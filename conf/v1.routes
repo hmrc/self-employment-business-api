@@ -1,0 +1,3 @@
+PUT        /sample/:nino/:taxYear       v1.controllers.AmendSampleController.amendSample(nino: String, taxYear: String)
+GET        /sample/:nino/:taxYear       v1.controllers.RetrieveSampleController.retrieveSample(nino: String, taxYear: String)
+DELETE     /sample/:nino/:taxYear       v1.controllers.DeleteSampleController.deleteSample(nino: String, taxYear: String)
