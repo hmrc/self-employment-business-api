@@ -56,8 +56,8 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               )
             ),
             api = APIDefinition(
-              name = "#mtd-api# (MTD)",
-              description = "#desc#",
+              name = "Self Employment Business API (MTD)",
+              description = "An API for providing Annual and Periodic Summary data",
               context = "mtd/template",
               categories = Seq("INCOME_TAX_MTD"),
               versions = Seq(
