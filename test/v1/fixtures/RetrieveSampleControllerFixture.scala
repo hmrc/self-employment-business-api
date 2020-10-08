@@ -128,17 +128,17 @@ object RetrieveSampleControllerFixture {
        |{
        |   "links":[
        |      {
-       |         "href":"/mtd/template/sample/$nino/$taxYear",
+       |         "href":"/individuals/business/self-employment/sample/$nino/$taxYear",
        |         "method":"PUT",
        |         "rel":"amend-sample-rel"
        |      },
        |      {
-       |         "href":"/mtd/template/sample/$nino/$taxYear",
+       |         "href":"/individuals/business/self-employment/sample/$nino/$taxYear",
        |         "method":"GET",
        |         "rel":"self"
        |      },
        |      {
-       |         "href":"/mtd/template/sample/$nino/$taxYear",
+       |         "href":"/individuals/business/self-employment/sample/$nino/$taxYear",
        |         "method":"DELETE",
        |         "rel":"delete-sample-rel"
        |      }

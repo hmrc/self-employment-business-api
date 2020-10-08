@@ -62,21 +62,21 @@ class RetrieveSampleControllerSpec
 
   val amendSampleLink: Link =
     Link(
-      href = s"/mtd/template/sample/$nino/$taxYear",
+      href = s"/individuals/business/self-employment/sample/$nino/$taxYear",
       method = PUT,
       rel = AMEND_SAMPLE_REL
     )
 
   val retrieveSampleLink: Link =
     Link(
-      href = s"/mtd/template/sample/$nino/$taxYear",
+      href = s"/individuals/business/self-employment/sample/$nino/$taxYear",
       method = GET,
       rel = SELF
     )
 
   val deleteSampleLink: Link =
     Link(
-      href = s"/mtd/template/sample/$nino/$taxYear",
+      href = s"/individuals/business/self-employment/sample/$nino/$taxYear",
       method = DELETE,
       rel = DELETE_SAMPLE_REL
     )

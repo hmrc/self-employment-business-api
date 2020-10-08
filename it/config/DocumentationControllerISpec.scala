@@ -38,9 +38,9 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     |      }
     |   ],
     |   "api":{
-    |      "name":"#mtd-api# (MTD)",
-    |      "description":"#desc#",
-    |      "context":"mtd/template",
+    |      "name":"Self Employment Business API (MTD)",
+    |      "description":"An API for providing Annual and Periodic Summary data",
+    |      "context":"individuals/business/self-employment",
     |      "categories":[
     |         "INCOME_TAX_MTD"
     |      ],

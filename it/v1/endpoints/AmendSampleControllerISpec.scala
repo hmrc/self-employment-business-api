@@ -60,17 +60,17 @@ class AmendSampleControllerISpec extends IntegrationBaseSpec {
       |{
       |  "links": [
       |    {
-      |      "href": "/mtd/template/sample/AA123456A/2017-18",
+      |      "href": "/individuals/business/self-employment/sample/AA123456A/2017-18",
       |      "method": "PUT",
       |      "rel": "amend-sample-rel"
       |    },
       |    {
-      |      "href": "/mtd/template/sample/AA123456A/2017-18",
+      |      "href": "/individuals/business/self-employment/sample/AA123456A/2017-18",
       |      "method": "GET",
       |      "rel": "self"
       |    },
       |    {
-      |      "href": "/mtd/template/sample/AA123456A/2017-18",
+      |      "href": "/individuals/business/self-employment/sample/AA123456A/2017-18",
       |      "method": "DELETE",
       |      "rel": "delete-sample-rel"
       |    }
