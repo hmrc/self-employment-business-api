@@ -1,0 +1,1 @@
+You can find the changelog in the [self-employment-business-api](https://github.com/hmrc/self-business-business-api/wiki/Changelog) GitHub wiki.

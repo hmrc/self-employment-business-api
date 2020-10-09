@@ -1,0 +1,18 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
+displayName: Sample Delete Endpoint [test only]
+description: "This endpoint allows a user to see an example delete endpoint"
+(annotations.sandboxData): !include ../scenarios/example_test_scenarios.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+responses:
+  204:
+    headers:
+      X-CorrelationId:
+        example: a1e8057e-fbbc-47a8-a8b4-78d9f015c253
+        description: Unique ID for operation tracking <br> String, 36 characters
