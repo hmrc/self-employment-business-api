@@ -113,6 +113,7 @@
       "type": "object",
       "properties": {
         "class4NicInfo": {
+          "description": "Self-employed profits above a set threshold are subject to Class 4 National Insurance charges.",
           "type": "object",
           "properties": {
             "isExempt": {
