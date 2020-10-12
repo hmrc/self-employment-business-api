@@ -1,6 +1,6 @@
 #%RAML 1.0
 ---
-title: MTD Template
+title: Self Employment Business (MTD)
 version: 1.0
 
 protocols: [ HTTPS ]
@@ -48,6 +48,7 @@ uses:
             description: 'The tax year to which the data applies.The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2017-18.'
             example: "2017-18"
         put: !include endpoints/createAndAmendAnnualSummary.raml
+        delete: !include endpoints/deleteAnnualSummary.raml
   /sample:
     /{nino}:
       uriParameters:
