@@ -16,11 +16,19 @@
 
 package v1.models.request.amendAnnualSummary
 
+<<<<<<< HEAD
 import play.api.libs.json.{Json, Reads, Writes}
+=======
+import play.api.libs.json.{Format, Json}
+>>>>>>> a67f837... Amend Annual summary models
 
 case class NonFinancials(class4NicInfo: Option[Class4NicInfo])
 
 object NonFinancials {
+<<<<<<< HEAD
   implicit val reads: Reads[NonFinancials] = Json.reads[NonFinancials]
   implicit val writes: Writes[NonFinancials] = (o: NonFinancials) => Json.toJson(o.class4NicInfo)
+=======
+  implicit val format: Format[NonFinancials] = Json.format[NonFinancials]
+>>>>>>> a67f837... Amend Annual summary models
 }
