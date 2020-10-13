@@ -22,10 +22,12 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 case class AmendAnnualSummaryBody(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials])
 
 object AmendAnnualSummaryBody {
+
   implicit val reads: Reads[AmendAnnualSummaryBody] = Json.reads[AmendAnnualSummaryBody]
   implicit val writes: OWrites[AmendAnnualSummaryBody] = (
     (JsPath \ "annualAdjustments").writeNullable[Adjustments] and
       (JsPath \ "annualAllowances").writeNullable[Allowances] and
       (JsPath \ "annualNonFinancials").writeNullable[NonFinancials]
     ) (unlift(AmendAnnualSummaryBody.unapply))
+//  an empty nonFinancials should be errored out as IncorrectOrEmptyBody so it ever has to write from NonFinancials(None) which will return a Null
 }

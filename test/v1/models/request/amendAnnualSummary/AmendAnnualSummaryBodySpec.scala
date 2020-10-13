@@ -157,7 +157,7 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |    },
            |    "annualNonFinancials": {
            |        "exemptFromPayingClass4Nics": true,
-           |        "class4NicsExemptionReason": "001 - Non Resident"
+           |        "class4NicsExemptionReason": "001"
            |    }
            |}
            |""".stripMargin)
