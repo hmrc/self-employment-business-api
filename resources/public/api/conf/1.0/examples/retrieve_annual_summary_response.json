@@ -24,7 +24,8 @@
   },
   "nonFinancials": {
     "class4NicInfo": {
-      "isExempt": false
+      "isExempt": true,
+      "exemptionCode": "002 - Trustee"
     }
   },
   "links": [
