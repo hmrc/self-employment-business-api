@@ -34,7 +34,7 @@ class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
 
     put(
       body = """{}""",
-      DesUri[Unit](s"business/self-employment/${request.nino}/${request.businessId}/annual/${request.taxYear}")
+      DesUri[Unit](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${request.taxYear}")
     )
   }
 }

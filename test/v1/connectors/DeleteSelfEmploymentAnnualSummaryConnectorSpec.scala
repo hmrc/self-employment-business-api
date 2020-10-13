@@ -48,7 +48,7 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.
           put(
-            url = s"$baseUrl/business/self-employment/${request.nino}/${request.businessId}/annual/${request.taxYear}",
+            url = s"$baseUrl/income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${request.taxYear}",
             body = """{}""",
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
