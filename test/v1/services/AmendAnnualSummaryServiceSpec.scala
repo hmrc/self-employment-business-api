@@ -21,7 +21,7 @@ import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendAnnualSummaryConnector
 import v1.models.domain.DesTaxYear
 import v1.models.domain.exemptionCode.MtdExemptionCode
-import v1.models.errors.{DesErrorCode, DesErrors, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, TaxYearFormatError}
+import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendAnnualSummary.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
 
@@ -81,8 +81,12 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
       val input = Seq(
         ("INVALID_NINO", NinoFormatError),
         ("INVALID_TAX_YEAR", TaxYearFormatError),
-        ("INVALID_INCOME_SOURCE", ???),
+        ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
+        ("INVALID_PAYLOAD", DownstreamError),
         ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
+        ("GONE", NotFoundError),
+        ("MISSING_EXEMPTION_REASON", RuleExemptionCodeError),
+        ("MISSING_EXEMPTION_INDICATOR", RuleExemptionCodeError),
         ("SERVER_ERROR", DownstreamError),
         ("SERVICE_UNAVAILABLE", DownstreamError)
       )

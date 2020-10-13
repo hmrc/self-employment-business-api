@@ -48,8 +48,12 @@ class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector
   private def desErrorMap: Map[String, MtdError] = Map(
     "INVALID_NINO" -> NinoFormatError,
     "INVALID_TAX_YEAR" -> TaxYearFormatError,
-    "INVALID_INCOME_SOURCE" -> ???,
+    "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
+    "INVALID_PAYLOAD" -> DownstreamError,
     "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+    "GONE" -> NotFoundError,
+    "MISSING_EXEMPTION_REASON" -> RuleExemptionCodeError,
+    "MISSING_EXEMPTION_INDICATOR" -> RuleExemptionCodeError,
     "SERVER_ERROR" -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
   )
