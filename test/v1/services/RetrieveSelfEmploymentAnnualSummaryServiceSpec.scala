@@ -1,0 +1,108 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package v1.services
+
+import support.UnitSpec
+import v1.controllers.EndpointLogContext
+import v1.mocks.connectors.{MockDeleteRetrieveConnector, MockRetrieveSelfEmploymentAnnualSummaryConnector}
+import v1.models.errors._
+import v1.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.Future
+
+class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
+
+  val nino = Nino("AA123456A")
+  val businessId = "XAIS12345678910"
+  val taxYear = "2019-20"
+  private val correlationId = "X-123"
+
+  val response = RetrieveSelfEmploymentAnnualSummaryResponse(
+    Some(adjustments(
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25))),
+    Some(allowances(
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25))),
+    Some(nonFinancials(
+      Some(class4NicInfo(
+        true,
+        Some("001 - Non Resident"))))))
+
+  private val requestData = RetrieveSelfEmploymentAnnualSummaryRequestData(nino, businessId, taxYear)
+
+  trait Test extends MockRetrieveSelfEmploymentAnnualSummaryConnector {
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+
+    val service = new RetrieveSelfEmploymentAnnualSummaryService(
+      connector = mockRetrieveSelfEmploymentConnector
+    )
+  }
+
+  "service" should {
+    "service call successful" when {
+      "return mapped result" in new Test {
+        MockRetrieveSelfEmploymentConnector.retrieveSelfEmployment(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        await(service.retrieveSelfEmploymentAnnualSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+      }
+    }
+  }
+
+  "unsuccessful" should {
+    "map errors according to spec" when {
+
+      def serviceError(desErrorCode: String, error: MtdError): Unit =
+        s"a $desErrorCode error is returned from the service" in new Test {
+
+          MockRetrieveSelfEmploymentConnector.retrieveSelfEmployment(requestData)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+
+          await(service.retrieveSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+        }
+
+      val input = Seq(
+        "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+        "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+        "INVALID_TAX_YEAR" -> TaxYearFormatError,
+        "NOT_FOUND" -> NotFoundError,
+        "SERVER_ERROR" -> DownstreamError,
+        "SERVICE_UNAVAILABLE" -> DownstreamError
+      )
+
+      input.foreach(args => (serviceError _).tupled(args))
+    }
+  }
+}

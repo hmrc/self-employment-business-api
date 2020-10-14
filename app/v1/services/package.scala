@@ -25,4 +25,6 @@ package object services {
 
   type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
 
+  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]
+
 }
