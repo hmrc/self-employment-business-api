@@ -27,15 +27,16 @@ object MtdError {
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid")
+
 // Rule Errors
 object RuleTaxYearNotSupportedError extends MtdError(
   code = "RULE_TAX_YEAR_NOT_SUPPORTED",
-  message = "Tax year not supported, because it precedes the earliest allowable tax year"
+  message = "The tax year specified is before the minimum tax year value"
 )
 
 object RuleTaxYearRangeInvalidError extends MtdError(
   code = "RULE_TAX_YEAR_RANGE_INVALID",
-  message = "Tax year range invalid. A tax year range of one year is required"
+  message = "The Tax year range is invalid"
 )
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
