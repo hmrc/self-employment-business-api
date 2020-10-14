@@ -18,11 +18,11 @@ package v1.models.request.amendAnnualSummary
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.exemptionCode.MtdExemptionCode
+import v1.models.domain.ex.MtdEx
 
 class Class4NicInfoSpec extends UnitSpec {
 
-  val trueMtdModel: Class4NicInfo = Class4NicInfo(isExempt = true, Some(MtdExemptionCode.`001 - Non Resident`))
+  val trueMtdModel: Class4NicInfo = Class4NicInfo(isExempt = true, Some(MtdEx.`001 - Non Resident`))
   val falseMtdModel: Class4NicInfo = Class4NicInfo(isExempt = false, None)
 
   "reads" should {

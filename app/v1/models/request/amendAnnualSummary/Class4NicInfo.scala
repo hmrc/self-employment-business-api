@@ -18,16 +18,16 @@ package v1.models.request.amendAnnualSummary
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.domain.exemptionCode.{DesExemptionCode, MtdExemptionCode}
+import v1.models.domain.ex.{DesEx, MtdEx}
 
-case class Class4NicInfo(isExempt: Boolean, exemptionCode: Option[MtdExemptionCode])
+case class Class4NicInfo(isExempt: Boolean, exemptionCode: Option[MtdEx])
 
 object Class4NicInfo {
 
   implicit val reads: Reads[Class4NicInfo] = Json.reads[Class4NicInfo]
   implicit val writes: OWrites[Class4NicInfo] = (
     (JsPath \ "exemptFromPayingClass4Nics").write[Boolean] and
-      (JsPath \ "class4NicsExemptionReason").writeNullable[DesExemptionCode]
+      (JsPath \ "class4NicsExemptionReason").writeNullable[DesEx]
     ) (unlift(Class4NicInfo.unapply(_: Class4NicInfo).map {
     case (bool, exemptionCode) => (bool, exemptionCode.map(_.toDes))
   }))

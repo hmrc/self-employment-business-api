@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.domain.exemptionCode
+package v1.models.domain.ex
 
 import play.api.libs.json.{JsError, JsValue, Json}
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v1.models.domain.exemptionCode.MtdExemptionCode._
+import v1.models.domain.ex.MtdEx._
 
-class MtdExemptionCodeSpec extends UnitSpec with EnumJsonSpecSupport {
+class MtdExSpec extends UnitSpec with EnumJsonSpecSupport {
 
   val desJson: JsValue = Json.toJson("")
 
-  testRoundTrip[MtdExemptionCode](
+  testRoundTrip[MtdEx](
     ("001 - Non Resident", `001 - Non Resident`),
     ("002 - Trustee", `002 - Trustee`),
     ("003 - Diver", `003 - Diver`),
@@ -37,18 +37,18 @@ class MtdExemptionCodeSpec extends UnitSpec with EnumJsonSpecSupport {
   "MtdExemptionCodeSpec" when {
     "given an invalid field" should {
       "return a JsError" in {
-        desJson.validate[MtdExemptionCode] shouldBe a[JsError]
+        desJson.validate[MtdEx] shouldBe a[JsError]
       }
     }
 
     "toDes" should {
       "produce the correct DesExemptionCode object" in {
-        `001 - Non Resident`.toDes shouldBe DesExemptionCode.`001`
-        `002 - Trustee`.toDes shouldBe DesExemptionCode.`002`
-        `003 - Diver`.toDes shouldBe DesExemptionCode.`003`
-        `004 - Employed earner taxed under ITTOIA 2005`.toDes shouldBe DesExemptionCode.`004`
-        `005 - Over state pension age`.toDes shouldBe DesExemptionCode.`005`
-        `006 - Under 16`.toDes shouldBe DesExemptionCode.`006`
+        `001 - Non Resident`.toDes shouldBe DesEx.`001`
+        `002 - Trustee`.toDes shouldBe DesEx.`002`
+        `003 - Diver`.toDes shouldBe DesEx.`003`
+        `004 - Employed earner taxed under ITTOIA 2005`.toDes shouldBe DesEx.`004`
+        `005 - Over state pension age`.toDes shouldBe DesEx.`005`
+        `006 - Under 16`.toDes shouldBe DesEx.`006`
       }
     }
   }
