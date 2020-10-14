@@ -20,7 +20,7 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.domain.DesTaxYear
-import v1.models.domain.exemptionCode.MtdExemptionCode
+import v1.models.domain.ex.MtdEx
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendAnnualSummary.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
 
@@ -39,7 +39,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
     body = AmendAnnualSummaryBody(
         Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
         Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99))),
-        Some(NonFinancials(Some(Class4NicInfo(isExempt = true, Some(MtdExemptionCode.`001 - Non Resident`)))))
+        Some(NonFinancials(Some(Class4NicInfo(isExempt = true, Some(MtdEx.`001 - Non Resident`)))))
     )
   )
 
