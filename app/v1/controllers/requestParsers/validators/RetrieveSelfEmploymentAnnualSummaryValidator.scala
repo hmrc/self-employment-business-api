@@ -16,8 +16,9 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations.{NinoValidation, TaxYearNotSupportedValidation, TaxYearValidation}
+import v1.controllers.requestParsers.validators.validations.{BusinessIdValidation, NinoValidation, TaxYearNotSupportedValidation, TaxYearValidation}
 import v1.models.errors.MtdError
+import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRawData
 
 class RetrieveSelfEmploymentAnnualSummaryValidator extends Validator[RetrieveSelfEmploymentAnnualSummaryRawData] {
 
