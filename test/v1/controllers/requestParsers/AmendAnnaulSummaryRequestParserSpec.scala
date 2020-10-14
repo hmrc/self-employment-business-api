@@ -19,7 +19,10 @@ package v1.controllers.requestParsers
 import play.api.libs.json.Json
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
+import v1.mocks.validators.MockAmendSelfEmploymentAnnualSummaryValidator
 import v1.models.errors._
+import v1.models.domain.ex.MtdEx._
+import v1.models.request.amendAnnualSummary.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRawData, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
 
 class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
   val nino = "AA123456B"
@@ -64,18 +67,18 @@ class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
   val inputData =
     AmendAnnualSummaryRawData(nino, businessId, taxYear, requestBodyJson)
 
-  trait Test extends MockAmendAnnualSummaryValidator {
-    lazy val parser = new AmendAnnualSummaryRequestParser(mockValidator)
+  trait Test extends MockAmendSelfEmploymentAnnualSummaryValidator {
+    lazy val parser = new AmendSelfEmploymentAnnualSummaryRequestParser(mockValidator)
   }
 
   "parse" should {
 
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockAmendAnnualSummaryValidator.validate(inputData).returns(Nil)
+        MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData).returns(Nil)
 
         val amendAnnualSummaryRequestBody =
-          AmendAnnualSummaryRequestBody(
+          AmendAnnualSummaryBody(
             Some(Adjustments(
                 Some(100.25),
                 Some(100.25),
@@ -99,10 +102,10 @@ class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
                 Some(100.25),
                 Some(100.25)
               )),
-              Some(nonFinancials(
-                Some(class4NicInfo(
+              Some(NonFinancials(
+                Some(Class4NicInfo(
                   true,
-                  "001 - Non Resident"
+                  Some(`001 - Non Resident`)
               ))))
           )
 
@@ -112,7 +115,7 @@ class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
     }
     "return an ErrroWrapper" when {
       "a single validation error occurs" in new Test {
-        MockAmendAnnualSummaryValidator.validate(inputData)
+        MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -120,7 +123,7 @@ class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockAmendAnnualSummaryValidator.validate(inputData)
+        MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 
         parser.parseRequest(inputData) shouldBe

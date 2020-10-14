@@ -18,12 +18,12 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
-import v1.controllers.requestParsers.validators.AmendSEAnnualSummaryValidator
-import v1.models.request.
+import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSummaryValidator
+import v1.models.request.amendAnnualSummary.{AmendAnnualSummaryRawData, AmendAnnualSummaryRequest, AmendAnnualSummaryBody}
 
-class AmendSEAnnualSummaryRequestParser @Inject()(val validator: AmendSEAnnualSummaryValidator)
-  extends RequestParser[AmendSEAnnualSummaryRawData, AmendSEAnnualSummaryRequest] {
+class AmendSelfEmploymentAnnualSummaryRequestParser @Inject()(val validator: AmendSelfEmploymentAnnualSummaryValidator)
+  extends RequestParser[AmendAnnualSummaryRawData, AmendAnnualSummaryRequest] {
 
-  override protected def requestFor(data: AmendSEAnnualSummaryRawData): AmendSEAnnualSummaryRequest =
-    AmendSEAnnualSummaryRequest(Nino(data.nino), data.businessId, data.taxYear, data.body.as[AmendSEAnnualSummaryRequestBody])
+  override protected def requestFor(data: AmendAnnualSummaryRawData): AmendAnnualSummaryRequest =
+    AmendAnnualSummaryRequest(Nino(data.nino), data.businessId, data.taxYear, data.body.as[AmendAnnualSummaryBody])
 }

@@ -17,12 +17,12 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.MtdError
-import v1.models.request.amendSample._
+import v1.models.errors._
+import v1.models.request.amendAnnualSummary.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRawData, NonFinancials}
 
-class AmendSEAnnualSummaryValidator extends Validator[AmendAnnualSummaryRawData] {
+class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSummaryRawData] {
 
-  private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, incorrectOrEmptyBodySubmittedValidation, bodyFieldValidation, exemptionCodeValidation)
+  private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
 
   private def parameterFormatValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = (data: AmendAnnualSummaryRawData) => {
     List(
@@ -39,15 +39,18 @@ class AmendSEAnnualSummaryValidator extends Validator[AmendAnnualSummaryRawData]
   }
 
   private def bodyFormatValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
-    List(
+    val baseValidation = List(
       JsonFormatValidation.validate[AmendAnnualSummaryBody](data.body, RuleIncorrectOrEmptyBodyError),
-      ExemptionCodeValidation.validate[AmendAnnualSummaryBody](data.body, RuleExemptionCode)
-    )
-  }
+      ExemptionCodeValidation.validate[AmendAnnualSummaryBody](data.body, RuleExemptionCode))
 
-  private def incorrectOrEmptyBodySubmittedValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
-    val body = data.body.as[AmendAnnualSummaryBody]
-    if (body.isIncorrectOrEmptyBody) List(List(RuleIncorrectOrEmptyBodyError)) else NoValidationErrors
+    val extraValidation: List[List[MtdError]] = {
+      data.body.asOpt[AmendAnnualSummaryBody].map(_.isEmpty).map {
+        case true => List(List(RuleIncorrectOrEmptyBodyError))
+        case false => NoValidationErrors
+      }.getOrElse(NoValidationErrors)
+    }
+
+    baseValidation ++ extraValidation
   }
 
   private def bodyFieldValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
@@ -56,8 +59,7 @@ class AmendSEAnnualSummaryValidator extends Validator[AmendAnnualSummaryRawData]
     List(flattenErrors(
       List(
         body.adjustments.map(validateAdjustments).getOrElse(NoValidationErrors),
-        body.allowances.map(validateAllowances).getOrElse(NoValidationErrors),
-        body.nonFinancials.map(validateNonFinancials).getOrElse(NoValidationErrors)
+        body.allowances.map(validateAllowances).getOrElse(NoValidationErrors)
         ).getOrElse(NoValidationErrors).toList)
     )
   }
@@ -69,39 +71,39 @@ class AmendSEAnnualSummaryValidator extends Validator[AmendAnnualSummaryRawData]
         path = s"/adjustments/includedNonTaxableProfits"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.basisAdjustment),
+        field = adjustments.basisAdjustment,
         path = s"/adjustments/basisAdjustment"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.overlapReliefUsed),
+        field = adjustments.overlapReliefUsed,
         path = s"/adjustments/overlapReliefUsed"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.accountingAdjustment),
+        field = adjustments.accountingAdjustment,
         path = s"/adjustments/accountingAdjustment"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.averagingAdjustment),
+        field = adjustments.averagingAdjustment,
         path = s"/adjustments/averagingAdjustment"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.lossBroughtForward),
+        field = adjustments.lossBroughtForward,
         path = s"/adjustments/lossBroughtForward"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.outstandingBusinessIncome),
+        field = adjustments.outstandingBusinessIncome,
         path = s"/adjustments/outstandingBusinessIncome"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.balancingChargeBPRA),
+        field = adjustments.balancingChargeBPRA,
         path = s"/adjustments/balancingChargeBPRA"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.balancingChargeOther),
+        field = adjustments.balancingChargeOther,
         path = s"/adjustments/balancingChargeOther"
       ),
       NumberValidation.validateOptional(
-        field = Some(adjustments.goodsAndServicesOwnUse),
+        field = adjustments.goodsAndServicesOwnUse,
         path = s"/adjustments/goodsAndServicesOwnUse"
       )
     ).flatten
@@ -114,49 +116,39 @@ class AmendSEAnnualSummaryValidator extends Validator[AmendAnnualSummaryRawData]
         path = s"/allowances/annualInvestmentAllowance"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.businessPremisesRenovationAllowance),
+        field = allowances.businessPremisesRenovationAllowance,
         path = s"/allowances/businessPremisesRenovationAllowance"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.capitalAllowanceMainPool),
+        field = allowances.capitalAllowanceMainPool,
         path = s"/allowances/capitalAllowanceMainPool"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.capitalAllowanceSpecialRatePool),
+        field = allowances.capitalAllowanceSpecialRatePool,
         path = s"/allowances/capitalAllowanceSpecialRatePool"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.zeroEmissionGoodsVehicleAllowance),
+        field = allowances.zeroEmissionGoodsVehicleAllowance,
         path = s"/allowances/zeroEmissionGoodsVehicleAllowance"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.enhancedCapitalAllowance),
+        field = allowances.enhancedCapitalAllowance,
         path = s"/allowances/enhancedCapitalAllowance"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.allowanceOnSales),
+        field = allowances.allowanceOnSales,
         path = s"/allowances/allowanceOnSales"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.capitalAllowanceSingleAssetPool),
+        field = allowances.capitalAllowanceSingleAssetPool,
         path = s"/allowances/capitalAllowanceSingleAssetPool"
       ),
       NumberValidation.validateOptional(
-        field = Some(allowances.tradingAllowance),
+        field = allowances.tradingAllowance,
         path = s"/allowances/tradingAllowance"
       )
     ).flatten
   }
-
-  private def validateNonFinancials(nonFinancials: NonFinancials): List[MtdError] = {
-    List(
-      ExemptionCodesValidation.validateOptional(
-        field = nonFinancials.class4NicInfo.flatMap(_.exemptionCode),
-        path = "/nonFinancials/class4NicInfo/exemptionCode"
-      )
-    )
-  }
-
 
   override def validate(data: AmendAnnualSummaryRawData): List[MtdError] = {
     run(validationSet, data).distinct

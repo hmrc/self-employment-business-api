@@ -1,6 +1,8 @@
 import play.api.libs.json.Json
 import support.UnitSpec
+import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSummaryValidator
 import v1.models.errors._
+import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRawData
 import v1.models.request.amendForeignPropertyAnnualSubmission.AmendAnnualSummaryRawData
 
 class AmendAnnualSummaryValidatorSpec extends UnitSpec {
@@ -44,7 +46,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
       |""".stripMargin
   )
 
-  val validator = new AmendAnnualSummaryValidator()
+  val validator = new AmendSelfEmploymentAnnualSummaryValidator()
 
   "running a validation" should {
     "return no errors" when {
@@ -883,15 +885,13 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |    },
             |    "nonFinancials": {
             |        "class4NicInfo":{
-            |            "isExempt": true
+            |            "isExempt": true,
+            |            "001 - Non Resident"
             |        }
             |    }
             |}
             |""".stripMargin
         ))) shouldBe List(
-          RuleExemptionCodeError.copy(paths = Some(
-            "/nonFinancials/class4NicInfo/countryCode"
-          ))),
           ValueFormatError.copy(paths = Some(Seq(
             "/adjustments/includedNonTaxableProfits",
             "/adjustments/basisAdjustment",
