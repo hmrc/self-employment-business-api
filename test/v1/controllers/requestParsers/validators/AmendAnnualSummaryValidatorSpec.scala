@@ -3,7 +3,6 @@ import support.UnitSpec
 import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSummaryValidator
 import v1.models.errors._
 import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRawData
-import v1.models.request.amendForeignPropertyAnnualSubmission.AmendAnnualSummaryRawData
 
 class AmendAnnualSummaryValidatorSpec extends UnitSpec {
 
