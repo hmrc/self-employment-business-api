@@ -24,11 +24,15 @@ body:
      example-1:
       description: Create and Amend Self-Employment Annual Summary Request
       value: !include ../examples/create_and_amend_annual_summary_request.json
-     example-2:
-      description: Create and Amend Self-Employment Annual Summary Response
-      value: !include ../examples/create_and_amend_annual_summary_response.json
 responses:
   200:
+    body:
+      application/json:
+        type: !include ../schemas/create_and_amend_annual_summary_response.json
+        examples:
+          example:
+            description: Example Response
+            value: !include ../examples/create_and_amend_annual_summary_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
