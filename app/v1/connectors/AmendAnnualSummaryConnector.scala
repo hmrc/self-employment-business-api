@@ -23,6 +23,7 @@ import v1.models.domain.DesTaxYear
 import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
+import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
@@ -31,8 +32,6 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
   def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext): Future[DesOutcome[Unit]] = {
-
-    import v1.connectors.httpparsers.StandardDesHttpParser._
 
     val nino = request.nino.nino
     val taxYear = request.taxYear
