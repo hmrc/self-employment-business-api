@@ -18,14 +18,14 @@ package v1.models.response.retrieveSEAnnual
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.domain.exemptionCode.{DesExemptionCode, MtdExemptionCode}
+//import v1.models.domain.exemptionCode.{DesExemptionCode, MtdExemptionCode}
 
-case class Class4NicInfo(isExempt: Boolean, exemptionCode: Option[MtdExemptionCode])
+case class Class4NicInfo(isExempt: Boolean, exemptionCode: Option[String])
 
 object Class4NicInfo {
   implicit val reads: Reads[Class4NicInfo] = (
     (JsPath \ "exemptFromPayingClass4Nics").read[Boolean] and
-      (JsPath \ "class4NicsExemptionReason").readNullable[DesExemptionCode].map(_.map(_.toMtd))
+      (JsPath \ "class4NicsExemptionReason").readNullable[String]
   )(Class4NicInfo.apply _)
   implicit val writes: OWrites[Class4NicInfo] = Json.writes[Class4NicInfo]
 }

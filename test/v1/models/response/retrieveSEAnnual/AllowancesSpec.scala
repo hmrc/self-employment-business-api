@@ -18,7 +18,6 @@ package v1.models.response.retrieveSEAnnual
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.exemptionCode.MtdExemptionCode
 
 class AllowancesSpec extends UnitSpec {
   val desJson: JsValue = Json.parse(

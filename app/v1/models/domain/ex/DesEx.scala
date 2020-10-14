@@ -45,4 +45,3 @@ object DesEx {
 
   implicit val format: Format[DesEx] = Enums.format[DesEx]
 }
-
