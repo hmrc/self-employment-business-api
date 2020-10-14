@@ -39,29 +39,26 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
   }
 
   private def bodyFormatValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
-    val baseValidation = List(
-      JsonFormatValidation.validate[AmendAnnualSummaryBody](data.body, RuleIncorrectOrEmptyBodyError),
-      ExemptionCodeValidation.validate[AmendAnnualSummaryBody](data.body, RuleExemptionCode))
+    List(
+      JsonFormatValidation.validate[AmendAnnualSummaryBody](data.body)
+    )
+  }
 
-    val extraValidation: List[List[MtdError]] = {
-      data.body.asOpt[AmendAnnualSummaryBody].map(_.isEmpty).map {
-        case true => List(List(RuleIncorrectOrEmptyBodyError))
-        case false => NoValidationErrors
-      }.getOrElse(NoValidationErrors)
-    }
-
-    baseValidation ++ extraValidation
+  private def nonFinancialsValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
+    val body = data.body.as[AmendAnnualSummaryBody]
+    List(
+      (body.nonFinancials.get.class4NicInfo.get.isExempt)
+    )
   }
 
   private def bodyFieldValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSummaryBody]
-
-    List(flattenErrors(
-      List(
-        body.adjustments.map(validateAdjustments).getOrElse(NoValidationErrors),
-        body.allowances.map(validateAllowances).getOrElse(NoValidationErrors)
-        ).getOrElse(NoValidationErrors).toList)
-    )
+    val errorsO: Option[List[List[MtdError]]] = for {
+      adjustmentsErrors <- body.adjustments.map(validateAdjustments)
+      allowancesErrors <- body.allowances.map(validateAllowances)
+      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.map(nonFinancialsValidation)
+    } yield List(adjustmentsErrors ++ allowancesErrors ++ nonFinancialsErrors)
+    List(errorsO.map(Validator.flattenErrors)).flatten
   }
 
   private def validateAdjustments(adjustments: Adjustments): List[MtdError] = {
