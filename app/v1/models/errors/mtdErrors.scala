@@ -33,6 +33,10 @@ object RuleTaxYearNotSupportedError extends MtdError(
   code = "RULE_TAX_YEAR_NOT_SUPPORTED",
   message = "The tax year specified is before the minimum tax year value"
 )
+object RuleExemptionCodeError extends MtdError(
+  code = "RULE_EXEMPTION_CODE",
+  message = "Exemption code must be supplied if is exempt indicator is set to true. Exemption code must not be supplied if exempt indicator is set to false"
+)
 
 object RuleTaxYearRangeInvalidError extends MtdError(
   code = "RULE_TAX_YEAR_RANGE_INVALID",
