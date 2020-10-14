@@ -18,7 +18,7 @@ package v1.models.response.retrieveSEAnnual
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-//import v1.models.domain.exemptionCode.MtdExemptionCode
+import v1.models.domain.ex.MtdEx
 
 class RetrieveSelfEmploymentAnnualSummaryResponseBodySpec extends UnitSpec {
   val desJson: JsValue = Json.parse(
@@ -83,7 +83,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseBodySpec extends UnitSpec {
       |  "nonFinancials": {
       |    "class4NicInfo": {
       |      "isExempt": true,
-      |      "exemptionCode": "001"
+      |      "exemptionCode": "001 - Non Resident"
       |    }
       |  }
       |}
@@ -92,7 +92,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseBodySpec extends UnitSpec {
   val model: RetrieveSelfEmploymentAnnualSummaryResponseBody = RetrieveSelfEmploymentAnnualSummaryResponseBody(
     Some(Adjustments(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
     Some(Allowances(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
-    Some(NonFinancials(Some(Class4NicInfo(true, Some("001")))))
+    Some(NonFinancials(Some(Class4NicInfo(true, Some(MtdEx.`001 - Non Resident`)))))
   )
 
   "reads" should {

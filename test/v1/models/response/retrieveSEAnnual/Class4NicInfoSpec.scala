@@ -18,45 +18,31 @@ package v1.models.response.retrieveSEAnnual
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v1.models.domain.ex.MtdEx
 
-class AllowancesSpec extends UnitSpec {
+class Class4NicInfoSpec extends UnitSpec {
   val desJson: JsValue = Json.parse(
     """
       |{
-      |  "annualInvestmentAllowance": 500.25,
-      |  "businessPremisesRenovationAllowance": 500.25,
-      |  "capitalAllowanceMainPool": 500.25,
-      |  "capitalAllowanceSpecialRatePool": 500.25,
-      |  "zeroEmissionGoodsVehicleAllowance": 500.25,
-      |  "enhancedCapitalAllowance": 500.25,
-      |  "allowanceOnSales": 500.25,
-      |  "capitalAllowanceSingleAssetPool": 500.25,
-      |  "tradingIncomeAllowance":  500.25
+      |  "exemptFromPayingClass4Nics": true,
+      |  "class4NicsExemptionReason": "001"
       |}
       |""".stripMargin)
 
   val mtdJson: JsValue = Json.parse(
     """
       |{
-      |  "annualInvestmentAllowance": 500.25,
-      |  "capitalAllowanceMainPool": 500.25,
-      |  "capitalAllowanceSpecialRatePool":500.25,
-      |  "zeroEmissionGoodsVehicleAllowance": 500.25,
-      |  "businessPremisesRenovationAllowance": 500.25,
-      |  "enhancedCapitalAllowance": 500.25,
-      |  "allowanceOnSales": 500.25,
-      |  "capitalAllowanceSingleAssetPool": 500.25,
-      |  "tradingAllowance": 500.25
+      |  "isExempt": true,
+      |  "exemptionCode": "001 - Non Resident"
       |}
       |""".stripMargin)
 
-  val model: Allowances =
-    Allowances(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))
+  val model: Class4NicInfo = Class4NicInfo(true, Some(MtdEx.`001 - Non Resident`))
 
   "reads" should {
     "return a model" when {
       "passed valid json" in {
-        desJson.as[Allowances] shouldBe model
+        desJson.as[Class4NicInfo] shouldBe model
       }
     }
   }

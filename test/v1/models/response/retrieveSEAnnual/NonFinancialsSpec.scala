@@ -16,17 +16,30 @@
 
 package v1.models.response.retrieveSEAnnual
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.domain.ex.{DesEx, MtdEx}
-//import v1.models.domain.exemptionCode.{DesExemptionCode, MtdExemptionCode}
+import play.api.libs.json.{JsValue, Json}
+import support.UnitSpec
+import v1.models.domain.ex.MtdEx
 
-case class Class4NicInfo(isExempt: Boolean, exemptionCode: Option[MtdEx])
+class NonFinancialsSpec extends UnitSpec{
 
-object Class4NicInfo {
-  implicit val reads: Reads[Class4NicInfo] = (
-    (JsPath \ "exemptFromPayingClass4Nics").read[Boolean] and
-      (JsPath \ "class4NicsExemptionReason").readNullable[DesEx].map(_.map(_.toMtd))
-  )(Class4NicInfo.apply _)
-  implicit val writes: OWrites[Class4NicInfo] = Json.writes[Class4NicInfo]
+  val mtdJson: JsValue = Json.parse(
+    """
+      |{
+      |  "class4NicInfo": {
+      |    "isExempt": true,
+      |    "exemptionCode": "001 - Non Resident"
+      |  }
+      |}
+      |""".stripMargin)
+
+  val model: NonFinancials = NonFinancials(Some(Class4NicInfo(true, Some(MtdEx.`001 - Non Resident`))))
+
+  "writes" should {
+    "return json" when {
+      "passed a model" in {
+        Json.toJson(model) shouldBe mtdJson
+      }
+    }
+  }
+
 }
