@@ -22,6 +22,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.Logging
+import v1.controllers.requestParsers.DeleteSelfEmploymentAnnualSummaryRequestParser
 import v1.models.errors._
 import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRawData
 import v1.services.{DeleteSelfEmploymentAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
@@ -31,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteSelfEmploymentAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
                                                             val lookupService: MtdIdLookupService,
-                                                            parser: DeleteOtherDeductionsRequestParser,
+                                                            parser: DeleteSelfEmploymentAnnualSummaryRequestParser,
                                                             service: DeleteSelfEmploymentAnnualSummaryService,
                                                             cc: ControllerComponents)(implicit ec: ExecutionContext)
 extends AuthorisedController(cc) with BaseController with Logging {

@@ -21,6 +21,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
+import v1.mocks.requestParsers.MockDeleteSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockDeleteSelfEmploymentAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -43,7 +44,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
     val controller = new DeleteSelfEmploymentAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockDeleteOtherDeductionsRequestParser,
+      parser = mockDeleteSelfEmploymentAnnualSummaryRequestParser,
       service = mockDeleteSelfEmploymentAnnualSummaryService,
       cc = cc)
 
@@ -60,7 +61,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
   private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
 
   "handleRequest" should {
-    "return NoContent" {
+    "return NoContent" when {
       "the request recieved is valid" in new Test {
 
         MockDeleteSelfEmploymentAnnualSummaryRequestParser
