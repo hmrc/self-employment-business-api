@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Create and Amend SE Annual Summary",
+  "title": "Create and Amend Self-Employment Annual Summary",
   "description": "Create or amend a self-employment annual summary for a tax year.",
   "type": "object",
   "properties": {
