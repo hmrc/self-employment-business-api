@@ -27,6 +27,9 @@ trait HateoasLinks {
   private def sampleUri(appConfig: AppConfig, nino: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/sample/$nino/$taxYear"
 
+  private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
+    s"/${appConfig.apiGatewayContext}/individuals/business/self-employment/${nino}/${businessId}/annual/${taxYear}"
+
   //Sample links
   def amendSample(appConfig: AppConfig, nino: String, taxYear: String): Link =
     Link(
@@ -57,4 +60,26 @@ trait HateoasLinks {
       method = DELETE,
       rel = DELETE_SAMPLE_REL
     )
+
+  def retrieveAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(
+      href = sampleUri(appConfig, nino, businessId, taxYear),
+      method = GET,
+      rel = ???
+    )
+
+  def amendAnnualSummary(appConfig: AppConfig, nino: String, taxYear: String): Link =
+    Link(
+      href = sampleUri(appConfig, nino, taxYear),
+      method = DELETE,
+      rel = ???
+    )
+
+  def deleteAnnualSummary(appConfig: AppConfig, nino: String, taxYear: String): Link =
+    Link(
+      href = sampleUri(appConfig, nino, taxYear),
+      method = PUT,
+      rel = ???
+    )
+
 }
