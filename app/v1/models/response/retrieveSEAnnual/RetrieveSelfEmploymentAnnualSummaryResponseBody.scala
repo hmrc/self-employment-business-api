@@ -16,8 +16,11 @@
 
 package v1.models.response.retrieveSEAnnual
 
+import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrieveSelfEmploymentAnnualSummaryResponseBody(
                                                             adjustments: Option[Adjustments],
@@ -25,7 +28,7 @@ case class RetrieveSelfEmploymentAnnualSummaryResponseBody(
                                                             nonFinancials: Option[NonFinancials]
                                                           )
 
-object RetrieveSelfEmploymentAnnualSummaryResponseBody {
+object RetrieveSelfEmploymentAnnualSummaryResponseBody extends HateoasLinks {
   implicit val reads: Reads[RetrieveSelfEmploymentAnnualSummaryResponseBody] = (
     (JsPath \ "annualAdjustments").readNullable[Adjustments] and
       (JsPath \ "annualAllowances").readNullable[Allowances] and
@@ -33,4 +36,20 @@ object RetrieveSelfEmploymentAnnualSummaryResponseBody {
     ) (RetrieveSelfEmploymentAnnualSummaryResponseBody.apply _)
 
   implicit val writes: OWrites[RetrieveSelfEmploymentAnnualSummaryResponseBody] = Json.writes[RetrieveSelfEmploymentAnnualSummaryResponseBody]
+
+
+  implicit object RetrieveSelfEmploymentAnnualSummaryLinksFactory extends
+    HateoasLinksFactory[RetrieveSelfEmploymentAnnualSummaryResponseBody, RetrieveSelfEmploymentAnnualSummaryHateoasData] {
+    override def links(appConfig: AppConfig, data: RetrieveSelfEmploymentAnnualSummaryHateoasData): Seq[Link] = {
+      import data._
+      Seq(
+        amendAnnualSummary(appConfig, nino, businessId, taxYear),
+        retrieveAnnualSummary(appConfig, nino, businessId, taxYear),
+        deleteAnnualSummary(appConfig, nino, businessId, taxYear)
+      )
+    }
+  }
+
 }
+
+case class RetrieveSelfEmploymentAnnualSummaryHateoasData(nino: String, businessId: String, taxYear: String) extends HateoasData
