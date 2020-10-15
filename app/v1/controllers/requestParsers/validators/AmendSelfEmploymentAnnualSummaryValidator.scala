@@ -47,13 +47,13 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
   private def bodyFieldValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSummaryBody]
     val errorsO: Option[List[List[MtdError]]] = for {
-      adjustmentsErrors <- body.adjustments.flatMap { data =>
+      adjustmentsErrors <- body.adjustments.map { data =>
         validateAdjustments(data)
       }
-      allowancesErrors <- body.allowances.flatMap { data =>
+      allowancesErrors <- body.allowances.map { data =>
         validateAllowances(data)
       }
-      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.flatMap { data =>
+      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.map { data =>
         nonFinancialsValidation(data)
       }
     } yield adjustmentsErrors ++ allowancesErrors ++ nonFinancialsErrors
