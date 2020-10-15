@@ -22,7 +22,7 @@ import v1.mocks.MockHttpClient
 import v1.models.domain.ex.MtdEx._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
-import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponseBody}
+import v1.models.response.retrieveSEAnnual._
 
 import scala.concurrent.Future
 
@@ -79,7 +79,8 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
           .get(
             url = s"$baseUrl/business/self-employment/${nino}/${businessId}/annual/${taxYear}",
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
-          ).returns(Future.successful(outcome))
+          )
+          .returns(Future.successful(outcome))
 
         await(connector.retrieveSEAnnual(request)) shouldBe outcome
       }

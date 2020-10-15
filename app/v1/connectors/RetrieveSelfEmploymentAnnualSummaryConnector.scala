@@ -34,7 +34,7 @@ class RetrieveSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClien
                     ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]] = {
 
     get(
-      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponseBody](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${request.taxYear}")
+      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponseBody](s"business/self-employment/${request.nino}/${request.businessId}/annual/${request.taxYear}")
     )
   }
 }
