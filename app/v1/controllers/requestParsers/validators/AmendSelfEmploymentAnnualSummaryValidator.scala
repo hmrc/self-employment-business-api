@@ -146,9 +146,8 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
     )
   }
 
-  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
+  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): List[List[MtdError]] =
     List(isExemptValidation.validate(class4NicInfo.isExempt, class4NicInfo.exemptionCode))
-  }
 
   override def validate(data: AmendAnnualSummaryRawData): List[MtdError] = {
     run(validationSet, data).distinct
