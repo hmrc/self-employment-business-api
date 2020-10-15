@@ -24,6 +24,7 @@ import utils.Logging
 import v1.connectors.RetrieveSelfEmploymentAnnualSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
+import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,9 +41,11 @@ class RetrieveSelfEmploymentAnnualSummaryService @Inject()(retrieveSelfEmploymen
       val result = for {
         desResponseWrapper <- EitherT(retrieveSelfEmploymentAnnualSummaryConnector.retrieveSEAnnual(request)).leftMap(mapDesErrors(desErrorMap))
       } yield desResponseWrapper
+
       result.value
     }
-  private def desErrorMap: Map[String, MtdError] =
+
+  private def desErrorMap =
     Map(
       "INVALID_NINO" -> NinoFormatError,
       "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,

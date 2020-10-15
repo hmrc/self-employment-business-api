@@ -18,6 +18,7 @@ package v1
 
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
+import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
 
 package object services {
 
@@ -25,6 +26,6 @@ package object services {
 
   type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
 
-  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]
+  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]
 
 }

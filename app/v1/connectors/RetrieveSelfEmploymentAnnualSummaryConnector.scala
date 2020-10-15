@@ -21,6 +21,8 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
+import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,10 +31,10 @@ class RetrieveSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClien
                                                              val appConfig: AppConfig) extends BaseDesConnector {
   def retrieveSEAnnual(request: RetrieveSelfEmploymentAnnualSummaryRequest)(
                     implicit hc: HeaderCarrier,
-                    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+                    ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]] = {
 
     get(
-      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponse](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${request.taxYear}")
+      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponseBody](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${request.taxYear}")
     )
   }
 }

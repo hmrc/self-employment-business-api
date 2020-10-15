@@ -18,10 +18,15 @@ package v1.services
 
 import support.UnitSpec
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.{MockDeleteRetrieveConnector, MockRetrieveSelfEmploymentAnnualSummaryConnector}
+import uk.gov.hmrc.domain.Nino
+import v1.mocks.connectors.MockRetrieveSelfEmploymentAnnualSummaryConnector
+import v1.models.domain.ex.MtdEx._
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
+import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponseBody}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -32,8 +37,8 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
   val taxYear = "2019-20"
   private val correlationId = "X-123"
 
-  val response = RetrieveSelfEmploymentAnnualSummaryResponse(
-    Some(adjustments(
+  val response = RetrieveSelfEmploymentAnnualSummaryResponseBody(
+    Some(Adjustments(
       Some(100.25),
       Some(100.25),
       Some(100.25),
@@ -44,7 +49,7 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25))),
-    Some(allowances(
+    Some(Allowances(
       Some(100.25),
       Some(100.25),
       Some(100.25),
@@ -54,19 +59,19 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25))),
-    Some(nonFinancials(
-      Some(class4NicInfo(
+    Some(NonFinancials(
+      Some(Class4NicInfo(
         true,
-        Some("001 - Non Resident"))))))
+        Some(`001 - Non Resident`))))))
 
-  private val requestData = RetrieveSelfEmploymentAnnualSummaryRequestData(nino, businessId, taxYear)
+  private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
 
   trait Test extends MockRetrieveSelfEmploymentAnnualSummaryConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new RetrieveSelfEmploymentAnnualSummaryService(
-      connector = mockRetrieveSelfEmploymentConnector
+      retrieveSelfEmploymentAnnualSummaryConnector = mockRetrieveSelfEmploymentAnnualSummaryConnector
     )
   }
 

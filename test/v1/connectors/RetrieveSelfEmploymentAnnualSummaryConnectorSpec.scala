@@ -19,8 +19,10 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.domain.ex.MtdEx._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
+import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
+import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponseBody}
 
 import scala.concurrent.Future
 
@@ -30,10 +32,10 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
   val businessId = "XAIS12345678910"
   val taxYear = "2019-20"
 
-  val request = RetrieveSelfEmploymentAnnualSummaryRequestData(nino, businessId, taxYear)
+  val request = RetrieveSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
 
-  val response = RetrieveSelfEmploymentAnnualSummaryResponse(
-    Some(adjustments(
+  val response = RetrieveSelfEmploymentAnnualSummaryResponseBody(
+    Some(Adjustments(
       Some(100.25),
       Some(100.25),
       Some(100.25),
@@ -44,7 +46,7 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25))),
-    Some(allowances(
+    Some(Allowances(
       Some(100.25),
       Some(100.25),
       Some(100.25),
@@ -54,10 +56,10 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25))),
-    Some(nonFinancials(
-      Some(class4NicInfo(
+    Some(NonFinancials(
+      Some(Class4NicInfo(
         true,
-        Some("001 - Non Resident"))))))
+        Some(`001 - Non Resident`))))))
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: RetrieveSelfEmploymentAnnualSummaryConnector =
@@ -82,5 +84,4 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
         await(connector.retrieveSEAnnual(request)) shouldBe outcome
       }
     }
-  }
 }
