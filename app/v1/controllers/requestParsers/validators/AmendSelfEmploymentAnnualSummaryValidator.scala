@@ -47,19 +47,16 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
   private def bodyFieldValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSummaryBody]
     val errorsO: Option[List[List[MtdError]]] = for {
-      adjustmentsErrors <- body.adjustments.match {
-        case Some(item: Adjustments) => validateAdjustments(item)
-        case None                    => NoValidationErrors
+      adjustmentsErrors <- body.adjustments.flatMap { data =>
+        validateAdjustments(data)
       }
-      allowancesErrors <- body.allowances.match {
-        case Some(item: Allowances) => validateAllowances(item)
-        case None                    => NoValidationErrors
+      allowancesErrors <- body.allowances.flatMap { data =>
+        validateAllowances(data)
       }
-      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.match {
-        case Some(item: Class4NicInfo) => nonFinancialsValidation(item)
-        case None                    => NoValidationErrors
+      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.flatMap { data =>
+        nonFinancialsValidation(data)
       }
-    } yield List(adjustmentsErrors, allowancesErrors, nonFinancialsErrors).map(_.toList)
+    } yield adjustmentsErrors ++ allowancesErrors ++ nonFinancialsErrors
     List(errorsO.map(Validator.flattenErrors)).flatten
   }
 
@@ -149,8 +146,8 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
     )
   }
 
-  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): AmendAnnualSummaryRawData => List[MtdError] = { data =>
-    isExemptValidation.validate(class4NicInfo.isExempt, class4NicInfo.exemptionCode)
+  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
+    List(isExemptValidation.validate(class4NicInfo.isExempt, class4NicInfo.exemptionCode))
   }
 
   override def validate(data: AmendAnnualSummaryRawData): List[List[MtdError]] = {
