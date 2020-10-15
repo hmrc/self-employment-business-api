@@ -26,6 +26,8 @@ import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
 import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRawData
+import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
+import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse.LinksFactory
 import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +53,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
           parsedRequest <- EitherT.fromEither[Future](parser.requestFor(rawData))
           serviceResponse <- EitherT(service.amendAnnualSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSummaryHateoasData(nino, taxYear)).asRight[ErrorWrapper])
+            hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +

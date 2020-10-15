@@ -62,24 +62,12 @@ trait HateoasLinks {
     )
 
   def retrieveAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
-    Link(
-      href = sampleUri(appConfig, nino, businessId, taxYear),
-      method = GET,
-      rel = ???
-    )
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
 
-  def amendAnnualSummary(appConfig: AppConfig, nino: String, taxYear: String): Link =
-    Link(
-      href = sampleUri(appConfig, nino, taxYear),
-      method = DELETE,
-      rel = ???
-    )
+  def amendAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = AMEND_ANNUAL_SUMMARY_REL)
 
-  def deleteAnnualSummary(appConfig: AppConfig, nino: String, taxYear: String): Link =
-    Link(
-      href = sampleUri(appConfig, nino, taxYear),
-      method = PUT,
-      rel = ???
-    )
+  def deleteAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = PUT, rel = DELETE_ANNUAL_SUMMARY_REL)
 
 }

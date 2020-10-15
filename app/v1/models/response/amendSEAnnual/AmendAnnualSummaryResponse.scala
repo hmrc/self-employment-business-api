@@ -26,13 +26,13 @@ object AmendAnnualSummaryResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: AmendAnnualSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
-        retrieveAnnualSummary(appConfig, nino, taxYear),
-        amendAnnualSummary(appConfig, nino, taxYear),
-        deleteAnnualSummary(appConfig, nino, taxYear)
+        retrieveAnnualSummary(appConfig, nino, businessId, taxYear),
+        amendAnnualSummary(appConfig, nino, businessId, taxYear),
+        deleteAnnualSummary(appConfig, nino, businessId, taxYear)
       )
     }
   }
 }
 
-case class AmendAnnualSummaryHateoasData(nino: String, taxYear: String) extends HateoasData
+case class AmendAnnualSummaryHateoasData(nino: String, businessId: String, taxYear: String) extends HateoasData
 
