@@ -16,19 +16,15 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import v1.models.domain.ex.MtdEx
 import v1.models.errors.{MtdError, RuleExemptionCodeError}
 
-object ExemptionCodeValidation {
-  val valueList = List("001 - Non Resident" +
-                      "002 - Trustee" +
-                      "003 - Diver" +
-                      "004 - Employed earner taxed under ITTOIA 2005" +
-                      "005 - Over state pension age" +
-                      "006 - Under 16")
+object IsExemptValidation {
 
-  def validate(isExempt: Boolean, exemptionCode: Option[String]): List[MtdError] = (isExempt, exemptionCode) match {
-    case (false, None) => NoValidationErrors
-    case (true, None) => List(RuleExemptionCodeError)
-    case (_, Some(value)) => if (valueList.contains(value)) NoValidationErrors else List(RuleExemptionCodeError)
+  def validate(isExempt: Boolean, exemptionCode: Option[MtdEx]): List[MtdError] = (isExempt, exemptionCode) match {
+    case (false, None)    => NoValidationErrors
+    case (true, None)     => List(RuleExemptionCodeError)
+    case (false, Some(_)) => List(RuleExemptionCodeError)
+    case (true, Some(_))  => NoValidationErrors
   }
 }

@@ -28,7 +28,7 @@ class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
     "return no errors" when {
       "when exemption code is supplied where the is exempt indicator is set to true" in {
 
-        val validationResult = ExemptionCodeValidation.validate(true, validExemptionCode)
+        val validationResult = IsExemptValidation.validate(true, validExemptionCode)
         validationResult.isEmpty shouldBe true
 
       }
@@ -37,7 +37,7 @@ class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
     "return an error" when {
       "when an exemption code is supplied where the is exempt indicator is set to false" in {
 
-        val validationResult = ExemptionCodeValidation.validate(false, Some("001 - Non Resident"))
+        val validationResult = IsExemptValidation.validate(false, Some("001 - Non Resident"))
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe RuleExemptionCodeError
@@ -47,7 +47,7 @@ class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
       "return an error" when {
         "when no exemption code is supplied where the is exempt indicator is set to true" in {
 
-          val validationResult = ExemptionCodeValidation.validate(true, None)
+          val validationResult = IsExemptValidation.validate(true, None)
           validationResult.isEmpty shouldBe false
           validationResult.length shouldBe 1
           validationResult.head shouldBe RuleExemptionCodeError
