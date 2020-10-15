@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.models.domain.DesTaxYear
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
 import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
 
@@ -34,7 +35,7 @@ class RetrieveSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClien
                     ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]] = {
 
     get(
-      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponseBody](s"business/self-employment/${request.nino}/${request.businessId}/annual/${request.taxYear}")
+      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponseBody](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
     )
   }
 }
