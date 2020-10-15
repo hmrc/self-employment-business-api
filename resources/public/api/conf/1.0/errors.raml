@@ -11,7 +11,7 @@ traits:
           application/json:
             type: types.errorResponse
             example:
-              description: Matching resource is not found.
+              description: The matching resource is not found.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
@@ -66,7 +66,7 @@ traits:
             type: types.errorResponse
             examples:
               rule_TaxYearNotSupported:
-                description: The specified Tax year is not supported. That is, the tax year specified is before the minimum tax year value.
+                description: The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
                 value:
                   code: RULE_TAX_YEAR_NOT_SUPPORTED
   ruleTaxYearRangeInvalid:
@@ -80,17 +80,6 @@ traits:
                 description: Tax year range invalid. A tax year range of one year is required.
                 value:
                   code: RULE_TAX_YEAR_RANGE_INVALID
-  ruleTaxYearNotEnded:
-      responses:
-        400:
-          body:
-            application/json:
-              type: types.errorResponse
-              examples:
-                ruleTaxYearNotEnded:
-                  description: A brought forward loss is entered before the end of the tax year in which it was generated.
-                  value:
-                    code: RULE_TAX_YEAR_NOT_ENDED
   formatBusinessId:
     responses:
       400:
