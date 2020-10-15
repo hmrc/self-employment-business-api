@@ -27,8 +27,13 @@ trait HateoasLinks {
   private def sampleUri(appConfig: AppConfig, nino: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/sample/$nino/$taxYear"
 
+<<<<<<< HEAD
   private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/annual/${taxYear}"
+=======
+  private def selfEmploymentAnnualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): String =
+    s"/${appConfig.apiGatewayContext}/$nino/$businessId/annual/$taxYear"
+>>>>>>> MTDSA-7314 Controller Skeleton pre-rebase
 
   //Sample links
   def amendSample(appConfig: AppConfig, nino: String, taxYear: String): Link =

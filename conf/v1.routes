@@ -3,4 +3,9 @@ GET        /sample/:nino/:taxYear                   v1.controllers.RetrieveSampl
 DELETE     /sample/:nino/:taxYear                   v1.controllers.DeleteSampleController.deleteSample(nino: String, taxYear: String)
 
 PUT        /:nino/:businessId/annual/:taxYear       v1.controllers.AmendAnnualSummaryController.handleRequest(nino: String, businessId: String, taxYear: String)
+GET        /:nino/:businessId/annual/:taxYear   v1.controllers.RetrieveSelfEmploymentAnnualSummaryController.handleRequest(nino: String, businessId: String, taxYear: String)
 DELETE     /:nino/:businessId/annual/:taxYear      v1.controllers.DeleteSelfEmploymentAnnualSummaryController.handleRequest(nino: String, businessId: String, taxYear: String)
+
+PUT        /sample/:nino/:taxYear               v1.controllers.AmendSampleController.amendSample(nino: String, taxYear: String)
+GET        /sample/:nino/:taxYear               v1.controllers.RetrieveSampleController.retrieveSample(nino: String, taxYear: String)
+DELETE     /sample/:nino/:taxYear               v1.controllers.DeleteSampleController.deleteSample(nino: String, taxYear: String)
