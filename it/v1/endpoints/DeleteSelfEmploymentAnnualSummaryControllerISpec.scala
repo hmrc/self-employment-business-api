@@ -31,10 +31,11 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
     val nino = "AA123456A"
     val businessId = "XAIS12345678910"
     val taxYear = "2021-22"
+    val desTaxYear = "2022"
 
-    def uri: String = s"/$nino/$businessId/annual/$taxYear"
+    def uri: String = s"/$nino/$businessId/$taxYear"
 
-    def desUri: String = s"/business/self-employment/$nino/$businessId/annual/$taxYear"
+    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
 
     def setupStubs(): StubMapping
 
@@ -63,7 +64,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.DELETE, desUri, Status.NO_CONTENT, JsObject.empty)
+          DesStub.onSuccess(DesStub.PUT, desUri, Status.NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
@@ -100,7 +101,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
           ("Walrus", "XAIS12345678910", "2019-20", Status.BAD_REQUEST, NinoFormatError),
           ("AA123456A", "notABusinessId", "2019-20", Status.BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "203100", Status.BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2017-18", Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", "XAIS12345678910", "2016-17", Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "XAIS12345678910" ,"2018-20", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
 
@@ -116,7 +117,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.DELETE, desUri, desStatus, errorBody(desCode))
+              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
             }
 
             val response: WSResponse = await(request().delete())
@@ -130,6 +131,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
           (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE", Status.BAD_REQUEST, BusinessIdFormatError),
           (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
           (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
+          (Status.INTERNAL_SERVER_ERROR, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
         )

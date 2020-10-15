@@ -19,6 +19,7 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.domain.DesTaxYear
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
 
@@ -48,7 +49,7 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.
           put(
-            url = s"$baseUrl/income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${request.taxYear}",
+            url = s"$baseUrl/income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}",
             body = """{}""",
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))

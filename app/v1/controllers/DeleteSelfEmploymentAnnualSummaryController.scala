@@ -64,6 +64,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
       case NinoFormatError |
+           BusinessIdFormatError |
            BadRequestError |
            TaxYearFormatError |
            RuleTaxYearNotSupportedError |
