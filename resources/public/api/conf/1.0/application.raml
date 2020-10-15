@@ -48,6 +48,7 @@ uses:
             description: 'The tax year to which the data applies.The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2017-18.'
             example: "2017-18"
         put: !include endpoints/createAndAmendAnnualSummary.raml
+        get: !include endpoints/retrieveAnnualSummary.raml
   /sample:
     /{nino}:
       uriParameters:
@@ -55,19 +56,6 @@ uses:
           description: National Insurance number, in the format AA999999A.
           type: string
           example: TC663795B
-      /{businessId}:
-        uriParameters:
-          businessId:
-            description: 'An identifier for the business, unique to the customer. Must conform to the regular expression ^X[A-Z0-9]{1}IS[0-9]{11}$'
-            type: string
-            example: XAIS12345678910
-        /annual/{taxYear}:
-          uriParameters:
-            taxYear:
-              description: The tax year to which the data applies.The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid. The minimum tax year is 2017-18.
-              type: string
-              example: 2017-18
-          get: !include endpoints/retrieveAnnualSummary.raml
       /{taxYear}:
         uriParameters:
           taxYear:
