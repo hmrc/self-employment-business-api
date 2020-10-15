@@ -33,7 +33,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
     val taxYear = "2021-22"
     val desTaxYear = "2022"
 
-    def uri: String = s"/$nino/$businessId/$taxYear"
+    def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
     def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
 
@@ -131,7 +131,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
           (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE", Status.BAD_REQUEST, BusinessIdFormatError),
           (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
           (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
         )

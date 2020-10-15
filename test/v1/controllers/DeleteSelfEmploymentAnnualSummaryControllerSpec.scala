@@ -62,7 +62,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
 
   "handleRequest" should {
     "return NoContent" when {
-      "the request recieved is valid" in new Test {
+      "the request received is valid" in new Test {
 
         MockDeleteSelfEmploymentAnnualSummaryRequestParser
           .parse(rawData)
