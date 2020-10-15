@@ -56,11 +56,9 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |   "adjustments":[
-            |      {
+            |   "adjustments":{
             |         "includedNonTaxableProfits": 216.12
-            |      }
-            |   ]
+            |   }
             |}
             |""".stripMargin
         ))) shouldBe Nil
@@ -68,7 +66,8 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
       "only adjustments is supplied" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
-            |"adjustments": {
+            |{
+            |   "adjustments": {
             |        "includedNonTaxableProfits": 216.12,
             |        "basisAdjustment": 626.53,
             |        "overlapReliefUsed": 153.89,
@@ -79,6 +78,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
             |        "goodsAndServicesOwnUse": 157.43
+            |   }
             |}
             |""".stripMargin
         ))) shouldBe Nil
@@ -86,7 +86,8 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
       "only allowances is supplied" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
-            |"allowances": {
+            |{
+            |   "allowances": {
             |        "annualInvestmentAllowance": 561.32,
             |        "businessPremisesRenovationAllowance": 198.45,
             |        "capitalAllowanceMainPool": 825.34,
@@ -96,6 +97,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34
+            |   }
             |}
             |""".stripMargin
         ))) shouldBe Nil
@@ -115,38 +117,34 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, "2022-24", requestBodyJson)) shouldBe List(RuleTaxYearRangeInvalidError)
       }
       "a below minimum taxYear is supplied" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, "2018-19", requestBodyJson)) shouldBe List(RuleTaxYearNotSupportedError)
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, "2010-11", requestBodyJson)) shouldBe List(RuleTaxYearNotSupportedError)
       }
     }
     "return RuleIncorrectOrEmptyBodyError" when {
       "an empty body is submitted" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse("""{}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
+    }
     "return RuleExemptionCode" when {
       "exemption code is missing when is exempt indicator set to true" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-        """
-          |{
-          |   "nonFinancials": {
-          |       "class4NicInfo":{
-          |           "isExempt": true
-          |       }
-          |   }
-          |}""".stripMargin))) shouldBe List(RuleExemptionCodeError)
+          """
+            |{
+            |   "nonFinancials": {
+            |       "class4NicInfo":{
+            |           "isExempt": true
+            |       }
+            |   }
+            |}""".stripMargin))) shouldBe List(RuleExemptionCodeError)
+      }
+
+      "an empty body is submitted" in {
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+          """
+            |{
+            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
     }
-      "an empty adjustments is submitted" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """{
-            |  "adjustments": {}
-            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError)
-      }
-      "an empty allowances is submitted" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """{
-            |   "allowances": {}
-            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError)
-      }
     "return ValueFormatError" when {
       "/adjustments/includedNonTaxableProfits is invalid" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
@@ -851,6 +849,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |""".stripMargin
         ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/tradingAllowance"))))
       }
+    }
     "return multiple errors" when {
       "every path parameter format is invalid" in {
         validator.validate(AmendAnnualSummaryRawData("AJAA12", "XASOE12", "201219", requestBodyJson)) shouldBe List(NinoFormatError, BusinessIdFormatError, TaxYearFormatError)
@@ -885,7 +884,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |    "nonFinancials": {
             |        "class4NicInfo":{
             |            "isExempt": true,
-            |            "001 - Non Resident"
+            |            "exemptionCode": "001 - Non Resident"
             |        }
             |    }
             |}

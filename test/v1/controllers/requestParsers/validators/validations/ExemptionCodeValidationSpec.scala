@@ -17,12 +17,14 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
+import v1.models.domain.ex.MtdEx
+import v1.models.domain.ex.MtdEx._
 import v1.models.errors._
 import v1.models.utils.JsonErrorValidators
 
 class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
 
-  val validExemptionCode: Option[String] = Some("001 - Non Resident")
+  val validExemptionCode: Option[MtdEx] = Some(`001 - Non Resident`)
 
   "validate" should {
     "return no errors" when {
@@ -37,21 +39,22 @@ class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
     "return an error" when {
       "when an exemption code is supplied where the is exempt indicator is set to false" in {
 
-        val validationResult = IsExemptValidation.validate(false, Some("001 - Non Resident"))
+        val validationResult = IsExemptValidation.validate(false, Some(`001 - Non Resident`))
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe RuleExemptionCodeError
 
       }
     }
-      "return an error" when {
-        "when no exemption code is supplied where the is exempt indicator is set to true" in {
+    "return an error" when {
+      "when no exemption code is supplied where the is exempt indicator is set to true" in {
 
-          val validationResult = IsExemptValidation.validate(true, None)
-          validationResult.isEmpty shouldBe false
-          validationResult.length shouldBe 1
-          validationResult.head shouldBe RuleExemptionCodeError
+        val validationResult = IsExemptValidation.validate(true, None)
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe RuleExemptionCodeError
 
-        }
       }
+    }
+  }
 }

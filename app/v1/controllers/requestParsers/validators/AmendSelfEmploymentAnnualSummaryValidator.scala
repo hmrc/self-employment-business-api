@@ -17,6 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
+import v1.models.domain.ex.MtdEx
 import v1.models.errors._
 import v1.models.request.amendAnnualSummary._
 
@@ -47,13 +48,13 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
   private def bodyFieldValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSummaryBody]
     val errorsO: Option[List[List[MtdError]]] = for {
-      adjustmentsErrors <- body.adjustments.flatMap { data =>
+      adjustmentsErrors <- body.adjustments.map { data =>
         validateAdjustments(data)
       }
-      allowancesErrors <- body.allowances.flatMap { data =>
+      allowancesErrors <- body.allowances.map { data =>
         validateAllowances(data)
       }
-      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.flatMap { data =>
+      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.map { data =>
         nonFinancialsValidation(data)
       }
     } yield adjustmentsErrors ++ allowancesErrors ++ nonFinancialsErrors
@@ -146,9 +147,9 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
     )
   }
 
-  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
+  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): List[List[MtdError]] =
     List(IsExemptValidation.validate(class4NicInfo.isExempt, class4NicInfo.exemptionCode))
-  }
+
 
   override def validate(data: AmendAnnualSummaryRawData): List[MtdError] = {
     run(validationSet, data).distinct
