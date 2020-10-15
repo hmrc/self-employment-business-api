@@ -49,6 +49,7 @@ class DeleteSelfEmploymentAnnualSummaryService @Inject()(deleteSelfEmploymentAnn
       "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+      "GONE" -> NotFoundError,
       "INVALID_PAYLOAD" -> DownstreamError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
