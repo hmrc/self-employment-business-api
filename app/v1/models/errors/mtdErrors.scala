@@ -42,7 +42,7 @@ object RuleTaxYearRangeInvalidError extends MtdError(
 
 object RuleExemptionCodeError extends MtdError(
   code = "RULE_EXEMPTION_CODE",
-  message = "Exemption code must be supplied if is exempt indicator is set to true. Exemption code must not be supplied if exempt indicator is set to false."
+  message = "Exemption code must be supplied if is exempt indicator is set to true. Exemption code must not be supplied if exempt indicator is set to false"
 )
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")

@@ -17,7 +17,6 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.domain.ex.MtdEx
 import v1.models.errors._
 import v1.models.request.amendAnnualSummary._
 
@@ -147,8 +146,9 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
     )
   }
 
-  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): List[List[MtdError]] =
+  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): List[List[MtdError]] = {
     List(IsExemptValidation.validate(class4NicInfo.isExempt, class4NicInfo.exemptionCode))
+  }
 
 
   override def validate(data: AmendAnnualSummaryRawData): List[MtdError] = {
