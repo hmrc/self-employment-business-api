@@ -138,6 +138,19 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |}""".stripMargin))) shouldBe List(RuleExemptionCodeError)
       }
 
+      "exemption code is supplied when is exempt indicator set to false" in {
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+          """
+            |{
+            |   "nonFinancials": {
+            |       "class4NicInfo":{
+            |           "isExempt": false,
+            |           "exemptionCode": "002 - Trustee"
+            |       }
+            |   }
+            |}""".stripMargin))) shouldBe List(RuleExemptionCodeError)
+      }
+
       "an empty body is submitted" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
