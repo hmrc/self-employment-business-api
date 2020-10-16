@@ -150,13 +150,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |   }
             |}""".stripMargin))) shouldBe List(RuleExemptionCodeError)
       }
-
-      "an empty body is submitted" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
-            |{
-            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError)
-      }
     }
     "return ValueFormatError" when {
       "/adjustments/includedNonTaxableProfits is invalid" in {
