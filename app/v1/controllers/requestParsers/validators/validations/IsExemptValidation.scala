@@ -16,15 +16,15 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.ex.MtdEx
 import v1.models.errors.{MtdError, RuleExemptionCodeError}
+import v1.models.request.amendAnnualSummary.Class4NicInfo
 
 object IsExemptValidation {
 
-  def validate(isExempt: Boolean, exemptionCode: Option[MtdEx]): List[MtdError] = (isExempt, exemptionCode) match {
-    case (false, None)    => NoValidationErrors
-    case (true, None)     => List(RuleExemptionCodeError)
-    case (false, Some(_)) => List(RuleExemptionCodeError)
-    case (true, Some(_))  => NoValidationErrors
+  def validate(class4NicInfo: Class4NicInfo): List[MtdError] = class4NicInfo match {
+    case Class4NicInfo(false, None)    => NoValidationErrors
+    case Class4NicInfo(true, None)     => List(RuleExemptionCodeError)
+    case Class4NicInfo(false, Some(_)) => List(RuleExemptionCodeError)
+    case Class4NicInfo(true, Some(_))  => NoValidationErrors
   }
 }

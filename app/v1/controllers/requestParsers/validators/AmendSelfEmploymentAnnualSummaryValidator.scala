@@ -46,18 +46,12 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
 
   private def bodyFieldValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSummaryBody]
-    val errorsO: Option[List[List[MtdError]]] = for {
-      adjustmentsErrors <- body.adjustments.map { data =>
-        validateAdjustments(data)
-      }
-      allowancesErrors <- body.allowances.map { data =>
-        validateAllowances(data)
-      }
-      nonFinancialsErrors <- body.nonFinancials.get.class4NicInfo.map { data =>
-        nonFinancialsValidation(data)
-      }
-    } yield adjustmentsErrors ++ allowancesErrors ++ nonFinancialsErrors
-    List(errorsO.map(Validator.flattenErrors)).flatten
+    val errorsO: List[List[MtdError]] = List(
+      body.adjustments.map(validateAdjustments).getOrElse(Nil),
+      body.allowances.map(validateAllowances).getOrElse(Nil),
+      body.nonFinancials.map(validateNonFinancials).getOrElse(Nil)
+    ).flatten
+    List(Validator.flattenErrors(errorsO))
   }
 
   private def validateAdjustments(adjustments: Adjustments): List[List[MtdError]] = {
@@ -146,8 +140,8 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
     )
   }
 
-  private def nonFinancialsValidation(class4NicInfo: Class4NicInfo): List[List[MtdError]] = {
-    List(IsExemptValidation.validate(class4NicInfo.isExempt, class4NicInfo.exemptionCode))
+  private def validateNonFinancials(nonFinancials: NonFinancials): List[List[MtdError]] = {
+    List(nonFinancials.class4NicInfo.map(IsExemptValidation.validate).getOrElse(Nil))
   }
 
 
