@@ -24,6 +24,7 @@ import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
 import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
+import v1.services.RetrieveSelfEmploymentAnnualSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
 
