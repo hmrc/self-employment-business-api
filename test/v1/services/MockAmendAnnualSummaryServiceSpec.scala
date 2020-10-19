@@ -22,14 +22,14 @@ import v1.mocks.connectors.MockAmendAnnualSummaryConnector
 import v1.models.domain.ex.MtdEx
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendAnnualSummary.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
+import v1.models.request.amendSEAnnual.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
 
 import scala.concurrent.Future
 
-class AmendAnnualSummaryServiceSpec extends ServiceSpec {
+class MockAmendAnnualSummaryServiceSpec extends ServiceSpec {
 
   private val nino = "AA123456A"
-  val businessId = ""
+  val businessId = "XAIS12345678910"
   private val taxYear = "2017-18"
   private val correlationId = "X-123"
 

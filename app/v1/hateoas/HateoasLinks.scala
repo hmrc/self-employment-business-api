@@ -18,8 +18,8 @@ package v1.hateoas
 
 import config.AppConfig
 import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{PUT, _}
-import v1.models.hateoas.RelType.{AMEND_SAMPLE_REL, DELETE_SAMPLE_REL, _}
+import v1.models.hateoas.Method._
+import v1.models.hateoas.RelType._
 
 trait HateoasLinks {
 
@@ -65,9 +65,9 @@ trait HateoasLinks {
     Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
 
   def amendAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
-    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = AMEND_ANNUAL_SUMMARY_REL)
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL)
 
   def deleteAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
-    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = PUT, rel = DELETE_ANNUAL_SUMMARY_REL)
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
 
 }

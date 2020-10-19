@@ -25,7 +25,7 @@ import utils.Logging
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
-import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRawData
+import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse.LinksFactory
 import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
@@ -74,13 +74,15 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
   private def errorResult(errorWrapper: ErrorWrapper) = {
 
     (errorWrapper.error: @unchecked) match {
-      case NinoFormatError |
-           BadRequestError |
+      case BadRequestError |
+           NinoFormatError |
+           BusinessIdFormatError |
            TaxYearFormatError |
+           MtdErrorWithCustomMessage(ValueFormatError.code) |
            RuleIncorrectOrEmptyBodyError |
            RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalidError |
-           MtdErrorWithCustomMessage(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
+           RuleExemptionCodeError => BadRequest(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
     }

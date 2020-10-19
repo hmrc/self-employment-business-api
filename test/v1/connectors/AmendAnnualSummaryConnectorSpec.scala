@@ -22,7 +22,7 @@ import v1.mocks.MockHttpClient
 import v1.models.domain.DesTaxYear
 import v1.models.domain.ex.MtdEx
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendAnnualSummary.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
+import v1.models.request.amendSEAnnual.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
 
 import scala.concurrent.Future
 

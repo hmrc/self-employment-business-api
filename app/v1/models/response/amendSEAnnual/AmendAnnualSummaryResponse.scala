@@ -35,4 +35,3 @@ object AmendAnnualSummaryResponse extends HateoasLinks {
 }
 
 case class AmendAnnualSummaryHateoasData(nino: String, businessId: String, taxYear: String) extends HateoasData
-
