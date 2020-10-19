@@ -28,7 +28,8 @@ class RetrieveSelfEmploymentAnnualSummaryValidator extends Validator[RetrieveSel
     run(validationSet, data).distinct
   }
 
-  private def parameterFormatValidation: RetrieveSelfEmploymentAnnualSummaryRawData => List[List[MtdError]] = (data: RetrieveSelfEmploymentAnnualSummaryRawData) => {
+  private def parameterFormatValidation: RetrieveSelfEmploymentAnnualSummaryRawData => List[List[MtdError]] =
+    (data: RetrieveSelfEmploymentAnnualSummaryRawData) => {
     List(
       NinoValidation.validate(data.nino),
       BusinessIdValidation.validate(data.businessId),
@@ -36,7 +37,8 @@ class RetrieveSelfEmploymentAnnualSummaryValidator extends Validator[RetrieveSel
     )
   }
 
-  private def parameterRuleValidation: RetrieveSelfEmploymentAnnualSummaryRawData => List[List[MtdError]] = (data: RetrieveSelfEmploymentAnnualSummaryRawData) => {
+  private def parameterRuleValidation: RetrieveSelfEmploymentAnnualSummaryRawData => List[List[MtdError]] =
+    (data: RetrieveSelfEmploymentAnnualSummaryRawData) => {
     List(
       TaxYearNotSupportedValidation.validate(data.taxYear)
     )

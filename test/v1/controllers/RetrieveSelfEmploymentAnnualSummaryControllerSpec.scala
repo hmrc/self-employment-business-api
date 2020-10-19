@@ -16,20 +16,23 @@
 
 package v1.controllers
 
-import akka.util.LineNumbers.Result
+
 import play.api.libs.json.Json
+import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.mocks.requestParsers.MockRetrieveSelfEmploymentAnnualSummaryRequestParser
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveSelfEmploymentAnnualSummaryService}
 import v1.models.domain.ex.MtdEx
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import v1.models.errors._
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.{RetrieveSelfEmploymentAnnualSummaryRawData, RetrieveSelfEmploymentAnnualSummaryRequest}
-import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryHateoasData, RetrieveSelfEmploymentAnnualSummaryResponseBody}
+import v1.models.response.retrieveSEAnnual._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSpec
@@ -71,12 +74,10 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
     Some(1000), Some(1000), Some(1000), Some(1000), Some(1000),
     Some(1000), Some(1000), Some(1000), Some(1000), Some(1000)
   )
-
   private val allowances = Allowances(
     Some(1000), Some(1000), Some(1000), Some(1000), Some(1000),
     Some(1000), Some(1000), Some(1000), Some(1000)
   )
-
   private val nonFinancials = NonFinancials(Some(Class4NicInfo(true, Some(MtdEx.`002 - Trustee`))))
 
   val responseBody: RetrieveSelfEmploymentAnnualSummaryResponseBody = RetrieveSelfEmploymentAnnualSummaryResponseBody(Some(adjustments), Some(allowances), Some(nonFinancials))
