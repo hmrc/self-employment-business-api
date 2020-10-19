@@ -80,32 +80,32 @@ class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
         val amendAnnualSummaryRequestBody =
           AmendAnnualSummaryBody(
             Some(Adjustments(
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25)
+                Some(216.12),
+                Some(626.53),
+                Some(153.89),
+                Some(514.24),
+                Some(124.98),
+                Some(571.27),
+                Some(751.03),
+                Some(719.23),
+                Some(956.47),
+                Some(157.43)
               )),
               Some(Allowances(
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25),
-                Some(100.25)
+                Some(561.32),
+                Some(198.45),
+                Some(825.34),
+                Some(647.12),
+                Some(173.64),
+                Some(115.98),
+                Some(548.15),
+                Some(901.67),
+                Some(521.34)
               )),
               Some(NonFinancials(
                 Some(Class4NicInfo(
                   true,
-                  Some(`001 - Non Resident`)
+                  Some(`002 - Trustee`)
               ))))
           )
 
