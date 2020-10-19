@@ -207,80 +207,97 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
 
 
       val fullDesJson = Json.parse(
-        """
-          |{
-          |   "from": "2001-01-01",
-          |   "to": "2001-01-01",
+        """{
+          |   "from": "2017-01-25",
+          |   "to": "2018-01-24",
           |   "financials": {
-          |      "incomes": {
-          |         "turnover": 200.00,
-          |         "other": 200.00
-          |      },
-          |      "deductions": {
-          |         "costOfGoods": {
-          |            "amount": -200.00,
-          |            "disallowableAmount": -200.00
-          |         },
-          |         "constructionIndustryScheme": {
-          |            "amount": 200.00,
-          |            "disallowableAmount": 200.00
-          |         },
-          |         "staffCosts": {
-          |            "amount": 200.00,
-          |            "disallowableAmount": 200.00
-          |         },
-          |         "travelCosts": {
-          |            "amount": 200.00,
-          |            "disallowableAmount": 200.00
-          |         },
-          |         "premisesRunningCosts": {
-          |            "amount": -100.00,
-          |            "disallowableAmount": -200.00
-          |         },
-          |         "maintenanceCosts": {
-          |            "amount": -200.00,
-          |            "disallowableAmount": -200.00
-          |         },
-          |         "adminCosts": {
-          |            "amount": 200.00,
-          |            "disallowableAmount": 200.00
-          |         },
-          |         "advertisingCosts": {
-          |            "amount": 200.00,
-          |            "disallowableAmount": 200.00
-          |         },
-          |         "interest": {
-          |            "amount": -200.00,
-          |            "disallowableAmount": -200.00
-          |         },
-          |         "financialCharges": {
-          |            "amount": -200.00,
-          |            "disallowableAmount": -200.00
-          |         },
-          |         "badDebt": {
-          |            "amount": -200.00,
-          |            "disallowableAmount": -200.00
-          |         },
-          |         "professionalFees": {
-          |            "amount": 200.00,
-          |            "disallowableAmount": 200.00
-          |         },
-          |         "depreciation": {
-          |            "amount": -200.00,
-          |            "disallowableAmount": -200.00
-          |         },
-          |         "other": {
-          |            "amount": 200.00,
-          |            "disallowableAmount": 200.00
-          |         },
-          |         "simplifiedExpenses": 199.98
-          |      }
-          |   }
+          |     "incomes": {
+          |       "turnover":  500.25,
+          |       "other": 500.25
+          |     },
+          |     "deductions": {
+          |       "costOfGoods": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "constructionIndustryScheme": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "staffCosts": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "travelCosts": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "premisesRunningCosts": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "maintenanceCosts": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "adminCosts": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "advertisingCosts": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "businessEntertainmentCosts": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "interest": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "financialCharges": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "badDebt": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "professionalFees": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "depreciation": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       },
+          |       "other": {
+          |         "amount": 500.25,
+          |         "disallowableAmount": 500.25
+          |       }
+          |     }
+          |  }
           |}
           |
           |""".stripMargin
       )
 
+      val noOptionalDesJson = Json.parse(
+        """{
+          |   "from": "2017-01-25",
+          |   "to": "2018-01-24",
+          |   "financials": {
+          |     "incomes": {
+          |       "turnover":  500.25,
+          |       "other":  500.25
+          |     },
+          |     "deductions": {
+          |       "simplifiedExpenses": 500.25
+          |     }
+          |   }
+          |}""".stripMargin
+      )
 
       "a valid request is made with full body" in {
         Json.toJson(fullMtdModel) shouldBe fullDesJson

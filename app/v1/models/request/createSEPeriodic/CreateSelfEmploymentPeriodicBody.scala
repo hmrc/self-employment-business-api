@@ -30,7 +30,7 @@ object CreateSelfEmploymentPeriodicBody {
   implicit val writes: OWrites[CreateSelfEmploymentPeriodicBody] = (
     (JsPath \ "from").write[String] and
       (JsPath \ "to").write[String] and
-      (JsPath \ "incomes").writeNullable[Incomes] and
+      (JsPath \ "financials").writeNullable[Incomes] and
       (JsPath \ "consolidatedExpenses").writeNullable[ConsolidatedExpenses] and
       (JsPath \ "deductions").writeNullable[Expenses]
     ) (unlift(CreateSelfEmploymentPeriodicBody.unapply))
