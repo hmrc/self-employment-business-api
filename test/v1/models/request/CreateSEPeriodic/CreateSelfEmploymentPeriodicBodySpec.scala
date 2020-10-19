@@ -1,0 +1,290 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package v1.models.request.CreateSEPeriodic
+
+import play.api.libs.json.Json
+import support.UnitSpec
+import v1.models.request.createSEPeriodic.{AmountObject, ConsolidatedExpenses, CreateSelfEmploymentPeriodicBody, Expenses, Incomes}
+
+class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
+
+  val fullMtdModel = CreateSelfEmploymentPeriodicBody(
+    "2017-01-25",
+    "2018-01-24",
+    Some(Incomes(
+      Some(AmountObject(500.25, None)),
+      Some(AmountObject(500.25, None))
+    )),
+    Some(ConsolidatedExpenses(
+      500.25
+    )),
+    Some(Expenses(
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25))),
+      Some(AmountObject(500.25, Some(500.25)))
+    ))
+  )
+
+  val someOptionalMtdModel = CreateSelfEmploymentPeriodicBody(
+    "2017-01-25",
+    "2018-01-24",
+    Some(Incomes(
+      Some(AmountObject(500.25, None)),
+      Some(AmountObject(500.25, None))
+    )),
+    Some(ConsolidatedExpenses(
+      500.25
+    )),
+    None
+  )
+  val noOptionalMtdModel = CreateSelfEmploymentPeriodicBody(
+    "2017-01-25",
+    "2018-01-24",
+    None,
+    None,
+    None
+  )
+
+  "reads" should {
+
+    "read from JSON" when {
+
+      val fullRequestJson = Json.parse(
+        """
+          |{
+          |   "periodFromDate": "2017-01-25",
+          |   "periodToDate": "2018-01-24",
+          |   "incomes": {
+          |     "turnover": {
+          |       "amount": 500.25
+          |     },
+          |     "other": {
+          |       "amount": 500.25
+          |     }
+          |   },
+          |   "consolidatedExpenses": {
+          |     "consolidatedExpenses": 500.25
+          |   },
+          |   "expenses": {
+          |     "costOfGoodsBought": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "cisPaymentsTo": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "staffCosts": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "travelCosts": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "premisesRunningCosts": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "maintenanceCosts": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "adminCosts": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "advertisingCosts": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "businessEntertainmentCosts": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "interestOnLoans": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "financialCharges": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "badDebt": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "professionalFees": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "depreciation": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     },
+          |     "other": {
+          |       "amount": 500.25,
+          |       "disallowableAmount": 500.25
+          |     }
+          |   }
+          |}
+          |""".stripMargin
+      )
+
+      val someOptionalRequestJson = Json.parse(
+        """
+          |{
+          |   "periodFromDate": "2017-01-25",
+          |   "periodToDate": "2018-01-24",
+          |   "incomes": {
+          |     "turnover": {
+          |       "amount": 500.25
+          |     },
+          |     "other": {
+          |       "amount": 500.25
+          |     }
+          |   },
+          |   "consolidatedExpenses": {
+          |     "consolidatedExpenses": 500.25
+          |   }
+          |}
+          |""".stripMargin
+      )
+
+      val noOptionalRequestJson = Json.parse(
+        """
+          |{
+          |   "periodFromDate": "2017-01-25",
+          |   "periodToDate": "2018-01-24"
+          |}
+          |""".stripMargin
+      )
+
+      "a valid request with all optional fields is made" in {
+        fullRequestJson.as[CreateSelfEmploymentPeriodicBody] shouldBe fullMtdModel
+      }
+
+      "a valid request with some optional fields is made" in {
+        someOptionalRequestJson.as[CreateSelfEmploymentPeriodicBody] shouldBe someOptionalMtdModel
+      }
+
+      "a valid request with no optional fields is made" in {
+        noOptionalRequestJson.as[CreateSelfEmploymentPeriodicBody] shouldBe noOptionalMtdModel
+      }
+
+    }
+  }
+
+  "writes" should {
+
+    "write to des" when {
+
+
+      val fullDesJson = Json.parse(
+        """
+          |{
+          |   "from": "2001-01-01",
+          |   "to": "2001-01-01",
+          |   "financials": {
+          |      "incomes": {
+          |         "turnover": 200.00,
+          |         "other": 200.00
+          |      },
+          |      "deductions": {
+          |         "costOfGoods": {
+          |            "amount": -200.00,
+          |            "disallowableAmount": -200.00
+          |         },
+          |         "constructionIndustryScheme": {
+          |            "amount": 200.00,
+          |            "disallowableAmount": 200.00
+          |         },
+          |         "staffCosts": {
+          |            "amount": 200.00,
+          |            "disallowableAmount": 200.00
+          |         },
+          |         "travelCosts": {
+          |            "amount": 200.00,
+          |            "disallowableAmount": 200.00
+          |         },
+          |         "premisesRunningCosts": {
+          |            "amount": -100.00,
+          |            "disallowableAmount": -200.00
+          |         },
+          |         "maintenanceCosts": {
+          |            "amount": -200.00,
+          |            "disallowableAmount": -200.00
+          |         },
+          |         "adminCosts": {
+          |            "amount": 200.00,
+          |            "disallowableAmount": 200.00
+          |         },
+          |         "advertisingCosts": {
+          |            "amount": 200.00,
+          |            "disallowableAmount": 200.00
+          |         },
+          |         "interest": {
+          |            "amount": -200.00,
+          |            "disallowableAmount": -200.00
+          |         },
+          |         "financialCharges": {
+          |            "amount": -200.00,
+          |            "disallowableAmount": -200.00
+          |         },
+          |         "badDebt": {
+          |            "amount": -200.00,
+          |            "disallowableAmount": -200.00
+          |         },
+          |         "professionalFees": {
+          |            "amount": 200.00,
+          |            "disallowableAmount": 200.00
+          |         },
+          |         "depreciation": {
+          |            "amount": -200.00,
+          |            "disallowableAmount": -200.00
+          |         },
+          |         "other": {
+          |            "amount": 200.00,
+          |            "disallowableAmount": 200.00
+          |         },
+          |         "simplifiedExpenses": 199.98
+          |      }
+          |   }
+          |}
+          |
+          |""".stripMargin
+      )
+
+
+      "a valid request is made with full body" in {
+        Json.toJson(fullMtdModel) shouldBe fullDesJson
+      }
+    }
+  }
+}
