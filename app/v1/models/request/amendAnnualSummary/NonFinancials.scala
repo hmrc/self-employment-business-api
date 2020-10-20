@@ -18,7 +18,9 @@ package v1.models.request.amendAnnualSummary
 
 import play.api.libs.json.{Json, Reads, Writes}
 
-case class NonFinancials(class4NicInfo: Option[Class4NicInfo])
+case class NonFinancials(class4NicInfo: Option[Class4NicInfo]) {
+  def isEmpty: Boolean = class4NicInfo.isEmpty
+}
 
 object NonFinancials {
   implicit val reads: Reads[NonFinancials] = Json.reads[NonFinancials]

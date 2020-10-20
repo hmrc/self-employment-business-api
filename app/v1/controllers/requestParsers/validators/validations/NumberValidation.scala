@@ -37,4 +37,22 @@ object NumberValidation {
       )
     }
   }
+
+  def validateOptionaIncludeNegatives(field: Option[BigDecimal], path: String): List[MtdError] = {
+    field match {
+      case None => NoValidationErrors
+      case Some(value) => validateIncludeNegatives(value, path)
+    }
+  }
+
+
+  private def validateIncludeNegatives(field: BigDecimal, path: String): List[MtdError] = {
+    if (field > -100000000000.00 && field < 100000000000.00 && field.scale <= 2) {
+      Nil
+    } else {
+      List(
+        ValueFormatError.copy(paths = Some(Seq(path)))
+      )
+    }
+  }
 }

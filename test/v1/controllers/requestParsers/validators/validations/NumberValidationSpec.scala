@@ -24,7 +24,8 @@ class NumberValidationSpec extends UnitSpec {
   val validNumber: Option[BigDecimal] = Some(9000.42)
   val lowestAllowedNumber: Option[BigDecimal] = Some(0)
   val highestAllowedNumber: Option[BigDecimal] = Some(99999999999.99)
-  val invalidNumber: Option[BigDecimal] = Some(-9000.42)
+  val negativeNumber: Option[BigDecimal] = Some(-9000.42)
+  val numberWithTooManyDecimalPlaces: Option[BigDecimal] = Some(9000.4345684532)
 
   "validate" should {
     "return no errors" when {
@@ -47,8 +48,48 @@ class NumberValidationSpec extends UnitSpec {
     }
 
     "return an error" when {
-      "an invalid number is supplied" in {
-        val validationResult = NumberValidation.validateOptional(invalidNumber, "/vctSubscription/1/amountInvested")
+      "a negative number is supplied" in {
+        val validationResult = NumberValidation.validateOptional(negativeNumber, "/vctSubscription/1/amountInvested")
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe ValueFormatError.copy(paths = Some(Seq("/vctSubscription/1/amountInvested")))
+      }
+      "a number with too many decimal places is supplied" in {
+        val validationResult = NumberValidation.validateOptional(numberWithTooManyDecimalPlaces, "/vctSubscription/1/amountInvested")
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe ValueFormatError.copy(paths = Some(Seq("/vctSubscription/1/amountInvested")))
+      }
+    }
+  }
+
+  "validateIncludeNegatives" should {
+    "return no errors" when {
+      "a valid number is supplied" in {
+        val validationResult = NumberValidation.validateOptionaIncludeNegatives(validNumber, "/vctSubscription/1/amountInvested")
+        validationResult.isEmpty shouldBe true
+      }
+      "no number is supplied" in {
+        val validationResult = NumberValidation.validateOptionaIncludeNegatives(None, "/vctSubscription/1/amountInvested")
+        validationResult.isEmpty shouldBe true
+      }
+      "the lowest allowed number (0) is supplied" in {
+        val validationResult = NumberValidation.validateOptionaIncludeNegatives(lowestAllowedNumber, "/vctSubscription/1/amountInvested")
+        validationResult.isEmpty shouldBe true
+      }
+      "the highest allowed number (99999999999.99) is supplied" in {
+        val validationResult = NumberValidation.validateOptionaIncludeNegatives(highestAllowedNumber, "/vctSubscription/1/amountInvested")
+        validationResult.isEmpty shouldBe true
+      }
+      "a negative number is supplied" in {
+        val validationResult = NumberValidation.validateOptionaIncludeNegatives(negativeNumber, "/vctSubscription/1/amountInvested")
+        validationResult.isEmpty shouldBe true
+      }
+    }
+
+    "return an error" when {
+      "a number with too many decimal places is supplied" in {
+        val validationResult = NumberValidation.validateOptionaIncludeNegatives(numberWithTooManyDecimalPlaces, "/vctSubscription/1/amountInvested")
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe ValueFormatError.copy(paths = Some(Seq("/vctSubscription/1/amountInvested")))

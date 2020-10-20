@@ -139,7 +139,25 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
     }
     "return RuleIncorrectOrEmptyBodyError" when {
       "an empty body is submitted" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse("""{}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+        """{}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
+      "an empty adjustments is submitted" in {
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+        """{"adjustments": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
+      "an empty allowances is submitted" in {
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+        """{"allowances": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
+      "an empty nonFinancials is submitted" in {
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+        """{"nonFinancials": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+      }
+      "an empty class4NicInfo is submitted" in {
+        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+        """{"nonFinancials": {"class4NicInfo": {}}}"""))
+        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/nonFinancials/class4NicInfo/isExempt"))))
       }
     }
     "return RuleExemptionCode" when {
@@ -212,7 +230,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |{
             |   "adjustments": {
             |        "includedNonTaxableProfits": 216.12,
-            |        "basisAdjustment": -1,
+            |        "basisAdjustment": -1.6432632,
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
@@ -326,7 +344,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "basisAdjustment": 626.53,
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
-            |        "averagingAdjustment": -1,
+            |        "averagingAdjustment": -1.4632636,
             |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
@@ -883,10 +901,10 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |{
             |   "adjustments": {
             |        "includedNonTaxableProfits": -1,
-            |        "basisAdjustment": -1,
+            |        "basisAdjustment": -1.56345,
             |        "overlapReliefUsed": -1,
             |        "accountingAdjustment": -1,
-            |        "averagingAdjustment": -1,
+            |        "averagingAdjustment": -1.6543643,
             |        "lossBroughtForward": -1,
             |        "outstandingBusinessIncome": -1,
             |        "balancingChargeBPRA": -1,

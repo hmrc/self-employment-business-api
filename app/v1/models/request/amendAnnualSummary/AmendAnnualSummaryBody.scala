@@ -19,7 +19,13 @@ package v1.models.request.amendAnnualSummary
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class AmendAnnualSummaryBody(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials])
+case class AmendAnnualSummaryBody(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials]) {
+  def isEmpty: Boolean =
+    (adjustments.isEmpty && allowances.isEmpty && nonFinancials.isEmpty) ||
+      adjustments.exists(_.isEmpty) ||
+      allowances.exists(_.isEmpty) ||
+      nonFinancials.exists(_.isEmpty)
+}
 
 object AmendAnnualSummaryBody {
 

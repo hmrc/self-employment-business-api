@@ -23,7 +23,7 @@ import v1.models.errors._
 import v1.models.request.amendAnnualSummary.Class4NicInfo
 import v1.models.utils.JsonErrorValidators
 
-class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
+class IsExemptValidationSpec extends UnitSpec with JsonErrorValidators {
 
   val validExemptionCode: Option[MtdEx] = Some(`001 - Non Resident`)
 
@@ -31,9 +31,14 @@ class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
     "return no errors" when {
       "when exemption code is supplied where the is exempt indicator is set to true" in {
 
+        val validationResult = IsExemptValidation.validate(Class4NicInfo(false, None))
+        validationResult.isEmpty shouldBe true
+      }
+
+      "when exemption code is not supplied where the is exempt indicator is set to false" in {
+
         val validationResult = IsExemptValidation.validate(Class4NicInfo(true, validExemptionCode))
         validationResult.isEmpty shouldBe true
-
       }
     }
 
@@ -44,17 +49,14 @@ class ExemptionCodeValidationSpec extends UnitSpec with JsonErrorValidators {
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe RuleExemptionCodeError
-
       }
-    }
-    "return an error" when {
+
       "when no exemption code is supplied where the is exempt indicator is set to true" in {
 
         val validationResult = IsExemptValidation.validate(Class4NicInfo(true, None))
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe RuleExemptionCodeError
-
       }
     }
   }

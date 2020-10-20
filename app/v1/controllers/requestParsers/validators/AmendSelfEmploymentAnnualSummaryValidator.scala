@@ -39,9 +39,16 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
   }
 
   private def bodyFormatValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
-    List(
-      JsonFormatValidation.validate[AmendAnnualSummaryBody](data.body)
-    )
+    val baseValidation = List(JsonFormatValidation.validate[AmendAnnualSummaryBody](data.body))
+
+    val  extraValidation: List[List[MtdError]] = {
+      data.body.asOpt[AmendAnnualSummaryBody].map(_.isEmpty).map {
+        case true => List(List(RuleIncorrectOrEmptyBodyError))
+        case false => NoValidationErrors
+      }.getOrElse(NoValidationErrors)
+    }
+
+    baseValidation ++ extraValidation
   }
 
   private def bodyFieldValidation: AmendAnnualSummaryRawData => List[List[MtdError]] = { data =>
@@ -60,7 +67,7 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
         field = adjustments.includedNonTaxableProfits,
         path = s"/adjustments/includedNonTaxableProfits"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionaIncludeNegatives(
         field = adjustments.basisAdjustment,
         path = s"/adjustments/basisAdjustment"
       ),
@@ -72,7 +79,7 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
         field = adjustments.accountingAdjustment,
         path = s"/adjustments/accountingAdjustment"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionaIncludeNegatives(
         field = adjustments.averagingAdjustment,
         path = s"/adjustments/averagingAdjustment"
       ),
