@@ -31,15 +31,15 @@ class AmendAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
       MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
       AmendAnnualSummaryResponse.LinksFactory.links(mockAppConfig, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)) shouldBe
         Seq(
-          Link(s"/my/context/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             GET,
             "self"
           ),
-          Link(s"/my/context/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             PUT,
             "create-and-amend-self-employment-annual-summary"
           ),
-          Link(s"/my/context/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             DELETE,
             "delete-self-employment-annual-summary"
           )
