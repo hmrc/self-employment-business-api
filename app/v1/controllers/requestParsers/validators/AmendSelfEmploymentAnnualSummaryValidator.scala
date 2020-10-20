@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
-import v1.models.request.amendAnnualSummary._
+import v1.models.request.amendSEAnnual._
 
 class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSummaryRawData] {
 

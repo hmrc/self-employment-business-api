@@ -16,15 +16,16 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, RuleExemptionCodeError}
-import v1.models.request.amendSEAnnual.Class4NicInfo
+import v1.models.domain.DesTaxYear
+import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 
-object IsExemptValidation {
+object MtdTaxYearValidation {
 
-  def validate(class4NicInfo: Class4NicInfo): List[MtdError] = class4NicInfo match {
-    case Class4NicInfo(false, None)    => NoValidationErrors
-    case Class4NicInfo(true, None)     => List(RuleExemptionCodeError)
-    case Class4NicInfo(false, Some(_)) => List(RuleExemptionCodeError)
-    case Class4NicInfo(true, Some(_))  => NoValidationErrors
+  // @param taxYear In format YYYY-YY
+  def validate(taxYear: String, minimumYear: Int): List[MtdError] = {
+
+    val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
+
+    if (desTaxYear >= minimumYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
   }
 }

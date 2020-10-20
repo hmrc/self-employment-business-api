@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSummaryValidator
 import v1.models.errors.MtdError
-import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRawData
+import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
 
 trait MockAmendSelfEmploymentAnnualSummaryValidator extends MockFactory {
 

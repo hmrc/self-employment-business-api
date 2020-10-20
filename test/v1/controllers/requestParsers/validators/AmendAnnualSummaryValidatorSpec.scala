@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators
 import play.api.libs.json.Json
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRawData
+import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
 
 class AmendAnnualSummaryValidatorSpec extends UnitSpec {
 

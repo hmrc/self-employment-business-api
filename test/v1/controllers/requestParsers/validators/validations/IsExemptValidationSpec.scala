@@ -20,7 +20,7 @@ import support.UnitSpec
 import v1.models.domain.ex.MtdEx
 import v1.models.domain.ex.MtdEx._
 import v1.models.errors._
-import v1.models.request.amendAnnualSummary.Class4NicInfo
+import v1.models.request.amendSEAnnual.Class4NicInfo
 import v1.models.utils.JsonErrorValidators
 
 class IsExemptValidationSpec extends UnitSpec with JsonErrorValidators {

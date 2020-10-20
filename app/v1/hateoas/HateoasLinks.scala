@@ -28,7 +28,7 @@ trait HateoasLinks {
     s"/${appConfig.apiGatewayContext}/sample/$nino/$taxYear"
 
   private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
-    s"/${appConfig.apiGatewayContext}/individuals/business/self-employment/${nino}/${businessId}/annual/${taxYear}"
+    s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/annual/${taxYear}"
 
   //Sample links
   def amendSample(appConfig: AppConfig, nino: String, taxYear: String): Link =

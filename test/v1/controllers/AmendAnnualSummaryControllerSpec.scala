@@ -124,12 +124,12 @@ class AmendAnnualSummaryControllerSpec
        |    {
        |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
        |      "method": "PUT",
-       |      "rel": $AMEND_ANNUAL_SUMMARY_REL
+       |      "rel": "create-and-amend-self-employment-annual-summary"
        |    },
        |    {
        |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
        |      "method": "DELETE",
-       |      "rel": $DELETE_ANNUAL_SUMMARY_REL
+       |      "rel": "delete-self-employment-annual-summary"
        |    }
        |  ]
        |}

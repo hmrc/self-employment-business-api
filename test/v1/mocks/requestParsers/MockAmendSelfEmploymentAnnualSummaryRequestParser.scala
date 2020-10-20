@@ -28,7 +28,7 @@ trait MockAmendSelfEmploymentAnnualSummaryRequestParser extends MockFactory {
 
   object MockAmendSelfEmploymentAnnualSummaryRequestParser {
     def requestFor(data: AmendAnnualSummaryRawData): CallHandler[Either[ErrorWrapper, AmendAnnualSummaryRequest]] = {
-      (mockAmendSelfEmploymentAnnualSummaryRequestParser.requestFor(_: AmendAnnualSummaryRawData)).expects(data)
+      (mockAmendSelfEmploymentAnnualSummaryRequestParser.parseRequest(_: AmendAnnualSummaryRawData)).expects(data)
     }
   }
 

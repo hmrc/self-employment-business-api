@@ -17,13 +17,14 @@
 package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
 import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
 import play.api.http.Status._
+import v1.models.domain.DesTaxYear
 
 class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
 
@@ -81,12 +82,12 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
          |      "method": "PUT",
-         |      "rel": $AMEND_ANNUAL_SUMMARY_REL
+         |      "rel": "create-and-amend-self-employment-annual-summary"
          |    },
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
          |      "method": "DELETE",
-         |      "rel": $DELETE_ANNUAL_SUMMARY_REL
+         |      "rel": "delete-self-employment-annual-summary"
          |    }
          |  ]
          |}
@@ -94,7 +95,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
-    def desUri: String = s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$taxYear"
+    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}"
 
     def setupStubs(): StubMapping
 
@@ -159,7 +160,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           response.status shouldBe BAD_REQUEST
           response.json shouldBe Json.toJson(TaxYearFormatError)
         }
-        "an invalid amount is provided" in new Test {
+        "a single invalid amount is provided" in new Test {
           override val requestBodyJson: JsValue = Json.parse(
             s"""
                |{
@@ -206,7 +207,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSpecialRatePool"))))
         }
 
-        "an invalid amount is provided" in new Test {
+        "multiple invalid amounts are provided" in new Test {
           override val requestBodyJson: JsValue = Json.parse(
             s"""
                |{
@@ -215,10 +216,10 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
                |        "basisAdjustment": 2.22,
                |        "overlapReliefUsed": 3.33,
                |        "accountingAdjustment": 4.44,
-               |        "averagingAdjustment": -5.55,
+               |        "averagingAdjustment": -5.556543456,
                |        "lossBroughtForward": 6.66,
                |        "outstandingBusinessIncome": 7.77,
-               |        "balancingChargeBPRA": 8.824328,
+               |        "balancingChargeBPRA": -8.88,
                |        "balancingChargeOther": 9.99,
                |        "goodsAndServicesOwnUse": 10.10
                |    },
@@ -271,10 +272,9 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           response.json shouldBe Json.toJson(RuleTaxYearRangeInvalidError)
         }
 
-        "a taxYear below 2021-22 is provided" in new Test {
-          override val taxYear: String = "2020-21"
+        "a taxYear below 2017-18 is provided" in new Test {
+          override val taxYear: String = "2016-17"
 
-          // whats minimum tax year?
           override def setupStubs(): StubMapping = {
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
@@ -335,7 +335,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, ),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
           (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),

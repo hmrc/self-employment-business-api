@@ -22,7 +22,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendSelfEmploymentAnnualSummaryValidator
 import v1.models.errors._
 import v1.models.domain.ex.MtdEx._
-import v1.models.request.amendAnnualSummary.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRawData, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
+import v1.models.request.amendSEAnnual._
 
 class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
   val nino = "AA123456B"
