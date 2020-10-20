@@ -23,7 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
-import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
+import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponse
 import v1.services.RetrieveSelfEmploymentAnnualSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ trait MockRetrieveSelfEmploymentAnnualSummaryService extends MockFactory {
 
   object MockRetrieveSelfEmploymentAnnualSummaryService {
     def retrieve(requestData: RetrieveSelfEmploymentAnnualSummaryRequest):
-    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveSelfEmploymentAnnualSummaryResponseBody]]]] = {
+    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveSelfEmploymentAnnualSummaryResponse]]]] = {
       (mockRetrieveSelfEmploymentAnnualSummaryService
         .retrieveSelfEmploymentAnnualSummary(_: RetrieveSelfEmploymentAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
         .expects(requestData, *, *, *)

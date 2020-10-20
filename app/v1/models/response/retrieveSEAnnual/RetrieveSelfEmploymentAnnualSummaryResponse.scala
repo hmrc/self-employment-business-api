@@ -22,24 +22,24 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrieveSelfEmploymentAnnualSummaryResponseBody(
+case class RetrieveSelfEmploymentAnnualSummaryResponse(
                                                             adjustments: Option[Adjustments],
                                                             allowances: Option[Allowances],
                                                             nonFinancials: Option[NonFinancials]
                                                           )
 
-object RetrieveSelfEmploymentAnnualSummaryResponseBody extends HateoasLinks {
-  implicit val reads: Reads[RetrieveSelfEmploymentAnnualSummaryResponseBody] = (
+object RetrieveSelfEmploymentAnnualSummaryResponse extends HateoasLinks {
+  implicit val reads: Reads[RetrieveSelfEmploymentAnnualSummaryResponse] = (
     (JsPath \ "annualAdjustments").readNullable[Adjustments] and
       (JsPath \ "annualAllowances").readNullable[Allowances] and
       ((JsPath \ "annualNonFinancials").readNullable[Class4NicInfo].map(_.map(class4NicInfo => NonFinancials(Some(class4NicInfo)))))
-    ) (RetrieveSelfEmploymentAnnualSummaryResponseBody.apply _)
+    ) (RetrieveSelfEmploymentAnnualSummaryResponse.apply _)
 
-  implicit val writes: OWrites[RetrieveSelfEmploymentAnnualSummaryResponseBody] = Json.writes[RetrieveSelfEmploymentAnnualSummaryResponseBody]
+  implicit val writes: OWrites[RetrieveSelfEmploymentAnnualSummaryResponse] = Json.writes[RetrieveSelfEmploymentAnnualSummaryResponse]
 
 
   implicit object RetrieveSelfEmploymentAnnualSummaryLinksFactory extends
-    HateoasLinksFactory[RetrieveSelfEmploymentAnnualSummaryResponseBody, RetrieveSelfEmploymentAnnualSummaryHateoasData] {
+    HateoasLinksFactory[RetrieveSelfEmploymentAnnualSummaryResponse, RetrieveSelfEmploymentAnnualSummaryHateoasData] {
     override def links(appConfig: AppConfig, data: RetrieveSelfEmploymentAnnualSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
