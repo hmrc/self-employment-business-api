@@ -17,7 +17,7 @@ is:
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
 displayName: Create a self-employment periodic update [test only]
-description: Create a self-employment periodic update for submission of periodic data i.e incomes and expenses. Submissions which do not include any incomes or expenses are invalid. You should submit zero values if you do not have incomes or expenses. Payload must contain either expenses OR consolidatedExpenses elements.
+description: This endpoint allows a developer to create a self-employment periodic update for submission of periodic data i.e incomes and expenses. Submissions which do not include any incomes or expenses are invalid. You should submit zero values if you do not have incomes or expenses. The payload must contain either expenses or consolidatedExpenses elements.
 (annotations.sandboxData): !include ../scenarios/create_periodic_update_period_scenarios.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
