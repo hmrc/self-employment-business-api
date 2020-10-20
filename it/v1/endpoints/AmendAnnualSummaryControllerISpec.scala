@@ -317,31 +317,36 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-//      "des service error" when {
-//        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-//          s"des returns an $desCode error and status $desStatus" in new Test {
-//
-//            override def setupStubs(): StubMapping = {
-//              AuthStub.authorised()
-//              MtdIdLookupStub.ninoFound(nino)
-//              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
-//            }
-//
-//            val response: WSResponse = await(request().put(requestBodyJson))
-//            response.status shouldBe expectedStatus
-//            response.json shouldBe Json.toJson(expectedBody)
-//          }
-//        }
-//
-//        val input = Seq(
-//          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-//          (BAD_REQUEST, "FORMAT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-//          (BAD_REQUEST, "NOT_FOUND", NOT_FOUND, NotFoundError),
-//          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-//          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError))
-//
-//        input.foreach(args => (serviceErrorTest _).tupled(args))
-//      }
+      "des service error" when {
+        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"des returns an $desCode error and status $desStatus" in new Test {
+
+            override def setupStubs(): StubMapping = {
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
+            }
+
+            val response: WSResponse = await(request().put(requestBodyJson))
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
+        }
+
+        val input = Seq(
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, ),
+          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
+          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
+          (FORBIDDEN, "MISSING_EXEMPTION_REASON", BAD_REQUEST, RuleExemptionCodeError),
+          (FORBIDDEN, "MISSING_EXEMPTION_INDICATOR", BAD_REQUEST, RuleExemptionCodeError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (GONE, "GONE", NOT_FOUND, NotFoundError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError))
+
+        input.foreach(args => (serviceErrorTest _).tupled(args))
+      }
     }
   }
 }
