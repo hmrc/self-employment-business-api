@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.CreateSelfEmploymentPeriodicConnector
 import v1.controllers.EndpointLogContext
-import v1.models.errors.ErrorWrapper
+import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.support.DesResponseMappingSupport
 
@@ -37,9 +37,17 @@ class CreateSelfEmploymentPeriodicService @Inject()(connector: CreateSelfEmploym
                     logConext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector)
-    }
+      desResponseWrapper <- EitherT(connector.createPeriodic(request)).leftMap(mapDesErrors(desErrorMap))
+    } yield desResponseWrapper
+
+    result.value
   }
 
-
+  private def desErrorMap: Map[String, MtdError] = Map(
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
+    "NOT_FOUND" -> NotFoundError,
+    "SERVER_ERROR" -> DownstreamError,
+    "SERVICE_UNAVAILABLE" -> DownstreamError
+  )
 }
