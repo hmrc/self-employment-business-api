@@ -16,15 +16,12 @@
 
 package v1.models.response.createSEPeriodic
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 
 case class CreateSelfEmploymentPeriodicResponseBody(periodId: String)
 
 
 object CreateSelfEmploymentPeriodicResponseBody {
-  implicit val reads: Reads[CreateSelfEmploymentPeriodicResponseBody] =
-    (JsPath \ "transactionReference").read[String].map(CreateSelfEmploymentPeriodicResponseBody(_))
-
-  implicit val writes: OWrites[CreateSelfEmploymentPeriodicResponseBody] = Json.writes[CreateSelfEmploymentPeriodicResponseBody]
+  implicit val format: OFormat[CreateSelfEmploymentPeriodicResponseBody] = Json.format[CreateSelfEmploymentPeriodicResponseBody]
 }

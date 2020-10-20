@@ -21,14 +21,7 @@ import support.UnitSpec
 
 class CreateSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
 
-  val desJson = Json.parse(
-    """
-      |{
-      |   "transactionReference": "2017090920170909"
-      |}
-      |""".stripMargin)
-
-  val mtdJson = Json.parse(
+  val json = Json.parse(
     """
       |{
       |   "periodId": "2017090920170909"
@@ -40,7 +33,7 @@ class CreateSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
   "reads" should {
     "return a model" when {
       "passed valid json" in {
-        desJson.as[CreateSelfEmploymentPeriodicResponseBody] shouldBe model
+        json.as[CreateSelfEmploymentPeriodicResponseBody] shouldBe model
       }
     }
   }
@@ -48,7 +41,7 @@ class CreateSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
   "writes" should {
     "return json" when {
       "passed a model" in {
-        Json.toJson(model) shouldBe mtdJson
+        Json.toJson(model) shouldBe json
       }
     }
   }
