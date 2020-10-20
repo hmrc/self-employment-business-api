@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.request.createSEPeriodic
+package v1.models.response.createSEPeriodic
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesAmountObject])
 
-object Incomes {
-  implicit val reads: Reads[Incomes] = Json.reads[Incomes]
-  implicit val writes: OWrites[Incomes] = (
-    (JsPath \ "turnover").writeNullable[BigDecimal] and
-      (JsPath \ "other").writeNullable[BigDecimal]
-    )(unlift(Incomes.unapply(_: Incomes).map {
-    case (turnoverO, otherO) => (turnoverO.map(_.amount), otherO.map(_.amount))
-  }))
+case class CreateSelfEmploymentPeriodicResponseBody(periodId: String)
 
+
+object CreateSelfEmploymentPeriodicResponseBody {
+  implicit val reads: Reads[CreateSelfEmploymentPeriodicResponseBody] =
+    (JsPath \ "transactionReference").read[String].map(CreateSelfEmploymentPeriodicResponseBody(_))
+
+  implicit val writes: OWrites[CreateSelfEmploymentPeriodicResponseBody] = Json.writes[CreateSelfEmploymentPeriodicResponseBody]
 }

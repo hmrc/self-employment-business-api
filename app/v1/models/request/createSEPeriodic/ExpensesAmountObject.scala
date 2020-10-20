@@ -16,18 +16,10 @@
 
 package v1.models.request.createSEPeriodic
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Format, Json}
 
-case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesAmountObject])
+case class ExpensesAmountObject(amount: BigDecimal, disallowableAmount: Option[BigDecimal])
 
-object Incomes {
-  implicit val reads: Reads[Incomes] = Json.reads[Incomes]
-  implicit val writes: OWrites[Incomes] = (
-    (JsPath \ "turnover").writeNullable[BigDecimal] and
-      (JsPath \ "other").writeNullable[BigDecimal]
-    )(unlift(Incomes.unapply(_: Incomes).map {
-    case (turnoverO, otherO) => (turnoverO.map(_.amount), otherO.map(_.amount))
-  }))
-
+object ExpensesAmountObject {
+  implicit val format: Format[ExpensesAmountObject] = Json.format[ExpensesAmountObject]
 }

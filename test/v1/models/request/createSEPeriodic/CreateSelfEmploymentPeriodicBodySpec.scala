@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package v1.models.request.CreateSEPeriodic
+package v1.models.request.createSEPeriodic
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.request.createSEPeriodic.{AmountObject, ConsolidatedExpenses, CreateSelfEmploymentPeriodicBody, Expenses, Incomes}
 
 class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
 
@@ -26,28 +25,28 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
     "2017-01-25",
     "2018-01-24",
     Some(Incomes(
-      Some(AmountObject(500.25, None)),
-      Some(AmountObject(500.25, None))
+      Some(IncomesAmountObject(500.25)),
+      Some(IncomesAmountObject(500.25))
     )),
     Some(ConsolidatedExpenses(
       500.25
     )),
     Some(Expenses(
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25))),
-      Some(AmountObject(500.25, Some(500.25)))
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25)))
     ))
   )
 
@@ -55,8 +54,8 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
     "2017-01-25",
     "2018-01-24",
     Some(Incomes(
-      Some(AmountObject(500.25, None)),
-      Some(AmountObject(500.25, None))
+      Some(IncomesAmountObject(500.25)),
+      Some(IncomesAmountObject(500.25))
     )),
     Some(ConsolidatedExpenses(
       500.25
@@ -205,8 +204,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
 
     "write to des" when {
 
-
-      val fullDesJson = Json.parse(
+      val nonConsolidatedJson = Json.parse(
         """{
           |   "from": "2017-01-25",
           |   "to": "2018-01-24",
@@ -279,11 +277,10 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
           |     }
           |  }
           |}
-          |
           |""".stripMargin
       )
 
-      val noOptionalDesJson = Json.parse(
+      val consolidatedJson = Json.parse(
         """{
           |   "from": "2017-01-25",
           |   "to": "2018-01-24",
@@ -296,11 +293,16 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
           |       "simplifiedExpenses": 500.25
           |     }
           |   }
-          |}""".stripMargin
+          |}
+          |""".stripMargin
       )
 
-      "a valid request is made with full body" in {
-        Json.toJson(fullMtdModel) shouldBe fullDesJson
+      "a valid request is made with non-consolidated body" in {
+        Json.toJson(fullMtdModel.copy(consolidatedExpenses = None)) shouldBe nonConsolidatedJson
+      }
+
+      "a valid request is made with consolidated body" in {
+        Json.toJson(fullMtdModel.copy(expenses = None)) shouldBe consolidatedJson
       }
     }
   }

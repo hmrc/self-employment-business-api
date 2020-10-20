@@ -19,39 +19,39 @@ package v1.models.request.createSEPeriodic
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Expenses(costOfGoodsBought: Option[AmountObject],
-                    cisPaymentsTo: Option[AmountObject],
-                    staffCosts: Option[AmountObject],
-                    travelCosts: Option[AmountObject],
-                    premisesRunningCosts: Option[AmountObject],
-                    maintenanceCosts: Option[AmountObject],
-                    adminCosts: Option[AmountObject],
-                    advertisingCosts: Option[AmountObject],
-                    businessEntertainmentCosts: Option[AmountObject],
-                    interestOnLoans: Option[AmountObject],
-                    financialCharges: Option[AmountObject],
-                    badDebt: Option[AmountObject],
-                    professionalFees: Option[AmountObject],
-                    depreciation: Option[AmountObject],
-                    other: Option[AmountObject])
+case class Expenses(costOfGoodsBought: Option[ExpensesAmountObject],
+                    cisPaymentsTo: Option[ExpensesAmountObject],
+                    staffCosts: Option[ExpensesAmountObject],
+                    travelCosts: Option[ExpensesAmountObject],
+                    premisesRunningCosts: Option[ExpensesAmountObject],
+                    maintenanceCosts: Option[ExpensesAmountObject],
+                    adminCosts: Option[ExpensesAmountObject],
+                    advertisingCosts: Option[ExpensesAmountObject],
+                    businessEntertainmentCosts: Option[ExpensesAmountObject],
+                    interestOnLoans: Option[ExpensesAmountObject],
+                    financialCharges: Option[ExpensesAmountObject],
+                    badDebt: Option[ExpensesAmountObject],
+                    professionalFees: Option[ExpensesAmountObject],
+                    depreciation: Option[ExpensesAmountObject],
+                    other: Option[ExpensesAmountObject])
 
 object Expenses {
   implicit val reads: Reads[Expenses] = Json.reads[Expenses]
   implicit val writes: OWrites[Expenses] = (
-    (JsPath \ "costOfGoods").writeNullable[AmountObject] and
-      (JsPath \ "constructionIndustryScheme").writeNullable[AmountObject] and
-      (JsPath \ "staffCosts").writeNullable[AmountObject] and
-      (JsPath \ "travelCosts").writeNullable[AmountObject] and
-      (JsPath \ "premisesRunningCosts").writeNullable[AmountObject] and
-      (JsPath \ "maintenanceCosts").writeNullable[AmountObject] and
-      (JsPath \ "adminCosts").writeNullable[AmountObject] and
-      (JsPath \ "advertisingCosts").writeNullable[AmountObject] and
-      (JsPath \ "businessEntertainmentCosts").writeNullable[AmountObject] and
-      (JsPath \ "interest").writeNullable[AmountObject] and
-      (JsPath \ "financialCharges").writeNullable[AmountObject] and
-      (JsPath \ "badDebt").writeNullable[AmountObject] and
-      (JsPath \ "professionalFees").writeNullable[AmountObject] and
-      (JsPath \ "deprecation").writeNullable[AmountObject] and
-      (JsPath \ "other").writeNullable[AmountObject]
+    (JsPath \ "costOfGoods").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "constructionIndustryScheme").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "staffCosts").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "travelCosts").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "premisesRunningCosts").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "maintenanceCosts").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "adminCosts").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "advertisingCosts").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "businessEntertainmentCosts").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "interest").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "financialCharges").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "badDebt").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "professionalFees").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "depreciation").writeNullable[ExpensesAmountObject] and
+      (JsPath \ "other").writeNullable[ExpensesAmountObject]
     ) (unlift(Expenses.unapply))
 }

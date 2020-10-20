@@ -16,10 +16,37 @@
 
 package v1.models.request.createSEPeriodic
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-case class AmountObject(amount: BigDecimal, disallowableAmount: Option[BigDecimal])
+class IncomesAmountObjectSpec extends UnitSpec {
 
-object AmountObject {
-  implicit val format: Format[AmountObject] = Json.format[AmountObject]
+  val model = IncomesAmountObject(500.12)
+
+  val json = Json.parse(
+    """
+      |{
+      | "amount": 500.12
+      |}
+      |""".stripMargin)
+
+
+  "reads" should {
+
+    "read from a model" when {
+
+      "a valid request is made" in {
+        json.as[IncomesAmountObject] shouldBe model
+      }
+    }
+  }
+  "writes" should {
+
+    "write to a model" when {
+
+      "a valid request is made" in {
+        Json.toJson(model) shouldBe json
+      }
+    }
+  }
 }

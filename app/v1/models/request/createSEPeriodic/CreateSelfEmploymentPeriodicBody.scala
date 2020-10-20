@@ -30,8 +30,11 @@ object CreateSelfEmploymentPeriodicBody {
   implicit val writes: OWrites[CreateSelfEmploymentPeriodicBody] = (
     (JsPath \ "from").write[String] and
       (JsPath \ "to").write[String] and
-      (JsPath \ "financials").writeNullable[Incomes] and
-      (JsPath \ "consolidatedExpenses").writeNullable[ConsolidatedExpenses] and
-      (JsPath \ "deductions").writeNullable[Expenses]
-    ) (unlift(CreateSelfEmploymentPeriodicBody.unapply))
+      (JsPath \ "financials" \ "incomes").writeNullable[Incomes] and
+      (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses").writeNullable[BigDecimal] and
+      (JsPath \ "financials" \ "deductions").writeNullable[Expenses]
+    ) (unlift(CreateSelfEmploymentPeriodicBody.unapply(_: CreateSelfEmploymentPeriodicBody).map {
+    case (periodFromDate, periodToDate, incomesO, consolidatedExpensesO, expensesO) =>
+      (periodFromDate, periodToDate, incomesO, consolidatedExpensesO.map(_.consolidatedExpenses), expensesO)
+  }))
 }

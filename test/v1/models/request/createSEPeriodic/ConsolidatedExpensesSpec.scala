@@ -16,18 +16,35 @@
 
 package v1.models.request.createSEPeriodic
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesAmountObject])
+class ConsolidatedExpensesSpec extends UnitSpec {
 
-object Incomes {
-  implicit val reads: Reads[Incomes] = Json.reads[Incomes]
-  implicit val writes: OWrites[Incomes] = (
-    (JsPath \ "turnover").writeNullable[BigDecimal] and
-      (JsPath \ "other").writeNullable[BigDecimal]
-    )(unlift(Incomes.unapply(_: Incomes).map {
-    case (turnoverO, otherO) => (turnoverO.map(_.amount), otherO.map(_.amount))
-  }))
+  val model = ConsolidatedExpenses(500.12)
 
+  val json = Json.parse(
+    """{
+      |"consolidatedExpenses": 500.12
+      |}
+      |""".stripMargin)
+
+  "reads" should {
+
+    "read from a json" when {
+
+      "a valid request is made" in  {
+        json.as[ConsolidatedExpenses] shouldBe model
+      }
+    }
+  }
+  "writes" should {
+
+    "write to a model" when {
+
+      "a valid request is made" in {
+        Json.toJson(model) shouldBe json
+      }
+    }
+  }
 }
