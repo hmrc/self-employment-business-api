@@ -301,7 +301,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           override val requestBodyJson: JsValue = Json.parse(
             """{
               |    "nonFinancials": {
-              |        "class4NicInfo":{
+              |        "class4NicInfo": {
               |        }
               |    }
               |}""".stripMargin)
@@ -312,8 +312,8 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError)
+          //response.status shouldBe BAD_REQUEST
+          response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/nonFinancials/class4NicInfo/isExempt"))))
         }
       }
 

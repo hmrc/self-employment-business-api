@@ -79,7 +79,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
            BusinessIdFormatError |
            TaxYearFormatError |
            MtdErrorWithCustomMessage(ValueFormatError.code) |
-           RuleIncorrectOrEmptyBodyError |
+           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
            RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalidError |
            RuleExemptionCodeError => BadRequest(Json.toJson(errorWrapper))
