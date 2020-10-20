@@ -42,6 +42,7 @@ object RuleExemptionCodeError extends MtdError(
 object RuleTaxYearRangeInvalidError extends MtdError(
   code = "RULE_TAX_YEAR_RANGE_INVALID",
   message = "The Tax year range is invalid"
+)
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 
