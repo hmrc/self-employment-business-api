@@ -22,7 +22,7 @@ import support.UnitSpec
 import v1.models.domain.ex.MtdEx
 import v1.models.hateoas.{Link, Method}
 
-class RetrieveSelfEmploymentAnnualSummaryResponseBodySpec extends UnitSpec with MockAppConfig {
+class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
   val desJson: JsValue = Json.parse(
     """
       |{
@@ -91,7 +91,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseBodySpec extends UnitSpec with 
       |}
       |""".stripMargin)
 
-  val model: RetrieveSelfEmploymentAnnualSummaryResponseBody = RetrieveSelfEmploymentAnnualSummaryResponseBody(
+  val model: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
     Some(Allowances(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
     Some(NonFinancials(Some(Class4NicInfo(true, Some(MtdEx.`001 - Non Resident`)))))
@@ -100,7 +100,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseBodySpec extends UnitSpec with 
   "reads" should {
     "return a model" when {
       "passed valid json" in {
-        desJson.as[RetrieveSelfEmploymentAnnualSummaryResponseBody] shouldBe model
+        desJson.as[RetrieveSelfEmploymentAnnualSummaryResponse] shouldBe model
       }
     }
   }
@@ -121,7 +121,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseBodySpec extends UnitSpec with 
 
         MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        RetrieveSelfEmploymentAnnualSummaryResponseBody.RetrieveSelfEmploymentAnnualSummaryLinksFactory.links(mockAppConfig, data) shouldBe Seq(
+        RetrieveSelfEmploymentAnnualSummaryResponse.RetrieveSelfEmploymentAnnualSummaryLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/${data.nino}/${data.businessId}/annual/${data.taxYear}",
             method = Method.PUT, rel = "create-and-amend-self-employment-annual-summary"),
           Link(href = s"/my/context/${data.nino}/${data.businessId}/annual/${data.taxYear}",

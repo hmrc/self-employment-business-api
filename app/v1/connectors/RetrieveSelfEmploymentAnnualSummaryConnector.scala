@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.domain.DesTaxYear
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
-import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
+import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,10 +32,10 @@ class RetrieveSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClien
                                                              val appConfig: AppConfig) extends BaseDesConnector {
   def retrieveSEAnnual(request: RetrieveSelfEmploymentAnnualSummaryRequest)(
                     implicit hc: HeaderCarrier,
-                    ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]] = {
+                    ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]] = {
 
     get(
-      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponseBody](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
+      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponse](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
     )
   }
 }

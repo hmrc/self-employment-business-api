@@ -35,7 +35,7 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
   val request = RetrieveSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
 
-  val response = RetrieveSelfEmploymentAnnualSummaryResponseBody(
+  val response = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(
       Some(100.25),
       Some(100.25),

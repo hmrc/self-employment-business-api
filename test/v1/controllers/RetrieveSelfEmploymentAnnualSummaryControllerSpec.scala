@@ -80,7 +80,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
   )
   private val nonFinancials = NonFinancials(Some(Class4NicInfo(true, Some(MtdEx.`002 - Trustee`))))
 
-  val responseBody: RetrieveSelfEmploymentAnnualSummaryResponseBody = RetrieveSelfEmploymentAnnualSummaryResponseBody(Some(adjustments), Some(allowances), Some(nonFinancials))
+  val responseBody: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(Some(adjustments), Some(allowances), Some(nonFinancials))
 
 
   "handleRequest" should {
