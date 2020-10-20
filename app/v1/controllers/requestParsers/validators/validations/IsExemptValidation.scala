@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendAnnualSummary
+package v1.controllers.requestParsers.validators.validations
 
-import play.api.libs.json.{Json, Reads, Writes}
+import v1.models.errors.{MtdError, RuleExemptionCodeError}
+import v1.models.request.amendAnnualSummary.Class4NicInfo
 
-case class NonFinancials(class4NicInfo: Option[Class4NicInfo]) {
-  def isEmpty: Boolean = class4NicInfo.isEmpty
-}
+object IsExemptValidation {
 
-object NonFinancials {
-  implicit val reads: Reads[NonFinancials] = Json.reads[NonFinancials]
-  implicit val writes: Writes[NonFinancials] = (o: NonFinancials) => Json.toJson(o.class4NicInfo)
+  def validate(class4NicInfo: Class4NicInfo): List[MtdError] = class4NicInfo match {
+    case Class4NicInfo(false, None)    => NoValidationErrors
+    case Class4NicInfo(true, None)     => List(RuleExemptionCodeError)
+    case Class4NicInfo(false, Some(_)) => List(RuleExemptionCodeError)
+    case Class4NicInfo(true, Some(_))  => NoValidationErrors
+  }
 }
