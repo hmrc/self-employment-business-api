@@ -23,7 +23,11 @@ case class CreateSelfEmploymentPeriodicBody(periodFromDate: String,
                                             periodToDate: String,
                                             incomes: Option[Incomes],
                                             consolidatedExpenses: Option[ConsolidatedExpenses],
-                                            expenses: Option[Expenses])
+                                            expenses: Option[Expenses]) {
+  def isEmpty: Boolean = {
+    incomes.exists(_.isEmpty) || expenses.exists(_.isEmpty)
+  }
+}
 
 object CreateSelfEmploymentPeriodicBody {
   implicit val reads: Reads[CreateSelfEmploymentPeriodicBody] = Json.reads[CreateSelfEmploymentPeriodicBody]

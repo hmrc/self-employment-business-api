@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators
+package v1.controllers.requestParsers.validators.validations
 
-import java.time.format.DateTimeFormatter
+import v1.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import v1.models.request.createSEPeriodic.{ConsolidatedExpenses, Expenses}
 
-package object validations {
+object ConsolidatedExpensesValidation {
 
-  val NoValidationErrors = List()
-  val dateFormat = DateTimeFormatter ofPattern "yyyy-MM-dd"
-
+  def validate(consolidatedExpenses: Option[ConsolidatedExpenses], expenses: Option[Expenses]): List[MtdError] = {
+    (consolidatedExpenses, expenses) match {
+      case (Some(_), Some(_)) => List(RuleBothExpensesSuppliedError)
+      case _ => NoValidationErrors
+    }
+  }
 }
