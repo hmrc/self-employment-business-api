@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import v1.models.errors.{MtdError, RuleExemptionCodeError}
-import v1.models.request.amendAnnualSummary.Class4NicInfo
+import v1.models.request.amendSEAnnual.Class4NicInfo
 
 object IsExemptValidation {
 

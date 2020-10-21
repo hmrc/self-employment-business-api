@@ -18,14 +18,17 @@ package v1.hateoas
 
 import config.AppConfig
 import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{PUT, _}
-import v1.models.hateoas.RelType.{AMEND_SAMPLE_REL, DELETE_SAMPLE_REL, _}
+import v1.models.hateoas.Method._
+import v1.models.hateoas.RelType._
 
 trait HateoasLinks {
 
   //Domain URIs
   private def sampleUri(appConfig: AppConfig, nino: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/sample/$nino/$taxYear"
+
+  private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
+    s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/annual/${taxYear}"
 
   //Sample links
   def amendSample(appConfig: AppConfig, nino: String, taxYear: String): Link =
@@ -57,4 +60,14 @@ trait HateoasLinks {
       method = DELETE,
       rel = DELETE_SAMPLE_REL
     )
+
+  def retrieveAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
+
+  def amendAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL)
+
+  def deleteAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendAnnualSummary
+package v1.models.request.amendSEAnnual
 
 import uk.gov.hmrc.domain.Nino
 

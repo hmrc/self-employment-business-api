@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendAnnualSummary
+package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.JsValue
-import v1.models.request.RawData
+import play.api.libs.json.{Json, Reads, Writes}
 
-case class AmendAnnualSummaryRawData(nino: String, businessId: String, taxYear: String, body: JsValue) extends RawData
+case class NonFinancials(class4NicInfo: Option[Class4NicInfo]) {
+  def isEmpty: Boolean = class4NicInfo.isEmpty
+}
+
+object NonFinancials {
+  implicit val reads: Reads[NonFinancials] = Json.reads[NonFinancials]
+  implicit val writes: Writes[NonFinancials] = (o: NonFinancials) => Json.toJson(o.class4NicInfo)
+}

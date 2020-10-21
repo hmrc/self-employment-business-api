@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSummaryValidator
-import v1.models.request.amendAnnualSummary.{AmendAnnualSummaryRawData, AmendAnnualSummaryRequest, AmendAnnualSummaryBody}
+import v1.models.request.amendSEAnnual.{AmendAnnualSummaryRawData, AmendAnnualSummaryRequest, AmendAnnualSummaryBody}
 
 class AmendSelfEmploymentAnnualSummaryRequestParser @Inject()(val validator: AmendSelfEmploymentAnnualSummaryValidator)
   extends RequestParser[AmendAnnualSummaryRawData, AmendAnnualSummaryRequest] {
