@@ -1,0 +1,21 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatBusinessId
+  - errors.formatTaxYear
+  - errors.ruleTaxYearNotSupported
+  - errors.ruleTaxYearRangeInvalid
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
+displayName: Delete a Self-Employment Annual Summary [test only]
+description: "This endpoint allows the developer to delete the self-employment annual summary for a tax year.  A National Insurance number, business ID and tax year must be provided."
+(annotations.sandboxData): !include ../scenarios/delete_annual_summary_scenarios.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+responses:
+  204:
+    headers:
+      X-CorrelationId:
+        example: a1e8057e-fbbc-47a8-a8b4-78d9f015c253
+        description: Unique ID for operation tracking <br> String, 36 characters

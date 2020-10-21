@@ -49,6 +49,7 @@ uses:
             example: "2017-18"
         put: !include endpoints/createAndAmendAnnualSummary.raml
         get: !include endpoints/retrieveAnnualSummary.raml
+        delete: !include endpoints/deleteAnnualSummary.raml
       /period:
         post:
           !include endpoints/createPeriodicUpdatePeriod.raml
