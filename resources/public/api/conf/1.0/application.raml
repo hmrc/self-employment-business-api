@@ -49,6 +49,9 @@ uses:
             example: "2017-18"
         put: !include endpoints/createAndAmendAnnualSummary.raml
         get: !include endpoints/retrieveAnnualSummary.raml
+      /period:
+        post:
+          !include endpoints/createPeriodicUpdatePeriod.raml
   /sample:
     /{nino}:
       uriParameters:

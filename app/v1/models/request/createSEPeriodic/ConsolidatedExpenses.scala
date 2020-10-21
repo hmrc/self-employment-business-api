@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package v1
+package v1.models.request.createSEPeriodic
 
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
-import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
+import play.api.libs.json.{Format, Json}
 
-package object services {
+case class ConsolidatedExpenses(consolidatedExpenses: BigDecimal)
 
-  private type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
-
-  type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
-
-  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]
-
+object ConsolidatedExpenses {
+  implicit val format: Format[ConsolidatedExpenses] = Json.format[ConsolidatedExpenses]
 }

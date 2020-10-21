@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{AmendAnnualSummaryConnector, DesOutcome}
+import v1.controllers.EndpointLogContext
+import v1.models.errors.ErrorWrapper
+import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
+import v1.services.AmendAnnualSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MockAmendAnnualSummaryConnector extends MockFactory {
+trait MockAmendAnnualSummaryService extends MockFactory {
 
-  val mockAmendAnnualSummaryConnector: AmendAnnualSummaryConnector = mock[AmendAnnualSummaryConnector]
+  val mockAmendAnnualSummaryService: AmendAnnualSummaryService = mock[AmendAnnualSummaryService]
 
-  object MockAmendAnnualSummaryConnector {
+  object MockAmendAnnualSummaryService {
 
-    def amendAnnualSummary(requestData: AmendAnnualSummaryRequest): CallHandler[Future[DesOutcome[Unit]]] = {
-      (mockAmendAnnualSummaryConnector
-        .amendAnnualSummary(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+    def amendAnnualSummary(requestData: AmendAnnualSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockAmendAnnualSummaryService
+        .amendAnnualSummary(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .expects(requestData, *, *, *)
     }
   }
-
 }
