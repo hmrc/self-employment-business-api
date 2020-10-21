@@ -1,0 +1,15 @@
+{
+  "periodFromDate": "2017-01-25",
+  "periodToDate": "2018-01-24",
+  "incomes": {
+    "turnover": {
+      "amount": 500.25
+    },
+    "other": {
+      "amount": 500.25
+    }
+  },
+  "consolidatedExpenses": {
+    "consolidatedExpenses": 500.25
+  }
+}

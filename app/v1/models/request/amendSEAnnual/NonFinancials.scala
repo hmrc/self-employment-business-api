@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package v1
+package v1.models.request.amendSEAnnual
 
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
-import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
+import play.api.libs.json.{Json, Reads, Writes}
 
-package object services {
+case class NonFinancials(class4NicInfo: Option[Class4NicInfo]) {
+  def isEmpty: Boolean = class4NicInfo.isEmpty
+}
 
-  private type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
-
-  type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
-
-  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]
-
+object NonFinancials {
+  implicit val reads: Reads[NonFinancials] = Json.reads[NonFinancials]
+  implicit val writes: Writes[NonFinancials] = (o: NonFinancials) => Json.toJson(o.class4NicInfo)
 }

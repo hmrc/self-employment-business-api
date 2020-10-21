@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-package v1
+package v1.models.request.createSEPeriodic
 
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
-import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
+import play.api.libs.json.JsValue
+import v1.models.request.RawData
 
-package object services {
-
-  private type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
-
-  type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
-
-  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]
-
-}
+case class CreateSelfEmploymentPeriodicRawData(nino: String, businessId: String, body: JsValue) extends RawData

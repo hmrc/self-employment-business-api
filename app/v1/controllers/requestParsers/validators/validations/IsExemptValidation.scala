@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package v1
+package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
-import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponseBody
+import v1.models.errors.{MtdError, RuleExemptionCodeError}
+import v1.models.request.amendSEAnnual.Class4NicInfo
 
-package object services {
+object IsExemptValidation {
 
-  private type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
-
-  type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
-
-  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponseBody]
-
+  def validate(class4NicInfo: Class4NicInfo): List[MtdError] = class4NicInfo match {
+    case Class4NicInfo(false, None)    => NoValidationErrors
+    case Class4NicInfo(true, None)     => List(RuleExemptionCodeError)
+    case Class4NicInfo(false, Some(_)) => List(RuleExemptionCodeError)
+    case Class4NicInfo(true, Some(_))  => NoValidationErrors
+  }
 }

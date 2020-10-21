@@ -91,6 +91,28 @@ traits:
                 description: The format of the supplied Business ID field is not valid.
                 value:
                   code: FORMAT_BUSINESS_ID
+  formatFromDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatFromDate:
+                description: The format of the supplied From date field is not valid.
+                value:
+                  code: FORMAT_FROM_DATE
+  formatToDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatToDate:
+                description: The format of the supplied To date field is not valid.
+                value:
+                  code: FORMAT_TO_DATE
   formatValue:
     responses:
       400:
@@ -102,6 +124,72 @@ traits:
                 description: The format of one or more monetary fields is not valid.
                 value:
                   code: FORMAT_VALUE
+  ruleBothExpensesSupplied:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleBothExpensesSupplied:
+                description: Both expenses and consolidatedExpenses can not be present at the same time.
+                value:
+                  code: RULE_BOTH_EXPENSES_SUPPLIED
+  ruleToDateBeforeFromDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleToDateBeforeFromDate:
+                description: The To date is earlier than the From date.
+                value:
+                  code: RULE_TO_DATE_BEFORE_FROM_DATE
+  ruleOverlappingPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleOverlappingPeriod:
+                description: Period summary overlaps with any of the existing period summaries.
+                value:
+                  code: RULE_OVERLAPPING_PERIOD
+  ruleMisalignedPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleMisalignedPeriod:
+                description: Period summary is not within the accounting period.
+                value:
+                  code: RULE_MISALIGNED_PERIOD
+  ruleNotContiguousPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNotContiguousPeriod:
+                description: Period summaries are not contiguous.
+                value:
+                  code: RULE_NOT_CONTIGUOUS_PERIOD
+  ruleNotAllowedConsolidatedExpenses:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNotAllowedConsolidatedExpenses:
+                description: Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold.
+                value:
+                  code: RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES
   ruleExemptionCode:
       responses:
         400:

@@ -20,7 +20,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.domain.DesTaxYear
-import v1.models.request.amendAnnualSummary.AmendAnnualSummaryRequest
+import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 import v1.connectors.httpparsers.StandardDesHttpParser._
