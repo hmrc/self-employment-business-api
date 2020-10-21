@@ -1,0 +1,48 @@
+{
+  "adjustments": {
+    "includedNonTaxableProfits": 3123.15,
+    "basisAdjustment": 192.25,
+    "overlapReliefUsed": 399.00,
+    "accountingAdjustment": 31.25,
+    "averagingAdjustment": 3134.20,
+    "lossBroughtForward": 10.89,
+    "outstandingBusinessIncome": 102.10,
+    "balancingChargeBPRA": 40.30,
+    "balancingChargeOther": 3992.00,
+    "goodsAndServicesOwnUse": 391.25
+  },
+  "allowances": {
+    "annualInvestmentAllowance": 3992.10,
+    "capitalAllowanceMainPool": 20.11,
+    "capitalAllowanceSpecialRatePool": 29.00,
+    "zeroEmissionGoodsVehicleAllowance": 500.00,
+    "businessPremisesRenovationAllowance": 31.00,
+    "enhancedCapitalAllowance": 49.19,
+    "allowanceOnSales": 39.48,
+    "capitalAllowanceSingleAssetPool": 32.39,
+    "tradingAllowance": 85.39
+  },
+  "nonFinancials": {
+    "class4NicInfo": {
+      "isExempt": true,
+      "exemptionCode": "002 - Trustee"
+    }
+  },
+  "links": [
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
+      "rel": "create-and-amend-self-employment-annual-summary",
+      "method": "PUT"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
+      "rel": "delete-self-employment-annual-summary",
+      "method": "DELETE"
+    }
+  ]
+}

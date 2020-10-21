@@ -1,0 +1,179 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Retrieve Self Employment Annual Summary",
+  "description": "Retrieves a self-employment annual summary for a tax year.",
+  "type": "object",
+  "properties": {
+    "adjustments": {
+      "type": "object",
+      "properties": {
+        "includedNonTaxableProfits": {
+          "description": "Income, receipts and other profits included in business income or expenses but not taxable as business profits. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "basisAdjustment": {
+          "description": "If your basis period is not the same as your accounting period, enter the adjustment needed to arrive at the profit or loss for the basis period – if the adjustment needs to be taken off the profit figure, this should be negative. Between -99999999999.99 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "overlapReliefUsed": {
+          "description": "Overlap relief used this year. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "accountingAdjustment": {
+          "description": "Adjustment for change of accounting practice. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "averagingAdjustment": {
+          "description": "Averaging adjustment (only for farmers, market gardeners and creators of literary or artistic works) – if the adjustment needs to be taken off the profit figure, this should be negative. Between -99999999999.99 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "lossBroughtForward": {
+          "description": "Loss brought forward from earlier years. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "outstandingBusinessIncome": {
+          "description": "Any other business income not included in other fields. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "balancingChargeBPRA": {
+          "description": "Balancing charge on sale or cessation of business use (only where Business Premises Renovation Allowance has been claimed). Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "balancingChargeOther": {
+          "description": "Balancing charge on sale or cessation of business use (where you have disposed of assets for more than their tax value). Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "goodsAndServicesOwnUse": {
+          "description": "Value of the normal sale price of goods or stock have been taken out of the business. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        }
+      },
+      "additionalProperties": false
+    },
+    "allowances": {
+      "type": "object",
+      "properties": {
+        "annualInvestmentAllowance": {
+          "description": "Annual investment allowance on items that qualify up to the AIA amount. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "businessPremisesRenovationAllowance": {
+          "description": "Business Premises Renovation Allowance if converting or renovating unused qualifying business premises. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "capitalAllowanceMainPool": {
+          "description": "Capital allowances at 18% on equipment, including cars with lower CO2 emissions. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "capitalAllowanceSpecialRatePool": {
+          "description": "Capital allowances at 8% on equipment, including cars with higher CO2 emissions. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "zeroEmissionGoodsVehicleAllowance": {
+          "description": "Zero emission goods vehicle allowance for goods vehicles purchased for business use. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "enhancedCapitalAllowance": {
+          "description": "100% and other enhanced capital allowances. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "allowanceOnSales": {
+          "description": "Allowances on sale or cessation of business use (where you have disposed of assets for less than their tax value). Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "capitalAllowanceSingleAssetPool": {
+          "description": "Capital Allowances for single asset pool costs. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "tradingAllowance": {
+          "description": "A tax exemption of a limited amount for individuals with trading income. Between 0 and 99999999999.99.",
+          "type": "number",
+          "example": "2000.99"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nonFinancials": {
+      "type": "object",
+      "properties": {
+        "class4NicInfo": {
+          "description": "Self-employed profits above a set threshold are subject to Class 4 National Insurance charges.",
+          "type": "object",
+          "properties": {
+            "isExempt": {
+              "description": "True if the taxpayer is exempt from paying class 4 nics on this source of income; false otherwise.",
+              "type": "boolean",
+              "example": "true"
+            },
+            "exemptionCode": {
+              "description": "Class 4 exemption codes - becomes mandatory if isExempt flag is set to true. Limited to the following possible values:\n\n001 - Non Resident\n002 - Trustee\n003 - Diver\n004 - Employed earner taxed under ITTOIA 2005\n005 - Over state pension age\n006 - Under 16",
+              "type": "string",
+              "example": "001 - Non Resident"
+            }
+          },
+          "required": [
+            "isExempt"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A list of endpoint links that indicate possible actions related to the current resource.",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint.",
+            "type": "string",
+            "example": "/individuals/business/self-employment/sample/{nino}/{businessId}/annual/{taxYear}"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
+            "type": "string",
+            "enum": [
+              "self",
+              "create-and-amend-self-employment-annual-summary",
+              "delete-self-employment-annual-summary"
+            ]
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint.",
+            "type": "string",
+            "enum": [
+              "GET",
+              "PUT",
+              "DELETE"
+            ]
+          }
+        },
+        "required": [
+          "href",
+          "rel",
+          "method"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
