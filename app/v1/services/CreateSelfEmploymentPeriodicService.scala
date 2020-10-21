@@ -17,6 +17,7 @@
 package v1.services
 
 import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
@@ -24,6 +25,8 @@ import v1.connectors.CreateSelfEmploymentPeriodicConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
+import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRequest
+import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponseBody
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,11 +37,12 @@ class CreateSelfEmploymentPeriodicService @Inject()(connector: CreateSelfEmploym
   def createPeriodic(request: CreateSelfEmploymentPeriodicRequest)(
                     implicit hc: HeaderCarrier,
                     ec:ExecutionContext,
-                    logConext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+                    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponseBody]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodic(request)).leftMap(mapDesErrors(desErrorMap))
-    } yield desResponseWrapper
+      mtdResponseWrapper <- EitherT.fromEither[Future](createPeriodId(desResponseWrapper, request.body.periodFromDate, request.body.periodToDate))
+    } yield mtdResponseWrapper
 
     result.value
   }
@@ -46,6 +50,10 @@ class CreateSelfEmploymentPeriodicService @Inject()(connector: CreateSelfEmploym
   private def desErrorMap: Map[String, MtdError] = Map(
     "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
     "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
+    "RULE_OVERLAPPING_PERIOD" -> RuleOverlappingPeriod,
+    "RULE_MISALIGNED_PERIOD" -> RuleMisalignedPeriod,
+    "RULE_NOT_CONTIGUOUS_PERIOD" -> RuleNotContiguousPeriod,
+    "RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
     "NOT_FOUND" -> NotFoundError,
     "SERVER_ERROR" -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError

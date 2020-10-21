@@ -21,6 +21,7 @@ import utils.Logging
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
+import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponseBody
 
 trait DesResponseMappingSupport {
   self: Logging =>
@@ -32,6 +33,13 @@ trait DesResponseMappingSupport {
       Right(desResponseWrapper)
     }
   }
+
+  def createPeriodId(responseWrapper: ResponseWrapper[Unit],
+                     fromDate: String, toDate:String): Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponseBody]] = {
+    Right(ResponseWrapper(responseWrapper.correlationId,
+      CreateSelfEmploymentPeriodicResponseBody(s"${fromDate.replaceAll("[-]","")}${toDate.replaceAll("[-]","")}")))
+  }
+
 
   final def mapDesErrors[D](errorCodeMap: PartialFunction[String, MtdError])(desResponseWrapper: ResponseWrapper[DesError])(
     implicit logContext: EndpointLogContext): ErrorWrapper = {

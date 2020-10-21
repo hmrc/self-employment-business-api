@@ -17,11 +17,14 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRequest
 
 import scala.concurrent.{ExecutionContext, Future}
+import v1.connectors.httpparsers.StandardDesHttpParser._
 
+@Singleton
 class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
                                                       val appConfig: AppConfig) extends BaseDesConnector {
 
@@ -34,7 +37,7 @@ class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
 
     post(
       body = request.body,
-      DesUri[Unit](s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+      DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
     )
   }
 

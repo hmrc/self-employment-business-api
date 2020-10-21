@@ -43,6 +43,26 @@ object RuleTaxYearRangeInvalidError extends MtdError(
   message = "The Tax year range is invalid"
 )
 
+object RuleOverlappingPeriod extends MtdError(
+  code = "RULE_OVERLAPPING_PERIOD",
+  message = "Period summary overlaps with any of the existing period summaries"
+)
+
+object RuleMisalignedPeriod extends MtdError(
+  code = "RULE_MISALIGNED_PERIOD",
+  message = "Period summary is not within the accounting period"
+)
+
+object RuleNotContiguousPeriod extends MtdError(
+  code = "RULE_MISALIGNED_PERIOD",
+  message = "Period summary is not within the accounting period"
+)
+
+object RuleNotAllowedConsolidatedExpenses extends MtdError(
+  code = "RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES",
+  message = "Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold"
+)
+
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 
 //Standard Errors
