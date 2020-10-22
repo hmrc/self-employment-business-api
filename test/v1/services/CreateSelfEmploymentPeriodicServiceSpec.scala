@@ -100,13 +100,15 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
         }
 
       val input = Seq(
-        ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
+        ("INVALID_NINO", NinoFormatError),
         ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
+        ("INVALID_PERIOD", RuleToDateBeforeFromDate),
         ("OVERLAPS_IN_PERIOD", RuleOverlappingPeriod),
         ("NOT_ALIGN_PERIOD", RuleMisalignedPeriod),
+        ("BOTH_EXPENSES_SUPPLIED", RuleBothExpensesSupplied),
         ("NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
         ("NOT_ALLOWED_SIMPLIFIED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
-        ("NOT_FOUND", NotFoundError),
+        ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
         ("SERVER_ERROR", DownstreamError),
         ("SERVICE_UNAVAILABLE", DownstreamError)
       )

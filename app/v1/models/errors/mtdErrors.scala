@@ -63,6 +63,16 @@ object RuleNotAllowedConsolidatedExpenses extends MtdError(
   message = "Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold"
 )
 
+object RuleBothExpensesSupplied extends MtdError(
+  code = "RULE_BOTH_EXPENSES_SUPPLIED",
+  message = "Both expenses and consolidatedExpenses can not be present at the same time"
+)
+
+object RuleToDateBeforeFromDate extends MtdError(
+  code = "RULE_TO_DATE_BEFORE_FROM_DATE",
+  message = "The To date cannot be earlier than the From date"
+)
+
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 
 //Standard Errors
