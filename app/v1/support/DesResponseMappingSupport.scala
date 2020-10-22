@@ -37,7 +37,7 @@ trait DesResponseMappingSupport {
   def createPeriodId(responseWrapper: ResponseWrapper[Unit],
                      fromDate: String, toDate:String): Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponseBody]] = {
     Right(ResponseWrapper(responseWrapper.correlationId,
-      CreateSelfEmploymentPeriodicResponseBody(s"${fromDate.replaceAll("[-]","")}${toDate.replaceAll("[-]","")}")))
+      CreateSelfEmploymentPeriodicResponseBody(s"${fromDate}_${toDate}")))
   }
 
 

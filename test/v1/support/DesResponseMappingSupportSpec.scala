@@ -124,7 +124,7 @@ class DesResponseMappingSupportSpec extends UnitSpec {
   "createPeriodId" should {
     "return a valid periodId" when {
       "given two valid dates" in {
-        val responseModel = CreateSelfEmploymentPeriodicResponseBody("2017090920170909")
+        val responseModel = CreateSelfEmploymentPeriodicResponseBody("2017-09-09_2017-09-09")
         mapping.createPeriodId(ResponseWrapper(correlationId, ()),"2017-09-09", "2017-09-09") shouldBe
           Right(ResponseWrapper(correlationId, responseModel))
       }

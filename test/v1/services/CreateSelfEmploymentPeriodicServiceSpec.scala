@@ -78,7 +78,7 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
     "createPeriodic" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome = Right(ResponseWrapper(correlationId, CreateSelfEmploymentPeriodicResponseBody("2017012520170125")))
+        val outcome = Right(ResponseWrapper(correlationId, CreateSelfEmploymentPeriodicResponseBody("2017-01-25_2017-01-25")))
 
         MockCreateSelfEmploymentPeriodicConnector.createSelfEmploymentPeriodic(requestData)
           .returns(Future.successful(connectorOutcome))
@@ -102,10 +102,10 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
       val input = Seq(
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
-        ("RULE_OVERLAPPING_PERIOD", RuleOverlappingPeriod),
-        ("RULE_MISALIGNED_PERIOD", RuleMisalignedPeriod),
-        ("RULE_NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
-        ("RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
+        ("OVERLAPS_IN_PERIOD", RuleOverlappingPeriod),
+        ("NOT_ALIGN_PERIOD", RuleMisalignedPeriod),
+        ("NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
+        ("NOT_ALLOWED_SIMPLIFIED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
         ("NOT_FOUND", NotFoundError),
         ("SERVER_ERROR", DownstreamError),
         ("SERVICE_UNAVAILABLE", DownstreamError)

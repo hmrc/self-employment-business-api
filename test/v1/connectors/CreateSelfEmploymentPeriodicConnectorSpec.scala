@@ -84,7 +84,7 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
   "CreateSEPeriodicConnector" when {
     "createPeriodic" must {
-      "return a 201 status for a success scenario" in new Test {
+      "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, response))
 
         MockedHttpClient
