@@ -30,6 +30,9 @@ trait HateoasLinks {
   private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/annual/${taxYear}"
 
+  private def sEPeriodicUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
+    s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/period/${periodId}"
+
   //Sample links
   def amendSample(appConfig: AppConfig, nino: String, taxYear: String): Link =
     Link(
@@ -69,5 +72,8 @@ trait HateoasLinks {
 
   def deleteAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
     Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
+
+  def retrieveSEPeriodic(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
+    Link(href = sEPeriodicUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
 
 }

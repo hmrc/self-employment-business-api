@@ -19,7 +19,7 @@ package v1.models.response.createSEPeriodic
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class CreateSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
+class CreateSelfEmploymentPeriodicResponseSpec extends UnitSpec {
 
   val json = Json.parse(
     """
@@ -28,12 +28,12 @@ class CreateSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val model = CreateSelfEmploymentPeriodicResponseBody("2017090920170909")
+  val model = CreateSelfEmploymentPeriodicResponse("2017090920170909")
 
   "reads" should {
     "return a model" when {
       "passed valid json" in {
-        json.as[CreateSelfEmploymentPeriodicResponseBody] shouldBe model
+        json.as[CreateSelfEmploymentPeriodicResponse] shouldBe model
       }
     }
   }
