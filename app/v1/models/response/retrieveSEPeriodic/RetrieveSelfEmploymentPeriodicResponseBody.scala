@@ -30,7 +30,7 @@ object RetrieveSelfEmploymentPeriodicResponseBody {
     (JsPath \ "from").read[String] and
       (JsPath \ "to").read[String] and
       (JsPath \ "financials" \ "incomes").readNullable[Incomes] and
-      (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses").readNullable[BigDecimal] and
+      (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses").readNullable[BigDecimal].map(_.map(ConsolidatedExpenses(_))) and
       (JsPath \ "financials" \ "deductions").readNullable[Expenses]
     ) (RetrieveSelfEmploymentPeriodicResponseBody.apply _)
 

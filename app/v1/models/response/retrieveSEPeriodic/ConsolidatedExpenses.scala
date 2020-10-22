@@ -16,4 +16,10 @@
 
 package v1.models.response.retrieveSEPeriodic
 
+import play.api.libs.json.{Format, Json}
+
 case class ConsolidatedExpenses(consolidatedExpenses: BigDecimal)
+
+object ConsolidatedExpenses {
+  implicit val format: Format[ConsolidatedExpenses] = Json.format[ConsolidatedExpenses]
+}
