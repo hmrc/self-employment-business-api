@@ -1,0 +1,72 @@
+{
+  "incomes": {
+    "turnover": {
+      "amount": 172.89
+    },
+    "other": {
+      "amount": 634.14
+    }
+  },
+  "expenses": {
+    "costOfGoodsBought": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "cisPaymentsTo": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "staffCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "travelCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "premisesRunningCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "maintenanceCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "adminCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "advertisingCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "businessEntertainmentCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "interestOnLoans": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "financialCharges": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "badDebt": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "professionalFees": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "depreciation": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "other": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    }
+  }
+}
