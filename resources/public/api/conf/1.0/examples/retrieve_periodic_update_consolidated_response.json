@@ -1,0 +1,27 @@
+{
+  "periodFromDate": "2019-04-29",
+  "periodToDate": "2019-10-25",
+  "incomes": {
+    "turnover": {
+      "amount": 172.89
+    },
+    "other": {
+      "amount": 634.14
+    }
+  },
+  "consolidatedExpenses": {
+    "consolidatedExpenses": 647.89
+  },
+  "links": [
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "amend-periodic-update",
+      "method": "PUT"
+    }
+  ]
+}

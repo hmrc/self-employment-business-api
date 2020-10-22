@@ -91,6 +91,17 @@ traits:
                 description: The format of the supplied Business ID field is not valid.
                 value:
                   code: FORMAT_BUSINESS_ID
+  formatPeriodId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatPeriodId:
+                description: The format of the supplied Period ID field is not valid.
+                value:
+                  code: FORMAT_PERIOD_ID
   formatFromDate:
     responses:
       400:
