@@ -62,8 +62,8 @@ object RuleMisalignedPeriod extends MtdError(
 )
 
 object RuleNotContiguousPeriod extends MtdError(
-  code = "RULE_MISALIGNED_PERIOD",
-  message = "Period summary is not within the accounting period"
+  code = "RULE_NOT_CONTIGUOUS_PERIOD",
+  message = "Period summaries are not contiguous"
 )
 
 object RuleNotAllowedConsolidatedExpenses extends MtdError(

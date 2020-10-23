@@ -28,7 +28,7 @@ case class CreateSelfEmploymentPeriodicResponse(periodId: String)
 object CreateSelfEmploymentPeriodicResponse extends HateoasLinks {
   implicit val format: OFormat[CreateSelfEmploymentPeriodicResponse] = Json.format[CreateSelfEmploymentPeriodicResponse]
 
-  implicit object LinksFactory extends HateoasLinksFactory[Unit, CreateSelfEmploymentPeriodicHateoasData] {
+  implicit object LinksFactory extends HateoasLinksFactory[CreateSelfEmploymentPeriodicResponse, CreateSelfEmploymentPeriodicHateoasData] {
     override def links(appConfig: AppConfig, data: CreateSelfEmploymentPeriodicHateoasData): Seq[Link] = {
       import data._
       Seq(

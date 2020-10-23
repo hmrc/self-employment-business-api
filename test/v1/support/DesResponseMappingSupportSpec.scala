@@ -22,7 +22,7 @@ import utils.Logging
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponseBody
+import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
 
 class DesResponseMappingSupportSpec extends UnitSpec {
 
@@ -124,7 +124,7 @@ class DesResponseMappingSupportSpec extends UnitSpec {
   "createPeriodId" should {
     "return a valid periodId" when {
       "given two valid dates" in {
-        val responseModel = CreateSelfEmploymentPeriodicResponseBody("2017-09-09_2017-09-09")
+        val responseModel = CreateSelfEmploymentPeriodicResponse("2017-09-09_2017-09-09")
         mapping.createPeriodId(ResponseWrapper(correlationId, ()),"2017-09-09", "2017-09-09") shouldBe
           Right(ResponseWrapper(correlationId, responseModel))
       }

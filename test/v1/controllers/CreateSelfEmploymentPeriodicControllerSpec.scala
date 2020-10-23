@@ -150,21 +150,21 @@ class CreateSelfEmploymentPeriodicControllerSpec
     Some(Incomes(Some(IncomesAmountObject(500.25)), Some(IncomesAmountObject(500.25)))),
     None,
     Some(Expenses(
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25)),
-      Some(ExpensesAmountObject(500.25, 500.25))
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25))),
+      Some(ExpensesAmountObject(500.25, Some(500.25)))
     )))
 
   val responseJson: JsValue = Json.parse(
@@ -197,8 +197,8 @@ class CreateSelfEmploymentPeriodicControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, CreateSelfEmploymentPeriodicResponse(periodId)))))
 
         MockHateoasFactory
-          .wrap((), CreateSelfEmploymentPeriodicHateoasData(nino, businessId, periodId))
-          .returns(HateoasWrapper((), testHateoasLinks))
+          .wrap(CreateSelfEmploymentPeriodicResponse(periodId), CreateSelfEmploymentPeriodicHateoasData(nino, businessId, periodId))
+          .returns(HateoasWrapper(CreateSelfEmploymentPeriodicResponse(periodId), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
         status(result) shouldBe OK
@@ -262,7 +262,7 @@ class CreateSelfEmploymentPeriodicControllerSpec
           (RuleOverlappingPeriod, BAD_REQUEST),
           (RuleMisalignedPeriod, BAD_REQUEST),
           (RuleNotContiguousPeriod, BAD_REQUEST),
-          (RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES, BAD_REQUEST),
+          (RuleNotAllowedConsolidatedExpenses, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )

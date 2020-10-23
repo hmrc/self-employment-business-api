@@ -53,7 +53,7 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
           parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.createPeriodic(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, CreateSelfEmploymentPeriodicHateoasData(nino, businessId, serviceResponse.periodId)).asRight[ErrorWrapper])
+            hateoasFactory.wrap(serviceResponse.responseData, CreateSelfEmploymentPeriodicHateoasData(nino, businessId, serviceResponse.responseData.periodId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +

@@ -21,7 +21,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createSEPeriodic._
-import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponseBody
+import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
 
 import scala.concurrent.Future
 
@@ -63,7 +63,7 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
     )
   )
 
-  val response = CreateSelfEmploymentPeriodicResponseBody("2017090920170909")
+  val response = CreateSelfEmploymentPeriodicResponse("2017090920170909")
 
   class Test extends MockHttpClient with MockAppConfig {
 

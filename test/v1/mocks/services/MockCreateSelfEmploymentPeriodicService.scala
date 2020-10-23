@@ -22,9 +22,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
 import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRequest
 import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
+import v1.services.CreateSelfEmploymentPeriodicService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,7 +36,7 @@ trait MockCreateSelfEmploymentPeriodicService extends MockFactory {
 
     def createPeriodic(requestData: CreateSelfEmploymentPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponse]]]] = {
       (mockCreateSelfEmploymentPeriodicService
-        .createPeriodic(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .createPeriodic(_: CreateSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
         .expects(requestData, *, *, *)
     }
   }

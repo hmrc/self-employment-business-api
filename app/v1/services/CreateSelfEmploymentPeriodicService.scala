@@ -26,7 +26,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRequest
-import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponseBody
+import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,7 @@ class CreateSelfEmploymentPeriodicService @Inject()(connector: CreateSelfEmploym
   def createPeriodic(request: CreateSelfEmploymentPeriodicRequest)(
                     implicit hc: HeaderCarrier,
                     ec:ExecutionContext,
-                    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponseBody]]] = {
+                    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodic(request)).leftMap(mapDesErrors(desErrorMap))

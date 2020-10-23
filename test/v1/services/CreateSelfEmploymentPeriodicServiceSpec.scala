@@ -22,7 +22,7 @@ import v1.mocks.connectors.MockCreateSelfEmploymentPeriodicConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createSEPeriodic._
-import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponseBody
+import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
 
 import scala.concurrent.Future
 
@@ -78,7 +78,7 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
     "createPeriodic" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome = Right(ResponseWrapper(correlationId, CreateSelfEmploymentPeriodicResponseBody("2017-01-25_2017-01-25")))
+        val outcome = Right(ResponseWrapper(correlationId, CreateSelfEmploymentPeriodicResponse("2017-01-25_2017-01-25")))
 
         MockCreateSelfEmploymentPeriodicConnector.createSelfEmploymentPeriodic(requestData)
           .returns(Future.successful(connectorOutcome))
