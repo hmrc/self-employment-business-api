@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.models.domain.DesTaxYear
 import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +35,7 @@ class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
 
     put(
       body = """{}""",
-      DesUri[Unit](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${request.taxYear}")
+      DesUri[Unit](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
     )
   }
 }
