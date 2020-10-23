@@ -32,6 +32,8 @@ object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is inv
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
 object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid")
 object ValueFormatError extends MtdError("FORMAT_VALUE", "One or more monetary fields are invalid")
+object FromDateFormatError extends MtdError("FORMAT_FROM_DATE", "The provided From date is invalid")
+object ToDateFormatError extends MtdError("FORMAT_TO_DATE", "The provided To date is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError extends MtdError(
@@ -68,14 +70,14 @@ object RuleNotAllowedConsolidatedExpenses extends MtdError(
   message = "Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold"
 )
 
-object RuleBothExpensesSupplied extends MtdError(
-  code = "RULE_BOTH_EXPENSES_SUPPLIED",
-  message = "Both expenses and consolidatedExpenses can not be present at the same time"
-)
-
-object RuleToDateBeforeFromDate extends MtdError(
+object RuleToDateBeforeFromDateError extends MtdError(
   code = "RULE_TO_DATE_BEFORE_FROM_DATE",
   message = "The To date cannot be earlier than the From date"
+)
+
+object RuleBothExpensesSuppliedError extends MtdError(
+  code = "RULE_BOTH_EXPENSES_SUPPLIED",
+  message = "Both expenses and consolidatedExpenses can not be present at the same time"
 )
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")

@@ -50,10 +50,10 @@ class CreateSelfEmploymentPeriodicService @Inject()(connector: CreateSelfEmploym
   private def desErrorMap: Map[String, MtdError] = Map(
     "INVALID_NINO" -> NinoFormatError,
     "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-    "INVALID_PERIOD" -> RuleToDateBeforeFromDate,
+    "INVALID_PERIOD" -> RuleToDateBeforeFromDateError,
     "OVERLAPS_IN_PERIOD" -> RuleOverlappingPeriod,
     "NOT_ALIGN_PERIOD" -> RuleMisalignedPeriod,
-    "BOTH_EXPENSES_SUPPLIED" -> RuleBothExpensesSupplied,
+    "BOTH_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError,
     "NOT_CONTIGUOUS_PERIOD" -> RuleNotContiguousPeriod,
     "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
     "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,

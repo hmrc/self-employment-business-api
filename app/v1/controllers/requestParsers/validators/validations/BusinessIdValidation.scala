@@ -22,8 +22,8 @@ object BusinessIdValidation {
 
   private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
 
-  def validate(nino: String): List[MtdError] = {
-    if (nino.matches(businessIdRegex)) NoValidationErrors else List(BusinessIdFormatError)
+  def validate(businessId: String): List[MtdError] = {
+    if (businessId.matches(businessIdRegex)) NoValidationErrors else List(BusinessIdFormatError)
   }
 
 }

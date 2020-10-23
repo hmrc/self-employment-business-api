@@ -19,7 +19,12 @@ package v1.models.request.createSEPeriodic
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesAmountObject])
+case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesAmountObject]) {
+
+  def isEmpty: Boolean = {
+    turnover.isEmpty && other.isEmpty
+  }
+}
 
 object Incomes {
   implicit val reads: Reads[Incomes] = Json.reads[Incomes]
