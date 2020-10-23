@@ -16,14 +16,14 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{BusinessIdFormatError, MtdError}
+import v1.models.errors.{MtdError, PeriodIdFormatError}
 
-object BusinessIdValidation {
+object PeriodIdValidation {
 
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$"
+  private val periodIdRegex = "20[1-9][0-9]\\-[0-9][0-2]\\-(0[1-9]|[12][0-9]|3[01])\\_20[1-9][0-9]\\-[0-9][0-2]\\-(0[1-9]|[12][0-9]|3[01])"
 
-  def validate(businessId: String): List[MtdError] = {
-    if (businessId.matches(businessIdRegex)) NoValidationErrors else List(BusinessIdFormatError)
+  def validate(periodId: String): List[MtdError] = {
+    if (periodId.matches(periodIdRegex)) NoValidationErrors else List(PeriodIdFormatError)
   }
 
 }
