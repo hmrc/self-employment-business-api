@@ -24,7 +24,7 @@ import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MockAmendAnnualSummaryConnector extends MockFactory {
+trait MockAmendAnnualSummaryConnector extends MockFactory {
 
   val mockAmendAnnualSummaryConnector: AmendAnnualSummaryConnector = mock[AmendAnnualSummaryConnector]
 
@@ -36,5 +36,4 @@ class MockAmendAnnualSummaryConnector extends MockFactory {
         .expects(requestData, *, *)
     }
   }
-
 }
