@@ -21,7 +21,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.RetrieveSelfEmploymentPeriodicUpdateConnector
+import v1.connectors.RetrieveSelfEmploymentPeriodicConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors.{BusinessIdFormatError, DownstreamError, NinoFormatError, NotFoundError, PeriodIdFormatError}
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
@@ -30,7 +30,7 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveSelfEmploymentPeriodicUpdateService @Inject()(retrieveSelfEmploymentPeriodicUpdateConnector: RetrieveSelfEmploymentPeriodicUpdateConnector)
+class RetrieveSelfEmploymentPeriodicService @Inject()(retrieveSelfEmploymentPeriodicUpdateConnector: RetrieveSelfEmploymentPeriodicConnector)
   extends DesResponseMappingSupport with Logging {
 
   def retrieveSelfEmploymentPeriodicUpdate(request: RetrieveSelfEmploymentPeriodicRequest)(

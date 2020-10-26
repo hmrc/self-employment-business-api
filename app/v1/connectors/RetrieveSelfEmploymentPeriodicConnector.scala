@@ -26,8 +26,8 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveSelfEmploymentPeriodicUpdateConnector @Inject()(val http: HttpClient,
-                                                              val appConfig: AppConfig) extends BaseDesConnector {
+class RetrieveSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
+                                                        val appConfig: AppConfig) extends BaseDesConnector {
   def retrieveSEAnnual(request: RetrieveSelfEmploymentPeriodicRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponse]] = {

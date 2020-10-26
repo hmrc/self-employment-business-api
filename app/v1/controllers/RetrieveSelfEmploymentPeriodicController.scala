@@ -28,7 +28,7 @@ import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRawData
 import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicHateoasData
-import v1.services.{EnrolmentsAuthService, MtdIdLookupService, RetrieveSelfEmploymentPeriodicUpdateService}
+import v1.services.{EnrolmentsAuthService, MtdIdLookupService, RetrieveSelfEmploymentPeriodicService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
                                                          val lookupService: MtdIdLookupService,
                                                          parser: RetrieveSelfEmploymentPeriodicRequestParser,
-                                                         service: RetrieveSelfEmploymentPeriodicUpdateService,
+                                                         service: RetrieveSelfEmploymentPeriodicService,
                                                          hateoasFactory: HateoasFactory,
                                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController with Logging {

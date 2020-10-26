@@ -19,15 +19,15 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DesOutcome, RetrieveSelfEmploymentPeriodicUpdateConnector}
+import v1.connectors.{DesOutcome, RetrieveSelfEmploymentPeriodicConnector}
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
 import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveSelfEmploymentPeriodicUpdateConnector extends MockFactory {
+trait MockRetrieveSelfEmploymentPeriodicConnector extends MockFactory {
 
-  val mockRetrieveSelfEmploymentPeriodicUpdateConnector: RetrieveSelfEmploymentPeriodicUpdateConnector = mock[RetrieveSelfEmploymentPeriodicUpdateConnector]
+  val mockRetrieveSelfEmploymentPeriodicUpdateConnector: RetrieveSelfEmploymentPeriodicConnector = mock[RetrieveSelfEmploymentPeriodicConnector]
 
   object MockRetrieveSelfEmploymentPeriodicUpdateConnector {
 

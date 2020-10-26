@@ -24,13 +24,13 @@ import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
 import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
-import v1.services.RetrieveSelfEmploymentPeriodicUpdateService
+import v1.services.RetrieveSelfEmploymentPeriodicService
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockRetrieveSelfEmploymentPeriodicService extends MockFactory {
 
-  val mockRetrieveSelfEmploymentPeriodicService: RetrieveSelfEmploymentPeriodicUpdateService = mock[RetrieveSelfEmploymentPeriodicUpdateService]
+  val mockRetrieveSelfEmploymentPeriodicService: RetrieveSelfEmploymentPeriodicService = mock[RetrieveSelfEmploymentPeriodicService]
 
   object MockRetrieveSelfEmploymentPeriodicService {
     def retrieve(requestData: RetrieveSelfEmploymentPeriodicRequest):

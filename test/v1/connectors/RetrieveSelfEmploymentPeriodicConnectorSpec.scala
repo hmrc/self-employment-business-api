@@ -25,7 +25,7 @@ import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, Inc
 
 import scala.concurrent.Future
 
-class RetrieveSelfEmploymentPeriodicUpdateConnectorSpec extends ConnectorSpec {
+class RetrieveSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
   val nino = Nino("AA123456A")
   val businessId = "XAIS12345678910"
@@ -51,8 +51,8 @@ class RetrieveSelfEmploymentPeriodicUpdateConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: RetrieveSelfEmploymentPeriodicUpdateConnector =
-      new RetrieveSelfEmploymentPeriodicUpdateConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: RetrieveSelfEmploymentPeriodicConnector =
+      new RetrieveSelfEmploymentPeriodicConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl

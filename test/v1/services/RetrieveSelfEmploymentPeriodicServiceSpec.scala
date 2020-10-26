@@ -20,7 +20,7 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockRetrieveSelfEmploymentPeriodicUpdateConnector
+import v1.mocks.connectors.MockRetrieveSelfEmploymentPeriodicConnector
 import v1.models.errors.{BusinessIdFormatError, DesErrorCode, DesErrors, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
@@ -29,7 +29,7 @@ import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, Inc
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveSelfEmploymentPeriodicUpdateServiceSpec extends UnitSpec {
+class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
 
   val nino = Nino("AA123456A")
   val businessId = "XAIS12345678910"
@@ -55,11 +55,11 @@ class RetrieveSelfEmploymentPeriodicUpdateServiceSpec extends UnitSpec {
 
   private val requestData = RetrieveSelfEmploymentPeriodicRequest(nino, businessId, periodId)
 
-  trait Test extends MockRetrieveSelfEmploymentPeriodicUpdateConnector {
+  trait Test extends MockRetrieveSelfEmploymentPeriodicConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new RetrieveSelfEmploymentPeriodicUpdateService(
+    val service = new RetrieveSelfEmploymentPeriodicService(
       retrieveSelfEmploymentPeriodicUpdateConnector = mockRetrieveSelfEmploymentPeriodicUpdateConnector
     )
   }
