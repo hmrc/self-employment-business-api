@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DesOutcome, RetrieveSelfEmploymentAnnualSummaryConnector}
+import v1.controllers.EndpointLogContext
+import v1.models.errors.ErrorWrapper
+import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
 import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponse
+import v1.services.RetrieveSelfEmploymentAnnualSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveSelfEmploymentAnnualSummaryConnector extends MockFactory {
+trait MockRetrieveSelfEmploymentAnnualSummaryService extends MockFactory {
 
-  val mockRetrieveSelfEmploymentAnnualSummaryConnector: RetrieveSelfEmploymentAnnualSummaryConnector = mock[RetrieveSelfEmploymentAnnualSummaryConnector]
+  val mockRetrieveSelfEmploymentAnnualSummaryService: RetrieveSelfEmploymentAnnualSummaryService = mock[RetrieveSelfEmploymentAnnualSummaryService]
 
-  object MockRetrieveSelfEmploymentConnector {
-
-    def retrieveSelfEmployment(requestData: RetrieveSelfEmploymentAnnualSummaryRequest):
-    CallHandler[Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]]] = {
-      (mockRetrieveSelfEmploymentAnnualSummaryConnector
-        .retrieveSEAnnual(_: RetrieveSelfEmploymentAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+  object MockRetrieveSelfEmploymentAnnualSummaryService {
+    def retrieve(requestData: RetrieveSelfEmploymentAnnualSummaryRequest):
+    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveSelfEmploymentAnnualSummaryResponse]]]] = {
+      (mockRetrieveSelfEmploymentAnnualSummaryService
+        .retrieveSelfEmploymentAnnualSummary(_: RetrieveSelfEmploymentAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .expects(requestData, *, *, *)
     }
   }
-
 }

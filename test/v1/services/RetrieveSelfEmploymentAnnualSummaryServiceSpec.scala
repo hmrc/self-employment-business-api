@@ -25,7 +25,7 @@ import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
-import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponseBody}
+import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -37,7 +37,7 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
   val taxYear = "2019-20"
   private val correlationId = "X-123"
 
-  val response = RetrieveSelfEmploymentAnnualSummaryResponseBody(
+  val response = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(
       Some(100.25),
       Some(100.25),
