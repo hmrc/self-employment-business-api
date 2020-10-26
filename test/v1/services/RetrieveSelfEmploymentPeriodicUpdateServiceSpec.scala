@@ -24,7 +24,7 @@ import v1.mocks.connectors.MockRetrieveSelfEmploymentPeriodicUpdateConnector
 import v1.models.errors.{BusinessIdFormatError, DesErrorCode, DesErrors, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
-import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponseBody}
+import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class RetrieveSelfEmploymentPeriodicUpdateServiceSpec extends UnitSpec {
   val periodId = "2019-01-25_2020-01-25"
   private val correlationId = "X-123"
 
-  val response = RetrieveSelfEmploymentPeriodicResponseBody(
+  val response = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
     "2020-01-25",
     Some(Incomes(

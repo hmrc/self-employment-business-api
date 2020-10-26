@@ -21,7 +21,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
-import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponseBody}
+import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
 
 import scala.concurrent.Future
 
@@ -33,7 +33,7 @@ class RetrieveSelfEmploymentPeriodicUpdateConnectorSpec extends ConnectorSpec {
 
   val request = RetrieveSelfEmploymentPeriodicRequest(nino, businessId, periodId)
 
-  val response = RetrieveSelfEmploymentPeriodicResponseBody(
+  val response = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
     "2020-01-25",
     Some(Incomes(

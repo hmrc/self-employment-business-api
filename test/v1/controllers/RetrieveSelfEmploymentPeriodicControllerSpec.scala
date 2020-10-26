@@ -21,13 +21,16 @@ import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, MtdError, NinoFormatError, PeriodIdFormatError}
+import v1.mocks.requestParsers.MockRetrieveSelfEmploymentPeriodicRequestParser
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveSelfEmploymentPeriodicService}
+import v1.models.errors.{BadRequestError, BusinessIdFormatError, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
+import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.{RetrieveSelfEmploymentPeriodicRawData, RetrieveSelfEmploymentPeriodicRequest}
-import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
+import v1.models.response.retrieveSEPeriodic._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
@@ -131,7 +134,7 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
               .retrieve(requestData)
               .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
+            val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)
@@ -142,6 +145,7 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
         val input = Seq(
           (NinoFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
+          (PeriodIdFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )

@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DesOutcome, RetrieveSelfEmploymentPeriodicUpdateConnector}
+import v1.controllers.EndpointLogContext
+import v1.models.errors.ErrorWrapper
+import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
 import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
+import v1.services.RetrieveSelfEmploymentPeriodicUpdateService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveSelfEmploymentPeriodicUpdateConnector extends MockFactory {
+trait MockRetrieveSelfEmploymentPeriodicService extends MockFactory {
 
-  val mockRetrieveSelfEmploymentPeriodicUpdateConnector: RetrieveSelfEmploymentPeriodicUpdateConnector = mock[RetrieveSelfEmploymentPeriodicUpdateConnector]
+  val mockRetrieveSelfEmploymentPeriodicService: RetrieveSelfEmploymentPeriodicUpdateService = mock[RetrieveSelfEmploymentPeriodicUpdateService]
 
-  object MockRetrieveSelfEmploymentPeriodicUpdateConnector {
-
-    def retrieveSelfEmployment(requestData: RetrieveSelfEmploymentPeriodicRequest):
-    CallHandler[Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponse]]] = {
-      (mockRetrieveSelfEmploymentPeriodicUpdateConnector
-        .retrieveSEAnnual(_: RetrieveSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+  object MockRetrieveSelfEmploymentPeriodicService {
+    def retrieve(requestData: RetrieveSelfEmploymentPeriodicRequest):
+    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveSelfEmploymentPeriodicResponse]]]] = {
+      (mockRetrieveSelfEmploymentPeriodicService
+        .retrieveSelfEmploymentPeriodicUpdate(_: RetrieveSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .expects(requestData, *, *, *)
     }
   }
-
 }
+

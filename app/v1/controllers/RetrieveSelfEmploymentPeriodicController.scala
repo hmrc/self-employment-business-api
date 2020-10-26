@@ -16,17 +16,19 @@
 
 package v1.controllers
 
+
 import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.Logging
 import v1.controllers.requestParsers.RetrieveSelfEmploymentPeriodicRequestParser
 import v1.hateoas.HateoasFactory
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, DownstreamError, ErrorWrapper, NinoFormatError, NotFoundError, PeriodIdFormatError}
+import v1.models.errors._
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRawData
 import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicHateoasData
-import v1.services.{EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{EnrolmentsAuthService, MtdIdLookupService, RetrieveSelfEmploymentPeriodicUpdateService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
                                                          val lookupService: MtdIdLookupService,
                                                          parser: RetrieveSelfEmploymentPeriodicRequestParser,
-                                                         service: RetrieveSelfEmploymentPeriodicService,
+                                                         service: RetrieveSelfEmploymentPeriodicUpdateService,
                                                          hateoasFactory: HateoasFactory,
                                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController with Logging {
@@ -48,7 +50,7 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.retrieveSelfEmploymentPeriodic(parsedRequest))
+          serviceResponse <- EitherT(service.retrieveSelfEmploymentPeriodicUpdate(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData,
               RetrieveSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper]
