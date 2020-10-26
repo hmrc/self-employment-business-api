@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.RetrieveSelfEmploymentPeriodicUpdateConnector
 import v1.controllers.EndpointLogContext
-import v1.models.errors.{BusinessIdFormatError, DownstreamError, NinoFormatError, NotFoundError}
+import v1.models.errors.{BusinessIdFormatError, DownstreamError, NinoFormatError, NotFoundError, PeriodIdFormatError}
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
 import v1.support.DesResponseMappingSupport
 
@@ -49,6 +49,8 @@ class RetrieveSelfEmploymentPeriodicUpdateService @Inject()(retrieveSelfEmployme
     Map(
       "INVALID_NINO" -> NinoFormatError,
       "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+      "INVALID_DATE_FROM" -> PeriodIdFormatError,
+      "INVALID_DATE_TO" -> PeriodIdFormatError,
       "NOT_FOUND_NINO" -> NotFoundError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
       "NOT_FOUND_PERIOD" -> NotFoundError,

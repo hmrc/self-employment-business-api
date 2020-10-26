@@ -21,12 +21,12 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockRetrieveSelfEmploymentPeriodicUpdateConnector
-import v1.models.errors.{BusinessIdFormatError, DesErrorCode, DesErrors, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError}
+import v1.models.errors.{BusinessIdFormatError, DesErrorCode, DesErrors, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
 import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponseBody}
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveSelfEmploymentPeriodicUpdateServiceSpec extends UnitSpec {
@@ -90,6 +90,8 @@ class RetrieveSelfEmploymentPeriodicUpdateServiceSpec extends UnitSpec {
       val input = Seq(
         "INVALID_NINO" -> NinoFormatError,
         "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+        "INVALID_DATE_FROM" -> PeriodIdFormatError,
+        "INVALID_DATE_TO" -> PeriodIdFormatError,
         "NOT_FOUND_NINO" -> NotFoundError,
         "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
         "NOT_FOUND_PERIOD" -> NotFoundError,
