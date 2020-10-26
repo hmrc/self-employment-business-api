@@ -16,14 +16,17 @@
 
 package v1.controllers
 
+import play.api.libs.json.Json
+import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.hateoas.Link
+import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, MtdError, NinoFormatError, PeriodIdFormatError}
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.request.retrieveSEPeriodic.{RetrieveSelfEmploymentPeriodicRawData, RetrieveSelfEmploymentPeriodicRequest}
-import v1.models.response.retrieveSEPeriodic.{Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
+import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
 
 import scala.concurrent.Future
 
@@ -41,8 +44,8 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
     val controller = new RetrieveSelfEmploymentPeriodicController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockRetrieveSelfEmploymentAnnualSummaryRequestParser,
-      service = mockRetrieveSelfEmploymentAnnualSummaryService,
+      parser = mockRetrieveSelfEmploymentPeriodicRequestParser,
+      service = mockRetrieveSelfEmploymentPeriodicService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
     )
@@ -64,28 +67,28 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
   val responseBody: RetrieveSelfEmploymentPeriodicResponse = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-01",
     "2020-01-01",
-    Some(Incomes(IncomesAmountObject())),
-    Some(),
-    Some()
+    Some(Incomes(Some(IncomesAmountObject(100.99)), Some(IncomesAmountObject(100.99)))),
+    Some(ConsolidatedExpenses(100.99)),
+    None
   )
 
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
 
-        MockRetrieveSelfEmploymentAnnualSummaryRequestParser
+        MockRetrieveSelfEmploymentPeriodicRequestParser
           .parse(rawData)
           .returns(Right(requestData))
 
-        MockRetrieveSelfEmploymentAnnualSummaryService
+        MockRetrieveSelfEmploymentPeriodicService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrieveSelfEmploymentAnnualSummaryHateoasData(nino, businessId, taxYear))
+          .wrap(responseBody, RetrieveSelfEmploymentPeriodicHateoasData(nino, businessId, periodId))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
+        val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
@@ -95,11 +98,11 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
-            MockRetrieveSelfEmploymentAnnualSummaryRequestParser
+            MockRetrieveSelfEmploymentPeriodicRequestParser
               .parse(rawData)
               .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
+            val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
@@ -111,9 +114,7 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
           (BadRequestError, BAD_REQUEST),
           (NinoFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST)
+          (PeriodIdFormatError, BAD_REQUEST)
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -122,11 +123,11 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {
 
-            MockRetrieveSelfEmploymentAnnualSummaryRequestParser
+            MockRetrieveSelfEmploymentPeriodicRequestParser
               .parse(rawData)
               .returns(Right(requestData))
 
-            MockRetrieveSelfEmploymentAnnualSummaryService
+            MockRetrieveSelfEmploymentPeriodicService
               .retrieve(requestData)
               .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
 
