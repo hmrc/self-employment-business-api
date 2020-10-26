@@ -16,31 +16,42 @@
 
 package v1.controllers
 
+import cats.data.EitherT
 import javax.inject.{Inject, Singleton}
+import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.Logging
+import v1.controllers.requestParsers.RetrieveSelfEmploymentPeriodicRequestParser
+import v1.hateoas.HateoasFactory
+import v1.models.errors.{BadRequestError, BusinessIdFormatError, DownstreamError, ErrorWrapper, NinoFormatError, NotFoundError, PeriodIdFormatError}
+import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRawData
+import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicHateoasData
 import v1.services.{EnrolmentsAuthService, MtdIdLookupService}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
                                                          val lookupService: MtdIdLookupService,
                                                          parser: RetrieveSelfEmploymentPeriodicRequestParser,
-                                                         service: RetrieveSelfEmploymentAnnualSummaryService,
+                                                         service: RetrieveSelfEmploymentPeriodicService,
                                                          hateoasFactory: HateoasFactory,
                                                          cc: ControllerComponents)(implicit ec: ExecutionContext)
   extends AuthorisedController(cc) with BaseController with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "RetrieveSelfEmploymentAnnualSummaryController", endpointName = "retrieveSelfEmploymentAnnualSummary")
+    EndpointLogContext(controllerName = "RetrieveSelfEmploymentPeriodicController", endpointName = "retrieveSelfEmploymentPeriodicUpdate")
 
-  def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
+  def handleRequest(nino: String, businessId: String, periodId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      val rawData = RetrieveSelfEmploymentAnnualSummaryRawData(nino, businessId, taxYear)
+      val rawData = RetrieveSelfEmploymentPeriodicRawData(nino, businessId, periodId)
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.retrieveSelfEmploymentAnnualSummary(parsedRequest))
+          serviceResponse <- EitherT(service.retrieveSelfEmploymentPeriodic(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData,
-              RetrieveSelfEmploymentAnnualSummaryHateoasData(nino, businessId, taxYear)).asRight[ErrorWrapper]
+              RetrieveSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper]
           )
         } yield {
           logger.info(
@@ -60,9 +71,7 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
     (errorWrapper.error: @unchecked) match {
       case NinoFormatError |
            BusinessIdFormatError |
-           TaxYearFormatError |
-           RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeInvalidError |
+           PeriodIdFormatError |
            BadRequestError => BadRequest(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

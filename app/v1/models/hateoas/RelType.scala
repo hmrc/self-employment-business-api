@@ -21,11 +21,10 @@ object RelType {
   val RETRIEVE_SAMPLE_REL = "retrieve-sample-rel"
   val DELETE_SAMPLE_REL = "delete-sample-rel"
 
-  val CREATE_AND_AMEND_SELF_EMPLOYMENT_ANNUAL_SUMMARY = "create-and-amend-self-employment-annual-summary"
-  val DELETE_SELF_EMPLOYMENT_ANNUAL_SUMMARY = "delete-self-employment-annual-summary"
-
   val SELF = "self"
 
   val AMEND_ANNUAL_SUMMARY_REL = "create-and-amend-self-employment-annual-summary"
   val DELETE_ANNUAL_SUMMARY_REL = "delete-self-employment-annual-summary"
+
+  val AMEND_PERIODIC_UPDATE_REL = "amend-periodic-update"
 }
