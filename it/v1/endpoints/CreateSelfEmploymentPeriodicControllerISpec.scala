@@ -147,7 +147,7 @@ class CreateSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
     """.stripMargin
   }
 
-  "Calling the amend endpoint" should {
+  "Calling the create endpoint" should {
 
     "return a 200 status code" when {
 
