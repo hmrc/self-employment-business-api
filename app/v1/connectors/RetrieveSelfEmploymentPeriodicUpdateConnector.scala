@@ -20,7 +20,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
-import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponseBody
+import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
 import v1.connectors.httpparsers.StandardDesHttpParser._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,13 +30,13 @@ class RetrieveSelfEmploymentPeriodicUpdateConnector @Inject()(val http: HttpClie
                                                               val appConfig: AppConfig) extends BaseDesConnector {
   def retrieveSEAnnual(request: RetrieveSelfEmploymentPeriodicRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponseBody]] = {
+    ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponse]] = {
 
     val fromDate = request.periodId.substring(0, 10)
     val toDate = request.periodId.substring(11, 21)
 
     get(
-      uri = DesUri[RetrieveSelfEmploymentPeriodicResponseBody](s"income-store/nino/${request.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate")
+      uri = DesUri[RetrieveSelfEmploymentPeriodicResponse](s"income-store/nino/${request.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate")
     )
   }
 }

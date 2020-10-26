@@ -16,25 +16,41 @@
 
 package v1.models.response.retrieveSEPeriodic
 
+import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrieveSelfEmploymentPeriodicResponseBody(periodFromDate: String,
-                                                      periodToDate: String,
-                                                      incomes: Option[Incomes],
-                                                      consolidatedExpenses: Option[ConsolidatedExpenses],
-                                                      expenses: Option[Expenses])
+case class RetrieveSelfEmploymentPeriodicResponse(periodFromDate: String,
+                                                  periodToDate: String,
+                                                  incomes: Option[Incomes],
+                                                  consolidatedExpenses: Option[ConsolidatedExpenses],
+                                                  expenses: Option[Expenses])
 
-object RetrieveSelfEmploymentPeriodicResponseBody {
-  implicit val reads: Reads[RetrieveSelfEmploymentPeriodicResponseBody] = (
+object RetrieveSelfEmploymentPeriodicResponse extends HateoasLinks {
+  implicit val reads: Reads[RetrieveSelfEmploymentPeriodicResponse] = (
     (JsPath \ "from").read[String] and
       (JsPath \ "to").read[String] and
       (JsPath \ "financials" \ "incomes").readNullable[Incomes] and
       (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses").readNullable[BigDecimal].map(_.map(ConsolidatedExpenses(_))) and
       (JsPath \ "financials" \ "deductions").readNullable[Expenses]
-    ) (RetrieveSelfEmploymentPeriodicResponseBody.apply _)
+    ) (RetrieveSelfEmploymentPeriodicResponse.apply _)
 
 
-  implicit val writes: OWrites[RetrieveSelfEmploymentPeriodicResponseBody] = Json.writes[RetrieveSelfEmploymentPeriodicResponseBody]
+  implicit val writes: OWrites[RetrieveSelfEmploymentPeriodicResponse] = Json.writes[RetrieveSelfEmploymentPeriodicResponse]
+
+  implicit object RetrieveSelfEmploymentAnnualSummaryLinksFactory extends
+    HateoasLinksFactory[RetrieveSelfEmploymentPeriodicResponse, RetrieveSelfEmploymentPeriodicHateoasData] {
+    override def links(appConfig: AppConfig, data: RetrieveSelfEmploymentPeriodicHateoasData): Seq[Link] = {
+      import data._
+      Seq(
+        amendPeriodicUpdate(appConfig, nino, businessId, periodId),
+        retrievePeriodicUpdate(appConfig, nino, businessId, periodId)
+      )
+    }
+  }
 
 }
+
+case class RetrieveSelfEmploymentPeriodicHateoasData(nino: String, businessId: String, periodId: String) extends HateoasData

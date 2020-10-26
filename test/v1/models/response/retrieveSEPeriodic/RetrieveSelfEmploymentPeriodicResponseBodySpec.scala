@@ -174,7 +174,7 @@ class RetrieveSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
       |""".stripMargin)
 
 
-  val model = RetrieveSelfEmploymentPeriodicResponseBody(
+  val model = RetrieveSelfEmploymentPeriodicResponse(
     "2017-01-25",
     "2017-01-25",
     Some(Incomes(
@@ -208,7 +208,7 @@ class RetrieveSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
   "reads" should {
     "return a model" when {
       "passed a valid json" in {
-        desJson.as[RetrieveSelfEmploymentPeriodicResponseBody] shouldBe model
+        desJson.as[RetrieveSelfEmploymentPeriodicResponse] shouldBe model
       }
     }
   }

@@ -7,3 +7,4 @@ GET        /:nino/:businessId/annual/:taxYear       v1.controllers.RetrieveSelfE
 DELETE     /:nino/:businessId/annual/:taxYear       v1.controllers.DeleteSelfEmploymentAnnualSummaryController.handleRequest(nino: String, businessId: String, taxYear: String)
 
 POST       /:nino/:businessId/period                v1.controllers.CreateSelfEmploymentPeriodicController.handleRequest(nino: String, businessId: String)
+GET        /:nino/:businessId/period/:periodId      v1.controllers.RetrieveSelfEmploymentPeriodicController.handleRequest(nino: String, businessId: String, periodId: String)
