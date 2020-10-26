@@ -16,10 +16,12 @@
 
 package v1.models.response.retrieveSEPeriodic
 
+import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
+import v1.models.hateoas.{Link, Method}
 
-class RetrieveSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
+class RetrieveSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
   val mtdJson = Json.parse(
     """
@@ -217,6 +219,21 @@ class RetrieveSelfEmploymentPeriodicResponseBodySpec extends UnitSpec {
     "return json" when {
       "passed a valid model" in {
         Json.toJson(model) shouldBe mtdJson
+      }
+    }
+  }
+
+  "LinksFactory" should {
+    "produce the correct links" when {
+      "called" in {
+        val data: RetrieveSelfEmploymentPeriodicHateoasData = RetrieveSelfEmploymentPeriodicHateoasData("mynino", "myBusinessId", "myPeriodId")
+
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+
+        RetrieveSelfEmploymentPeriodicResponse.RetrieveSelfEmploymentAnnualSummaryLinksFactory.links(mockAppConfig, data) shouldBe Seq(
+          Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.PUT, rel = "amend-periodic-update"),
+          Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.GET, rel = "self")
+        )
       }
     }
   }
