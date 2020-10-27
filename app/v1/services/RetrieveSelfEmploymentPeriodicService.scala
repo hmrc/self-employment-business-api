@@ -51,7 +51,6 @@ class RetrieveSelfEmploymentPeriodicService @Inject()(retrieveSelfEmploymentPeri
       "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
       "INVALID_DATE_FROM" -> PeriodIdFormatError,
       "INVALID_DATE_TO" -> PeriodIdFormatError,
-      "NOT_FOUND" -> NotFoundError,
       "NOT_FOUND_NINO" -> NotFoundError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
       "NOT_FOUND_PERIOD" -> NotFoundError,
