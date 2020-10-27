@@ -312,7 +312,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           }
 
           val response: WSResponse = await(request().put(requestBodyJson))
-          //response.status shouldBe BAD_REQUEST
+          response.status shouldBe BAD_REQUEST
           response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/nonFinancials/class4NicInfo/isExempt"))))
         }
       }
