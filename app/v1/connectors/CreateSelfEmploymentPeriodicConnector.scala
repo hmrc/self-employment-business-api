@@ -17,6 +17,7 @@
 package v1.connectors
 
 import config.AppConfig
+import play.api.http.Status.OK
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRequest
@@ -34,6 +35,8 @@ class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
 
     val nino = request.nino
     val businessId = request.businessId
+
+    implicit val successCode: SuccessCode = SuccessCode(OK)
 
     post(
       body = request.body,

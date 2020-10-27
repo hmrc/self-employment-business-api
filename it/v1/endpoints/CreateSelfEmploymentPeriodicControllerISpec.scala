@@ -126,6 +126,13 @@ class CreateSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
+    val desResponse: JsValue = Json.parse(
+      s"""
+         |{
+         |  "transactionReference": "2017090920170909"
+         |}
+         |""".stripMargin)
+
     def uri: String = s"/$nino/$businessId/period"
 
     def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
@@ -156,7 +163,7 @@ class CreateSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.POST, desUri, NO_CONTENT, JsObject.empty)
+          DesStub.onSuccess(DesStub.POST, desUri, OK, desResponse)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
