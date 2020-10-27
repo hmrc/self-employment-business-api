@@ -307,6 +307,7 @@ class RetrieveSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec 
           (Status.NOT_FOUND, "NOT_FOUND_NINO", Status.NOT_FOUND, NotFoundError),
           (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
           (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
+          (Status.BAD_REQUEST, "INVALID_ORIGINATOR_ID", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
         )

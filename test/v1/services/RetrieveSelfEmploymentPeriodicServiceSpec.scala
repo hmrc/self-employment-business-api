@@ -95,6 +95,7 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
         "NOT_FOUND_NINO" -> NotFoundError,
         "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
         "NOT_FOUND_PERIOD" -> NotFoundError,
+        "INVALID_ORIGINATOR_ID" -> DownstreamError,
         "SERVER_ERROR" -> DownstreamError,
         "SERVICE_UNAVAILABLE" -> DownstreamError
       )
