@@ -32,9 +32,7 @@ trait BaseDesConnector {
 
   private[connectors] def desHeaderCarrier(implicit hc: HeaderCarrier): HeaderCarrier =
     hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders(
-        "Environment" -> appConfig.desEnv,
-        "Originator-Id" -> "DA_SDI")
+      .withExtraHeaders("Environment" -> appConfig.desEnv)
 
   def post[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
                                                               hc: HeaderCarrier,
