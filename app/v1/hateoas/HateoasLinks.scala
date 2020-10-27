@@ -30,12 +30,7 @@ trait HateoasLinks {
   private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/annual/${taxYear}"
 
-<<<<<<< HEAD
-  private def sEPeriodicUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
-=======
-
   private def periodicUpdateUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
->>>>>>> 05ed635... MTDSA-7432 Retrieve SE Periodic Controller, Routes & ITs
     s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/period/${periodId}"
 
   //Sample links
