@@ -30,7 +30,10 @@ trait HateoasLinks {
   private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/annual/${taxYear}"
 
-  private def periodicUpdateUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
+  private def periodicUpdateUri(appConfig: AppConfig, nino: String, businessId: String) =
+    s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/period"
+
+  private def periodicUpdateItemUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
     s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/period/${periodId}"
 
   //Sample links
@@ -74,10 +77,16 @@ trait HateoasLinks {
     Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
 
 
+  def listPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String): Link =
+    Link(href = periodicUpdateUri(appConfig, nino, businessId), method = GET, rel = SELF)
+
+  def createPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String): Link =
+    Link(href = periodicUpdateUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIODIC_UPDATE_REL)
+
   def retrievePeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
-    Link(href = periodicUpdateUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
+    Link(href = periodicUpdateItemUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
 
   def amendPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
-    Link(href = periodicUpdateUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIODIC_UPDATE_REL)
+    Link(href = periodicUpdateItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIODIC_UPDATE_REL)
 
 }

@@ -18,9 +18,9 @@ package v1
 
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
+import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
 import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponse
-import v1.models.response.listSEPeriodic.ListSelfEmploymentPeriodicResponse
+import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
 
 package object services {
 
@@ -32,6 +32,6 @@ package object services {
 
   type RetrieveSelfEmploymentPeriodicUpdateServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentPeriodicResponse]
 
-  type ListSelfEmploymentUpdatePeriodsServiceOutcome = ServiceOutcome[ListSelfEmploymentPeriodicResponse]
+  type ListSelfEmploymentUpdatePeriodsServiceOutcome = ServiceOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]
 
 }

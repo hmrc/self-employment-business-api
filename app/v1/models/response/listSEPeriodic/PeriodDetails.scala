@@ -22,11 +22,10 @@ import play.api.libs.functional.syntax._
 case class PeriodDetails(periodId: String, from: String, to: String)
 
 object PeriodDetails {
-  //periodId will be generated in the service so it ignores the transactionReference
     implicit val reads: Reads[PeriodDetails] = (
         (JsPath \ "from").read[String] and
         (JsPath \ "to").read[String]
-    ) ((from, to) => PeriodDetails(periodId = "", from = from, to = to))
+    ) ((from, to) => PeriodDetails(periodId = s"${from}_$to", from = from, to = to))
 
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
 }
