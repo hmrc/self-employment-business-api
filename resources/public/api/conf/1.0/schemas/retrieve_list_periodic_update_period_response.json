@@ -6,7 +6,7 @@
   "properties": {
     "periods": {
       "type": "array",
-      "properties": {
+      "items": {
         "periodId": {
           "description": "Concatenated from and to dates",
           "type": "string",
@@ -62,5 +62,8 @@
       }
     }
   },
+  "required": [
+    "periods"
+  ],
   "additionalProperties": false
 }
