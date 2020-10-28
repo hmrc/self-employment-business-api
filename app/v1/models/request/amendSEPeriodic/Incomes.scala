@@ -23,8 +23,8 @@ case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesA
 
 object Incomes {
   implicit val reads: Reads[Incomes] = (
-    (JsPath \ "turnover").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_))) and
-      (JsPath \ "other").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_)))
+    (JsPath \ "turnover" \ "amount").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_))) and
+      (JsPath \ "other" \ "amount").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_)))
     ) (Incomes.apply _)
 
   implicit val writes: OWrites[Incomes] = Json.writes[Incomes]

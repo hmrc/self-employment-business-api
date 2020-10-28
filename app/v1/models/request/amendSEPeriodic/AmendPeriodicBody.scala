@@ -26,8 +26,8 @@ object AmendPeriodicBody {
   implicit val reads: Reads[AmendPeriodicBody] = Json.reads[AmendPeriodicBody]
 
   implicit val writes: OWrites[AmendPeriodicBody] = (
-      (JsPath \ "deductions").writeNullable[Incomes] and
-      (JsPath \ "expenses" \ "simplifiedExpenses").writeNullable[ConsolidatedExpenses] and
-      (JsPath \ "expenses").writeNullable[Expenses]
+      (JsPath \ "incomes").writeNullable[Incomes] and
+      (JsPath \ "deductions" \ "simplifiedExpenses").writeNullable[ConsolidatedExpenses] and
+      (JsPath \ "deductions").writeNullable[Expenses]
     )(unlift(AmendPeriodicBody.unapply))
 }

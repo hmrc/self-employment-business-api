@@ -37,8 +37,8 @@ case class Expenses(costOfGoodsBought: Option[ExpensesAmountObject],
 
 object Expenses {
   implicit val reads: Reads[Expenses] = (
-    (JsPath \ "costOfGoods").readNullable[ExpensesAmountObject] and
-      (JsPath \ "constructionIndustryScheme").readNullable[ExpensesAmountObject] and
+    (JsPath \ "costOfGoodsBought").readNullable[ExpensesAmountObject] and
+      (JsPath \ "cisPaymentsTo").readNullable[ExpensesAmountObject] and
       (JsPath \ "staffCosts").readNullable[ExpensesAmountObject] and
       (JsPath \ "travelCosts").readNullable[ExpensesAmountObject] and
       (JsPath \ "premisesRunningCosts").readNullable[ExpensesAmountObject] and
@@ -46,7 +46,7 @@ object Expenses {
       (JsPath \ "adminCosts").readNullable[ExpensesAmountObject] and
       (JsPath \ "advertisingCosts").readNullable[ExpensesAmountObject] and
       (JsPath \ "businessEntertainmentCosts").readNullable[ExpensesAmountObject] and
-      (JsPath \ "interest").readNullable[ExpensesAmountObject] and
+      (JsPath \ "interestOnLoans").readNullable[ExpensesAmountObject] and
       (JsPath \ "financialCharges").readNullable[ExpensesAmountObject] and
       (JsPath \ "badDebt").readNullable[ExpensesAmountObject] and
       (JsPath \ "professionalFees").readNullable[ExpensesAmountObject] and
@@ -54,6 +54,21 @@ object Expenses {
       (JsPath \ "other").readNullable[ExpensesAmountObject]
     ) (Expenses.apply _)
 
-  implicit val writes: OWrites[Expenses] = Json.writes[Expenses]
-
+  implicit val writes: OWrites[Expenses] = (
+      (JsPath \ "costOfGoods").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "constructionIndustryScheme").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "staffCosts").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "travelCosts").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "premisesRunningCosts").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "maintenanceCosts").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "adminCosts").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "advertisingCosts").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "businessEntertainmentCosts").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "interest").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "financialCharges").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "badDebt").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "professionalFees").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "depreciation").writeNullable[ExpensesAmountObject] and
+        (JsPath \ "other").writeNullable[ExpensesAmountObject]
+      ) (unlift(Expenses.unapply))
 }
