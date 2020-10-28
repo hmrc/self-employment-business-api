@@ -1,0 +1,86 @@
+{
+  "periodFromDate": "2019-04-29",
+  "periodToDate": "2019-10-25",
+  "incomes": {
+    "turnover": {
+      "amount": 172.89
+    },
+    "other": {
+      "amount": 634.14
+    }
+  },
+  "expenses": {
+    "costOfGoodsBought": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "cisPaymentsTo": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "staffCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "travelCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "premisesRunningCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "maintenanceCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "adminCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "advertisingCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "businessEntertainmentCosts": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "interestOnLoans": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "financialCharges": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "badDebt": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "professionalFees": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "depreciation": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    },
+    "other": {
+      "amount": 627.90,
+      "disallowableAmount": 657.02
+    }
+  },
+  "links": [
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "amend-periodic-update",
+      "method": "PUT"
+    }
+  ]
+}

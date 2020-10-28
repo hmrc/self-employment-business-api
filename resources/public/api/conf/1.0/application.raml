@@ -51,8 +51,13 @@ uses:
         get: !include endpoints/retrieveAnnualSummary.raml
         delete: !include endpoints/deleteAnnualSummary.raml
       /period:
-        post:
-          !include endpoints/createPeriodicUpdatePeriod.raml
+        post: !include endpoints/createPeriodicUpdatePeriod.raml
+        /{periodId}:
+          uriParameters:
+            periodId:
+              description: "An identifier for the update period, unique to the customer's self-employment business."
+              example: "2017-04-06_2017-07-04"
+          get: !include endpoints/retrievePeriodicUpdate.raml
   /sample:
     /{nino}:
       uriParameters:
