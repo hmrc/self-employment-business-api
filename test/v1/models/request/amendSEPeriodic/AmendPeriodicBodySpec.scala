@@ -179,6 +179,10 @@ class AmendPeriodicBodySpec extends UnitSpec {
   val fullDesJson: JsValue = Json.parse(
     s"""
        |{
+       |   "incomes": {
+       |      "turnover": 200.00,
+       |      "other": 200.00
+       |   },
        |   "deductions": {
        |      "costOfGoods": {
        |         "amount": 200.00,
@@ -212,6 +216,10 @@ class AmendPeriodicBodySpec extends UnitSpec {
        |         "amount": 200.00,
        |         "disallowableAmount": 200.00
        |      },
+       |      "businessEntertainmentCosts": {
+       |         "amount": 200.00,
+       |         "disallowableAmount": 200.00
+       |      },
        |      "interest": {
        |         "amount": 200.00,
        |         "disallowableAmount": 200.00
@@ -236,7 +244,7 @@ class AmendPeriodicBodySpec extends UnitSpec {
        |         "amount": 200.00,
        |         "disallowableAmount": 200.00
        |      },
-       |      "simplifiedExpenses": 999.99
+       |      "simplifiedExpenses": 200.00
        |   }
        |}
        |""".stripMargin)
@@ -277,6 +285,10 @@ class AmendPeriodicBodySpec extends UnitSpec {
        |         "amount": 200.00,
        |         "disallowableAmount": 200.00
        |      },
+       |      "businessEntertainmentCosts": {
+       |         "amount": 200.00,
+       |         "disallowableAmount": 200.00
+       |      },
        |      "interest": {
        |         "amount": 200.00,
        |         "disallowableAmount": 200.00
@@ -301,7 +313,7 @@ class AmendPeriodicBodySpec extends UnitSpec {
        |         "amount": 200.00,
        |         "disallowableAmount": 200.00
        |      },
-       |      "simplifiedExpenses": 999.99
+       |      "simplifiedExpenses": 200.00
        |   }
        |}
        |""".stripMargin)

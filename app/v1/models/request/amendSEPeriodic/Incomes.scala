@@ -17,7 +17,7 @@
 package v1.models.request.amendSEPeriodic
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{JsPath, OWrites, Reads}
 
 case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesAmountObject])
 
@@ -27,5 +27,10 @@ object Incomes {
       (JsPath \ "other" \ "amount").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_)))
     ) (Incomes.apply _)
 
-  implicit val writes: OWrites[Incomes] = Json.writes[Incomes]
+  implicit val writes: OWrites[Incomes] = (
+      (JsPath \ "turnover").writeNullable[BigDecimal] and
+        (JsPath \ "other").writeNullable[BigDecimal]
+      ) (unlift(Incomes.unapply(_: Incomes).map {
+    case (turnoverO, otherO) => (turnoverO.map(_.amount), otherO.map(_.amount))
+  }))
 }

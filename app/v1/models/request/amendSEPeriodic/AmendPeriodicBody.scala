@@ -27,7 +27,10 @@ object AmendPeriodicBody {
 
   implicit val writes: OWrites[AmendPeriodicBody] = (
       (JsPath \ "incomes").writeNullable[Incomes] and
-      (JsPath \ "deductions" \ "simplifiedExpenses").writeNullable[ConsolidatedExpenses] and
+      (JsPath \ "deductions" \ "simplifiedExpenses").writeNullable[BigDecimal] and
       (JsPath \ "deductions").writeNullable[Expenses]
-    )(unlift(AmendPeriodicBody.unapply))
+    )(unlift(AmendPeriodicBody.unapply(_: AmendPeriodicBody).map {
+    case (incomesO, consolidatedExpensesO, expensesO) =>
+      (incomesO, consolidatedExpensesO.map(_.consolidatedExpenses), expensesO)
+  }))
 }
