@@ -141,8 +141,7 @@ class ExpensesSpec extends UnitSpec {
       |         "travelCosts": {
       |            "amount": 500.25,
       |            "disallowableAmount": 500.25
-      |         },
-      |         "simplifiedExpenses": 666.66
+      |         }
       |      }
       |""".stripMargin)
 
@@ -167,7 +166,7 @@ class ExpensesSpec extends UnitSpec {
   "reads" should {
     "return a model" when {
       "passed a valid json" in {
-        desJson.as[Expenses] shouldBe model
+        json.as[Expenses] shouldBe model
       }
     }
   }
@@ -175,7 +174,7 @@ class ExpensesSpec extends UnitSpec {
   "writes" should {
     "return json" when {
       "passed a valid model" in {
-        Json.toJson(model) shouldBe json
+        Json.toJson(model) shouldBe desJson
       }
     }
   }

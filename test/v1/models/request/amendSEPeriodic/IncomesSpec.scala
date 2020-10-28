@@ -24,10 +24,10 @@ class IncomesSpec extends UnitSpec {
   val mtdJson = Json.parse(
     """
       |{
-      |"turnover": {
+      | "turnover": {
       |   "amount": 500.25
       |   },
-      |"other": {
+      | "other": {
       |   "amount": 500.25
       |   }
       |}
@@ -36,10 +36,9 @@ class IncomesSpec extends UnitSpec {
   val desJson = Json.parse(
     """
       |{
-      |         "turnover": 500.25,
-      |         "other": 500.25
+      |   "turnover": 500.25,
+      |   "other": 500.25
       |}
-      |
       |""".stripMargin)
 
   val model = Incomes(
@@ -52,7 +51,7 @@ class IncomesSpec extends UnitSpec {
   "reads" should {
     "return a model" when {
       "passed a valid json" in {
-        desJson.as[Incomes] shouldBe model
+        mtdJson.as[Incomes] shouldBe model
       }
     }
   }
@@ -60,7 +59,7 @@ class IncomesSpec extends UnitSpec {
   "writes" should {
     "return json" when {
       "passed a valid model" in {
-        Json.toJson(model) shouldBe mtdJson
+        Json.toJson(model) shouldBe desJson
       }
     }
   }
