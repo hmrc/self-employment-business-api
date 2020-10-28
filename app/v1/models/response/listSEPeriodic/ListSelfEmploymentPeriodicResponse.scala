@@ -16,15 +16,10 @@
 
 package v1.models.response.listSEPeriodic
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
-case class ListSelfEmploymentPeriodicResponse(selfEmploymentPeriods: Seq[Option[PeriodDetails]])
+case class ListSelfEmploymentPeriodicResponse(periods: Seq[PeriodDetails])
 
 object ListSelfEmploymentPeriodicResponse {
-  implicit val reads: Reads[ListSelfEmploymentPeriodicResponse] =
-    (JsPath \ "periods").read[Seq[Option[PeriodDetails]]]
-
-  (ListSelfEmploymentPeriodicResponse.apply _)
-
-  implicit val writes: OWrites[ListSelfEmploymentPeriodicResponse] = Json.writes[ListSelfEmploymentPeriodicResponse]
+  implicit val format: OFormat[ListSelfEmploymentPeriodicResponse] = Json.format[ListSelfEmploymentPeriodicResponse]
 }

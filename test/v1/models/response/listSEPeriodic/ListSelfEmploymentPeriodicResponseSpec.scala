@@ -16,50 +16,98 @@
 
 package v1.models.response.listSEPeriodic
 
+import play.api.libs.json.Json
 import support.UnitSpec
 
 class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec {
 
+  val generateModelEmpty = ListSelfEmploymentPeriodicResponse(Seq())
+
   val beforeGenerateModel = ListSelfEmploymentPeriodicResponse(
-    Seq(PeriodDetailsObject(
-      Some(PeriodDetails(
+    Seq(PeriodDetails(
         "",
         "2020-01-01",
         "2020-01-01"
-      )))))
+      )))
 
   val afterGenerateModel = ListSelfEmploymentPeriodicResponse(
-    Seq(PeriodDetailsObject(
-      Some(PeriodDetails(
+    Seq(PeriodDetails(
         "2020-01-01_2020-01-01",
         "2020-01-01",
         "2020-01-01"
-      )))))
+      )))
 
   val beforeGenerateModelMultiple = ListSelfEmploymentPeriodicResponse(
-    Seq(PeriodDetailsObject(
-      Some(PeriodDetails(
+    Seq(PeriodDetails(
         "",
         "2020-01-01",
         "2020-01-01"
-      )))))
+        ),
+        PeriodDetails(
+          "",
+          "2020-01-01",
+          "2020-01-01"
+        )))
 
   val afterGenerateModelMultiple = ListSelfEmploymentPeriodicResponse(
-    Seq(PeriodDetailsObject(
-      Some(PeriodDetails(
+    Seq(PeriodDetails(
         "2020-01-01_2020-01-01",
         "2020-01-01",
         "2020-01-01"
-      )))))
+      ),
+        PeriodDetails(
+          "2020-01-01_2020-01-01",
+          "2020-01-01",
+          "2020-01-01"
+        )))
+
+  val jsonEmpty = Json.parse(
+    """
+      |{
+      |   "periods": [
+      |    ]
+      |}
+      |""".stripMargin
+  )
 
   val json = Json.parse(
     """
       |{
-      |   "periodDetails": {
-      |       "periodId": "2020-01-01_2020-01-01",
-      |       "from": "2020-01-01",
-      |       "to": "2020-01-01"
-      |   }
+      |   "periods": [
+      |       {
+      |           "periodId": "2020-01-01_2020-01-01",
+      |           "from": "2020-01-01",
+      |           "to": "2020-01-01"
+      |       }
+      |    ]
+      |}
+      |""".stripMargin
+  )
+
+  val jsonMulitple = Json.parse(
+    """
+      |{
+      |   "periods": [
+      |    {
+      |           "periodId": "2020-01-01_2020-01-01",
+      |           "from": "2020-01-01",
+      |           "to": "2020-01-01"
+      |    },
+      |    {
+      |           "periodId": "2020-01-01_2020-01-01",
+      |           "from": "2020-01-01",
+      |           "to": "2020-01-01"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+  )
+
+  val desJsonEmpty = Json.parse(
+    """
+      |{
+      |   "periods": [
+      |     ]
       |}
       |""".stripMargin
   )
@@ -67,11 +115,32 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec {
   val desJson = Json.parse(
     """
       |{
-      |   "periodDetails": {
-      |       "transactionReference": "111111111111",
-      |       "from": "2020-01-01",
-      |       "to": "2020-01-01"
-      |   }
+      |   "periods": [
+      |           {
+      |               "transactionReference": "3123123123121",
+      |               "from": "2020-01-01",
+      |               "to": "2020-01-01"
+      |           }
+      |     ]
+      |}
+      |""".stripMargin
+  )
+
+  val desJsonMultiple = Json.parse(
+    """
+      |{
+      |   "periods": [
+      |           {
+      |               "transactionReference": "32131123131",
+      |               "from": "2020-01-01",
+      |               "to": "2020-01-01"
+      |           },
+      |           {
+      |               "transactionReference": "3123123123121",
+      |               "from": "2020-01-01",
+      |               "to": "2020-01-01"
+      |           }
+      |     ]
       |}
       |""".stripMargin
   )
@@ -80,8 +149,16 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec {
 
     "read from a json" when {
 
-      "a valid request is made" in  {
-        desJson.as[PeriodDetailsObject] shouldBe beforeGenerateModel
+      "a valid request is made" in {
+        desJson.as[ListSelfEmploymentPeriodicResponse] shouldBe beforeGenerateModel
+      }
+
+      "a valid empty request is made" in {
+        desJsonEmpty.as[ListSelfEmploymentPeriodicResponse] shouldBe generateModelEmpty
+      }
+
+      "a valid request with multiple fields is made" in {
+        desJsonMultiple.as[ListSelfEmploymentPeriodicResponse] shouldBe beforeGenerateModelMultiple
       }
     }
   }
@@ -92,6 +169,13 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec {
       "a valid request is made" in {
         Json.toJson(afterGenerateModel) shouldBe json
       }
+      "a valid empty request is made" in {
+        Json.toJson(generateModelEmpty) shouldBe jsonEmpty
+      }
+      "a valid request with mutiple fields is made" in {
+        Json.toJson(afterGenerateModelMultiple) shouldBe jsonMulitple
+      }
     }
   }
+}
 
