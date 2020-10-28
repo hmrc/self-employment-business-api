@@ -24,7 +24,7 @@ import v1.mocks.connectors.MockListSelfEmploymentPeriodicConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
-import v1.models.response.listSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, ListSelfEmploymentPeriodicResponse}
+import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -35,27 +35,24 @@ class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
   val businessId = "XAIS12345678910"
   private val correlationId = "X-123"
 
-  val response = ListSelfEmploymentUpdatePeriodsResponse(
-    periods[
-      ("2019-04-06_2020-04-05",
-      "2019-04-06",
-      "2020-04-05"
-      )
-    ]
-  )
+  val response = ListSelfEmploymentPeriodicResponse(
+    Seq(PeriodDetails(
+      "2020-01-01_2020-01-01",
+      "2020-01-01",
+      "2020-01-01"
+      )))
 
-  val multipleResponse = ListSelfEmploymentUpdatePeriodsResponse(
-    periods[
-      ("2019-04-06_2020-04-05",
+  val multipleResponse = ListSelfEmploymentPeriodicResponse(
+    Seq(PeriodDetails(
+      "2019-04-06_2020-04-05",
       "2019-04-06",
       "2020-04-05"
       ),
-      ("2019-03-06_2020-03-05",
-      "2019-03-06",
-      "2020-03-05"
-      )
-    ]
-  )
+      PeriodDetails(
+      "2019-04-06_2020-04-05",
+      "2020-04-06",
+      "2020-04-05"
+      )))
 
   private val requestData = ListSelfEmploymentPeriodicRequest(nino, businessId)
 
@@ -74,13 +71,13 @@ class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
         MockListSelfEmploymentPeriodicConnector.listSelfEmployment(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.listSelfEmploymentPeriodicUpdate(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
-      },
+        await(service.listSelfEmploymentUpdatePeriods(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+      }
       "return multiple responses" in new Test {
         MockListSelfEmploymentPeriodicConnector.listSelfEmployment(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, multipleResponse))))
 
-        await(service.listSelfEmploymentPeriodicUpdate(requestData)) shouldBe Right(ResponseWrapper(correlationId, multipleResponse))
+        await(service.listSelfEmploymentUpdatePeriods(requestData)) shouldBe Right(ResponseWrapper(correlationId, multipleResponse))
       }
     }
   }

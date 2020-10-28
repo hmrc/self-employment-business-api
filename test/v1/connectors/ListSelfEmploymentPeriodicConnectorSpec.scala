@@ -20,8 +20,8 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request
-import v1.models.response
+import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
+import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
 
 import scala.concurrent.Future
 
@@ -33,15 +33,11 @@ class ListSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
   val request = ListSelfEmploymentPeriodicRequest(nino, businessId)
 
   val response = ListSelfEmploymentPeriodicResponse(
-    SelfEmploymentPeriods[
-      Some(PeriodDetails(
-        "2019-04-06_2020-04-05",
-        "2019-04-06",
-        "2020-04-05"
-        )
-      )
-    ]
-  )
+    Seq(PeriodDetails(
+      "2020-01-01_2020-01-01",
+      "2020-01-01",
+      "2020-01-01"
+    )))
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: ListSelfEmploymentPeriodicConnector =

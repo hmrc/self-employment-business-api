@@ -20,8 +20,8 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.request.ListSelfEmploymentPeriodicRequest
-import v1.models.response.ListSelfEmploymentPeriodicResponse
+import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
+import v1.models.response.listSEPeriodic.ListSelfEmploymentPeriodicResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
