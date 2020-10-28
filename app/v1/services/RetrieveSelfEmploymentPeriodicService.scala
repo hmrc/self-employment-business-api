@@ -21,7 +21,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.RetrieveSelfEmploymentPeriodicUpdateConnector
+import v1.connectors.RetrieveSelfEmploymentPeriodicConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors.{BusinessIdFormatError, DownstreamError, NinoFormatError, NotFoundError, PeriodIdFormatError}
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
@@ -30,7 +30,7 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveSelfEmploymentPeriodicUpdateService @Inject()(retrieveSelfEmploymentPeriodicUpdateConnector: RetrieveSelfEmploymentPeriodicUpdateConnector)
+class RetrieveSelfEmploymentPeriodicService @Inject()(retrieveSelfEmploymentPeriodicUpdateConnector: RetrieveSelfEmploymentPeriodicConnector)
   extends DesResponseMappingSupport with Logging {
 
   def retrieveSelfEmploymentPeriodicUpdate(request: RetrieveSelfEmploymentPeriodicRequest)(
@@ -48,10 +48,9 @@ class RetrieveSelfEmploymentPeriodicUpdateService @Inject()(retrieveSelfEmployme
   private def desErrorMap =
     Map(
       "INVALID_NINO" -> NinoFormatError,
-      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
       "INVALID_DATE_FROM" -> PeriodIdFormatError,
       "INVALID_DATE_TO" -> PeriodIdFormatError,
-      "NOT_FOUND_NINO" -> NotFoundError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
       "NOT_FOUND_PERIOD" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,

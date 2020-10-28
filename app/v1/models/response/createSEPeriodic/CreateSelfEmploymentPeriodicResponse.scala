@@ -32,7 +32,7 @@ object CreateSelfEmploymentPeriodicResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: CreateSelfEmploymentPeriodicHateoasData): Seq[Link] = {
       import data._
       Seq(
-        retrieveSEPeriodic(appConfig, nino, businessId, periodId)
+        retrievePeriodicUpdate(appConfig, nino, businessId, periodId)
       )
     }
   }

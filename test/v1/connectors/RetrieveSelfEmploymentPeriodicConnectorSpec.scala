@@ -21,11 +21,11 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
-import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponseBody}
+import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
 
 import scala.concurrent.Future
 
-class RetrieveSelfEmploymentPeriodicUpdateConnectorSpec extends ConnectorSpec {
+class RetrieveSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
   val nino = Nino("AA123456A")
   val businessId = "XAIS12345678910"
@@ -33,7 +33,7 @@ class RetrieveSelfEmploymentPeriodicUpdateConnectorSpec extends ConnectorSpec {
 
   val request = RetrieveSelfEmploymentPeriodicRequest(nino, businessId, periodId)
 
-  val response = RetrieveSelfEmploymentPeriodicResponseBody(
+  val response = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
     "2020-01-25",
     Some(Incomes(
@@ -51,8 +51,8 @@ class RetrieveSelfEmploymentPeriodicUpdateConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: RetrieveSelfEmploymentPeriodicUpdateConnector =
-      new RetrieveSelfEmploymentPeriodicUpdateConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: RetrieveSelfEmploymentPeriodicConnector =
+      new RetrieveSelfEmploymentPeriodicConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockedAppConfig.desBaseUrl returns baseUrl
