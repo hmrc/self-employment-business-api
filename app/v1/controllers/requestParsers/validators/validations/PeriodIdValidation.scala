@@ -16,14 +16,22 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import java.time.LocalDate
+
 import v1.models.errors.{MtdError, PeriodIdFormatError}
+
+import scala.util.{Failure, Success, Try}
 
 object PeriodIdValidation {
 
-  private val periodIdRegex = "20[1-9][0-9]\\-[0-9][0-2]\\-(0[1-9]|[12][0-9]|3[01])\\_20[1-9][0-9]\\-[0-9][0-2]\\-(0[1-9]|[12][0-9]|3[01])"
-
   def validate(periodId: String): List[MtdError] = {
-    if (periodId.matches(periodIdRegex)) NoValidationErrors else List(PeriodIdFormatError)
+    Try {
+      LocalDate.parse(periodId.substring(0,10), dateFormat)
+      LocalDate.parse(periodId.substring(11,21), dateFormat)
+    } match {
+      case Success(_) => Nil
+      case Failure(_) => List(PeriodIdFormatError)
+    }
   }
 
 }
