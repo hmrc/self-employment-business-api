@@ -23,6 +23,8 @@ import play.api.mvc.{Action, ControllerComponents}
 import utils.Logging
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
+import v1.models.request.amendSEPeriodic.AmendPeriodicRawData
+import v1.models.response.amendSEPeriodic.AmendSelfEmploymentPeriodicHateoasData
 import v1.services.{EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,15 +41,15 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendSelfEmploymentPeriodicController", endpointName = "amendSelfEmploymentPeriodic")
 
-  def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
+  def handleRequest(nino: String, businessId: String, periodId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      val rawData = AmendSelfEmploymentPeriodicRawData(nino, businessId, taxYear, request.body)
+      val rawData = AmendPeriodicRawData(nino, businessId, periodId, request.body)
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.amendPeriodicSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendSelfEmploymentPeriodicHateoasData(nino, businessId, taxYear)).asRight[ErrorWrapper])
+            hateoasFactory.wrap(serviceResponse.responseData, AmendSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
