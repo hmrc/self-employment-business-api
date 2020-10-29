@@ -20,74 +20,87 @@ import play.api.libs.json.Json
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendPeriodicValidator
-import v1.models.domain.ex.MtdEx._
 import v1.models.errors._
 import v1.models.request.amendSEPeriodic._
 
 class AmendPeriodicRequestParserSpec extends UnitSpec {
   val nino = "AA123456B"
   val businessId = "XAIS12345678910"
-  val periodId = ""
+  val periodId = "2019-01-01_2019-02-02"
 
   private val requestBodyJson = Json.parse(
     """
       |{
-      |   "costOfGoodsBought": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "cisPaymentsTo": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "staffCosts": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "travelCosts": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "premisesRunningCosts": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "maintenanceCosts": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "adminCosts": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "advertisingCosts": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "interestOnLoans": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "financialCharges": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "badDebt": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "professionalFees": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "depreciation": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   },
-      |   "other": {
-      |      "amount": 500.25,
-      |      "disallowableAmount": 500.25
-      |   }
+      |    "incomes": {
+      |        "turnover": {
+      |            "amount": 200.00
+      |        },
+      |        "other": {
+      |            "amount": 200.00
+      |        }
+      |    },
+      |    "expenses": {
+      |        "costOfGoodsBought": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "cisPaymentsTo": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "staffCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "travelCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "premisesRunningCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "maintenanceCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "adminCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "advertisingCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "businessEntertainmentCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "interestOnLoans": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "financialCharges": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "badDebt": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "professionalFees": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "depreciation": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "other": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        }
+      |    }
       |}
         """.stripMargin)
 
@@ -106,7 +119,24 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
 
         val amendPeriodicRequestBody =
           AmendPeriodicBody(
-
+            Some(Incomes(Some(IncomesAmountObject(200.00)), Some(IncomesAmountObject(200.00)))),
+            None,
+            Some(Expenses(
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00)))))
           )
 
         parser.parseRequest(inputData) shouldBe

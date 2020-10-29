@@ -67,7 +67,7 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
         field = adjustments.includedNonTaxableProfits,
         path = s"/adjustments/includedNonTaxableProfits"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = adjustments.basisAdjustment,
         path = s"/adjustments/basisAdjustment"
       ),
@@ -79,7 +79,7 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
         field = adjustments.accountingAdjustment,
         path = s"/adjustments/accountingAdjustment"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = adjustments.averagingAdjustment,
         path = s"/adjustments/averagingAdjustment"
       ),

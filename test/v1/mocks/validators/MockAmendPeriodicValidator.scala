@@ -26,7 +26,7 @@ trait MockAmendPeriodicValidator extends MockFactory {
 
   val mockValidator: AmendPeriodicValidator = mock[AmendPeriodicValidator]
 
-  object MockAmendSelfEmploymentAnnualSummaryValidator {
+  object MockAmendPeriodicValidator {
 
     def validate(data: AmendPeriodicRawData): CallHandler1[AmendPeriodicRawData, List[MtdError]] = {
       (mockValidator

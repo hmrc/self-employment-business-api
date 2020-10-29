@@ -21,7 +21,7 @@ import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockCreateSelfEmploymentPeriodicConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.createSEPeriodic._
+import v1.models.request.createSEPeriodic.{ConsolidatedExpenses, _}
 import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
 
 import scala.concurrent.Future

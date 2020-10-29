@@ -95,7 +95,7 @@ class CreateSelfEmploymentPeriodicValidator extends Validator[CreateSelfEmployme
 
   private def validateConsolidatedExpenses(consolidatedExpenses: ConsolidatedExpenses): List[MtdError] = {
     List(
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = Some(consolidatedExpenses.consolidatedExpenses),
         path = s"/consolidatedExpenses/consolidatedExpenses"
       )
@@ -104,11 +104,11 @@ class CreateSelfEmploymentPeriodicValidator extends Validator[CreateSelfEmployme
 
   private def validateExpenses(expenses: Expenses): List[MtdError] = {
     List(
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.costOfGoodsBought.map(_.amount),
         path = s"/expenses/costOfGoodsBought/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.costOfGoodsBought.flatMap(_.disallowableAmount),
         path = s"/expenses/costOfGoodsBought/disallowableAmount"
       ),
@@ -136,19 +136,19 @@ class CreateSelfEmploymentPeriodicValidator extends Validator[CreateSelfEmployme
         field = expenses.travelCosts.flatMap(_.disallowableAmount),
         path = s"/expenses/travelCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.premisesRunningCosts.map(_.amount),
         path = s"/expenses/premisesRunningCosts/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.premisesRunningCosts.flatMap(_.disallowableAmount),
         path = s"/expenses/premisesRunningCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.maintenanceCosts.map(_.amount),
         path = s"/expenses/maintenanceCosts/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.maintenanceCosts.flatMap(_.disallowableAmount),
         path = s"/expenses/maintenanceCosts/disallowableAmount"
       ),
@@ -176,31 +176,31 @@ class CreateSelfEmploymentPeriodicValidator extends Validator[CreateSelfEmployme
         field = expenses.businessEntertainmentCosts.flatMap(_.disallowableAmount),
         path = s"/expenses/businessEntertainmentCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.interestOnLoans.map(_.amount),
         path = s"/expenses/interestOnLoans/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.interestOnLoans.flatMap(_.disallowableAmount),
         path = s"/expenses/interestOnLoans/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.financialCharges.map(_.amount),
         path = s"/expenses/financialCharges/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.financialCharges.flatMap(_.disallowableAmount),
         path = s"/expenses/financialCharges/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.badDebt.map(_.amount),
         path = s"/expenses/badDebt/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.badDebt.flatMap(_.disallowableAmount),
         path = s"/expenses/badDebt/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.professionalFees.map(_.amount),
         path = s"/expenses/professionalFees/amount"
       ),
@@ -208,11 +208,11 @@ class CreateSelfEmploymentPeriodicValidator extends Validator[CreateSelfEmployme
         field = expenses.professionalFees.flatMap(_.disallowableAmount),
         path = s"/expenses/professionalFees/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.depreciation.map(_.amount),
         path = s"/expenses/depreciation/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateOptionalIncludeNegatives(
         field = expenses.depreciation.flatMap(_.disallowableAmount),
         path = s"/expenses/depreciation/disallowableAmount"
       ),

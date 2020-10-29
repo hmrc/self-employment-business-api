@@ -22,7 +22,7 @@ import v1.models.request.amendSEPeriodic._
 
 class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation)
+  private val validationSet = List(parameterFormatValidation, bodyFormatValidation, consolidatedExpensesRuleValidation, bodyFieldValidation)
 
   private def parameterFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = (data: AmendPeriodicRawData) => {
     List(
@@ -45,6 +45,14 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
     baseValidation ++ extraValidation
   }
 
+  private def consolidatedExpensesRuleValidation: AmendPeriodicRawData => List[List[MtdError]] = (data: AmendPeriodicRawData) => {
+    val body = data.body.as[AmendPeriodicBody]
+
+    List(
+      AmendConsolidatedExpensesValidation.validate(body.consolidatedExpenses, body.expenses)
+    )
+  }
+
   private def bodyFieldValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendPeriodicBody]
     val errorsO: List[List[MtdError]] = List(
@@ -57,12 +65,12 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
 
   private def validateIncomes(incomes: Incomes): List[List[MtdError]] = {
     List(
-      NumberValidation.validateOptional(
-        field = incomes.turnover.amount,
+      NumberValidation.validate(
+        field = incomes.turnover.get.amount,
         path = s"/incomes/turnover/amount"
       ),
-      NumberValidation.validateOptional(
-        field = incomes.other.amount,
+      NumberValidation.validate(
+        field = incomes.other.get.amount,
         path = s"/incomes/other/amount"
       )
     )
@@ -70,7 +78,7 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
 
   private def validateConsolidatedExpenses(consolidatedExpenses: ConsolidatedExpenses): List[List[MtdError]] = {
     List(
-      NumberValidation.validateOptionaIncludeNegatives(
+      NumberValidation.validateIncludeNegatives(
         field = consolidatedExpenses.consolidatedExpenses,
         path = s"/consolidatedExpenses/consolidatedExpenses"
       )
@@ -79,124 +87,124 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
 
   private def validateExpenses(expenses: Expenses): List[List[MtdError]] = {
     List(
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.costOfGoodsBought.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.costOfGoodsBought.get.amount,
         path = s"/expenses/costOfGoodsBought/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.costOfGoodsBought.disallowableAmount,
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.costOfGoodsBought.get.disallowableAmount,
         path = s"/expenses/costOfGoodsBought/disallowableAmount"
       ),
-      NumberValidation.validateOptional(
-        field = expenses.cisPaymentsTo.amount,
+      NumberValidation.validate(
+        field = expenses.cisPaymentsTo.get.amount,
         path = s"/expenses/cisPaymentsTo/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.cisPaymentsTo.disallowableAmount,
+        field = expenses.cisPaymentsTo.get.disallowableAmount,
         path = s"/expenses/cisPaymentsTo/disallowableAmount"
       ),
-      NumberValidation.validateOptional(
-        field = expenses.staffCosts.amount,
+      NumberValidation.validate(
+        field = expenses.staffCosts.get.amount,
         path = s"/expenses/staffCosts/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.staffCosts.disallowableAmount,
+        field = expenses.staffCosts.get.disallowableAmount,
         path = s"/expenses/staffCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptional(
-        field = expenses.travelCosts.amount,
+      NumberValidation.validate(
+        field = expenses.travelCosts.get.amount,
         path = s"/expenses/travelCosts/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.travelCosts.disallowableAmount,
+        field = expenses.travelCosts.get.disallowableAmount,
         path = s"/expenses/travelCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.premisesRunningCosts.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.premisesRunningCosts.get.amount,
         path = s"/expenses/premisesRunningCosts/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.premisesRunningCosts.disallowableAmount,
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.premisesRunningCosts.get.disallowableAmount,
         path = s"/expenses/premisesRunningCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.maintenanceCosts.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.maintenanceCosts.get.amount,
         path = s"/expenses/maintenanceCosts/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.maintenanceCosts.disallowableAmount,
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.maintenanceCosts.get.disallowableAmount,
         path = s"/expenses/maintenanceCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptional(
-        field = expenses.adminCosts.amount,
+      NumberValidation.validate(
+        field = expenses.adminCosts.get.amount,
         path = s"/expenses/adminCosts/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.adminCosts.disallowableAmount,
+        field = expenses.adminCosts.get.disallowableAmount,
         path = s"/expenses/adminCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptional(
-        field = expenses.advertisingCosts.amount,
+      NumberValidation.validate(
+        field = expenses.advertisingCosts.get.amount,
         path = s"/expenses/advertisingCosts/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.advertisingCosts.disallowableAmount,
+        field = expenses.advertisingCosts.get.disallowableAmount,
         path = s"/expenses/advertisingCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptional(
-        field = expenses.businessEntertainmentCosts.amount,
+      NumberValidation.validate(
+        field = expenses.businessEntertainmentCosts.get.amount,
         path = s"/expenses/businessEntertainmentCosts/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.businessEntertainmentCosts.disallowableAmount,
+        field = expenses.businessEntertainmentCosts.get.disallowableAmount,
         path = s"/expenses/businessEntertainmentCosts/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.interestOnLoans.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.interestOnLoans.get.amount,
         path = s"/expenses/interestOnLoans/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.interestOnLoans.disallowableAmount,
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.interestOnLoans.get.disallowableAmount,
         path = s"/expenses/interestOnLoans/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.financialCharges.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.financialCharges.get.amount,
         path = s"/expenses/financialCharges/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.financialCharges.disallowableAmount,
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.financialCharges.get.disallowableAmount,
         path = s"/expenses/financialCharges/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.badDebt.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.badDebt.get.amount,
         path = s"/expenses/badDebt/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.badDebt.disallowableAmount,
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.badDebt.get.disallowableAmount,
         path = s"/expenses/badDebt/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.professionalFees.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.professionalFees.get.amount,
         path = s"/expenses/professionalFees/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.professionalFees.disallowableAmount,
+        field = expenses.professionalFees.get.disallowableAmount,
         path = s"/expenses/professionalFees/disallowableAmount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.depreciation.amount,
+      NumberValidation.validateIncludeNegatives(
+        field = expenses.depreciation.get.amount,
         path = s"/expenses/depreciation/amount"
       ),
-      NumberValidation.validateOptionaIncludeNegatives(
-        field = expenses.depreciation.disallowableAmount,
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.depreciation.get.disallowableAmount,
         path = s"/expenses/depreciation/disallowableAmount"
       ),
-      NumberValidation.validateOptional(
-        field = expenses.other.amount,
+      NumberValidation.validate(
+        field = expenses.other.get.amount,
         path = s"/expenses/other/amount"
       ),
       NumberValidation.validateOptional(
-        field = expenses.other.disallowableAmount,
+        field = expenses.other.get.disallowableAmount,
         path = s"/expenses/other/disallowableAmount"
       )
     )
