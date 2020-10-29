@@ -1,14 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Create Periodic Update Period",
-  "description": "Create a self-employment periodic update for submission of periodic data.",
+  "title": "Amend Self-Employment Periodic Update",
+  "description": "Amend a self-employment periodic update for a tax year.",
   "type": "object",
   "properties": {
-    "periodId": {
-      "type": "string",
-      "description": "An identifier for the update period, unique to the customer's self-employment business.",
-      "example": "2017-04-06_2017-07-04"
-    },
     "links": {
       "type": "array",
       "items": {
@@ -24,13 +19,15 @@
             "description": "The HTTP method type for the endpoint.",
             "type": "string",
             "enum": [
-              "GET"
+              "GET",
+              "PUT"
             ]
           },
           "rel": {
             "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
             "type": "string",
             "enum": [
+              "amend-periodic-update",
               "self"
             ]
           }
@@ -42,6 +39,5 @@
         ]
       }
     }
-  },
-  "additionalProperties": false
+  }
 }
