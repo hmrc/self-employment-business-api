@@ -26,7 +26,7 @@ import v1.models.request.amendSEAnnual.{Adjustments, Allowances, AmendAnnualSumm
 
 import scala.concurrent.Future
 
-class MockAmendAnnualSummaryServiceSpec extends ServiceSpec {
+class AmendAnnualSummaryServiceSpec extends ServiceSpec {
 
   private val nino = "AA123456A"
   val businessId = "XAIS12345678910"

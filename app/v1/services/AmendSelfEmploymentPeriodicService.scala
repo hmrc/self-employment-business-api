@@ -17,13 +17,15 @@
 package v1.services
 
 import cats.data.EitherT
+import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.AmendSelfEmploymentPeriodicConnector
 import v1.controllers.EndpointLogContext
-import v1.models.errors.{BusinessIdFormatError, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
+import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
+import v1.models.request.amendSEPeriodic.AmendPeriodicRequest
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +39,7 @@ class AmendSelfEmploymentPeriodicService @Inject()(connector: AmendSelfEmploymen
     logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.amendPeriodicUpdate(request)).leftMap(mapDesErrors(desErrorMap))
+      desResponseWrapper <- EitherT(connector.amendPeriodicUpdates(request)).leftMap(mapDesErrors(desErrorMap))
     } yield desResponseWrapper
 
     result.value
@@ -50,7 +52,7 @@ class AmendSelfEmploymentPeriodicService @Inject()(connector: AmendSelfEmploymen
     "INVALID_DATE_TO" -> PeriodIdFormatError,
     "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
     "NOT_FOUND_PERIOD" -> NotFoundError,
-    "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+    "NOT_FOUND_NINO" -> NotFoundError,
     "BOTH_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError,
     "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
     "SERVER_ERROR" -> DownstreamError,

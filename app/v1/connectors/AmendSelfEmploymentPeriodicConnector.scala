@@ -19,8 +19,10 @@ package v1.connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.models.request.amendSEPeriodic.AmendPeriodicRequest
 
 import scala.concurrent.{ExecutionContext, Future}
+import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class AmendSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
@@ -33,7 +35,7 @@ class AmendSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
     val nino = request.nino.nino
     val businessId = request.businessId
     val fromDate = request.periodId.substring(0, 10)
-    val toDate = requestperiodId.substring(11, 21)
+    val toDate = request.periodId.substring(11, 21)
 
     put(
       body = request.body,
