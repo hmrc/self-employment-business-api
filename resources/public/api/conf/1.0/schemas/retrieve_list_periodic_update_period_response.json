@@ -5,6 +5,7 @@
   "type": "object",
   "properties": {
     "periods": {
+      "description": "Details about Self-Employment periods ",
       "type": "array",
       "items": {
         "periodId": {
