@@ -16,8 +16,15 @@
 
 package v1.endpoints
 
-import play.api.libs.json.Json
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.HeaderNames.ACCEPT
+import play.api.http.Status.NO_CONTENT
+import play.api.libs.json.{JsObject, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.http.Status._
 import support.IntegrationBaseSpec
+import v1.models.errors._
+import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
 
 class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
 
@@ -65,6 +72,172 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
 
     def desUri: String = s"income-store/nino/$nino/self-employments/$businessId/periodic-summaries$periodId"
 
+    def setupStubs(): StubMapping
 
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
+    }
+
+    def errorBody(code: String): String =
+      s"""
+         |      {
+         |        "code": "$code",
+         |        "reason": "des message"
+         |      }
+    """.stripMargin
+  }
+
+  "Calling the amend endpoint" should {
+
+    "return a 200 status code" when {
+
+      "any valid request is made" in new Test {
+
+        override def setupStubs(): StubMapping = {
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT, JsObject.empty)
+        }
+
+        val response: WSResponse = await(request().put(requestJson))
+        response.status shouldBe OK
+        response.json shouldBe responseJson
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+    }
+
+
+    "return error according to spec" when {
+
+      "validation error" when {
+        "an invalid NINO is provided" in new Test {
+          override val nino: String = "INVALID_NINO"
+
+          override def setupStubs(): StubMapping = {
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(request().put(requestJson))
+          response.status shouldBe BAD_REQUEST
+          response.json shouldBe Json.toJson(NinoFormatError)
+        }
+        "an invalid businessId is provided" in new Test {
+          override val businessId: String = "INVALID_BUSINESS_ID"
+
+          override def setupStubs(): StubMapping = {
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(request().put(requestJson))
+          response.status shouldBe BAD_REQUEST
+          response.json shouldBe Json.toJson(BusinessIdFormatError)
+        }
+        "an invalid periodId is provided" in new Test {
+          override val periodId: String = "INVALID_PERIOD_ID"
+
+          override def setupStubs(): StubMapping = {
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(request().put(requestJson))
+          response.status shouldBe BAD_REQUEST
+          response.json shouldBe Json.toJson(PeriodIdFormatError)
+        }
+        "a single invalid amount is provided" in new Test {
+          override val requestJson = Json.parse(
+            """
+              |{
+              |    "incomes": {
+              |        "turnover": {
+              |            "amount": 172.89
+              |        },
+              |        "other": {
+              |            "amount": 90
+              |        }
+              |    },
+              |    "consolidatedExpenses": {
+              |        "consolidatedExpenses": 647.89
+              |    }
+              |}
+              |""".stripMargin)
+
+          override def setupStubs(): StubMapping = {
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(request().put(requestJson))
+          response.status shouldBe BAD_REQUEST
+          response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSpecialRatePool"))))
+        }
+
+        "multiple invalid amounts are provided" in new Test {
+          override val requestJson = Json.parse(
+            """
+              |{
+              |    "incomes": {
+              |        "turnover": {
+              |            "amount": 172
+              |        },
+              |        "other": {
+              |            "amount": -634.14
+              |        }
+              |    },
+              |    "consolidatedExpenses": {
+              |        "consolidatedExpenses": 6
+              |    }
+              |}
+              |""".stripMargin)
+
+          override def setupStubs(): StubMapping = {
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(request().put(requestJson))
+          response.status shouldBe BAD_REQUEST
+          response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq(
+            "/incomes/turnover/amount",
+            "/incomes/other/amount",
+            "/consolidatedExpenses/consolidatedExpenses"
+          ))))
+        }
+
+      }
+
+      "des service error" when {
+        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"des returns an $desCode error and status $desStatus" in new Test {
+
+            override def setupStubs(): StubMapping = {
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
+            }
+
+            val response: WSResponse = await(request().put(requestJson))
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
+        }
+
+        val input = Seq(
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+          (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
+          (NOT_FOUND, "NOT_FOUND_PERIOD", NOT_FOUND, NotFoundError),
+          (NOT_FOUND, "NOT_FOUND_NINO", NOT_FOUND, NotFoundError),
+          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError))
+
+        input.foreach(args => (serviceErrorTest _).tupled(args))
+      }
+    }
   }
 }
