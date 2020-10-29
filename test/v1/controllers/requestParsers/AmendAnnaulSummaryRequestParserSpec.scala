@@ -104,7 +104,6 @@ class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
               )),
               Some(NonFinancials(
                 Some(Class4NicInfo(
-                  true,
                   Some(`002 - Trustee`)
               ))))
           )

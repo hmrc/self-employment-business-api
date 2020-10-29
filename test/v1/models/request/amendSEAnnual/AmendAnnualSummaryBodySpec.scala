@@ -26,7 +26,7 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
     AmendAnnualSummaryBody(
       Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
       Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99))),
-      Some(NonFinancials(Some(Class4NicInfo(isExempt = true, Some(MtdEx.`001 - Non Resident`))))))
+      Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))))
   val partialMtdModel: AmendAnnualSummaryBody =
     AmendAnnualSummaryBody(
       Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
@@ -67,7 +67,6 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |    },
            |    "nonFinancials": {
            |        "class4NicInfo":{
-           |            "isExempt": true,
            |            "exemptionCode": "001 - Non Resident"
            |        }
            |    }

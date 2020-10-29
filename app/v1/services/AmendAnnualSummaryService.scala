@@ -52,8 +52,6 @@ class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector
     "INVALID_PAYLOAD" -> DownstreamError,
     "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
     "GONE" -> NotFoundError,
-    "MISSING_EXEMPTION_REASON" -> RuleExemptionCodeError,
-    "MISSING_EXEMPTION_INDICATOR" -> RuleExemptionCodeError,
     "SERVER_ERROR" -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
   )

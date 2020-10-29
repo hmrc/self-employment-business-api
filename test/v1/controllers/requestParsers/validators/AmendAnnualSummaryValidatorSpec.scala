@@ -154,37 +154,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
         """{"nonFinancials": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
-      "an empty class4NicInfo is submitted" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-        """{"nonFinancials": {"class4NicInfo": {}}}"""))
-        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/nonFinancials/class4NicInfo/isExempt"))))
-      }
-    }
-    "return RuleExemptionCode" when {
-      "exemption code is missing when is exempt indicator set to true" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
-            |{
-            |   "nonFinancials": {
-            |       "class4NicInfo":{
-            |           "isExempt": true
-            |       }
-            |   }
-            |}""".stripMargin))) shouldBe List(RuleExemptionCodeError)
-      }
-
-      "exemption code is supplied when is exempt indicator set to false" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
-            |{
-            |   "nonFinancials": {
-            |       "class4NicInfo":{
-            |           "isExempt": false,
-            |           "exemptionCode": "002 - Trustee"
-            |       }
-            |   }
-            |}""".stripMargin))) shouldBe List(RuleExemptionCodeError)
-      }
     }
     "return ValueFormatError" when {
       "/adjustments/includedNonTaxableProfits is invalid" in {

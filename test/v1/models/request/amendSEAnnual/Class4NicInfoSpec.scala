@@ -22,8 +22,8 @@ import v1.models.domain.ex.MtdEx
 
 class Class4NicInfoSpec extends UnitSpec {
 
-  val trueMtdModel: Class4NicInfo = Class4NicInfo(isExempt = true, Some(MtdEx.`001 - Non Resident`))
-  val falseMtdModel: Class4NicInfo = Class4NicInfo(isExempt = false, None)
+  val trueMtdModel: Class4NicInfo = Class4NicInfo(Some(MtdEx.`001 - Non Resident`))
+  val falseMtdModel: Class4NicInfo = Class4NicInfo(None)
 
   "reads" should {
 
@@ -32,7 +32,6 @@ class Class4NicInfoSpec extends UnitSpec {
       val trueRequestJson: JsValue = Json.parse(
         s"""
            |{
-           |  "isExempt": true,
            |  "exemptionCode": "001 - Non Resident"
            |}
            |""".stripMargin)
@@ -40,7 +39,6 @@ class Class4NicInfoSpec extends UnitSpec {
       val falseRequestJson: JsValue = Json.parse(
         s"""
            |{
-           |  "isExempt": false
            |}
            |""".stripMargin)
 
