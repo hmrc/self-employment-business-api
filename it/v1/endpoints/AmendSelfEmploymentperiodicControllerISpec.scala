@@ -50,6 +50,82 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         |}
         |""".stripMargin)
 
+    val unconsolidatedRequestJson = Json.parse(
+      """
+        |{
+        |    "incomes": {
+        |        "turnover": {
+        |            "amount": 172.89
+        |        },
+        |        "other": {
+        |            "amount": 634.14
+        |        }
+        |    },
+        |    "expenses": {
+        |        "costOfGoodsBought": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "cisPaymentsTo": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "staffCosts": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "travelCosts": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "premisesRunningCosts": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "maintenanceCosts": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "adminCosts": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "advertisingCosts": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "businessEntertainmentCosts": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "interestOnLoans": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "financialCharges": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "badDebt": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "professionalFees": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "depreciation": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        },
+        |        "other": {
+        |            "amount": 627.90,
+        |            "disallowableAmount": 657.02
+        |        }
+        |    }
+        |}
+        |""".stripMargin)
+
     val responseJson = Json.parse(
       s"""
          |{
@@ -93,7 +169,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new Test {
+      "any valid consolidated request is made" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
@@ -102,6 +178,20 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().put(requestJson))
+        response.status shouldBe OK
+        response.json shouldBe responseJson
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+
+      "a valid unconsolidated request is made" in new Test {
+
+        override def setupStubs(): StubMapping = {
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT, JsObject.empty)
+        }
+
+        val response: WSResponse = await(request().put(unconsolidatedRequestJson))
         response.status shouldBe OK
         response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
@@ -173,7 +263,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
 
           val response: WSResponse = await(request().put(requestJson))
           response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSpecialRatePool"))))
+          response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq("/incomes/other/amount"))))
         }
 
         "multiple invalid amounts are provided" in new Test {
