@@ -255,7 +255,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
         validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
         """{"expenses": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
-      "a body with a manditory field is missing is submitted" in {
+      "a body with a mandatory field is missing is submitted" in {
         validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
         """{
           |    "incomes": {

@@ -143,7 +143,7 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
           Right(AmendPeriodicRequest(Nino(nino), businessId, periodId, amendPeriodicRequestBody))
       }
     }
-    "return an ErrroWrapper" when {
+    "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
         MockAmendPeriodicValidator.validate(inputData)
           .returns(List(NinoFormatError))

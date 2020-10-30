@@ -20,7 +20,7 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.createSEPeriodic.{ConsolidatedExpenses, _}
+import v1.models.request.createSEPeriodic._
 import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
 
 import scala.concurrent.Future

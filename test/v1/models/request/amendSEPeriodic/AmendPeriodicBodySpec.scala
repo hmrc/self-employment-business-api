@@ -18,7 +18,6 @@ package v1.models.request.amendSEPeriodic
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.request.createSEPeriodic.ConsolidatedExpenses
 
 class AmendPeriodicBodySpec extends UnitSpec {
 

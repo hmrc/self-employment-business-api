@@ -21,7 +21,7 @@ import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockCreateSelfEmploymentPeriodicValidator
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError}
-import v1.models.request.createSEPeriodic.{ConsolidatedExpenses, _}
+import v1.models.request.createSEPeriodic._
 
 class CreateSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
     val nino = "AA123456B"
