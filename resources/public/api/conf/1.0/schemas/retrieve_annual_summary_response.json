@@ -118,20 +118,12 @@
           "description": "Self-employed profits above a set threshold are subject to Class 4 National Insurance charges.",
           "type": "object",
           "properties": {
-            "isExempt": {
-              "description": "True if the taxpayer is exempt from paying class 4 nics on this source of income; false otherwise.",
-              "type": "boolean",
-              "example": "true"
-            },
             "exemptionCode": {
               "description": "Class 4 exemption codes - becomes mandatory if isExempt flag is set to true. Limited to the following possible values:\n\n001 - Non Resident\n002 - Trustee\n003 - Diver\n004 - Employed earner taxed under ITTOIA 2005\n005 - Over state pension age\n006 - Under 16",
               "type": "string",
               "example": "001 - Non Resident"
             }
           },
-          "required": [
-            "isExempt"
-          ],
           "additionalProperties": false
         }
       }
