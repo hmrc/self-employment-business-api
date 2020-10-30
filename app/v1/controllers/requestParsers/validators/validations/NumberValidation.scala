@@ -28,7 +28,7 @@ object NumberValidation {
   }
 
 
-  private def validate(field: BigDecimal, path: String): List[MtdError] = {
+  def validate(field: BigDecimal, path: String): List[MtdError] = {
     if (field >= 0 && field < 100000000000.00 && field.scale <= 2) {
       Nil
     } else {
@@ -38,7 +38,7 @@ object NumberValidation {
     }
   }
 
-  def validateOptionaIncludeNegatives(field: Option[BigDecimal], path: String): List[MtdError] = {
+  def validateOptionalIncludeNegatives(field: Option[BigDecimal], path: String): List[MtdError] = {
     field match {
       case None => NoValidationErrors
       case Some(value) => validateIncludeNegatives(value, path)
@@ -46,7 +46,7 @@ object NumberValidation {
   }
 
 
-  private def validateIncludeNegatives(field: BigDecimal, path: String): List[MtdError] = {
+  def validateIncludeNegatives(field: BigDecimal, path: String): List[MtdError] = {
     if (field > -100000000000.00 && field < 100000000000.00 && field.scale <= 2) {
       Nil
     } else {

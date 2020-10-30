@@ -19,7 +19,12 @@ package v1.models.request.amendSEPeriodic
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class AmendPeriodicBody(incomes: Option[Incomes], consolidatedExpenses: Option[ConsolidatedExpenses], expenses: Option[Expenses])
+case class AmendPeriodicBody(incomes: Option[Incomes], consolidatedExpenses: Option[ConsolidatedExpenses], expenses: Option[Expenses]) {
+  def isEmpty: Boolean =
+    (incomes.isEmpty && consolidatedExpenses.isEmpty && expenses.isEmpty) ||
+      incomes.exists(_.isEmpty) ||
+      expenses.exists(_.isEmpty)
+}
 
 object AmendPeriodicBody {
 

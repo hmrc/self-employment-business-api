@@ -33,7 +33,24 @@ case class Expenses(costOfGoodsBought: Option[ExpensesAmountObject],
                     badDebt: Option[ExpensesAmountObject],
                     professionalFees: Option[ExpensesAmountObject],
                     depreciation: Option[ExpensesAmountObject],
-                    other: Option[ExpensesAmountObject])
+                    other: Option[ExpensesAmountObject]) {
+
+  def isEmpty: Boolean =
+    (costOfGoodsBought.isEmpty &&
+      cisPaymentsTo.isEmpty &&
+      staffCosts.isEmpty &&
+      travelCosts.isEmpty &&
+      premisesRunningCosts.isEmpty &&
+      maintenanceCosts.isEmpty &&
+      adminCosts.isEmpty &&
+      advertisingCosts.isEmpty &&
+      businessEntertainmentCosts.isEmpty &&
+      interestOnLoans.isEmpty &&
+      badDebt.isEmpty &&
+      professionalFees.isEmpty &&
+      depreciation.isEmpty &&
+      other.isEmpty)
+}
 
 object Expenses {
   implicit val reads: Reads[Expenses] = (
