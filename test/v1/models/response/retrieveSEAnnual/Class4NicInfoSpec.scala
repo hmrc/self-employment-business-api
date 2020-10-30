@@ -32,12 +32,11 @@ class Class4NicInfoSpec extends UnitSpec {
   val mtdJson: JsValue = Json.parse(
     """
       |{
-      |  "isExempt": true,
       |  "exemptionCode": "001 - Non Resident"
       |}
       |""".stripMargin)
 
-  val model: Class4NicInfo = Class4NicInfo(true, Some(MtdEx.`001 - Non Resident`))
+  val model: Class4NicInfo = Class4NicInfo(Some(MtdEx.`001 - Non Resident`))
 
   "reads" should {
     "return a model" when {

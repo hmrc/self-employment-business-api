@@ -59,7 +59,6 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
       Some(100.25))),
     Some(NonFinancials(
       Some(Class4NicInfo(
-        true,
         Some(`001 - Non Resident`))))))
 
   class Test extends MockHttpClient with MockAppConfig {

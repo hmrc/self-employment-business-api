@@ -84,7 +84,6 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |  },
       |  "nonFinancials": {
       |    "class4NicInfo": {
-      |      "isExempt": true,
       |      "exemptionCode": "001 - Non Resident"
       |    }
       |  }
@@ -94,7 +93,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
   val model: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
     Some(Allowances(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
-    Some(NonFinancials(Some(Class4NicInfo(true, Some(MtdEx.`001 - Non Resident`)))))
+    Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
   )
 
   "reads" should {

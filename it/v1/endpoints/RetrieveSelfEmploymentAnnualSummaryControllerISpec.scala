@@ -62,7 +62,6 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |  },
          |  "nonFinancials": {
          |    "class4NicInfo": {
-         |      "isExempt": true,
          |      "exemptionCode": "002 - Trustee"
          |    }
          |  },
