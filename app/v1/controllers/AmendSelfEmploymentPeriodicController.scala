@@ -16,22 +16,25 @@
 
 package v1.controllers
 
-import cats.Inject
+import javax.inject.{Inject, Singleton}
 import cats.data.EitherT
+import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
 import utils.Logging
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
+import v1.controllers.requestParsers.AmendPeriodicRequestParser
 import v1.models.request.amendSEPeriodic.AmendPeriodicRawData
 import v1.models.response.amendSEPeriodic.AmendSelfEmploymentPeriodicHateoasData
-import v1.services.{EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{AmendSelfEmploymentPeriodicService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class AmendSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
                                                       val lookupService: MtdIdLookupService,
-                                                      parser: AmendSelfEmploymentPeriodicRequestParser,
+                                                      parser: AmendPeriodicRequestParser,
                                                       service: AmendSelfEmploymentPeriodicService,
                                                       hateoasFactory: HateoasFactory,
                                                       cc: ControllerComponents)(implicit ec: ExecutionContext)
@@ -47,7 +50,7 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.amendPeriodicSummary(parsedRequest))
+          serviceResponse <- EitherT(service.amendPeriodicUpdate(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper])
         } yield {
