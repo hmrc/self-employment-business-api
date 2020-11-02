@@ -18,8 +18,7 @@ package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status.NO_CONTENT
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.http.Status._
 import support.IntegrationBaseSpec
@@ -29,11 +28,13 @@ import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
 class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
-    val nino = "AA123456A"
-    val businessId = "XAIS12345678910"
-    val periodId = "2019-01-01_2020-01-01"
+    val nino: String = "AA123456A"
+    val businessId: String = "XAIS12345678910"
+    val periodId: String = "2019-01-01_2020-01-01"
+    val fromDate: String = "2019-01-01"
+    val toDate: String = "2020-01-01"
 
-    val requestJson = Json.parse(
+    val requestJson: JsValue = Json.parse(
       """
         |{
         |    "incomes": {
@@ -50,7 +51,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         |}
         |""".stripMargin)
 
-    val unconsolidatedRequestJson = Json.parse(
+    val unconsolidatedRequestJson: JsValue = Json.parse(
       """
         |{
         |    "incomes": {
@@ -126,7 +127,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         |}
         |""".stripMargin)
 
-    val responseJson = Json.parse(
+    val responseJson: JsValue = Json.parse(
       s"""
          |{
          |  "links": [
@@ -144,9 +145,9 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    def uri: String = s"/$nino/$businessId/periodic/$periodId"
+    def uri: String = s"/$nino/$businessId/period/$periodId"
 
-    def desUri: String = s"income-store/nino/$nino/self-employments/$businessId/periodic-summaries$periodId"
+    def desUri: String = s"/income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
 
     def setupStubs(): StubMapping
 
@@ -239,7 +240,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
           response.json shouldBe Json.toJson(PeriodIdFormatError)
         }
         "a single invalid amount is provided" in new Test {
-          override val requestJson = Json.parse(
+          override val requestJson: JsValue = Json.parse(
             """
               |{
               |    "incomes": {
@@ -267,19 +268,19 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         }
 
         "multiple invalid amounts are provided" in new Test {
-          override val requestJson = Json.parse(
+          override val requestJson: JsValue = Json.parse(
             """
               |{
               |    "incomes": {
               |        "turnover": {
-              |            "amount": 172
+              |            "amount": 172.4325
               |        },
               |        "other": {
-              |            "amount": -634.14
+              |            "amount": 634.1442
               |        }
               |    },
               |    "consolidatedExpenses": {
-              |        "consolidatedExpenses": 6
+              |        "consolidatedExpenses": 632.4521
               |    }
               |}
               |""".stripMargin)

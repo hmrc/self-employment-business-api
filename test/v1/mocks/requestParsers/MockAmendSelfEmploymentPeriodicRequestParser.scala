@@ -18,12 +18,13 @@ package v1.mocks.requestParsers
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.AmendPeriodicRequestParser
 import v1.models.errors.ErrorWrapper
 import v1.models.request.amendSEPeriodic.{AmendPeriodicRawData, AmendPeriodicRequest}
 
 trait MockAmendSelfEmploymentPeriodicRequestParser extends MockFactory {
 
-  val mockAmendSelfEmploymentPeriodicRequestParser: AmendSelfEmploymentPeriodicRequestParser = mock[AmendSelfEmploymentPeriodicRequestParser]
+  val mockAmendSelfEmploymentPeriodicRequestParser: AmendPeriodicRequestParser = mock[AmendPeriodicRequestParser]
 
   object MockAmendSelfEmploymentPeriodicRequestParser {
     def requestFor(data: AmendPeriodicRawData): CallHandler[Either[ErrorWrapper, AmendPeriodicRequest]] = {

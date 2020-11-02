@@ -23,6 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEPeriodic.AmendPeriodicRequest
+import v1.services.AmendSelfEmploymentPeriodicService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,7 +35,7 @@ trait MockAmendSelfEmploymentPeriodicService extends MockFactory {
 
     def amendPeriodic(requestData: AmendPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendSelfEmploymentPeriodicService
-        .amendPeriodic(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .amendPeriodicUpdate(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
         .expects(requestData, *, *, *)
     }
   }

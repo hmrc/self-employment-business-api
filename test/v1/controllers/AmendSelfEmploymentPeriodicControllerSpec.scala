@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
@@ -58,10 +58,10 @@ class AmendSelfEmploymentPeriodicControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
   }
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val periodId = "2019-01-01_2020-01-01"
-  private val correlationId = "X-123"
+  private val nino: String = "AA123456A"
+  private val businessId: String = "XAIS12345678910"
+  private val periodId: String = "2019-01-01_2020-01-01"
+  private val correlationId: String = "X-123"
 
   private val testHateoasLinks = Seq(
     Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = PUT, rel = AMEND_PERIODIC_UPDATE_REL),
@@ -91,7 +91,7 @@ class AmendSelfEmploymentPeriodicControllerSpec
     None
   )
 
-  val responseJson = Json.parse(
+  val responseJson: JsValue = Json.parse(
     s"""
       |{
       |  "links": [
@@ -155,11 +155,9 @@ class AmendSelfEmploymentPeriodicControllerSpec
           (BadRequestError, BAD_REQUEST),
           (NinoFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (ValueFormatError.copy(paths = Some(Seq("/foreignTaxCreditRelief/amount"))), BAD_REQUEST),
+          (PeriodIdFormatError, BAD_REQUEST),
+          (ValueFormatError.copy(paths = Some(Seq("/incomes/turnover/amount"))), BAD_REQUEST),
           (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST),
           (RuleExemptionCodeError, BAD_REQUEST)
         )
 
@@ -188,9 +186,10 @@ class AmendSelfEmploymentPeriodicControllerSpec
 
         val input = Seq(
           (NinoFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
-          (RuleExemptionCodeError, BAD_REQUEST),
+          (PeriodIdFormatError, BAD_REQUEST),
+          (RuleBothExpensesSuppliedError, BAD_REQUEST),
+          (RuleNotAllowedConsolidatedExpenses, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )

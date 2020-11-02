@@ -27,6 +27,7 @@ import v1.models.errors._
 import v1.controllers.requestParsers.AmendPeriodicRequestParser
 import v1.models.request.amendSEPeriodic.AmendPeriodicRawData
 import v1.models.response.amendSEPeriodic.AmendSelfEmploymentPeriodicHateoasData
+import v1.models.response.amendSEPeriodic.AmendSelfEmploymentPeriodicResponse.LinksFactory
 import v1.services.{AmendSelfEmploymentPeriodicService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -77,10 +78,11 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
            NinoFormatError |
            BusinessIdFormatError |
            TaxYearFormatError |
+           PeriodIdFormatError |
+           RuleBothExpensesSuppliedError |
+           RuleNotAllowedConsolidatedExpenses |
            MtdErrorWithCustomMessage(ValueFormatError.code) |
            MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
-           RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeInvalidError |
            RuleExemptionCodeError => BadRequest(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
