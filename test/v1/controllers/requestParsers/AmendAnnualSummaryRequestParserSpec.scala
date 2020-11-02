@@ -24,7 +24,7 @@ import v1.models.errors._
 import v1.models.domain.ex.MtdEx._
 import v1.models.request.amendSEAnnual._
 
-class AmendAnnaulSummaryRequestParserSpec extends UnitSpec {
+class AmendAnnualSummaryRequestParserSpec extends UnitSpec {
   val nino = "AA123456B"
   val businessId = "XAIS12345678910"
   val taxYear = "2019-20"
