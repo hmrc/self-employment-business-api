@@ -147,7 +147,12 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$businessId/period/$periodId"
 
-    def desUri: String = s"/income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
+    def queryParams: Map[String, String] = Map(
+      "from" -> fromDate,
+      "to" -> toDate
+    )
+
+    def desUri: String = s"/income-store/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     def setupStubs(): StubMapping
 
@@ -175,7 +180,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT, JsObject.empty)
+          DesStub.onSuccess(DesStub.PUT, desUri, queryParams, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(requestJson))
@@ -189,7 +194,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT, JsObject.empty)
+          DesStub.onSuccess(DesStub.PUT, desUri, queryParams, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(unconsolidatedRequestJson))
@@ -248,7 +253,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
               |            "amount": 172.89
               |        },
               |        "other": {
-              |            "amount": 90
+              |            "amount": 90.0796
               |        }
               |    },
               |    "consolidatedExpenses": {
@@ -320,6 +325,9 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+          (BAD_REQUEST, "INVALID_DATE_FROM", BAD_REQUEST, PeriodIdFormatError),
+          (BAD_REQUEST, "INVALID_DATE_TO", BAD_REQUEST, PeriodIdFormatError),
+          (BAD_REQUEST, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
           (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
           (NOT_FOUND, "NOT_FOUND_PERIOD", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "NOT_FOUND_NINO", NOT_FOUND, NotFoundError),

@@ -114,7 +114,7 @@ class AmendSelfEmploymentPeriodicControllerSpec
 
   "handleRequest" should {
     "return OK" when {
-      "the request recieved is valid" in new Test {
+      "the request received is valid" in new Test {
 
         MockAmendSelfEmploymentPeriodicRequestParser
           .requestFor(rawData)
