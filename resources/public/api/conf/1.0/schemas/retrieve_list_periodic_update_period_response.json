@@ -5,24 +5,32 @@
   "type": "object",
   "properties": {
     "periods": {
-      "description": "Details about Self-Employment periods ",
       "type": "array",
       "items": {
-        "periodId": {
-          "description": "Concatenated from and to dates",
-          "type": "string",
-          "example": "2017-04-06_2017-07-04"
+        "type": "object",
+        "description": "Details about Self-Employment periods ",
+        "properties": {
+          "periodId": {
+            "description": "Concatenated from and to dates",
+            "type": "string",
+            "example": "2017-04-06_2017-07-04"
+          },
+          "from": {
+            "description": "The start date of this update period",
+            "type": "string",
+            "example": "2018-04-06"
+          },
+          "to": {
+            "description": "The end date of this update period",
+            "type": "string",
+            "example": "2018-04-06"
+          }
         },
-        "from": {
-          "description": "The start date of this update period",
-          "type": "string",
-          "example": "2018-04-06"
-        },
-        "to": {
-          "description": "The end date of this update period",
-          "type": "string",
-          "example": "2018-04-06"
-        }
+        "required": [
+          "periodId",
+          "from",
+          "to"
+        ]
       },
       "additionalProperties": false
     },
