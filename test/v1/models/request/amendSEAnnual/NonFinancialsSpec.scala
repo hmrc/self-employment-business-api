@@ -22,7 +22,7 @@ import v1.models.domain.ex.MtdEx
 
 class NonFinancialsSpec extends UnitSpec {
 
-  val mtdModel: NonFinancials = NonFinancials(Some(Class4NicInfo(isExempt = true, Some(MtdEx.`001 - Non Resident`))))
+  val mtdModel: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))
 
   "reads" should {
 

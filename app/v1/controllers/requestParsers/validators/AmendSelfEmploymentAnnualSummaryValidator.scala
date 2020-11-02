@@ -55,8 +55,7 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
     val body = data.body.as[AmendAnnualSummaryBody]
     val errorsO: List[List[MtdError]] = List(
       body.adjustments.map(validateAdjustments).getOrElse(Nil),
-      body.allowances.map(validateAllowances).getOrElse(Nil),
-      body.nonFinancials.map(validateNonFinancials).getOrElse(Nil)
+      body.allowances.map(validateAllowances).getOrElse(Nil)
     ).flatten
     List(Validator.flattenErrors(errorsO))
   }
@@ -146,11 +145,6 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
       )
     )
   }
-
-  private def validateNonFinancials(nonFinancials: NonFinancials): List[List[MtdError]] = {
-    List(nonFinancials.class4NicInfo.map(IsExemptValidation.validate).getOrElse(Nil))
-  }
-
 
   override def validate(data: AmendAnnualSummaryRawData): List[MtdError] = {
     run(validationSet, data).distinct

@@ -81,8 +81,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
            MtdErrorWithCustomMessage(ValueFormatError.code) |
            MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
            RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeInvalidError |
-           RuleExemptionCodeError => BadRequest(Json.toJson(errorWrapper))
+           RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
     }

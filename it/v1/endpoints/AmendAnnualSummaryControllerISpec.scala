@@ -297,24 +297,6 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           response.status shouldBe BAD_REQUEST
           response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError)
         }
-        s"a body missing mandatory fields is provided" in new Test {
-          override val requestBodyJson: JsValue = Json.parse(
-            """{
-              |    "nonFinancials": {
-              |        "class4NicInfo": {
-              |        }
-              |    }
-              |}""".stripMargin)
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/nonFinancials/class4NicInfo/isExempt"))))
-        }
       }
 
       "des service error" when {
@@ -339,8 +321,6 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
           (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
-          (FORBIDDEN, "MISSING_EXEMPTION_REASON", BAD_REQUEST, RuleExemptionCodeError),
-          (FORBIDDEN, "MISSING_EXEMPTION_INDICATOR", BAD_REQUEST, RuleExemptionCodeError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
           (GONE, "GONE", NOT_FOUND, NotFoundError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError))
