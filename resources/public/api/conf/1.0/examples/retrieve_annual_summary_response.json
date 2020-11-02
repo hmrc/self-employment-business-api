@@ -20,7 +20,9 @@
     "enhancedCapitalAllowance": 49.19,
     "allowanceOnSales": 39.48,
     "capitalAllowanceSingleAssetPool": 32.39,
-    "tradingAllowance": 85.39
+    "tradingAllowance": 85.39,
+    "structureAndBuildingAllowance": 56.42,
+    "electricChargePointAllowance": 10.79
   },
   "nonFinancials": {
     "class4NicInfo": {
