@@ -112,8 +112,8 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |      "allowanceOnSales": 200.00,
          |      "capitalAllowanceSingleAssetPool": 200.00,
          |      "tradingIncomeAllowance":  200.00,
-         |    "structureAndBuildingAllowance":  200.00,
-         |    "electricChargePointAllowance":  200.00
+         |      "structureAndBuildingAllowance":  200.00,
+         |      "electricChargePointAllowance":  200.00
          |   },
          |   "annualNonFinancials": {
          |      "exemptFromPayingClass4Nics": true,
