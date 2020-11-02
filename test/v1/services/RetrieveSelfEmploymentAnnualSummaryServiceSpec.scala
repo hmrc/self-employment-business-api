@@ -58,7 +58,10 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25),
-      Some(100.25))),
+      Some(100.25),
+      Some(100.25),
+      Some(100.25)
+    )),
     Some(NonFinancials(
       Some(Class4NicInfo(
         Some(`001 - Non Resident`))))))

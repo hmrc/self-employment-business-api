@@ -58,7 +58,9 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |    "enhancedCapitalAllowance": 200.00,
          |    "allowanceOnSales": 200.00,
          |    "capitalAllowanceSingleAssetPool": 200.00,
-         |    "tradingAllowance": 200.00
+         |    "tradingAllowance": 200.00,
+         |    "structureAndBuildingAllowance":  200.00,
+         |    "electricChargePointAllowance":  200.00
          |  },
          |  "nonFinancials": {
          |    "class4NicInfo": {
@@ -109,7 +111,9 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |      "enhancedCapitalAllowance": 200.00,
          |      "allowanceOnSales": 200.00,
          |      "capitalAllowanceSingleAssetPool": 200.00,
-         |      "tradingIncomeAllowance":  200.00
+         |      "tradingIncomeAllowance":  200.00,
+         |      "structureAndBuildingAllowance":  200.00,
+         |      "electricChargePointAllowance":  200.00
          |   },
          |   "annualNonFinancials": {
          |      "exemptFromPayingClass4Nics": true,
