@@ -61,7 +61,6 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       Some(100.25))),
     Some(NonFinancials(
       Some(Class4NicInfo(
-        true,
         Some(`001 - Non Resident`))))))
 
   private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)

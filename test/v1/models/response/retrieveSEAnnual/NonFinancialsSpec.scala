@@ -26,13 +26,12 @@ class NonFinancialsSpec extends UnitSpec{
     """
       |{
       |  "class4NicInfo": {
-      |    "isExempt": true,
       |    "exemptionCode": "001 - Non Resident"
       |  }
       |}
       |""".stripMargin)
 
-  val model: NonFinancials = NonFinancials(Some(Class4NicInfo(true, Some(MtdEx.`001 - Non Resident`))))
+  val model: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))
 
   "writes" should {
     "return json" when {
