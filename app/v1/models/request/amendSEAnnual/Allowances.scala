@@ -27,7 +27,9 @@ case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
                       enhancedCapitalAllowance: Option[BigDecimal],
                       allowanceOnSales: Option[BigDecimal],
                       capitalAllowanceSingleAssetPool: Option[BigDecimal],
-                      tradingAllowance: Option[BigDecimal]) {
+                      tradingAllowance: Option[BigDecimal],
+                      structureAndBuildingAllowance: Option[BigDecimal],
+                      electricChargePointAllowance: Option[BigDecimal]) {
   def isEmpty: Boolean = annualInvestmentAllowance.isEmpty &&
     businessPremisesRenovationAllowance.isEmpty &&
     capitalAllowanceMainPool.isEmpty &&
@@ -36,8 +38,9 @@ case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
     enhancedCapitalAllowance.isEmpty &&
     allowanceOnSales.isEmpty &&
     capitalAllowanceSingleAssetPool.isEmpty &&
-    tradingAllowance.isEmpty
-
+    tradingAllowance.isEmpty &&
+    structureAndBuildingAllowance.isEmpty &&
+    electricChargePointAllowance.isEmpty
 }
 
 object Allowances {
@@ -51,6 +54,8 @@ object Allowances {
       (JsPath \ "enhancedCapitalAllowance").writeNullable[BigDecimal] and
       (JsPath \ "allowanceOnSales").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceSingleAssetPool").writeNullable[BigDecimal] and
-      (JsPath \ "tradingIncomeAllowance").writeNullable[BigDecimal]
+      (JsPath \ "tradingIncomeAllowance").writeNullable[BigDecimal] and
+      (JsPath \ "structureAndBuildingAllowance").writeNullable[BigDecimal] and
+      (JsPath \ "electricChargePointAllowance").writeNullable[BigDecimal]
     ) (unlift(Allowances.unapply))
 }

@@ -21,9 +21,9 @@ import support.UnitSpec
 
 class AllowancesSpec extends UnitSpec {
 
-  val fullMtdModel: Allowances = Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99))
-  val partialMtdModel: Allowances = Allowances(Some(1.11), None, Some(3.33), None, None, Some(6.66), Some(7.77), None, Some(9.99))
-  val emptyMtdModel: Allowances = Allowances(None, None, None, None, None, None, None, None, None)
+  val fullMtdModel: Allowances = Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10), Some(11.11))
+  val partialMtdModel: Allowances = Allowances(Some(1.11), None, Some(3.33), None, None, Some(6.66), Some(7.77), None, Some(9.99), Some(10.10), Some(11.11))
+  val emptyMtdModel: Allowances = Allowances(None, None, None, None, None, None, None, None, None, None, None)
 
   "reads" should {
 
@@ -40,7 +40,9 @@ class AllowancesSpec extends UnitSpec {
            |  "enhancedCapitalAllowance": 6.66,
            |  "allowanceOnSales": 7.77,
            |  "capitalAllowanceSingleAssetPool": 8.88,
-           |  "tradingAllowance": "9.99"
+           |  "tradingAllowance": "9.99",
+           |  "structureAndBuildingAllowance": 10.10,
+           |  "electricChargePointAllowance": 11.11
            |}
            |""".stripMargin)
 
@@ -51,7 +53,9 @@ class AllowancesSpec extends UnitSpec {
            |  "capitalAllowanceMainPool": 3.33,
            |  "enhancedCapitalAllowance": 6.66,
            |  "allowanceOnSales": 7.77,
-           |  "tradingAllowance": "9.99"
+           |  "tradingAllowance": "9.99",
+           |  "structureAndBuildingAllowance": 10.10,
+           |  "electricChargePointAllowance": 11.11
            |}
            |""".stripMargin)
 
@@ -92,7 +96,9 @@ class AllowancesSpec extends UnitSpec {
            |  "enhancedCapitalAllowance": 6.66,
            |  "allowanceOnSales": 7.77,
            |  "capitalAllowanceSingleAssetPool": 8.88,
-           |  "tradingIncomeAllowance": 9.99
+           |  "tradingIncomeAllowance": 9.99,
+           |  "structureAndBuildingAllowance": 10.10,
+           |  "electricChargePointAllowance": 11.11
            |}
            |""".stripMargin)
 
@@ -103,7 +109,9 @@ class AllowancesSpec extends UnitSpec {
            |  "capitalAllowanceMainPool": 3.33,
            |  "enhancedCapitalAllowance": 6.66,
            |  "allowanceOnSales": 7.77,
-           |  "tradingIncomeAllowance": 9.99
+           |  "tradingIncomeAllowance": 9.99,
+           |  "structureAndBuildingAllowance": 10.10,
+           |  "electricChargePointAllowance": 11.11
            |}
            |""".stripMargin)
 
