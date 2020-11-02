@@ -327,7 +327,7 @@ class AmendSelfEmploymentPeriodicControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_DATE_FROM", BAD_REQUEST, PeriodIdFormatError),
           (BAD_REQUEST, "INVALID_DATE_TO", BAD_REQUEST, PeriodIdFormatError),
-          (BAD_REQUEST, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
+          (CONFLICT, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
           (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
           (NOT_FOUND, "NOT_FOUND_PERIOD", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "NOT_FOUND_NINO", NOT_FOUND, NotFoundError),

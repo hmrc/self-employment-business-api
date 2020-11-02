@@ -157,8 +157,7 @@ class AmendSelfEmploymentPeriodicControllerSpec
           (BusinessIdFormatError, BAD_REQUEST),
           (PeriodIdFormatError, BAD_REQUEST),
           (ValueFormatError.copy(paths = Some(Seq("/incomes/turnover/amount"))), BAD_REQUEST),
-          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-          (RuleExemptionCodeError, BAD_REQUEST)
+          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST)
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))

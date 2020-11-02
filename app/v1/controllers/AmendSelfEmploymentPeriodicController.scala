@@ -77,13 +77,11 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
       case BadRequestError |
            NinoFormatError |
            BusinessIdFormatError |
-           TaxYearFormatError |
            PeriodIdFormatError |
            RuleBothExpensesSuppliedError |
            RuleNotAllowedConsolidatedExpenses |
            MtdErrorWithCustomMessage(ValueFormatError.code) |
-           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
-           RuleExemptionCodeError => BadRequest(Json.toJson(errorWrapper))
+           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) => BadRequest(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
     }
