@@ -52,6 +52,7 @@ uses:
         delete: !include endpoints/deleteAnnualSummary.raml
       /period:
         post: !include endpoints/createPeriodicUpdatePeriod.raml
+        get: !include endpoints/listPeriodicUpdatePeriod.raml
         /{periodId}:
           uriParameters:
             periodId:

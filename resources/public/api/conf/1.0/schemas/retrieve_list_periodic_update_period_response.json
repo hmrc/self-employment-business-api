@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Retrieve Self Employment Annual Summary",
+  "description": "Retrieves a self-employment annual summary for a tax year.",
+  "type": "object",
+  "properties": {
+    "periods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Details about Self-Employment periods ",
+        "properties": {
+          "periodId": {
+            "description": "Concatenated from and to dates",
+            "type": "string",
+            "example": "2017-04-06_2017-07-04"
+          },
+          "from": {
+            "description": "The start date of this update period",
+            "type": "string",
+            "example": "2018-04-06"
+          },
+          "to": {
+            "description": "The end date of this update period",
+            "type": "string",
+            "example": "2018-04-06"
+          }
+        },
+        "required": [
+          "periodId",
+          "from",
+          "to"
+        ]
+      },
+      "additionalProperties": false
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A list of endpoint links that indicate possible actions related to the current resource.",
+        "properties": {
+          "href": {
+            "description": "The relative url of the endpoint.",
+            "type": "string",
+            "example": "/individuals/business/self-employment/sample/{nino}/{businessId}/period"
+          },
+          "rel": {
+            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
+            "type": "string",
+            "enum": [
+              "self",
+              "create-periodic-update"
+            ]
+          },
+          "method": {
+            "description": "The HTTP method type for the endpoint.",
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          }
+        },
+        "required": [
+          "href",
+          "rel",
+          "method"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "periods"
+  ],
+  "additionalProperties": false
+}
