@@ -58,7 +58,9 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
          |        "enhancedCapitalAllowance": 6.66,
          |        "allowanceOnSales": 7.77,
          |        "capitalAllowanceSingleAssetPool": 8.88,
-         |        "tradingAllowance": 9.99
+         |        "tradingAllowance": 9.99,
+         |        "structureAndBuildingAllowance": 10.10,
+         |        "electricChargePointAllowance": 11.11
          |    },
          |    "nonFinancials": {
          |        "class4NicInfo":{
@@ -185,7 +187,9 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
                |        "enhancedCapitalAllowance": 6.66,
                |        "allowanceOnSales": 7.77,
                |        "capitalAllowanceSingleAssetPool": 8.88,
-               |        "tradingAllowance": 9.99
+               |        "tradingAllowance": 9.99,
+               |        "structureAndBuildingAllowance": 10.10,
+               |        "electricChargePointAllowance": 11.11
                |    },
                |    "nonFinancials": {
                |        "class4NicInfo":{
@@ -232,7 +236,9 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
                |        "enhancedCapitalAllowance": 6.664365,
                |        "allowanceOnSales": 7.77,
                |        "capitalAllowanceSingleAssetPool": 8.88,
-               |        "tradingAllowance": 9.99
+               |        "tradingAllowance": 9.99,
+               |        "structureAndBuildingAllowance": 10.10,
+               |        "electricChargePointAllowance": 11.11
                |    },
                |    "nonFinancials": {
                |        "class4NicInfo":{
