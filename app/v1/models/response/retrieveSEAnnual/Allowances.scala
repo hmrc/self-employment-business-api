@@ -29,6 +29,8 @@ case class Allowances(
                        allowanceOnSales: Option[BigDecimal],
                        capitalAllowanceSingleAssetPool: Option[BigDecimal],
                        tradingAllowance: Option[BigDecimal],
+                       structureAndBuildingAllowance: Option[BigDecimal],
+                       electricChargePointAllowance: Option[BigDecimal]
                      )
 
 object Allowances {
@@ -41,7 +43,9 @@ object Allowances {
     (JsPath \ "enhancedCapitalAllowance").readNullable[BigDecimal] and
     (JsPath \ "allowanceOnSales").readNullable[BigDecimal] and
     (JsPath \ "capitalAllowanceSingleAssetPool").readNullable[BigDecimal] and
-    (JsPath \ "tradingIncomeAllowance").readNullable[BigDecimal]
+    (JsPath \ "tradingIncomeAllowance").readNullable[BigDecimal] and
+    (JsPath \ "structureAndBuildingAllowance").readNullable[BigDecimal] and
+    (JsPath \ "electricChargePointAllowance").readNullable[BigDecimal]
   )(Allowances.apply _)
   implicit val writes: OWrites[Allowances] = Json.writes[Allowances]
 }
