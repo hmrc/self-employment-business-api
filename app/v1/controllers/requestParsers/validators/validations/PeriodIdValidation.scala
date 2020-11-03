@@ -25,13 +25,16 @@ import scala.util.{Failure, Success, Try}
 object PeriodIdValidation {
 
   def validate(periodId: String): List[MtdError] = {
-    Try {
-      LocalDate.parse(periodId.substring(0,10), dateFormat)
-      LocalDate.parse(periodId.substring(11,21), dateFormat)
-    } match {
-      case Success(_) => Nil
-      case Failure(_) => List(PeriodIdFormatError)
+    if (periodId.length == 21) {
+      Try {
+        LocalDate.parse(periodId.substring(0, 10), dateFormat)
+        LocalDate.parse(periodId.substring(11, 21), dateFormat)
+      } match {
+        case Success(_) => Nil
+        case Failure(_) => List(PeriodIdFormatError)
+      }
+    } else{
+       List(PeriodIdFormatError)
     }
   }
-
 }
