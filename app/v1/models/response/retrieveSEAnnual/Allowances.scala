@@ -40,7 +40,7 @@ object Allowances {
     (JsPath \ "capitalAllowanceMainPool").readNullable[BigDecimal] and
     (JsPath \ "capitalAllowanceSpecialRatePool").readNullable[BigDecimal] and
     (JsPath \ "zeroEmissionGoodsVehicleAllowance").readNullable[BigDecimal] and
-    (JsPath \ "enhancedCapitalAllowance").readNullable[BigDecimal] and
+    (JsPath \ "enhanceCapitalAllowance").readNullable[BigDecimal] and
     (JsPath \ "allowanceOnSales").readNullable[BigDecimal] and
     (JsPath \ "capitalAllowanceSingleAssetPool").readNullable[BigDecimal] and
     (JsPath \ "tradingIncomeAllowance").readNullable[BigDecimal] and

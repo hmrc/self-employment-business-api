@@ -51,7 +51,7 @@ object Allowances {
       (JsPath \ "capitalAllowanceMainPool").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceSpecialRatePool").writeNullable[BigDecimal] and
       (JsPath \ "zeroEmissionGoodsVehicleAllowance").writeNullable[BigDecimal] and
-      (JsPath \ "enhancedCapitalAllowance").writeNullable[BigDecimal] and
+      (JsPath \ "enhanceCapitalAllowance").writeNullable[BigDecimal] and
       (JsPath \ "allowanceOnSales").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceSingleAssetPool").writeNullable[BigDecimal] and
       (JsPath \ "tradingIncomeAllowance").writeNullable[BigDecimal] and

@@ -44,7 +44,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    "capitalAllowanceMainPool": 500.25,
       |    "capitalAllowanceSpecialRatePool": 500.25,
       |    "zeroEmissionGoodsVehicleAllowance": 500.25,
-      |    "enhancedCapitalAllowance": 500.25,
+      |    "enhanceCapitalAllowance": 500.25,
       |    "allowanceOnSales": 500.25,
       |    "capitalAllowanceSingleAssetPool": 500.25,
       |    "tradingIncomeAllowance":  500.25,
