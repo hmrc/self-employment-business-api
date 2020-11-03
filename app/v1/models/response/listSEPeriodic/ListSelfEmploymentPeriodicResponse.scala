@@ -16,10 +16,36 @@
 
 package v1.models.response.listSEPeriodic
 
-import play.api.libs.json.{Json, OFormat}
+import cats.Functor
+import config.AppConfig
+import play.api.libs.json.{Json, OWrites, Reads, Writes}
+import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
 
-case class ListSelfEmploymentPeriodicResponse(periods: Seq[PeriodDetails])
+case class ListSelfEmploymentPeriodicResponse[I](periods: Seq[I])
 
-object ListSelfEmploymentPeriodicResponse {
-  implicit val format: OFormat[ListSelfEmploymentPeriodicResponse] = Json.format[ListSelfEmploymentPeriodicResponse]
+object ListSelfEmploymentPeriodicResponse extends HateoasLinks {
+  implicit def reads: Reads[ListSelfEmploymentPeriodicResponse[PeriodDetails]] = Json.format[ListSelfEmploymentPeriodicResponse[PeriodDetails]]
+  implicit def writes[I: Writes]: OWrites[ListSelfEmploymentPeriodicResponse[I]] = Json.writes[ListSelfEmploymentPeriodicResponse[I]]
+
+  implicit object LinksFactory extends HateoasListLinksFactory[ListSelfEmploymentPeriodicResponse, PeriodDetails, ListSelfEmploymentPeriodicHateoasData] {
+    override def links(appConfig: AppConfig, data: ListSelfEmploymentPeriodicHateoasData): Seq[Link] = {
+      Seq(
+        listPeriodicUpdate(appConfig, data.nino, data.businessId),
+        createPeriodicUpdate(appConfig, data.nino, data.businessId),
+      )
+    }
+
+    override def itemLinks(appConfig: AppConfig, data: ListSelfEmploymentPeriodicHateoasData, item: PeriodDetails): Seq[Link] =
+      Seq(
+        retrievePeriodicUpdate(appConfig, data.nino, data.businessId, item.periodId)
+      )
+  }
+
+  implicit object ResponseFunctor extends Functor[ListSelfEmploymentPeriodicResponse] {
+    override def map[A, B](fa: ListSelfEmploymentPeriodicResponse[A])(f: A => B): ListSelfEmploymentPeriodicResponse[B] =
+      ListSelfEmploymentPeriodicResponse(fa.periods.map(f))
+  }
 }
+
+case class ListSelfEmploymentPeriodicHateoasData(nino: String, businessId: String) extends HateoasData

@@ -48,7 +48,7 @@ class ListSelfEmploymentPeriodicService @Inject()(listSelfEmploymentPeriodicConn
   private def desErrorMap =
     Map(
       "INVALID_NINO" -> NinoFormatError,
-      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
+      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError

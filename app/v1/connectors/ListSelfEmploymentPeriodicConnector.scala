@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
-import v1.models.response.listSEPeriodic.ListSelfEmploymentPeriodicResponse
+import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,10 +30,11 @@ class ListSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
                                                     val appConfig: AppConfig) extends BaseDesConnector {
   def listSEPeriodic(request: ListSelfEmploymentPeriodicRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[ListSelfEmploymentPeriodicResponse]] = {
+    ec: ExecutionContext): Future[DesOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]] = {
 
     get(
-      uri = DesUri[ListSelfEmploymentPeriodicResponse](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/periodic-summaries")
+      uri = DesUri[ListSelfEmploymentPeriodicResponse[PeriodDetails]]
+        (s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/periodic-summaries")
     )
   }
 }

@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DesOutcome, ListSelfEmploymentPeriodicConnector}
+import v1.controllers.EndpointLogContext
+import v1.models.errors.ErrorWrapper
+import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
 import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
+import v1.services.ListSelfEmploymentPeriodicService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListSelfEmploymentPeriodicConnector extends MockFactory {
+trait MockListSelfEmploymentPeriodicService extends MockFactory {
 
-  val mockListSelfEmploymentPeriodicConnector: ListSelfEmploymentPeriodicConnector = mock[ListSelfEmploymentPeriodicConnector]
+  val mockListSelfEmploymentPeriodicService: ListSelfEmploymentPeriodicService = mock[ListSelfEmploymentPeriodicService]
 
-  object MockListSelfEmploymentPeriodicConnector {
-
-    def listSelfEmployment(requestData: ListSelfEmploymentPeriodicRequest):
-    CallHandler[Future[DesOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]]] = {
-      (mockListSelfEmploymentPeriodicConnector
-        .listSEPeriodic(_: ListSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+  object MockListSelfEmploymentPeriodicService {
+    def listSelfEmploymentUpdatePeriods(requestData: ListSelfEmploymentPeriodicRequest):
+    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListSelfEmploymentPeriodicResponse[PeriodDetails]]]]] = {
+      (mockListSelfEmploymentPeriodicService
+        .listSelfEmploymentUpdatePeriods(_: ListSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
+        .expects(requestData, *, *, *)
     }
   }
-
 }

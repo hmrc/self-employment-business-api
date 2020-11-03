@@ -21,20 +21,19 @@ import support.UnitSpec
 
 class PeriodDetailsSpec extends UnitSpec {
 
-  val beforeGenerateModel = PeriodDetails("", "2020-01-01", "2020-02-02")
-  val afterGenerateModel = PeriodDetails("2020-01-01_2020-01-01", "2020-01-01", "2020-02-02")
+  private val model = PeriodDetails("2020-01-01_2020-02-02", "2020-01-01", "2020-02-02")
 
-  val json = Json.parse(
+  private val json = Json.parse(
     """
       |{
-      |   "periodId": "2020-01-01_2020-01-01",
+      |   "periodId": "2020-01-01_2020-02-02",
       |   "from": "2020-01-01",
       |   "to": "2020-02-02"
       |}
       |""".stripMargin
   )
 
-  val desJson = Json.parse(
+  private val desJson = Json.parse(
     """
       |{
       |   "transactionReference": "1111111111",
@@ -49,7 +48,7 @@ class PeriodDetailsSpec extends UnitSpec {
     "read from a json" when {
 
       "a valid request is made" in  {
-        desJson.as[PeriodDetails] shouldBe beforeGenerateModel
+        desJson.as[PeriodDetails] shouldBe model
       }
     }
   }
@@ -58,7 +57,7 @@ class PeriodDetailsSpec extends UnitSpec {
     "write to a model" when {
 
       "a valid request is made" in {
-        Json.toJson(afterGenerateModel) shouldBe json
+        Json.toJson(model) shouldBe json
       }
     }
   }
