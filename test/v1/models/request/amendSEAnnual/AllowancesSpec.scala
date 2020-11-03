@@ -94,7 +94,7 @@ class AllowancesSpec extends UnitSpec {
            |  "capitalAllowanceMainPool": 3.33,
            |  "capitalAllowanceSpecialRatePool": 4.44,
            |  "zeroEmissionGoodsVehicleAllowance": 5.55,
-           |  "enhancedCapitalAllowance": 6.66,
+           |  "enhanceCapitalAllowance": 6.66,
            |  "allowanceOnSales": 7.77,
            |  "capitalAllowanceSingleAssetPool": 8.88,
            |  "tradingIncomeAllowance": 9.99,
@@ -108,7 +108,7 @@ class AllowancesSpec extends UnitSpec {
            |{
            |  "annualInvestmentAllowance": 1.11,
            |  "capitalAllowanceMainPool": 3.33,
-           |  "enhancedCapitalAllowance": 6.66,
+           |  "enhanceCapitalAllowance": 6.66,
            |  "allowanceOnSales": 7.77,
            |  "tradingIncomeAllowance": 9.99,
            |  "structureAndBuildingAllowance": 10.10,

@@ -108,7 +108,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |      "capitalAllowanceSpecialRatePool": 200.00,
          |      "zeroEmissionGoodsVehicleAllowance": 200.00,
          |      "businessPremisesRenovationAllowance": 200.00,
-         |      "enhancedCapitalAllowance": 200.00,
+         |      "enhanceCapitalAllowance": 200.00,
          |      "allowanceOnSales": 200.00,
          |      "capitalAllowanceSingleAssetPool": 200.00,
          |      "tradingIncomeAllowance":  200.00,
