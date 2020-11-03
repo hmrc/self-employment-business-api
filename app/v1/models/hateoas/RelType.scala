@@ -27,4 +27,5 @@ object RelType {
   val DELETE_ANNUAL_SUMMARY_REL = "delete-self-employment-annual-summary"
 
   val AMEND_PERIODIC_UPDATE_REL = "amend-periodic-update"
+
 }
