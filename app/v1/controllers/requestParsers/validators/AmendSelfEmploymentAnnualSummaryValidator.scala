@@ -142,6 +142,14 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
       NumberValidation.validateOptional(
         field = allowances.tradingAllowance,
         path = s"/allowances/tradingAllowance"
+      ),
+      NumberValidation.validateOptional(
+        field = allowances.structureAndBuildingAllowance,
+        path = s"/allowances/structureAndBuildingAllowance"
+      ),
+      NumberValidation.validateOptional(
+        field = allowances.electricChargePointAllowance,
+        path = s"/allowances/electricChargePointAllowance"
       )
     )
   }

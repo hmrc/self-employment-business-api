@@ -25,12 +25,12 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
   val fullMtdModel: AmendAnnualSummaryBody =
     AmendAnnualSummaryBody(
       Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99))),
+      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10), Some(11.11))),
       Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))))
   val partialMtdModel: AmendAnnualSummaryBody =
     AmendAnnualSummaryBody(
       Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99))),
+      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10), Some(11.11))),
       None)
   val emptyMtdModel: AmendAnnualSummaryBody =
     AmendAnnualSummaryBody(None, None, None)
@@ -63,7 +63,9 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "enhancedCapitalAllowance": 6.66,
            |        "allowanceOnSales": 7.77,
            |        "capitalAllowanceSingleAssetPool": 8.88,
-           |        "tradingAllowance": 9.99
+           |        "tradingAllowance": 9.99,
+           |        "structureAndBuildingAllowance": 10.10,
+           |        "electricChargePointAllowance": 11.11
            |    },
            |    "nonFinancials": {
            |        "class4NicInfo":{
@@ -97,7 +99,9 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "enhancedCapitalAllowance": 6.66,
            |        "allowanceOnSales": 7.77,
            |        "capitalAllowanceSingleAssetPool": 8.88,
-           |        "tradingAllowance": 9.99
+           |        "tradingAllowance": 9.99,
+           |        "structureAndBuildingAllowance": 10.10,
+           |        "electricChargePointAllowance": 11.11
            |    }
            |}
            |""".stripMargin)
@@ -152,7 +156,9 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "enhancedCapitalAllowance": 6.66,
            |        "allowanceOnSales": 7.77,
            |        "capitalAllowanceSingleAssetPool": 8.88,
-           |        "tradingIncomeAllowance": 9.99
+           |        "tradingIncomeAllowance": 9.99,
+           |        "structureAndBuildingAllowance": 10.10,
+           |        "electricChargePointAllowance": 11.11
            |    },
            |    "annualNonFinancials": {
            |        "exemptFromPayingClass4Nics": true,
@@ -185,7 +191,9 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "enhancedCapitalAllowance": 6.66,
            |        "allowanceOnSales": 7.77,
            |        "capitalAllowanceSingleAssetPool": 8.88,
-           |        "tradingIncomeAllowance": 9.99
+           |        "tradingIncomeAllowance": 9.99,
+           |        "structureAndBuildingAllowance": 10.10,
+           |        "electricChargePointAllowance": 11.11
            |    }
            |}
            |""".stripMargin)
