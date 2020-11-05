@@ -14,7 +14,7 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Income associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Income associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "10000.89"
             }
           },
@@ -27,7 +27,7 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Income associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Income associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "10000.89"
             }
           },
