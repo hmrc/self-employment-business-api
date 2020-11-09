@@ -56,7 +56,7 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
               .asRight[ErrorWrapper]
           )
         } yield {
-          logger.info(
+          logger.warn(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 

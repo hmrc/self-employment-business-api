@@ -56,7 +56,7 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
               RetrieveSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper]
           )
         } yield {
-          logger.info(
+          logger.warn(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 

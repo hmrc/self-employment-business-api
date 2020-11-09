@@ -55,7 +55,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)).asRight[ErrorWrapper])
         } yield {
-          logger.info(
+          logger.warn(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
