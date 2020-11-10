@@ -81,7 +81,7 @@ class RetrieveSampleControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request.get)
         response.status shouldBe NOT_FOUND
-        response.json shouldBe Json.toJson(ErrorWrapper(Some(correlationId), NotFoundError))
+        response.json shouldBe Json.toJson(ErrorWrapper(correlationId, NotFoundError))
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }

@@ -32,8 +32,8 @@ trait MockAmendSampleConnector extends MockFactory {
 
     def amendSample(requestData: AmendSampleRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockAmendSampleConnector
-        .amendSample(_: AmendSampleRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .amendSample(_: AmendSampleRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 

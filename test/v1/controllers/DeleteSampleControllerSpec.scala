@@ -20,6 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteRetrieveRequestParser
 import v1.mocks.services.{MockDeleteRetrieveService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.DesTaxYear
@@ -35,7 +36,8 @@ class DeleteSampleControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteRetrieveService
-    with MockDeleteRetrieveRequestParser {
+    with MockDeleteRetrieveRequestParser
+    with MockIdGenerator {
 
   val nino: String = "AA123456A"
   val taxYear: String = "2017-18"
@@ -59,11 +61,13 @@ class DeleteSampleControllerSpec
       lookupService = mockMtdIdLookupService,
       requestParser = mockDeleteRetrieveRequestParser,
       service = mockDeleteRetrieveService,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   "DeleteSampleController" should {
@@ -93,7 +97,7 @@ class DeleteSampleControllerSpec
 
             MockDeleteRetrieveRequestParser
               .parse(rawData)
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(correlationId, error, None)))
 
             val result: Future[Result] = controller.deleteSample(nino, taxYear)(fakeDeleteRequest)
 
@@ -124,7 +128,7 @@ class DeleteSampleControllerSpec
 
             MockDeleteRetrieveService
               .delete()
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.deleteSample(nino, taxYear)(fakeDeleteRequest)
 

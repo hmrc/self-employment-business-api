@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSummaryRequestParser
 import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
@@ -41,7 +42,8 @@ class AmendAnnualSummaryControllerSpec
     with MockMtdIdLookupService
     with MockAmendAnnualSummaryService
     with MockAmendSelfEmploymentAnnualSummaryRequestParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockIdGenerator {
 
   trait Test {
     val hc = HeaderCarrier()
@@ -52,11 +54,13 @@ class AmendAnnualSummaryControllerSpec
       parser = mockAmendSelfEmploymentAnnualSummaryRequestParser,
       service = mockAmendAnnualSummaryService,
       hateoasFactory = mockHateoasFactory,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   private val nino = "AA123456A"
@@ -168,7 +172,7 @@ class AmendAnnualSummaryControllerSpec
 
             MockAmendSelfEmploymentAnnualSummaryRequestParser
               .requestFor(rawData)
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(correlationId, error, None)))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
 
@@ -202,7 +206,7 @@ class AmendAnnualSummaryControllerSpec
 
             MockAmendAnnualSummaryService
               .amendAnnualSummary(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
 

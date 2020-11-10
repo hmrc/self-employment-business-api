@@ -29,7 +29,8 @@ class AmendSampleConnector @Inject()(val http: HttpClient,
 
   def amendSample(request: AmendSampleRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[Unit]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 

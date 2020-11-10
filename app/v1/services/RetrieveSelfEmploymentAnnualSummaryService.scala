@@ -36,7 +36,8 @@ class RetrieveSelfEmploymentAnnualSummaryService @Inject()(retrieveSelfEmploymen
     def retrieveSelfEmploymentAnnualSummary(request: RetrieveSelfEmploymentAnnualSummaryRequest)(
                                          implicit hc: HeaderCarrier,
                                          ec: ExecutionContext,
-                                         logContext: EndpointLogContext): Future[RetrieveSelfEmploymentAnnualSummaryServiceOutcome] = {
+                                         logContext: EndpointLogContext,
+                                         correlationId: String): Future[RetrieveSelfEmploymentAnnualSummaryServiceOutcome] = {
 
       val result = for {
         desResponseWrapper <- EitherT(retrieveSelfEmploymentAnnualSummaryConnector.retrieveSEAnnual(request)).leftMap(mapDesErrors(desErrorMap))

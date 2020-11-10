@@ -29,7 +29,7 @@ trait MockListSelfEmploymentPeriodicRequestParser extends MockFactory {
 
   object MockListSelfEmploymentPeriodicRequestParser {
     def parse(data: ListSelfEmploymentPeriodicRawData): CallHandler[Either[ErrorWrapper, ListSelfEmploymentPeriodicRequest]] = {
-      (mockListSelfEmploymentPeriodicRequestParser.parseRequest(_: ListSelfEmploymentPeriodicRawData)).expects(data)
+      (mockListSelfEmploymentPeriodicRequestParser.parseRequest(_: ListSelfEmploymentPeriodicRawData)(_: String)).expects(data, *)
     }
   }
 }

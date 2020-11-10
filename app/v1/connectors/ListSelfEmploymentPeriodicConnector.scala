@@ -30,7 +30,8 @@ class ListSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
                                                     val appConfig: AppConfig) extends BaseDesConnector {
   def listSEPeriodic(request: ListSelfEmploymentPeriodicRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]] = {
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]] = {
 
     get(
       uri = DesUri[ListSelfEmploymentPeriodicResponse[PeriodDetails]]

@@ -32,8 +32,8 @@ trait MockCreateSelfEmploymentPeriodicConnector extends MockFactory {
 
     def createSelfEmploymentPeriodic(requestData: CreateSelfEmploymentPeriodicRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockCreateSelfEmploymentPeriodicConnector
-        .createPeriodic(_: CreateSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .createPeriodic(_: CreateSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 }

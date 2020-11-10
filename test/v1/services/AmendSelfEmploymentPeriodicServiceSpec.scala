@@ -33,7 +33,7 @@ class AmendSelfEmploymentPeriodicServiceSpec extends UnitSpec {
   val nino = Nino("AA123456A")
   val businessId = "XAIS12345678910"
   val periodId = "2019-01-25_2020-01-25"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
 
   private val requestData = AmendPeriodicRequest(nino, businessId, periodId, AmendPeriodicBody(None, None, None))
 
@@ -66,7 +66,7 @@ class AmendSelfEmploymentPeriodicServiceSpec extends UnitSpec {
           MockAmendSelfEmploymentPeriodicConnector.amendPeriodicUpdate(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.amendPeriodicUpdate(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          await(service.amendPeriodicUpdate(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

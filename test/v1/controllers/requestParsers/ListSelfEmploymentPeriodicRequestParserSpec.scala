@@ -26,6 +26,7 @@ class ListSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
+  implicit val correlationId = "X-123"
 
   val rawData = ListSelfEmploymentPeriodicRawData(
     nino = nino,
@@ -55,7 +56,7 @@ class ListSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(rawData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
@@ -63,7 +64,7 @@ class ListSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, BusinessIdFormatError))
 
         parser.parseRequest(rawData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError))))
       }
     }
   }

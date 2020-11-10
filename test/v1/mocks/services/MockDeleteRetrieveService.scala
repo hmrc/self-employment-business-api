@@ -38,14 +38,14 @@ trait MockDeleteRetrieveService extends MockFactory {
 
     def delete(desErrorMap: Map[String, MtdError] = defaultDesMap): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteRetrieveService
-        .delete(_: Map[String, MtdError])(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Unit]))
-        .expects(*, *, *, *, *)
+        .delete(_: Map[String, MtdError])(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Unit], _: String))
+        .expects(*, *, *, *, *, *)
     }
 
     def retrieve[Resp: Reads](desErrorMap: Map[String, MtdError] = defaultDesMap): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Resp]]]] = {
       (mockDeleteRetrieveService
-        .retrieve[Resp](_: Map[String, MtdError])(_: Format[Resp], _: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Resp]))
-        .expects(*, *, *, *, *, *)
+        .retrieve[Resp](_: Map[String, MtdError])(_: Format[Resp], _: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Resp], _: String))
+        .expects(*, *, *, *, *, *, *)
     }
   }
 

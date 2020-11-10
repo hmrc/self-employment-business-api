@@ -30,7 +30,7 @@ trait MockRetrieveSelfEmploymentAnnualSummaryRequestParser extends MockFactory {
 
   object MockRetrieveSelfEmploymentAnnualSummaryRequestParser {
     def parse(data: RetrieveSelfEmploymentAnnualSummaryRawData): CallHandler[Either[ErrorWrapper, RetrieveSelfEmploymentAnnualSummaryRequest]] = {
-      (mockRetrieveSelfEmploymentAnnualSummaryRequestParser.parseRequest(_: RetrieveSelfEmploymentAnnualSummaryRawData)).expects(data)
+      (mockRetrieveSelfEmploymentAnnualSummaryRequestParser.parseRequest(_: RetrieveSelfEmploymentAnnualSummaryRawData)(_: String)).expects(data, *)
     }
   }
 }

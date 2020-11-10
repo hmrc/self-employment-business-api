@@ -33,7 +33,7 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
   val taxYear = "2017-18"
   val nino = Nino("AA123456A")
   val businessId = "XAIS12345678910"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
 
   private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
 
@@ -66,7 +66,7 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
           MockDeleteSelfEmploymentAnnualSummaryConnector.deleteSelfEmploymentAnnualSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.deleteSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          await(service.deleteSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

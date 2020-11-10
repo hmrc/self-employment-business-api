@@ -34,7 +34,7 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
   val nino = Nino("AA123456A")
   val businessId = "XAIS12345678910"
   val periodId = "2019-01-25_2020-01-25"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
 
   val response = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
@@ -84,7 +84,7 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
           MockRetrieveSelfEmploymentPeriodicUpdateConnector.retrieveSelfEmployment(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.retrieveSelfEmploymentPeriodicUpdate(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          await(service.retrieveSelfEmploymentPeriodicUpdate(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

@@ -30,7 +30,8 @@ class AmendSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
 
   def amendPeriodicUpdates(request: AmendPeriodicRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[Unit]] = {
 
     val nino = request.nino.nino
     val businessId = request.businessId

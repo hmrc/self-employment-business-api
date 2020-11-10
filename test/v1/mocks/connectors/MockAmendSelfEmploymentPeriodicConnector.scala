@@ -32,8 +32,8 @@ trait MockAmendSelfEmploymentPeriodicConnector extends MockFactory {
 
     def amendPeriodicUpdate(requestData: AmendPeriodicRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockAmendPeriodicUpdateConnector
-        .amendPeriodicUpdates(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .amendPeriodicUpdates(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 }

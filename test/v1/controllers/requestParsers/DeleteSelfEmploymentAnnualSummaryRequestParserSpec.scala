@@ -27,6 +27,7 @@ class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val taxYear: String = "2017-18"
+  implicit val correlationId = "X-123"
 
   val deleteSelfEmploymentAnnualSummaryRawData: DeleteSelfEmploymentAnnualSummaryRawData = DeleteSelfEmploymentAnnualSummaryRawData(
     nino = nino,
@@ -56,7 +57,7 @@ class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(deleteSelfEmploymentAnnualSummaryRawData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
@@ -64,7 +65,7 @@ class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, BusinessIdFormatError, TaxYearFormatError))
 
         parser.parseRequest(deleteSelfEmploymentAnnualSummaryRawData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError, TaxYearFormatError))))
       }
     }
   }

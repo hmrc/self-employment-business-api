@@ -36,7 +36,8 @@ class AmendSampleService @Inject()(connector: AmendSampleConnector) extends DesR
   def amendSample(request: AmendSampleRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+    logContext: EndpointLogContext,
+    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.amendSample(request)).leftMap(mapDesErrors(desErrorMap))

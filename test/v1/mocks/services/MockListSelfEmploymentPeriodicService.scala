@@ -36,8 +36,8 @@ trait MockListSelfEmploymentPeriodicService extends MockFactory {
     def listSelfEmploymentUpdatePeriods(requestData: ListSelfEmploymentPeriodicRequest):
     CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListSelfEmploymentPeriodicResponse[PeriodDetails]]]]] = {
       (mockListSelfEmploymentPeriodicService
-        .listSelfEmploymentUpdatePeriods(_: ListSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .listSelfEmploymentUpdatePeriods(_: ListSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

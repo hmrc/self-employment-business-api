@@ -31,7 +31,7 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
   private val nino = "AA123456A"
   val businessId = "XAIS12345678910"
   private val taxYear = "2017-18"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
 
   private val requestBody =  AmendAnnualSummaryBody(
     Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
@@ -74,7 +74,7 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
           MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

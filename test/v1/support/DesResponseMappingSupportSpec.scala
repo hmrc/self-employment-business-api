@@ -55,7 +55,7 @@ class DesResponseMappingSupportSpec extends UnitSpec {
     "passed an empty response" should {
       "return a NotFoundError error" in {
         mapping.validateRetrieveResponse(ResponseWrapper(correlationId, TestClass(None))) shouldBe
-          Left(ErrorWrapper(Some(correlationId), NotFoundError))
+          Left(ErrorWrapper(correlationId, NotFoundError))
       }
     }
     "passed anything else" should {
@@ -71,14 +71,14 @@ class DesResponseMappingSupportSpec extends UnitSpec {
       "the error code is in the map provided" must {
         "use the mapping and wrap" in {
           mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("ERR1")))) shouldBe
-            ErrorWrapper(Some(correlationId), Error1)
+            ErrorWrapper(correlationId, Error1)
         }
       }
 
       "the error code is not in the map provided" must {
         "default to DownstreamError and wrap" in {
           mapping.mapDesErrors (errorCodeMap)(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode("UNKNOWN")))) shouldBe
-            ErrorWrapper(Some(correlationId), DownstreamError)
+            ErrorWrapper(correlationId, DownstreamError)
         }
       }
     }
@@ -87,21 +87,21 @@ class DesResponseMappingSupportSpec extends UnitSpec {
       "the error codes is in the map provided" must {
         "use the mapping and wrap with main error type of BadRequest" in {
           mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, DesErrors(List(DesErrorCode("ERR1"), DesErrorCode("ERR2"))))) shouldBe
-            ErrorWrapper(Some(correlationId), BadRequestError, Some(Seq(Error1, Error2)))
+            ErrorWrapper(correlationId, BadRequestError, Some(Seq(Error1, Error2)))
         }
       }
 
       "the error code is not in the map provided" must {
         "default main error to DownstreamError ignore other errors" in {
           mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, DesErrors(List(DesErrorCode("ERR1"), DesErrorCode("UNKNOWN"))))) shouldBe
-            ErrorWrapper(Some(correlationId), DownstreamError)
+            ErrorWrapper(correlationId, DownstreamError)
         }
       }
 
       "one of the mapped errors is DownstreamError" must {
         "wrap the errors with main error type of DownstreamError" in {
           mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, DesErrors(List(DesErrorCode("ERR1"), DesErrorCode("DS"))))) shouldBe
-            ErrorWrapper(Some(correlationId), DownstreamError)
+            ErrorWrapper(correlationId, DownstreamError)
         }
       }
     }
@@ -109,14 +109,14 @@ class DesResponseMappingSupportSpec extends UnitSpec {
     "the error code is an OutboundError" must {
       "return the error as is (in an ErrorWrapper)" in {
         mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain))) shouldBe
-          ErrorWrapper(Some(correlationId), ErrorBvrMain)
+          ErrorWrapper(correlationId, ErrorBvrMain)
       }
     }
 
     "the error code is an OutboundError with multiple errors" must {
       "return the error as is (in an ErrorWrapper)" in {
         mapping.mapDesErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain, Some(Seq(ErrorBvr))))) shouldBe
-          ErrorWrapper(Some(correlationId), ErrorBvrMain, Some(Seq(ErrorBvr)))
+          ErrorWrapper(correlationId, ErrorBvrMain, Some(Seq(ErrorBvr)))
       }
     }
   }

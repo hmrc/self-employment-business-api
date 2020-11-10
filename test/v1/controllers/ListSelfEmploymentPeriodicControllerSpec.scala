@@ -20,9 +20,10 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListSelfEmploymentPeriodicRequestParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockListSelfEmploymentPeriodicService}
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListSelfEmploymentPeriodicService, MockMtdIdLookupService}
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -39,7 +40,8 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
   with MockListSelfEmploymentPeriodicService
   with MockListSelfEmploymentPeriodicRequestParser
   with MockHateoasFactory
-  with MockAuditService {
+  with MockAuditService
+  with MockIdGenerator {
 
   trait Test {
     val hc = HeaderCarrier()
@@ -51,10 +53,12 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
       service = mockListSelfEmploymentPeriodicService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   private val nino = "AA123456A"
@@ -133,7 +137,7 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
 
             MockListSelfEmploymentPeriodicRequestParser
               .parse(rawData)
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(correlationId, error, None)))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)
 
@@ -161,7 +165,7 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
 
             MockListSelfEmploymentPeriodicService
               .listSelfEmploymentUpdatePeriods(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)
 

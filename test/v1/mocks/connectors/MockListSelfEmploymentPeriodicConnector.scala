@@ -34,8 +34,8 @@ trait MockListSelfEmploymentPeriodicConnector extends MockFactory {
     def listSelfEmployment(requestData: ListSelfEmploymentPeriodicRequest):
     CallHandler[Future[DesOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]]] = {
       (mockListSelfEmploymentPeriodicConnector
-        .listSEPeriodic(_: ListSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .listSEPeriodic(_: ListSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 
