@@ -55,7 +55,7 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper])
         } yield {
-          logger.info(
+          logger.warn(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 

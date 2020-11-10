@@ -48,7 +48,7 @@ extends AuthorisedController(cc) with BaseController with Logging {
           parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.deleteSelfEmploymentAnnualSummary(parsedRequest))
         } yield {
-          logger.info(
+          logger.warn(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 

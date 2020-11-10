@@ -43,13 +43,13 @@ trait BaseController {
   protected def getCorrelationId(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): String = {
     errorWrapper.correlationId match {
       case Some(correlationId) =>
-        logger.info(
+        logger.warn(
           s"[${endpointLogContext.controllerName}][getCorrelationId] - " +
             s"Error received from DES ${Json.toJson(errorWrapper)} with CorrelationId: $correlationId")
         correlationId
       case None =>
         val correlationId = UUID.randomUUID().toString
-        logger.info(
+        logger.warn(
           s"[${endpointLogContext.controllerName}][getCorrelationId] - " +
             s"Validation error: ${Json.toJson(errorWrapper)} with CorrelationId: $correlationId")
         correlationId
