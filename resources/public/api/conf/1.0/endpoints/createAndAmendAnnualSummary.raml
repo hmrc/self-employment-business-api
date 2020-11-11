@@ -12,7 +12,7 @@ is:
   - errors.notFound
   - errors.clientOrAgentNotAuthorised
 displayName: Create and Amend Self-Employment Annual Summary [test only]
-description: Create or amend a self-employment annual summary for a tax year.
+description: This end point allows a developer to create or amend a self-employment annual summary for a tax year. A National Insurance number, Business ID and tax year must be provided.
 (annotations.sandboxData): !include ../scenarios/create_and_amend_annual_summary_scenarios.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
