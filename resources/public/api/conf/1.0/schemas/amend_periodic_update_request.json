@@ -77,12 +77,12 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Expenses associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
@@ -95,12 +95,12 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Expenses associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
@@ -113,12 +113,12 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Expenses associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
@@ -167,12 +167,12 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Expenses associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
@@ -185,12 +185,12 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Expenses associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
@@ -203,12 +203,12 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Expenses associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
@@ -280,7 +280,7 @@
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
@@ -311,12 +311,12 @@
           "properties": {
             "amount": {
               "type": "number",
-              "description": "Expenses associated with the running of the business. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             },
             "disallowableAmount": {
               "type": "number",
-              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0.00 and 99999999999.99 up to two decimal places.",
+              "description": "Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to two decimal places.",
               "example": "1000.45"
             }
           },
