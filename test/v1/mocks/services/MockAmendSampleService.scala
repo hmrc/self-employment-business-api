@@ -35,8 +35,8 @@ trait MockAmendSampleService extends MockFactory {
 
     def amendSample(requestData: AmendSampleRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendSampleService
-        .amendSample(_: AmendSampleRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .amendSample(_: AmendSampleRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
   }
 

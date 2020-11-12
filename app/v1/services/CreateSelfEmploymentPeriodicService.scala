@@ -37,7 +37,8 @@ class CreateSelfEmploymentPeriodicService @Inject()(connector: CreateSelfEmploym
   def createPeriodic(request: CreateSelfEmploymentPeriodicRequest)(
                     implicit hc: HeaderCarrier,
                     ec:ExecutionContext,
-                    logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponse]]] = {
+                    logContext: EndpointLogContext,
+                    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodic(request)).leftMap(mapDesErrors(desErrorMap))

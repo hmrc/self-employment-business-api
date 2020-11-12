@@ -32,7 +32,8 @@ class RetrieveSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClien
                                                              val appConfig: AppConfig) extends BaseDesConnector {
   def retrieveSEAnnual(request: RetrieveSelfEmploymentAnnualSummaryRequest)(
                     implicit hc: HeaderCarrier,
-                    ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]] = {
+                    ec: ExecutionContext,
+                    correlationId: String): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]] = {
 
     get(
       uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponse](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")

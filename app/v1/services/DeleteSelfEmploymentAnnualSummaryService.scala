@@ -36,7 +36,8 @@ class DeleteSelfEmploymentAnnualSummaryService @Inject()(deleteSelfEmploymentAnn
     def deleteSelfEmploymentAnnualSummary(request: DeleteSelfEmploymentAnnualSummaryRequest)(
                                          implicit hc: HeaderCarrier,
                                          ec: ExecutionContext,
-                                         logContext: EndpointLogContext): Future[DeleteSelfEmploymentAnnualSummaryServiceOutcome] = {
+                                         logContext: EndpointLogContext,
+                                         correlationId: String): Future[DeleteSelfEmploymentAnnualSummaryServiceOutcome] = {
 
       val result = for {
         desResponseWrapper <- EitherT(deleteSelfEmploymentAnnualSummaryConnector.deleteSEAnnual(request)).leftMap(mapDesErrors(desErrorMap))

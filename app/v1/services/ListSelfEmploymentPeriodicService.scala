@@ -36,7 +36,8 @@ class ListSelfEmploymentPeriodicService @Inject()(listSelfEmploymentPeriodicConn
   def listSelfEmploymentUpdatePeriods(request: ListSelfEmploymentPeriodicRequest)(
                                       implicit hc: HeaderCarrier,
                                       ec: ExecutionContext,
-                                      logContext: EndpointLogContext): Future[ListSelfEmploymentUpdatePeriodsServiceOutcome] = {
+                                      logContext: EndpointLogContext,
+                                      correlationId: String): Future[ListSelfEmploymentUpdatePeriodsServiceOutcome] = {
 
     val result = for {
       desResponseWrapper <- EitherT(listSelfEmploymentPeriodicConnector.listSEPeriodic(request)).leftMap(mapDesErrors(desErrorMap))

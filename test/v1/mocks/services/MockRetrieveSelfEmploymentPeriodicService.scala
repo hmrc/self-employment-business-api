@@ -36,8 +36,8 @@ trait MockRetrieveSelfEmploymentPeriodicService extends MockFactory {
     def retrieve(requestData: RetrieveSelfEmploymentPeriodicRequest):
     CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveSelfEmploymentPeriodicResponse]]]] = {
       (mockRetrieveSelfEmploymentPeriodicService
-        .retrieveSelfEmploymentPeriodicUpdate(_: RetrieveSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .retrieveSelfEmploymentPeriodicUpdate(_: RetrieveSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
   }
 }

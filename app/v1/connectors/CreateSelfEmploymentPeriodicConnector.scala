@@ -31,7 +31,8 @@ class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
 
   def createPeriodic(request: CreateSelfEmploymentPeriodicRequest)(
                     implicit hc: HeaderCarrier,
-                    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+                    ec: ExecutionContext,
+                    correlationId: String): Future[DesOutcome[Unit]] = {
 
     val nino = request.nino
     val businessId = request.businessId

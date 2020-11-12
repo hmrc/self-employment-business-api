@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockCreateSelfEmploymentPeriodicRequestParser
 import v1.mocks.services.{MockCreateSelfEmploymentPeriodicService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -39,7 +40,8 @@ class CreateSelfEmploymentPeriodicControllerSpec
     with MockMtdIdLookupService
     with MockCreateSelfEmploymentPeriodicService
     with MockCreateSelfEmploymentPeriodicRequestParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockIdGenerator {
 
   trait Test {
     val hc = HeaderCarrier()
@@ -50,11 +52,13 @@ class CreateSelfEmploymentPeriodicControllerSpec
       parser = mockCreateSelfEmploymentPeriodicRequestParser,
       service = mockCreateSelfEmploymentPeriodicService,
       hateoasFactory = mockHateoasFactory,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
   private val nino = "AA123456A"
@@ -212,7 +216,7 @@ class CreateSelfEmploymentPeriodicControllerSpec
 
             MockCreateSelfEmploymentPeriodicRequestParser
               .parseRequest(rawData)
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(correlationId, error, None)))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
 
@@ -246,7 +250,7 @@ class CreateSelfEmploymentPeriodicControllerSpec
 
             MockCreateSelfEmploymentPeriodicService
               .createPeriodic(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
 

@@ -28,7 +28,7 @@ trait MockDeleteSelfEmploymentAnnualSummaryRequestParser extends MockFactory {
 
   object MockDeleteSelfEmploymentAnnualSummaryRequestParser {
     def parse(data: DeleteSelfEmploymentAnnualSummaryRawData): CallHandler[Either[ErrorWrapper, DeleteSelfEmploymentAnnualSummaryRequest]] = {
-      (mockDeleteSelfEmploymentAnnualSummaryRequestParser.parseRequest(_: DeleteSelfEmploymentAnnualSummaryRawData)).expects(data)
+      (mockDeleteSelfEmploymentAnnualSummaryRequestParser.parseRequest(_: DeleteSelfEmploymentAnnualSummaryRawData)(_: String)).expects(data, *)
     }
   }
 }

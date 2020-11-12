@@ -35,8 +35,8 @@ trait MockDeleteSelfEmploymentAnnualSummaryService extends MockFactory {
 
     def delete(requestData: DeleteSelfEmploymentAnnualSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteSelfEmploymentAnnualSummaryService
-        .deleteSelfEmploymentAnnualSummary(_: DeleteSelfEmploymentAnnualSummaryRequest)(_:HeaderCarrier, _: ExecutionContext, _: EndpointLogContext))
-        .expects(requestData, *, *, *)
+        .deleteSelfEmploymentAnnualSummary(_: DeleteSelfEmploymentAnnualSummaryRequest)(_:HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
   }
 

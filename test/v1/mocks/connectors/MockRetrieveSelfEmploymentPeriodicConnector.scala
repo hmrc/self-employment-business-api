@@ -34,8 +34,8 @@ trait MockRetrieveSelfEmploymentPeriodicConnector extends MockFactory {
     def retrieveSelfEmployment(requestData: RetrieveSelfEmploymentPeriodicRequest):
     CallHandler[Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponse]]] = {
       (mockRetrieveSelfEmploymentPeriodicUpdateConnector
-        .retrieveSEAnnual(_: RetrieveSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .retrieveSEAnnual(_: RetrieveSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 

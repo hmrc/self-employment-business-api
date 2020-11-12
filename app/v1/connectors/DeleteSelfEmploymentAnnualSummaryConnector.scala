@@ -31,7 +31,8 @@ class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
                                                            val appConfig: AppConfig) extends BaseDesConnector {
   def deleteSEAnnual(request: DeleteSelfEmploymentAnnualSummaryRequest)(
                     implicit hc: HeaderCarrier,
-                    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+                    ec: ExecutionContext,
+                    correlationId: String): Future[DesOutcome[Unit]] = {
 
     put(
       body = """{}""",

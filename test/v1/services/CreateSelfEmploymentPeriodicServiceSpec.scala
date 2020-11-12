@@ -30,7 +30,7 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
   private val nino = "AA123456A"
   private val businessId = "XAIS12345678910"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
 
 
   private val requestBody = CreateSelfEmploymentPeriodicBody(
@@ -96,7 +96,7 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
           MockCreateSelfEmploymentPeriodicConnector.createSelfEmploymentPeriodic(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.createPeriodic(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          await(service.createPeriodic(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

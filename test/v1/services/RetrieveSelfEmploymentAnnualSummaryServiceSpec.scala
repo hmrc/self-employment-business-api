@@ -35,7 +35,7 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
   val nino = Nino("AA123456A")
   val businessId = "XAIS12345678910"
   val taxYear = "2019-20"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
 
   val response = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(
@@ -97,7 +97,7 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
           MockRetrieveSelfEmploymentConnector.retrieveSelfEmployment(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.retrieveSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          await(service.retrieveSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

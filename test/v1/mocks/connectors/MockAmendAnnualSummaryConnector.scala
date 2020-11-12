@@ -32,8 +32,8 @@ trait MockAmendAnnualSummaryConnector extends MockFactory {
 
     def amendAnnualSummary(requestData: AmendAnnualSummaryRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockAmendAnnualSummaryConnector
-        .amendAnnualSummary(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(requestData, *, *)
+        .amendAnnualSummary(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(requestData, *, *, *)
     }
   }
 }

@@ -31,7 +31,8 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
 
   def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[Unit]] = {
 
     val nino = request.nino.nino
     val taxYear = request.taxYear

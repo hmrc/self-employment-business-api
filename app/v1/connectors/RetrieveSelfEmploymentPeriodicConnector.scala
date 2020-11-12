@@ -30,7 +30,8 @@ class RetrieveSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
                                                         val appConfig: AppConfig) extends BaseDesConnector {
   def retrieveSEAnnual(request: RetrieveSelfEmploymentPeriodicRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponse]] = {
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponse]] = {
 
     val fromDate = request.periodId.substring(0, 10)
     val toDate = request.periodId.substring(11, 21)

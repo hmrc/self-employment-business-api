@@ -30,7 +30,7 @@ class AmendSampleServiceSpec extends ServiceSpec {
 
   private val nino = "AA123456A"
   private val taxYear = "2017-18"
-  private val correlationId = "X-123"
+  implicit val correlationId = "X-123"
 
   private val requestBody = AmendSampleRequestBody(
     data = "someData"
@@ -70,7 +70,7 @@ class AmendSampleServiceSpec extends ServiceSpec {
           MockAmendSampleConnector.amendSample(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.amendSample(requestData)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+          await(service.amendSample(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

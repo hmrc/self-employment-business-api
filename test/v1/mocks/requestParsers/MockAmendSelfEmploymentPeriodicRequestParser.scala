@@ -28,7 +28,7 @@ trait MockAmendSelfEmploymentPeriodicRequestParser extends MockFactory {
 
   object MockAmendSelfEmploymentPeriodicRequestParser {
     def requestFor(data: AmendPeriodicRawData): CallHandler[Either[ErrorWrapper, AmendPeriodicRequest]] = {
-      (mockAmendSelfEmploymentPeriodicRequestParser.parseRequest(_: AmendPeriodicRawData)).expects(data)
+      (mockAmendSelfEmploymentPeriodicRequestParser.parseRequest(_: AmendPeriodicRawData)(_: String)).expects(data, *)
     }
   }
 
