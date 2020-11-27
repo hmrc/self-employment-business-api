@@ -22,21 +22,51 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import v1.models.domain.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {
     val nino: String = "AA123456A"
-    val taxYear: String = "2017-18"
+    val businessId: String = "XAIS12345678910"
+    val taxYear: String = "2020-21"
+    val desTaxYear: String = "2021"
     val data: String = "someData"
-    val correlationId: String = "X-123"
 
     val requestJson: String =
       s"""
          |{
-         |"data": "$data"
+         |   "adjustments": {
+         |        "includedNonTaxableProfits": 1.11,
+         |        "basisAdjustment": 2.22,
+         |        "overlapReliefUsed": 3.33,
+         |        "accountingAdjustment": 4.44,
+         |        "averagingAdjustment": 5.55,
+         |        "lossBroughtForward": 6.66,
+         |        "outstandingBusinessIncome": 7.77,
+         |        "balancingChargeBPRA": 8.88,
+         |        "balancingChargeOther": 9.99,
+         |        "goodsAndServicesOwnUse": 10.10
+         |    },
+         |    "allowances": {
+         |        "annualInvestmentAllowance": 1.11,
+         |        "businessPremisesRenovationAllowance": 2.22,
+         |        "capitalAllowanceMainPool": 3.33,
+         |        "capitalAllowanceSpecialRatePool": 4.44,
+         |        "zeroEmissionGoodsVehicleAllowance": 5.55,
+         |        "enhancedCapitalAllowance": 6.66,
+         |        "allowanceOnSales": 7.77,
+         |        "capitalAllowanceSingleAssetPool": 8.88,
+         |        "tradingAllowance": 9.99,
+         |        "structureAndBuildingAllowance": 10.10,
+         |        "electricChargePointAllowance": 11.11
+         |    },
+         |    "nonFinancials": {
+         |        "class4NicInfo":{
+         |            "isExempt": true,
+         |            "exemptionCode": "001 - Non Resident"
+         |        }
+         |    }
          |}
         """.stripMargin
 
@@ -44,11 +74,11 @@ class AuthISpec extends IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"/sample/$nino/$taxYear")
+      buildRequest(s"/$nino/$businessId/annual/$taxYear")
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
 
-    def desUri: String = s"/some-placeholder/template/$nino/${DesTaxYear.fromMtd(taxYear)}"
+    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
 
     val desResponse: JsValue = Json.parse(
       """
