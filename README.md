@@ -2,15 +2,13 @@ Self Employment Business API
 ========================
 The Self Employment Business API allows software packages to:
 
-```
-· to create or amend a self-employment annual summary for a tax year.
-· to delete the self-employment annual summary for a tax year.
-· to retrieve a self-employment annual summary for a tax year.
-· to create a self-employment periodic update for submission of periodic data
-· to amend a self-employment periodic update.
-· to retrieve a list of all self-employment update periods.
-· to retrieve a single self-employment periodic update for a given identifier.
-```
+* to create or amend a self-employment annual summary for a tax year.
+* to delete the self-employment annual summary for a tax year.
+* to retrieve a self-employment annual summary for a tax year.
+* to create a self-employment periodic update for submission of periodic data
+* to amend a self-employment periodic update.
+* to retrieve a list of all self-employment update periods.
+* to retrieve a single self-employment periodic update for a given identifier.
 
 ## Requirements
 - Scala 2.12.x
