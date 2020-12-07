@@ -38,10 +38,10 @@ Then go to http://localhost:9680/api-documentation/docs/api/preview and use this
 `http://localhost:7801/api/conf/1.0/application.raml`
 
 ## Reporting Issues
-You can create a GitHub issue [here](https://github.com/hmrc/individuals-self-employment-business-api/issues)
+You can create a GitHub issue [here](https://github.com/hmrc/self-employment-business-api/issues)
 
 ## API Reference / Documentation 
-Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation)
+Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/self-employment-business-api/1.0)
 
 ## License
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
