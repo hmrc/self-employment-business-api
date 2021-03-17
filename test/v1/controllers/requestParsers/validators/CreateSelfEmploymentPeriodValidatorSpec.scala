@@ -370,7 +370,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |   }
             |}
             |""".stripMargin
-        ))) shouldBe List(ToDateFormatError, FromDateFormatError)
+        ))) shouldBe List(FromDateFormatError, ToDateFormatError)
       }
     }
 
