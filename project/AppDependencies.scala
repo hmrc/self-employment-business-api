@@ -22,12 +22,12 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-backend-play-27" % "4.0.0",
+    "uk.gov.hmrc" %% "bootstrap-backend-play-27" % "4.1.0",
     "uk.gov.hmrc"   %% "domain"            % "5.10.0-play-27",
-    "org.typelevel" %% "cats-core"         % "2.1.1",
+    "org.typelevel" %% "cats-core"         % "2.4.2",
     compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.1" cross CrossVersion.full),
     "com.github.ghik" % "silencer-lib" % "1.7.1" % Provided cross CrossVersion.full,
-    "com.chuusai"   %% "shapeless"         % "2.3.3"
+    "com.chuusai"   %% "shapeless"         % "2.4.0-M1"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
