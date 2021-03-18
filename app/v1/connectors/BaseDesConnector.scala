@@ -19,9 +19,8 @@ package v1.connectors
 import config.AppConfig
 import play.api.Logger
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
-
 import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseDesConnector {
