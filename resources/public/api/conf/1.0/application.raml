@@ -39,9 +39,10 @@ uses:
     /{businessId}:
       uriParameters:
         businessId:
-          description: 'An identifier for the business, unique to the customer. Must conform to the regular expression ^X[A-Z0-9]{1}IS[0-9]{11}$.'
+          description: 'An identifier for the business, unique to the customer. Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`.'
           type: string
           example: XAIS12345678910
+          pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
       /annual/{taxYear}:
         uriParameters:
           taxYear:
