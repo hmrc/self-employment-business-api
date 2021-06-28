@@ -18,7 +18,7 @@ package v1.services
 
 import support.UnitSpec
 import v1.controllers.EndpointLogContext
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.connectors.MockRetrieveSelfEmploymentAnnualSummaryConnector
 import v1.models.domain.ex.MtdEx._
 import v1.models.errors._
