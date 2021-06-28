@@ -40,7 +40,7 @@ class BaseDesConnectorSpec extends ConnectorSpec {
   implicit val httpReads: HttpReads[DesOutcome[Result]] = mock[HttpReads[DesOutcome[Result]]]
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: BaseDesConnector = new BaseDesConnector {
+    val connector: BaseDownstreamConnector = new BaseDownstreamConnector {
       val http: HttpClient = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
