@@ -38,4 +38,3 @@ object Nino extends (String => Nino) {
   val validPrefixes: Seq[String] = validFirstCharacters.flatMap(a => validSecondCharacters.map(a + _)).filterNot(invalidPrefixes.contains(_))
   val validSuffixes: Seq[String] = ('A' to 'D').map(_.toString)
 }
-
