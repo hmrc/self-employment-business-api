@@ -75,4 +75,5 @@ object ConfidenceLevelConfig {
       authValidationEnabled = config.getBoolean("auth-validation.enabled")
     )
   }
+
 }

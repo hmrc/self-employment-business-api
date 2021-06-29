@@ -54,7 +54,7 @@ class BaseDesConnectorSpec extends ConnectorSpec {
     val requiredHeaders: Seq[(String, String)] = Seq(
       "Environment" -> "des-environment",
       "Authorization" -> s"Bearer des-token",
-      "User-Agent" -> "individuals-reliefs-api",
+      "User-Agent" -> "self-employment-business-api",
       "CorrelationId" -> correlationId,
       "Gov-Test-Scenario" -> "DEFAULT"
     )
