@@ -16,12 +16,12 @@
 
 package v1.models.request.createSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class ExpensesSpec extends UnitSpec {
 
-  val fullModel = Expenses(
+  val fullModel: Expenses = Expenses(
     Some(ExpensesAmountObject(500.25, Some(500.25))),
     Some(ExpensesAmountObject(500.25, Some(500.25))),
     Some(ExpensesAmountObject(500.25, Some(500.25))),
@@ -39,11 +39,11 @@ class ExpensesSpec extends UnitSpec {
     Some(ExpensesAmountObject(500.25, Some(500.25)))
   )
 
-  val emptyModel = Expenses(
+  val emptyModel: Expenses = Expenses(
     None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
   )
 
-  val fullJson = Json.parse(
+  val fullJson: JsValue = Json.parse(
     """
       |{
       |     "costOfGoodsBought": {
@@ -109,7 +109,7 @@ class ExpensesSpec extends UnitSpec {
       |   }
       |""".stripMargin)
 
-  val emptyJson = Json.parse(""" {} """)
+  val emptyJson: JsValue = Json.parse(""" {} """)
 
   "reads" should {
 

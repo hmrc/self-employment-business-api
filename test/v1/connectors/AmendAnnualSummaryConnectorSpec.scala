@@ -18,6 +18,7 @@ package v1.connectors
 
 import mocks.MockAppConfig
 import v1.models.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
 import v1.models.domain.DesTaxYear
 import v1.models.domain.ex.MtdEx
@@ -50,14 +51,10 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq(
-      "Environment" -> "des-environment",
-      "Authorization" -> s"Bearer des-token"
-    )
-
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "AmendAnnualSummaryConnector" when {
@@ -65,11 +62,16 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
       "return a 204 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        val requiredHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}",
+            config = dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = desRequestHeaders: _*
+            requiredHeaders = requiredHeadersPut,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 
         await(connector.amendAnnualSummary(request)) shouldBe outcome

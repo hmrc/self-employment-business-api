@@ -31,12 +31,12 @@ import scala.concurrent.Future
 
 class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  val periodId = "2019-01-25_2020-01-25"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  val periodId: String = "2019-01-25_2020-01-25"
+  implicit val correlationId: String = "X-123"
 
-  val response = RetrieveSelfEmploymentPeriodicResponse(
+  val response: RetrieveSelfEmploymentPeriodicResponse = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
     "2020-01-25",
     Some(Incomes(
@@ -53,7 +53,7 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
     None
   )
 
-  private val requestData = RetrieveSelfEmploymentPeriodicRequest(nino, businessId, periodId)
+  private val requestData = RetrieveSelfEmploymentPeriodicRequest(Nino(nino), businessId, periodId)
 
   trait Test extends MockRetrieveSelfEmploymentPeriodicConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()

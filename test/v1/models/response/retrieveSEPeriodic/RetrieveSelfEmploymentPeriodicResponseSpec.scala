@@ -17,13 +17,13 @@
 package v1.models.response.retrieveSEPeriodic
 
 import mocks.MockAppConfig
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.hateoas.{Link, Method}
 
 class RetrieveSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
-  val mtdJson = Json.parse(
+  val mtdJson: JsValue = Json.parse(
     """
       |{
       |    "periodFromDate": "2017-01-25",
@@ -101,7 +101,7 @@ class RetrieveSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppCo
       |""".stripMargin)
 
 
-  val desJson = Json.parse(
+  val desJson: JsValue = Json.parse(
     """
       |{
       |   "from": "2017-01-25",
@@ -176,7 +176,7 @@ class RetrieveSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppCo
       |""".stripMargin)
 
 
-  val model = RetrieveSelfEmploymentPeriodicResponse(
+  val model: RetrieveSelfEmploymentPeriodicResponse = RetrieveSelfEmploymentPeriodicResponse(
     "2017-01-25",
     "2017-01-25",
     Some(Incomes(
@@ -228,7 +228,7 @@ class RetrieveSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppCo
       "called" in {
         val data: RetrieveSelfEmploymentPeriodicHateoasData = RetrieveSelfEmploymentPeriodicHateoasData("mynino", "myBusinessId", "myPeriodId")
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrieveSelfEmploymentPeriodicResponse.RetrieveSelfEmploymentAnnualSummaryLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.PUT, rel = "amend-periodic-update"),

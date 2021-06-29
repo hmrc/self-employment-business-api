@@ -31,18 +31,18 @@ import scala.concurrent.Future
 
 class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  implicit val correlationId: String = "X-123"
 
-  val response = ListSelfEmploymentPeriodicResponse(
+  val response: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
     Seq(PeriodDetails(
       "2020-01-01_2020-01-01",
       "2020-01-01",
       "2020-01-01"
       )))
 
-  val multipleResponse = ListSelfEmploymentPeriodicResponse(
+  val multipleResponse: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
     Seq(PeriodDetails(
       "2019-04-06_2020-04-05",
       "2019-04-06",
@@ -54,7 +54,7 @@ class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
       "2020-04-05"
       )))
 
-  private val requestData = ListSelfEmploymentPeriodicRequest(nino, businessId)
+  private val requestData = ListSelfEmploymentPeriodicRequest(Nino(nino), businessId)
 
   trait Test extends MockListSelfEmploymentPeriodicConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -105,4 +105,5 @@ class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

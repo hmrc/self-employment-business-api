@@ -27,13 +27,13 @@ import scala.concurrent.Future
 
 class RetrieveSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  val periodId = "2019-01-25_2020-01-25"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  val periodId: String = "2019-01-25_2020-01-25"
 
-  val request = RetrieveSelfEmploymentPeriodicRequest(nino, businessId, periodId)
+  val request: RetrieveSelfEmploymentPeriodicRequest = RetrieveSelfEmploymentPeriodicRequest(Nino(nino), businessId, periodId)
 
-  val response = RetrieveSelfEmploymentPeriodicResponse(
+  val response: RetrieveSelfEmploymentPeriodicResponse = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
     "2020-01-25",
     Some(Incomes(
@@ -55,22 +55,25 @@ class RetrieveSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       new RetrieveSelfEmploymentPeriodicConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "connector" must {
     "send a request and return a body" in new Test {
 
-      val fromDate = request.periodId.substring(0, 10)
-      val toDate = request.periodId.substring(11, 21)
+      val fromDate: String = request.periodId.substring(0, 10)
+      val toDate: String = request.periodId.substring(11, 21)
 
       val outcome = Right(ResponseWrapper(correlationId, response))
       MockedHttpClient
         .get(
           url = s"$baseUrl/income-store/nino/${request.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate",
-          requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          config = dummyDesHeaderCarrierConfig,
+          requiredHeaders = requiredDesHeaders,
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )
         .returns(Future.successful(outcome))
 

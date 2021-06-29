@@ -44,8 +44,13 @@ class AmendSelfEmploymentPeriodicControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
+  private val nino: String = "AA123456A"
+  private val businessId: String = "XAIS12345678910"
+  private val periodId: String = "2019-01-01_2020-01-01"
+  private val correlationId: String = "X-123"
+
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new AmendSelfEmploymentPeriodicController(
       authService = mockEnrolmentsAuthService,
@@ -61,11 +66,6 @@ class AmendSelfEmploymentPeriodicControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val nino: String = "AA123456A"
-  private val businessId: String = "XAIS12345678910"
-  private val periodId: String = "2019-01-01_2020-01-01"
-  private val correlationId: String = "X-123"
 
   private val testHateoasLinks = Seq(
     Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = PUT, rel = AMEND_PERIODIC_UPDATE_REL),

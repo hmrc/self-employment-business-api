@@ -24,10 +24,10 @@ import v1.models.errors._
 import v1.models.request.amendSEPeriodic._
 
 class AmendPeriodicRequestParserSpec extends UnitSpec {
-  val nino = "AA123456B"
-  val businessId = "XAIS12345678910"
-  val periodId = "2019-01-01_2019-02-02"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456B"
+  val businessId: String = "XAIS12345678910"
+  val periodId: String = "2019-01-01_2019-02-02"
+  implicit val correlationId: String = "X-123"
 
   private val requestBodyJson = Json.parse(
     """
@@ -105,7 +105,7 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
       |}
         """.stripMargin)
 
-  val inputData =
+  val inputData: AmendPeriodicRawData =
     AmendPeriodicRawData(nino, businessId, periodId, requestBodyJson)
 
   trait Test extends MockAmendPeriodicValidator {
@@ -118,7 +118,7 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
       "valid request data is supplied" in new Test {
         MockAmendPeriodicValidator.validate(inputData).returns(Nil)
 
-        val amendPeriodicRequestBody =
+        val amendPeriodicRequestBody: AmendPeriodicBody =
           AmendPeriodicBody(
             Some(Incomes(Some(IncomesAmountObject(200.00)), Some(IncomesAmountObject(200.00)))),
             None,

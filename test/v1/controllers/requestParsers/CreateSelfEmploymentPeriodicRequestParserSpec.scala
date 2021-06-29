@@ -24,9 +24,9 @@ import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, N
 import v1.models.request.createSEPeriodic._
 
 class CreateSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
-    val nino = "AA123456B"
-    val businessId = "XAIS12345678910"
-    implicit val correlationId = "X-123"
+    val nino: String = "AA123456B"
+    val businessId: String = "XAIS12345678910"
+    implicit val correlationId: String = "X-123"
 
     private val requestBodyJson = Json.parse(
       """
@@ -47,7 +47,7 @@ class CreateSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
         |}
         """.stripMargin)
 
-    val inputData =
+    val inputData: CreateSelfEmploymentPeriodicRawData =
       CreateSelfEmploymentPeriodicRawData(nino, businessId, requestBodyJson)
 
     trait Test extends MockCreateSelfEmploymentPeriodicValidator {
@@ -60,7 +60,7 @@ class CreateSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
         "valid request data is supplied" in new Test {
           MockCreateSelfEmploymentPeriodicValidator.validate(inputData).returns(Nil)
 
-          val createPeriodicUpdateRequestBody = CreateSelfEmploymentPeriodicBody(
+          val createPeriodicUpdateRequestBody: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
             "2017-01-25",
             "2018-01-24",
             Some(Incomes(Some(IncomesAmountObject(500.25)), Some(IncomesAmountObject(500.25)))),

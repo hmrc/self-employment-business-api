@@ -45,8 +45,13 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
   with MockAuditService
   with MockIdGenerator {
 
+  private val nino = "AA123456A"
+  private val businessId = "XAIS12345678910"
+  private val taxYear = "2020-21"
+  private val correlationId = "X-123"
+
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new RetrieveSelfEmploymentAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -62,11 +67,6 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
     MockedEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val taxYear = "2020-21"
-  private val correlationId = "X-123"
 
   private val rawData = RetrieveSelfEmploymentAnnualSummaryRawData(nino, businessId, taxYear)
   private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)

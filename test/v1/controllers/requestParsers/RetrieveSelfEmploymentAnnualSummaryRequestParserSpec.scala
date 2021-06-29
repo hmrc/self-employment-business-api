@@ -27,7 +27,7 @@ class RetrieveSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val taxYear: String = "2017-18"
-  implicit val correlationId = "X-123"
+  implicit val correlationId: String = "X-123"
 
   val retrieveSelfEmploymentAnnualSummaryRawData: RetrieveSelfEmploymentAnnualSummaryRawData = RetrieveSelfEmploymentAnnualSummaryRawData(
     nino = nino,

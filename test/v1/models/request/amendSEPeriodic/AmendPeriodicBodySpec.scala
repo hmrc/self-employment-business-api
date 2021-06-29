@@ -323,7 +323,7 @@ class AmendPeriodicBodySpec extends UnitSpec {
        |{}
        |""".stripMargin)
 
-  val fullMtdModel = AmendPeriodicBody(
+  val fullMtdModel: AmendPeriodicBody = AmendPeriodicBody(
     Some(Incomes(
       Some(IncomesAmountObject(
         200.00
@@ -351,7 +351,7 @@ class AmendPeriodicBodySpec extends UnitSpec {
       Some(ExpensesAmountObject(200.00, Some(200.00)))))
   )
 
-  val partialMtdModel = AmendPeriodicBody(
+  val partialMtdModel: AmendPeriodicBody  = AmendPeriodicBody (
     None,
     Some(ConsolidatedExpenses(200.00)),
     Some(Expenses(
@@ -372,12 +372,11 @@ class AmendPeriodicBodySpec extends UnitSpec {
       Some(ExpensesAmountObject(200.00, Some(200.00)))))
   )
 
-  val emptyMtdModel = AmendPeriodicBody(
+  val emptyMtdModel: AmendPeriodicBody = AmendPeriodicBody(
     None,
     None,
     None
   )
-
 
   "reads" should {
     "return a model" when {
@@ -411,4 +410,5 @@ class AmendPeriodicBodySpec extends UnitSpec {
 
     }
   }
+
 }

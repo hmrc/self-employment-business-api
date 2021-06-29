@@ -30,12 +30,12 @@ import scala.concurrent.Future
 
 class AmendSelfEmploymentPeriodicServiceSpec extends UnitSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  val periodId = "2019-01-25_2020-01-25"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  val periodId: String = "2019-01-25_2020-01-25"
+  implicit val correlationId: String = "X-123"
 
-  private val requestData = AmendPeriodicRequest(nino, businessId, periodId, AmendPeriodicBody(None, None, None))
+  private val requestData = AmendPeriodicRequest(Nino(nino), businessId, periodId, AmendPeriodicBody(None, None, None))
 
   trait Test extends MockAmendSelfEmploymentPeriodicConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -86,4 +86,5 @@ class AmendSelfEmploymentPeriodicServiceSpec extends UnitSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

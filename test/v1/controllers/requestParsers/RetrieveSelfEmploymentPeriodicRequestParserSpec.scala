@@ -27,9 +27,9 @@ class RetrieveSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val periodId: String = "2017-01-25_2017-02-25"
-  implicit val correlationId = "X-123"
+  implicit val correlationId: String = "X-123"
 
-  val rawData = RetrieveSelfEmploymentPeriodicRawData(
+  val rawData: RetrieveSelfEmploymentPeriodicRawData = RetrieveSelfEmploymentPeriodicRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId

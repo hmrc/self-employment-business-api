@@ -24,8 +24,8 @@ import v1.models.request.RawData
 
 class RequestParserSpec extends UnitSpec {
 
-  private val nino = "AA123456A"
-  implicit val correlationId = "X-123"
+  private val nino: String = "AA123456A"
+  implicit val correlationId: String = "X-123"
   case class Raw(nino: String) extends RawData
   case class Request(nino: Nino)
 
@@ -37,7 +37,7 @@ class RequestParserSpec extends UnitSpec {
     val parser: RequestParser[Raw, Request] = new RequestParser[Raw, Request] {
       val validator: Validator[Raw] = test.validator
 
-      protected def requestFor(data: Raw) = Request(Nino(data.nino))
+      protected def requestFor(data: Raw): Request = Request(Nino(data.nino))
     }
   }
 

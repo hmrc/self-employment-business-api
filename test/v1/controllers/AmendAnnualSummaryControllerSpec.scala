@@ -45,8 +45,13 @@ class AmendAnnualSummaryControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
+  private val nino: String = "AA123456A"
+  private val businessId: String = "XAIS12345678910"
+  private val taxYear: String = "2019-20"
+  private val correlationId: String = "X-123"
+
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new AmendAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -62,11 +67,6 @@ class AmendAnnualSummaryControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val taxYear = "2019-20"
-  private val correlationId = "X-123"
 
   private val testHateoasLinks = Seq(
     Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),

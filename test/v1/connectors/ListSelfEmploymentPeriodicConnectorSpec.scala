@@ -27,12 +27,12 @@ import scala.concurrent.Future
 
 class ListSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
 
-  val request = ListSelfEmploymentPeriodicRequest(nino, businessId)
+  val request: ListSelfEmploymentPeriodicRequest = ListSelfEmploymentPeriodicRequest(Nino(nino), businessId)
 
-  val response = ListSelfEmploymentPeriodicResponse(
+  val response: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
     Seq(PeriodDetails(
       "2020-01-01_2020-01-01",
       "2020-01-01",
@@ -44,9 +44,10 @@ class ListSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       new ListSelfEmploymentPeriodicConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "connector" must {
@@ -56,7 +57,9 @@ class ListSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       MockedHttpClient
         .get(
           url = s"$baseUrl/income-tax/nino/${request.nino}/self-employments/${request.businessId}/periodic-summaries",
-          requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+          config = dummyDesHeaderCarrierConfig,
+          requiredHeaders = requiredDesHeaders,
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )
         .returns(Future.successful(outcome))
 

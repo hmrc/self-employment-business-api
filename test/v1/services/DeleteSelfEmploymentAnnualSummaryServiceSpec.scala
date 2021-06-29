@@ -30,12 +30,12 @@ import scala.concurrent.Future
 
 class DeleteSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
 
-  val taxYear = "2017-18"
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  implicit val correlationId = "X-123"
+  val taxYear: String = "2017-18"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  implicit val correlationId: String = "X-123"
 
-  private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
+  private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
 
   trait Test extends MockDeleteSelfEmploymentAnnualSummaryConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -83,4 +83,5 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

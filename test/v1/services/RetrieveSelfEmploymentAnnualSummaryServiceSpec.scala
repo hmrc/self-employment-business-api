@@ -32,12 +32,12 @@ import scala.concurrent.Future
 
 class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  val taxYear = "2019-20"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  val taxYear: String = "2019-20"
+  implicit val correlationId: String = "X-123"
 
-  val response = RetrieveSelfEmploymentAnnualSummaryResponse(
+  val response: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(
       Some(100.25),
       Some(100.25),
@@ -66,7 +66,7 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       Some(Class4NicInfo(
         Some(`001 - Non Resident`))))))
 
-  private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
+  private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
 
   trait Test extends MockRetrieveSelfEmploymentAnnualSummaryConnector {
     implicit val hc: HeaderCarrier = HeaderCarrier()

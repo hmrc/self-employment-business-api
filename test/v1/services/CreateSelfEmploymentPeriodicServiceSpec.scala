@@ -28,9 +28,9 @@ import scala.concurrent.Future
 
 class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  implicit val correlationId = "X-123"
+  private val nino: String = "AA123456A"
+  private val businessId: String = "XAIS12345678910"
+  implicit val correlationId: String = "X-123"
 
 
   private val requestBody = CreateSelfEmploymentPeriodicBody(

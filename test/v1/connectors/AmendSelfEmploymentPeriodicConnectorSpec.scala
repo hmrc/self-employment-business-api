@@ -18,6 +18,7 @@ package v1.connectors
 
 import mocks.MockAppConfig
 import v1.models.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEPeriodic.{AmendPeriodicBody, AmendPeriodicRequest, ConsolidatedExpenses}
@@ -47,14 +48,10 @@ class AmendSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq(
-      "Environment" -> "des-environment",
-      "Authorization" -> s"Bearer des-token"
-    )
-
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "AmendSelfEmploymentPeriodicConnector" when {
@@ -62,14 +59,19 @@ class AmendSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       "return a 204 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        val fromDate = request.periodId.substring(0, 10)
-        val toDate = request.periodId.substring(11, 21)
+        val fromDate: String = request.periodId.substring(0, 10)
+        val toDate: String= request.periodId.substring(11, 21)
+
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        val requiredHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-store/nino/${request.nino}/self-employments/${request.businessId}/periodic-summaries?from=$fromDate&to=$toDate",
+            config = dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = desRequestHeaders: _*
+            requiredHeaders = requiredHeadersPut,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 
         await(connector.amendPeriodicUpdates(request)) shouldBe outcome

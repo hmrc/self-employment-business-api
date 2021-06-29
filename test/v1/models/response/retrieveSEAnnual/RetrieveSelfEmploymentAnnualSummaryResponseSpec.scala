@@ -122,7 +122,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
         val data: RetrieveSelfEmploymentAnnualSummaryHateoasData =
           RetrieveSelfEmploymentAnnualSummaryHateoasData("myNino", "myBusinessId", "mySubmissionId")
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrieveSelfEmploymentAnnualSummaryResponse.RetrieveSelfEmploymentAnnualSummaryLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/${data.nino}/${data.businessId}/annual/${data.taxYear}",

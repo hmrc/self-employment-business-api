@@ -43,8 +43,13 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
   with MockAuditService
   with MockIdGenerator {
 
+  private val nino = "AA123456A"
+  private val businessId = "XAIS12345678910"
+  private val periodId = "2019-01-01_2020-01-01"
+  private val correlationId = "X-123"
+
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new RetrieveSelfEmploymentPeriodicController(
       authService = mockEnrolmentsAuthService,
@@ -60,11 +65,6 @@ class RetrieveSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
     MockedEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val periodId = "2019-01-01_2020-01-01"
-  private val correlationId = "X-123"
 
   private val rawData = RetrieveSelfEmploymentPeriodicRawData(nino, businessId, periodId)
   private val requestData = RetrieveSelfEmploymentPeriodicRequest(Nino(nino), businessId, periodId)

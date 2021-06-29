@@ -30,7 +30,7 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
   val nino = "AA123456A"
   val businessId = "XAIS12345678910"
 
-  val request = CreateSelfEmploymentPeriodicRequest(
+  val request: CreateSelfEmploymentPeriodicRequest = CreateSelfEmploymentPeriodicRequest(
     nino = Nino(nino),
     businessId = businessId,
     body = CreateSelfEmploymentPeriodicBody(
@@ -63,7 +63,7 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
     )
   )
 
-  val response = CreateSelfEmploymentPeriodicResponse("2017090920170909")
+  val response: CreateSelfEmploymentPeriodicResponse = CreateSelfEmploymentPeriodicResponse("2017090920170909")
 
   class Test extends MockHttpClient with MockAppConfig {
 
@@ -72,14 +72,10 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq(
-      "Environment" -> "des-environment",
-      "Authorization" -> s"Bearer des-token"
-    )
-
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "CreateSEPeriodicConnector" when {
@@ -90,9 +86,11 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .post(
             url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries",
+            config = dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = desRequestHeaders: _*
-          ).returns(Future.successful(outcome))
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        ).returns(Future.successful(outcome))
 
         await(connector.createPeriodic(request)) shouldBe outcome
       }

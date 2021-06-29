@@ -16,12 +16,12 @@
 
 package v1.models.request.amendSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class ExpensesSpec extends UnitSpec {
 
-  val json = Json.parse(
+  val json: JsValue = Json.parse(
     """
       |{
       |            "costOfGoodsBought": {
@@ -83,7 +83,7 @@ class ExpensesSpec extends UnitSpec {
       |        }
       |""".stripMargin)
 
-  val desJson = Json.parse(
+  val desJson: JsValue = Json.parse(
     """
       |{
       |         "adminCosts": {
@@ -145,7 +145,7 @@ class ExpensesSpec extends UnitSpec {
       |      }
       |""".stripMargin)
 
-  val model = Expenses(
+  val model: Expenses = Expenses(
     Some(ExpensesAmountObject(500.25,Some(500.25))),
     Some(ExpensesAmountObject(500.25,Some(500.25))),
     Some(ExpensesAmountObject(500.25,Some(500.25))),
