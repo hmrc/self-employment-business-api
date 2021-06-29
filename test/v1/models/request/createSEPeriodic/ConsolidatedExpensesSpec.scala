@@ -16,14 +16,14 @@
 
 package v1.models.request.createSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class ConsolidatedExpensesSpec extends UnitSpec {
 
-  val model = ConsolidatedExpenses(500.12)
+  val model: ConsolidatedExpenses = ConsolidatedExpenses(500.12)
 
-  val json = Json.parse(
+  val json: JsValue = Json.parse(
     """{
       |"consolidatedExpenses": 500.12
       |}
@@ -47,4 +47,5 @@ class ConsolidatedExpensesSpec extends UnitSpec {
       }
     }
   }
+
 }

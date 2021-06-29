@@ -16,14 +16,14 @@
 
 package v1.models.response.retrieveSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class IncomesAmountObjectSpec extends UnitSpec {
 
-  val model = IncomesAmountObject(500.12)
+  val model: IncomesAmountObject = IncomesAmountObject(500.12)
 
-  val json = Json.parse(
+  val json: JsValue = Json.parse(
     """
       |{
       | "amount": 500.12
@@ -49,4 +49,5 @@ class IncomesAmountObjectSpec extends UnitSpec {
       }
     }
   }
+
 }

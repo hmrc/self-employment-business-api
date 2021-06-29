@@ -26,7 +26,7 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class AmendSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
-                                                     val appConfig: AppConfig) extends BaseDesConnector {
+                                                     val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendPeriodicUpdates(request: AmendPeriodicRequest)(
     implicit hc: HeaderCarrier,

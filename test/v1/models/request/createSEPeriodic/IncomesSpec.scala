@@ -16,20 +16,20 @@
 
 package v1.models.request.createSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class IncomesSpec extends UnitSpec {
 
-  val fullModel = Incomes(
+  val fullModel: Incomes = Incomes(
     Some(IncomesAmountObject(500.12)),
     Some(IncomesAmountObject(500.12))
   )
 
-  val emptyModel = Incomes(None, None)
+  val emptyModel: Incomes = Incomes(None, None)
 
 
-  val fullJson = Json.parse(
+  val fullJson: JsValue = Json.parse(
     """
       |{
       | "turnover": {
@@ -41,7 +41,7 @@ class IncomesSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val emptyJson = Json.parse(""" {} """)
+  val emptyJson: JsValue = Json.parse(""" {} """)
 
   "reads" should {
 
@@ -84,4 +84,5 @@ class IncomesSpec extends UnitSpec {
       }
     }
   }
+
 }

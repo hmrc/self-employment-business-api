@@ -27,7 +27,7 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
-                                            val appConfig: AppConfig) extends BaseDesConnector {
+                                            val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
     implicit hc: HeaderCarrier,

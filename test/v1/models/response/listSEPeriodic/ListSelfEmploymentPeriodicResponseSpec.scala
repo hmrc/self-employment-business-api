@@ -164,14 +164,14 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig
 
   "LinksFactory" should {
     "return the correct top-level links" in {
-      MockedAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
+      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
       ListSelfEmploymentPeriodicResponse.LinksFactory.links(mockAppConfig, ListSelfEmploymentPeriodicHateoasData("nino", "id")) shouldBe Seq(
         Link(href = "/test/context/nino/id/period", method = GET, rel = "self"),
         Link(href = "/test/context/nino/id/period", method = POST, rel = "create-periodic-update"),
       )
     }
     "return the correct item-level links" in {
-      MockedAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
+      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
       ListSelfEmploymentPeriodicResponse.LinksFactory.itemLinks(mockAppConfig, ListSelfEmploymentPeriodicHateoasData("nino", "id"), PeriodDetails("periodId", "", "")) shouldBe Seq(
         Link(href = "/test/context/nino/id/period/periodId", method = GET, rel = "self"),
       )

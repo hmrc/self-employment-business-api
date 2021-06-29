@@ -16,6 +16,6 @@
 
 package v1.models.request.retrieveSEPeriodic
 
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 
 case class RetrieveSelfEmploymentPeriodicRequest(nino: Nino, businessId: String, periodId: String)

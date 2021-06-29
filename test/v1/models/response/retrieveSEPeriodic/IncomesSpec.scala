@@ -16,12 +16,12 @@
 
 package v1.models.response.retrieveSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class IncomesSpec extends UnitSpec {
 
-  val mtdJson = Json.parse(
+  val mtdJson: JsValue = Json.parse(
     """
       |{
       |"turnover": {
@@ -33,7 +33,7 @@ class IncomesSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val desJson = Json.parse(
+  val desJson: JsValue = Json.parse(
     """
       |{
       |         "turnover": 500.25,
@@ -42,7 +42,7 @@ class IncomesSpec extends UnitSpec {
       |
       |""".stripMargin)
 
-  val model = Incomes(
+  val model: Incomes = Incomes(
     Some(IncomesAmountObject(500.25)),
     Some(IncomesAmountObject(500.25))
   )
@@ -64,4 +64,5 @@ class IncomesSpec extends UnitSpec {
       }
     }
   }
+
 }

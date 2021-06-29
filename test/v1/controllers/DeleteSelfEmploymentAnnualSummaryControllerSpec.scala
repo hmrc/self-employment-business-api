@@ -18,7 +18,7 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
@@ -40,8 +40,13 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
+  private val nino = "AA123456A"
+  private val taxYear = "2019-20"
+  private val businessId = "XAIS12345678910"
+  private val correlationId = "X-123"
+
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new DeleteSelfEmploymentAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -56,11 +61,6 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
     MockedEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val nino = "AA123456A"
-  private val taxYear = "2019-20"
-  private val businessId = "XAIS12345678910"
-  private val correlationId = "X-123"
 
   private val rawData = DeleteSelfEmploymentAnnualSummaryRawData(nino, businessId, taxYear)
   private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)

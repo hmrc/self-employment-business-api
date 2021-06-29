@@ -17,20 +17,20 @@
 package v1.models.response.createSEPeriodic
 
 import mocks.MockAppConfig
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.hateoas.{Link, Method}
 
-class CreateSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig  {
+class CreateSelfEmploymentPeriodicResponseBodySpec extends UnitSpec with MockAppConfig  {
 
-  val json = Json.parse(
+  val json: JsValue = Json.parse(
     """
       |{
       |   "periodId": "2017090920170909"
       |}
       |""".stripMargin)
 
-  val model = CreateSelfEmploymentPeriodicResponse("2017090920170909")
+  val model: CreateSelfEmploymentPeriodicResponse = CreateSelfEmploymentPeriodicResponse("2017090920170909")
 
   "reads" should {
     "return a model" when {
@@ -53,7 +53,7 @@ class CreateSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConf
       "called" in {
         val data: CreateSelfEmploymentPeriodicHateoasData = CreateSelfEmploymentPeriodicHateoasData("mynino", "myBusinessId", "myPeriodId")
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         CreateSelfEmploymentPeriodicResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.GET, rel = "self")

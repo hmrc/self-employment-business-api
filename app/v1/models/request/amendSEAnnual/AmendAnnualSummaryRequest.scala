@@ -16,6 +16,6 @@
 
 package v1.models.request.amendSEAnnual
 
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 
 case class AmendAnnualSummaryRequest(nino: Nino, businessId: String, taxYear: String, body: AmendAnnualSummaryBody)

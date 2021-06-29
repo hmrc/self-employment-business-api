@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
 
-  val fullMtdModel = CreateSelfEmploymentPeriodicBody(
+  val fullMtdModel: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
     "2018-01-24",
     Some(Incomes(
@@ -50,7 +50,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
     ))
   )
 
-  val someOptionalMtdModel = CreateSelfEmploymentPeriodicBody(
+  val someOptionalMtdModel: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
     "2018-01-24",
     Some(Incomes(
@@ -62,7 +62,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
     )),
     None
   )
-  val noOptionalMtdModel = CreateSelfEmploymentPeriodicBody(
+  val noOptionalMtdModel: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
     "2018-01-24",
     None,

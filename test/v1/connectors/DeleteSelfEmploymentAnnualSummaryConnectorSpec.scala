@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.domain.DesTaxYear
 import v1.models.outcomes.ResponseWrapper
@@ -27,21 +27,22 @@ import scala.concurrent.Future
 
 class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
-  val taxYear = "2017-18"
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
+  val taxYear: String = "2017-18"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
 
   class Test extends MockHttpClient with MockAppConfig {
     val connector: DeleteSelfEmploymentAnnualSummaryConnector = new DeleteSelfEmploymentAnnualSummaryConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "delete" should {
-    val request = DeleteSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
+    val request = DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
 
     "return a 204 with no body" when {
       "the downstream call is successful" in new Test {
@@ -49,9 +50,11 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.
           put(
-            url = s"$baseUrl/income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}",
+            url = s"$baseUrl/income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}",
+            config = dummyDesHeaderCarrierConfig,
             body = """{}""",
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 
         await(connector.deleteSEAnnual(request)) shouldBe outcome

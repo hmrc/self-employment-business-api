@@ -27,14 +27,14 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
-                                                      val appConfig: AppConfig) extends BaseDesConnector {
+                                                      val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodic(request: CreateSelfEmploymentPeriodicRequest)(
                     implicit hc: HeaderCarrier,
                     ec: ExecutionContext,
                     correlationId: String): Future[DesOutcome[Unit]] = {
 
-    val nino = request.nino
+    val nino = request.nino.nino
     val businessId = request.businessId
 
     implicit val successCode: SuccessCode = SuccessCode(OK)

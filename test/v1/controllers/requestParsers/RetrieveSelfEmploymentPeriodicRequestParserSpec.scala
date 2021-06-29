@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.validators.MockRetrieveSelfEmploymentPeriodicValidator
 import v1.models.errors._
 import v1.models.request.retrieveSEPeriodic.{RetrieveSelfEmploymentPeriodicRawData, RetrieveSelfEmploymentPeriodicRequest}
@@ -27,9 +27,9 @@ class RetrieveSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val periodId: String = "2017-01-25_2017-02-25"
-  implicit val correlationId = "X-123"
+  implicit val correlationId: String = "X-123"
 
-  val rawData = RetrieveSelfEmploymentPeriodicRawData(
+  val rawData: RetrieveSelfEmploymentPeriodicRawData = RetrieveSelfEmploymentPeriodicRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId

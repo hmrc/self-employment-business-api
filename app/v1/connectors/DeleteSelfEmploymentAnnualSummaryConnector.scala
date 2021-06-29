@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
-                                                           val appConfig: AppConfig) extends BaseDesConnector {
+                                                           val appConfig: AppConfig) extends BaseDownstreamConnector {
   def deleteSEAnnual(request: DeleteSelfEmploymentAnnualSummaryRequest)(
                     implicit hc: HeaderCarrier,
                     ec: ExecutionContext,
@@ -36,7 +36,7 @@ class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
 
     put(
       body = """{}""",
-      DesUri[Unit](s"income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
+      DesUri[Unit](s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
     )
   }
 }
