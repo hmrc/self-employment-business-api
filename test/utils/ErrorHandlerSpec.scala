@@ -64,12 +64,14 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
     (httpAuditEvent.dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String])(_: HeaderCarrier)).expects(*, *, *, *, *)
       .returns(dataEvent)
 
-    (auditConnector.sendEvent(_ : DataEvent)(_: HeaderCarrier, _: ExecutionContext)).expects(*, *, *)
+    (auditConnector.sendEvent(_: DataEvent)(_: HeaderCarrier, _: ExecutionContext)).expects(*, *, *)
       .returns(Future.successful(Success))
 
     val configuration: Configuration = Configuration(
       "appName" -> "myApp",
-      "bootstrap.errorHandler.warnOnly.statusCodes" -> List.empty)
+      "bootstrap.errorHandler.warnOnly.statusCodes" -> List.empty
+    )
+
     val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
   }
 
@@ -160,4 +162,3 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
     }
   }
 }
-

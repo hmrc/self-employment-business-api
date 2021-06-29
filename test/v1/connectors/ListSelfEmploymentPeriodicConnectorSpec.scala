@@ -56,7 +56,7 @@ class ListSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       val outcome = Right(ResponseWrapper(correlationId, response))
       MockedHttpClient
         .get(
-          url = s"$baseUrl/income-tax/nino/${request.nino}/self-employments/${request.businessId}/periodic-summaries",
+          url = s"$baseUrl/income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summaries",
           config = dummyDesHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

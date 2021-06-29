@@ -70,7 +70,7 @@ class RetrieveSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       val outcome = Right(ResponseWrapper(correlationId, response))
       MockedHttpClient
         .get(
-          url = s"$baseUrl/income-store/nino/${request.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate",
+          url = s"$baseUrl/income-store/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate",
           config = dummyDesHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

@@ -61,6 +61,7 @@ trait BaseDownstreamConnector extends Logging {
 
     def doGet(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] =
       http.GET(getBackendUri(uri))
+
     doGet(getBackendHeaders(uri, hc, correlationId))
   }
 

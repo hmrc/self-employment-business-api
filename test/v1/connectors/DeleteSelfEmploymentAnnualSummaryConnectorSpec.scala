@@ -42,7 +42,7 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "delete" should {
-    val request = DeleteSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
+    val request = DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
 
     "return a 204 with no body" when {
       "the downstream call is successful" in new Test {
@@ -50,7 +50,7 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient.
           put(
-            url = s"$baseUrl/income-tax/nino/${request.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}",
+            url = s"$baseUrl/income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}",
             config = dummyDesHeaderCarrierConfig,
             body = """{}""",
             requiredHeaders = requiredDesHeaders,

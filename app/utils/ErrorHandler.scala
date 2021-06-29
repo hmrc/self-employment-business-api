@@ -18,7 +18,6 @@ package utils
 
 import definition.Versions
 import play.api.Configuration
-import play.api._
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
@@ -41,8 +40,6 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
 
   import httpAuditEvent.dataEvent
 
-  private val logger: Logger = Logger(this.getClass)
-
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -58,13 +55,11 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
       case BAD_REQUEST =>
         auditConnector.sendEvent(dataEvent("ServerValidationError",
           "Request bad format exception", request))
-        auditConnector.sendEvent(dataEvent("ServerValidationError", "Request bad format exception", request))
         Future.successful(BadRequest(Json.toJson(BadRequestError)))
 
       case NOT_FOUND =>
         auditConnector.sendEvent(dataEvent("ResourceNotFound",
           "Resource Endpoint Not Found", request))
-        auditConnector.sendEvent(dataEvent("ResourceNotFound", "Resource Endpoint Not Found", request))
         Future.successful(NotFound(Json.toJson(NotFoundError)))
 
       case _ =>

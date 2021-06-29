@@ -33,7 +33,6 @@ trait MockHttpClient extends MockFactory {
                config: HeaderCarrier.Config,
                requiredHeaders: Seq[(String, String)] = Seq.empty,
                excludedHeaders: Seq[(String, String)] = Seq.empty): CallHandler[Future[T]] = {
-
       (mockHttpClient
         .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
         .expects(where {
