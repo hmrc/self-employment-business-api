@@ -30,7 +30,7 @@ case class PublishingException(message: String) extends Exception(message)
 
 sealed trait APIStatus
 
-object APIStatus extends Enumeration {
+object APIStatus {
 
   case object ALPHA extends APIStatus
 
@@ -42,7 +42,7 @@ object APIStatus extends Enumeration {
 
   case object RETIRED extends APIStatus
 
-  implicit val formatApiVersion: Format[APIStatus] = Enums.format[APIStatus]
+  implicit val formatAPIStatus: Format[APIStatus] = Enums.format[APIStatus]
   val parser: PartialFunction[String, APIStatus] = Enums.parser[APIStatus]
 }
 
@@ -69,7 +69,7 @@ case class APIDefinition(name: String,
   require(versions.nonEmpty, "at least one version is required")
   require(uniqueVersions, "version numbers must be unique")
 
-  private def uniqueVersions = {
+  private def uniqueVersions: Boolean = {
     !versions.map(_.version).groupBy(identity).mapValues(_.size).exists(_._2 > 1)
   }
 }

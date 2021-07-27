@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
 
-  val fullMtdModel = CreateSelfEmploymentPeriodicBody(
+  val fullMtdModel: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
     "2018-01-24",
     Some(Incomes(
@@ -50,7 +50,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
     ))
   )
 
-  val someOptionalMtdModel = CreateSelfEmploymentPeriodicBody(
+  val someOptionalMtdModel: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
     "2018-01-24",
     Some(Incomes(
@@ -62,7 +62,8 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
     )),
     None
   )
-  val noOptionalMtdModel = CreateSelfEmploymentPeriodicBody(
+
+  val noOptionalMtdModel: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
     "2018-01-24",
     None,
@@ -71,9 +72,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
   )
 
   "reads" should {
-
     "read from JSON" when {
-
       val fullRequestJson = Json.parse(
         """
           |{
@@ -153,7 +152,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
           |     }
           |   }
           |}
-          |""".stripMargin
+        """.stripMargin
       )
 
       val someOptionalRequestJson = Json.parse(
@@ -173,7 +172,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
           |     "consolidatedExpenses": 500.25
           |   }
           |}
-          |""".stripMargin
+        """.stripMargin
       )
 
       val noOptionalRequestJson = Json.parse(
@@ -182,7 +181,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
           |   "periodFromDate": "2017-01-25",
           |   "periodToDate": "2018-01-24"
           |}
-          |""".stripMargin
+        """.stripMargin
       )
 
       "a valid request with all optional fields is made" in {
@@ -201,9 +200,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
   }
 
   "writes" should {
-
     "write to des" when {
-
       val nonConsolidatedJson = Json.parse(
         """{
           |   "from": "2017-01-25",
@@ -277,7 +274,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
           |     }
           |  }
           |}
-          |""".stripMargin
+        """.stripMargin
       )
 
       val consolidatedJson = Json.parse(
@@ -294,7 +291,7 @@ class CreateSelfEmploymentPeriodicBodySpec extends UnitSpec {
           |     }
           |   }
           |}
-          |""".stripMargin
+        """.stripMargin
       )
 
       "a valid request is made with non-consolidated body" in {

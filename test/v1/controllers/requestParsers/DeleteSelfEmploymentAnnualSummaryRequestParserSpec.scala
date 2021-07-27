@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockDeleteSelfEmploymentAnnualSummaryValidator
+import v1.models.domain.Nino
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.request.deleteSEAnnual.{DeleteSelfEmploymentAnnualSummaryRawData, DeleteSelfEmploymentAnnualSummaryRequest}
 
@@ -27,7 +27,7 @@ class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val taxYear: String = "2017-18"
-  implicit val correlationId = "X-123"
+  implicit val correlationId: String = "X-123"
 
   val deleteSelfEmploymentAnnualSummaryRawData: DeleteSelfEmploymentAnnualSummaryRawData = DeleteSelfEmploymentAnnualSummaryRawData(
     nino = nino,

@@ -23,6 +23,7 @@ import v1.models.domain.ex.MtdEx
 import v1.models.hateoas.{Link, Method}
 
 class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
+
   val desJson: JsValue = Json.parse(
     """
       |{
@@ -56,7 +57,8 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    "class4NicsExemptionReason": "001"
       |  }
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val mtdJson: JsValue = Json.parse(
     """
@@ -92,11 +94,18 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    }
       |  }
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val model: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
-    Some(Adjustments(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
-    Some(Allowances(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))),
+    Some(Adjustments(
+      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25),
+      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25)
+    )),
+    Some(Allowances(
+      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25),
+      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25)
+    )),
     Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
   )
 
@@ -119,10 +128,13 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
   "LinksFactory" should {
     "produce the correct links" when {
       "called" in {
-        val data: RetrieveSelfEmploymentAnnualSummaryHateoasData =
-          RetrieveSelfEmploymentAnnualSummaryHateoasData("myNino", "myBusinessId", "mySubmissionId")
+        val data: RetrieveSelfEmploymentAnnualSummaryHateoasData = RetrieveSelfEmploymentAnnualSummaryHateoasData(
+          nino = "myNino",
+          businessId = "myBusinessId",
+          taxYear = "taxYear"
+        )
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrieveSelfEmploymentAnnualSummaryResponse.RetrieveSelfEmploymentAnnualSummaryLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/${data.nino}/${data.businessId}/annual/${data.taxYear}",
@@ -135,5 +147,4 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       }
     }
   }
-
 }

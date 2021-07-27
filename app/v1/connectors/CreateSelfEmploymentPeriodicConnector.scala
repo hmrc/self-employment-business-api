@@ -30,11 +30,11 @@ class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
                                                       val appConfig: AppConfig) extends BaseDesConnector {
 
   def createPeriodic(request: CreateSelfEmploymentPeriodicRequest)(
-                    implicit hc: HeaderCarrier,
-                    ec: ExecutionContext,
-                    correlationId: String): Future[DesOutcome[Unit]] = {
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[Unit]] = {
 
-    val nino = request.nino
+    val nino = request.nino.nino
     val businessId = request.businessId
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
@@ -44,5 +44,4 @@ class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
       DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
     )
   }
-
 }

@@ -25,6 +25,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
+
   private val requestBodyExpensesJson = Json.parse(
     """
       |{
@@ -101,8 +102,9 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
       |     }
       |   }
       |}
-      |""".stripMargin
+    """.stripMargin
   )
+
   private val requestBodyConsolidatedExpensesJson = Json.parse(
     """
       |{
@@ -120,7 +122,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
       |     "consolidatedExpenses": 500.25
       |   }
       |}
-      |""".stripMargin
+    """.stripMargin
   )
 
   val validator = new CreateSelfEmploymentPeriodicValidator()
@@ -130,9 +132,11 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
       "a valid expenses request is supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, requestBodyExpensesJson)) shouldBe Nil
       }
+
       "a valid consolidated expenses request is supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, requestBodyConsolidatedExpensesJson)) shouldBe Nil
       }
+
       "the minimum fields are supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -140,9 +144,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |   "periodFromDate": "2017-01-25",
             |   "periodToDate": "2018-01-24"
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe Nil
       }
+
       "only incomes are supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -158,9 +163,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe Nil
       }
+
       "only expenses are supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -230,9 +236,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe Nil
       }
+
       "only consolidatedExpenses are supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -243,7 +250,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     "consolidatedExpenses": 500.25
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe Nil
       }
     }
@@ -252,6 +259,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
       "an invalid nino is supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData("walrus", validBusinessId, requestBodyExpensesJson)) shouldBe List(NinoFormatError)
       }
+
       "an invalid businessId is supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, "beans", requestBodyExpensesJson)) shouldBe List(BusinessIdFormatError)
       }
@@ -263,6 +271,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
           """{}""".stripMargin
         ))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
+
       "an empty Incomes object is supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -271,9 +280,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |   "periodToDate": "2018-01-24",
             |   "incomes": {}
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
+
       "an empty Expenses object is supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -282,7 +292,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |   "periodToDate": "2018-01-24",
             |   "expenses": {}
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
     }
@@ -306,9 +316,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     "consolidatedExpenses": 500.25
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(FromDateFormatError)
       }
+
       "an invalid toDate is supplied" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -327,9 +338,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     "consolidatedExpenses": 500.25
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(ToDateFormatError)
       }
+
       "toDate is before fromDate" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -348,9 +360,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     "consolidatedExpenses": 500.25
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(RuleToDateBeforeFromDateError)
       }
+
       "both dates are invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -369,8 +382,8 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     "consolidatedExpenses": 500.25
             |   }
             |}
-            |""".stripMargin
-        ))) shouldBe List(ToDateFormatError, FromDateFormatError)
+          """.stripMargin
+        ))) shouldBe List(FromDateFormatError, ToDateFormatError)
       }
     }
 
@@ -455,7 +468,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(RuleBothExpensesSuppliedError)
       }
     }
@@ -473,13 +486,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/incomes/turnover/amount"
           )))
         )
       }
+
       "/incomes/other/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -492,13 +506,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/incomes/other/amount"
           )))
         )
       }
+
       "/expenses/costOfGoodsBought/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -520,13 +535,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/costOfGoodsBought/amount"
           )))
         )
       }
+
       "/expenses/costOfGoodsBought/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -548,13 +564,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/costOfGoodsBought/disallowableAmount"
           )))
         )
       }
+
       "/expenses/cisPaymentsTo/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -576,13 +593,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/cisPaymentsTo/amount"
           )))
         )
       }
+
       "/expenses/cisPaymentsTo/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -604,13 +622,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/cisPaymentsTo/disallowableAmount"
           )))
         )
       }
+
       "/expenses/staffCosts/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -632,13 +651,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/staffCosts/amount"
           )))
         )
       }
+
       "/expenses/staffCosts/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -660,13 +680,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/staffCosts/disallowableAmount"
           )))
         )
       }
+
       "/expenses/travelCosts/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -688,13 +709,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/travelCosts/amount"
           )))
         )
       }
+
       "/expenses/travelCosts/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -716,13 +738,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/travelCosts/disallowableAmount"
           )))
         )
       }
+
       "/expenses/premisesRunningCosts/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -744,13 +767,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/premisesRunningCosts/amount"
           )))
         )
       }
+
       "/expenses/premisesRunningCosts/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -772,13 +796,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/premisesRunningCosts/disallowableAmount"
           )))
         )
       }
+
       "/expenses/maintenanceCosts/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -800,13 +825,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/maintenanceCosts/amount"
           )))
         )
       }
+
       "/expenses/maintenanceCosts/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -828,13 +854,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/maintenanceCosts/disallowableAmount"
           )))
         )
       }
+
       "/expenses/adminCosts/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -856,13 +883,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/adminCosts/amount"
           )))
         )
       }
+
       "/expenses/adminCosts/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -884,13 +912,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/adminCosts/disallowableAmount"
           )))
         )
       }
+
       "/expenses/advertisingCosts/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -912,13 +941,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/advertisingCosts/amount"
           )))
         )
       }
+
       "/expenses/advertisingCosts/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -940,13 +970,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/advertisingCosts/disallowableAmount"
           )))
         )
       }
+
       "/expenses/businessEntertainmentCosts/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -968,13 +999,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/businessEntertainmentCosts/amount"
           )))
         )
       }
+
       "/expenses/businessEntertainmentCosts/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -996,13 +1028,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/businessEntertainmentCosts/disallowableAmount"
           )))
         )
       }
+
       "/expenses/interestOnLoans/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1024,13 +1057,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/interestOnLoans/amount"
           )))
         )
       }
+
       "/expenses/interestOnLoans/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1052,13 +1086,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/interestOnLoans/disallowableAmount"
           )))
         )
       }
+
       "/expenses/financialCharges/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1080,13 +1115,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/financialCharges/amount"
           )))
         )
       }
+
       "/expenses/financialCharges/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1108,13 +1144,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/financialCharges/disallowableAmount"
           )))
         )
       }
+
       "/expenses/badDebt/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1136,13 +1173,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/badDebt/amount"
           )))
         )
       }
+
       "/expenses/badDebt/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1164,13 +1202,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/badDebt/disallowableAmount"
           )))
         )
       }
+
       "/expenses/professionalFees/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1192,13 +1231,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/professionalFees/amount"
           )))
         )
       }
+
       "/expenses/professionalFees/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1220,13 +1260,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/professionalFees/disallowableAmount"
           )))
         )
       }
+
       "/expenses/depreciation/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1248,13 +1289,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/depreciation/amount"
           )))
         )
       }
+
       "/expenses/depreciation/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1276,13 +1318,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/depreciation/disallowableAmount"
           )))
         )
       }
+
       "/expenses/other/amount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1304,13 +1347,14 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/other/amount"
           )))
         )
       }
+
       "/expenses/other/disallowableAmount is invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1332,7 +1376,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/expenses/other/disallowableAmount"
@@ -1343,8 +1387,10 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
 
     "return all errors" when {
       "all path parameters are invalid" in {
-        validator.validate(CreateSelfEmploymentPeriodicRawData("walrus", "beans", requestBodyExpensesJson)) shouldBe List(NinoFormatError, BusinessIdFormatError)
+        validator.validate(CreateSelfEmploymentPeriodicRawData("walrus", "beans", requestBodyExpensesJson)) shouldBe
+          List(NinoFormatError, BusinessIdFormatError)
       }
+
       "all fields are invalid" in {
         validator.validate(CreateSelfEmploymentPeriodicRawData(validNino, validBusinessId, Json.parse(
           """
@@ -1422,7 +1468,7 @@ class CreateSelfEmploymentPeriodValidatorSpec extends UnitSpec {
             |     }
             |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         ))) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/incomes/turnover/amount",

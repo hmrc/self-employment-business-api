@@ -17,7 +17,6 @@
 package v1.routing
 
 import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, Materializer}
 import com.typesafe.config.ConfigFactory
 import mocks.MockAppConfig
 import org.scalatest.Inside
@@ -38,8 +37,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   test =>
 
   implicit private val actorSystem: ActorSystem = ActorSystem("test")
-  implicit private val mat: Materializer        = ActorMaterializer()
-  val action: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
+  val action: DefaultActionBuilder              = app.injector.instanceOf[DefaultActionBuilder]
 
   import play.api.mvc.Handler
   import play.api.routing.sird._
@@ -58,7 +56,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   private val v2Router      = Router.from {
     case GET(p"/v2") => V2Handler
   }
-  private val v3Router = Router.from {
+  private val v3Router      = Router.from {
     case GET(p"/v3") => V3Handler
   }
 
@@ -73,7 +71,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     private val filters           = mock[HttpFilters]
     (filters.filters _).stubs().returns(Seq.empty)
 
-    MockedAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("""
+    MockAppConfig.featureSwitch.returns(Some(Configuration(ConfigFactory.parseString("""
                                                                            |version-1.enabled = true
                                                                            |version-2.enabled = true
                                                                          """.stripMargin))))

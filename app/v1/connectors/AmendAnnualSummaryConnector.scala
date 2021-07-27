@@ -40,7 +40,9 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
 
     put(
       body = request.body,
-      DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}")
+      DesUri[Unit](
+        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}"
+      )
     )
   }
 }

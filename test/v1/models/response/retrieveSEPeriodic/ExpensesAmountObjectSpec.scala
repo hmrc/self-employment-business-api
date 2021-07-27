@@ -16,42 +16,40 @@
 
 package v1.models.response.retrieveSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
-class ExpensesAmountObjectSpec extends UnitSpec{
+class ExpensesAmountObjectSpec extends UnitSpec {
 
-  val fullModel = ExpensesAmountObject(500.25, Some(500.25))
+  val fullModel: ExpensesAmountObject = ExpensesAmountObject(500.25, Some(500.25))
 
-  val noOptionModel = ExpensesAmountObject(500.25, None)
+  val noOptionModel: ExpensesAmountObject = ExpensesAmountObject(500.25, None)
 
-  val fullJson = Json.parse(
+  val fullJson: JsValue = Json.parse(
     """
       |{
-      | "amount": 500.25,
-      | "disallowableAmount": 500.25
+      |  "amount": 500.25,
+      |  "disallowableAmount": 500.25
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
-  val noOptionJson = Json.parse(
+  val noOptionJson: JsValue = Json.parse(
     """
       |{
-      | "amount": 500.25
+      |  "amount": 500.25
       |}
-      |""".stripMargin)
-
+    """.stripMargin
+  )
 
   "reads" should {
-
     "read from a model" when {
-
       "a valid request is made" in {
         fullJson.as[ExpensesAmountObject] shouldBe fullModel
       }
     }
 
     "read from a model with no disallowable amount" when {
-
       "a valid request with no disallowable amount is made" in {
         noOptionJson.as[ExpensesAmountObject] shouldBe noOptionModel
       }
@@ -59,21 +57,16 @@ class ExpensesAmountObjectSpec extends UnitSpec{
   }
 
   "writes" should {
-
     "write to a model" when {
-
       "a valid request is made" in {
         Json.toJson(fullModel) shouldBe fullJson
       }
     }
 
     "write to a model with no disallowable amount" when {
-
       "a valid request is made with no disallowable amount" in {
         Json.toJson(noOptionModel) shouldBe noOptionJson
       }
     }
   }
 }
-
-

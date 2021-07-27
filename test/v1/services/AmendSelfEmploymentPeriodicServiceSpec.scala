@@ -16,29 +16,30 @@
 
 package v1.services
 
-import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendSelfEmploymentPeriodicConnector
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEPeriodic.{AmendPeriodicBody, AmendPeriodicRequest}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AmendSelfEmploymentPeriodicServiceSpec extends UnitSpec {
+class AmendSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  val periodId = "2019-01-25_2020-01-25"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  val periodId: String = "2019-01-25_2020-01-25"
+  implicit val correlationId: String = "X-123"
 
-  private val requestData = AmendPeriodicRequest(nino, businessId, periodId, AmendPeriodicBody(None, None, None))
+  private val requestData = AmendPeriodicRequest(
+    nino = Nino(nino),
+    businessId = businessId,
+    periodId = periodId,
+    body = AmendPeriodicBody(None, None, None)
+  )
 
   trait Test extends MockAmendSelfEmploymentPeriodicConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendSelfEmploymentPeriodicService(
@@ -59,7 +60,6 @@ class AmendSelfEmploymentPeriodicServiceSpec extends UnitSpec {
 
   "unsuccessful" should {
     "map errors according to spec" when {
-
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 

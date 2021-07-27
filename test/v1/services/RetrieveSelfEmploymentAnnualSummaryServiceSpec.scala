@@ -16,28 +16,25 @@
 
 package v1.services
 
-import support.UnitSpec
 import v1.controllers.EndpointLogContext
-import uk.gov.hmrc.domain.Nino
+import v1.models.domain.Nino
 import v1.mocks.connectors.MockRetrieveSelfEmploymentAnnualSummaryConnector
 import v1.models.domain.ex.MtdEx._
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
 import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponse}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
+class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  val taxYear = "2019-20"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  val taxYear: String = "2019-20"
+  implicit val correlationId: String = "X-123"
 
-  val response = RetrieveSelfEmploymentAnnualSummaryResponse(
+  val response: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(
       Some(100.25),
       Some(100.25),
@@ -48,7 +45,8 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25),
-      Some(100.25))),
+      Some(100.25)
+    )),
     Some(Allowances(
       Some(100.25),
       Some(100.25),
@@ -62,14 +60,16 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
       Some(100.25),
       Some(100.25)
     )),
-    Some(NonFinancials(
-      Some(Class4NicInfo(
-        Some(`001 - Non Resident`))))))
+    Some(NonFinancials(Some(Class4NicInfo(Some(`001 - Non Resident`)))))
+  )
 
-  private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(nino, businessId, taxYear)
+  private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(
+    nino = Nino(nino),
+    businessId = businessId,
+    taxYear = taxYear
+  )
 
   trait Test extends MockRetrieveSelfEmploymentAnnualSummaryConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new RetrieveSelfEmploymentAnnualSummaryService(
@@ -90,7 +90,6 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends UnitSpec {
 
   "unsuccessful" should {
     "map errors according to spec" when {
-
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 

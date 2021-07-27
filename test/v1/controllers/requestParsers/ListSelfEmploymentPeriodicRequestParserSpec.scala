@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockListSelfEmploymentPeriodicValidator
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.request.listSEPeriodic.{ListSelfEmploymentPeriodicRawData, ListSelfEmploymentPeriodicRequest}
 
@@ -26,13 +26,12 @@ class ListSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
-  implicit val correlationId = "X-123"
+  implicit val correlationId: String = "X-123"
 
-  val rawData = ListSelfEmploymentPeriodicRawData(
+  val rawData: ListSelfEmploymentPeriodicRawData = ListSelfEmploymentPeriodicRawData(
     nino = nino,
     businessId = businessId
   )
-
 
   trait Test extends MockListSelfEmploymentPeriodicValidator {
     lazy val parser: ListSelfEmploymentPeriodicRequestParser = new ListSelfEmploymentPeriodicRequestParser(

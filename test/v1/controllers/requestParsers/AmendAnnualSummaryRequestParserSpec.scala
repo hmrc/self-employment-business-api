@@ -18,17 +18,18 @@ package v1.controllers.requestParsers
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendSelfEmploymentAnnualSummaryValidator
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.domain.ex.MtdEx._
 import v1.models.request.amendSEAnnual._
 
 class AmendAnnualSummaryRequestParserSpec extends UnitSpec {
-  val nino = "AA123456B"
-  val businessId = "XAIS12345678910"
-  val taxYear = "2019-20"
-  implicit val correlationId = "X-123"
+
+  val nino: String = "AA123456B"
+  val businessId: String = "XAIS12345678910"
+  val taxYear: String = "2019-20"
+  implicit val correlationId: String = "X-123"
 
   private val requestBodyJson = Json.parse(
     """
@@ -65,59 +66,64 @@ class AmendAnnualSummaryRequestParserSpec extends UnitSpec {
       |        }
       |    }
       |}
-        """.stripMargin)
+    """.stripMargin
+  )
 
-  val inputData =
-    AmendAnnualSummaryRawData(nino, businessId, taxYear, requestBodyJson)
+  val inputData: AmendAnnualSummaryRawData = AmendAnnualSummaryRawData(
+    nino = nino,
+    businessId = businessId,
+    taxYear = taxYear,
+    body = requestBodyJson
+  )
 
   trait Test extends MockAmendSelfEmploymentAnnualSummaryValidator {
     lazy val parser = new AmendSelfEmploymentAnnualSummaryRequestParser(mockValidator)
   }
 
   "parse" should {
-
     "return a request object" when {
       "valid request data is supplied" in new Test {
         MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData).returns(Nil)
 
-        val amendAnnualSummaryRequestBody =
-          AmendAnnualSummaryBody(
-            Some(Adjustments(
-                Some(216.12),
-                Some(626.53),
-                Some(153.89),
-                Some(514.24),
-                Some(124.98),
-                Some(571.27),
-                Some(751.03),
-                Some(719.23),
-                Some(956.47),
-                Some(157.43)
-              )),
-              Some(Allowances(
-                Some(561.32),
-                Some(198.45),
-                Some(825.34),
-                Some(647.12),
-                Some(173.64),
-                Some(115.98),
-                Some(548.15),
-                Some(901.67),
-                Some(521.34),
-                Some(324.65),
-                Some(658.11)
-              )),
-              Some(NonFinancials(
-                Some(Class4NicInfo(
-                  Some(`002 - Trustee`)
-              ))))
-          )
+        val amendAnnualSummaryRequestBody: AmendAnnualSummaryBody = AmendAnnualSummaryBody(
+          Some(Adjustments(
+            Some(216.12),
+            Some(626.53),
+            Some(153.89),
+            Some(514.24),
+            Some(124.98),
+            Some(571.27),
+            Some(751.03),
+            Some(719.23),
+            Some(956.47),
+            Some(157.43)
+          )),
+          Some(Allowances(
+            Some(561.32),
+            Some(198.45),
+            Some(825.34),
+            Some(647.12),
+            Some(173.64),
+            Some(115.98),
+            Some(548.15),
+            Some(901.67),
+            Some(521.34),
+            Some(324.65),
+            Some(658.11)
+          )),
+          Some(NonFinancials(
+            Some(Class4NicInfo(
+              Some(`002 - Trustee`)
+            ))
+          ))
+        )
 
         parser.parseRequest(inputData) shouldBe
           Right(AmendAnnualSummaryRequest(Nino(nino), businessId, taxYear, amendAnnualSummaryRequestBody))
       }
     }
-    "return an ErrroWrapper" when {
+
+    "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
         MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData)
           .returns(List(NinoFormatError))

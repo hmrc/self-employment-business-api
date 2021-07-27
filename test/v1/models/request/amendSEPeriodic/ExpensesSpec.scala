@@ -16,136 +16,138 @@
 
 package v1.models.request.amendSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class ExpensesSpec extends UnitSpec {
 
-  val json = Json.parse(
+  val json: JsValue = Json.parse(
     """
       |{
-      |            "costOfGoodsBought": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "cisPaymentsTo": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "staffCosts": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "travelCosts": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "premisesRunningCosts": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "maintenanceCosts": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "adminCosts": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "advertisingCosts": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "interestOnLoans": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "financialCharges": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "badDebt": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "professionalFees": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "depreciation": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            },
-      |            "other": {
-      |                "amount": 500.25,
-      |                "disallowableAmount": 500.25
-      |            }
-      |        }
-      |""".stripMargin)
+      |   "costOfGoodsBought":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "cisPaymentsTo":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "staffCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "travelCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "premisesRunningCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "maintenanceCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "adminCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "advertisingCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "interestOnLoans":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "financialCharges":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "badDebt":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "professionalFees":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "depreciation":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "other":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   }
+      |}
+    """.stripMargin
+  )
 
-  val desJson = Json.parse(
+  val desJson: JsValue = Json.parse(
     """
       |{
-      |         "adminCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "advertisingCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "badDebt": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "constructionIndustryScheme": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "costOfGoods": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "depreciation": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "financialCharges": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "interest": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "maintenanceCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "other": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "professionalFees": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "premisesRunningCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "staffCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         },
-      |         "travelCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
-      |         }
-      |      }
-      |""".stripMargin)
+      |   "adminCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "advertisingCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "badDebt":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "constructionIndustryScheme":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "costOfGoods":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "depreciation":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "financialCharges":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "interest":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "maintenanceCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "other":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "professionalFees":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "premisesRunningCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "staffCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   },
+      |   "travelCosts":{
+      |      "amount":500.25,
+      |      "disallowableAmount":500.25
+      |   }
+      |}
+    """.stripMargin
+  )
 
-  val model = Expenses(
+  val model: Expenses = Expenses(
     Some(ExpensesAmountObject(500.25,Some(500.25))),
     Some(ExpensesAmountObject(500.25,Some(500.25))),
     Some(ExpensesAmountObject(500.25,Some(500.25))),
@@ -160,8 +162,8 @@ class ExpensesSpec extends UnitSpec {
     Some(ExpensesAmountObject(500.25,Some(500.25))),
     Some(ExpensesAmountObject(500.25,Some(500.25))),
     Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))))
-
+    Some(ExpensesAmountObject(500.25,Some(500.25)))
+  )
 
   "reads" should {
     "return a model" when {

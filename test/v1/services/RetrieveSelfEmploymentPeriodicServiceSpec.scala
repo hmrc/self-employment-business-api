@@ -16,27 +16,24 @@
 
 package v1.services
 
-import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockRetrieveSelfEmploymentPeriodicConnector
-import v1.models.errors.{BusinessIdFormatError, DesErrorCode, DesErrors, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError}
+import v1.models.domain.Nino
+import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
 import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
+class RetrieveSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
-  val nino = Nino("AA123456A")
-  val businessId = "XAIS12345678910"
-  val periodId = "2019-01-25_2020-01-25"
-  implicit val correlationId = "X-123"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  val periodId: String = "2019-01-25_2020-01-25"
+  implicit val correlationId: String = "X-123"
 
-  val response = RetrieveSelfEmploymentPeriodicResponse(
+  val response: RetrieveSelfEmploymentPeriodicResponse = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
     "2020-01-25",
     Some(Incomes(
@@ -53,10 +50,13 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
     None
   )
 
-  private val requestData = RetrieveSelfEmploymentPeriodicRequest(nino, businessId, periodId)
+  private val requestData = RetrieveSelfEmploymentPeriodicRequest(
+    nino = Nino(nino),
+    businessId = businessId,
+    periodId = periodId
+  )
 
   trait Test extends MockRetrieveSelfEmploymentPeriodicConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new RetrieveSelfEmploymentPeriodicService(
@@ -77,7 +77,6 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends UnitSpec {
 
   "unsuccessful" should {
     "map errors according to spec" when {
-
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 

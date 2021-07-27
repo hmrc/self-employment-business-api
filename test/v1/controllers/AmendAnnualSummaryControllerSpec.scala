@@ -18,13 +18,13 @@ package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSummaryRequestParser
 import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
 import v1.mocks.services.{MockAmendAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.domain.Nino
 import v1.models.domain.ex.MtdEx
 import v1.models.errors._
 import v1.models.hateoas.Method.{DELETE, GET, PUT}
@@ -45,8 +45,13 @@ class AmendAnnualSummaryControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
+  private val nino = "AA123456A"
+  private val businessId = "XAIS12345678910"
+  private val taxYear = "2019-20"
+  private val correlationId = "X-123"
+
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new AmendAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -58,15 +63,10 @@ class AmendAnnualSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val taxYear = "2019-20"
-  private val correlationId = "X-123"
 
   private val testHateoasLinks = Seq(
     Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
@@ -75,41 +75,41 @@ class AmendAnnualSummaryControllerSpec
   )
 
   private val requestJson = Json.parse(
-    """|
-       |{
-       |   "adjustments": {
-       |        "includedNonTaxableProfits": 1.11,
-       |        "basisAdjustment": 2.22,
-       |        "overlapReliefUsed": 3.33,
-       |        "accountingAdjustment": 4.44,
-       |        "averagingAdjustment": 5.55,
-       |        "lossBroughtForward": 6.66,
-       |        "outstandingBusinessIncome": 7.77,
-       |        "balancingChargeBPRA": 8.88,
-       |        "balancingChargeOther": 9.99,
-       |        "goodsAndServicesOwnUse": 10.10
-       |    },
-       |    "allowances": {
-       |        "annualInvestmentAllowance": 1.11,
-       |        "businessPremisesRenovationAllowance": 2.22,
-       |        "capitalAllowanceMainPool": 3.33,
-       |        "capitalAllowanceSpecialRatePool": 4.44,
-       |        "zeroEmissionGoodsVehicleAllowance": 5.55,
-       |        "enhancedCapitalAllowance": 6.66,
-       |        "allowanceOnSales": 7.77,
-       |        "capitalAllowanceSingleAssetPool": 8.88,
-       |        "tradingAllowance": 9.99,
-       |        "structureAndBuildingAllowance": "10.10",
-       |        "electricChargePointAllowance": "11.11"
-       |    },
-       |    "nonFinancials": {
-       |        "class4NicInfo":{
-       |            "isExempt": true,
-       |            "exemptionCode": "001 - Non Resident"
-       |        }
-       |    }
-       |}
-       |""".stripMargin
+    """
+      |{
+      |   "adjustments": {
+      |        "includedNonTaxableProfits": 1.11,
+      |        "basisAdjustment": 2.22,
+      |        "overlapReliefUsed": 3.33,
+      |        "accountingAdjustment": 4.44,
+      |        "averagingAdjustment": 5.55,
+      |        "lossBroughtForward": 6.66,
+      |        "outstandingBusinessIncome": 7.77,
+      |        "balancingChargeBPRA": 8.88,
+      |        "balancingChargeOther": 9.99,
+      |        "goodsAndServicesOwnUse": 10.10
+      |    },
+      |    "allowances": {
+      |        "annualInvestmentAllowance": 1.11,
+      |        "businessPremisesRenovationAllowance": 2.22,
+      |        "capitalAllowanceMainPool": 3.33,
+      |        "capitalAllowanceSpecialRatePool": 4.44,
+      |        "zeroEmissionGoodsVehicleAllowance": 5.55,
+      |        "enhancedCapitalAllowance": 6.66,
+      |        "allowanceOnSales": 7.77,
+      |        "capitalAllowanceSingleAssetPool": 8.88,
+      |        "tradingAllowance": 9.99,
+      |        "structureAndBuildingAllowance": "10.10",
+      |        "electricChargePointAllowance": "11.11"
+      |    },
+      |    "nonFinancials": {
+      |        "class4NicInfo":{
+      |            "isExempt": true,
+      |            "exemptionCode": "001 - Non Resident"
+      |        }
+      |    }
+      |}
+    """.stripMargin
   )
 
   private val requestBody = AmendAnnualSummaryBody(
@@ -120,26 +120,27 @@ class AmendAnnualSummaryControllerSpec
 
   val responseJson: JsValue = Json.parse(
     s"""
-       |{
-       |  "links": [
-       |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-       |      "method": "GET",
-       |      "rel": "self"
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-       |      "method": "PUT",
-       |      "rel": "create-and-amend-self-employment-annual-summary"
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-       |      "method": "DELETE",
-       |      "rel": "delete-self-employment-annual-summary"
-       |    }
-       |  ]
-       |}
-       |""".stripMargin)
+      |{
+      |  "links": [
+      |    {
+      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      |      "method": "GET",
+      |      "rel": "self"
+      |    },
+      |    {
+      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      |      "method": "PUT",
+      |      "rel": "create-and-amend-self-employment-annual-summary"
+      |    },
+      |    {
+      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      |      "method": "DELETE",
+      |      "rel": "delete-self-employment-annual-summary"
+      |    }
+      |  ]
+      |}
+    """.stripMargin
+  )
 
   private val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, requestJson)
   private val requestData = AmendAnnualSummaryRequest(Nino(nino), businessId, taxYear, requestBody)
@@ -147,7 +148,6 @@ class AmendAnnualSummaryControllerSpec
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
-
         MockAmendSelfEmploymentAnnualSummaryRequestParser
           .requestFor(rawData)
           .returns(Right(requestData))
@@ -165,6 +165,7 @@ class AmendAnnualSummaryControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
+
     "return the error as per spec" when {
       "parser errors occur" should {
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {

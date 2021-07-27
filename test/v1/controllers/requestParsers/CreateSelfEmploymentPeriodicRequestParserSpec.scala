@@ -18,78 +18,81 @@ package v1.controllers.requestParsers
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockCreateSelfEmploymentPeriodicValidator
+import v1.models.domain.Nino
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError}
 import v1.models.request.createSEPeriodic._
 
 class CreateSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
-    val nino = "AA123456B"
-    val businessId = "XAIS12345678910"
-    implicit val correlationId = "X-123"
 
-    private val requestBodyJson = Json.parse(
-      """
-        {
-        |   "periodFromDate": "2017-01-25",
-        |   "periodToDate": "2018-01-24",
-        |   "incomes": {
-        |     "turnover": {
-        |       "amount": 500.25
-        |     },
-        |     "other": {
-        |       "amount": 500.25
-        |     }
-        |   },
-        |   "consolidatedExpenses": {
-        |     "consolidatedExpenses": 500.25
-        |   }
-        |}
-        """.stripMargin)
+  val nino: String = "AA123456B"
+  val businessId: String = "XAIS12345678910"
+  implicit val correlationId: String = "X-123"
 
-    val inputData =
-      CreateSelfEmploymentPeriodicRawData(nino, businessId, requestBodyJson)
+  private val requestBodyJson = Json.parse(
+    """
+       {
+       |   "periodFromDate": "2017-01-25",
+       |   "periodToDate": "2018-01-24",
+       |   "incomes": {
+       |     "turnover": {
+       |       "amount": 500.25
+       |     },
+       |     "other": {
+       |       "amount": 500.25
+       |     }
+       |   },
+       |   "consolidatedExpenses": {
+       |     "consolidatedExpenses": 500.25
+       |   }
+       |}
+     """.stripMargin
+  )
 
-    trait Test extends MockCreateSelfEmploymentPeriodicValidator {
-      lazy val parser = new CreateSelfEmploymentPeriodicRequestParser(mockValidator)
-    }
+  val inputData: CreateSelfEmploymentPeriodicRawData = CreateSelfEmploymentPeriodicRawData(
+    nino = nino,
+    businessId = businessId,
+    body = requestBodyJson
+  )
 
-    "parse" should {
+  trait Test extends MockCreateSelfEmploymentPeriodicValidator {
+    lazy val parser = new CreateSelfEmploymentPeriodicRequestParser(mockValidator)
+  }
 
-      "return a request object" when {
-        "valid request data is supplied" in new Test {
-          MockCreateSelfEmploymentPeriodicValidator.validate(inputData).returns(Nil)
+  "parse" should {
+    "return a request object" when {
+      "valid request data is supplied" in new Test {
+        MockCreateSelfEmploymentPeriodicValidator.validate(inputData).returns(Nil)
 
-          val createPeriodicUpdateRequestBody = CreateSelfEmploymentPeriodicBody(
-            "2017-01-25",
-            "2018-01-24",
-            Some(Incomes(Some(IncomesAmountObject(500.25)), Some(IncomesAmountObject(500.25)))),
-            Some(ConsolidatedExpenses(500.25)),
-            None
-          )
+        val createPeriodicUpdateRequestBody: CreateSelfEmploymentPeriodicBody = CreateSelfEmploymentPeriodicBody(
+          "2017-01-25",
+          "2018-01-24",
+          Some(Incomes(Some(IncomesAmountObject(500.25)), Some(IncomesAmountObject(500.25)))),
+          Some(ConsolidatedExpenses(500.25)),
+          None
+        )
 
-
-          parser.parseRequest(inputData) shouldBe
-            Right(CreateSelfEmploymentPeriodicRequest(Nino(nino), businessId, createPeriodicUpdateRequestBody))
-        }
-      }
-      "return an ErrroWrapper" when {
-        "a single validation error occurs" in new Test {
-          MockCreateSelfEmploymentPeriodicValidator.validate(inputData)
-            .returns(List(NinoFormatError))
-
-          parser.parseRequest(inputData) shouldBe
-            Left(ErrorWrapper(correlationId, NinoFormatError, None))
-        }
-
-        "multiple validation errors occur" in new Test {
-          MockCreateSelfEmploymentPeriodicValidator.validate(inputData)
-            .returns(List(NinoFormatError, BusinessIdFormatError))
-
-          parser.parseRequest(inputData) shouldBe
-            Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError))))
-        }
+        parser.parseRequest(inputData) shouldBe
+          Right(CreateSelfEmploymentPeriodicRequest(Nino(nino), businessId, createPeriodicUpdateRequestBody))
       }
     }
 
+    "return an ErrorWrapper" when {
+      "a single validation error occurs" in new Test {
+        MockCreateSelfEmploymentPeriodicValidator.validate(inputData)
+          .returns(List(NinoFormatError))
+
+        parser.parseRequest(inputData) shouldBe
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
+      }
+
+      "multiple validation errors occur" in new Test {
+        MockCreateSelfEmploymentPeriodicValidator.validate(inputData)
+          .returns(List(NinoFormatError, BusinessIdFormatError))
+
+        parser.parseRequest(inputData) shouldBe
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError))))
+      }
+    }
+  }
 }

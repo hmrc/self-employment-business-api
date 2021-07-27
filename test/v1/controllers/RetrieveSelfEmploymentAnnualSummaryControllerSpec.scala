@@ -16,15 +16,14 @@
 
 package v1.controllers
 
-
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveSelfEmploymentAnnualSummaryService}
+import v1.models.domain.Nino
 import v1.models.domain.ex.MtdEx
 import v1.models.errors._
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -45,8 +44,13 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
   with MockAuditService
   with MockIdGenerator {
 
+  private val nino = "AA123456A"
+  private val businessId = "XAIS12345678910"
+  private val taxYear = "2020-21"
+  private val correlationId = "X-123"
+
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new RetrieveSelfEmploymentAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -58,21 +62,15 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
       idGenerator = mockIdGenerator
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val taxYear = "2020-21"
-  private val correlationId = "X-123"
 
   private val rawData = RetrieveSelfEmploymentAnnualSummaryRawData(nino, businessId, taxYear)
   private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
 
   private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/annual/$taxYear", method = GET, rel = "self")
-
 
   private val adjustments = Adjustments(
     Some(1000), Some(1000), Some(1000), Some(1000), Some(1000),
@@ -84,13 +82,15 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
   )
   private val nonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`002 - Trustee`))))
 
-  val responseBody: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(Some(adjustments), Some(allowances), Some(nonFinancials))
-
+  val responseBody: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
+    adjustments = Some(adjustments),
+    allowances = Some(allowances),
+    nonFinancials = Some(nonFinancials)
+  )
 
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
-
         MockRetrieveSelfEmploymentAnnualSummaryRequestParser
           .parse(rawData)
           .returns(Right(requestData))
@@ -108,6 +108,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
+
     "return an error as per spec" when {
       "parser errors occur" should {
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
@@ -136,6 +137,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
       }
+
       "service errors occur" should {
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {

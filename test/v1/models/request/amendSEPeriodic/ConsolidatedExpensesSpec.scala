@@ -16,32 +16,31 @@
 
 package v1.models.request.amendSEPeriodic
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class ConsolidatedExpensesSpec extends UnitSpec {
 
-  val model = ConsolidatedExpenses(500.25)
+  val model: ConsolidatedExpenses = ConsolidatedExpenses(500.25)
 
-  val json = Json.parse(
-    """{
-      |"consolidatedExpenses": 500.25
+  val json: JsValue = Json.parse(
+    """
+      |{
+      |   "consolidatedExpenses": 500.25
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   "reads" should {
-
     "read from a json" when {
-
       "a valid request is made" in {
         json.as[ConsolidatedExpenses] shouldBe model
       }
     }
   }
+
   "writes" should {
-
     "write to a model" when {
-
       "a valid request is made" in {
         Json.toJson(model) shouldBe json
       }

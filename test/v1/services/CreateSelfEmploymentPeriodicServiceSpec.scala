@@ -16,9 +16,9 @@
 
 package v1.services
 
-import uk.gov.hmrc.domain.Nino
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockCreateSelfEmploymentPeriodicConnector
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createSEPeriodic._
@@ -28,10 +28,9 @@ import scala.concurrent.Future
 
 class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  implicit val correlationId = "X-123"
-
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  implicit val correlationId: String = "X-123"
 
   private val requestBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
@@ -85,36 +84,33 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
         await(service.createPeriodic(requestData)) shouldBe outcome
       }
-    }
 
+      "map errors according to spec" when {
+        def serviceError(desErrorCode: String, error: MtdError): Unit =
+          s"a $desErrorCode error is returned from the service" in new Test {
 
-    "map errors according to spec" when {
+            MockCreateSelfEmploymentPeriodicConnector.createSelfEmploymentPeriodic(requestData)
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-      def serviceError(desErrorCode: String, error: MtdError): Unit =
-        s"a $desErrorCode error is returned from the service" in new Test {
+            await(service.createPeriodic(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          }
 
-          MockCreateSelfEmploymentPeriodicConnector.createSelfEmploymentPeriodic(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+        val input = Seq(
+          ("INVALID_NINO", NinoFormatError),
+          ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
+          ("INVALID_PERIOD", RuleToDateBeforeFromDateError),
+          ("OVERLAPS_IN_PERIOD", RuleOverlappingPeriod),
+          ("NOT_ALIGN_PERIOD", RuleMisalignedPeriod),
+          ("BOTH_EXPENSES_SUPPLIED", RuleBothExpensesSuppliedError),
+          ("NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
+          ("NOT_ALLOWED_SIMPLIFIED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
+          ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
+          ("SERVER_ERROR", DownstreamError),
+          ("SERVICE_UNAVAILABLE", DownstreamError)
+        )
 
-          await(service.createPeriodic(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
-        }
-
-      val input = Seq(
-        ("INVALID_NINO", NinoFormatError),
-        ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
-        ("INVALID_PERIOD", RuleToDateBeforeFromDateError),
-        ("OVERLAPS_IN_PERIOD", RuleOverlappingPeriod),
-        ("NOT_ALIGN_PERIOD", RuleMisalignedPeriod),
-        ("BOTH_EXPENSES_SUPPLIED", RuleBothExpensesSuppliedError),
-        ("NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
-        ("NOT_ALLOWED_SIMPLIFIED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
-        ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
-        ("SERVER_ERROR", DownstreamError),
-        ("SERVICE_UNAVAILABLE", DownstreamError)
-      )
-
-      input.foreach(args => (serviceError _).tupled(args))
+        input.foreach(args => (serviceError _).tupled(args))
+      }
     }
   }
-
 }
