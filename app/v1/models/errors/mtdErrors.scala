@@ -33,8 +33,8 @@ object MtdErrorWithCustomMessage {
 
 // Format Errors
 object NinoFormatError extends MtdError(
-  code ="FORMAT_NINO",
-  message ="The provided NINO is invalid"
+  code = "FORMAT_NINO",
+  message = "The provided NINO is invalid"
 )
 object TaxYearFormatError extends MtdError(
   code = "FORMAT_TAX_YEAR",
