@@ -51,10 +51,11 @@ class RetrieveSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: RetrieveSelfEmploymentPeriodicConnector =
-      new RetrieveSelfEmploymentPeriodicConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: RetrieveSelfEmploymentPeriodicConnector = new RetrieveSelfEmploymentPeriodicConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockAppConfig.desBaseUrl returns baseUrl
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
@@ -63,19 +64,18 @@ class RetrieveSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
   "connector" must {
     "send a request and return a body" in new Test {
-
       val fromDate: String = request.periodId.substring(0, 10)
       val toDate: String = request.periodId.substring(11, 21)
 
       val outcome = Right(ResponseWrapper(correlationId, response))
-      MockedHttpClient
+
+      MockHttpClient
         .get(
-          url = s"$baseUrl/income-store/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate",
+          url = s"$baseUrl/income-store/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate",
           config = dummyDesHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        )
-        .returns(Future.successful(outcome))
+        ).returns(Future.successful(outcome))
 
       await(connector.retrieveSEAnnual(request)) shouldBe outcome
     }

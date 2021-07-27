@@ -17,9 +17,9 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.DesTaxYear
+import v1.models.domain.{DesTaxYear, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
 
@@ -31,10 +31,18 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
-  class Test extends MockHttpClient with MockAppConfig {
-    val connector: DeleteSelfEmploymentAnnualSummaryConnector = new DeleteSelfEmploymentAnnualSummaryConnector(http = mockHttpClient, appConfig = mockAppConfig)
+  val request: DeleteSelfEmploymentAnnualSummaryRequest = DeleteSelfEmploymentAnnualSummaryRequest(
+    nino = Nino(nino),
+    businessId = businessId,
+    taxYear = taxYear
+  )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
+  class Test extends MockHttpClient with MockAppConfig {
+    val connector: DeleteSelfEmploymentAnnualSummaryConnector = new DeleteSelfEmploymentAnnualSummaryConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
+
     MockAppConfig.desBaseUrl returns baseUrl
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
@@ -42,18 +50,19 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "delete" should {
-    val request = DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
-
     "return a 204 with no body" when {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockedHttpClient.
-          put(
-            url = s"$baseUrl/income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}",
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+
+        MockHttpClient
+          .put(
+            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}",
             config = dummyDesHeaderCarrierConfig,
             body = """{}""",
-            requiredHeaders = requiredDesHeaders,
+            requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 

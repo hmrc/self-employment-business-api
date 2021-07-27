@@ -17,9 +17,9 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
+import v1.models.domain.Nino
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEPeriodic.{AmendPeriodicBody, AmendPeriodicRequest, ConsolidatedExpenses}
 
@@ -39,10 +39,10 @@ class AmendSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       None,
       Some(ConsolidatedExpenses(200.10)),
       None
-    ))
+    )
+  )
 
   class Test extends MockHttpClient with MockAppConfig {
-
     val connector: AmendSelfEmploymentPeriodicConnector = new AmendSelfEmploymentPeriodicConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -60,17 +60,17 @@ class AmendSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         val fromDate: String = request.periodId.substring(0, 10)
-        val toDate: String= request.periodId.substring(11, 21)
+        val toDate: String = request.periodId.substring(11, 21)
 
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+        val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
-        MockedHttpClient
+        MockHttpClient
           .put(
-            url = s"$baseUrl/income-store/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summaries?from=$fromDate&to=$toDate",
+            url = s"$baseUrl/income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = requiredHeadersPut,
+            requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 

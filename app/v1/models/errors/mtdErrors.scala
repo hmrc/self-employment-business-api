@@ -31,6 +31,7 @@ object MtdErrorWithCustomMessage {
   def unapply(arg: MtdError): Option[String] = Some(arg.code)
 }
 
+// Format Errors
 object NinoFormatError extends MtdError(
   code ="FORMAT_NINO",
   message ="The provided NINO is invalid"
@@ -111,7 +112,7 @@ object RuleIncorrectOrEmptyBodyError extends MtdError(
   message = "An empty or non-matching body was submitted"
 )
 
-//Standard Errors
+// Standard Errors
 object NotFoundError extends MtdError(
   code = "MATCHING_RESOURCE_NOT_FOUND",
   message = "Matching resource not found"
@@ -137,7 +138,7 @@ object ServiceUnavailableError extends MtdError(
   message = "Internal server error"
 )
 
-//Authorisation Errors
+// Authorisation Errors
 object UnauthorisedError extends MtdError(
   code = "CLIENT_OR_AGENT_NOT_AUTHORISED",
   message = "The client and/or agent is not authorised"
@@ -149,17 +150,17 @@ object InvalidBearerTokenError extends MtdError(
 )
 
 // Accept header Errors
-object  InvalidAcceptHeaderError extends MtdError(
+object InvalidAcceptHeaderError extends MtdError(
   code = "ACCEPT_HEADER_INVALID",
   message = "The accept header is missing or invalid"
 )
 
-object  UnsupportedVersionError extends MtdError(
+object UnsupportedVersionError extends MtdError(
   code = "NOT_FOUND",
   message = "The requested resource could not be found"
 )
 
 object InvalidBodyTypeError extends MtdError(
   code = "INVALID_BODY_TYPE",
-  message ="Expecting text/json or application/json body"
+  message = "Expecting text/json or application/json body"
 )

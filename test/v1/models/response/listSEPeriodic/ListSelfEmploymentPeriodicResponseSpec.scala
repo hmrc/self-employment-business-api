@@ -28,30 +28,33 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig
 
   private val model = ListSelfEmploymentPeriodicResponse(
     Seq(PeriodDetails(
-        "2019-01-01_2020-01-01",
-        "2019-01-01",
-        "2020-01-01"
-      )))
+      "2019-01-01_2020-01-01",
+      "2019-01-01",
+      "2020-01-01"
+    ))
+  )
 
   private val modelMultiple = ListSelfEmploymentPeriodicResponse(
-    Seq(PeriodDetails(
+    Seq(
+      PeriodDetails(
         "2019-01-01_2020-01-01",
         "2019-01-01",
         "2020-01-01"
       ),
-        PeriodDetails(
-          "2019-01-01_2020-01-01",
-          "2019-01-01",
-          "2020-01-01"
-        )))
+      PeriodDetails(
+        "2019-01-01_2020-01-01",
+        "2019-01-01",
+        "2020-01-01"
+      )
+    )
+  )
 
-  private val jsonEmpty = Json.parse(
+  private val jsonEmptyArray = Json.parse(
     """
       |{
-      |   "periods": [
-      |    ]
+      |   "periods": [ ]
       |}
-      |""".stripMargin
+    """.stripMargin
   )
 
   private val json = Json.parse(
@@ -65,80 +68,69 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig
       |       }
       |    ]
       |}
-      |""".stripMargin
+    """.stripMargin
   )
 
-  private val jsonMulitple = Json.parse(
+  private val jsonMultiple = Json.parse(
     """
       |{
       |   "periods": [
-      |    {
-      |           "periodId": "2019-01-01_2020-01-01",
-      |           "from": "2019-01-01",
-      |           "to": "2020-01-01"
-      |    },
-      |    {
-      |           "periodId": "2019-01-01_2020-01-01",
-      |           "from": "2019-01-01",
-      |           "to": "2020-01-01"
-      |    }
-      |  ]
+      |     {
+      |         "periodId": "2019-01-01_2020-01-01",
+      |         "from": "2019-01-01",
+      |         "to": "2020-01-01"
+      |     },
+      |     {
+      |         "periodId": "2019-01-01_2020-01-01",
+      |         "from": "2019-01-01",
+      |         "to": "2020-01-01"
+      |     }
+      |   ]
       |}
-      |""".stripMargin
-  )
-
-  private val desJsonEmpty = Json.parse(
-    """
-      |{
-      |   "periods": [
-      |     ]
-      |}
-      |""".stripMargin
+    """.stripMargin
   )
 
   private val desJson = Json.parse(
     """
       |{
       |   "periods": [
-      |           {
-      |               "transactionReference": "3123123123121",
-      |               "from": "2019-01-01",
-      |               "to": "2020-01-01"
-      |           }
-      |     ]
+      |      {
+      |           "transactionReference": "3123123123121",
+      |           "from": "2019-01-01",
+      |           "to": "2020-01-01"
+      |      }
+      |   ]
       |}
-      |""".stripMargin
+    """.stripMargin
   )
 
   private val desJsonMultiple = Json.parse(
     """
       |{
       |   "periods": [
-      |           {
-      |               "transactionReference": "32131123131",
-      |               "from": "2019-01-01",
-      |               "to": "2020-01-01"
-      |           },
-      |           {
-      |               "transactionReference": "3123123123121",
-      |               "from": "2019-01-01",
-      |               "to": "2020-01-01"
-      |           }
-      |     ]
+      |      {
+      |           "transactionReference": "32131123131",
+      |           "from": "2019-01-01",
+      |           "to": "2020-01-01"
+      |      },
+      |      {
+      |           "transactionReference": "3123123123121",
+      |           "from": "2019-01-01",
+      |           "to": "2020-01-01"
+      |      }
+      |   ]
       |}
-      |""".stripMargin
+    """.stripMargin
   )
 
   "reads" should {
-
     "read from a json" when {
-
       "a valid request is made" in {
         desJson.as[ListSelfEmploymentPeriodicResponse[PeriodDetails]] shouldBe model
       }
 
       "a valid empty request is made" in {
-        desJsonEmpty.as[ListSelfEmploymentPeriodicResponse[PeriodDetails]] shouldBe generateModelEmpty
+        jsonEmptyArray.as[ListSelfEmploymentPeriodicResponse[PeriodDetails]] shouldBe generateModelEmpty
       }
 
       "a valid request with multiple fields is made" in {
@@ -146,18 +138,19 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig
       }
     }
   }
+
   "writes" should {
-
     "write to a model" when {
-
       "a valid request is made" in {
         Json.toJson(model) shouldBe json
       }
+
       "a valid empty request is made" in {
-        Json.toJson(generateModelEmpty) shouldBe jsonEmpty
+        Json.toJson(generateModelEmpty) shouldBe jsonEmptyArray
       }
+
       "a valid request with multiple fields is made" in {
-        Json.toJson(modelMultiple) shouldBe jsonMulitple
+        Json.toJson(modelMultiple) shouldBe jsonMultiple
       }
     }
   }
@@ -165,6 +158,7 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig
   "LinksFactory" should {
     "return the correct top-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
+
       ListSelfEmploymentPeriodicResponse.LinksFactory.links(mockAppConfig, ListSelfEmploymentPeriodicHateoasData("nino", "id")) shouldBe Seq(
         Link(href = "/test/context/nino/id/period", method = GET, rel = "self"),
         Link(href = "/test/context/nino/id/period", method = POST, rel = "create-periodic-update"),
@@ -172,10 +166,10 @@ class ListSelfEmploymentPeriodicResponseSpec extends UnitSpec with MockAppConfig
     }
     "return the correct item-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
+
       ListSelfEmploymentPeriodicResponse.LinksFactory.itemLinks(mockAppConfig, ListSelfEmploymentPeriodicHateoasData("nino", "id"), PeriodDetails("periodId", "", "")) shouldBe Seq(
         Link(href = "/test/context/nino/id/period/periodId", method = GET, rel = "self"),
       )
     }
   }
 }
-

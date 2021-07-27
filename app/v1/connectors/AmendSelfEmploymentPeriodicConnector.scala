@@ -26,7 +26,7 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class AmendSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
-                                                     val appConfig: AppConfig) extends BaseDownstreamConnector {
+                                                     val appConfig: AppConfig) extends BaseDesConnector {
 
   def amendPeriodicUpdates(request: AmendPeriodicRequest)(
     implicit hc: HeaderCarrier,
@@ -40,7 +40,9 @@ class AmendSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
 
     put(
       body = request.body,
-      DesUri[Unit](s"income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate")
+      DesUri[Unit](
+        s"income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
+      )
     )
   }
 }

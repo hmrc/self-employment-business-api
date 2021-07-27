@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.models.domain.Nino
 import v1.mocks.validators.MockRetrieveSelfEmploymentPeriodicValidator
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.request.retrieveSEPeriodic.{RetrieveSelfEmploymentPeriodicRawData, RetrieveSelfEmploymentPeriodicRequest}
 
@@ -34,7 +34,6 @@ class RetrieveSelfEmploymentPeriodicRequestParserSpec extends UnitSpec {
     businessId = businessId,
     periodId = periodId
   )
-
 
   trait Test extends MockRetrieveSelfEmploymentPeriodicValidator {
     lazy val parser: RetrieveSelfEmploymentPeriodicRequestParser = new RetrieveSelfEmploymentPeriodicRequestParser(

@@ -26,28 +26,24 @@ class IncomesAmountObjectSpec extends UnitSpec {
   val json: JsValue = Json.parse(
     """
       |{
-      | "amount": 500.12
+      |  "amount": 500.12
       |}
-      |""".stripMargin)
-
+    """.stripMargin
+  )
 
   "reads" should {
-
     "read from a model" when {
-
       "a valid request is made" in {
         json.as[IncomesAmountObject] shouldBe model
       }
     }
   }
+
   "writes" should {
-
     "write to a model" when {
-
       "a valid request is made" in {
         Json.toJson(model) shouldBe json
       }
     }
   }
-
 }

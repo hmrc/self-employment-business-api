@@ -17,8 +17,8 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
+import v1.models.domain.Nino
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
 import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
@@ -30,20 +30,25 @@ class ListSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
-  val request: ListSelfEmploymentPeriodicRequest = ListSelfEmploymentPeriodicRequest(Nino(nino), businessId)
+  val request: ListSelfEmploymentPeriodicRequest = ListSelfEmploymentPeriodicRequest(
+    nino = Nino(nino),
+    businessId = businessId
+  )
 
   val response: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
     Seq(PeriodDetails(
       "2020-01-01_2020-01-01",
       "2020-01-01",
       "2020-01-01"
-    )))
+    ))
+  )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: ListSelfEmploymentPeriodicConnector =
-      new ListSelfEmploymentPeriodicConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: ListSelfEmploymentPeriodicConnector = new ListSelfEmploymentPeriodicConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockAppConfig.desBaseUrl returns baseUrl
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
@@ -52,16 +57,15 @@ class ListSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
   "connector" must {
     "send a request and return a body" in new Test {
-
       val outcome = Right(ResponseWrapper(correlationId, response))
-      MockedHttpClient
+
+      MockHttpClient
         .get(
-          url = s"$baseUrl/income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summaries",
+          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries",
           config = dummyDesHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        )
-        .returns(Future.successful(outcome))
+        ).returns(Future.successful(outcome))
 
       await(connector.listSEPeriodic(request)) shouldBe outcome
     }

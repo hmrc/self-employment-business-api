@@ -28,30 +28,28 @@ class ExpensesAmountObjectSpec extends UnitSpec {
   val fullJson: JsValue = Json.parse(
     """
       |{
-      | "amount": 500.12,
-      | "disallowableAmount": 500.12
+      |  "amount": 500.12,
+      |  "disallowableAmount": 500.12
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val noOptionJson: JsValue = Json.parse(
     """
       |{
-      | "amount": 500.12
+      |  "amount": 500.12
       |}
-      |""".stripMargin)
-
+    """.stripMargin
+  )
 
   "reads" should {
-
     "read from a model" when {
-
       "a valid request is made" in {
         fullJson.as[ExpensesAmountObject] shouldBe fullModel
       }
     }
 
     "read from a model with no disallowable amount" when {
-
       "a valid request with no disallowable amount is made" in {
         noOptionJson.as[ExpensesAmountObject] shouldBe noOptionModel
       }
@@ -59,20 +57,16 @@ class ExpensesAmountObjectSpec extends UnitSpec {
   }
 
   "writes" should {
-
     "write to a model" when {
-
       "a valid request is made" in {
         Json.toJson(fullModel) shouldBe fullJson
       }
     }
 
     "write to a model with no disallowable amount" when {
-
       "a valid request is made with no disallowable amount" in {
         Json.toJson(noOptionModel) shouldBe noOptionJson
       }
     }
   }
-
 }

@@ -16,13 +16,11 @@
 
 package utils
 
-
 import support.UnitSpec
 
 class JsonErrorSanitiserSpec extends UnitSpec {
 
   "JsonErrorSanitiser" should {
-
     "return an empty string for an empty string" in {
       JsonErrorSanitiser.sanitise("") shouldBe ""
     }
@@ -39,6 +37,5 @@ class JsonErrorSanitiserSpec extends UnitSpec {
       JsonErrorSanitiser.sanitise("Some not sensitive message. Invalid Json: sensitive information") shouldBe
         "Some not sensitive message."
     }
-
   }
 }

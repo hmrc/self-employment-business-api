@@ -18,12 +18,12 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListSelfEmploymentPeriodicRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListSelfEmploymentPeriodicService, MockMtdIdLookupService}
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -63,8 +63,8 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
@@ -105,13 +105,12 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
       |    }
       |  ]
       |}
-      |""".stripMargin
+    """.stripMargin
   )
 
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
-
         MockListSelfEmploymentPeriodicRequestParser
           .parse(rawData)
           .returns(Right(requestData))
@@ -130,6 +129,7 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
+
     "return an error as per spec" when {
       "parser errors occur" should {
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
@@ -155,6 +155,7 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
       }
+
       "service errors occur" should {
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {

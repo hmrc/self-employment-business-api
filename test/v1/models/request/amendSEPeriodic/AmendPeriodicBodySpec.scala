@@ -22,306 +22,306 @@ import support.UnitSpec
 class AmendPeriodicBodySpec extends UnitSpec {
 
   val fullRequestJson: JsValue = Json.parse(
-    s"""
-       |{
-       |    "incomes": {
-       |        "turnover": {
-       |            "amount": 200.00
-       |        },
-       |        "other": {
-       |            "amount": 200.00
-       |        }
-       |    },
-       |    "consolidatedExpenses": {
-       |        "consolidatedExpenses": 200.00
-       |    },
-       |    "expenses": {
-       |        "costOfGoodsBought": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "cisPaymentsTo": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "staffCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "travelCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "premisesRunningCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "maintenanceCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "adminCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "advertisingCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "businessEntertainmentCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "interestOnLoans": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "financialCharges": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "badDebt": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "professionalFees": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "depreciation": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "other": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        }
-       |    }
-       |}
-       |""".stripMargin)
+    """
+      |{
+      |    "incomes": {
+      |        "turnover": {
+      |            "amount": 200.00
+      |        },
+      |        "other": {
+      |            "amount": 200.00
+      |        }
+      |    },
+      |    "consolidatedExpenses": {
+      |        "consolidatedExpenses": 200.00
+      |    },
+      |    "expenses": {
+      |        "costOfGoodsBought": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "cisPaymentsTo": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "staffCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "travelCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "premisesRunningCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "maintenanceCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "adminCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "advertisingCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "businessEntertainmentCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "interestOnLoans": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "financialCharges": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "badDebt": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "professionalFees": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "depreciation": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "other": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        }
+      |    }
+      |}
+    """.stripMargin
+  )
 
   val partialRequestJson: JsValue = Json.parse(
-    s"""
-       |{
-       |    "consolidatedExpenses": {
-       |        "consolidatedExpenses": 200.00
-       |    },
-       |    "expenses": {
-       |        "costOfGoodsBought": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "cisPaymentsTo": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "staffCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "travelCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "premisesRunningCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "maintenanceCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "adminCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "advertisingCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "businessEntertainmentCosts": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "interestOnLoans": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "financialCharges": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "badDebt": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "professionalFees": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "depreciation": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        },
-       |        "other": {
-       |            "amount": 200.00,
-       |            "disallowableAmount": 200.00
-       |        }
-       |    }
-       |}
-       |""".stripMargin)
+    """
+      |{
+      |    "consolidatedExpenses": {
+      |        "consolidatedExpenses": 200.00
+      |    },
+      |    "expenses": {
+      |        "costOfGoodsBought": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "cisPaymentsTo": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "staffCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "travelCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "premisesRunningCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "maintenanceCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "adminCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "advertisingCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "businessEntertainmentCosts": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "interestOnLoans": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "financialCharges": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "badDebt": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "professionalFees": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "depreciation": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        },
+      |        "other": {
+      |            "amount": 200.00,
+      |            "disallowableAmount": 200.00
+      |        }
+      |    }
+      |}
+    """.stripMargin
+  )
 
-   val emptyRequestJson: JsValue = Json.parse(
-    s"""
-       |{}
-       |""".stripMargin)
+  val emptyJson: JsValue = Json.parse(
+    """
+      |{}
+    """.stripMargin
+   )
 
   val fullDesJson: JsValue = Json.parse(
-    s"""
-       |{
-       |   "incomes": {
-       |      "turnover": 200.00,
-       |      "other": 200.00
-       |   },
-       |   "deductions": {
-       |      "costOfGoods": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "constructionIndustryScheme": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "staffCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "travelCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "premisesRunningCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "maintenanceCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "adminCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "advertisingCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "businessEntertainmentCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "interest": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "financialCharges": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "badDebt": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "professionalFees": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "depreciation": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "other": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "simplifiedExpenses": 200.00
-       |   }
-       |}
-       |""".stripMargin)
+    """
+      |{
+      |   "incomes": {
+      |      "turnover": 200.00,
+      |      "other": 200.00
+      |   },
+      |   "deductions": {
+      |      "costOfGoods": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "constructionIndustryScheme": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "staffCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "travelCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "premisesRunningCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "maintenanceCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "adminCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "advertisingCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "businessEntertainmentCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "interest": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "financialCharges": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "badDebt": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "professionalFees": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "depreciation": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "other": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "simplifiedExpenses": 200.00
+      |   }
+      |}
+    """.stripMargin
+  )
 
   val partialDesJson: JsValue = Json.parse(
-    s"""
-       |{
-       |   "deductions": {
-       |      "costOfGoods": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "constructionIndustryScheme": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "staffCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "travelCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "premisesRunningCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "maintenanceCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "adminCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "advertisingCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "businessEntertainmentCosts": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "interest": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "financialCharges": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "badDebt": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "professionalFees": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "depreciation": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "other": {
-       |         "amount": 200.00,
-       |         "disallowableAmount": 200.00
-       |      },
-       |      "simplifiedExpenses": 200.00
-       |   }
-       |}
-       |""".stripMargin)
-
-  val emptyDesJson: JsValue = Json.parse(
-    s"""
-       |{}
-       |""".stripMargin)
+    """
+      |{
+      |   "deductions": {
+      |      "costOfGoods": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "constructionIndustryScheme": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "staffCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "travelCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "premisesRunningCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "maintenanceCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "adminCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "advertisingCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "businessEntertainmentCosts": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "interest": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "financialCharges": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "badDebt": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "professionalFees": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "depreciation": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "other": {
+      |         "amount": 200.00,
+      |         "disallowableAmount": 200.00
+      |      },
+      |      "simplifiedExpenses": 200.00
+      |   }
+      |}
+    """.stripMargin
+  )
 
   val fullMtdModel: AmendPeriodicBody = AmendPeriodicBody(
     Some(Incomes(
@@ -348,7 +348,8 @@ class AmendPeriodicBodySpec extends UnitSpec {
       Some(ExpensesAmountObject(200.00, Some(200.00))),
       Some(ExpensesAmountObject(200.00, Some(200.00))),
       Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00)))))
+      Some(ExpensesAmountObject(200.00, Some(200.00)))
+    ))
   )
 
   val partialMtdModel: AmendPeriodicBody  = AmendPeriodicBody (
@@ -369,7 +370,8 @@ class AmendPeriodicBodySpec extends UnitSpec {
       Some(ExpensesAmountObject(200.00, Some(200.00))),
       Some(ExpensesAmountObject(200.00, Some(200.00))),
       Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00)))))
+      Some(ExpensesAmountObject(200.00, Some(200.00)))
+    ))
   )
 
   val emptyMtdModel: AmendPeriodicBody = AmendPeriodicBody(
@@ -389,7 +391,7 @@ class AmendPeriodicBodySpec extends UnitSpec {
       }
 
       "a valid request with no data is made" in {
-        emptyRequestJson.as[AmendPeriodicBody] shouldBe emptyMtdModel
+        emptyJson.as[AmendPeriodicBody] shouldBe emptyMtdModel
       }
     }
   }
@@ -405,10 +407,8 @@ class AmendPeriodicBodySpec extends UnitSpec {
       }
 
       "a valid request is made with empty body" in {
-        Json.toJson(emptyMtdModel) shouldBe emptyDesJson
+        Json.toJson(emptyMtdModel) shouldBe emptyJson
       }
-
     }
   }
-
 }

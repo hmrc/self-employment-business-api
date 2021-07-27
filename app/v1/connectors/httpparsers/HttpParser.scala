@@ -65,5 +65,4 @@ trait HttpParser extends Logging {
 
     singleError orElse multipleErrors orElse bvrErrors getOrElse unableToParseJsonError
   }
-
 }

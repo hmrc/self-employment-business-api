@@ -27,12 +27,12 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
-                                                      val appConfig: AppConfig) extends BaseDownstreamConnector {
+                                                      val appConfig: AppConfig) extends BaseDesConnector {
 
   def createPeriodic(request: CreateSelfEmploymentPeriodicRequest)(
-                    implicit hc: HeaderCarrier,
-                    ec: ExecutionContext,
-                    correlationId: String): Future[DesOutcome[Unit]] = {
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[Unit]] = {
 
     val nino = request.nino.nino
     val businessId = request.businessId
@@ -44,5 +44,4 @@ class CreateSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
       DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
     )
   }
-
 }

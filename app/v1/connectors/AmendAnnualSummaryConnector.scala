@@ -27,7 +27,7 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
-                                            val appConfig: AppConfig) extends BaseDownstreamConnector {
+                                            val appConfig: AppConfig) extends BaseDesConnector {
 
   def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
     implicit hc: HeaderCarrier,
@@ -40,7 +40,9 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
 
     put(
       body = request.body,
-      DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}")
+      DesUri[Unit](
+        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}"
+      )
     )
   }
 }

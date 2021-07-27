@@ -45,15 +45,15 @@ class StandardDesHttpParserSpec extends UnitSpec {
   val data = "someData"
   val desExpectedJson: JsValue = Json.obj("data" -> data)
 
-  private val desModel: SomeModel = SomeModel(data)
-  private val desResponse: ResponseWrapper[SomeModel] = ResponseWrapper(correlationId, desModel)
+  private val desModel = SomeModel(data)
+  private val desResponse = ResponseWrapper(correlationId, desModel)
 
   "The generic HTTP parser" when {
     "no status code is specified" must {
       val httpReads: HttpReads[DesOutcome[SomeModel]] = implicitly
 
       "return a Right DES response containing the model object if the response json corresponds to a model object" in {
-        val httpResponse: HttpResponse = HttpResponse(OK, desExpectedJson.toString(), Map("CorrelationId" -> Seq(correlationId)))
+        val httpResponse = HttpResponse(OK, desExpectedJson.toString(), Map("CorrelationId" -> Seq(correlationId)))
 
         httpReads.read(method, url, httpResponse) shouldBe Right(desResponse)
       }

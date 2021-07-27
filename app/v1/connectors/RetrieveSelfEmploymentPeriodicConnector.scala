@@ -27,7 +27,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
-                                                        val appConfig: AppConfig) extends BaseDownstreamConnector {
+                                                        val appConfig: AppConfig) extends BaseDesConnector {
+
   def retrieveSEAnnual(request: RetrieveSelfEmploymentPeriodicRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
@@ -37,7 +38,9 @@ class RetrieveSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
     val toDate = request.periodId.substring(11, 21)
 
     get(
-      uri = DesUri[RetrieveSelfEmploymentPeriodicResponse](s"income-store/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate")
+      uri = DesUri[RetrieveSelfEmploymentPeriodicResponse](
+        s"income-store/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate"
+      )
     )
   }
 }

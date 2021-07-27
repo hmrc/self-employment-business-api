@@ -18,12 +18,13 @@ package v1.controllers.requestParsers
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.domain.Nino
 import v1.mocks.validators.MockAmendPeriodicValidator
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.request.amendSEPeriodic._
 
 class AmendPeriodicRequestParserSpec extends UnitSpec {
+
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val periodId: String = "2019-01-01_2019-02-02"
@@ -103,47 +104,51 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
       |        }
       |    }
       |}
-        """.stripMargin)
+    """.stripMargin
+  )
 
-  val inputData: AmendPeriodicRawData =
-    AmendPeriodicRawData(nino, businessId, periodId, requestBodyJson)
+  val inputData: AmendPeriodicRawData = AmendPeriodicRawData(
+    nino = nino,
+    businessId = businessId,
+    periodId = periodId,
+    body = requestBodyJson
+  )
 
   trait Test extends MockAmendPeriodicValidator {
     lazy val parser = new AmendPeriodicRequestParser(mockValidator)
   }
 
   "parse" should {
-
     "return a request object" when {
       "valid request data is supplied" in new Test {
         MockAmendPeriodicValidator.validate(inputData).returns(Nil)
 
-        val amendPeriodicRequestBody: AmendPeriodicBody =
-          AmendPeriodicBody(
-            Some(Incomes(Some(IncomesAmountObject(200.00)), Some(IncomesAmountObject(200.00)))),
-            None,
-            Some(Expenses(
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00))),
-              Some(ExpensesAmountObject(200.00, Some(200.00)))))
-          )
+        val amendPeriodicRequestBody: AmendPeriodicBody = AmendPeriodicBody(
+          Some(Incomes(Some(IncomesAmountObject(200.00)), Some(IncomesAmountObject(200.00)))),
+          None,
+          Some(Expenses(
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00))),
+            Some(ExpensesAmountObject(200.00, Some(200.00)))))
+        )
 
         parser.parseRequest(inputData) shouldBe
           Right(AmendPeriodicRequest(Nino(nino), businessId, periodId, amendPeriodicRequestBody))
       }
     }
+
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
         MockAmendPeriodicValidator.validate(inputData)

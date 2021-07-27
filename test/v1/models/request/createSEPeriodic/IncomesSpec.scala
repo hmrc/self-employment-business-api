@@ -28,32 +28,29 @@ class IncomesSpec extends UnitSpec {
 
   val emptyModel: Incomes = Incomes(None, None)
 
-
   val fullJson: JsValue = Json.parse(
     """
       |{
-      | "turnover": {
-      |   "amount": 500.12
+      |  "turnover": {
+      |    "amount": 500.12
       |  },
-      | "other": {
-      |   "amount": 500.12
+      |  "other": {
+      |    "amount": 500.12
       |  }
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val emptyJson: JsValue = Json.parse(""" {} """)
 
   "reads" should {
-
     "read from a model" when {
-
       "a valid request is made" in {
         fullJson.as[Incomes] shouldBe fullModel
       }
     }
 
     "read from an empty model" when {
-
       "a valid request with an empty model is made" in {
         emptyJson.as[Incomes] shouldBe emptyModel
       }
@@ -61,16 +58,15 @@ class IncomesSpec extends UnitSpec {
   }
 
   "writes" should {
-
     "write to a model" when {
-
       val desJson = Json.parse(
         """
           |{
-          | "turnover": 500.12,
-          | "other": 500.12
+          |  "turnover": 500.12,
+          |  "other": 500.12
           |}
-          |""".stripMargin)
+        """.stripMargin
+      )
 
       "a valid request is made" in {
         Json.toJson(fullModel) shouldBe desJson
@@ -78,11 +74,9 @@ class IncomesSpec extends UnitSpec {
     }
 
     "write to an empty model" when {
-
       "a valid request is made" in {
         Json.toJson(emptyModel) shouldBe emptyJson
       }
     }
   }
-
 }

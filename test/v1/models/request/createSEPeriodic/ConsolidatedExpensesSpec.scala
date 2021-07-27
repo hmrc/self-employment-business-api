@@ -24,28 +24,26 @@ class ConsolidatedExpensesSpec extends UnitSpec {
   val model: ConsolidatedExpenses = ConsolidatedExpenses(500.12)
 
   val json: JsValue = Json.parse(
-    """{
-      |"consolidatedExpenses": 500.12
+    """
+      |{
+      |  "consolidatedExpenses": 500.12
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   "reads" should {
-
     "read from a json" when {
-
       "a valid request is made" in  {
         json.as[ConsolidatedExpenses] shouldBe model
       }
     }
   }
+
   "writes" should {
-
     "write to a model" when {
-
       "a valid request is made" in {
         Json.toJson(model) shouldBe json
       }
     }
   }
-
 }

@@ -29,14 +29,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
-                                                             val appConfig: AppConfig) extends BaseDownstreamConnector {
+                                                             val appConfig: AppConfig) extends BaseDesConnector {
+
   def retrieveSEAnnual(request: RetrieveSelfEmploymentAnnualSummaryRequest)(
-                    implicit hc: HeaderCarrier,
-                    ec: ExecutionContext,
-                    correlationId: String): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]] = {
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]] = {
 
     get(
-      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponse](s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
+      uri = DesUri[RetrieveSelfEmploymentAnnualSummaryResponse](
+        s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}"
+      )
     )
   }
 }

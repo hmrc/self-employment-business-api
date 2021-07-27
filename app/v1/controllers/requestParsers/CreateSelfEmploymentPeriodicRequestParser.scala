@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import v1.models.domain.Nino
 import v1.controllers.requestParsers.validators.CreateSelfEmploymentPeriodicValidator
+import v1.models.domain.Nino
 import v1.models.request.createSEPeriodic.{CreateSelfEmploymentPeriodicBody, CreateSelfEmploymentPeriodicRawData, CreateSelfEmploymentPeriodicRequest}
 
 class CreateSelfEmploymentPeriodicRequestParser @Inject()(val validator: CreateSelfEmploymentPeriodicValidator)

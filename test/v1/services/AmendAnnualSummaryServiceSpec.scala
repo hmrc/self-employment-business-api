@@ -16,9 +16,9 @@
 
 package v1.services
 
-import v1.models.domain.Nino
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendAnnualSummaryConnector
+import v1.models.domain.Nino
 import v1.models.domain.ex.MtdEx
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -28,9 +28,9 @@ import scala.concurrent.Future
 
 class AmendAnnualSummaryServiceSpec extends ServiceSpec {
 
-  private val nino: String = "AA123456A"
+  val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  private val taxYear: String = "2017-18"
+  val taxYear: String = "2017-18"
   implicit val correlationId: String = "X-123"
 
   private val requestBody =  AmendAnnualSummaryBody(
@@ -64,31 +64,30 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
 
         await(service.amendAnnualSummary(requestData)) shouldBe outcome
       }
-    }
 
-    "map errors according to spec" when {
+      "map errors according to spec" when {
+        def serviceError(desErrorCode: String, error: MtdError): Unit =
+          s"a $desErrorCode error is returned from the service" in new Test {
 
-      def serviceError(desErrorCode: String, error: MtdError): Unit =
-        s"a $desErrorCode error is returned from the service" in new Test {
+            MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+            await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          }
 
-          await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
-        }
+        val input = Seq(
+          ("INVALID_NINO", NinoFormatError),
+          ("INVALID_TAX_YEAR", TaxYearFormatError),
+          ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
+          ("INVALID_PAYLOAD", DownstreamError),
+          ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
+          ("GONE", NotFoundError),
+          ("SERVER_ERROR", DownstreamError),
+          ("SERVICE_UNAVAILABLE", DownstreamError)
+        )
 
-      val input = Seq(
-        ("INVALID_NINO", NinoFormatError),
-        ("INVALID_TAX_YEAR", TaxYearFormatError),
-        ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
-        ("INVALID_PAYLOAD", DownstreamError),
-        ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
-        ("GONE", NotFoundError),
-        ("SERVER_ERROR", DownstreamError),
-        ("SERVICE_UNAVAILABLE", DownstreamError)
-      )
-
-      input.foreach(args => (serviceError _).tupled(args))
+        input.foreach(args => (serviceError _).tupled(args))
+      }
     }
   }
 }

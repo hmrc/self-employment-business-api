@@ -17,9 +17,8 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
-import v1.models.domain.DesTaxYear
+import v1.models.domain.{DesTaxYear, Nino}
 import v1.models.domain.ex.MtdEx._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
@@ -33,9 +32,13 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
   val businessId: String = "XAIS12345678910"
   val taxYear: String = "2019-20"
 
-  val request: RetrieveSelfEmploymentAnnualSummaryRequest = RetrieveSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
+  val request: RetrieveSelfEmploymentAnnualSummaryRequest = RetrieveSelfEmploymentAnnualSummaryRequest(
+    nino = Nino(nino),
+    businessId = businessId,
+    taxYear = taxYear
+  )
 
-  val response : RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
+  val response: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(
       Some(100.25),
       Some(100.25),
@@ -46,7 +49,8 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25),
-      Some(100.25))),
+      Some(100.25)
+    )),
     Some(Allowances(
       Some(100.25),
       Some(100.25),
@@ -62,13 +66,17 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
     )),
     Some(NonFinancials(
       Some(Class4NicInfo(
-        Some(`001 - Non Resident`))))))
+        Some(`001 - Non Resident`)
+      ))
+    ))
+  )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: RetrieveSelfEmploymentAnnualSummaryConnector =
-      new RetrieveSelfEmploymentAnnualSummaryConnector(http = mockHttpClient, appConfig = mockAppConfig)
+    val connector: RetrieveSelfEmploymentAnnualSummaryConnector = new RetrieveSelfEmploymentAnnualSummaryConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq("Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
     MockAppConfig.desBaseUrl returns baseUrl
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
@@ -77,18 +85,17 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
   "connector" must {
     "send a request and return a body" in new Test {
+      val outcome = Right(ResponseWrapper(correlationId, response))
 
-        val outcome = Right(ResponseWrapper(correlationId, response))
-        MockedHttpClient
-          .get(
-            url = s"$baseUrl/income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}",
-            config = dummyDesHeaderCarrierConfig,
-            requiredHeaders = requiredDesHeaders,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
+      MockHttpClient
+        .get(
+          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}",
+          config = dummyDesHeaderCarrierConfig,
+          requiredHeaders = requiredDesHeaders,
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        ).returns(Future.successful(outcome))
 
-        await(connector.retrieveSEAnnual(request)) shouldBe outcome
-      }
+      await(connector.retrieveSEAnnual(request)) shouldBe outcome
     }
+  }
 }

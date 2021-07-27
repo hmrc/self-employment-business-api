@@ -18,12 +18,12 @@ package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendSelfEmploymentPeriodicRequestParser
 import v1.mocks.services.{MockAmendSelfEmploymentPeriodicService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.{GET, PUT}
@@ -44,10 +44,10 @@ class AmendSelfEmploymentPeriodicControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
-  private val nino: String = "AA123456A"
-  private val businessId: String = "XAIS12345678910"
-  private val periodId: String = "2019-01-01_2020-01-01"
-  private val correlationId: String = "X-123"
+  private val nino = "AA123456A"
+  private val businessId = "XAIS12345678910"
+  private val periodId = "2019-01-01_2020-01-01"
+  private val correlationId = "X-123"
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -62,8 +62,8 @@ class AmendSelfEmploymentPeriodicControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
@@ -87,7 +87,8 @@ class AmendSelfEmploymentPeriodicControllerSpec
       |        "consolidatedExpenses": 647.89
       |    }
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val requestBody = AmendPeriodicBody(
     Some(Incomes(Some(IncomesAmountObject(500.25)),Some(IncomesAmountObject(500.15)))),
@@ -111,7 +112,8 @@ class AmendSelfEmploymentPeriodicControllerSpec
       |    }
       |  ]
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   private val rawData = AmendPeriodicRawData(nino, businessId, periodId, requestJson)
   private val requestData = AmendPeriodicRequest(Nino(nino), businessId, periodId, requestBody)
@@ -119,7 +121,6 @@ class AmendSelfEmploymentPeriodicControllerSpec
   "handleRequest" should {
     "return OK" when {
       "the request received is valid" in new Test {
-
         MockAmendSelfEmploymentPeriodicRequestParser
           .requestFor(rawData)
           .returns(Right(requestData))

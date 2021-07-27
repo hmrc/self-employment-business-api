@@ -28,7 +28,8 @@ class CreateSelfEmploymentPeriodicResponseBodySpec extends UnitSpec with MockApp
       |{
       |   "periodId": "2017090920170909"
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val model: CreateSelfEmploymentPeriodicResponse = CreateSelfEmploymentPeriodicResponse("2017090920170909")
 

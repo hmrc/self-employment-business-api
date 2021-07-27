@@ -69,7 +69,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return an InvalidNino error" when {
       "the HttpResponse contains a 403 status" in {
-        val response = HttpResponse(FORBIDDEN, "")
+        val response = HttpResponse(FORBIDDEN, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(NinoFormatError)
@@ -78,7 +78,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return an Unauthorised error" when {
       "the HttpResponse contains a 403 status" in {
-        val response = HttpResponse(UNAUTHORIZED, "")
+        val response = HttpResponse(UNAUTHORIZED, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(InvalidBearerTokenError)
@@ -87,7 +87,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return a DownstreamError" when {
       "the HttpResponse contains any other status" in {
-        val response = HttpResponse(INTERNAL_SERVER_ERROR, "")
+        val response = HttpResponse(INTERNAL_SERVER_ERROR, None.orNull)
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(DownstreamError)

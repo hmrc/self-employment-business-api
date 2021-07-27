@@ -28,15 +28,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
-                                                           val appConfig: AppConfig) extends BaseDownstreamConnector {
+                                                           val appConfig: AppConfig) extends BaseDesConnector {
+
   def deleteSEAnnual(request: DeleteSelfEmploymentAnnualSummaryRequest)(
-                    implicit hc: HeaderCarrier,
-                    ec: ExecutionContext,
-                    correlationId: String): Future[DesOutcome[Unit]] = {
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext,
+    correlationId: String): Future[DesOutcome[Unit]] = {
 
     put(
       body = """{}""",
-      DesUri[Unit](s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}")
+      DesUri[Unit](
+        s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${DesTaxYear.fromMtd(request.taxYear)}"
+      )
     )
   }
 }

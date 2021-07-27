@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import v1.models.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteSelfEmploymentAnnualSummaryValidator
+import v1.models.domain.Nino
 import v1.models.request.deleteSEAnnual.{DeleteSelfEmploymentAnnualSummaryRawData, DeleteSelfEmploymentAnnualSummaryRequest}
 
 class DeleteSelfEmploymentAnnualSummaryRequestParser @Inject()(val validator: DeleteSelfEmploymentAnnualSummaryValidator)

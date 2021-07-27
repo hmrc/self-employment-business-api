@@ -24,30 +24,29 @@ class IncomesSpec extends UnitSpec {
   val mtdJson: JsValue = Json.parse(
     """
       |{
-      |"turnover": {
-      |   "amount": 500.25
-      |   },
-      |"other": {
-      |   "amount": 500.25
-      |   }
+      |  "turnover": {
+      |    "amount": 500.25
+      |  },
+      |  "other": {
+      |    "amount": 500.25
+      |  }
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val desJson: JsValue = Json.parse(
     """
       |{
-      |         "turnover": 500.25,
-      |         "other": 500.25
+      |   "turnover": 500.25,
+      |   "other": 500.25
       |}
-      |
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val model: Incomes = Incomes(
     Some(IncomesAmountObject(500.25)),
     Some(IncomesAmountObject(500.25))
   )
-
-
 
   "reads" should {
     "return a model" when {
@@ -64,5 +63,4 @@ class IncomesSpec extends UnitSpec {
       }
     }
   }
-
 }

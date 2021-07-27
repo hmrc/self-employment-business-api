@@ -27,15 +27,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ListSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
-                                                    val appConfig: AppConfig) extends BaseDownstreamConnector {
+                                                    val appConfig: AppConfig) extends BaseDesConnector {
+
   def listSEPeriodic(request: ListSelfEmploymentPeriodicRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     correlationId: String): Future[DesOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]] = {
 
     get(
-      uri = DesUri[ListSelfEmploymentPeriodicResponse[PeriodDetails]]
-        (s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summaries")
+      uri = DesUri[ListSelfEmploymentPeriodicResponse[PeriodDetails]](
+        s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summaries"
+      )
     )
   }
 }

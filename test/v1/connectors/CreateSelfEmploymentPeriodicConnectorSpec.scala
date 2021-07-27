@@ -17,8 +17,9 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
+import v1.models.domain.Nino
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createSEPeriodic._
 import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
@@ -27,8 +28,8 @@ import scala.concurrent.Future
 
 class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
 
-  val nino = "AA123456A"
-  val businessId = "XAIS12345678910"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
 
   val request: CreateSelfEmploymentPeriodicRequest = CreateSelfEmploymentPeriodicRequest(
     nino = Nino(nino),
@@ -66,7 +67,6 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
   val response: CreateSelfEmploymentPeriodicResponse = CreateSelfEmploymentPeriodicResponse("2017090920170909")
 
   class Test extends MockHttpClient with MockAppConfig {
-
     val connector: CreateSelfEmploymentPeriodicConnector = new CreateSelfEmploymentPeriodicConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -83,12 +83,15 @@ class CreateSelfEmploymentPeriodicConnectorSpec extends ConnectorSpec {
       "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, response))
 
-        MockedHttpClient
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+
+        MockHttpClient
           .post(
             url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
-            requiredHeaders = requiredDesHeaders,
+            requiredHeaders = requiredDesHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         ).returns(Future.successful(outcome))
 

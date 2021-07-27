@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.domain.ex.MtdEx
 
-class NonFinancialsSpec extends UnitSpec{
+class NonFinancialsSpec extends UnitSpec {
 
   val mtdJson: JsValue = Json.parse(
     """
@@ -29,7 +29,8 @@ class NonFinancialsSpec extends UnitSpec{
       |    "exemptionCode": "001 - Non Resident"
       |  }
       |}
-      |""".stripMargin)
+    """.stripMargin
+  )
 
   val model: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))
 
@@ -40,5 +41,4 @@ class NonFinancialsSpec extends UnitSpec{
       }
     }
   }
-
 }

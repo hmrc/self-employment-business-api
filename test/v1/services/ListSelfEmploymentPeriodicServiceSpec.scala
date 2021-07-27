@@ -16,20 +16,17 @@
 
 package v1.services
 
-import support.UnitSpec
-import v1.models.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockListSelfEmploymentPeriodicConnector
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
 import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
+class ListSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -40,24 +37,30 @@ class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
       "2020-01-01_2020-01-01",
       "2020-01-01",
       "2020-01-01"
-      )))
+    ))
+  )
 
   val multipleResponse: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
-    Seq(PeriodDetails(
-      "2019-04-06_2020-04-05",
-      "2019-04-06",
-      "2020-04-05"
+    Seq(
+      PeriodDetails(
+        "2019-04-06_2020-04-05",
+        "2019-04-06",
+        "2020-04-05"
       ),
       PeriodDetails(
-      "2019-04-06_2020-04-05",
-      "2020-04-06",
-      "2020-04-05"
-      )))
+        "2019-04-06_2020-04-05",
+        "2020-04-06",
+        "2020-04-05"
+      )
+    )
+  )
 
-  private val requestData = ListSelfEmploymentPeriodicRequest(Nino(nino), businessId)
+  private val requestData = ListSelfEmploymentPeriodicRequest(
+    nino = Nino(nino),
+    businessId = businessId
+  )
 
   trait Test extends MockListSelfEmploymentPeriodicConnector {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new ListSelfEmploymentPeriodicService(
@@ -84,7 +87,6 @@ class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
 
   "unsuccessful" should {
     "map errors according to spec" when {
-
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
@@ -105,5 +107,4 @@ class ListSelfEmploymentPeriodicServiceSpec extends UnitSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
-
 }

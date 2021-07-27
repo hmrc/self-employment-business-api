@@ -46,82 +46,80 @@ class ExpensesSpec extends UnitSpec {
   val fullJson: JsValue = Json.parse(
     """
       |{
-      |     "costOfGoodsBought": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "cisPaymentsTo": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "staffCosts": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "travelCosts": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "premisesRunningCosts": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "maintenanceCosts": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "adminCosts": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "advertisingCosts": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "businessEntertainmentCosts": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "interestOnLoans": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "financialCharges": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "badDebt": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "professionalFees": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "depreciation": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     },
-      |     "other": {
-      |       "amount": 500.25,
-      |       "disallowableAmount": 500.25
-      |     }
+      |   "costOfGoodsBought": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "cisPaymentsTo": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "staffCosts": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "travelCosts": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "premisesRunningCosts": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "maintenanceCosts": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "adminCosts": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "advertisingCosts": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "businessEntertainmentCosts": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "interestOnLoans": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "financialCharges": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "badDebt": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "professionalFees": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "depreciation": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
+      |   },
+      |   "other": {
+      |      "amount": 500.25,
+      |      "disallowableAmount": 500.25
       |   }
-      |""".stripMargin)
+      |}
+    """.stripMargin
+  )
 
   val emptyJson: JsValue = Json.parse(""" {} """)
 
   "reads" should {
-
     "read from a json" when {
-
       "a valid request is made" in  {
         fullJson.as[Expenses] shouldBe fullModel
       }
     }
 
     "read from an empty json" when {
-
       "a valid request with an empty json" in {
         emptyJson.as[Expenses] shouldBe emptyModel
       }
@@ -129,81 +127,80 @@ class ExpensesSpec extends UnitSpec {
   }
 
   "writes" should {
-
     "write to a model" when {
-
       val fullDesJson = Json.parse(
         """
           |{
-          |       "costOfGoods": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "constructionIndustryScheme": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "staffCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "travelCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "premisesRunningCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "maintenanceCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "adminCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "advertisingCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "businessEntertainmentCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "interest": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "financialCharges": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "badDebt": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "professionalFees": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "depreciation": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "other": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       }
-          |     }
-          |""".stripMargin)
+          |    "costOfGoods": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "constructionIndustryScheme": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "staffCosts": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "travelCosts": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "premisesRunningCosts": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "maintenanceCosts": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "adminCosts": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "advertisingCosts": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "businessEntertainmentCosts": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "interest": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "financialCharges": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "badDebt": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "professionalFees": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "depreciation": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    },
+          |    "other": {
+          |      "amount": 500.25,
+          |      "disallowableAmount": 500.25
+          |    }
+          |}
+        """.stripMargin
+      )
 
       "a valid request is made" in {
         Json.toJson(fullModel) shouldBe fullDesJson
       }
     }
-    "write to an empty model" when {
 
+    "write to an empty model" when {
       "a valid request is made with an empty body" in {
         Json.toJson(emptyModel) shouldBe emptyJson
       }

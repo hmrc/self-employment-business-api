@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import v1.models.domain.Nino
 import v1.controllers.requestParsers.validators.RetrieveSelfEmploymentAnnualSummaryValidator
+import v1.models.domain.Nino
 import v1.models.request.retrieveSEAnnual.{RetrieveSelfEmploymentAnnualSummaryRawData, RetrieveSelfEmploymentAnnualSummaryRequest}
 
 class RetrieveSelfEmploymentAnnualSummaryRequestParser @Inject()(val validator: RetrieveSelfEmploymentAnnualSummaryValidator)

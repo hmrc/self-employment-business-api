@@ -18,12 +18,12 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockDeleteSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockDeleteSelfEmploymentAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.deleteSEAnnual.{DeleteSelfEmploymentAnnualSummaryRawData, DeleteSelfEmploymentAnnualSummaryRequest}
@@ -57,8 +57,8 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
+    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
+    MockEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
@@ -68,7 +68,6 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
   "handleRequest" should {
     "return NoContent" when {
       "the request received is valid" in new Test {
-
         MockDeleteSelfEmploymentAnnualSummaryRequestParser
           .parse(rawData)
           .returns(Right(requestData))
@@ -83,6 +82,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
+
     "return the error as per spec" when {
       "parser errors occur" should {
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
@@ -142,7 +142,6 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
 
         input.foreach(args => (serviceErrors _).tupled(args))
       }
-
     }
   }
 }

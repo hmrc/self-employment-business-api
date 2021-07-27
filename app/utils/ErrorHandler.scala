@@ -34,9 +34,10 @@ import javax.inject._
 import scala.concurrent._
 
 @Singleton
-class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
-  extends JsonErrorHandler(auditConnector, httpAuditEvent, config)
-    with Logging {
+class ErrorHandler @Inject()(config: Configuration,
+                             auditConnector: AuditConnector,
+                             httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
+  extends JsonErrorHandler(auditConnector, httpAuditEvent, config) with Logging {
 
   import httpAuditEvent.dataEvent
 

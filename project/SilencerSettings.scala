@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import sbt.{CrossVersion, Def, compilerPlugin, _}
 
 object SilencerSettings {
 
-  private val silencerVersion = "1.7.1"
+  private val silencerVersion = "1.7.5"
 
   // stop "unused import" warnings from routes files
   def apply(): Seq[Def.Setting[_ >: Seq[ModuleID] with Task[Seq[String]] <: Equals]] = Seq(
