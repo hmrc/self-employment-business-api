@@ -60,8 +60,6 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25),
-      Some(100.25),
-      Some(100.25),
       Some(100.25)
     )),
     Some(NonFinancials(

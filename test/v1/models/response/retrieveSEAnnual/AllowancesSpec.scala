@@ -31,9 +31,7 @@ class AllowancesSpec extends UnitSpec {
       |  "enhanceCapitalAllowance": 500.25,
       |  "allowanceOnSales": 500.25,
       |  "capitalAllowanceSingleAssetPool": 500.25,
-      |  "tradingIncomeAllowance":  500.25,
-      |  "structureAndBuildingAllowance":  500.25,
-      |  "electricChargePointAllowance":  500.25
+      |  "tradingIncomeAllowance":  500.25
       |}
       |""".stripMargin)
 
@@ -48,16 +46,12 @@ class AllowancesSpec extends UnitSpec {
       |  "enhancedCapitalAllowance": 500.25,
       |  "allowanceOnSales": 500.25,
       |  "capitalAllowanceSingleAssetPool": 500.25,
-      |  "tradingAllowance": 500.25,
-      |  "structureAndBuildingAllowance": 500.25,
-      |  "electricChargePointAllowance": 500.25
+      |  "tradingAllowance": 500.25
       |}
       |""".stripMargin)
 
   val model: Allowances =
     Allowances(Some(500.25),
-      Some(500.25),
-      Some(500.25),
       Some(500.25),
       Some(500.25),
       Some(500.25),

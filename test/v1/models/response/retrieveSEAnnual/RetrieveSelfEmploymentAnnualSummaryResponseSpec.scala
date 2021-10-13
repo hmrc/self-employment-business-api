@@ -35,7 +35,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    "averagingAdjustment": 500.25,
       |    "lossBroughtForward": 500.25,
       |    "outstandingBusinessIncome": 500.25,
-      |    "balancingChargeBPRA": 500.25,
+      |    "balancingChargeBpra": 500.25,
       |    "balancingChargeOther": 500.25,
       |    "goodsAndServicesOwnUse": 500.25
       |  },
@@ -48,9 +48,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    "enhanceCapitalAllowance": 500.25,
       |    "allowanceOnSales": 500.25,
       |    "capitalAllowanceSingleAssetPool": 500.25,
-      |    "tradingIncomeAllowance":  500.25,
-      |    "structureAndBuildingAllowance":  500.25,
-      |    "electricChargePointAllowance":  500.25
+      |    "tradingIncomeAllowance":  500.25
       |  },
       |  "annualNonFinancials": {
       |    "exemptFromPayingClass4Nics": true,
@@ -84,9 +82,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    "enhancedCapitalAllowance": 500.25,
       |    "allowanceOnSales": 500.25,
       |    "capitalAllowanceSingleAssetPool": 500.25,
-      |    "tradingAllowance": 500.25,
-      |    "structureAndBuildingAllowance":  500.25,
-      |    "electricChargePointAllowance":  500.25
+      |    "tradingAllowance": 500.25
       |  },
       |  "nonFinancials": {
       |    "class4NicInfo": {
@@ -104,7 +100,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
     )),
     Some(Allowances(
       Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25),
-      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25)
+      Some(500.25), Some(500.25), Some(500.25)
     )),
     Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
   )
