@@ -40,7 +40,7 @@ object Adjustments {
       (JsPath \ "averagingAdjustment").readNullable[BigDecimal] and
       (JsPath \ "lossBroughtForward").readNullable[BigDecimal] and
       (JsPath \ "outstandingBusinessIncome").readNullable[BigDecimal] and
-      (JsPath \ "BalancingChargeBpra").readNullable[BigDecimal] and
+      (JsPath \ "balancingChargeBpra").readNullable[BigDecimal] and
       (JsPath \ "balancingChargeOther").readNullable[BigDecimal] and
       (JsPath \ "goodsAndServicesOwnUse").readNullable[BigDecimal]
     )(Adjustments.apply _)
