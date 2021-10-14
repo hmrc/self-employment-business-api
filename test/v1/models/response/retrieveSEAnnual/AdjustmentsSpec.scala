@@ -31,7 +31,7 @@ class AdjustmentsSpec extends UnitSpec {
       |  "averagingAdjustment": 500.25,
       |  "lossBroughtForward": 500.25,
       |  "outstandingBusinessIncome": 500.25,
-      |  "balancingChargeBPRA": 500.25,
+      |  "balancingChargeBpra": 500.25,
       |  "balancingChargeOther": 500.25,
       |  "goodsAndServicesOwnUse": 500.25
       |}
@@ -53,8 +53,18 @@ class AdjustmentsSpec extends UnitSpec {
       |}
       |""".stripMargin)
 
-  val model: Adjustments =
-    Adjustments(Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25))
+  val model: Adjustments = Adjustments(
+    includedNonTaxableProfits = Some(500.25),
+    basisAdjustment = Some(500.25),
+    overlapReliefUsed = Some(500.25),
+    accountingAdjustment= Some(500.25),
+    averagingAdjustment = Some(500.25),
+    lossBroughtForward = Some(500.25),
+    outstandingBusinessIncome = Some(500.25),
+    balancingChargeBPRA = Some(500.25),
+    balancingChargeOther = Some(500.25),
+    goodsAndServicesOwnUse = Some(500.25)
+  )
 
   "reads" should {
     "return a model" when {

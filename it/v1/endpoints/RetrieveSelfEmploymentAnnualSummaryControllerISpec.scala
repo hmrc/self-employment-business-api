@@ -199,7 +199,6 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
         def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"des returns an $desCode error and status $desStatus" in new Test {
 
-
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
