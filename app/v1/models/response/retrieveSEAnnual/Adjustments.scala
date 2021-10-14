@@ -32,8 +32,6 @@ case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                       )
 
 object Adjustments {
-  implicit val writes: OWrites[Adjustments] = Json.writes[Adjustments]
-
   implicit val reads: Reads[Adjustments] = (
     (JsPath \ "includedNonTaxableProfits").readNullable[BigDecimal] and
       (JsPath \ "basisAdjustment").readNullable[BigDecimal] and
@@ -45,6 +43,6 @@ object Adjustments {
       (JsPath \ "BalancingChargeBpra").readNullable[BigDecimal] and
       (JsPath \ "balancingChargeOther").readNullable[BigDecimal] and
       (JsPath \ "goodsAndServicesOwnUse").readNullable[BigDecimal]
-    ) (Adjustments.apply _)
-
+    )(Adjustments.apply _)
+  implicit val writes: OWrites[Adjustments] = Json.writes[Adjustments]
 }

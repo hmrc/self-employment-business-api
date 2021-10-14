@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
 class AllowancesSpec extends UnitSpec {
+
   val desJson: JsValue = Json.parse(
     """
       |{
@@ -76,4 +77,5 @@ class AllowancesSpec extends UnitSpec {
       }
     }
   }
+
 }
