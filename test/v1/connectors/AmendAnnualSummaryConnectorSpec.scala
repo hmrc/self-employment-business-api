@@ -38,7 +38,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
     taxYear = taxYear,
     body = AmendAnnualSummaryBody(
       Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10), Some(11.11))),
+      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))),
       Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
     )
   )
@@ -57,7 +57,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
 
   "AmendAnnualSummaryConnector" when {
     "amendAnnualSummary" must {
-      "return a 204 status for a success scenario" in new Test {
+      "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))

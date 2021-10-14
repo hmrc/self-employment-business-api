@@ -16,7 +16,8 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                        basisAdjustment: Option[BigDecimal],
@@ -41,5 +42,17 @@ case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
 }
 
 object Adjustments {
-  implicit val format: Format[Adjustments] = Json.format[Adjustments]
+  implicit val reads: Reads[Adjustments] = Json.reads[Adjustments]
+  implicit val writes: OWrites[Adjustments] = (
+    (JsPath \ "includedNonTaxableProfits").writeNullable[BigDecimal] and
+      (JsPath \ "basisAdjustment").writeNullable[BigDecimal] and
+      (JsPath \ "overlapReliefUsed").writeNullable[BigDecimal] and
+      (JsPath \ "accountingAdjustment").writeNullable[BigDecimal] and
+      (JsPath \ "averagingAdjustment").writeNullable[BigDecimal] and
+      (JsPath \ "lossBroughtForward").writeNullable[BigDecimal] and
+      (JsPath \ "outstandingBusinessIncome").writeNullable[BigDecimal] and
+      (JsPath \ "balancingChargeBpsa").writeNullable[BigDecimal] and
+      (JsPath \ "balancingChargeOther").writeNullable[BigDecimal] and
+      (JsPath \ "goodsAndServicesOwnUse").writeNullable[BigDecimal]
+    ) (unlift(Adjustments.unapply))
 }

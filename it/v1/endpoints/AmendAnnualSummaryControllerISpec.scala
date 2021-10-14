@@ -18,13 +18,13 @@ package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.http.Status._
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
+import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
-import play.api.http.Status._
-import v1.models.domain.DesTaxYear
 
 class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
 
@@ -59,7 +59,6 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
          |        "allowanceOnSales": 7.77,
          |        "capitalAllowanceSingleAssetPool": 8.88,
          |        "tradingAllowance": 9.99,
-         |        "structureAndBuildingAllowance": 10.10,
          |        "electricChargePointAllowance": 11.11
          |    },
          |    "nonFinancials": {
@@ -114,6 +113,12 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
          |        "reason": "des message"
          |      }
     """.stripMargin
+
+    val desResponseBody: JsValue = Json.parse(
+      """{
+        |   "transactionReference": "2017090920170909"
+        |}""".stripMargin)
+
   }
 
   "Calling the amend endpoint" should {
@@ -125,7 +130,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT, JsObject.empty)
+          DesStub.onSuccess(DesStub.PUT, desUri, OK, desResponseBody)
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
@@ -188,7 +193,6 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
                |        "allowanceOnSales": 7.77,
                |        "capitalAllowanceSingleAssetPool": 8.88,
                |        "tradingAllowance": 9.99,
-               |        "structureAndBuildingAllowance": 10.10,
                |        "electricChargePointAllowance": 11.11
                |    },
                |    "nonFinancials": {
@@ -237,7 +241,6 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
                |        "allowanceOnSales": 7.77,
                |        "capitalAllowanceSingleAssetPool": 8.88,
                |        "tradingAllowance": 9.99,
-               |        "structureAndBuildingAllowance": 10.10,
                |        "electricChargePointAllowance": 11.11
                |    },
                |    "nonFinancials": {

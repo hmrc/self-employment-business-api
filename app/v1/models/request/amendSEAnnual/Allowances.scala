@@ -28,7 +28,6 @@ case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
                       allowanceOnSales: Option[BigDecimal],
                       capitalAllowanceSingleAssetPool: Option[BigDecimal],
                       tradingAllowance: Option[BigDecimal],
-                      structureAndBuildingAllowance: Option[BigDecimal],
                       electricChargePointAllowance: Option[BigDecimal]) {
   def isEmpty: Boolean = annualInvestmentAllowance.isEmpty &&
     businessPremisesRenovationAllowance.isEmpty &&
@@ -39,7 +38,6 @@ case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
     allowanceOnSales.isEmpty &&
     capitalAllowanceSingleAssetPool.isEmpty &&
     tradingAllowance.isEmpty &&
-    structureAndBuildingAllowance.isEmpty &&
     electricChargePointAllowance.isEmpty
 }
 
@@ -55,7 +53,6 @@ object Allowances {
       (JsPath \ "allowanceOnSales").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceSingleAssetPool").writeNullable[BigDecimal] and
       (JsPath \ "tradingIncomeAllowance").writeNullable[BigDecimal] and
-      (JsPath \ "structureAndBuildingAllowance").writeNullable[BigDecimal] and
       (JsPath \ "electricChargePointAllowance").writeNullable[BigDecimal]
     ) (unlift(Allowances.unapply))
 }
