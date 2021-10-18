@@ -51,7 +51,7 @@ object Adjustments {
       (JsPath \ "averagingAdjustment").writeNullable[BigDecimal] and
       (JsPath \ "lossBroughtForward").writeNullable[BigDecimal] and
       (JsPath \ "outstandingBusinessIncome").writeNullable[BigDecimal] and
-      (JsPath \ "balancingChargeBpsa").writeNullable[BigDecimal] and
+      (JsPath \ "balancingChargeBpra").writeNullable[BigDecimal] and
       (JsPath \ "balancingChargeOther").writeNullable[BigDecimal] and
       (JsPath \ "goodsAndServicesOwnUse").writeNullable[BigDecimal]
     ) (unlift(Adjustments.unapply))

@@ -93,7 +93,7 @@ class AdjustmentsSpec extends UnitSpec {
            |  "averagingAdjustment": 5.55,
            |  "lossBroughtForward": 6.66,
            |  "outstandingBusinessIncome": 7.77,
-           |  "balancingChargeBpsa": 8.88,
+           |  "balancingChargeBpra": 8.88,
            |  "balancingChargeOther": 9.99,
            |  "goodsAndServicesOwnUse": 10.10
            |}
