@@ -16,10 +16,10 @@
 
 package v1.models.response.retrieveSEAnnual
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Adjustments(
-                        includedNonTaxableProfits: Option[BigDecimal],
+case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                         basisAdjustment: Option[BigDecimal],
                         overlapReliefUsed: Option[BigDecimal],
                         accountingAdjustment: Option[BigDecimal],
@@ -32,5 +32,17 @@ case class Adjustments(
                       )
 
 object Adjustments {
-  implicit val format: OFormat[Adjustments] = Json.format[Adjustments]
+  implicit val reads: Reads[Adjustments] = (
+    (JsPath \ "includedNonTaxableProfits").readNullable[BigDecimal] and
+      (JsPath \ "basisAdjustment").readNullable[BigDecimal] and
+      (JsPath \ "overlapReliefUsed").readNullable[BigDecimal] and
+      (JsPath \ "accountingAdjustment").readNullable[BigDecimal] and
+      (JsPath \ "averagingAdjustment").readNullable[BigDecimal] and
+      (JsPath \ "lossBroughtForward").readNullable[BigDecimal] and
+      (JsPath \ "outstandingBusinessIncome").readNullable[BigDecimal] and
+      (JsPath \ "balancingChargeBpra").readNullable[BigDecimal] and
+      (JsPath \ "balancingChargeOther").readNullable[BigDecimal] and
+      (JsPath \ "goodsAndServicesOwnUse").readNullable[BigDecimal]
+    )(Adjustments.apply _)
+  implicit val writes: OWrites[Adjustments] = Json.writes[Adjustments]
 }

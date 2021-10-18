@@ -78,7 +78,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
   )
   private val allowances = Allowances(
     Some(1000), Some(1000), Some(1000), Some(1000), Some(1000),
-    Some(1000), Some(1000), Some(1000), Some(1000), Some(1000), Some(100)
+    Some(1000), Some(1000), Some(1000), Some(1000)
   )
   private val nonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`002 - Trustee`))))
 

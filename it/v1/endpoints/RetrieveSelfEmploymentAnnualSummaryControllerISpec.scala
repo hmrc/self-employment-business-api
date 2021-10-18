@@ -19,7 +19,7 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
@@ -34,7 +34,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
     val taxYear = "2021-22"
     val desTaxYear = "2022"
 
-    val responseBody = Json.parse(
+    val responseBody: JsValue = Json.parse(
       s"""
          |{
          |  "adjustments": {
@@ -58,9 +58,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |    "enhancedCapitalAllowance": 200.00,
          |    "allowanceOnSales": 200.00,
          |    "capitalAllowanceSingleAssetPool": 200.00,
-         |    "tradingAllowance": 200.00,
-         |    "structureAndBuildingAllowance":  200.00,
-         |    "electricChargePointAllowance":  200.00
+         |    "tradingAllowance": 200.00
          |  },
          |  "nonFinancials": {
          |    "class4NicInfo": {
@@ -87,7 +85,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |}
          |""".stripMargin)
 
-    val desResponseBody = Json.parse(
+    val desResponseBody: JsValue = Json.parse(
       s"""
          |{
          |   "annualAdjustments": {
@@ -98,7 +96,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |      "averagingAdjustment": 200.00,
          |      "lossBroughtForward": 200.00,
          |      "outstandingBusinessIncome": 200.00,
-         |      "balancingChargeBPRA": 200.00,
+         |      "balancingChargeBpra": 200.00,
          |      "balancingChargeOther": 200.00,
          |      "goodsAndServicesOwnUse": 200.00
          |   },
@@ -111,9 +109,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |      "enhanceCapitalAllowance": 200.00,
          |      "allowanceOnSales": 200.00,
          |      "capitalAllowanceSingleAssetPool": 200.00,
-         |      "tradingIncomeAllowance":  200.00,
-         |      "structureAndBuildingAllowance":  200.00,
-         |      "electricChargePointAllowance":  200.00
+         |      "tradingIncomeAllowance":  200.00
          |   },
          |   "annualNonFinancials": {
          |      "exemptFromPayingClass4Nics": true,
@@ -202,7 +198,6 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
       "des service error" when {
         def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"des returns an $desCode error and status $desStatus" in new Test {
-
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
