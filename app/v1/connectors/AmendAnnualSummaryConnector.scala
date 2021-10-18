@@ -24,6 +24,7 @@ import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 
 @Singleton
 class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
@@ -32,7 +33,7 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
   def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[Unit]] = {
+    correlationId: String): Future[DesOutcome[AmendAnnualSummaryResponse]] = {
 
     val nino = request.nino.nino
     val taxYear = request.taxYear
@@ -40,7 +41,7 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
 
     put(
       body = request.body,
-      DesUri[Unit](
+      DesUri[AmendAnnualSummaryResponse](
         s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}"
       )
     )

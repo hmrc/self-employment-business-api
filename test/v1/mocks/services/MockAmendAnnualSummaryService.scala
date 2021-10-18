@@ -23,6 +23,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
+import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 import v1.services.AmendAnnualSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +34,7 @@ trait MockAmendAnnualSummaryService extends MockFactory {
 
   object MockAmendAnnualSummaryService {
 
-    def amendAnnualSummary(requestData: AmendAnnualSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def amendAnnualSummary(requestData: AmendAnnualSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[AmendAnnualSummaryResponse]]]] = {
       (mockAmendAnnualSummaryService
         .amendAnnualSummary(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)

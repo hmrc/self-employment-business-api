@@ -56,7 +56,6 @@ class AmendAnnualSummaryRequestParserSpec extends UnitSpec {
       |        "allowanceOnSales": 548.15,
       |        "capitalAllowanceSingleAssetPool": 901.67,
       |        "tradingAllowance": 521.34,
-      |        "structureAndBuildingAllowance": "324.65",
       |        "electricChargePointAllowance": "658.11"
       |    },
       |    "nonFinancials": {
@@ -108,7 +107,6 @@ class AmendAnnualSummaryRequestParserSpec extends UnitSpec {
             Some(548.15),
             Some(901.67),
             Some(521.34),
-            Some(324.65),
             Some(658.11)
           )),
           Some(NonFinancials(

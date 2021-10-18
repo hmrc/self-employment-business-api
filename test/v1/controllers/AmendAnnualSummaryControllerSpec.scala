@@ -22,16 +22,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSummaryRequestParser
-import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
 import v1.mocks.services.{MockAmendAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.Nino
 import v1.models.domain.ex.MtdEx
 import v1.models.errors._
-import v1.models.hateoas.Method.{DELETE, GET, PUT}
 import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.Method.{DELETE, GET, PUT}
+import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
+import v1.models.response.amendSEAnnual.{AmendAnnualSummaryHateoasData, AmendAnnualSummaryResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -99,7 +99,6 @@ class AmendAnnualSummaryControllerSpec
       |        "allowanceOnSales": 7.77,
       |        "capitalAllowanceSingleAssetPool": 8.88,
       |        "tradingAllowance": 9.99,
-      |        "structureAndBuildingAllowance": "10.10",
       |        "electricChargePointAllowance": "11.11"
       |    },
       |    "nonFinancials": {
@@ -114,7 +113,7 @@ class AmendAnnualSummaryControllerSpec
 
   private val requestBody = AmendAnnualSummaryBody(
     Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-    Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10), Some(11.11))),
+    Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99),  Some(11.11))),
     Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
   )
 
@@ -142,6 +141,10 @@ class AmendAnnualSummaryControllerSpec
     """.stripMargin
   )
 
+  val responseBody: AmendAnnualSummaryResponse = AmendAnnualSummaryResponse(
+    transactionReference = "2017090920170909"
+  )
+
   private val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, requestJson)
   private val requestData = AmendAnnualSummaryRequest(Nino(nino), businessId, taxYear, requestBody)
 
@@ -154,11 +157,11 @@ class AmendAnnualSummaryControllerSpec
 
         MockAmendAnnualSummaryService
           .amendAnnualSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap((), AmendAnnualSummaryHateoasData(nino, businessId, taxYear))
-          .returns(HateoasWrapper((), testHateoasLinks))
+          .wrap(responseBody, AmendAnnualSummaryHateoasData(nino, businessId, taxYear))
+          .returns(HateoasWrapper(responseBody, testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
         status(result) shouldBe OK

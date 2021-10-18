@@ -51,7 +51,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
       |        "allowanceOnSales": 548.15,
       |        "capitalAllowanceSingleAssetPool": 901.67,
       |        "tradingAllowance": 521.34,
-      |        "structureAndBuildingAllowance": "354.58",
       |        "electricChargePointAllowance": "832.52"
       |    },
       |    "nonFinancials": {
@@ -116,7 +115,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |   }
             |}
@@ -186,7 +184,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -225,7 +222,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -264,7 +260,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -303,7 +298,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -342,7 +336,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -381,7 +374,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -420,7 +412,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -459,7 +450,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -498,7 +488,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -537,7 +526,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -576,7 +564,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -615,7 +602,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -654,7 +640,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -693,7 +678,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -732,7 +716,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -771,7 +754,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -810,7 +792,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": -1,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -849,7 +830,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": -1,
             |        "tradingAllowance": 521.34,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -888,7 +868,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": -1,
-            |        "structureAndBuildingAllowance": "354.58",
             |        "electricChargePointAllowance": "832.52"
             |    },
             |    "nonFinancials": {
@@ -900,45 +879,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |}
             |""".stripMargin
         ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/tradingAllowance"))))
-      }
-      "/allowances/structureAndBuildingAllowance is invalid" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
-            |{
-            |   "adjustments": {
-            |        "includedNonTaxableProfits": 216.12,
-            |        "basisAdjustment": 626.53,
-            |        "overlapReliefUsed": 153.89,
-            |        "accountingAdjustment": 514.24,
-            |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
-            |        "outstandingBusinessIncome": 751.03,
-            |        "balancingChargeBPRA": 719.23,
-            |        "balancingChargeOther": 956.47,
-            |        "goodsAndServicesOwnUse": 157.43
-            |    },
-            |    "allowances": {
-            |        "annualInvestmentAllowance": 561.32,
-            |        "businessPremisesRenovationAllowance": 198.45,
-            |        "capitalAllowanceMainPool": 825.34,
-            |       "capitalAllowanceSpecialRatePool": 647.12,
-            |        "zeroEmissionGoodsVehicleAllowance": 173.64,
-            |        "enhancedCapitalAllowance": 115.98,
-            |        "allowanceOnSales": 548.15,
-            |        "capitalAllowanceSingleAssetPool": 901.67,
-            |        "tradingAllowance": 1263.23,
-            |        "structureAndBuildingAllowance": "-354.58",
-            |        "electricChargePointAllowance": "832.52"
-            |    },
-            |    "nonFinancials": {
-            |        "class4NicInfo":{
-            |            "isExempt": true,
-            |            "exemptionCode": "002 - Trustee"
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/structureAndBuildingAllowance"))))
       }
       "/allowances/electricChargePointAllowance is invalid" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
@@ -966,7 +906,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": 548.15,
             |        "capitalAllowanceSingleAssetPool": 901.67,
             |        "tradingAllowance": 532.78,
-            |        "structureAndBuildingAllowance": 354.58,
             |        "electricChargePointAllowance": -832.52
             |    },
             |    "nonFinancials": {
@@ -1010,7 +949,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "allowanceOnSales": -1,
             |        "capitalAllowanceSingleAssetPool": -1,
             |        "tradingAllowance": -1,
-            |        "structureAndBuildingAllowance": -1,
             |        "electricChargePointAllowance": -1
             |    },
             |    "nonFinancials": {
@@ -1042,7 +980,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             "/allowances/allowanceOnSales",
             "/allowances/capitalAllowanceSingleAssetPool",
             "/allowances/tradingAllowance",
-            "/allowances/structureAndBuildingAllowance",
             "/allowances/electricChargePointAllowance"))))
       }
     }

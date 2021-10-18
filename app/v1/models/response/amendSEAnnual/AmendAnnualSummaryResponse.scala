@@ -17,12 +17,23 @@
 package v1.models.response.amendSEAnnual
 
 import config.AppConfig
+import play.api.libs.json.{Json, OWrites, Reads}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
+case class AmendAnnualSummaryResponse(
+                                       transactionReference: String
+                                     )
+
 object AmendAnnualSummaryResponse extends HateoasLinks {
 
-  implicit object LinksFactory extends HateoasLinksFactory[Unit, AmendAnnualSummaryHateoasData] {
+  implicit val reads: Reads[AmendAnnualSummaryResponse] = Json.reads[AmendAnnualSummaryResponse]
+
+  implicit val writes: OWrites[AmendAnnualSummaryResponse] = OWrites[AmendAnnualSummaryResponse] { _ =>
+    Json.obj()
+  }
+
+  implicit object AmendSelfEmploymentAnnualSummaryLinksFactory extends HateoasLinksFactory[AmendAnnualSummaryResponse, AmendAnnualSummaryHateoasData] {
     override def links(appConfig: AppConfig, data: AmendAnnualSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(

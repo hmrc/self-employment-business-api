@@ -27,7 +27,6 @@ import v1.models.errors._
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
 import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse.LinksFactory
 import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
 import scala.concurrent.{ExecutionContext, Future}

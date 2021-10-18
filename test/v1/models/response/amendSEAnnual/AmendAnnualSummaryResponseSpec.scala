@@ -31,7 +31,8 @@ class AmendAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
       MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
 
-      AmendAnnualSummaryResponse.LinksFactory.links(mockAppConfig, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)) shouldBe
+      AmendAnnualSummaryResponse.AmendSelfEmploymentAnnualSummaryLinksFactory.
+        links(mockAppConfig, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)) shouldBe
         Seq(
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             GET,
