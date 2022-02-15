@@ -1,0 +1,30 @@
+{
+  "adjustments": {
+    "includedNonTaxableProfits": 216.12,
+    "basisAdjustment": 626.53,
+    "overlapReliefUsed": 153.89,
+    "accountingAdjustment": 514.24,
+    "averagingAdjustment": 124.98,
+    "lossBroughtForward": 571.27,
+    "outstandingBusinessIncome": 751.03,
+    "balancingChargeBPRA": 719.23,
+    "balancingChargeOther": 956.47,
+    "goodsAndServicesOwnUse": 157.43
+  },
+  "allowances": {
+    "annualInvestmentAllowance": 561.32,
+    "businessPremisesRenovationAllowance": 198.45,
+    "capitalAllowanceMainPool": 825.34,
+    "capitalAllowanceSpecialRatePool": 647.12,
+    "zeroEmissionGoodsVehicleAllowance": 173.64,
+    "enhancedCapitalAllowance": 115.98,
+    "allowanceOnSales": 548.15,
+    "capitalAllowanceSingleAssetPool": 901.67,
+    "electricChargePointAllowance": 143.94
+  },
+  "nonFinancials": {
+    "class4NicInfo":{
+      "exemptionCode": "002 - Trustee"
+    }
+  }
+}

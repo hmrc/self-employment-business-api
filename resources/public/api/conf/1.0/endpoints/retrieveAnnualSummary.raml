@@ -22,4 +22,10 @@ responses:
     body:
       application/json:
         type: !include ../schemas/retrieve_annual_summary_response.json
-        example: !include ../examples/retrieve_annual_summary_response.json
+        examples:
+          example-1:
+            description: Example Response
+            value: !include ../examples/retrieve_annual_summary_other_allowances_response.json
+          example-2:
+            description: Example Response with Trading Allowance
+            value: !include ../examples/retrieve_annual_summary_trading_allowance_response.json

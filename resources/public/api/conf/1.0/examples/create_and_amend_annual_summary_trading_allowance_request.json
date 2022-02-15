@@ -12,16 +12,7 @@
     "goodsAndServicesOwnUse": 157.43
   },
   "allowances": {
-    "annualInvestmentAllowance": 561.32,
-    "businessPremisesRenovationAllowance": 198.45,
-    "capitalAllowanceMainPool": 825.34,
-    "capitalAllowanceSpecialRatePool": 647.12,
-    "zeroEmissionGoodsVehicleAllowance": 173.64,
-    "enhancedCapitalAllowance": 115.98,
-    "allowanceOnSales": 548.15,
-    "capitalAllowanceSingleAssetPool": 901.67,
-    "tradingAllowance": 521.34,
-    "electricChargePointAllowance": 143.94
+    "tradingAllowance": 521.34
   },
   "nonFinancials": {
     "class4NicInfo":{

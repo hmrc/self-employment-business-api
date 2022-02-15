@@ -12,14 +12,6 @@
     "goodsAndServicesOwnUse": 391.25
   },
   "allowances": {
-    "annualInvestmentAllowance": 3992.10,
-    "capitalAllowanceMainPool": 20.11,
-    "capitalAllowanceSpecialRatePool": 29.00,
-    "zeroEmissionGoodsVehicleAllowance": 500.00,
-    "businessPremisesRenovationAllowance": 31.00,
-    "enhancedCapitalAllowance": 49.19,
-    "allowanceOnSales": 39.48,
-    "capitalAllowanceSingleAssetPool": 32.39,
     "tradingAllowance": 85.39
   },
   "nonFinancials": {
