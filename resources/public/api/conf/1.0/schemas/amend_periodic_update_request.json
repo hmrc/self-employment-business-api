@@ -73,7 +73,7 @@
         },
         "cisPaymentsTo": {
           "type": "object",
-          "description": "Payments to subcontractors - Construction Industry Scheme (CIS).",
+          "description": "Construction industry – payments to subcontractors.",
           "properties": {
             "amount": {
               "type": "number",
