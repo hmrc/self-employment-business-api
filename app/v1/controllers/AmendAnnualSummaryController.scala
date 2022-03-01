@@ -18,18 +18,18 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, ControllerComponents }
+import utils.{ IdGenerator, Logging }
+import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
 import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
-import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{ AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
@@ -39,8 +39,9 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
                                              hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
-
+    extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
@@ -48,12 +49,13 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-        s"with correlationId : $correlationId")
+      logger.info(
+        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with correlationId : $correlationId")
       val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, request.body)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.amendAnnualSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)).asRight[ErrorWrapper])
@@ -68,7 +70,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -77,20 +79,13 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError |
-           NinoFormatError |
-           BusinessIdFormatError |
-           TaxYearFormatError |
-           MtdErrorWithCustomMessage(ValueFormatError.code) |
-           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
-           RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
+  private def errorResult(errorWrapper: ErrorWrapper) =
+    errorWrapper.error match {
+      case BadRequestError | NinoFormatError | BusinessIdFormatError | TaxYearFormatError | MtdErrorWithCustomMessage(ValueFormatError.code) |
+          MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) | RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalidError =>
+        BadRequest(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
     }
-  }
 
 }

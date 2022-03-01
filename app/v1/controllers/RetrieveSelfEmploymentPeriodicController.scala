@@ -16,21 +16,20 @@
 
 package v1.controllers
 
-
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.RetrieveSelfEmploymentPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRawData
 import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicHateoasData
-import v1.services.{EnrolmentsAuthService, MtdIdLookupService, RetrieveSelfEmploymentPeriodicService}
+import v1.services.{ EnrolmentsAuthService, MtdIdLookupService, RetrieveSelfEmploymentPeriodicService }
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
@@ -40,7 +39,9 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
                                                          hateoasFactory: HateoasFactory,
                                                          cc: ControllerComponents,
                                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
+    extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveSelfEmploymentPeriodicController", endpointName = "retrieveSelfEmploymentPeriodicUpdate")
@@ -48,16 +49,18 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
   def handleRequest(nino: String, businessId: String, periodId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-        s"with correlationId : $correlationId")
+      logger.info(
+        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with correlationId : $correlationId")
       val rawData = RetrieveSelfEmploymentPeriodicRawData(nino, businessId, periodId)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.retrieveSelfEmploymentPeriodicUpdate(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData,
-              RetrieveSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper]
+            hateoasFactory
+              .wrap(serviceResponse.responseData, RetrieveSelfEmploymentPeriodicHateoasData(nino, businessId, periodId))
+              .asRight[ErrorWrapper]
           )
         } yield {
           logger.info(
@@ -69,7 +72,7 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
         }
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -78,14 +81,10 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case NinoFormatError |
-           BusinessIdFormatError |
-           PeriodIdFormatError |
-           BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+  private def errorResult(errorWrapper: ErrorWrapper) =
+    errorWrapper.error match {
+      case NotFoundError                                     => NotFound(Json.toJson(errorWrapper))
+      case _: InternalError                                  => InternalServerError(Json.toJson(errorWrapper))
+      case _: FormatError | _: RuleError | MtdError(_, _, _) => BadRequest(Json.toJson(errorWrapper))
     }
-  }
 }

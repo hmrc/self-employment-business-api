@@ -16,21 +16,21 @@
 
 package v1.controllers
 
-import javax.inject.{Inject, Singleton}
 import cats.data.EitherT
 import cats.implicits._
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, ControllerComponents }
+import utils.{ IdGenerator, Logging }
+import v1.controllers.requestParsers.AmendPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.controllers.requestParsers.AmendPeriodicRequestParser
 import v1.models.request.amendSEPeriodic.AmendPeriodicRawData
 import v1.models.response.amendSEPeriodic.AmendSelfEmploymentPeriodicHateoasData
 import v1.models.response.amendSEPeriodic.AmendSelfEmploymentPeriodicResponse.LinksFactory
-import v1.services.{AmendSelfEmploymentPeriodicService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{ AmendSelfEmploymentPeriodicService, EnrolmentsAuthService, MtdIdLookupService }
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
@@ -40,8 +40,9 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
                                                       hateoasFactory: HateoasFactory,
                                                       cc: ControllerComponents,
                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
-
+    extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendSelfEmploymentPeriodicController", endpointName = "amendSelfEmploymentPeriodic")
@@ -49,15 +50,18 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
   def handleRequest(nino: String, businessId: String, periodId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-        s"with correlationId : $correlationId")
+      logger.info(
+        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with correlationId : $correlationId")
       val rawData = AmendPeriodicRawData(nino, businessId, periodId, request.body)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.amendPeriodicUpdate(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendSelfEmploymentPeriodicHateoasData(nino, businessId, periodId)).asRight[ErrorWrapper])
+            hateoasFactory
+              .wrap(serviceResponse.responseData, AmendSelfEmploymentPeriodicHateoasData(nino, businessId, periodId))
+              .asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -69,7 +73,7 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -78,20 +82,13 @@ class AmendSelfEmploymentPeriodicController @Inject()(val authService: Enrolment
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError |
-           NinoFormatError |
-           BusinessIdFormatError |
-           PeriodIdFormatError |
-           RuleBothExpensesSuppliedError |
-           RuleNotAllowedConsolidatedExpenses |
-           MtdErrorWithCustomMessage(ValueFormatError.code) |
-           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) => BadRequest(Json.toJson(errorWrapper))
+  private def errorResult(errorWrapper: ErrorWrapper) =
+    errorWrapper.error match {
+      case BadRequestError | NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | RuleBothExpensesSuppliedError |
+          RuleNotAllowedConsolidatedExpenses | MtdErrorWithCustomMessage(ValueFormatError.code) | MtdErrorWithCustomMessage(
+            RuleIncorrectOrEmptyBodyError.code) =>
+        BadRequest(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
     }
-  }
-
 }
