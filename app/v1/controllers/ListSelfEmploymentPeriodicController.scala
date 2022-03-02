@@ -81,10 +81,16 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) =
+  protected def errorResult(errorWrapper: ErrorWrapper) = {
     errorWrapper.error match {
-      case NotFoundError                                     => NotFound(Json.toJson(errorWrapper))
-      case _: InternalError                                  => InternalServerError(Json.toJson(errorWrapper))
-      case _: FormatError | _: RuleError | MtdError(_, _, _) => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError                 => NotFound(Json.toJson(errorWrapper))
+      case _: FormatError | _: RuleError => BadRequest(Json.toJson(errorWrapper))
+      case _: InternalError              => InternalServerError(Json.toJson(errorWrapper))
+      case _ =>
+        logger.error(
+          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+            s"Unhandled error: $errorWrapper")
+        InternalServerError(Json.toJson(DownstreamError))
     }
+  }
 }

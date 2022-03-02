@@ -23,6 +23,8 @@ sealed case class MtdError(code: String, message: String, paths: Option[Seq[Stri
 sealed trait FormatError
 sealed trait RuleError
 sealed trait InternalError
+sealed trait AuthorisationError
+sealed trait UserError
 
 object MtdError {
   implicit val writes: OWrites[MtdError] = Json.writes[MtdError]
@@ -168,8 +170,7 @@ object NotFoundError
     extends MtdError(
       code = "MATCHING_RESOURCE_NOT_FOUND",
       message = "Matching resource not found"
-    )
-    with InternalError
+    ) with UserError
 
 object DownstreamError
     extends MtdError(
