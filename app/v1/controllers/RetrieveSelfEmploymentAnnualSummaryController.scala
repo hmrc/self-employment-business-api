@@ -83,8 +83,11 @@ class RetrieveSelfEmploymentAnnualSummaryController @Inject()(val authService: E
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NotFoundError                                     => NotFound(Json.toJson(errorWrapper))
-      case _: InternalError                                  => InternalServerError(Json.toJson(errorWrapper))
-      case _: FormatError | _: RuleError | MtdError(_, _, _) => BadRequest(Json.toJson(errorWrapper))
+      case NinoFormatError | BusinessIdFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalidError |
+          BadRequestError =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case _               => unhandledError(errorWrapper)
     }
 }

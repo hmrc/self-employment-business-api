@@ -75,8 +75,11 @@ class DeleteSelfEmploymentAnnualSummaryController @Inject()(val authService: Enr
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case _: FormatError | _: RuleError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                   => NotFound(Json.toJson(errorWrapper))
-      case _: InternalError | MtdError(_, _, _)            => InternalServerError(Json.toJson(errorWrapper))
+      case NinoFormatError | BusinessIdFormatError | BadRequestError | TaxYearFormatError | RuleTaxYearNotSupportedError |
+          RuleTaxYearRangeInvalidError =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case _               => unhandledError(errorWrapper)
     }
 }

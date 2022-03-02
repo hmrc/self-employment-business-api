@@ -83,8 +83,9 @@ class RetrieveSelfEmploymentPeriodicController @Inject()(val authService: Enrolm
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NotFoundError                                     => NotFound(Json.toJson(errorWrapper))
-      case _: InternalError                                  => InternalServerError(Json.toJson(errorWrapper))
-      case _: FormatError | _: RuleError | MtdError(_, _, _) => BadRequest(Json.toJson(errorWrapper))
+      case NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError                                                                   => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError                                                                 => InternalServerError(Json.toJson(errorWrapper))
+      case _                                                                               => unhandledError(errorWrapper)
     }
 }
