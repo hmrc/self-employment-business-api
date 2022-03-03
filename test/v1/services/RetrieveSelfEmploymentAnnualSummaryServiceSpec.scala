@@ -44,7 +44,6 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
       Some(100.25),
       Some(100.25),
       Some(100.25),
-      Some(100.25),
       Some(100.25)
     )),
     Some(Allowances(

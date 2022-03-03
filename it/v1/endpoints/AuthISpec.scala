@@ -42,7 +42,6 @@ class AuthISpec extends IntegrationBaseSpec {
          |        "overlapReliefUsed": 3.33,
          |        "accountingAdjustment": 4.44,
          |        "averagingAdjustment": 5.55,
-         |        "lossBroughtForward": 6.66,
          |        "outstandingBusinessIncome": 7.77,
          |        "balancingChargeBPRA": 8.88,
          |        "balancingChargeOther": 9.99,

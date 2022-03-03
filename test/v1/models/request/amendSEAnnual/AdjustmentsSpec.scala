@@ -22,9 +22,9 @@ import support.UnitSpec
 class AdjustmentsSpec extends UnitSpec {
 
   val fullMtdModel: Adjustments =
-    Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))
-  val partialMtdModel: Adjustments = Adjustments(Some(1.11), None, Some(3.33), None, None, Some(6.66), Some(7.77), None, Some(9.99), None)
-  val emptyMtdModel: Adjustments = Adjustments(None, None, None, None, None, None, None, None, None, None)
+    Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(7.77), Some(8.88), Some(9.99), Some(10.10))
+  val partialMtdModel: Adjustments = Adjustments(Some(1.11), None, Some(3.33), None, None, Some(7.77), None, Some(9.99), None)
+  val emptyMtdModel: Adjustments = Adjustments(None, None, None, None, None, None, None, None, None)
 
   "reads" should {
 
@@ -38,7 +38,6 @@ class AdjustmentsSpec extends UnitSpec {
            |  "overlapReliefUsed": 3.33,
            |  "accountingAdjustment": 4.44,
            |  "averagingAdjustment": 5.55,
-           |  "lossBroughtForward": 6.66,
            |  "outstandingBusinessIncome": 7.77,
            |  "balancingChargeBPRA": 8.88,
            |  "balancingChargeOther": "9.99",
@@ -51,7 +50,6 @@ class AdjustmentsSpec extends UnitSpec {
            |{
            |  "includedNonTaxableProfits": 1.11,
            |  "overlapReliefUsed": 3.33,
-           |  "lossBroughtForward": 6.66,
            |  "outstandingBusinessIncome": 7.77,
            |  "balancingChargeOther": "9.99"
            |}
@@ -91,7 +89,6 @@ class AdjustmentsSpec extends UnitSpec {
            |  "overlapReliefUsed": 3.33,
            |  "accountingAdjustment": 4.44,
            |  "averagingAdjustment": 5.55,
-           |  "lossBroughtForward": 6.66,
            |  "outstandingBusinessIncome": 7.77,
            |  "balancingChargeBpra": 8.88,
            |  "balancingChargeOther": 9.99,
@@ -104,7 +101,6 @@ class AdjustmentsSpec extends UnitSpec {
            |{
            |  "includedNonTaxableProfits": 1.11,
            |  "overlapReliefUsed": 3.33,
-           |  "lossBroughtForward": 6.66,
            |  "outstandingBusinessIncome": 7.77,
            |  "balancingChargeOther": 9.99
            |}

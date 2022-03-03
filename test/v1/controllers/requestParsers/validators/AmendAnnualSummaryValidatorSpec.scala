@@ -35,7 +35,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
       |        "overlapReliefUsed": 153.89,
       |        "accountingAdjustment": 514.24,
       |        "averagingAdjustment": 124.98,
-      |        "lossBroughtForward": 571.27,
       |        "outstandingBusinessIncome": 751.03,
       |        "balancingChargeBPRA": 719.23,
       |        "balancingChargeOther": 956.47,
@@ -91,7 +90,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -168,7 +166,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -206,7 +203,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -244,7 +240,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": -1,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -282,7 +277,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": -1,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -320,7 +314,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": -1.4632636,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -348,44 +341,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |""".stripMargin
         ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/averagingAdjustment"))))
       }
-      "/adjustments/lossBroughtForward is invalid" in {
-        validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
-            |{
-            |   "adjustments": {
-            |        "includedNonTaxableProfits": 216.12,
-            |        "basisAdjustment": 626.53,
-            |        "overlapReliefUsed": 153.89,
-            |        "accountingAdjustment": 514.24,
-            |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": -1,
-            |        "outstandingBusinessIncome": 751.03,
-            |        "balancingChargeBPRA": 719.23,
-            |        "balancingChargeOther": 956.47,
-            |        "goodsAndServicesOwnUse": 157.43
-            |    },
-            |    "allowances": {
-            |        "annualInvestmentAllowance": 561.32,
-            |        "businessPremisesRenovationAllowance": 198.45,
-            |        "capitalAllowanceMainPool": 825.34,
-            |        "capitalAllowanceSpecialRatePool": 647.12,
-            |        "zeroEmissionGoodsVehicleAllowance": 173.64,
-            |        "enhancedCapitalAllowance": 115.98,
-            |        "allowanceOnSales": 548.15,
-            |        "capitalAllowanceSingleAssetPool": 901.67,
-            |        "tradingAllowance": 521.34,
-            |        "electricChargePointAllowance": "832.52"
-            |    },
-            |    "nonFinancials": {
-            |        "class4NicInfo":{
-            |            "isExempt": true,
-            |            "exemptionCode": "002 - Trustee"
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/lossBroughtForward"))))
-      }
+
       "/adjustments/outstandingBusinessIncome is invalid" in {
         validator.validate(AmendAnnualSummaryRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
@@ -396,7 +352,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": -1,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -434,7 +389,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": -1,
             |        "balancingChargeOther": 956.47,
@@ -472,7 +426,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": -1,
@@ -510,7 +463,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -548,7 +500,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -586,7 +537,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -624,7 +574,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -662,7 +611,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -700,7 +648,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -738,7 +685,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -776,7 +722,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -814,7 +759,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -852,7 +796,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -890,7 +833,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": 153.89,
             |        "accountingAdjustment": 514.24,
             |        "averagingAdjustment": 124.98,
-            |        "lossBroughtForward": 571.27,
             |        "outstandingBusinessIncome": 751.03,
             |        "balancingChargeBPRA": 719.23,
             |        "balancingChargeOther": 956.47,
@@ -933,7 +875,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             |        "overlapReliefUsed": -1,
             |        "accountingAdjustment": -1,
             |        "averagingAdjustment": -1.6543643,
-            |        "lossBroughtForward": -1,
             |        "outstandingBusinessIncome": -1,
             |        "balancingChargeBPRA": -1,
             |        "balancingChargeOther": -1,
@@ -966,7 +907,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
             "/adjustments/overlapReliefUsed",
             "/adjustments/accountingAdjustment",
             "/adjustments/averagingAdjustment",
-            "/adjustments/lossBroughtForward",
             "/adjustments/outstandingBusinessIncome",
             "/adjustments/balancingChargeBPRA",
             "/adjustments/balancingChargeOther",

@@ -24,12 +24,12 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
 
   val fullMtdModel: AmendAnnualSummaryBody =
     AmendAnnualSummaryBody(
-      Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
+      Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
       Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))),
       Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))))
   val partialMtdModel: AmendAnnualSummaryBody =
     AmendAnnualSummaryBody(
-      Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
+      Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
       Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))),
       None)
   val emptyMtdModel: AmendAnnualSummaryBody =
@@ -48,7 +48,6 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "overlapReliefUsed": 3.33,
            |        "accountingAdjustment": 4.44,
            |        "averagingAdjustment": 5.55,
-           |        "lossBroughtForward": 6.66,
            |        "outstandingBusinessIncome": 7.77,
            |        "balancingChargeBPRA": 8.88,
            |        "balancingChargeOther": 9.99,
@@ -83,7 +82,6 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "overlapReliefUsed": 3.33,
            |        "accountingAdjustment": 4.44,
            |        "averagingAdjustment": 5.55,
-           |        "lossBroughtForward": 6.66,
            |        "outstandingBusinessIncome": 7.77,
            |        "balancingChargeBPRA": 8.88,
            |        "balancingChargeOther": 9.99,
@@ -139,7 +137,6 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "overlapReliefUsed": 3.33,
            |        "accountingAdjustment": 4.44,
            |        "averagingAdjustment": 5.55,
-           |        "lossBroughtForward": 6.66,
            |        "outstandingBusinessIncome": 7.77,
            |        "balancingChargeBpra": 8.88,
            |        "balancingChargeOther": 9.99,
@@ -173,7 +170,6 @@ class AmendAnnualSummaryBodySpec extends UnitSpec {
            |        "overlapReliefUsed": 3.33,
            |        "accountingAdjustment": 4.44,
            |        "averagingAdjustment": 5.55,
-           |        "lossBroughtForward": 6.66,
            |        "outstandingBusinessIncome": 7.77,
            |        "balancingChargeBpra": 8.88,
            |        "balancingChargeOther": 9.99,
