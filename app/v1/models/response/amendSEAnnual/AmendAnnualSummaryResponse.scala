@@ -19,7 +19,8 @@ package v1.models.response.amendSEAnnual
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.hateoas.{HateoasData, Link}
+import v1.models.hateoas.{HateoasData, HateoasDataBuilder, Link}
+import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
 
 case class AmendAnnualSummaryResponse(
                                        transactionReference: String
@@ -46,3 +47,12 @@ object AmendAnnualSummaryResponse extends HateoasLinks {
 }
 
 case class AmendAnnualSummaryHateoasData(nino: String, businessId: String, taxYear: String) extends HateoasData
+
+object AmendAnnualSummaryHateoasData {
+  implicit object DataBuilder extends HateoasDataBuilder[AmendAnnualSummaryRawData, AmendAnnualSummaryHateoasData] {
+    override def dataFor(raw: AmendAnnualSummaryRawData): AmendAnnualSummaryHateoasData = {
+      import raw._
+      AmendAnnualSummaryHateoasData(nino = nino, businessId = businessId, taxYear = taxYear)
+    }
+  }
+}

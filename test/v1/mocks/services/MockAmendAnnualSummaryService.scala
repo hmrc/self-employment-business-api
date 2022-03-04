@@ -36,7 +36,7 @@ trait MockAmendAnnualSummaryService extends MockFactory {
 
     def amendAnnualSummary(requestData: AmendAnnualSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[AmendAnnualSummaryResponse]]]] = {
       (mockAmendAnnualSummaryService
-        .amendAnnualSummary(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .doService(_: AmendAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
   }

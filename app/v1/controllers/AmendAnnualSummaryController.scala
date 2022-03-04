@@ -16,77 +16,55 @@
 
 package v1.controllers
 
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, ControllerComponents, Result}
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
-import v1.hateoas.HateoasFactory
+import v1.hateoas.{HateoasFactory, HateoasLinksFactory}
+import v1.models.errors.ErrorWrapper.WithCode
 import v1.models.errors._
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
-import v1.services.{ AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
+import v1.models.hateoas.HateoasDataBuilder
+import v1.models.request.amendSEAnnual.{AmendAnnualSummaryRawData, AmendAnnualSummaryRequest}
+import v1.models.response.amendSEAnnual.{AmendAnnualSummaryHateoasData, AmendAnnualSummaryResponse}
+import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
                                              val lookupService: MtdIdLookupService,
-                                             parser: AmendSelfEmploymentAnnualSummaryRequestParser,
-                                             service: AmendAnnualSummaryService,
-                                             hateoasFactory: HateoasFactory,
+                                             val parser: AmendSelfEmploymentAnnualSummaryRequestParser,
+                                             val service: AmendAnnualSummaryService,
+                                             val hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
-                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with BaseController
+                                             val idGenerator: IdGenerator)(implicit val ec: ExecutionContext)
+  extends AuthorisedController(cc)
+    with StandardController with SimpleHateoasWrapping
     with Logging {
+
+  type InputRaw = AmendAnnualSummaryRawData
+  type Input = AmendAnnualSummaryRequest
+  type Output = AmendAnnualSummaryResponse
+  type HData = AmendAnnualSummaryHateoasData
+
+  // TODO often raw input == hateoas data (maybe POSTs will return an id that is also reqd) but can we do away with
+  // separate InputRaw and HData types (and hence two typeclass instances) in most cases?
+  override val hateoasLinksFactory: HateoasLinksFactory[Output, HData] = implicitly
+  override val hateoasDataBuilder: HateoasDataBuilder[InputRaw, HData] = implicitly
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(
-        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with correlationId : $correlationId")
       val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, request.body)
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.amendAnnualSummary(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)).asRight[ErrorWrapper])
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse))
-            .withApiHeaders(serviceResponse.correlationId)
-        }
-
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-        result
-      }.merge
+      doHandleRequest(rawData)
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case BadRequestError | NinoFormatError | BusinessIdFormatError | TaxYearFormatError | MtdErrorWithCustomMessage(ValueFormatError.code) |
-          MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) | RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalidError =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case _               => unhandledError(errorWrapper)
-    }
-
+  // TODO remove this unless there are controller specific errors not handled by StandardController...
+  override protected def errorResultPF(implicit endpointLogContext: EndpointLogContext): PartialFunction[ErrorWrapper, Result] = {
+    case errorWrapper@WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
+  }
 }

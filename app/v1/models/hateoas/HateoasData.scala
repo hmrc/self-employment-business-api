@@ -16,6 +16,8 @@
 
 package v1.models.hateoas
 
+import v1.models.request.RawData
+
 /**
   * Marker trait that represents data to be used as parameters to the links that are to be returned
   * for a particular endpoint. This data may be identifiers (e.g. nino and/or other resource id) to embed in
@@ -23,3 +25,7 @@ package v1.models.hateoas
   * certain scenarios.
   */
 trait HateoasData
+
+trait HateoasDataBuilder[Raw <: RawData, Data <: HateoasData] {
+  def dataFor(raw: Raw): Data
+}

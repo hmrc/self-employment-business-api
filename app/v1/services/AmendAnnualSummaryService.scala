@@ -32,9 +32,13 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector) extends DesResponseMappingSupport with Logging {
+class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector)
+  extends BaseService with DesResponseMappingSupport with Logging {
 
-  def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
+  type Input = AmendAnnualSummaryRequest
+  type Output = AmendAnnualSummaryResponse
+
+  override def doService(request: AmendAnnualSummaryRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     logContext: EndpointLogContext,

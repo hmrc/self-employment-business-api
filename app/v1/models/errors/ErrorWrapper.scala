@@ -40,4 +40,8 @@ object ErrorWrapper {
       case _ => json
     }
   }
+
+  object WithCode {
+    def unapply(arg: ErrorWrapper): Option[String] = Some(arg.error.code)
+  }
 }

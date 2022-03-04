@@ -67,7 +67,7 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
         MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
           .returns(Future.successful(outcome))
 
-        await(service.amendAnnualSummary(requestData)) shouldBe outcome
+        await(service.doService(requestData)) shouldBe outcome
       }
 
       "map errors according to spec" when {
@@ -77,7 +77,7 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
             MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.doService(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(
