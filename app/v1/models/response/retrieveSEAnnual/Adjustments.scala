@@ -24,7 +24,6 @@ case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                         overlapReliefUsed: Option[BigDecimal],
                         accountingAdjustment: Option[BigDecimal],
                         averagingAdjustment: Option[BigDecimal],
-                        lossBroughtForward: Option[BigDecimal],
                         outstandingBusinessIncome: Option[BigDecimal],
                         balancingChargeBPRA: Option[BigDecimal],
                         balancingChargeOther: Option[BigDecimal],
@@ -38,7 +37,6 @@ object Adjustments {
       (JsPath \ "overlapReliefUsed").readNullable[BigDecimal] and
       (JsPath \ "accountingAdjustment").readNullable[BigDecimal] and
       (JsPath \ "averagingAdjustment").readNullable[BigDecimal] and
-      (JsPath \ "lossBroughtForward").readNullable[BigDecimal] and
       (JsPath \ "outstandingBusinessIncome").readNullable[BigDecimal] and
       (JsPath \ "balancingChargeBpra").readNullable[BigDecimal] and
       (JsPath \ "balancingChargeOther").readNullable[BigDecimal] and

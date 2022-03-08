@@ -73,7 +73,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
   private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/annual/$taxYear", method = GET, rel = "self")
 
   private val adjustments = Adjustments(
-    Some(1000), Some(1000), Some(1000), Some(1000), Some(1000),
+    Some(1000), Some(1000), Some(1000), Some(1000),
     Some(1000), Some(1000), Some(1000), Some(1000), Some(1000)
   )
   private val allowances = Allowances(

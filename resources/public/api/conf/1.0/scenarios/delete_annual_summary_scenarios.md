@@ -8,7 +8,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><p>N/A - DEFAULT</p></td>
+            <td><p>DEFAULT_DELETE</p></td>
             <td><p>Simulate success response.</p></td>
         </tr>
         <tr>

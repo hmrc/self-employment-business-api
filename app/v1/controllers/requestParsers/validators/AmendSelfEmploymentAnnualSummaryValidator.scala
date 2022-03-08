@@ -83,10 +83,6 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSum
         path = s"/adjustments/averagingAdjustment"
       ),
       NumberValidation.validateOptional(
-        field = adjustments.lossBroughtForward,
-        path = s"/adjustments/lossBroughtForward"
-      ),
-      NumberValidation.validateOptional(
         field = adjustments.outstandingBusinessIncome,
         path = s"/adjustments/outstandingBusinessIncome"
       ),
