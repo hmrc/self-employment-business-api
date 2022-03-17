@@ -64,7 +64,9 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUri, Status.NO_CONTENT, JsObject.empty)
+
+          DesStub.when(method = DesStub.PUT, uri = desUri, body = Some("{}"))
+            .thenReturn(status = Status.NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().delete())
