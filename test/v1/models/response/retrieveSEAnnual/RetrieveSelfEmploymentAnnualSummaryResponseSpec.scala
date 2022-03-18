@@ -33,7 +33,6 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    "overlapReliefUsed": 500.25,
       |    "accountingAdjustment": 500.25,
       |    "averagingAdjustment": 500.25,
-      |    "lossBroughtForward": 500.25,
       |    "outstandingBusinessIncome": 500.25,
       |    "balancingChargeBpra": 500.25,
       |    "balancingChargeOther": 500.25,
@@ -67,7 +66,6 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |    "overlapReliefUsed":500.25,
       |    "accountingAdjustment": 500.25,
       |    "averagingAdjustment": 500.25,
-      |    "lossBroughtForward": 500.25,
       |    "outstandingBusinessIncome": 500.25,
       |    "balancingChargeBPRA": 500.25,
       |    "balancingChargeOther":500.25,
@@ -95,7 +93,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
 
   val model: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
     Some(Adjustments(
-      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25),
+      Some(500.25), Some(500.25), Some(500.25), Some(500.25),
       Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25)
     )),
     Some(Allowances(

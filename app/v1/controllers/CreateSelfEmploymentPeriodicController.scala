@@ -18,19 +18,19 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, ControllerComponents }
+import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.CreateSelfEmploymentPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRawData
 import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicHateoasData
 import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse.LinksFactory
-import v1.services.{CreateSelfEmploymentPeriodicService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{ CreateSelfEmploymentPeriodicService, EnrolmentsAuthService, MtdIdLookupService }
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class CreateSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
@@ -40,8 +40,9 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
                                                        hateoasFactory: HateoasFactory,
                                                        cc: ControllerComponents,
                                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
-
+    extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateSelfEmploymentPeriodController", endpointName = "createSelfEmploymentPeriodSummary")
@@ -49,15 +50,18 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-        s"with correlationId : $correlationId")
+      logger.info(
+        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with correlationId : $correlationId")
       val rawData = CreateSelfEmploymentPeriodicRawData(nino, businessId, request.body)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.createPeriodic(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, CreateSelfEmploymentPeriodicHateoasData(nino, businessId, serviceResponse.responseData.periodId)).asRight[ErrorWrapper])
+            hateoasFactory
+              .wrap(serviceResponse.responseData, CreateSelfEmploymentPeriodicHateoasData(nino, businessId, serviceResponse.responseData.periodId))
+              .asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -69,7 +73,7 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -78,25 +82,18 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
+  private def errorResult(errorWrapper: ErrorWrapper) =
+    errorWrapper.error match {
+      case MtdErrorWithCustomMessage(ValueFormatError.code) | MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) =>
+        BadRequest(Json.toJson(errorWrapper))
 
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError |
-           NinoFormatError |
-           BusinessIdFormatError |
-           FromDateFormatError |
-           ToDateFormatError |
-           MtdErrorWithCustomMessage(ValueFormatError.code) |
-           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
-           RuleBothExpensesSuppliedError |
-           RuleToDateBeforeFromDateError |
-           RuleOverlappingPeriod |
-           RuleMisalignedPeriod |
-           RuleNotContiguousPeriod |
-           RuleNotAllowedConsolidatedExpenses => BadRequest(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | BusinessIdFormatError | FromDateFormatError | ToDateFormatError | RuleBothExpensesSuppliedError |
+          RuleToDateBeforeFromDateError | RuleOverlappingPeriod | RuleMisalignedPeriod | RuleNotContiguousPeriod |
+          RuleNotAllowedConsolidatedExpenses =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case _ => unhandledError(errorWrapper)
     }
-  }
 
 }

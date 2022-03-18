@@ -18,18 +18,18 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.ListSelfEmploymentPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRawData
 import v1.models.response.listSEPeriodic.ListSelfEmploymentPeriodicHateoasData
-import v1.services.{EnrolmentsAuthService, ListSelfEmploymentPeriodicService, MtdIdLookupService}
+import v1.services.{ EnrolmentsAuthService, ListSelfEmploymentPeriodicService, MtdIdLookupService }
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class ListSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
@@ -39,7 +39,9 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
                                                      hateoasFactory: HateoasFactory,
                                                      cc: ControllerComponents,
                                                      idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
+    extends AuthorisedController(cc)
+    with BaseController
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListSelfEmploymentPeriodicController", endpointName = "listSelfEmploymentPeriodicUpdate")
@@ -47,12 +49,13 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
   def handleRequest(nino: String, businessId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-        s"with correlationId : $correlationId")
+      logger.info(
+        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with correlationId : $correlationId")
       val rawData = ListSelfEmploymentPeriodicRawData(nino, businessId)
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](parser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.listSelfEmploymentUpdatePeriods(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
@@ -69,7 +72,7 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
         }
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -78,11 +81,11 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
       }.merge
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
+  private def errorResult(errorWrapper: ErrorWrapper) =
+    errorWrapper.error match {
       case NinoFormatError | BusinessIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case DownstreamError                                           => InternalServerError(Json.toJson(errorWrapper))
       case NotFoundError                                             => NotFound(Json.toJson(errorWrapper))
+      case DownstreamError                                           => InternalServerError(Json.toJson(errorWrapper))
+      case _                                                         => unhandledError(errorWrapper)
     }
-  }
 }
