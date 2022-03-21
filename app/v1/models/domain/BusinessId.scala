@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendSEAnnual
+package v1.models.domain
 
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-
-case class AmendAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear, body: AmendAnnualSubmissionBody)
+case class BusinessId(value : String) extends AnyVal

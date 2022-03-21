@@ -18,7 +18,7 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendAnnualSummaryConnector
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnualSubmissionRequest}
@@ -37,8 +37,8 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
 
   private val requestData = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear,
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear),
     body = requestBody
   )
 

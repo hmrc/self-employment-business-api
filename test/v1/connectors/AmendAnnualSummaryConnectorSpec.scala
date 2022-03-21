@@ -19,7 +19,7 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.{TaxYear, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequest}
 
@@ -29,12 +29,13 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String = "AA123456A"
   val taxYear: String = "2018-19"
+  val downstreamTaxYear: String = "2019"
   val businessId: String = "XAIS12345678910"
 
   val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear,
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear),
     body = AmendAnnualSubmissionBody(None, None, None)
   )
 
@@ -60,7 +61,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
 
         MockHttpClient
           .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${TaxYear.fromMtd(taxYear)}",
+            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,

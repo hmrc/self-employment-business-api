@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import v1.mocks.validators.MockAmendSelfEmploymentAnnualSummaryValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.request.amendSEAnnual._
 
@@ -50,7 +50,7 @@ class AmendSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec with Am
         val amendAnnualSummaryRequestBody: AmendAnnualSubmissionBody = amendAnnualSubmissionBody()
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendAnnualSubmissionRequest(Nino(nino), businessId, taxYear, amendAnnualSummaryRequestBody))
+          Right(AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), amendAnnualSummaryRequestBody))
       }
     }
 
