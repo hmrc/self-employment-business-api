@@ -22,7 +22,7 @@ import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.request.amendSEAnnual._
 
-class AmendAnnualSummaryRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
+class AmendSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
 
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"

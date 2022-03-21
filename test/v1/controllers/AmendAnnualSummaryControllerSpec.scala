@@ -42,7 +42,8 @@ class AmendAnnualSummaryControllerSpec
     with MockAmendAnnualSummaryService
     with MockAmendSelfEmploymentAnnualSummaryRequestParser
     with MockHateoasFactory
-    with MockIdGenerator {
+    with MockIdGenerator
+    with AmendAnnualSubmissionFixture {
 
   private val nino = "AA123456A"
   private val businessId = "XAIS12345678910"
@@ -73,65 +74,31 @@ class AmendAnnualSummaryControllerSpec
     Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
   )
 
-  private val requestJson = Json.parse(
-    """
-      |{
-      |   "adjustments": {
-      |        "includedNonTaxableProfits": 1.11,
-      |        "basisAdjustment": 2.22,
-      |        "overlapReliefUsed": 3.33,
-      |        "accountingAdjustment": 4.44,
-      |        "averagingAdjustment": 5.55,
-      |        "outstandingBusinessIncome": 7.77,
-      |        "balancingChargeBPRA": 8.88,
-      |        "balancingChargeOther": 9.99,
-      |        "goodsAndServicesOwnUse": 10.10
-      |    },
-      |    "allowances": {
-      |        "annualInvestmentAllowance": 1.11,
-      |        "businessPremisesRenovationAllowance": 2.22,
-      |        "capitalAllowanceMainPool": 3.33,
-      |        "capitalAllowanceSpecialRatePool": 4.44,
-      |        "zeroEmissionGoodsVehicleAllowance": 5.55,
-      |        "enhancedCapitalAllowance": 6.66,
-      |        "allowanceOnSales": 7.77,
-      |        "capitalAllowanceSingleAssetPool": 8.88,
-      |        "tradingAllowance": 9.99,
-      |        "electricChargePointAllowance": "11.11"
-      |    },
-      |    "nonFinancials": {
-      |        "class4NicInfo":{
-      |            "isExempt": true,
-      |            "exemptionCode": "001 - Non Resident"
-      |        }
-      |    }
-      |}
-    """.stripMargin
-  )
+  private val requestJson = amendAnnualSubmissionBodyMtdJson(None, None, None)
 
   private val requestBody = AmendAnnualSubmissionBody(None, None, None)
 
   val responseJson: JsValue = Json.parse(
     s"""
-      |{
-      |  "links": [
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-      |      "method": "GET",
-      |      "rel": "self"
-      |    },
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-      |      "method": "PUT",
-      |      "rel": "create-and-amend-self-employment-annual-summary"
-      |    },
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-      |      "method": "DELETE",
-      |      "rel": "delete-self-employment-annual-summary"
-      |    }
-      |  ]
-      |}
+       |{
+       |  "links": [
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "method": "GET",
+       |      "rel": "self"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "method": "PUT",
+       |      "rel": "create-and-amend-self-employment-annual-summary"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "method": "DELETE",
+       |      "rel": "delete-self-employment-annual-summary"
+       |    }
+       |  ]
+       |}
     """.stripMargin
   )
 

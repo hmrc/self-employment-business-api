@@ -26,7 +26,7 @@ import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 
 import scala.concurrent.Future
 
-class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture{
+class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
 
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
