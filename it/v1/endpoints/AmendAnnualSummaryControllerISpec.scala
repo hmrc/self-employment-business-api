@@ -22,7 +22,6 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
 import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
@@ -34,6 +33,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec with AmendAn
     val nino: String = "AA123456A"
     val businessId: String = "XAIS12345678910"
     val taxYear: String = "2021-22"
+    val downstreamTaxYear: String = "2022"
 
     val requestBodyJson: JsValue = amendAnnualSubmissionBodyMtdJson()
 
@@ -62,7 +62,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec with AmendAn
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}"
+    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear"
 
     def setupStubs(): StubMapping
 

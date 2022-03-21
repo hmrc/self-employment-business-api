@@ -19,7 +19,7 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.{DesTaxYear, Nino}
+import v1.models.domain.{TaxYear, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequest}
 
@@ -60,7 +60,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
 
         MockHttpClient
           .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}",
+            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${TaxYear.fromMtd(taxYear)}",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,

@@ -19,7 +19,7 @@ package v1.connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.models.domain.DesTaxYear
+import v1.models.domain.TaxYear
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +42,7 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
     put(
       body = request.body,
       DesUri[AmendAnnualSummaryResponse](
-        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}"
+        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${TaxYear.fromMtd(taxYear).toDownstream}"
       )
     )
   }

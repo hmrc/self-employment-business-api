@@ -18,7 +18,7 @@ package v1.connectors
 
 import mocks.MockAppConfig
 import v1.mocks.MockHttpClient
-import v1.models.domain.{DesTaxYear, Nino}
+import v1.models.domain.{TaxYear, Nino}
 import v1.models.domain.ex.MtdNicExemption._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
@@ -86,7 +86,7 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
 
       MockHttpClient
         .get(
-          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}",
+          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${TaxYear.fromMtd(taxYear)}",
           config = dummyDesHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
