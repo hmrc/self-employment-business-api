@@ -24,7 +24,7 @@ case class AmendAnnualSubmissionBody(adjustments: Option[Adjustments], allowance
 object AmendAnnualSubmissionBody {
 
   implicit val reads: Reads[AmendAnnualSubmissionBody] = Json.reads[AmendAnnualSubmissionBody]
-  implicit def writes: OWrites[AmendAnnualSubmissionBody] = (
+  implicit val writes: OWrites[AmendAnnualSubmissionBody] = (
     (JsPath \ "annualAdjustments").writeNullable[Adjustments] and
       (JsPath \ "annualAllowances").writeNullable[Allowances] and
       (JsPath \ "annualNonFinancials").writeNullable[NonFinancials]
