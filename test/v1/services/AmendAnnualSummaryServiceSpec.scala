@@ -75,9 +75,15 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
           ("INVALID_TAX_YEAR", TaxYearFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
           ("INVALID_PAYLOAD", DownstreamError),
+          ("INVALID_CORRELATIONID", DownstreamError),
+          ("MISSING_EXEMPTION_REASON", DownstreamError),
+          ("MISSING_EXEMPTION_INDICATOR", DownstreamError),
+          ("ALLOWANCE_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+          ("NOT_FOUND", NotFoundError),
           ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
-          ("GONE", NotFoundError),
+          ("GONE", DownstreamError),
           ("SERVER_ERROR", DownstreamError),
+          ("BAD_GATEWAY", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)
         )
 
