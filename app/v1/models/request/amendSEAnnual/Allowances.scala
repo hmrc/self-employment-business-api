@@ -32,19 +32,7 @@ case class Allowances(
                        electricChargePointAllowance: Option[BigDecimal],
                        zeroEmissionsCarAllowance: Option[BigDecimal],
                        structuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]],
-                       enhancedStructuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]]) {
-
-  def isEmpty: Boolean = annualInvestmentAllowance.isEmpty &&
-    businessPremisesRenovationAllowance.isEmpty &&
-    capitalAllowanceMainPool.isEmpty &&
-    capitalAllowanceSpecialRatePool.isEmpty &&
-    zeroEmissionsGoodsVehicleAllowance.isEmpty &&
-    enhancedCapitalAllowance.isEmpty &&
-    allowanceOnSales.isEmpty &&
-    capitalAllowanceSingleAssetPool.isEmpty &&
-    tradingIncomeAllowance.isEmpty &&
-    electricChargePointAllowance.isEmpty
-}
+                       enhancedStructuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]])
 
 object Allowances {
   implicit val reads: Reads[Allowances] = Json.reads[Allowances]

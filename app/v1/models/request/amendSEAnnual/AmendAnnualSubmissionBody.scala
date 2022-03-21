@@ -19,13 +19,7 @@ package v1.models.request.amendSEAnnual
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class AmendAnnualSubmissionBody(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials]) {
-
-  def isEmpty: Boolean =
-    (adjustments.isEmpty && allowances.isEmpty && nonFinancials.isEmpty) ||
-      adjustments.exists(_.isEmpty) ||
-      allowances.exists(_.isEmpty)
-}
+case class AmendAnnualSubmissionBody(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials])
 
 object AmendAnnualSubmissionBody {
 

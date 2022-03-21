@@ -41,14 +41,15 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSub
   private def bodyFormatValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
     val baseValidation = List(JsonFormatValidation.validate[AmendAnnualSubmissionBody](data.body))
 
-    val  extraValidation: List[List[MtdError]] = {
-      data.body.asOpt[AmendAnnualSubmissionBody].map(_.isEmpty).map {
-        case true => List(List(RuleIncorrectOrEmptyBodyError))
-        case false => NoValidationErrors
-      }.getOrElse(NoValidationErrors)
-    }
+    // TODO use JsonFormatValidation.validateAndCheckNonEmpty[AmendAnnualSubmissionBody] which does not require isEmpty methods
+//    val  extraValidation: List[List[MtdError]] = {
+//      data.body.asOpt[AmendAnnualSubmissionBody].map(_.isEmpty).map {
+//        case true => List(List(RuleIncorrectOrEmptyBodyError))
+//        case false => NoValidationErrors
+//      }.getOrElse(NoValidationErrors)
+//    }
 
-    baseValidation ++ extraValidation
+    baseValidation // ++ extraValidation
   }
 
   private def bodyFieldValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>

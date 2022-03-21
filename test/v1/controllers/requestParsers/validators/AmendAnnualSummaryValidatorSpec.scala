@@ -144,6 +144,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
         """{}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
+/*
       "an empty adjustments is submitted" in {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
         """{"adjustments": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
@@ -152,7 +153,6 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
         """{"allowances": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
-/*
       "an empty nonFinancials is submitted" in {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
         """{"nonFinancials": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)

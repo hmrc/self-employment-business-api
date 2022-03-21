@@ -26,17 +26,7 @@ case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                        outstandingBusinessIncome: Option[BigDecimal],
                        balancingChargeBpra: Option[BigDecimal],
                        balancingChargeOther: Option[BigDecimal],
-                       goodsAndServicesOwnUse: Option[BigDecimal]) {
-  def isEmpty: Boolean = includedNonTaxableProfits.isEmpty &&
-      basisAdjustment.isEmpty &&
-      overlapReliefUsed.isEmpty &&
-      accountingAdjustment.isEmpty &&
-      averagingAdjustment.isEmpty &&
-      outstandingBusinessIncome.isEmpty &&
-      balancingChargeBpra.isEmpty &&
-      balancingChargeOther.isEmpty &&
-      goodsAndServicesOwnUse.isEmpty
-}
+                       goodsAndServicesOwnUse: Option[BigDecimal])
 
 object Adjustments {
   implicit val format: Format[Adjustments] = Json.format[Adjustments]
