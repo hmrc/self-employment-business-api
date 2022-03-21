@@ -20,7 +20,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.domain.DesTaxYear
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 import v1.connectors.httpparsers.StandardDesHttpParser._
@@ -30,7 +30,7 @@ import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
                                             val appConfig: AppConfig) extends BaseDesConnector {
 
-  def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
+  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     correlationId: String): Future[DesOutcome[AmendAnnualSummaryResponse]] = {

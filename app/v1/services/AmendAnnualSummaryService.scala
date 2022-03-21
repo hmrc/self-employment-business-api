@@ -25,7 +25,7 @@ import v1.connectors.AmendAnnualSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 import v1.support.DesResponseMappingSupport
 
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
+  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     logContext: EndpointLogContext,

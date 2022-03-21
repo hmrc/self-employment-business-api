@@ -19,7 +19,7 @@ package v1.models.response.retrieveSEAnnual
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.ex.MtdNicExemption
 import v1.models.hateoas.{Link, Method}
 
 class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
@@ -84,7 +84,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |  },
       |  "nonFinancials": {
       |    "class4NicInfo": {
-      |      "exemptionCode": "001 - Non Resident"
+      |      "exemptionCode": "non-resident"
       |    }
       |  }
       |}
@@ -100,7 +100,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25),
       Some(500.25), Some(500.25), Some(500.25)
     )),
-    Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
+    Some(NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.`non-resident`)))))
   )
 
   "reads" should {

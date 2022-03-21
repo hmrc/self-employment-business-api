@@ -24,11 +24,10 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockAmendAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.Nino
-import v1.models.domain.ex.MtdEx
 import v1.models.errors._
-import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.{DELETE, GET, PUT}
 import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
+import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
 import v1.models.response.amendSEAnnual.{AmendAnnualSummaryHateoasData, AmendAnnualSummaryResponse}
@@ -110,11 +109,7 @@ class AmendAnnualSummaryControllerSpec
     """.stripMargin
   )
 
-  private val requestBody = AmendAnnualSummaryBody(
-    Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-    Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99),  Some(11.11))),
-    Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
-  )
+  private val requestBody = AmendAnnualSubmissionBody(None, None, None)
 
   val responseJson: JsValue = Json.parse(
     s"""
@@ -144,8 +139,8 @@ class AmendAnnualSummaryControllerSpec
     transactionReference = "2017090920170909"
   )
 
-  private val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, requestJson)
-  private val requestData = AmendAnnualSummaryRequest(Nino(nino), businessId, taxYear, requestBody)
+  private val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
+  private val requestData = AmendAnnualSubmissionRequest(Nino(nino), businessId, taxYear, requestBody)
 
   "handleRequest" should {
     "return Ok" when {

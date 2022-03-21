@@ -19,7 +19,7 @@ package v1.connectors
 import mocks.MockAppConfig
 import v1.mocks.MockHttpClient
 import v1.models.domain.{DesTaxYear, Nino}
-import v1.models.domain.ex.MtdEx._
+import v1.models.domain.ex.MtdNicExemption._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
 import v1.models.response.retrieveSEAnnual._
@@ -63,7 +63,7 @@ class RetrieveSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
     )),
     Some(NonFinancials(
       Some(Class4NicInfo(
-        Some(`001 - Non Resident`)
+        Some(`non-resident`)
       ))
     ))
   )

@@ -18,7 +18,7 @@ package v1.models.response.retrieveSEAnnual
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.ex.MtdNicExemption
 
 class NonFinancialsSpec extends UnitSpec {
 
@@ -26,13 +26,13 @@ class NonFinancialsSpec extends UnitSpec {
     """
       |{
       |  "class4NicInfo": {
-      |    "exemptionCode": "001 - Non Resident"
+      |    "exemptionCode": "non-resident"
       |  }
       |}
     """.stripMargin
   )
 
-  val model: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))
+  val model: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.`non-resident`))))
 
   "writes" should {
     "return json" when {

@@ -19,25 +19,30 @@ package v1.models.request.amendSEAnnual
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
-                      businessPremisesRenovationAllowance: Option[BigDecimal],
-                      capitalAllowanceMainPool: Option[BigDecimal],
-                      capitalAllowanceSpecialRatePool: Option[BigDecimal],
-                      zeroEmissionGoodsVehicleAllowance: Option[BigDecimal],
-                      enhancedCapitalAllowance: Option[BigDecimal],
-                      allowanceOnSales: Option[BigDecimal],
-                      capitalAllowanceSingleAssetPool: Option[BigDecimal],
-                      tradingAllowance: Option[BigDecimal],
-                      electricChargePointAllowance: Option[BigDecimal]) {
+case class Allowances(
+                       annualInvestmentAllowance: Option[BigDecimal],
+                       businessPremisesRenovationAllowance: Option[BigDecimal],
+                       capitalAllowanceMainPool: Option[BigDecimal],
+                       capitalAllowanceSpecialRatePool: Option[BigDecimal],
+                       zeroEmissionsGoodsVehicleAllowance: Option[BigDecimal],
+                       enhancedCapitalAllowance: Option[BigDecimal],
+                       allowanceOnSales: Option[BigDecimal],
+                       capitalAllowanceSingleAssetPool: Option[BigDecimal],
+                       tradingIncomeAllowance: Option[BigDecimal],
+                       electricChargePointAllowance: Option[BigDecimal],
+                       zeroEmissionsCarAllowance: Option[BigDecimal],
+                       structuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]],
+                       enhancedStructuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]]) {
+
   def isEmpty: Boolean = annualInvestmentAllowance.isEmpty &&
     businessPremisesRenovationAllowance.isEmpty &&
     capitalAllowanceMainPool.isEmpty &&
     capitalAllowanceSpecialRatePool.isEmpty &&
-    zeroEmissionGoodsVehicleAllowance.isEmpty &&
+    zeroEmissionsGoodsVehicleAllowance.isEmpty &&
     enhancedCapitalAllowance.isEmpty &&
     allowanceOnSales.isEmpty &&
     capitalAllowanceSingleAssetPool.isEmpty &&
-    tradingAllowance.isEmpty &&
+    tradingIncomeAllowance.isEmpty &&
     electricChargePointAllowance.isEmpty
 }
 
@@ -53,6 +58,9 @@ object Allowances {
       (JsPath \ "allowanceOnSales").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceSingleAssetPool").writeNullable[BigDecimal] and
       (JsPath \ "tradingIncomeAllowance").writeNullable[BigDecimal] and
-      (JsPath \ "electricChargePointAllowance").writeNullable[BigDecimal]
+      (JsPath \ "electricChargePointAllowance").writeNullable[BigDecimal] and
+      (JsPath \ "zeroEmissionsCarAllowance").writeNullable[BigDecimal] and
+      (JsPath \ "structuredBuildingAllowance").writeNullable[Seq[StructuredBuildingAllowance]] and
+      (JsPath \ "enhancedStructuredBuildingAllowance").writeNullable[Seq[StructuredBuildingAllowance]]
     ) (unlift(Allowances.unapply))
 }

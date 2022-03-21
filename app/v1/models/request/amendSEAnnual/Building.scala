@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrieveSEAnnual
+package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
-case class Class4NicInfo(exemptionCode: Option[MtdNicExemption])
+case class Building(name: Option[String],
+                    number: Option[String],
+                    postcode: String)
 
-object Class4NicInfo {
-  implicit val reads: Reads[Class4NicInfo] =
-      (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd)).map {
-        case exemptionReason => Class4NicInfo(exemptionReason)
-      }
-  implicit val writes: OWrites[Class4NicInfo] = Json.writes[Class4NicInfo]
+object Building {
+  implicit val reads: Reads[Building] = Json.reads[Building]
+
+  implicit val writes: Writes[Building] = (
+    (JsPath \ "name").writeNullable[String] and
+      (JsPath \ "number").writeNullable[String] and
+      (JsPath \ "postCode").write[String]
+    ) (unlift(Building.unapply))
 }
+

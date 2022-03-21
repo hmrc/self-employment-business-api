@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrieveSEAnnual
+package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
+import v1.models.domain.Nino
 
-case class Class4NicInfo(exemptionCode: Option[MtdNicExemption])
-
-object Class4NicInfo {
-  implicit val reads: Reads[Class4NicInfo] =
-      (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd)).map {
-        case exemptionReason => Class4NicInfo(exemptionReason)
-      }
-  implicit val writes: OWrites[Class4NicInfo] = Json.writes[Class4NicInfo]
-}
+case class AmendAnnualSubmissionRequest(nino: Nino, businessId: String, taxYear: String, body: AmendAnnualSubmissionBody)

@@ -16,115 +16,60 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import support.UnitSpec
 
 class AdjustmentsSpec extends UnitSpec {
 
-  val fullMtdModel: Adjustments =
-    Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(7.77), Some(8.88), Some(9.99), Some(10.10))
-  val partialMtdModel: Adjustments = Adjustments(Some(1.11), None, Some(3.33), None, None, Some(7.77), None, Some(9.99), None)
-  val emptyMtdModel: Adjustments = Adjustments(None, None, None, None, None, None, None, None, None)
+  val model: Adjustments =
+    Adjustments(
+      includedNonTaxableProfits = Some(1.12),
+      basisAdjustment = Some(2.12),
+      overlapReliefUsed = Some(3.12),
+      accountingAdjustment = Some(4.12),
+      averagingAdjustment = Some(5.12),
+      outstandingBusinessIncome = Some(6.12),
+      balancingChargeBpra = Some(7.12),
+      balancingChargeOther = Some(8.12),
+      goodsAndServicesOwnUse = Some(9.12))
 
-  "reads" should {
-
-    "read from JSON" when {
-
-      val fullRequestJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "includedNonTaxableProfits": 1.11,
-           |  "basisAdjustment": 2.22,
-           |  "overlapReliefUsed": 3.33,
-           |  "accountingAdjustment": 4.44,
-           |  "averagingAdjustment": 5.55,
-           |  "outstandingBusinessIncome": 7.77,
-           |  "balancingChargeBPRA": 8.88,
-           |  "balancingChargeOther": "9.99",
-           |  "goodsAndServicesOwnUse": "10.10"
-           |}
-           |""".stripMargin)
-
-      val partialRequestJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "includedNonTaxableProfits": 1.11,
-           |  "overlapReliefUsed": 3.33,
-           |  "outstandingBusinessIncome": 7.77,
-           |  "balancingChargeOther": "9.99"
-           |}
-           |""".stripMargin)
-
-      val emptyRequestJson: JsValue = Json.parse(
-        s"""
-           |{
-           |
-           |}
-           |""".stripMargin)
-
-      "a valid request with all data is made" in {
-        fullRequestJson.as[Adjustments] shouldBe fullMtdModel
+  "reads" when {
+    "passed valid mtd JSON" should {
+      "return the model" in {
+        Json.parse(
+          s"""{
+             |  "includedNonTaxableProfits": 1.12,
+             |  "basisAdjustment": 2.12,
+             |  "overlapReliefUsed": 3.12,
+             |  "accountingAdjustment": 4.12,
+             |  "averagingAdjustment": 5.12,
+             |  "outstandingBusinessIncome": 6.12,
+             |  "balancingChargeBpra": 7.12,
+             |  "balancingChargeOther": 8.12,
+             |  "goodsAndServicesOwnUse": 9.12
+             |}
+             |""".stripMargin).as[Adjustments] shouldBe model
       }
-
-      "a valid request with some data is made" in {
-        partialRequestJson.as[Adjustments] shouldBe partialMtdModel
-      }
-
-      "a valid request with no data is made" in {
-        emptyRequestJson.as[Adjustments] shouldBe emptyMtdModel
-      }
-
     }
   }
 
-  "Writes" should {
-
-    "write to des" when{
-
-      val fullDesJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "includedNonTaxableProfits": 1.11,
-           |  "basisAdjustment": 2.22,
-           |  "overlapReliefUsed": 3.33,
-           |  "accountingAdjustment": 4.44,
-           |  "averagingAdjustment": 5.55,
-           |  "outstandingBusinessIncome": 7.77,
-           |  "balancingChargeBpra": 8.88,
-           |  "balancingChargeOther": 9.99,
-           |  "goodsAndServicesOwnUse": 10.10
-           |}
-           |""".stripMargin)
-
-      val partialDesJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "includedNonTaxableProfits": 1.11,
-           |  "overlapReliefUsed": 3.33,
-           |  "outstandingBusinessIncome": 7.77,
-           |  "balancingChargeOther": 9.99
-           |}
-           |""".stripMargin)
-
-      val emptyDesJson: JsValue = Json.parse(
-        s"""
-           |{
-           |
-           |}
-           |""".stripMargin)
-
-      "a valid request is made with full body" in {
-        Json.toJson(fullMtdModel) shouldBe fullDesJson
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe Json.parse(
+          s"""{
+             |  "includedNonTaxableProfits": 1.12,
+             |  "basisAdjustment": 2.12,
+             |  "overlapReliefUsed": 3.12,
+             |  "accountingAdjustment": 4.12,
+             |  "averagingAdjustment": 5.12,
+             |  "outstandingBusinessIncome": 6.12,
+             |  "balancingChargeBpra": 7.12,
+             |  "balancingChargeOther": 8.12,
+             |  "goodsAndServicesOwnUse": 9.12
+             |}
+             |""".stripMargin)
       }
-
-      "a valid request is made with partial body" in {
-        Json.toJson(partialMtdModel) shouldBe partialDesJson
-      }
-
-      "a valid request is made with empty body" in {
-        Json.toJson(emptyMtdModel) shouldBe emptyDesJson
-      }
-
     }
   }
 }

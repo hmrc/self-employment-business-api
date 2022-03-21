@@ -24,7 +24,7 @@ import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
 import v1.services.{ AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
 
@@ -52,7 +52,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, request.body)
+      val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, request.body)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))

@@ -19,7 +19,7 @@ package v1.services
 import v1.controllers.EndpointLogContext
 import v1.models.domain.Nino
 import v1.mocks.connectors.MockRetrieveSelfEmploymentAnnualSummaryConnector
-import v1.models.domain.ex.MtdEx._
+import v1.models.domain.ex.MtdNicExemption._
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
@@ -57,7 +57,7 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
       Some(100.25),
       Some(100.25)
     )),
-    Some(NonFinancials(Some(Class4NicInfo(Some(`001 - Non Resident`)))))
+    Some(NonFinancials(Some(Class4NicInfo(Some(`non-resident`)))))
   )
 
   private val requestData = RetrieveSelfEmploymentAnnualSummaryRequest(

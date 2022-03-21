@@ -20,9 +20,8 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
 import v1.models.domain.{DesTaxYear, Nino}
-import v1.models.domain.ex.MtdEx
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
+import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequest}
 
 import scala.concurrent.Future
 
@@ -32,15 +31,11 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
   val taxYear: String = "2018-19"
   val businessId: String = "XAIS12345678910"
 
-  val request: AmendAnnualSummaryRequest = AmendAnnualSummaryRequest(
+  val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
     businessId = businessId,
     taxYear = taxYear,
-    body = AmendAnnualSummaryBody(
-      Some(Adjustments(Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))),
-      Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
-    )
+    body = AmendAnnualSubmissionBody(None, None, None)
   )
 
   class Test extends MockHttpClient with MockAppConfig {

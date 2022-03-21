@@ -16,58 +16,22 @@
 
 package v1.controllers.requestParsers
 
-import play.api.libs.json.Json
 import support.UnitSpec
 import v1.mocks.validators.MockAmendSelfEmploymentAnnualSummaryValidator
 import v1.models.domain.Nino
 import v1.models.errors._
-import v1.models.domain.ex.MtdEx._
 import v1.models.request.amendSEAnnual._
 
-class AmendAnnualSummaryRequestParserSpec extends UnitSpec {
+class AmendAnnualSummaryRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
 
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val taxYear: String = "2019-20"
   implicit val correlationId: String = "X-123"
 
-  private val requestBodyJson = Json.parse(
-    """
-      |{
-      |   "adjustments": {
-      |        "includedNonTaxableProfits": 216.12,
-      |        "basisAdjustment": 626.53,
-      |        "overlapReliefUsed": 153.89,
-      |        "accountingAdjustment": 514.24,
-      |        "averagingAdjustment": 124.98,
-      |        "outstandingBusinessIncome": 751.03,
-      |        "balancingChargeBPRA": 719.23,
-      |        "balancingChargeOther": 956.47,
-      |        "goodsAndServicesOwnUse": 157.43
-      |    },
-      |    "allowances": {
-      |        "annualInvestmentAllowance": 561.32,
-      |        "businessPremisesRenovationAllowance": 198.45,
-      |        "capitalAllowanceMainPool": 825.34,
-      |        "capitalAllowanceSpecialRatePool": 647.12,
-      |        "zeroEmissionGoodsVehicleAllowance": 173.64,
-      |        "enhancedCapitalAllowance": 115.98,
-      |        "allowanceOnSales": 548.15,
-      |        "capitalAllowanceSingleAssetPool": 901.67,
-      |        "tradingAllowance": 521.34,
-      |        "electricChargePointAllowance": "658.11"
-      |    },
-      |    "nonFinancials": {
-      |        "class4NicInfo":{
-      |            "isExempt": true,
-      |            "exemptionCode": "002 - Trustee"
-      |        }
-      |    }
-      |}
-    """.stripMargin
-  )
+  private val requestBodyJson = amendAnnualSubmissionBodyMtdJson()
 
-  val inputData: AmendAnnualSummaryRawData = AmendAnnualSummaryRawData(
+  val inputData: AmendAnnualSubmissionRawData = AmendAnnualSubmissionRawData(
     nino = nino,
     businessId = businessId,
     taxYear = taxYear,
@@ -83,39 +47,10 @@ class AmendAnnualSummaryRequestParserSpec extends UnitSpec {
       "valid request data is supplied" in new Test {
         MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData).returns(Nil)
 
-        val amendAnnualSummaryRequestBody: AmendAnnualSummaryBody = AmendAnnualSummaryBody(
-          Some(Adjustments(
-            Some(216.12),
-            Some(626.53),
-            Some(153.89),
-            Some(514.24),
-            Some(124.98),
-            Some(751.03),
-            Some(719.23),
-            Some(956.47),
-            Some(157.43)
-          )),
-          Some(Allowances(
-            Some(561.32),
-            Some(198.45),
-            Some(825.34),
-            Some(647.12),
-            Some(173.64),
-            Some(115.98),
-            Some(548.15),
-            Some(901.67),
-            Some(521.34),
-            Some(658.11)
-          )),
-          Some(NonFinancials(
-            Some(Class4NicInfo(
-              Some(`002 - Trustee`)
-            ))
-          ))
-        )
+        val amendAnnualSummaryRequestBody: AmendAnnualSubmissionBody = amendAnnualSubmissionBody()
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendAnnualSummaryRequest(Nino(nino), businessId, taxYear, amendAnnualSummaryRequestBody))
+          Right(AmendAnnualSubmissionRequest(Nino(nino), businessId, taxYear, amendAnnualSummaryRequestBody))
       }
     }
 

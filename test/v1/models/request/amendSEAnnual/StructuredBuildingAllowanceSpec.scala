@@ -16,7 +16,24 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.JsValue
-import v1.models.request.RawData
+import play.api.libs.json.Json
+import support.UnitSpec
 
-case class AmendAnnualSummaryRawData(nino: String, businessId: String, taxYear: String, body: JsValue) extends RawData
+class StructuredBuildingAllowanceSpec extends UnitSpec with StructuredBuildingAllowanceFixture {
+
+  "reads" when {
+    "passed a valid JSON" should {
+      "return the model" in {
+        structuredBuildingAllowanceMtdJson.as[StructuredBuildingAllowance] shouldBe structuredBuildingAllowance
+      }
+    }
+  }
+
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(structuredBuildingAllowance) shouldBe structuredBuildingAllowanceDownstreamJson
+      }
+    }
+  }
+}

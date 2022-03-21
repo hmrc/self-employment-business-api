@@ -16,8 +16,7 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Format, Json}
 
 case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                        basisAdjustment: Option[BigDecimal],
@@ -25,7 +24,7 @@ case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                        accountingAdjustment: Option[BigDecimal],
                        averagingAdjustment: Option[BigDecimal],
                        outstandingBusinessIncome: Option[BigDecimal],
-                       balancingChargeBPRA: Option[BigDecimal],
+                       balancingChargeBpra: Option[BigDecimal],
                        balancingChargeOther: Option[BigDecimal],
                        goodsAndServicesOwnUse: Option[BigDecimal]) {
   def isEmpty: Boolean = includedNonTaxableProfits.isEmpty &&
@@ -34,22 +33,11 @@ case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
       accountingAdjustment.isEmpty &&
       averagingAdjustment.isEmpty &&
       outstandingBusinessIncome.isEmpty &&
-      balancingChargeBPRA.isEmpty &&
+      balancingChargeBpra.isEmpty &&
       balancingChargeOther.isEmpty &&
       goodsAndServicesOwnUse.isEmpty
 }
 
 object Adjustments {
-  implicit val reads: Reads[Adjustments] = Json.reads[Adjustments]
-  implicit val writes: OWrites[Adjustments] = (
-    (JsPath \ "includedNonTaxableProfits").writeNullable[BigDecimal] and
-      (JsPath \ "basisAdjustment").writeNullable[BigDecimal] and
-      (JsPath \ "overlapReliefUsed").writeNullable[BigDecimal] and
-      (JsPath \ "accountingAdjustment").writeNullable[BigDecimal] and
-      (JsPath \ "averagingAdjustment").writeNullable[BigDecimal] and
-      (JsPath \ "outstandingBusinessIncome").writeNullable[BigDecimal] and
-      (JsPath \ "balancingChargeBpra").writeNullable[BigDecimal] and
-      (JsPath \ "balancingChargeOther").writeNullable[BigDecimal] and
-      (JsPath \ "goodsAndServicesOwnUse").writeNullable[BigDecimal]
-    ) (unlift(Adjustments.unapply))
+  implicit val format: Format[Adjustments] = Json.format[Adjustments]
 }

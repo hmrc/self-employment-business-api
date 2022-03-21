@@ -14,42 +14,39 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrieveSEAnnual
+package v1.models.request.amendSEAnnual
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.ex.MtdNicExemption
 
-class Class4NicInfoSpec extends UnitSpec {
-  val desJson: JsValue = Json.parse(
+class FirstYearSpec extends UnitSpec {
+
+  val model: FirstYear =
+    FirstYear(
+        "2020-01-01",
+        3000.40
+      )
+
+  val json: JsValue = Json.parse(
     """
       |{
-      |  "exemptFromPayingClass4Nics": true,
-      |  "class4NicsExemptionReason": "001"
+      |  "qualifyingDate": "2020-01-01",
+      |  "qualifyingAmountExpenditure": 3000.40
       |}
       |""".stripMargin)
 
-  val mtdJson: JsValue = Json.parse(
-    """
-      |{
-      |  "exemptionCode": "non-resident"
-      |}
-      |""".stripMargin)
-
-  val model: Class4NicInfo = Class4NicInfo(Some(MtdNicExemption.`non-resident`))
-
-  "reads" should {
-    "return a model" when {
-      "passed valid json" in {
-        desJson.as[Class4NicInfo] shouldBe model
+  "reads" when {
+    "passed a valid JSON" should {
+      "return the model" in {
+        json.as[FirstYear] shouldBe model
       }
     }
   }
 
-  "writes" should {
-    "return json" when {
-      "passed a model" in {
-        Json.toJson(model) shouldBe mtdJson
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe json
       }
     }
   }

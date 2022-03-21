@@ -16,6 +16,11 @@
 
 package v1.models.request.amendSEAnnual
 
-import v1.models.domain.Nino
+import play.api.libs.json.{Json, OFormat}
 
-case class AmendAnnualSummaryRequest(nino: Nino, businessId: String, taxYear: String, body: AmendAnnualSummaryBody)
+case class FirstYear(qualifyingDate: String,
+                     qualifyingAmountExpenditure: BigDecimal)
+
+object FirstYear {
+  implicit val format: OFormat[FirstYear] = Json.format[FirstYear]
+}

@@ -24,9 +24,10 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.domain.DesTaxYear
 import v1.models.errors._
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
 import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
 
-class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
+class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec with AmendAnnualSubmissionFixture {
 
   private trait Test {
 
@@ -34,41 +35,7 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
     val businessId: String = "XAIS12345678910"
     val taxYear: String = "2021-22"
 
-    val requestBodyJson: JsValue = Json.parse(
-      s"""
-         |{
-         |   "adjustments": {
-         |        "includedNonTaxableProfits": 1.11,
-         |        "basisAdjustment": 2.22,
-         |        "overlapReliefUsed": 3.33,
-         |        "accountingAdjustment": 4.44,
-         |        "averagingAdjustment": 5.55,
-         |        "outstandingBusinessIncome": 7.77,
-         |        "balancingChargeBPRA": 8.88,
-         |        "balancingChargeOther": 9.99,
-         |        "goodsAndServicesOwnUse": 10.10
-         |    },
-         |    "allowances": {
-         |        "annualInvestmentAllowance": 1.11,
-         |        "businessPremisesRenovationAllowance": 2.22,
-         |        "capitalAllowanceMainPool": 3.33,
-         |        "capitalAllowanceSpecialRatePool": 4.44,
-         |        "zeroEmissionGoodsVehicleAllowance": 5.55,
-         |        "enhancedCapitalAllowance": 6.66,
-         |        "allowanceOnSales": 7.77,
-         |        "capitalAllowanceSingleAssetPool": 8.88,
-         |        "tradingAllowance": 9.99,
-         |        "electricChargePointAllowance": 11.11
-         |    },
-         |    "nonFinancials": {
-         |        "class4NicInfo":{
-         |            "isExempt": true,
-         |            "exemptionCode": "001 - Non Resident"
-         |        }
-         |    }
-         |}
-         |""".stripMargin
-    )
+    val requestBodyJson: JsValue = amendAnnualSubmissionBodyMtdJson()
 
     val responseBody: JsValue = Json.parse(
       s"""
@@ -140,170 +107,6 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec {
     }
 
     "return error according to spec" when {
-
-      "validation error" when {
-        "an invalid NINO is provided" in new Test {
-          override val nino: String = "INVALID_NINO"
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(NinoFormatError)
-        }
-        "an invalid taxYear is provided" in new Test {
-          override val taxYear: String = "INVALID_TAXYEAR"
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(TaxYearFormatError)
-        }
-        "a single invalid amount is provided" in new Test {
-          override val requestBodyJson: JsValue = Json.parse(
-            s"""
-               |{
-               |   "adjustments": {
-               |        "includedNonTaxableProfits": 1.11,
-               |        "basisAdjustment": 2.22,
-               |        "overlapReliefUsed": 3.33,
-               |        "accountingAdjustment": 4.44,
-               |        "averagingAdjustment": 5.55,
-               |        "outstandingBusinessIncome": 7.77,
-               |        "balancingChargeBPRA": 8.88,
-               |        "balancingChargeOther": 9.99,
-               |        "goodsAndServicesOwnUse": 10.10
-               |    },
-               |    "allowances": {
-               |        "annualInvestmentAllowance": 1.11,
-               |        "businessPremisesRenovationAllowance": 2.22,
-               |        "capitalAllowanceMainPool": 3.33,
-               |        "capitalAllowanceSpecialRatePool": -4.44,
-               |        "zeroEmissionGoodsVehicleAllowance": 5.55,
-               |        "enhancedCapitalAllowance": 6.66,
-               |        "allowanceOnSales": 7.77,
-               |        "capitalAllowanceSingleAssetPool": 8.88,
-               |        "tradingAllowance": 9.99,
-               |        "electricChargePointAllowance": 11.11
-               |    },
-               |    "nonFinancials": {
-               |        "class4NicInfo":{
-               |            "isExempt": true,
-               |            "exemptionCode": "001 - Non Resident"
-               |        }
-               |    }
-               |}
-               |""".stripMargin
-          )
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSpecialRatePool"))))
-        }
-
-        "multiple invalid amounts are provided" in new Test {
-          override val requestBodyJson: JsValue = Json.parse(
-            s"""
-               |{
-               |   "adjustments": {
-               |        "includedNonTaxableProfits": 1.11,
-               |        "basisAdjustment": 2.22,
-               |        "overlapReliefUsed": 3.33,
-               |        "accountingAdjustment": 4.44,
-               |        "averagingAdjustment": -5.556543456,
-               |        "outstandingBusinessIncome": 7.77,
-               |        "balancingChargeBPRA": -8.88,
-               |        "balancingChargeOther": 9.99,
-               |        "goodsAndServicesOwnUse": 10.10
-               |    },
-               |    "allowances": {
-               |        "annualInvestmentAllowance": 1.11,
-               |        "businessPremisesRenovationAllowance": 2.22,
-               |        "capitalAllowanceMainPool": 3.33,
-               |        "capitalAllowanceSpecialRatePool": -4.44,
-               |        "zeroEmissionGoodsVehicleAllowance": 5.55,
-               |        "enhancedCapitalAllowance": 6.664365,
-               |        "allowanceOnSales": 7.77,
-               |        "capitalAllowanceSingleAssetPool": 8.88,
-               |        "tradingAllowance": 9.99,
-               |        "electricChargePointAllowance": 11.11
-               |    },
-               |    "nonFinancials": {
-               |        "class4NicInfo":{
-               |            "isExempt": true,
-               |            "exemptionCode": "001 - Non Resident"
-               |        }
-               |    }
-               |}
-               |""".stripMargin
-          )
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq(
-            "/adjustments/averagingAdjustment",
-            "/adjustments/balancingChargeBPRA",
-            "/allowances/capitalAllowanceSpecialRatePool",
-            "/allowances/enhancedCapitalAllowance"
-          ))))
-        }
-
-        "a taxYear with range of greater than a year is provided" in new Test {
-          override val taxYear: String = "2019-21"
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleTaxYearRangeInvalidError)
-        }
-
-        "a taxYear below 2017-18 is provided" in new Test {
-          override val taxYear: String = "2016-17"
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleTaxYearNotSupportedError)
-        }
-
-        "an empty body is provided" in new Test {
-          override val requestBodyJson: JsValue = Json.parse("""{}""")
-
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().put(requestBodyJson))
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError)
-        }
-      }
 
       "des service error" when {
         def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {

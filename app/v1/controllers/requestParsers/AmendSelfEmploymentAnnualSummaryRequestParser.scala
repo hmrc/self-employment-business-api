@@ -19,11 +19,11 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSummaryValidator
 import v1.models.domain.Nino
-import v1.models.request.amendSEAnnual.{AmendAnnualSummaryBody, AmendAnnualSummaryRawData, AmendAnnualSummaryRequest}
+import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest}
 
 class AmendSelfEmploymentAnnualSummaryRequestParser @Inject()(val validator: AmendSelfEmploymentAnnualSummaryValidator)
-  extends RequestParser[AmendAnnualSummaryRawData, AmendAnnualSummaryRequest] {
+  extends RequestParser[AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest] {
 
-  override protected def requestFor(data: AmendAnnualSummaryRawData): AmendAnnualSummaryRequest =
-    AmendAnnualSummaryRequest(Nino(data.nino), data.businessId, data.taxYear, data.body.as[AmendAnnualSummaryBody])
+  override protected def requestFor(data: AmendAnnualSubmissionRawData): AmendAnnualSubmissionRequest =
+    AmendAnnualSubmissionRequest(Nino(data.nino), data.businessId, data.taxYear, data.body.as[AmendAnnualSubmissionBody])
 }

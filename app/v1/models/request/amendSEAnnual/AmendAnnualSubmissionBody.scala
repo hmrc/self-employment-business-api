@@ -19,21 +19,20 @@ package v1.models.request.amendSEAnnual
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class AmendAnnualSummaryBody(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials]) {
+case class AmendAnnualSubmissionBody(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials]) {
+
   def isEmpty: Boolean =
     (adjustments.isEmpty && allowances.isEmpty && nonFinancials.isEmpty) ||
       adjustments.exists(_.isEmpty) ||
-      allowances.exists(_.isEmpty) ||
-      nonFinancials.exists(_.isEmpty)
+      allowances.exists(_.isEmpty)
 }
 
-object AmendAnnualSummaryBody {
+object AmendAnnualSubmissionBody {
 
-  implicit val reads: Reads[AmendAnnualSummaryBody] = Json.reads[AmendAnnualSummaryBody]
-  implicit val writes: OWrites[AmendAnnualSummaryBody] = (
+  implicit val reads: Reads[AmendAnnualSubmissionBody] = Json.reads[AmendAnnualSubmissionBody]
+  implicit def writes: OWrites[AmendAnnualSubmissionBody] = (
     (JsPath \ "annualAdjustments").writeNullable[Adjustments] and
       (JsPath \ "annualAllowances").writeNullable[Allowances] and
       (JsPath \ "annualNonFinancials").writeNullable[NonFinancials]
-    ) (unlift(AmendAnnualSummaryBody.unapply))
-//  an empty nonFinancials should be errored out as IncorrectOrEmptyBody so it ever has to write from NonFinancials(None) which will return a Null
+    ) (unlift(AmendAnnualSubmissionBody.unapply))
 }

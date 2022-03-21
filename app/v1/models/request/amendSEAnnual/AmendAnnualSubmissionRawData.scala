@@ -16,19 +16,7 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.domain.ex.{DesEx, MtdEx}
+import play.api.libs.json.JsValue
+import v1.models.request.RawData
 
-case class Class4NicInfo(exemptionCode: Option[MtdEx])
-
-object Class4NicInfo {
-
-  implicit val reads: Reads[Class4NicInfo] = Json.reads[Class4NicInfo]
-  implicit val writes: OWrites[Class4NicInfo] = (
-    (JsPath \ "exemptFromPayingClass4Nics").write[Boolean] and
-      (JsPath \ "class4NicsExemptionReason").writeNullable[DesEx]
-    ) (unlift(Class4NicInfo.unapply(_: Class4NicInfo).map {
-    case exemptionCode => (exemptionCode.isDefined, exemptionCode.map(_.toDes))
-  }))
-}
+case class AmendAnnualSubmissionRawData(nino: String, businessId: String, taxYear: String, body: JsValue) extends RawData
