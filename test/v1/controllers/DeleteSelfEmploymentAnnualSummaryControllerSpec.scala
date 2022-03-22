@@ -23,10 +23,10 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockDeleteSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockDeleteSelfEmploymentAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.{DeleteSelfEmploymentAnnualSummaryRawData, DeleteSelfEmploymentAnnualSummaryRequest}
+import v1.models.request.deleteSEAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -62,8 +62,8 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData = DeleteSelfEmploymentAnnualSummaryRawData(nino, businessId, taxYear)
-  private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear)
+  private val rawData = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
+  private val requestData = DeleteAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "handleRequest" should {
     "return NoContent" when {

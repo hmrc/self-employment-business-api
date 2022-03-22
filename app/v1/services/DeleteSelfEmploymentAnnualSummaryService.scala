@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DeleteSelfEmploymentAnnualSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeleteSelfEmploymentAnnualSummaryService @Inject()(deleteSelfEmploymentAnnualSummaryConnector: DeleteSelfEmploymentAnnualSummaryConnector)
   extends DesResponseMappingSupport with Logging {
 
-    def deleteSelfEmploymentAnnualSummary(request: DeleteSelfEmploymentAnnualSummaryRequest)(
+    def deleteSelfEmploymentAnnualSummary(request: DeleteAnnualSubmissionRequest)(
                                          implicit hc: HeaderCarrier,
                                          ec: ExecutionContext,
                                          logContext: EndpointLogContext,

@@ -23,7 +23,7 @@ import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.DeleteSelfEmploymentAnnualSummaryRequestParser
 import v1.models.errors._
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRawData
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
 import v1.services.{ DeleteSelfEmploymentAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
 
 import javax.inject.{ Inject, Singleton }
@@ -49,7 +49,7 @@ class DeleteSelfEmploymentAnnualSummaryController @Inject()(val authService: Enr
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = DeleteSelfEmploymentAnnualSummaryRawData(nino, businessId, taxYear)
+      val rawData = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))

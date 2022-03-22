@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DeleteSelfEmploymentAnnualSummaryConnector, DesOutcome}
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +31,9 @@ trait MockDeleteSelfEmploymentAnnualSummaryConnector extends MockFactory {
 
   object MockDeleteSelfEmploymentAnnualSummaryConnector {
 
-    def deleteSelfEmploymentAnnualSummary(requestData: DeleteSelfEmploymentAnnualSummaryRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+    def deleteSelfEmploymentAnnualSummary(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockDeleteSelfEmploymentAnnualSummaryConnector
-        .deleteSEAnnual(_: DeleteSelfEmploymentAnnualSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .deleteSEAnnual(_: DeleteAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
   }

@@ -18,10 +18,10 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockDeleteSelfEmploymentAnnualSummaryConnector
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.Future
 
@@ -32,10 +32,10 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
   val businessId: String = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(
+  private val requestData = DeleteAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
   trait Test extends MockDeleteSelfEmploymentAnnualSummaryConnector {

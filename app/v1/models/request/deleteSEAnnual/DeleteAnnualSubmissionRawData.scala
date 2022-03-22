@@ -16,6 +16,6 @@
 
 package v1.models.request.deleteSEAnnual
 
-import v1.models.domain.Nino
+import v1.models.request.RawData
 
-case class DeleteSelfEmploymentAnnualSummaryRequest(nino: Nino, businessId: String, taxYear: String)
+case class DeleteAnnualSubmissionRawData(nino: String, businessId: String, taxYear: String) extends RawData

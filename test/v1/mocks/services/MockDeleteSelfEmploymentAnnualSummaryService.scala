@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
 import v1.services.DeleteSelfEmploymentAnnualSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,9 +33,9 @@ trait MockDeleteSelfEmploymentAnnualSummaryService extends MockFactory {
 
   object MockDeleteSelfEmploymentAnnualSummaryService {
 
-    def delete(requestData: DeleteSelfEmploymentAnnualSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def delete(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteSelfEmploymentAnnualSummaryService
-        .deleteSelfEmploymentAnnualSummary(_: DeleteSelfEmploymentAnnualSummaryRequest)(_:HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .deleteSelfEmploymentAnnualSummary(_: DeleteAnnualSubmissionRequest)(_:HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
   }

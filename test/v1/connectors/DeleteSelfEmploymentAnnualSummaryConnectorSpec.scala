@@ -19,9 +19,9 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.Future
 
@@ -32,10 +32,10 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
-  val request: DeleteSelfEmploymentAnnualSummaryRequest = DeleteSelfEmploymentAnnualSummaryRequest(
+  val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
   class Test extends MockHttpClient with MockAppConfig {

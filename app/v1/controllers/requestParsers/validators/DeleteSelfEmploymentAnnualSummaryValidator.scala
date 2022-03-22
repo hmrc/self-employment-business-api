@@ -18,17 +18,17 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations.{BusinessIdValidation, NinoValidation, TaxYearNotSupportedValidation, TaxYearValidation}
 import v1.models.errors.MtdError
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRawData
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
 
-class DeleteSelfEmploymentAnnualSummaryValidator extends Validator[DeleteSelfEmploymentAnnualSummaryRawData] {
+class DeleteSelfEmploymentAnnualSummaryValidator extends Validator[DeleteAnnualSubmissionRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
 
-  override def validate(data: DeleteSelfEmploymentAnnualSummaryRawData): List[MtdError] = {
+  override def validate(data: DeleteAnnualSubmissionRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
 
-  private def parameterFormatValidation: DeleteSelfEmploymentAnnualSummaryRawData => List[List[MtdError]] = (data: DeleteSelfEmploymentAnnualSummaryRawData) => {
+  private def parameterFormatValidation: DeleteAnnualSubmissionRawData => List[List[MtdError]] = (data: DeleteAnnualSubmissionRawData) => {
     List(
       NinoValidation.validate(data.nino),
       BusinessIdValidation.validate(data.businessId),
@@ -36,7 +36,7 @@ class DeleteSelfEmploymentAnnualSummaryValidator extends Validator[DeleteSelfEmp
     )
   }
 
-  private def parameterRuleValidation: DeleteSelfEmploymentAnnualSummaryRawData => List[List[MtdError]] = (data: DeleteSelfEmploymentAnnualSummaryRawData) => {
+  private def parameterRuleValidation: DeleteAnnualSubmissionRawData => List[List[MtdError]] = (data: DeleteAnnualSubmissionRawData) => {
     List(
       TaxYearNotSupportedValidation.validate(data.taxYear)
     )

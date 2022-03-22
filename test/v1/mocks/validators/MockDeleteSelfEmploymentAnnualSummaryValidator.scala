@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.DeleteSelfEmploymentAnnualSummaryValidator
 import v1.models.errors.MtdError
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRawData
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
 
 trait MockDeleteSelfEmploymentAnnualSummaryValidator extends MockFactory {
 
@@ -28,9 +28,9 @@ trait MockDeleteSelfEmploymentAnnualSummaryValidator extends MockFactory {
 
   object MockDeleteSelfEmploymentAnnualSummaryValidator {
 
-    def validate(data: DeleteSelfEmploymentAnnualSummaryRawData): CallHandler1[DeleteSelfEmploymentAnnualSummaryRawData, List[MtdError]] = {
+    def validate(data: DeleteAnnualSubmissionRawData): CallHandler1[DeleteAnnualSubmissionRawData, List[MtdError]] = {
       (mockDeleteSelfEmploymentAnnualSummaryValidator
-        .validate(_: DeleteSelfEmploymentAnnualSummaryRawData))
+        .validate(_: DeleteAnnualSubmissionRawData))
         .expects(data)
     }
   }

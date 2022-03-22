@@ -18,12 +18,12 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.DeleteSelfEmploymentAnnualSummaryValidator
-import v1.models.domain.Nino
-import v1.models.request.deleteSEAnnual.{DeleteSelfEmploymentAnnualSummaryRawData, DeleteSelfEmploymentAnnualSummaryRequest}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
+import v1.models.request.deleteSEAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
 class DeleteSelfEmploymentAnnualSummaryRequestParser @Inject()(val validator: DeleteSelfEmploymentAnnualSummaryValidator)
-  extends RequestParser[DeleteSelfEmploymentAnnualSummaryRawData, DeleteSelfEmploymentAnnualSummaryRequest] {
+  extends RequestParser[DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest] {
 
-  override protected def requestFor(data: DeleteSelfEmploymentAnnualSummaryRawData): DeleteSelfEmploymentAnnualSummaryRequest =
-    DeleteSelfEmploymentAnnualSummaryRequest(Nino(data.nino), data.businessId, data.taxYear)
+  override protected def requestFor(data: DeleteAnnualSubmissionRawData): DeleteAnnualSubmissionRequest =
+    DeleteAnnualSubmissionRequest(Nino(data.nino), BusinessId(data.businessId), TaxYear.fromMtd(data.taxYear))
 }

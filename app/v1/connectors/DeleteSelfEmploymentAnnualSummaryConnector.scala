@@ -17,28 +17,30 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.domain.TaxYear
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRequest
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
                                                            val appConfig: AppConfig) extends BaseDesConnector {
 
-  def deleteSEAnnual(request: DeleteSelfEmploymentAnnualSummaryRequest)(
+  def deleteSEAnnual(request: DeleteAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     correlationId: String): Future[DesOutcome[Unit]] = {
 
+    val nino = request.nino.nino
+    val taxYear = request.taxYear.toDownstream
+    val businessId = request.businessId.value
+
     put(
       body = """{}""",
       DesUri[Unit](
-        s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${TaxYear.fromMtd(request.taxYear).toDownstream}"
+        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$taxYear"
       )
     )
   }

@@ -18,9 +18,9 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import v1.mocks.validators.MockDeleteSelfEmploymentAnnualSummaryValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import v1.models.request.deleteSEAnnual.{DeleteSelfEmploymentAnnualSummaryRawData, DeleteSelfEmploymentAnnualSummaryRequest}
+import v1.models.request.deleteSEAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
 class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
 
@@ -29,7 +29,7 @@ class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
   val taxYear: String = "2017-18"
   implicit val correlationId: String = "X-123"
 
-  val deleteSelfEmploymentAnnualSummaryRawData: DeleteSelfEmploymentAnnualSummaryRawData = DeleteSelfEmploymentAnnualSummaryRawData(
+  val deleteSelfEmploymentAnnualSummaryRawData: DeleteAnnualSubmissionRawData = DeleteAnnualSubmissionRawData(
     nino = nino,
     businessId = businessId,
     taxYear = taxYear
@@ -47,7 +47,7 @@ class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
         MockDeleteSelfEmploymentAnnualSummaryValidator.validate(deleteSelfEmploymentAnnualSummaryRawData).returns(Nil)
 
         parser.parseRequest(deleteSelfEmploymentAnnualSummaryRawData) shouldBe
-          Right(DeleteSelfEmploymentAnnualSummaryRequest(Nino(nino), businessId, taxYear))
+          Right(DeleteAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
       }
     }
 

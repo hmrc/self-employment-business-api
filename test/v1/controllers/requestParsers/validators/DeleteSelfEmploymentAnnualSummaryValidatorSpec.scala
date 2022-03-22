@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.request.deleteSEAnnual.DeleteSelfEmploymentAnnualSummaryRawData
+import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
 
 class DeleteSelfEmploymentAnnualSummaryValidatorSpec extends UnitSpec {
 
@@ -31,48 +31,48 @@ class DeleteSelfEmploymentAnnualSummaryValidatorSpec extends UnitSpec {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(DeleteSelfEmploymentAnnualSummaryRawData(validNino, validBusinessId, validTaxYear)) shouldBe Nil
+        validator.validate(DeleteAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear)) shouldBe Nil
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(DeleteSelfEmploymentAnnualSummaryRawData("A12344A", validBusinessId, validTaxYear)) shouldBe
+        validator.validate(DeleteAnnualSubmissionRawData("A12344A", validBusinessId, validTaxYear)) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(DeleteSelfEmploymentAnnualSummaryRawData(validNino, "Walruses", validTaxYear)) shouldBe
+        validator.validate(DeleteAnnualSubmissionRawData(validNino, "Walruses", validTaxYear)) shouldBe
           List(BusinessIdFormatError)
       }
     }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in {
-        validator.validate(DeleteSelfEmploymentAnnualSummaryRawData(validNino, validBusinessId, "20178")) shouldBe
+        validator.validate(DeleteAnnualSubmissionRawData(validNino, validBusinessId, "20178")) shouldBe
           List(TaxYearFormatError)
       }
     }
 
     "return RuleTaxYearRangeInvalidError" when {
       "an invalid tax year is supplied" in {
-        validator.validate(DeleteSelfEmploymentAnnualSummaryRawData(validNino, validBusinessId, "2017-19")) shouldBe
+        validator.validate(DeleteAnnualSubmissionRawData(validNino, validBusinessId, "2017-19")) shouldBe
           List(RuleTaxYearRangeInvalidError)
       }
     }
 
     "return RuleTaxYearNotSupportedError" when {
       "an invalid tax year is supplied" in {
-        validator.validate(DeleteSelfEmploymentAnnualSummaryRawData(validNino, validBusinessId, "2016-17")) shouldBe
+        validator.validate(DeleteAnnualSubmissionRawData(validNino, validBusinessId, "2016-17")) shouldBe
           List(RuleTaxYearNotSupportedError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(DeleteSelfEmploymentAnnualSummaryRawData("A12344A", "Baked Beans", "20178")) shouldBe
+        validator.validate(DeleteAnnualSubmissionRawData("A12344A", "Baked Beans", "20178")) shouldBe
           List(NinoFormatError, BusinessIdFormatError, TaxYearFormatError)
       }
     }
