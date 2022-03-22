@@ -31,7 +31,7 @@ trait MockAmendAnnualSubmissionService extends MockFactory {
 
   val mockAmendAnnualSummaryService: AmendAnnualSubmissionService = mock[AmendAnnualSubmissionService]
 
-  object MockAmendAnnualSummaryService {
+  object MockAmendAnnualSubmissionService {
 
     def amendAnnualSummary(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendAnnualSummaryService

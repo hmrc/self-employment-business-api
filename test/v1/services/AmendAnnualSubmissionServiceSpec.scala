@@ -48,7 +48,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendAnnualSubmissionService(
-      connector = mockAmendAnnualSubmissionConnector
+      connector = mockAmendAnnualSummaryConnector
     )
   }
 
@@ -57,8 +57,8 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
       "return correct result for a success" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        mockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
-          .(Future.successful(outcome))
+        MockAmendAnnualSubmissionConnector.amendAnnualSummary(requestData)
+          .returns(Future.successful(outcome))
 
         await(service.amendAnnualSummary(requestData)) shouldBe outcome
       }
@@ -67,7 +67,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            mockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
+            MockAmendAnnualSubmissionConnector.amendAnnualSummary(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
             await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))

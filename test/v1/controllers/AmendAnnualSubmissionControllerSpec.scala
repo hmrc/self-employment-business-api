@@ -98,7 +98,7 @@ class AmendAnnualSubmissionControllerSpec
           .requestFor(rawData)
           .returns(Right(requestData))
 
-        MockAmendAnnualSummaryService
+        MockAmendAnnualSubmissionService
           .amendAnnualSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
@@ -151,7 +151,7 @@ class AmendAnnualSubmissionControllerSpec
               .requestFor(rawData)
               .returns(Right(requestData))
 
-            MockAmendAnnualSummaryService
+            MockAmendAnnualSubmissionService
               .amendAnnualSummary(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
