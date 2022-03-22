@@ -38,10 +38,10 @@ trait HateoasLinks {
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
 
   def amendAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
-    Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL)
+    Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUBMISSION_REL)
 
   def deleteAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
-    Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
+    Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUBMISSION_REL)
 
 
   def listPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String): Link =

@@ -25,8 +25,7 @@ import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockAmendAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
-import v1.models.hateoas.Method.{DELETE, GET, PUT}
-import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
+import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
@@ -68,11 +67,7 @@ class AmendAnnualSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val testHateoasLinks = Seq(
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
-  )
+  private val testHateoasLinks = Seq(Link(href = s"/someLink", method = GET, rel = "some-rel"))
 
   private val requestJson = amendAnnualSubmissionBodyMtdJson(None, None, None)
 
@@ -83,19 +78,9 @@ class AmendAnnualSummaryControllerSpec
        |{
        |  "links": [
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "href": "/someLink",
        |      "method": "GET",
-       |      "rel": "self"
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-       |      "method": "PUT",
-       |      "rel": "create-and-amend-self-employment-annual-summary"
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-       |      "method": "DELETE",
-       |      "rel": "delete-self-employment-annual-summary"
+       |      "rel": "some-rel"
        |    }
        |  ]
        |}

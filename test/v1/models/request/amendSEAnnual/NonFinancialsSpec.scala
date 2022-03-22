@@ -41,7 +41,7 @@ class NonFinancialsSpec extends UnitSpec {
     }
 
     "writes" when {
-      "there is no exemption reason" must {
+      "there is an exemption reason" must {
         "set exemptFromPayingClass4Nics false" in {
           Json.toJson(NonFinancials(
             businessDetailsChangedRecently = true,
@@ -57,7 +57,7 @@ class NonFinancialsSpec extends UnitSpec {
         }
       }
 
-      "there is an exemption reason" must {
+      "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
           Json.toJson(NonFinancials(
             businessDetailsChangedRecently = true,
