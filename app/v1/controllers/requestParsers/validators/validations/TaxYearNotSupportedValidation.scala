@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import config.FixedConfig
-import v1.models.domain.DesTaxYear
+import v1.models.domain.TaxYear
 import v1.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 
 object TaxYearNotSupportedValidation extends FixedConfig {
@@ -25,7 +25,7 @@ object TaxYearNotSupportedValidation extends FixedConfig {
   // @param taxYear In format YYYY-YY
   def validate(taxYear: String): List[MtdError] = {
 
-    val desTaxYear = Integer.parseInt(DesTaxYear.fromMtd(taxYear).value)
+    val desTaxYear = Integer.parseInt(TaxYear.fromMtd(taxYear).toDownstream)
 
     if (desTaxYear >= minimumTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
   }

@@ -19,10 +19,9 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.{DesTaxYear, Nino}
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
+import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequest}
 
 import scala.concurrent.Future
 
@@ -30,17 +29,14 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String = "AA123456A"
   val taxYear: String = "2018-19"
+  val downstreamTaxYear: String = "2019"
   val businessId: String = "XAIS12345678910"
 
-  val request: AmendAnnualSummaryRequest = AmendAnnualSummaryRequest(
+  val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear,
-    body = AmendAnnualSummaryBody(
-      Some(Adjustments(Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-      Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))),
-      Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
-    )
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear),
+    body = AmendAnnualSubmissionBody(None, None, None)
   )
 
   class Test extends MockHttpClient with MockAppConfig {
@@ -56,7 +52,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "AmendAnnualSummaryConnector" when {
-    "amendAnnualSummary" must {
+    "amendAnnualSubmission" must {
       "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
@@ -65,7 +61,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
 
         MockHttpClient
           .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}",
+            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,

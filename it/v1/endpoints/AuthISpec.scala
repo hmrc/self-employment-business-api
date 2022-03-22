@@ -37,33 +37,7 @@ class AuthISpec extends IntegrationBaseSpec {
       s"""
          |{
          |   "adjustments": {
-         |        "includedNonTaxableProfits": 1.11,
-         |        "basisAdjustment": 2.22,
-         |        "overlapReliefUsed": 3.33,
-         |        "accountingAdjustment": 4.44,
-         |        "averagingAdjustment": 5.55,
-         |        "outstandingBusinessIncome": 7.77,
-         |        "balancingChargeBPRA": 8.88,
-         |        "balancingChargeOther": 9.99,
-         |        "goodsAndServicesOwnUse": 10.10
-         |    },
-         |    "allowances": {
-         |        "annualInvestmentAllowance": 1.11,
-         |        "businessPremisesRenovationAllowance": 2.22,
-         |        "capitalAllowanceMainPool": 3.33,
-         |        "capitalAllowanceSpecialRatePool": 4.44,
-         |        "zeroEmissionGoodsVehicleAllowance": 5.55,
-         |        "enhancedCapitalAllowance": 6.66,
-         |        "allowanceOnSales": 7.77,
-         |        "capitalAllowanceSingleAssetPool": 8.88,
-         |        "tradingAllowance": 9.99,
-         |        "electricChargePointAllowance": 11.11
-         |    },
-         |    "nonFinancials": {
-         |        "class4NicInfo":{
-         |            "isExempt": true,
-         |            "exemptionCode": "001 - Non Resident"
-         |        }
+         |        "includedNonTaxableProfits": 1.11
          |    }
          |}
         """.stripMargin

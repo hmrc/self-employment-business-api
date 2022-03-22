@@ -23,8 +23,8 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveSelfEmploymentAnnualSummaryService}
-import v1.models.domain.Nino
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.{BusinessId, Nino, TaxYear}
+import v1.models.domain.ex.MtdNicExemption
 import v1.models.errors._
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
@@ -80,7 +80,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
     Some(1000), Some(1000), Some(1000), Some(1000), Some(1000),
     Some(1000), Some(1000), Some(1000), Some(1000)
   )
-  private val nonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`002 - Trustee`))))
+  private val nonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.trustee))))
 
   val responseBody: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
     adjustments = Some(adjustments),
@@ -100,7 +100,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerSpec extends ControllerBaseSp
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrieveSelfEmploymentAnnualSummaryHateoasData(nino, businessId, taxYear))
+          .wrap(responseBody, RetrieveSelfEmploymentAnnualSummaryHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)

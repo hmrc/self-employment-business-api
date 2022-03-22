@@ -14,20 +14,40 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package v1.models.request.amendSEAnnual
 
+import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
-class DesTaxYearSpec extends UnitSpec {
-  "toString" should {
-    "return the value inside the model as a String instead of the standard case class toString" in {
-      DesTaxYear("value").toString shouldBe "value"
+class FirstYearSpec extends UnitSpec {
+
+  val model: FirstYear =
+    FirstYear(
+        "2020-01-01",
+        3000.40
+      )
+
+  val json: JsValue = Json.parse(
+    """
+      |{
+      |  "qualifyingDate": "2020-01-01",
+      |  "qualifyingAmountExpenditure": 3000.40
+      |}
+      |""".stripMargin)
+
+  "reads" when {
+    "passed a valid JSON" should {
+      "return the model" in {
+        json.as[FirstYear] shouldBe model
+      }
     }
   }
 
-  "fromMtd" should {
-    "return the DES representation of an MTD tax year (XXYY-ZZ -> XXZZ)" in {
-      DesTaxYear.fromMtd("2018-19") shouldBe DesTaxYear("2019")
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe json
+      }
     }
   }
 }

@@ -23,15 +23,13 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSummaryRequestParser
 import v1.mocks.services.{MockAmendAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.domain.Nino
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
+import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
-import v1.models.hateoas.Method.{DELETE, GET, PUT}
-import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
-import v1.models.response.amendSEAnnual.{AmendAnnualSummaryHateoasData, AmendAnnualSummaryResponse}
+import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,7 +41,8 @@ class AmendAnnualSummaryControllerSpec
     with MockAmendAnnualSummaryService
     with MockAmendSelfEmploymentAnnualSummaryRequestParser
     with MockHateoasFactory
-    with MockIdGenerator {
+    with MockIdGenerator
+    with AmendAnnualSubmissionFixture {
 
   private val nino = "AA123456A"
   private val businessId = "XAIS12345678910"
@@ -68,84 +67,28 @@ class AmendAnnualSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val testHateoasLinks = Seq(
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
-  )
+  private val testHateoasLinks = Seq(Link(href = s"/someLink", method = GET, rel = "some-rel"))
 
-  private val requestJson = Json.parse(
-    """
-      |{
-      |   "adjustments": {
-      |        "includedNonTaxableProfits": 1.11,
-      |        "basisAdjustment": 2.22,
-      |        "overlapReliefUsed": 3.33,
-      |        "accountingAdjustment": 4.44,
-      |        "averagingAdjustment": 5.55,
-      |        "outstandingBusinessIncome": 7.77,
-      |        "balancingChargeBPRA": 8.88,
-      |        "balancingChargeOther": 9.99,
-      |        "goodsAndServicesOwnUse": 10.10
-      |    },
-      |    "allowances": {
-      |        "annualInvestmentAllowance": 1.11,
-      |        "businessPremisesRenovationAllowance": 2.22,
-      |        "capitalAllowanceMainPool": 3.33,
-      |        "capitalAllowanceSpecialRatePool": 4.44,
-      |        "zeroEmissionGoodsVehicleAllowance": 5.55,
-      |        "enhancedCapitalAllowance": 6.66,
-      |        "allowanceOnSales": 7.77,
-      |        "capitalAllowanceSingleAssetPool": 8.88,
-      |        "tradingAllowance": 9.99,
-      |        "electricChargePointAllowance": "11.11"
-      |    },
-      |    "nonFinancials": {
-      |        "class4NicInfo":{
-      |            "isExempt": true,
-      |            "exemptionCode": "001 - Non Resident"
-      |        }
-      |    }
-      |}
-    """.stripMargin
-  )
+  private val requestJson = amendAnnualSubmissionBodyMtdJson(None, None, None)
 
-  private val requestBody = AmendAnnualSummaryBody(
-    Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-    Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99),  Some(11.11))),
-    Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
-  )
+  private val requestBody = AmendAnnualSubmissionBody(None, None, None)
 
   val responseJson: JsValue = Json.parse(
     s"""
-      |{
-      |  "links": [
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-      |      "method": "GET",
-      |      "rel": "self"
-      |    },
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-      |      "method": "PUT",
-      |      "rel": "create-and-amend-self-employment-annual-summary"
-      |    },
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-      |      "method": "DELETE",
-      |      "rel": "delete-self-employment-annual-summary"
-      |    }
-      |  ]
-      |}
+       |{
+       |  "links": [
+       |    {
+       |      "href": "/someLink",
+       |      "method": "GET",
+       |      "rel": "some-rel"
+       |    }
+       |  ]
+       |}
     """.stripMargin
   )
 
-  val responseBody: AmendAnnualSummaryResponse = AmendAnnualSummaryResponse(
-    transactionReference = "2017090920170909"
-  )
-
-  private val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, requestJson)
-  private val requestData = AmendAnnualSummaryRequest(Nino(nino), businessId, taxYear, requestBody)
+  private val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
+  private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
     "return Ok" when {
@@ -156,11 +99,11 @@ class AmendAnnualSummaryControllerSpec
 
         MockAmendAnnualSummaryService
           .amendAnnualSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap(responseBody, AmendAnnualSummaryHateoasData(nino, businessId, taxYear))
-          .returns(HateoasWrapper(responseBody, testHateoasLinks))
+          .wrap((), AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
+          .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
         status(result) shouldBe OK

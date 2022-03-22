@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSummaryValidator
 import v1.models.errors.MtdError
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 
 trait MockAmendSelfEmploymentAnnualSummaryValidator extends MockFactory {
 
@@ -28,9 +28,9 @@ trait MockAmendSelfEmploymentAnnualSummaryValidator extends MockFactory {
 
   object MockAmendSelfEmploymentAnnualSummaryValidator {
 
-    def validate(data: AmendAnnualSummaryRawData): CallHandler1[AmendAnnualSummaryRawData, List[MtdError]] = {
+    def validate(data: AmendAnnualSubmissionRawData): CallHandler1[AmendAnnualSubmissionRawData, List[MtdError]] = {
       (mockValidator
-        .validate(_: AmendAnnualSummaryRawData))
+        .validate(_: AmendAnnualSubmissionRawData))
         .expects(data)
     }
   }

@@ -19,36 +19,36 @@ package v1.models.domain.ex
 import play.api.libs.json.{JsError, JsValue, Json}
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v1.models.domain.ex.MtdEx._
+import v1.models.domain.ex.MtdNicExemption._
 
-class MtdExSpec extends UnitSpec with EnumJsonSpecSupport {
+class MtdNicExemptionSpec extends UnitSpec with EnumJsonSpecSupport {
 
   val desJson: JsValue = Json.toJson("")
 
-  testRoundTrip[MtdEx](
-    ("001 - Non Resident", `001 - Non Resident`),
-    ("002 - Trustee", `002 - Trustee`),
-    ("003 - Diver", `003 - Diver`),
-    ("004 - Employed earner taxed under ITTOIA 2005", `004 - Employed earner taxed under ITTOIA 2005`),
-    ("005 - Over state pension age", `005 - Over state pension age`),
-    ("006 - Under 16", `006 - Under 16`)
+  testRoundTrip[MtdNicExemption](
+    ("non-resident", `non-resident`),
+    ("trustee", trustee),
+    ("diver", diver),
+    ("ITTOIA-2005", `ITTOIA-2005`),
+    ("over-state-pension-age", `over-state-pension-age`),
+    ("under-16", `under-16`)
   )
 
   "MtdExemptionCodeSpec" when {
     "given an invalid field" should {
       "return a JsError" in {
-        desJson.validate[MtdEx] shouldBe a[JsError]
+        desJson.validate[MtdNicExemption] shouldBe a[JsError]
       }
     }
 
-    "toDes" should {
+    "toDownstream" should {
       "produce the correct DesExemptionCode object" in {
-        `001 - Non Resident`.toDes shouldBe DesEx.`001`
-        `002 - Trustee`.toDes shouldBe DesEx.`002`
-        `003 - Diver`.toDes shouldBe DesEx.`003`
-        `004 - Employed earner taxed under ITTOIA 2005`.toDes shouldBe DesEx.`004`
-        `005 - Over state pension age`.toDes shouldBe DesEx.`005`
-        `006 - Under 16`.toDes shouldBe DesEx.`006`
+        `non-resident`.toDownstream shouldBe DownstreamNicExemption.`001`
+        trustee.toDownstream shouldBe DownstreamNicExemption.`002`
+        diver.toDownstream shouldBe DownstreamNicExemption.`003`
+        `ITTOIA-2005`.toDownstream shouldBe DownstreamNicExemption.`004`
+        `over-state-pension-age`.toDownstream shouldBe DownstreamNicExemption.`005`
+        `under-16`.toDownstream shouldBe DownstreamNicExemption.`006`
       }
     }
   }

@@ -18,18 +18,19 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, ControllerComponents}
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryHateoasData
-import v1.services.{ AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
+import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
+import v1.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
+import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
@@ -44,7 +45,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
+    EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSubmission")
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
@@ -52,13 +53,14 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, request.body)
+      val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, request.body)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.amendAnnualSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)).asRight[ErrorWrapper])
+            hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSubmissionHateoasData(
+              parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear)).asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +

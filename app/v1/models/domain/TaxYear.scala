@@ -17,22 +17,27 @@
 package v1.models.domain
 
 /**
-  * Represents a tax year for DES
-  *
-  * @param value the tax year string (where 2018 represents 2017-18)
+  * Opaque representation of a tax year
   */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
+case class TaxYear(private val value: String) extends AnyVal {
+  def toDownstream: String = value
+
+  def toMtd: String = {
+    val prefix = value.take(2)
+    val yearTwo = value.drop(2)
+    val yearOne = (yearTwo.toInt - 1).toString
+    prefix + yearOne + "-" + yearTwo
+  }
 }
 
-object DesTaxYear {
+object TaxYear {
 
   /**
     * @param taxYear tax year in MTD format (e.g. 2017-18)
     */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(2) + taxYear.drop(5))
+  def fromMtd(taxYear: String): TaxYear =
+    TaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  def fromDes(taxYear: String): DesTaxYear =
-    DesTaxYear((taxYear.toInt - 1) + "-" + taxYear.drop(2))
+  def fromDownstream(taxYear: String): TaxYear =
+    TaxYear(taxYear)
 }

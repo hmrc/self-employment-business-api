@@ -18,37 +18,27 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendAnnualSummaryConnector
-import v1.models.domain.Nino
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
+import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnualSubmissionRequest}
 
 import scala.concurrent.Future
 
-class AmendAnnualSummaryServiceSpec extends ServiceSpec {
+class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
 
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val taxYear: String = "2017-18"
   implicit val correlationId: String = "X-123"
 
-  private val requestBody =  AmendAnnualSummaryBody(
-    Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
-    Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))),
-    Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
-  )
+  private val requestBody =  amendAnnualSubmissionBody()
 
-  private val requestData = AmendAnnualSummaryRequest(
+  private val requestData = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear,
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear),
     body = requestBody
-  )
-
-  val responseBody: AmendAnnualSummaryResponse = AmendAnnualSummaryResponse(
-    transactionReference = "2017090920170909"
   )
 
   trait Test extends MockAmendAnnualSummaryConnector {
@@ -60,9 +50,9 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
   }
 
   "AmendAnnualSummaryService" when {
-    "amendAnnualSummary" must {
+    "amendAnnualSubmission" must {
       "return correct result for a success" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, responseBody))
+        val outcome = Right(ResponseWrapper(correlationId, ()))
 
         MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
           .returns(Future.successful(outcome))

@@ -17,32 +17,33 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
+import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.models.domain.DesTaxYear
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
-
-import scala.concurrent.{ExecutionContext, Future}
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
                                             val appConfig: AppConfig) extends BaseDesConnector {
 
-  def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
+  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[AmendAnnualSummaryResponse]] = {
+    correlationId: String): Future[DesOutcome[Unit]] = {
 
     val nino = request.nino.nino
-    val taxYear = request.taxYear
-    val businessId = request.businessId
+    val taxYear = request.taxYear.toDownstream
+    val businessId = request.businessId.value
+
+    implicit val successCode: SuccessCode = SuccessCode(OK)
 
     put(
       body = request.body,
-      DesUri[AmendAnnualSummaryResponse](
-        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${DesTaxYear.fromMtd(taxYear)}"
+      DesUri[Unit](
+        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$taxYear"
       )
     )
   }

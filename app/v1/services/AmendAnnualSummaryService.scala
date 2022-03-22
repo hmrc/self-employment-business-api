@@ -18,27 +18,26 @@ package v1.services
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.AmendAnnualSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 import v1.support.DesResponseMappingSupport
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendAnnualSummary(request: AmendAnnualSummaryRequest)(
+  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[AmendAnnualSummaryResponse]]] = {
+    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.amendAnnualSummary(request)).leftMap(mapDesErrors(desErrorMap))

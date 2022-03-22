@@ -18,45 +18,58 @@ package v1.models.request.amendSEAnnual
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.ex.MtdNicExemption
 
 class NonFinancialsSpec extends UnitSpec {
 
-  val mtdModel: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`))))
-
   "reads" should {
+    "passed valid mtd JSON" should {
+      "return the model" in {
+        val requestJson: JsValue = Json.parse(
+          s"""
+             |{
+             |    "businessDetailsChangedRecently": true,
+             |    "class4NicsExemptionReason": "non-resident"
+             |  }
+             |""".stripMargin)
 
-    "read from JSON" when {
-
-      val requestJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "class4NicInfo": {
-           |    "isExempt": true,
-           |    "exemptionCode": "001 - Non Resident"
-           |  }
-           |}
-           |""".stripMargin)
-
-      "a valid request is made" in {
-        requestJson.as[NonFinancials] shouldBe mtdModel
+        requestJson.as[NonFinancials] shouldBe NonFinancials(
+          businessDetailsChangedRecently = true,
+          class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
+        )
       }
     }
-  }
 
-  "Writes" should {
+    "writes" when {
+      "there is an exemption reason" must {
+        "set exemptFromPayingClass4Nics false" in {
+          Json.toJson(NonFinancials(
+            businessDetailsChangedRecently = true,
+            class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
+            Json.parse(
+              s"""
+                 |{
+                 |  "businessDetailsChangedRecently": true,
+                 |  "exemptFromPayingClass4Nics": true,
+                 |  "class4NicsExemptionReason": "001"
+                 |}
+                 |""".stripMargin)
+        }
+      }
 
-    "write to des" when{
-
-      val desJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "exemptFromPayingClass4Nics": true,
-           |  "class4NicsExemptionReason": "001"
-           |}
-           |""".stripMargin)
-      "a valid request is made" in {
-        Json.toJson(mtdModel) shouldBe desJson
+      "there is no exemption reason" must {
+        "set exemptFromPayingClass4Nics true" in {
+          Json.toJson(NonFinancials(
+            businessDetailsChangedRecently = true,
+            class4NicsExemptionReason = None)) shouldBe
+            Json.parse(
+              s"""
+                 |{
+                 |  "businessDetailsChangedRecently": true,
+                 |  "exemptFromPayingClass4Nics": false
+                 |}
+                 |""".stripMargin)
+        }
       }
     }
   }

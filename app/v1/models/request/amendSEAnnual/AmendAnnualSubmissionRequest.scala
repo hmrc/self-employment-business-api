@@ -16,7 +16,6 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.JsValue
-import v1.models.request.RawData
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 
-case class AmendAnnualSummaryRawData(nino: String, businessId: String, taxYear: String, body: JsValue) extends RawData
+case class AmendAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear, body: AmendAnnualSubmissionBody)

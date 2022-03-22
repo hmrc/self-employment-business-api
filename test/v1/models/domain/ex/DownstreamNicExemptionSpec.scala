@@ -19,13 +19,13 @@ package v1.models.domain.ex
 import play.api.libs.json.{JsError, JsValue, Json}
 import support.UnitSpec
 import utils.enums.EnumJsonSpecSupport
-import v1.models.domain.ex.DesEx._
+import v1.models.domain.ex.DownstreamNicExemption._
 
-class DesExSpec extends UnitSpec with EnumJsonSpecSupport {
+class DownstreamNicExemptionSpec extends UnitSpec with EnumJsonSpecSupport {
 
   val desJson: JsValue = Json.toJson("")
 
-  testRoundTrip[DesEx](
+  testRoundTrip[DownstreamNicExemption](
     ("001", `001`),
     ("002", `002`),
     ("003", `003`),
@@ -37,18 +37,18 @@ class DesExSpec extends UnitSpec with EnumJsonSpecSupport {
   "DesExemptionCode" when {
     "given an invalid field" should {
       "return a JsError" in {
-        desJson.validate[DesEx] shouldBe a[JsError]
+        desJson.validate[DownstreamNicExemption] shouldBe a[JsError]
       }
     }
 
     "toMtd" should {
       "produce the correct MtdExemptionCode object" in {
-        `001`.toMtd shouldBe MtdEx.`001 - Non Resident`
-        `002`.toMtd shouldBe MtdEx.`002 - Trustee`
-        `003`.toMtd shouldBe MtdEx.`003 - Diver`
-        `004`.toMtd shouldBe MtdEx.`004 - Employed earner taxed under ITTOIA 2005`
-        `005`.toMtd shouldBe MtdEx.`005 - Over state pension age`
-        `006`.toMtd shouldBe MtdEx.`006 - Under 16`
+        `001`.toMtd shouldBe MtdNicExemption.`non-resident`
+        `002`.toMtd shouldBe MtdNicExemption.trustee
+        `003`.toMtd shouldBe MtdNicExemption.diver
+        `004`.toMtd shouldBe MtdNicExemption.`ITTOIA-2005`
+        `005`.toMtd shouldBe MtdNicExemption.`over-state-pension-age`
+        `006`.toMtd shouldBe MtdNicExemption.`under-16`
       }
     }
   }

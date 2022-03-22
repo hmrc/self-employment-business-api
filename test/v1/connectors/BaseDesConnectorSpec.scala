@@ -87,7 +87,7 @@ class BaseDesConnectorSpec extends ConnectorSpec {
     "complete the request successfully with the required headers" when {
       "GET" in new Test(desEnvironmentHeaders) {
         MockHttpClient
-          .get(absoluteUrl, config, requiredHeaders, excludedHeaders)
+          .get(absoluteUrl, config, requiredHeaders = requiredHeaders, excludedHeaders = excludedHeaders)
           .returns(Future.successful(outcome))
 
         await(connector.get(DesUri[Result](url))) shouldBe outcome

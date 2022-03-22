@@ -19,17 +19,18 @@ package v1.controllers
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.RetrieveSelfEmploymentAnnualSummaryRequestParser
 import v1.hateoas.HateoasFactory
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRawData
 import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryHateoasData
-import v1.services.{ EnrolmentsAuthService, MtdIdLookupService, RetrieveSelfEmploymentAnnualSummaryService }
+import v1.services.{EnrolmentsAuthService, MtdIdLookupService, RetrieveSelfEmploymentAnnualSummaryService}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveSelfEmploymentAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
@@ -59,7 +60,7 @@ class RetrieveSelfEmploymentAnnualSummaryController @Inject()(val authService: E
           serviceResponse <- EitherT(service.retrieveSelfEmploymentAnnualSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, RetrieveSelfEmploymentAnnualSummaryHateoasData(nino, businessId, taxYear))
+              .wrap(serviceResponse.responseData, RetrieveSelfEmploymentAnnualSummaryHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
               .asRight[ErrorWrapper]
           )
         } yield {

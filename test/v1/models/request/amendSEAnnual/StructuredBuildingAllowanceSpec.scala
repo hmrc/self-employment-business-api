@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package v1.hateoas
+package v1.models.request.amendSEAnnual
 
-import config.AppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-trait AmendHateoasBodies extends HateoasLinks {
+class StructuredBuildingAllowanceSpec extends UnitSpec with StructuredBuildingAllowanceFixture {
 
-  def amendSampleHateoasBody(appConfig: AppConfig, nino: String, taxYear: String): JsValue = {
+  "reads" when {
+    "passed a valid JSON" should {
+      "return the model" in {
+        structuredBuildingAllowanceMtdJson.as[StructuredBuildingAllowance] shouldBe structuredBuildingAllowance
+      }
+    }
+  }
 
-    val links = Seq(
-      amendSample(appConfig, nino, taxYear),
-      retrieveSample(appConfig, nino, taxYear, isSelf = true),
-      deleteSample(appConfig, nino, taxYear)
-    )
-
-    Json.obj("links" -> links)
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(structuredBuildingAllowance) shouldBe structuredBuildingAllowanceDownstreamJson
+      }
+    }
   }
 }

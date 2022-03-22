@@ -19,7 +19,8 @@ package v1.models.response.retrieveSEAnnual
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.ex.MtdEx
+import v1.models.domain.{BusinessId, Nino, TaxYear}
+import v1.models.domain.ex.MtdNicExemption
 import v1.models.hateoas.{Link, Method}
 
 class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
@@ -84,7 +85,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       |  },
       |  "nonFinancials": {
       |    "class4NicInfo": {
-      |      "exemptionCode": "001 - Non Resident"
+      |      "exemptionCode": "non-resident"
       |    }
       |  }
       |}
@@ -100,7 +101,7 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
       Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25),
       Some(500.25), Some(500.25), Some(500.25)
     )),
-    Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
+    Some(NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.`non-resident`)))))
   )
 
   "reads" should {
@@ -122,21 +123,25 @@ class RetrieveSelfEmploymentAnnualSummaryResponseSpec extends UnitSpec with Mock
   "LinksFactory" should {
     "produce the correct links" when {
       "called" in {
+        val nino = "AA111111A"
+        val businessId = "XAIS12345678910"
+        val taxYear = "2019-20"
+
         val data: RetrieveSelfEmploymentAnnualSummaryHateoasData = RetrieveSelfEmploymentAnnualSummaryHateoasData(
-          nino = "myNino",
-          businessId = "myBusinessId",
-          taxYear = "taxYear"
+          Nino(nino),
+          BusinessId(businessId),
+          TaxYear.fromMtd(taxYear)
         )
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrieveSelfEmploymentAnnualSummaryResponse.RetrieveSelfEmploymentAnnualSummaryLinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          Link(href = s"/my/context/${data.nino}/${data.businessId}/annual/${data.taxYear}",
-            method = Method.PUT, rel = "create-and-amend-self-employment-annual-summary"),
-          Link(href = s"/my/context/${data.nino}/${data.businessId}/annual/${data.taxYear}",
+          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
+            method = Method.PUT, rel = "create-and-amend-self-employment-annual-submission"),
+          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
             method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/${data.nino}/${data.businessId}/annual/${data.taxYear}",
-            method = Method.DELETE, rel = "delete-self-employment-annual-summary")
+          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
+            method = Method.DELETE, rel = "delete-self-employment-annual-submission")
         )
       }
     }

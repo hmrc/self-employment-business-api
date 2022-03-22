@@ -16,121 +16,72 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import support.UnitSpec
 
 class AllowancesSpec extends UnitSpec {
 
-  val fullMtdModel: Allowances =
-    Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))
-  val partialMtdModel: Allowances = Allowances(Some(1.11), None, Some(3.33), None, None, Some(6.66), Some(7.77), None, Some(9.99), Some(11.11))
-  val emptyMtdModel: Allowances = Allowances(None, None, None, None, None, None, None, None, None, None)
+  val model: Allowances = Allowances(
+    annualInvestmentAllowance = Some(1.12),
+    capitalAllowanceMainPool = Some(2.12),
+    capitalAllowanceSpecialRatePool = Some(3.12),
+    zeroEmissionsGoodsVehicleAllowance = Some(4.12),
+    businessPremisesRenovationAllowance = Some(5.12),
+    enhancedCapitalAllowance = Some(6.12),
+    allowanceOnSales = Some(7.12),
+    capitalAllowanceSingleAssetPool = Some(8.12),
+    electricChargePointAllowance = Some(9.12),
+    tradingIncomeAllowance = Some(10.12),
+    zeroEmissionsCarAllowance = Some(11.12),
+    structuredBuildingAllowance = Some(Nil),
+    enhancedStructuredBuildingAllowance = Some(Nil)
+  )
 
-  "reads" should {
-
-    "read from JSON" when {
-
-      val fullRequestJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "annualInvestmentAllowance": 1.11,
-           |  "businessPremisesRenovationAllowance": 2.22,
-           |  "capitalAllowanceMainPool": 3.33,
-           |  "capitalAllowanceSpecialRatePool": 4.44,
-           |  "zeroEmissionGoodsVehicleAllowance": 5.55,
-           |  "enhancedCapitalAllowance": 6.66,
-           |  "allowanceOnSales": 7.77,
-           |  "capitalAllowanceSingleAssetPool": 8.88,
-           |  "tradingAllowance": 9.99,
-           |  "electricChargePointAllowance": 11.11
-           |}
-           |""".stripMargin)
-
-      val partialRequestJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "annualInvestmentAllowance": 1.11,
-           |  "capitalAllowanceMainPool": 3.33,
-           |  "enhancedCapitalAllowance": 6.66,
-           |  "allowanceOnSales": 7.77,
-           |  "tradingAllowance": "9.99",
-           |  "electricChargePointAllowance": 11.11
-           |}
-           |""".stripMargin)
-
-      val emptyRequestJson: JsValue = Json.parse(
-        s"""
-           |{
-           |
-           |}
-           |""".stripMargin)
-
-      "a valid request with all data is made" in {
-        fullRequestJson.as[Allowances] shouldBe fullMtdModel
+  "reads" when {
+    "passed valid mtd JSON" should {
+      "return the model" in {
+        Json.parse(
+          s"""{
+             |  "annualInvestmentAllowance": 1.12,
+             |  "capitalAllowanceMainPool": 2.12,
+             |  "capitalAllowanceSpecialRatePool": 3.12,
+             |  "zeroEmissionsGoodsVehicleAllowance": 4.12,
+             |  "businessPremisesRenovationAllowance": 5.12,
+             |  "enhancedCapitalAllowance": 6.12,
+             |  "allowanceOnSales": 7.12,
+             |  "capitalAllowanceSingleAssetPool": 8.12,
+             |  "electricChargePointAllowance": 9.12,
+             |  "tradingIncomeAllowance": 10.12,
+             |  "zeroEmissionsCarAllowance": 11.12,
+             |  "structuredBuildingAllowance": [],
+             |  "enhancedStructuredBuildingAllowance": []
+             |}
+             |""".stripMargin).as[Allowances] shouldBe model
       }
-
-      "a valid request with some data is made" in {
-        partialRequestJson.as[Allowances] shouldBe partialMtdModel
-      }
-
-      "a valid request with no data is made" in {
-        emptyRequestJson.as[Allowances] shouldBe emptyMtdModel
-      }
-
     }
   }
 
-  "Writes" should {
-
-    "write to des" when{
-
-      val fullDesJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "annualInvestmentAllowance": 1.11,
-           |  "businessPremisesRenovationAllowance": 2.22,
-           |  "capitalAllowanceMainPool": 3.33,
-           |  "capitalAllowanceSpecialRatePool": 4.44,
-           |  "zeroEmissionGoodsVehicleAllowance": 5.55,
-           |  "enhanceCapitalAllowance": 6.66,
-           |  "allowanceOnSales": 7.77,
-           |  "capitalAllowanceSingleAssetPool": 8.88,
-           |  "tradingIncomeAllowance": 9.99,
-           |  "electricChargePointAllowance": 11.11
-           |}
-           |""".stripMargin)
-
-      val partialDesJson: JsValue = Json.parse(
-        s"""
-           |{
-           |  "annualInvestmentAllowance": 1.11,
-           |  "capitalAllowanceMainPool": 3.33,
-           |  "enhanceCapitalAllowance": 6.66,
-           |  "allowanceOnSales": 7.77,
-           |  "tradingIncomeAllowance": 9.99,
-           |  "electricChargePointAllowance": 11.11
-           |}
-           |""".stripMargin)
-
-      val emptyDesJson: JsValue = Json.parse(
-        s"""
-           |{
-           |
-           |}
-           |""".stripMargin)
-
-      "a valid request is made with full body" in {
-        Json.toJson(fullMtdModel) shouldBe fullDesJson
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe Json.parse(
+          s"""{
+             |  "annualInvestmentAllowance": 1.12,
+             |  "capitalAllowanceMainPool": 2.12,
+             |  "capitalAllowanceSpecialRatePool": 3.12,
+             |  "zeroEmissionGoodsVehicleAllowance": 4.12,
+             |  "businessPremisesRenovationAllowance": 5.12,
+             |  "enhanceCapitalAllowance": 6.12,
+             |  "allowanceOnSales": 7.12,
+             |  "capitalAllowanceSingleAssetPool": 8.12,
+             |  "electricChargePointAllowance": 9.12,
+             |  "tradingIncomeAllowance": 10.12,
+             |  "zeroEmissionsCarAllowance": 11.12,
+             |  "structuredBuildingAllowance": [],
+             |  "enhancedStructuredBuildingAllowance": []
+             |}
+             |""".stripMargin)
       }
-
-      "a valid request is made with partial body" in {
-        Json.toJson(partialMtdModel) shouldBe partialDesJson
-      }
-
-      "a valid request is made with empty body" in {
-        Json.toJson(emptyMtdModel) shouldBe emptyDesJson
-      }
-
     }
   }
 }
