@@ -52,7 +52,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "AmendAnnualSummaryConnector" when {
-    "amendAnnualSummary" must {
+    "amendAnnualSubmission" must {
       "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 

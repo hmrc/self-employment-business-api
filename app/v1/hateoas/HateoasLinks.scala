@@ -24,57 +24,23 @@ import v1.models.hateoas.RelType._
 trait HateoasLinks {
 
   //Domain URIs
-  private def sampleUri(appConfig: AppConfig, nino: String, taxYear: String) =
-    s"/${appConfig.apiGatewayContext}/sample/$nino/$taxYear"
-
-  private def annualSummaryUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
-    s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/annual/${taxYear}"
+  private def annualSubmissionUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
+    s"/${appConfig.apiGatewayContext}/$nino/$businessId/annual/$taxYear"
 
   private def periodicUpdateUri(appConfig: AppConfig, nino: String, businessId: String) =
-    s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/period"
+    s"/${appConfig.apiGatewayContext}/$nino/$businessId/period"
 
   private def periodicUpdateItemUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
-    s"/${appConfig.apiGatewayContext}/${nino}/${businessId}/period/${periodId}"
+    s"/${appConfig.apiGatewayContext}/$nino/$businessId/period/$periodId"
 
-  //Sample links
-  def amendSample(appConfig: AppConfig, nino: String, taxYear: String): Link =
-    Link(
-      href = sampleUri(appConfig, nino, taxYear),
-      method = PUT,
-      rel = AMEND_SAMPLE_REL
-    )
+  def retrieveAnnualSubmission(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
 
-  def retrieveSample(appConfig: AppConfig, nino: String, taxYear: String, isSelf: Boolean): Link =
-    if (isSelf) {
-      Link(
-        href = sampleUri(appConfig, nino, taxYear),
-        method = GET,
-        rel = SELF
-      )
-    }
-  else {
-      Link(
-        href = sampleUri(appConfig, nino, taxYear),
-        method = GET,
-        rel = RETRIEVE_SAMPLE_REL
-      )
-    }
+  def amendAnnualSubmission(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL)
 
-  def deleteSample(appConfig: AppConfig, nino: String, taxYear: String): Link =
-    Link(
-      href = sampleUri(appConfig, nino, taxYear),
-      method = DELETE,
-      rel = DELETE_SAMPLE_REL
-    )
-
-  def retrieveAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
-    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
-
-  def amendAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
-    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL)
-
-  def deleteAnnualSummary(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
-    Link(href = annualSummaryUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
+  def deleteAnnualSubmission(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+    Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
 
 
   def listPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String): Link =

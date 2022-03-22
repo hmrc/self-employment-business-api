@@ -21,7 +21,6 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{AmendAnnualSummaryConnector, DesOutcome}
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +30,7 @@ trait MockAmendAnnualSummaryConnector extends MockFactory {
 
   object MockAmendAnnualSummaryConnector {
 
-    def amendAnnualSummary(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[DesOutcome[AmendAnnualSummaryResponse]]] = {
+    def amendAnnualSummary(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockAmendAnnualSummaryConnector
         .amendAnnualSummary(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

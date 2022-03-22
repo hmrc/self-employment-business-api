@@ -32,7 +32,7 @@ object RetrieveSelfEmploymentAnnualSummaryResponse extends HateoasLinks {
   implicit val reads: Reads[RetrieveSelfEmploymentAnnualSummaryResponse] = (
     (JsPath \ "annualAdjustments").readNullable[Adjustments] and
       (JsPath \ "annualAllowances").readNullable[Allowances] and
-      ((JsPath \ "annualNonFinancials").readNullable[Class4NicInfo].map(_.map(class4NicInfo => NonFinancials(Some(class4NicInfo)))))
+      (JsPath \ "annualNonFinancials").readNullable[Class4NicInfo].map(_.map(class4NicInfo => NonFinancials(Some(class4NicInfo))))
     ) (RetrieveSelfEmploymentAnnualSummaryResponse.apply _)
 
   implicit val writes: OWrites[RetrieveSelfEmploymentAnnualSummaryResponse] = Json.writes[RetrieveSelfEmploymentAnnualSummaryResponse]
@@ -43,9 +43,9 @@ object RetrieveSelfEmploymentAnnualSummaryResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: RetrieveSelfEmploymentAnnualSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
-        amendAnnualSummary(appConfig, nino, businessId, taxYear),
-        retrieveAnnualSummary(appConfig, nino, businessId, taxYear),
-        deleteAnnualSummary(appConfig, nino, businessId, taxYear)
+        amendAnnualSubmission(appConfig, nino, businessId, taxYear),
+        retrieveAnnualSubmission(appConfig, nino, businessId, taxYear),
+        deleteAnnualSubmission(appConfig, nino, businessId, taxYear)
       )
     }
   }

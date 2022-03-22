@@ -21,7 +21,7 @@ import support.UnitSpec
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method.{DELETE, GET, PUT}
 
-class AmendAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
+class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "return the correct links" in {
@@ -31,8 +31,8 @@ class AmendAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
       MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
 
-      AmendAnnualSummaryResponse.AmendSelfEmploymentAnnualSummaryLinksFactory.
-        links(mockAppConfig, AmendAnnualSummaryHateoasData(nino, businessId, taxYear)) shouldBe
+      AmendAnnualSubmissionResponse.AmendSelfEmploymentAnnualSubmissionLinksFactory.
+        links(mockAppConfig, AmendAnnualSubmissionHateoasData(nino, businessId, taxYear)) shouldBe
         Seq(
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             GET,

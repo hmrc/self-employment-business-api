@@ -22,7 +22,6 @@ import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnualSubmissionRequest}
-import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 
 import scala.concurrent.Future
 
@@ -42,10 +41,6 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
     body = requestBody
   )
 
-  val responseBody: AmendAnnualSummaryResponse = AmendAnnualSummaryResponse(
-    transactionReference = "2017090920170909"
-  )
-
   trait Test extends MockAmendAnnualSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
@@ -55,9 +50,9 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
   }
 
   "AmendAnnualSummaryService" when {
-    "amendAnnualSummary" must {
+    "amendAnnualSubmission" must {
       "return correct result for a success" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, responseBody))
+        val outcome = Right(ResponseWrapper(correlationId, ()))
 
         MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
           .returns(Future.successful(outcome))

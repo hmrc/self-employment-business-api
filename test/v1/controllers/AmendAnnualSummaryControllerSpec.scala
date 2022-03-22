@@ -30,7 +30,7 @@ import v1.models.hateoas.RelType.{AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMAR
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
-import v1.models.response.amendSEAnnual.{AmendAnnualSummaryHateoasData, AmendAnnualSummaryResponse}
+import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -102,10 +102,6 @@ class AmendAnnualSummaryControllerSpec
     """.stripMargin
   )
 
-  val responseBody: AmendAnnualSummaryResponse = AmendAnnualSummaryResponse(
-    transactionReference = "2017090920170909"
-  )
-
   private val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
   private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
@@ -118,11 +114,11 @@ class AmendAnnualSummaryControllerSpec
 
         MockAmendAnnualSummaryService
           .amendAnnualSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap(responseBody, AmendAnnualSummaryHateoasData(nino, businessId, taxYear))
-          .returns(HateoasWrapper(responseBody, testHateoasLinks))
+          .wrap((), AmendAnnualSubmissionHateoasData(nino, businessId, taxYear))
+          .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
         status(result) shouldBe OK
