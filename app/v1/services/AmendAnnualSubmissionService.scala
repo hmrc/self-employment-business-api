@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendAnnualSubmissionService @Inject()(connector: AmendAnnualSubmissionConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
+  def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     logContext: EndpointLogContext,

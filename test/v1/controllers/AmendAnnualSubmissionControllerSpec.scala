@@ -57,7 +57,7 @@ class AmendAnnualSubmissionControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       parser = mockAmendSelfEmploymentAnnualSummaryRequestParser,
-      service = mockAmendAnnualSummaryService,
+      service = mockAmendAnnualSubmissionService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -99,7 +99,7 @@ class AmendAnnualSubmissionControllerSpec
           .returns(Right(requestData))
 
         MockAmendAnnualSubmissionService
-          .amendAnnualSummary(requestData)
+          .amendAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
@@ -152,7 +152,7 @@ class AmendAnnualSubmissionControllerSpec
               .returns(Right(requestData))
 
             MockAmendAnnualSubmissionService
-              .amendAnnualSummary(requestData)
+              .amendAnnualSubmission(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))

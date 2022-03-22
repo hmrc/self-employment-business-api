@@ -51,7 +51,7 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
-  "AmendAnnualSummaryConnector" when {
+  "AmendAnnualSubmissionConnector" when {
     "amendAnnualSubmission" must {
       "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))

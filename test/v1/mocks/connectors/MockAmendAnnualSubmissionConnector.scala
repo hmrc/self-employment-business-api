@@ -19,8 +19,8 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{AmendAnnualSubmissionConnector, DownstreamOutcome}
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
+import v1.connectors.{AmendAnnualSubmissionConnector, DesOutcome}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +30,7 @@ trait MockAmendAnnualSubmissionConnector extends MockFactory {
 
   object MockAmendAnnualSubmissionConnector {
 
-    def amendAnnualSubmission(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def amendAnnualSubmission(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockAmendAnnualSubmissionConnector
         .amendAnnualSubmission(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

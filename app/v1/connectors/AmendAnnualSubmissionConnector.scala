@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendAnnualSubmissionConnector @Inject()(val http: HttpClient,
                                                val appConfig: AppConfig) extends BaseDesConnector {
 
-  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
+  def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     correlationId: String): Future[DesOutcome[Unit]] = {

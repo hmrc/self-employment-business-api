@@ -57,7 +57,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.amendAnnualSummary(parsedRequest))
+          serviceResponse <- EitherT(service.amendAnnualSubmission(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSubmissionHateoasData(
               parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear)).asRight[ErrorWrapper])

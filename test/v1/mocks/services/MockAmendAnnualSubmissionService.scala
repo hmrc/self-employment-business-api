@@ -29,13 +29,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendAnnualSubmissionService extends MockFactory {
 
-  val mockAmendAnnualSummaryService: AmendAnnualSubmissionService = mock[AmendAnnualSubmissionService]
+  val mockAmendAnnualSubmissionService: AmendAnnualSubmissionService = mock[AmendAnnualSubmissionService]
 
   object MockAmendAnnualSubmissionService {
 
-    def amendAnnualSummary(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockAmendAnnualSummaryService
-        .amendAnnualSummary(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+    def amendAnnualSubmission(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockAmendAnnualSubmissionService
+        .amendAnnualSubmission(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
   }
