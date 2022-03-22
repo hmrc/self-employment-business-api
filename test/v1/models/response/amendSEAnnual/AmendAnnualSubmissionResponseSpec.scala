@@ -45,7 +45,7 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
           ),
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             DELETE,
-            "delete-self-employment-annual-submission"
+            "deleteAnnualSubmission-self-employment-annual-submission"
           )
         )
     }

@@ -141,7 +141,7 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
           Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
             method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
-            method = Method.DELETE, rel = "delete-self-employment-annual-submission")
+            method = Method.DELETE, rel = "deleteAnnualSubmission-self-employment-annual-submission")
         )
       }
     }

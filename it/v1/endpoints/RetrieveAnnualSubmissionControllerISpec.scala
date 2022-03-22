@@ -77,7 +77,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
          |    },
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "rel": "delete-self-employment-annual-submission",
+         |      "rel": "deleteAnnualSubmission-self-employment-annual-submission",
          |      "method": "DELETE"
          |    }
          |  ]
