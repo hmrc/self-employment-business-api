@@ -25,7 +25,7 @@ import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSu
 
 import scala.concurrent.Future
 
-class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
+class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
   val nino: String = "AA123456A"
   val taxYear: String = "2018-19"
@@ -40,7 +40,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: AmendAnnualSummaryConnector = new AmendAnnualSummaryConnector(
+    val connector: AmendAnnualSubmissionConnector = new AmendAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
@@ -68,7 +68,7 @@ class AmendAnnualSummaryConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 
-        await(connector.amendAnnualSummary(request)) shouldBe outcome
+        await(connector.amendAnnualSubmission(request)) shouldBe outcome
       }
     }
   }

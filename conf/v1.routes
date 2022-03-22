@@ -1,4 +1,4 @@
-PUT        /:nino/:businessId/annual/:taxYear       v1.controllers.AmendAnnualSubmissionController.handleRequest(nino: String, businessId: String, taxYear: String)
+PUT        /:nino/:businessId/annual/:taxYear       v1.controllers.AmendAnnualSummaryController.handleRequest(nino: String, businessId: String, taxYear: String)
 GET        /:nino/:businessId/annual/:taxYear       v1.controllers.RetrieveAnnualSubmissionController.handleRequest(nino: String, businessId: String, taxYear: String)
 DELETE     /:nino/:businessId/annual/:taxYear       v1.controllers.DeleteAnnualSubmissionController.handleRequest(nino: String, businessId: String, taxYear: String)
 

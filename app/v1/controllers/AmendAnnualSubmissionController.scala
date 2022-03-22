@@ -27,19 +27,19 @@ import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
-import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{AmendAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService }
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
-                                                val lookupService: MtdIdLookupService,
-                                                parser: AmendSelfEmploymentAnnualSummaryRequestParser,
-                                                service: AmendAnnualSummaryService,
-                                                hateoasFactory: HateoasFactory,
-                                                cc: ControllerComponents,
-                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
+                                             val lookupService: MtdIdLookupService,
+                                             parser: AmendSelfEmploymentAnnualSummaryRequestParser,
+                                             service: AmendAnnualSubmissionService,
+                                             hateoasFactory: HateoasFactory,
+                                             cc: ControllerComponents,
+                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {

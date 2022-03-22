@@ -17,7 +17,7 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockAmendAnnualSummaryConnector
+import v1.mocks.connectors.MockAmendAnnualSubmissionConnector
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -25,7 +25,8 @@ import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnua
 
 import scala.concurrent.Future
 
-class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
+class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
+
 
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -41,11 +42,13 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
     body = requestBody
   )
 
-  trait Test extends MockAmendAnnualSummaryConnector {
+
+
+  trait Test extends MockAmendAnnualSubmissionConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new AmendAnnualSummaryService(
-      connector = mockAmendAnnualSummaryConnector
+    val service = new AmendAnnualSubmissionService(
+      connector = mockAmendAnnualSubmissionConnector
     )
   }
 
@@ -54,8 +57,8 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
       "return correct result for a success" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
-          .returns(Future.successful(outcome))
+        mockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
+          .(Future.successful(outcome))
 
         await(service.amendAnnualSummary(requestData)) shouldBe outcome
       }
@@ -64,7 +67,7 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
+            mockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
             await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))

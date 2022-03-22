@@ -23,13 +23,13 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
-import v1.services.AmendAnnualSummaryService
+import v1.services.AmendAnnualSubmissionService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendAnnualSummaryService extends MockFactory {
+trait MockAmendAnnualSubmissionService extends MockFactory {
 
-  val mockAmendAnnualSummaryService: AmendAnnualSummaryService = mock[AmendAnnualSummaryService]
+  val mockAmendAnnualSummaryService: AmendAnnualSubmissionService = mock[AmendAnnualSubmissionService]
 
   object MockAmendAnnualSummaryService {
 

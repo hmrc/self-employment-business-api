@@ -22,8 +22,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSummaryRequestParser
-import v1.mocks.services.{MockAmendAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.domain.{BusinessId, Nino, TaxYear}
+import v1.models.domain.{BusinessId, TaxYear}
+import v1.mocks.services.{MockAmendAnnualSubmissionService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -38,7 +39,7 @@ class AmendAnnualSubmissionControllerSpec
   extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockAmendAnnualSummaryService
+    with MockAmendAnnualSubmissionService
     with MockAmendSelfEmploymentAnnualSummaryRequestParser
     with MockHateoasFactory
     with MockIdGenerator
@@ -52,7 +53,7 @@ class AmendAnnualSubmissionControllerSpec
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
-    val controller = new AmendAnnualSubmissionController(
+    val controller = new AmendAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       parser = mockAmendSelfEmploymentAnnualSummaryRequestParser,
