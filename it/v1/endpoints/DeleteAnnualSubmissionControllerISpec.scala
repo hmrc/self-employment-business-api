@@ -18,7 +18,7 @@ package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
@@ -54,7 +54,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     """.stripMargin
   }
 
-  "Calling the deleteAnnualSubmission endpoint" should {
+  "Calling the delete endpoint" should {
 
     "return a 204 status code" when {
 
@@ -66,7 +66,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
 
           DesStub.when(method = DesStub.PUT, uri = desUri, body = Some("{}"))
-            .thenReturn(status = Status.NO_CONTENT, JsObject.empty)
+            .thenReturn(status = Status.NO_CONTENT)
         }
 
         val response: WSResponse = await(request().delete())

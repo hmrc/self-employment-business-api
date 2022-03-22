@@ -54,7 +54,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
          |      "method": "DELETE",
-         |      "rel": "deleteAnnualSubmission-self-employment-annual-submission"
+         |      "rel": "delete-self-employment-annual-submission"
          |    }
          |  ]
          |}

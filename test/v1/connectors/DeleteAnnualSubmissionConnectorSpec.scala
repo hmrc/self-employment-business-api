@@ -17,6 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
+import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino, TaxYear}
@@ -62,7 +63,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
           .put(
             url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
             config = dummyDesHeaderCarrierConfig,
-            body = """{}""",
+            body = JsObject.empty,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))

@@ -17,6 +17,7 @@
 package v1.connectors
 
 import config.AppConfig
+import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
@@ -38,7 +39,7 @@ class DeleteAnnualSubmissionConnector @Inject()(val http: HttpClient,
     val businessId = request.businessId.value
 
     put(
-      body = """{}""",
+      body = JsObject.empty,
       DesUri[Unit](
         s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$taxYear"
       )
