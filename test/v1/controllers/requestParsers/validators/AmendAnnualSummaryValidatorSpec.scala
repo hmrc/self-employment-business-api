@@ -62,7 +62,7 @@ class AmendAnnualSummaryValidatorSpec extends UnitSpec {
       |""".stripMargin
   )
 
-  val validator = new AmendSelfEmploymentAnnualSummaryValidator()
+  val validator = new CreateAmendSelfEmploymentAnnualSubmissionValidator()
 
   "running a validation" should {
     "return no errors" when {

@@ -20,7 +20,7 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.amendSEAnnual._
 
-class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSubmissionRawData] {
+class CreateAmendSelfEmploymentAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
 
@@ -56,7 +56,8 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSub
     val body = data.body.as[AmendAnnualSubmissionBody]
     val errorsO: List[List[MtdError]] = List(
       body.adjustments.map(validateAdjustments).getOrElse(Nil),
-      body.allowances.map(validateAllowances).getOrElse(Nil)
+      body.allowances.map(validateAllowances).getOrElse(Nil),
+      body.nonFinancials.map(validateNonFinancials).getOrElse(Nil)
     ).flatten
     List(Validator.flattenErrors(errorsO))
   }
@@ -67,9 +68,10 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSub
         field = adjustments.includedNonTaxableProfits,
         path = s"/adjustments/includedNonTaxableProfits"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = adjustments.basisAdjustment,
-        path = s"/adjustments/basisAdjustment"
+        path = s"/adjustments/basisAdjustment",
+        min = -99999999999.99
       ),
       NumberValidation.validateOptional(
         field = adjustments.overlapReliefUsed,
@@ -79,9 +81,10 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSub
         field = adjustments.accountingAdjustment,
         path = s"/adjustments/accountingAdjustment"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = adjustments.averagingAdjustment,
-        path = s"/adjustments/averagingAdjustment"
+        path = s"/adjustments/averagingAdjustment",
+        min = -99999999999.99
       ),
       NumberValidation.validateOptional(
         field = adjustments.outstandingBusinessIncome,
@@ -89,7 +92,7 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSub
       ),
       NumberValidation.validateOptional(
         field = adjustments.balancingChargeBpra,
-        path = s"/adjustments/balancingChargeBPRA"
+        path = s"/adjustments/balancingChargeBpra"
       ),
       NumberValidation.validateOptional(
         field = adjustments.balancingChargeOther,
@@ -122,7 +125,7 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSub
       ),
       NumberValidation.validateOptional(
         field = allowances.zeroEmissionsGoodsVehicleAllowance,
-        path = s"/allowances/zeroEmissionGoodsVehicleAllowance"
+        path = s"/allowances/zeroEmissionsGoodsVehicleAllowance"
       ),
       NumberValidation.validateOptional(
         field = allowances.enhancedCapitalAllowance,
@@ -138,11 +141,76 @@ class AmendSelfEmploymentAnnualSummaryValidator extends Validator[AmendAnnualSub
       ),
       NumberValidation.validateOptional(
         field = allowances.tradingIncomeAllowance,
-        path = s"/allowances/tradingAllowance"
+        path = s"/allowances/tradingIncomeAllowance"
       ),
       NumberValidation.validateOptional(
         field = allowances.electricChargePointAllowance,
         path = s"/allowances/electricChargePointAllowance"
+      ),
+      NumberValidation.validateOptional(
+        field = allowances.zeroEmissionsCarAllowance,
+        path = s"/allowances/zeroEmissionsCarAllowance"
+      ),
+      NumberValidation.validateOptional(
+        field = structuredBuildingAllowance.amount,
+        path = s"/allowances/structuredBuildingAllowance/amount"
+      ),
+      DateValidation.validateOptional(
+        field = structuredBuildingAllowance.firstYear.qualifyingDate,
+        path = s"/allowances/structuredBuildingAllowance/firstYear/qualifyingDate"
+      ),
+      NumberValidation.validateOptional(
+        field = structuredBuildingAllowance.firstYear.qualifyingAmountExpenditure,
+        path = s"/allowances/structuredBuildingAllowance/firstYear/qualifyingAmountExpenditure"
+      ),
+      NameValidation.validateOptional(
+        field = structuredBuildingAllowance.building.name,
+        path = s"/allowances/structuredBuildingAllowance/building/name"
+      ),
+      NumberValidation.validateOptional(
+        field = structuredBuildingAllowance.building.number,
+        path = s"/allowances/structuredBuildingAllowance/building/number"
+      ),
+      PostCodeValidation.validateOptional(
+        field = structuredBuildingAllowance.building.postcode,
+        path = s"/allowances/structuredBuildingAllowance/building/postcode"
+      ),
+      NumberValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.amount,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/amount"
+      ),
+      DateValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.firstYear.qualifyingDate,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/firstYear/qualifyingDate"
+      ),
+      NumberValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.firstYear.qualifyingAmountExpenditure,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/firstYear/qualifyingAmountExpenditure"
+      ),
+      NameValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.building.name,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/building/name"
+      ),
+      NumberValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.building.number,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/building/number"
+      ),
+      PostCodeValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.building.postcode,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/building/postcode"
+      )
+    )
+  }
+
+  private def validateNonFinancials(nonFinancials: NonFinancials): List[List[MtdError]] = {
+    List(
+      NumberValidation.validateOptional(
+        field = allowances.annualInvestmentAllowance,
+        path = s"/nonFinancials/businessDetailsChangedRecently"
+      ),
+      NumberValidation.validateOptional(
+        field = allowances.businessPremisesRenovationAllowance,
+        path = s"/nonFinancials/class4NicsExemptionReason"
       )
     )
   }

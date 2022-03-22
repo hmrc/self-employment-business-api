@@ -18,10 +18,10 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents}
-import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, ControllerComponents }
+import utils.{ IdGenerator, Logging }
+import v1.controllers.requestParsers.CreateAmendSelfEmploymentAnnualSubmissionRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
                                              val lookupService: MtdIdLookupService,
-                                             parser: AmendSelfEmploymentAnnualSummaryRequestParser,
+                                             parser: CreateAmendSelfEmploymentAnnualSubmissionRequestParser,
                                              service: AmendAnnualSubmissionService,
                                              hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
