@@ -49,12 +49,12 @@ class AmendAnnualSummaryControllerISpec extends IntegrationBaseSpec with AmendAn
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
          |      "method": "PUT",
-         |      "rel": "create-and-amend-self-employment-annual-summary"
+         |      "rel": "create-and-amend-self-employment-annual-submission"
          |    },
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
          |      "method": "DELETE",
-         |      "rel": "delete-self-employment-annual-summary"
+         |      "rel": "delete-self-employment-annual-submission"
          |    }
          |  ]
          |}

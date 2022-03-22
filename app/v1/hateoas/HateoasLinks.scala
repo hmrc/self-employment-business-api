@@ -17,6 +17,7 @@
 package v1.hateoas
 
 import config.AppConfig
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 import v1.models.hateoas.RelType._
@@ -24,8 +25,8 @@ import v1.models.hateoas.RelType._
 trait HateoasLinks {
 
   //Domain URIs
-  private def annualSubmissionUri(appConfig: AppConfig, nino: String, businessId: String, taxYear: String) =
-    s"/${appConfig.apiGatewayContext}/$nino/$businessId/annual/$taxYear"
+  private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
+    s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.toMtd}"
 
   private def periodicUpdateUri(appConfig: AppConfig, nino: String, businessId: String) =
     s"/${appConfig.apiGatewayContext}/$nino/$businessId/period"
@@ -33,13 +34,13 @@ trait HateoasLinks {
   private def periodicUpdateItemUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
     s"/${appConfig.apiGatewayContext}/$nino/$businessId/period/$periodId"
 
-  def retrieveAnnualSubmission(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+  def retrieveAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
 
-  def amendAnnualSubmission(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+  def amendAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUMMARY_REL)
 
-  def deleteAnnualSubmission(appConfig: AppConfig, nino: String, businessId: String, taxYear: String): Link =
+  def deleteAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUMMARY_REL)
 
 

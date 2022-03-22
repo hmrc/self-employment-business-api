@@ -20,6 +20,7 @@ import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrieveSelfEmploymentAnnualSummaryResponse(
@@ -52,4 +53,4 @@ object RetrieveSelfEmploymentAnnualSummaryResponse extends HateoasLinks {
 
 }
 
-case class RetrieveSelfEmploymentAnnualSummaryHateoasData(nino: String, businessId: String, taxYear: String) extends HateoasData
+case class RetrieveSelfEmploymentAnnualSummaryHateoasData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends HateoasData

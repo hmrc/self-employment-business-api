@@ -18,6 +18,7 @@ package v1.models.response.amendSEAnnual
 
 import mocks.MockAppConfig
 import support.UnitSpec
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method.{DELETE, GET, PUT}
 
@@ -25,14 +26,14 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "return the correct links" in {
-      val nino = "mynino"
+      val nino = "AA111111A"
       val businessId = "XAIS12345678910"
       val taxYear = "2019-20"
 
       MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
 
       AmendAnnualSubmissionResponse.AmendSelfEmploymentAnnualSubmissionLinksFactory.
-        links(mockAppConfig, AmendAnnualSubmissionHateoasData(nino, businessId, taxYear)) shouldBe
+        links(mockAppConfig, AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))) shouldBe
         Seq(
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             GET,
@@ -40,11 +41,11 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
           ),
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             PUT,
-            "create-and-amend-self-employment-annual-summary"
+            "create-and-amend-self-employment-annual-submission"
           ),
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             DELETE,
-            "delete-self-employment-annual-summary"
+            "delete-self-employment-annual-submission"
           )
         )
     }

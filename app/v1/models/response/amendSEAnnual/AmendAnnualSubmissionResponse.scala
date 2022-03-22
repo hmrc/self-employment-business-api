@@ -18,6 +18,7 @@ package v1.models.response.amendSEAnnual
 
 import config.AppConfig
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{HateoasData, Link}
 
 object AmendAnnualSubmissionResponse extends HateoasLinks {
@@ -34,4 +35,5 @@ object AmendAnnualSubmissionResponse extends HateoasLinks {
   }
 }
 
-case class AmendAnnualSubmissionHateoasData(nino: String, businessId: String, taxYear: String) extends HateoasData
+case class AmendAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends HateoasData
+

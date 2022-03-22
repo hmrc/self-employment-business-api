@@ -67,7 +67,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |  "links": [
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "rel": "create-and-amend-self-employment-annual-summary",
+         |      "rel": "create-and-amend-self-employment-annual-submission",
          |      "method": "PUT"
          |    },
          |    {
@@ -77,7 +77,7 @@ class RetrieveSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBase
          |    },
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "rel": "delete-self-employment-annual-summary",
+         |      "rel": "delete-self-employment-annual-submission",
          |      "method": "DELETE"
          |    }
          |  ]
