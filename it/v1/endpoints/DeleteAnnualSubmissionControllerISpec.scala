@@ -54,7 +54,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     """.stripMargin
   }
 
-  "Calling the delete endpoint" should {
+  "Calling the deleteAnnualSubmission endpoint" should {
 
     "return a 204 status code" when {
 

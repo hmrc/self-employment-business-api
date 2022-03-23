@@ -46,11 +46,11 @@ uses:
       /annual/{taxYear}:
         uriParameters:
           taxYear:
-            description: 'The tax year to which the data applies.The start year and end year must not span two tax years. No gaps are allowed, for example, 2017-19 is not valid. The minimum tax year is 2017-18.'
-            example: "2017-18"
-        put: !include endpoints/createAndAmendAnnualSummary.raml
+            description: 'The tax year to which the data applies in the format YYYY-YY. The start year and end year must not span two tax years. The minimum tax year is 2017-18. No gaps are allowed, for example, 2022-24 is not valid.'
+            example: "2022-23"
+        put: !include endpoints/createAndAmendAnnualSubmission.raml
         get: !include endpoints/retrieveAnnualSummary.raml
-        delete: !include endpoints/deleteAnnualSummary.raml
+        delete: !include endpoints/deleteAnnualSubmission.raml
       /period:
         post: !include endpoints/createPeriodicUpdatePeriod.raml
         get: !include endpoints/listPeriodicUpdatePeriod.raml
