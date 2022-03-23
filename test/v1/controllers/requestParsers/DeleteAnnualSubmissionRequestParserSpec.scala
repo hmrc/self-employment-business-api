@@ -17,54 +17,54 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.mocks.validators.MockDeleteSelfEmploymentAnnualSummaryValidator
+import v1.mocks.validators.MockDeleteAnnualSubmissionValidator
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import v1.models.request.deleteSEAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
+import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
-class DeleteSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec {
+class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
   val taxYear: String = "2017-18"
   implicit val correlationId: String = "X-123"
 
-  val deleteSelfEmploymentAnnualSummaryRawData: DeleteAnnualSubmissionRawData = DeleteAnnualSubmissionRawData(
+  val deleteAnnualSubmissionRawData: DeleteAnnualSubmissionRawData = DeleteAnnualSubmissionRawData(
     nino = nino,
     businessId = businessId,
     taxYear = taxYear
   )
 
-  trait Test extends MockDeleteSelfEmploymentAnnualSummaryValidator {
-    lazy val parser: DeleteSelfEmploymentAnnualSummaryRequestParser = new DeleteSelfEmploymentAnnualSummaryRequestParser(
-      validator = mockDeleteSelfEmploymentAnnualSummaryValidator
+  trait Test extends MockDeleteAnnualSubmissionValidator {
+    lazy val parser: DeleteAnnualSubmissionRequestParser = new DeleteAnnualSubmissionRequestParser(
+      validator = mockDeleteAnnualSubmissionValidator
     )
   }
 
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockDeleteSelfEmploymentAnnualSummaryValidator.validate(deleteSelfEmploymentAnnualSummaryRawData).returns(Nil)
+        MockDeleteAnnualSubmissionValidator.validate(deleteAnnualSubmissionRawData).returns(Nil)
 
-        parser.parseRequest(deleteSelfEmploymentAnnualSummaryRawData) shouldBe
+        parser.parseRequest(deleteAnnualSubmissionRawData) shouldBe
           Right(DeleteAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
       }
     }
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockDeleteSelfEmploymentAnnualSummaryValidator.validate(deleteSelfEmploymentAnnualSummaryRawData)
+        MockDeleteAnnualSubmissionValidator.validate(deleteAnnualSubmissionRawData)
           .returns(List(NinoFormatError))
 
-        parser.parseRequest(deleteSelfEmploymentAnnualSummaryRawData) shouldBe
+        parser.parseRequest(deleteAnnualSubmissionRawData) shouldBe
           Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
-        MockDeleteSelfEmploymentAnnualSummaryValidator.validate(deleteSelfEmploymentAnnualSummaryRawData)
+        MockDeleteAnnualSubmissionValidator.validate(deleteAnnualSubmissionRawData)
           .returns(List(NinoFormatError, BusinessIdFormatError, TaxYearFormatError))
 
-        parser.parseRequest(deleteSelfEmploymentAnnualSummaryRawData) shouldBe
+        parser.parseRequest(deleteAnnualSubmissionRawData) shouldBe
           Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, BusinessIdFormatError, TaxYearFormatError))))
       }
     }

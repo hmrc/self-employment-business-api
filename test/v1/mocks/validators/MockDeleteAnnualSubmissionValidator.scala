@@ -18,18 +18,18 @@ package v1.mocks.validators
 
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.DeleteSelfEmploymentAnnualSummaryValidator
+import v1.controllers.requestParsers.validators.DeleteAnnualSubmissionValidator
 import v1.models.errors.MtdError
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
 
-trait MockDeleteSelfEmploymentAnnualSummaryValidator extends MockFactory {
+trait MockDeleteAnnualSubmissionValidator extends MockFactory {
 
-  val mockDeleteSelfEmploymentAnnualSummaryValidator: DeleteSelfEmploymentAnnualSummaryValidator = mock[DeleteSelfEmploymentAnnualSummaryValidator]
+  val mockDeleteAnnualSubmissionValidator: DeleteAnnualSubmissionValidator = mock[DeleteAnnualSubmissionValidator]
 
-  object MockDeleteSelfEmploymentAnnualSummaryValidator {
+  object MockDeleteAnnualSubmissionValidator {
 
     def validate(data: DeleteAnnualSubmissionRawData): CallHandler1[DeleteAnnualSubmissionRawData, List[MtdError]] = {
-      (mockDeleteSelfEmploymentAnnualSummaryValidator
+      (mockDeleteAnnualSubmissionValidator
         .validate(_: DeleteAnnualSubmissionRawData))
         .expects(data)
     }

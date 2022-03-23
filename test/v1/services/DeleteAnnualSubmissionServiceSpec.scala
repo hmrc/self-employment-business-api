@@ -17,15 +17,15 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockDeleteSelfEmploymentAnnualSummaryConnector
+import v1.mocks.connectors.MockDeleteAnnualSubmissionConnector
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.Future
 
-class DeleteSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
+class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
 
   val taxYear: String = "2017-18"
   val nino: String = "AA123456A"
@@ -38,21 +38,21 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
-  trait Test extends MockDeleteSelfEmploymentAnnualSummaryConnector {
+  trait Test extends MockDeleteAnnualSubmissionConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new DeleteSelfEmploymentAnnualSummaryService(
-      deleteSelfEmploymentAnnualSummaryConnector = mockDeleteSelfEmploymentAnnualSummaryConnector
+    val service = new DeleteAnnualSubmissionService(
+      connector = mockDeleteAnnualSubmissionConnector
     )
   }
 
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockDeleteSelfEmploymentAnnualSummaryConnector.deleteSelfEmploymentAnnualSummary(requestData)
+        MockDeleteAnnualSubmissionConnector.deleteAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        await(service.deleteSelfEmploymentAnnualSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
+        await(service.deleteAnnualSubmission(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
       }
     }
   }
@@ -62,10 +62,10 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockDeleteSelfEmploymentAnnualSummaryConnector.deleteSelfEmploymentAnnualSummary(requestData)
+          MockDeleteAnnualSubmissionConnector.deleteAnnualSubmission(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.deleteSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.deleteAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

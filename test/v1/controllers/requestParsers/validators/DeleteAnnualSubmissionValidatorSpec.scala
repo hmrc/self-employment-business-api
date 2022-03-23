@@ -18,15 +18,15 @@ package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
 
-class DeleteSelfEmploymentAnnualSummaryValidatorSpec extends UnitSpec {
+class DeleteAnnualSubmissionValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validTaxYear = "2017-18"
 
-  val validator = new DeleteSelfEmploymentAnnualSummaryValidator()
+  val validator = new DeleteAnnualSubmissionValidator()
 
   "running a validation" should {
     "return no errors" when {

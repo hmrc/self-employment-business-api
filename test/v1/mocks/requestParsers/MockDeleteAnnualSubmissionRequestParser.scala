@@ -18,17 +18,17 @@ package v1.mocks.requestParsers
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.DeleteSelfEmploymentAnnualSummaryRequestParser
+import v1.controllers.requestParsers.DeleteAnnualSubmissionRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.deleteSEAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
+import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
-trait MockDeleteSelfEmploymentAnnualSummaryRequestParser extends MockFactory {
+trait MockDeleteAnnualSubmissionRequestParser extends MockFactory {
 
-  val mockDeleteSelfEmploymentAnnualSummaryRequestParser: DeleteSelfEmploymentAnnualSummaryRequestParser = mock[DeleteSelfEmploymentAnnualSummaryRequestParser]
+  val mockDeleteAnnualSubmissionRequestParser: DeleteAnnualSubmissionRequestParser = mock[DeleteAnnualSubmissionRequestParser]
 
-  object MockDeleteSelfEmploymentAnnualSummaryRequestParser {
+  object MockDeleteAnnualSubmissionRequestParser {
     def parse(data: DeleteAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, DeleteAnnualSubmissionRequest]] = {
-      (mockDeleteSelfEmploymentAnnualSummaryRequestParser.parseRequest(_: DeleteAnnualSubmissionRawData)(_: String)).expects(data, *)
+      (mockDeleteAnnualSubmissionRequestParser.parseRequest(_: DeleteAnnualSubmissionRawData)(_: String)).expects(data, *)
     }
   }
 }

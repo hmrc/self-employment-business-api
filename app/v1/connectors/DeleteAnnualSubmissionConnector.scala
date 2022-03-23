@@ -19,16 +19,16 @@ package v1.connectors
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteSelfEmploymentAnnualSummaryConnector @Inject()(val http: HttpClient,
-                                                           val appConfig: AppConfig) extends BaseDesConnector {
+class DeleteAnnualSubmissionConnector @Inject()(val http: HttpClient,
+                                                val appConfig: AppConfig) extends BaseDesConnector {
 
-  def deleteSEAnnual(request: DeleteAnnualSubmissionRequest)(
+  def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     correlationId: String): Future[DesOutcome[Unit]] = {

@@ -19,21 +19,21 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DeleteSelfEmploymentAnnualSummaryConnector, DesOutcome}
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
+import v1.connectors.{DeleteAnnualSubmissionConnector, DesOutcome}
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteSelfEmploymentAnnualSummaryConnector extends MockFactory {
+trait MockDeleteAnnualSubmissionConnector extends MockFactory {
 
-  val mockDeleteSelfEmploymentAnnualSummaryConnector: DeleteSelfEmploymentAnnualSummaryConnector = mock[DeleteSelfEmploymentAnnualSummaryConnector]
+  val mockDeleteAnnualSubmissionConnector: DeleteAnnualSubmissionConnector = mock[DeleteAnnualSubmissionConnector]
 
 
-  object MockDeleteSelfEmploymentAnnualSummaryConnector {
+  object MockDeleteAnnualSubmissionConnector {
 
-    def deleteSelfEmploymentAnnualSummary(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[DesOutcome[Unit]]] = {
-      (mockDeleteSelfEmploymentAnnualSummaryConnector
-        .deleteSEAnnual(_: DeleteAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+    def deleteAnnualSubmission(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+      (mockDeleteAnnualSubmissionConnector
+        .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
   }

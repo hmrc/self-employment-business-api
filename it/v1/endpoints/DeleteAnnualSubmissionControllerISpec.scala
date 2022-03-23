@@ -24,7 +24,7 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSpec {
+class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
@@ -54,7 +54,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerISpec extends IntegrationBaseSp
     """.stripMargin
   }
 
-  "Calling the delete endpoint" should {
+  "Calling the deleteAnnualSubmission endpoint" should {
 
     "return a 204 status code" when {
 

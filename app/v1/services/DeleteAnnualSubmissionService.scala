@@ -21,26 +21,26 @@ import utils.Logging
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.DeleteSelfEmploymentAnnualSummaryConnector
+import v1.connectors.DeleteAnnualSubmissionConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteSelfEmploymentAnnualSummaryService @Inject()(deleteSelfEmploymentAnnualSummaryConnector: DeleteSelfEmploymentAnnualSummaryConnector)
+class DeleteAnnualSubmissionService @Inject()(connector: DeleteAnnualSubmissionConnector)
   extends DesResponseMappingSupport with Logging {
 
-    def deleteSelfEmploymentAnnualSummary(request: DeleteAnnualSubmissionRequest)(
+    def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(
                                          implicit hc: HeaderCarrier,
                                          ec: ExecutionContext,
                                          logContext: EndpointLogContext,
-                                         correlationId: String): Future[DeleteSelfEmploymentAnnualSummaryServiceOutcome] = {
+                                         correlationId: String): Future[ServiceOutcome[Unit]] = {
 
       val result = for {
-        desResponseWrapper <- EitherT(deleteSelfEmploymentAnnualSummaryConnector.deleteSEAnnual(request)).leftMap(mapDesErrors(desErrorMap))
+        desResponseWrapper <- EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDesErrors(desErrorMap))
       } yield desResponseWrapper
       result.value
     }

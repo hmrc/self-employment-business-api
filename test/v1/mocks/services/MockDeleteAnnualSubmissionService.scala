@@ -22,20 +22,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
-import v1.services.DeleteSelfEmploymentAnnualSummaryService
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
+import v1.services.DeleteAnnualSubmissionService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteSelfEmploymentAnnualSummaryService extends MockFactory {
+trait MockDeleteAnnualSubmissionService extends MockFactory {
 
-  val mockDeleteSelfEmploymentAnnualSummaryService: DeleteSelfEmploymentAnnualSummaryService = mock[DeleteSelfEmploymentAnnualSummaryService]
+  val mockDeleteAnnualSubmissionService: DeleteAnnualSubmissionService = mock[DeleteAnnualSubmissionService]
 
-  object MockDeleteSelfEmploymentAnnualSummaryService {
+  object MockDeleteAnnualSubmissionService {
 
-    def delete(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockDeleteSelfEmploymentAnnualSummaryService
-        .deleteSelfEmploymentAnnualSummary(_: DeleteAnnualSubmissionRequest)(_:HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+    def deleteAnnualSubmission(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockDeleteAnnualSubmissionService
+        .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequest)(_:HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
   }

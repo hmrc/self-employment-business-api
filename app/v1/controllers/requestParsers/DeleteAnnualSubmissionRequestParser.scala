@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.request.deleteSEAnnual
+package v1.controllers.requestParsers
 
+import javax.inject.Inject
+import v1.controllers.requestParsers.validators.DeleteAnnualSubmissionValidator
 import v1.models.domain.{BusinessId, Nino, TaxYear}
+import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
-case class DeleteAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear)
+class DeleteAnnualSubmissionRequestParser @Inject()(val validator: DeleteAnnualSubmissionValidator)
+  extends RequestParser[DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest] {
+
+  override protected def requestFor(data: DeleteAnnualSubmissionRawData): DeleteAnnualSubmissionRequest =
+    DeleteAnnualSubmissionRequest(Nino(data.nino), BusinessId(data.businessId), TaxYear.fromMtd(data.taxYear))
+}

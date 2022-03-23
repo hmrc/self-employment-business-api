@@ -21,27 +21,27 @@ import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import utils.{ IdGenerator, Logging }
-import v1.controllers.requestParsers.DeleteSelfEmploymentAnnualSummaryRequestParser
+import v1.controllers.requestParsers.DeleteAnnualSubmissionRequestParser
 import v1.models.errors._
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
-import v1.services.{ DeleteSelfEmploymentAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
+import v1.services.{ DeleteAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService }
 
 import javax.inject.{ Inject, Singleton }
 import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
-class DeleteSelfEmploymentAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
-                                                            val lookupService: MtdIdLookupService,
-                                                            parser: DeleteSelfEmploymentAnnualSummaryRequestParser,
-                                                            service: DeleteSelfEmploymentAnnualSummaryService,
-                                                            cc: ControllerComponents,
-                                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class DeleteAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
+                                                 val lookupService: MtdIdLookupService,
+                                                 parser: DeleteAnnualSubmissionRequestParser,
+                                                 service: DeleteAnnualSubmissionService,
+                                                 cc: ControllerComponents,
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "DeleteSelfEmploymentAnnualSummaryController", endpointName = "deleteSelfEmploymentAnnualSummary")
+    EndpointLogContext(controllerName = "DeleteAnnualSubmissionController", endpointName = "deleteAnnualSubmission")
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -53,7 +53,7 @@ class DeleteSelfEmploymentAnnualSummaryController @Inject()(val authService: Enr
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.deleteSelfEmploymentAnnualSummary(parsedRequest))
+          serviceResponse <- EitherT(service.deleteAnnualSubmission(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +

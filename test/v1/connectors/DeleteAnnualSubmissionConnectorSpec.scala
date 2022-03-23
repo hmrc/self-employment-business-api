@@ -21,11 +21,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRequest
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.Future
 
-class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
+class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
   val taxYear: String = "2017-18"
   val downstreamTaxYear: String = "2018"
@@ -39,7 +39,7 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
-    val connector: DeleteSelfEmploymentAnnualSummaryConnector = new DeleteSelfEmploymentAnnualSummaryConnector(
+    val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
@@ -50,7 +50,7 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
-  "delete" should {
+  "deleteAnnualSubmission" should {
     "return a 204 with no body" when {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
@@ -67,7 +67,7 @@ class DeleteSelfEmploymentAnnualSummaryConnectorSpec extends ConnectorSpec {
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 
-        await(connector.deleteSEAnnual(request)) shouldBe outcome
+        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
       }
     }
   }

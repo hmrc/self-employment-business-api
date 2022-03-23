@@ -24,9 +24,7 @@ import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRespo
 
 package object services {
 
-  private type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
-
-  type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
+  type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
 
   type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]
 

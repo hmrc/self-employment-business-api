@@ -18,9 +18,9 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations.{BusinessIdValidation, NinoValidation, TaxYearNotSupportedValidation, TaxYearValidation}
 import v1.models.errors.MtdError
-import v1.models.request.deleteSEAnnual.DeleteAnnualSubmissionRawData
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
 
-class DeleteSelfEmploymentAnnualSummaryValidator extends Validator[DeleteAnnualSubmissionRawData] {
+class DeleteAnnualSubmissionValidator extends Validator[DeleteAnnualSubmissionRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
 

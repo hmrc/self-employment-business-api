@@ -21,22 +21,22 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockDeleteSelfEmploymentAnnualSummaryRequestParser
-import v1.mocks.services.{MockDeleteSelfEmploymentAnnualSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.mocks.requestParsers.MockDeleteAnnualSubmissionRequestParser
+import v1.mocks.services.{MockDeleteAnnualSubmissionService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSEAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
+import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeleteSelfEmploymentAnnualSummaryControllerSpec
+class DeleteAnnualSubmissionControllerSpec
   extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockDeleteSelfEmploymentAnnualSummaryService
-    with MockDeleteSelfEmploymentAnnualSummaryRequestParser
+    with MockDeleteAnnualSubmissionService
+    with MockDeleteAnnualSubmissionRequestParser
     with MockHateoasFactory
     with MockIdGenerator {
 
@@ -48,11 +48,11 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
-    val controller = new DeleteSelfEmploymentAnnualSummaryController(
+    val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockDeleteSelfEmploymentAnnualSummaryRequestParser,
-      service = mockDeleteSelfEmploymentAnnualSummaryService,
+      parser = mockDeleteAnnualSubmissionRequestParser,
+      service = mockDeleteAnnualSubmissionService,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -68,12 +68,12 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
   "handleRequest" should {
     "return NoContent" when {
       "the request received is valid" in new Test {
-        MockDeleteSelfEmploymentAnnualSummaryRequestParser
+        MockDeleteAnnualSubmissionRequestParser
           .parse(rawData)
           .returns(Right(requestData))
 
-        MockDeleteSelfEmploymentAnnualSummaryService
-          .delete(requestData)
+        MockDeleteAnnualSubmissionService
+          .deleteAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
@@ -88,7 +88,7 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
-            MockDeleteSelfEmploymentAnnualSummaryRequestParser
+            MockDeleteAnnualSubmissionRequestParser
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
@@ -116,12 +116,12 @@ class DeleteSelfEmploymentAnnualSummaryControllerSpec
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {
 
-            MockDeleteSelfEmploymentAnnualSummaryRequestParser
+            MockDeleteAnnualSubmissionRequestParser
               .parse(rawData)
               .returns(Right(requestData))
 
-            MockDeleteSelfEmploymentAnnualSummaryService
-              .delete(requestData)
+            MockDeleteAnnualSubmissionService
+              .deleteAnnualSubmission(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
