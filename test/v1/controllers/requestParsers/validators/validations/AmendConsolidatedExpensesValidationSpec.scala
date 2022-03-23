@@ -18,13 +18,13 @@ package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
 import v1.models.errors.RuleBothExpensesSuppliedError
-import v1.models.request.amendSEPeriodic.{ConsolidatedExpenses, Expenses, ExpensesAmountObject}
+import v1.models.request.amendPeriodic.{ConsolidatedExpenses, Expenses, ExpensesAmountObject}
 import v1.models.utils.JsonErrorValidators
 
 class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
 
-  val consolidatedExpenses = ConsolidatedExpenses(100.50)
-  val expenses = Expenses(
+  val consolidatedExpenses: ConsolidatedExpenses = ConsolidatedExpenses(100.50)
+  val expenses: Expenses = Expenses(
     Some(ExpensesAmountObject(100.50, Some(100.50))),
     Some(ExpensesAmountObject(100.50, Some(100.50))),
     Some(ExpensesAmountObject(100.50, Some(100.50))),

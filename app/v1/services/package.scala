@@ -18,20 +18,9 @@ package v1
 
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
-import v1.models.response.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryResponse
-import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
 
 package object services {
 
-  private type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
-
-  type DeleteSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[Unit]
-
-  type RetrieveSelfEmploymentAnnualSummaryServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentAnnualSummaryResponse]
-
-  type RetrieveSelfEmploymentPeriodicUpdateServiceOutcome = ServiceOutcome[RetrieveSelfEmploymentPeriodicResponse]
-
-  type ListSelfEmploymentUpdatePeriodsServiceOutcome = ServiceOutcome[ListSelfEmploymentPeriodicResponse[PeriodDetails]]
+  type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
 
 }

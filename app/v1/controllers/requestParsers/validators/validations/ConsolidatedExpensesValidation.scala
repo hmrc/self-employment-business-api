@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import v1.models.errors.{MtdError, RuleBothExpensesSuppliedError}
-import v1.models.request.createSEPeriodic.{ConsolidatedExpenses, Expenses}
+import v1.models.request.createPeriodic.{ConsolidatedExpenses, Expenses}
 
 object ConsolidatedExpensesValidation {
 

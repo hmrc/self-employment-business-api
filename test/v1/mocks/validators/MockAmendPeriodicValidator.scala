@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.AmendPeriodicValidator
 import v1.models.errors.MtdError
-import v1.models.request.amendSEPeriodic.AmendPeriodicRawData
+import v1.models.request.amendPeriodic.AmendPeriodicRawData
 
 trait MockAmendPeriodicValidator extends MockFactory {
 
