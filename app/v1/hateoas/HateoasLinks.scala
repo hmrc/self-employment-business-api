@@ -28,10 +28,10 @@ trait HateoasLinks {
   private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.toMtd}"
 
-  private def periodicUpdateUri(appConfig: AppConfig, nino: String, businessId: String) =
+  private def periodicSummaryUri(appConfig: AppConfig, nino: String, businessId: String) =
     s"/${appConfig.apiGatewayContext}/$nino/$businessId/period"
 
-  private def periodicUpdateItemUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
+  private def periodicSummaryItemUri(appConfig: AppConfig, nino: String, businessId: String, periodId: String) =
     s"/${appConfig.apiGatewayContext}/$nino/$businessId/period/$periodId"
 
   def retrieveAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
@@ -44,16 +44,16 @@ trait HateoasLinks {
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUBMISSION_REL)
 
 
-  def listPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String): Link =
-    Link(href = periodicUpdateUri(appConfig, nino, businessId), method = GET, rel = SELF)
+  def listPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String): Link =
+    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = GET, rel = SELF)
 
-  def createPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String): Link =
-    Link(href = periodicUpdateUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIODIC_UPDATE_REL)
+  def createPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String): Link =
+    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIODIC_UPDATE_REL)
 
-  def retrievePeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
-    Link(href = periodicUpdateItemUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
+  def retrievePeriodicSummary(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
+    Link(href = periodicSummaryItemUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
 
-  def amendPeriodicUpdate(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
-    Link(href = periodicUpdateItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIODIC_UPDATE_REL)
+  def amendPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
+    Link(href = periodicSummaryItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIODIC_UPDATE_REL)
 
 }

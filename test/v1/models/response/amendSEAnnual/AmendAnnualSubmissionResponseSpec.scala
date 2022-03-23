@@ -32,7 +32,7 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
       MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
 
-      AmendAnnualSubmissionResponse.AmendSelfEmploymentAnnualSubmissionLinksFactory.
+      AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory.
         links(mockAppConfig, AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))) shouldBe
         Seq(
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",

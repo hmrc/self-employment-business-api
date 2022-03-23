@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.AmendPeriodicValidator
 import v1.models.domain.Nino
-import v1.models.request.amendSEPeriodic.{AmendPeriodicBody, AmendPeriodicRawData, AmendPeriodicRequest}
+import v1.models.request.amendPeriodic.{AmendPeriodicBody, AmendPeriodicRawData, AmendPeriodicRequest}
 
 class AmendPeriodicRequestParser @Inject()(val validator: AmendPeriodicValidator)
   extends RequestParser[AmendPeriodicRawData, AmendPeriodicRequest] {
