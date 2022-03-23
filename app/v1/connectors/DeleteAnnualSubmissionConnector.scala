@@ -19,6 +19,7 @@ package v1.connectors
 import config.AppConfig
 import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.IfsUri
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
@@ -27,12 +28,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeleteAnnualSubmissionConnector @Inject()(val http: HttpClient,
-                                                val appConfig: AppConfig) extends BaseDesConnector {
+                                                val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[Unit]] = {
+    correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino = request.nino.nino
     val taxYear = request.taxYear.toDownstream
@@ -40,7 +41,7 @@ class DeleteAnnualSubmissionConnector @Inject()(val http: HttpClient,
 
     put(
       body = JsObject.empty,
-      DesUri[Unit](
+      IfsUri[Unit](
         s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$taxYear"
       )
     )

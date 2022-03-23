@@ -17,8 +17,10 @@
 package v1.connectors
 
 import config.AppConfig
+
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.DesUri
 import v1.models.request.amendPeriodic.AmendPeriodicRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,12 +28,12 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
 class AmendPeriodicConnector @Inject()(val http: HttpClient,
-                                       val appConfig: AppConfig) extends BaseDesConnector {
+                                       val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendPeriodicSummary(request: AmendPeriodicRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[Unit]] = {
+    correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino = request.nino.nino
     val businessId = request.businessId

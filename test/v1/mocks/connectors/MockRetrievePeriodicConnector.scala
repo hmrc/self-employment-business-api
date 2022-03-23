@@ -19,7 +19,7 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{DesOutcome, RetrievePeriodicConnector}
+import v1.connectors.{DownstreamOutcome, RetrievePeriodicConnector}
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
 import v1.models.response.retrievePeriodic.RetrievePeriodicResponse
 
@@ -32,7 +32,7 @@ trait MockRetrievePeriodicConnector extends MockFactory {
   object MockRetrievePeriodicConnector {
 
     def retrievePeriodicSummary(requestData: RetrievePeriodicRequest):
-    CallHandler[Future[DesOutcome[RetrievePeriodicResponse]]] = {
+    CallHandler[Future[DownstreamOutcome[RetrievePeriodicResponse]]] = {
       (mockRetrievePeriodicConnector
         .retrievePeriodicSummary(_: RetrievePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
