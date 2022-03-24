@@ -12,8 +12,12 @@
             <td><p>Simulate success response.</p></td>
         </tr>
         <tr>
+            <td><p>TRADING_ALLOWANCE</p></td>
+            <td><p>Simulates success response with trading allowance instead.</p></td>
+        </tr>
+        <tr>
             <td><p>NOT_FOUND</p></td>
-            <td><p>Simulate scenario where no data found.</p></td>
+            <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>
     </tbody>
 </table>
