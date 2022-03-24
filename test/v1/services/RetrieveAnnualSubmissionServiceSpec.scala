@@ -77,9 +77,11 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
 
       val input = Seq(
         "INVALID_NINO" -> NinoFormatError,
-        "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
+        "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
         "INVALID_TAX_YEAR" -> TaxYearFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+        "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
+        "NOT_FOUND_PERIOD" -> NotFoundError,
+        "INVALID_CORRELATIONID" -> DownstreamError,
         "SERVER_ERROR" -> DownstreamError,
         "SERVICE_UNAVAILABLE" -> DownstreamError
       )
