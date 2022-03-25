@@ -23,21 +23,19 @@ import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrieveAnnualSubmissionResponse(
-                                                            adjustments: Option[Adjustments],
-                                                            allowances: Option[Allowances],
-                                                            nonFinancials: Option[NonFinancials]
-                                                          )
+case class RetrieveAnnualSubmissionResponse(adjustments: Option[Adjustments],
+                                            allowances: Option[Allowances],
+                                            nonFinancials: Option[NonFinancials])
 
 object RetrieveAnnualSubmissionResponse extends HateoasLinks {
+
   implicit val reads: Reads[RetrieveAnnualSubmissionResponse] = (
     (JsPath \ "annualAdjustments").readNullable[Adjustments] and
       (JsPath \ "annualAllowances").readNullable[Allowances] and
-      (JsPath \ "annualNonFinancials").readNullable[Class4NicInfo].map(_.map(class4NicInfo => NonFinancials(Some(class4NicInfo))))
-    ) (RetrieveAnnualSubmissionResponse.apply _)
+      (JsPath \ "annualNonFinancials").readNullable[NonFinancials]
+    )(RetrieveAnnualSubmissionResponse.apply _)
 
   implicit val writes: OWrites[RetrieveAnnualSubmissionResponse] = Json.writes[RetrieveAnnualSubmissionResponse]
-
 
   implicit object RetrieveAnnualSubmissionLinksFactory extends
     HateoasLinksFactory[RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
@@ -50,7 +48,6 @@ object RetrieveAnnualSubmissionResponse extends HateoasLinks {
       )
     }
   }
-
 }
 
 case class RetrieveAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends HateoasData

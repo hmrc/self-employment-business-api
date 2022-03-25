@@ -18,19 +18,17 @@ package v1.models.response.retrieveAnnual
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
-import v1.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
 
-case class NonFinancials(businessDetailsChangedRecently: Boolean,
-                         class4NicsExemptionReason: Option[MtdNicExemption])
+case class Building(name: Option[String],
+                    number: Option[String],
+                    postcode: String)
 
-object NonFinancials {
-  implicit val reads: Reads[NonFinancials] = Json.reads[NonFinancials]
+object Building {
+  implicit val reads: Reads[Building] = Json.reads[Building]
 
-  implicit val writes: Writes[NonFinancials] = (
-    (JsPath \ "businessDetailsChangedRecently").write[Boolean] and
-      (JsPath \ "exemptFromPayingClass4Nics").write[Boolean] and
-      (JsPath \ "class4NicsExemptionReason").writeNullable[DownstreamNicExemption]
-    ) (unlift(NonFinancials.unapply(_: NonFinancials).map {
-    case (changed, exemption) => (changed, exemption.isDefined, exemption.map(_.toDownstream))
-  }))
+  implicit val writes: Writes[Building] = (
+    (JsPath \ "name").writeNullable[String] and
+      (JsPath \ "number").writeNullable[String] and
+      (JsPath \ "postCode").write[String]
+    ) (unlift(Building.unapply))
 }

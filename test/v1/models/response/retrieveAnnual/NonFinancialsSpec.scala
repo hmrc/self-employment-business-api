@@ -22,22 +22,54 @@ import v1.models.domain.ex.MtdNicExemption
 
 class NonFinancialsSpec extends UnitSpec {
 
-  val mtdJson: JsValue = Json.parse(
-    """
-      |{
-      |  "class4NicInfo": {
-      |    "exemptionCode": "non-resident"
-      |  }
-      |}
-    """.stripMargin
-  )
+  "reads" should {
+    "passed valid mtd JSON" should {
+      "return the model" in {
+        val requestJson: JsValue = Json.parse(
+          s"""
+             |{
+             |    "businessDetailsChangedRecently": true,
+             |    "class4NicsExemptionReason": "non-resident"
+             |  }
+             |""".stripMargin)
 
-  val model: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.`non-resident`))))
+        requestJson.as[NonFinancials] shouldBe NonFinancials(
+          businessDetailsChangedRecently = true,
+          class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
+        )
+      }
+    }
 
-  "writes" should {
-    "return json" when {
-      "passed a model" in {
-        Json.toJson(model) shouldBe mtdJson
+    "writes" when {
+      "there is an exemption reason" must {
+        "set exemptFromPayingClass4Nics false" in {
+          Json.toJson(NonFinancials(
+            businessDetailsChangedRecently = true,
+            class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
+            Json.parse(
+              s"""
+                 |{
+                 |  "businessDetailsChangedRecently": true,
+                 |  "exemptFromPayingClass4Nics": true,
+                 |  "class4NicsExemptionReason": "001"
+                 |}
+                 |""".stripMargin)
+        }
+      }
+
+      "there is no exemption reason" must {
+        "set exemptFromPayingClass4Nics true" in {
+          Json.toJson(NonFinancials(
+            businessDetailsChangedRecently = true,
+            class4NicsExemptionReason = None)) shouldBe
+            Json.parse(
+              s"""
+                 |{
+                 |  "businessDetailsChangedRecently": true,
+                 |  "exemptFromPayingClass4Nics": false
+                 |}
+                 |""".stripMargin)
+        }
       }
     }
   }

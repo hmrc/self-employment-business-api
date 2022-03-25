@@ -20,15 +20,14 @@ import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class Adjustments(includedNonTaxableProfits: Option[BigDecimal],
-                        basisAdjustment: Option[BigDecimal],
-                        overlapReliefUsed: Option[BigDecimal],
-                        accountingAdjustment: Option[BigDecimal],
-                        averagingAdjustment: Option[BigDecimal],
-                        outstandingBusinessIncome: Option[BigDecimal],
-                        balancingChargeBPRA: Option[BigDecimal],
-                        balancingChargeOther: Option[BigDecimal],
-                        goodsAndServicesOwnUse: Option[BigDecimal]
-                      )
+                       basisAdjustment: Option[BigDecimal],
+                       overlapReliefUsed: Option[BigDecimal],
+                       accountingAdjustment: Option[BigDecimal],
+                       averagingAdjustment: Option[BigDecimal],
+                       outstandingBusinessIncome: Option[BigDecimal],
+                       balancingChargeBpra: Option[BigDecimal],
+                       balancingChargeOther: Option[BigDecimal],
+                       goodsAndServicesOwnUse: Option[BigDecimal])
 
 object Adjustments {
   implicit val reads: Reads[Adjustments] = (

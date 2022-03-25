@@ -16,66 +16,72 @@
 
 package v1.models.response.retrieveAnnual
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import support.UnitSpec
 
 class AllowancesSpec extends UnitSpec {
 
-  val desJson: JsValue = Json.parse(
-    """
-      |{
-      |  "annualInvestmentAllowance": 500.25,
-      |  "businessPremisesRenovationAllowance": 500.25,
-      |  "capitalAllowanceMainPool": 500.25,
-      |  "capitalAllowanceSpecialRatePool": 500.25,
-      |  "zeroEmissionGoodsVehicleAllowance": 500.25,
-      |  "enhanceCapitalAllowance": 500.25,
-      |  "allowanceOnSales": 500.25,
-      |  "capitalAllowanceSingleAssetPool": 500.25,
-      |  "tradingIncomeAllowance":  500.25
-      |}
-      |""".stripMargin)
+  val model: Allowances = Allowances(
+    annualInvestmentAllowance = Some(1.12),
+    capitalAllowanceMainPool = Some(2.12),
+    capitalAllowanceSpecialRatePool = Some(3.12),
+    zeroEmissionsGoodsVehicleAllowance = Some(4.12),
+    businessPremisesRenovationAllowance = Some(5.12),
+    enhancedCapitalAllowance = Some(6.12),
+    allowanceOnSales = Some(7.12),
+    capitalAllowanceSingleAssetPool = Some(8.12),
+    electricChargePointAllowance = Some(9.12),
+    tradingIncomeAllowance = Some(10.12),
+    zeroEmissionsCarAllowance = Some(11.12),
+    structuredBuildingAllowance = Some(Nil),
+    enhancedStructuredBuildingAllowance = Some(Nil)
+  )
 
-  val mtdJson: JsValue = Json.parse(
-    """
-      |{
-      |  "annualInvestmentAllowance": 500.25,
-      |  "capitalAllowanceMainPool": 500.25,
-      |  "capitalAllowanceSpecialRatePool":500.25,
-      |  "zeroEmissionGoodsVehicleAllowance": 500.25,
-      |  "businessPremisesRenovationAllowance": 500.25,
-      |  "enhancedCapitalAllowance": 500.25,
-      |  "allowanceOnSales": 500.25,
-      |  "capitalAllowanceSingleAssetPool": 500.25,
-      |  "tradingAllowance": 500.25
-      |}
-      |""".stripMargin)
-
-  val model: Allowances =
-    Allowances(Some(500.25),
-      Some(500.25),
-      Some(500.25),
-      Some(500.25),
-      Some(500.25),
-      Some(500.25),
-      Some(500.25),
-      Some(500.25),
-      Some(500.25))
-
-  "reads" should {
-    "return a model" when {
-      "passed valid json" in {
-        desJson.as[Allowances] shouldBe model
+  "reads" when {
+    "passed valid mtd JSON" should {
+      "return the model" in {
+        Json.parse(
+          s"""{
+             |  "annualInvestmentAllowance": 1.12,
+             |  "capitalAllowanceMainPool": 2.12,
+             |  "capitalAllowanceSpecialRatePool": 3.12,
+             |  "zeroEmissionsGoodsVehicleAllowance": 4.12,
+             |  "businessPremisesRenovationAllowance": 5.12,
+             |  "enhancedCapitalAllowance": 6.12,
+             |  "allowanceOnSales": 7.12,
+             |  "capitalAllowanceSingleAssetPool": 8.12,
+             |  "electricChargePointAllowance": 9.12,
+             |  "tradingIncomeAllowance": 10.12,
+             |  "zeroEmissionsCarAllowance": 11.12,
+             |  "structuredBuildingAllowance": [],
+             |  "enhancedStructuredBuildingAllowance": []
+             |}
+             |""".stripMargin).as[Allowances] shouldBe model
       }
     }
   }
 
-  "writes" should {
-    "return json" when {
-      "passed a model" in {
-        Json.toJson(model) shouldBe mtdJson
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe Json.parse(
+          s"""{
+             |  "annualInvestmentAllowance": 1.12,
+             |  "capitalAllowanceMainPool": 2.12,
+             |  "capitalAllowanceSpecialRatePool": 3.12,
+             |  "zeroEmissionGoodsVehicleAllowance": 4.12,
+             |  "businessPremisesRenovationAllowance": 5.12,
+             |  "enhanceCapitalAllowance": 6.12,
+             |  "allowanceOnSales": 7.12,
+             |  "capitalAllowanceSingleAssetPool": 8.12,
+             |  "electricChargePointAllowance": 9.12,
+             |  "tradingIncomeAllowance": 10.12,
+             |  "zeroEmissionsCarAllowance": 11.12,
+             |  "structuredBuildingAllowance": [],
+             |  "enhancedStructuredBuildingAllowance": []
+             |}
+             |""".stripMargin)
       }
     }
   }
-
 }

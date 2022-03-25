@@ -32,7 +32,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     val nino = "AA123456A"
     val businessId = "XAIS12345678910"
     val taxYear = "2021-22"
-    val desTaxYear = "2022"
+    val downstreamTaxYear = "2022"
 
     val responseBody: JsValue = Json.parse(
       s"""
@@ -44,7 +44,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
          |    "accountingAdjustment": 200.00,
          |    "averagingAdjustment": 200.00,
          |    "outstandingBusinessIncome": 200.00,
-         |    "balancingChargeBPRA": 200.00,
+         |    "balancingChargeBpra": 200.00,
          |    "balancingChargeOther": 200.00,
          |    "goodsAndServicesOwnUse": 200.00
          |  },
@@ -52,31 +52,60 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
          |    "annualInvestmentAllowance": 200.00,
          |    "capitalAllowanceMainPool": 200.00,
          |    "capitalAllowanceSpecialRatePool": 200.00,
-         |    "zeroEmissionGoodsVehicleAllowance": 200.00,
+         |    "zeroEmissionsGoodsVehicleAllowance": 200.00,
          |    "businessPremisesRenovationAllowance": 200.00,
          |    "enhancedCapitalAllowance": 200.00,
          |    "allowanceOnSales": 200.00,
          |    "capitalAllowanceSingleAssetPool": 200.00,
-         |    "tradingAllowance": 200.00
+         |    "electricChargePointAllowance": 200.00,
+         |    "zeroEmissionsCarAllowance": 200.00,
+         |    "structuredBuildingAllowance": [
+         |      {
+         |        "amount": 564.89,
+         |        "firstYear": {
+         |          "qualifyingDate": "2019-05-29",
+         |          "qualifyingAmountExpenditure": 567.67
+         |        },
+         |        "building": {
+         |          "name": "Victoria Building",
+         |          "number": "23",
+         |          "postcode": "TF3 5GH"
+         |        }
+         |      }
+         |    ],
+         |    "enhancedStructuredBuildingAllowance": [
+         |      {
+         |        "amount": 445.56,
+         |        "firstYear": {
+         |          "qualifyingDate": "2019-09-29",
+         |          "qualifyingAmountExpenditure": 565.56
+         |        },
+         |        "building": {
+         |          "name": "Trinity House",
+         |          "number": "20",
+         |          "postcode": "TF4 7HJ"
+         |        }
+         |      }
+         |    ],
+         |    "zeroEmissionsCarAllowance": 678.78
          |  },
          |  "nonFinancials": {
-         |    "class4NicInfo": {
-         |      "exemptionCode": "trustee"
-         |    }
+         |    "businessDetailsChangedRecently": true,
+         |    "class4NicsExemptionReason": "non-resident"
          |  },
          |  "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+         |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
          |      "rel": "create-and-amend-self-employment-annual-submission",
          |      "method": "PUT"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+         |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
          |      "rel": "self",
          |      "method": "GET"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+         |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
          |      "rel": "delete-self-employment-annual-submission",
          |      "method": "DELETE"
          |    }
@@ -87,32 +116,63 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     val desResponseBody: JsValue = Json.parse(
       s"""
          |{
-         |   "annualAdjustments": {
-         |      "includedNonTaxableProfits": 200.00,
-         |      "basisAdjustment": 200.00,
-         |      "overlapReliefUsed": 200.00,
-         |      "accountingAdjustment": 200.00,
-         |      "averagingAdjustment": 200.00,
-         |      "outstandingBusinessIncome": 200.00,
-         |      "balancingChargeBpra": 200.00,
-         |      "balancingChargeOther": 200.00,
-         |      "goodsAndServicesOwnUse": 200.00
-         |   },
-         |   "annualAllowances": {
-         |      "annualInvestmentAllowance": 200.00,
-         |      "capitalAllowanceMainPool": 200.00,
-         |      "capitalAllowanceSpecialRatePool": 200.00,
-         |      "zeroEmissionGoodsVehicleAllowance": 200.00,
-         |      "businessPremisesRenovationAllowance": 200.00,
-         |      "enhanceCapitalAllowance": 200.00,
-         |      "allowanceOnSales": 200.00,
-         |      "capitalAllowanceSingleAssetPool": 200.00,
-         |      "tradingIncomeAllowance":  200.00
-         |   },
-         |   "annualNonFinancials": {
-         |      "exemptFromPayingClass4Nics": true,
-         |      "class4NicsExemptionReason": "002"
-         |   }
+         |  "annualAdjustments": {
+         |    "includedNonTaxableProfits": 210,
+         |    "basisAdjustment": 178.23,
+         |    "overlapReliefUsed": 123.78,
+         |    "accountingAdjustment": 678.9,
+         |    "averagingAdjustment": 674.98,
+         |    "lossBroughtForward": 124.78,
+         |    "outstandingBusinessIncome": 342.67,
+         |    "balancingChargeBpra": 145.98,
+         |    "balancingChargeOther": 457.23,
+         |    "goodsAndServicesOwnUse": 432.9
+         |  },
+         |  "annualAllowances": {
+         |    "annualInvestmentAllowance": 564.76,
+         |    "capitalAllowanceMainPool": 456.98,
+         |    "capitalAllowanceSpecialRatePool": 352.87,
+         |    "zeroEmissionGoodsVehicleAllowance": 653.9,
+         |    "businessPremisesRenovationAllowance": 452.98,
+         |    "enhanceCapitalAllowance": 563.23,
+         |    "allowanceOnSales": 678.9,
+         |    "capitalAllowanceSingleAssetPool": 563.89,
+         |    "electricChargePointAllowance": 0,
+         |    "structuredBuildingAllowance": [
+         |      {
+         |        "amount": 564.89,
+         |        "firstYear": {
+         |          "qualifyingDate": "2019-05-29",
+         |          "qualifyingAmountExpenditure": 567.67
+         |        },
+         |        "building": {
+         |          "name": "Victoria Building",
+         |          "number": "23",
+         |          "postCode": "TF3 5GH"
+         |        }
+         |      }
+         |    ],
+         |    "enhancedStructuredBuildingAllowance": [
+         |      {
+         |        "amount": 445.56,
+         |        "firstYear": {
+         |          "qualifyingDate": "2019-09-29",
+         |          "qualifyingAmountExpenditure": 565.56
+         |        },
+         |        "building": {
+         |          "name": "Trinity House",
+         |          "number": "20",
+         |          "postCode": "TF4 7HJ"
+         |        }
+         |      }
+         |    ],
+         |    "zeroEmissionsCarAllowance": 678.78
+         |  },
+         |  "annualNonFinancials": {
+         |    "businessDetailsChangedRecently": true,
+         |    "exemptFromPayingClass4Nics": true,
+         |    "class4NicsExemptionReason": "001"
+         |  }
          |}
          |""".stripMargin)
 
@@ -120,7 +180,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
+    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear"
 
     def request(): WSRequest = {
       setupStubs()

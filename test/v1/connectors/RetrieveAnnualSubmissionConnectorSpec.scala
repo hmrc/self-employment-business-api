@@ -19,7 +19,6 @@ package v1.connectors
 import mocks.MockAppConfig
 import v1.mocks.MockHttpClient
 import v1.models.domain.Nino
-import v1.models.domain.ex.MtdNicExemption._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
 import v1.models.response.retrieveAnnual._
@@ -40,33 +39,9 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec {
   )
 
   val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
-    Some(Adjustments(
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25)
-    )),
-    Some(Allowances(
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25)
-    )),
-    Some(NonFinancials(
-      Some(Class4NicInfo(
-        Some(`non-resident`)
-      ))
-    ))
+    allowances = Some(Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Adjustments(None, None, None, None, None, None, None, None, None)),
+    nonFinancials = Some(NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
   class Test extends MockHttpClient with MockAppConfig {

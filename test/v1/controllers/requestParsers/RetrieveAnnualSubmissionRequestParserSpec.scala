@@ -21,6 +21,7 @@ import v1.mocks.validators.MockRetrieveAnnualSubmissionValidator
 import v1.models.domain.Nino
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
+import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionFixture
 
 class RetrieveAnnualSubmissionRequestParserSpec extends UnitSpec {
 

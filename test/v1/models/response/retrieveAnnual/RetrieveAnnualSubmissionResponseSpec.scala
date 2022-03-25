@@ -20,10 +20,61 @@ import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.domain.ex.MtdNicExemption
 import v1.models.hateoas.{Link, Method}
 
-class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
+class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with RetrieveAnnualSubmissionFixture with MockAppConfig {
+
+  val model: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
+    allowances = Some(Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Adjustments(None, None, None, None, None, None, None, None, None)),
+    nonFinancials = Some(NonFinancials(businessDetailsChangedRecently = true, None))
+  )
+
+  "reads" when {
+    "passed valid mtd JSON" should {
+      "return the model" in {
+        Json.parse(
+          s"""{
+             |  "allowances": {},
+             |  "adjustments": {},
+             |  "nonFinancials": {
+             |    "businessDetailsChangedRecently": true
+             |  }
+             |}
+             |""".stripMargin).as[RetrieveAnnualSubmissionResponse] shouldBe model
+      }
+    }
+
+    "passed populated JSON" should {
+      "return the corresponding model" in {
+        retrieveAnnualSubmissionBodyMtdJson().as[RetrieveAnnualSubmissionResponse] shouldBe retrieveAnnualSubmissionBody()
+      }
+    }
+  }
+
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe
+          Json.parse(
+            s"""{
+               |  "annualAllowances": {},
+               |  "annualAdjustments": {},
+               |  "annualNonFinancials": {
+               |    "businessDetailsChangedRecently": true,
+               |    "exemptFromPayingClass4Nics": false
+               |  }
+               |}
+               |""".stripMargin)
+      }
+    }
+
+    "passed a populated model" should {
+      "return the populated downstream JSON" in {
+        Json.toJson(retrieveAnnualSubmissionBody()) shouldBe retrieveAnnualSubmissionBodyDownstreamJson()
+      }
+    }
+  }
 
   val desJson: JsValue = Json.parse(
     """
@@ -90,18 +141,6 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
       |  }
       |}
     """.stripMargin
-  )
-
-  val model: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
-    Some(Adjustments(
-      Some(500.25), Some(500.25), Some(500.25), Some(500.25),
-      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25)
-    )),
-    Some(Allowances(
-      Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25), Some(500.25),
-      Some(500.25), Some(500.25), Some(500.25)
-    )),
-    Some(NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.`non-resident`)))))
   )
 
   "reads" should {

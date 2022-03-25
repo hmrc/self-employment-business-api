@@ -16,15 +16,24 @@
 
 package v1.models.response.retrieveAnnual
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-case class Class4NicInfo(exemptionCode: Option[MtdNicExemption])
+class StructuredBuildingAllowanceSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
 
-object Class4NicInfo {
-  implicit val reads: Reads[Class4NicInfo] =
-      (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd)).map {
-        exemptionReason => Class4NicInfo(exemptionReason)
+  "reads" when {
+    "passed a valid JSON" should {
+      "return the model" in {
+        structuredBuildingAllowanceMtdJson.as[StructuredBuildingAllowance] shouldBe structuredBuildingAllowance
       }
-  implicit val writes: OWrites[Class4NicInfo] = Json.writes[Class4NicInfo]
+    }
+  }
+
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(structuredBuildingAllowance) shouldBe structuredBuildingAllowanceDownstreamJson
+      }
+    }
+  }
 }
