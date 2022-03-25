@@ -19,7 +19,7 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{CreatePeriodicConnector, DesOutcome}
+import v1.connectors.{CreatePeriodicConnector, DownstreamOutcome}
 import v1.models.request.createPeriodic.CreatePeriodicRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,7 @@ trait MockCreatePeriodicConnector extends MockFactory {
 
   object MockCreatePeriodicConnector {
 
-    def createPeriodicSummary(requestData: CreatePeriodicRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+    def createPeriodicSummary(requestData: CreatePeriodicRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockCreatePeriodicConnector
         .createPeriodicSummary(_: CreatePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

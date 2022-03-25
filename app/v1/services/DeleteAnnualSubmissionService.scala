@@ -42,17 +42,25 @@ class DeleteAnnualSubmissionService @Inject()(connector: DeleteAnnualSubmissionC
       val result = for {
         desResponseWrapper <- EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDesErrors(desErrorMap))
       } yield desResponseWrapper
+
       result.value
     }
-  private def desErrorMap: Map[String, MtdError] =
+
+  private val desErrorMap: Map[String, MtdError] =
     Map(
       "INVALID_NINO" -> NinoFormatError,
-      "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
+      "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
+      "INVALID_CORRELATIONID" -> DownstreamError,
+      "INVALID_PAYLOAD" -> DownstreamError,
+      "MISSING_EXEMPTION_REASON" -> DownstreamError,
+      "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
+      "ALLOWANCE_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "NOT_FOUND" -> NotFoundError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
       "GONE" -> NotFoundError,
-      "INVALID_PAYLOAD" -> DownstreamError,
       "SERVER_ERROR" -> DownstreamError,
+      "BAD_GATEWAY" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
     )
 }

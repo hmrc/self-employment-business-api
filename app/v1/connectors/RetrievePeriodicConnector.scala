@@ -17,22 +17,23 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
 import v1.models.response.retrievePeriodic.RetrievePeriodicResponse
-import v1.connectors.httpparsers.StandardDesHttpParser._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrievePeriodicConnector @Inject()(val http: HttpClient,
-                                          val appConfig: AppConfig) extends BaseDesConnector {
+                                          val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrievePeriodicSummary(request: RetrievePeriodicRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[RetrievePeriodicResponse]] = {
+    correlationId: String): Future[DownstreamOutcome[RetrievePeriodicResponse]] = {
 
     val fromDate = request.periodId.substring(0, 10)
     val toDate = request.periodId.substring(11, 21)
