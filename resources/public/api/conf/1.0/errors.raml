@@ -178,6 +178,17 @@ traits:
                 description: The supplied date format is not valid.
                 value:
                   code: FORMAT_DATE
+  formatClass4Exemption:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClass4Exemption:
+                description: The format of the supplied Class 4 National Insurance exemption reason is not valid.
+                value:
+                  code: FORMAT_CLASS_4_EXEMPTION_REASON
   ruleBothExpensesSupplied:
     responses:
       400:
