@@ -189,7 +189,6 @@ trait RetrieveAnnualSubmissionFixture {
     s"""
        |{
        |  "businessDetailsChangedRecently": true,
-       |  "exemptFromPayingClass4Nics": true,
        |  "class4NicsExemptionReason": "001"
        |}
        |""".stripMargin)
@@ -200,19 +199,14 @@ trait RetrieveAnnualSubmissionFixture {
     Some(nonFinancials)
   )
 
-  def retrieveAnnualSubmissionBody(adjustmentsModel: Option[Adjustments] = Some(adjustments),
-                                allowancesModel: Option[Allowances] = Some(allowances),
-                                nonFinancialsModel: Option[NonFinancials] = Some(nonFinancials)): RetrieveAnnualSubmissionResponse =
-    RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
-
-  def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
-                                       allowances: Option[JsValue] = Some(allowancesMtdJson),
-                                       nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
-    JsObject(Seq(
-      adjustments.map("adjustments" -> _),
-      allowances.map("allowances" -> _),
-      nonFinancials.map("nonFinancials" -> _)
-    ).collect { case Some((a, b)) => a -> b })
+  val mtdRetrieveResponseJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "adjustments": $adjustmentsMtdJson,
+       |  "allowances": $allowancesMtdJson,
+       |  "nonFinancials": $nonFinancialsMtdJson
+       |}
+       |""".stripMargin)
 
   val downstreamRetrieveResponseJson: JsValue = Json.parse(
     s"""
@@ -223,9 +217,47 @@ trait RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
+  def mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String, businessId: String, taxYear: String): JsValue =
+    mtdRetrieveResponseJson.as[JsObject] ++ Json.parse(
+      s"""
+         |{
+         |  "links": [
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+         |      "method": "PUT",
+         |      "rel": "create-and-amend-self-employment-annual-submission"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+         |      "method": "DELETE",
+         |      "rel": "delete-self-employment-annual-submission"
+         |    }
+         |  ]
+         |}
+         |""".stripMargin).as[JsObject]
+
+  def retrieveAnnualSubmissionBody(adjustmentsModel: Option[Adjustments] = Some(adjustments),
+                                   allowancesModel: Option[Allowances] = Some(allowances),
+                                   nonFinancialsModel: Option[NonFinancials] = Some(nonFinancials)): RetrieveAnnualSubmissionResponse =
+    RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
+
+  def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
+                                          allowances: Option[JsValue] = Some(allowancesMtdJson),
+                                          nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
+    JsObject(Seq(
+      adjustments.map("adjustments" -> _),
+      allowances.map("allowances" -> _),
+      nonFinancials.map("nonFinancials" -> _)
+    ).collect { case Some((a, b)) => a -> b })
+
   def retrieveAnnualSubmissionBodyDownstreamJson(adjustments: Option[JsValue] = Some(adjustmentsDownstreamJson),
-                                              allowances: Option[JsValue] = Some(allowancesDownstreamJson),
-                                              nonFinancials: Option[JsValue] = Some(nonFinancialsDownstreamJson)): JsValue =
+                                                 allowances: Option[JsValue] = Some(allowancesDownstreamJson),
+                                                 nonFinancials: Option[JsValue] = Some(nonFinancialsDownstreamJson)): JsValue =
     JsObject(Seq(
       adjustments.map("annualAdjustments" -> _),
       allowances.map("annualAllowances" -> _),

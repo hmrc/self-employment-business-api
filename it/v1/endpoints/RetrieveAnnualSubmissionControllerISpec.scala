@@ -18,14 +18,15 @@ package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
+import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionFixture
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
+class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with RetrieveAnnualSubmissionFixture{
 
   private trait Test {
 
@@ -34,145 +35,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     val taxYear = "2021-22"
     val downstreamTaxYear = "2022"
 
-    val responseBody: JsValue = Json.parse(
-      s"""
-         |{
-         |  "adjustments": {
-         |    "includedNonTaxableProfits": 210,
-         |    "basisAdjustment": 178.23,
-         |    "overlapReliefUsed": 123.78,
-         |    "accountingAdjustment": 678.9,
-         |    "averagingAdjustment": 674.98,
-         |    "outstandingBusinessIncome": 342.67,
-         |    "balancingChargeBpra": 145.98,
-         |    "balancingChargeOther": 457.23,
-         |    "goodsAndServicesOwnUse": 432.9
-         |  },
-         |  "allowances": {
-         |    "annualInvestmentAllowance": 564.76,
-         |    "capitalAllowanceMainPool": 456.98,
-         |    "capitalAllowanceSpecialRatePool": 352.87,
-         |    "zeroEmissionsGoodsVehicleAllowance": 653.9,
-         |    "businessPremisesRenovationAllowance": 452.98,
-         |    "enhancedCapitalAllowance": 563.23,
-         |    "allowanceOnSales": 678.9,
-         |    "capitalAllowanceSingleAssetPool": 563.89,
-         |    "electricChargePointAllowance": 0,
-         |    "structuredBuildingAllowance": [
-         |      {
-         |        "amount": 564.89,
-         |        "firstYear": {
-         |          "qualifyingDate": "2019-05-29",
-         |          "qualifyingAmountExpenditure": 567.67
-         |        },
-         |        "building": {
-         |          "name": "Victoria Building",
-         |          "number": "23",
-         |          "postcode": "TF3 5GH"
-         |        }
-         |      }
-         |    ],
-         |    "enhancedStructuredBuildingAllowance": [
-         |      {
-         |        "amount": 445.56,
-         |        "firstYear": {
-         |          "qualifyingDate": "2019-09-29",
-         |          "qualifyingAmountExpenditure": 565.56
-         |        },
-         |        "building": {
-         |          "name": "Trinity House",
-         |          "number": "20",
-         |          "postcode": "TF4 7HJ"
-         |        }
-         |      }
-         |    ],
-         |    "zeroEmissionsCarAllowance": 678.78
-         |  },
-         |  "nonFinancials": {
-         |    "businessDetailsChangedRecently": true,
-         |    "class4NicsExemptionReason": "non-resident"
-         |  },
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
-         |      "rel": "create-and-amend-self-employment-annual-submission",
-         |      "method": "PUT"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
-         |      "rel": "self",
-         |      "method": "GET"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
-         |      "rel": "delete-self-employment-annual-submission",
-         |      "method": "DELETE"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin)
-
-    val desResponseBody: JsValue = Json.parse(
-      s"""
-         |{
-         |  "annualAdjustments": {
-         |    "includedNonTaxableProfits": 210,
-         |    "basisAdjustment": 178.23,
-         |    "overlapReliefUsed": 123.78,
-         |    "accountingAdjustment": 678.9,
-         |    "averagingAdjustment": 674.98,
-         |    "lossBroughtForward": 124.78,
-         |    "outstandingBusinessIncome": 342.67,
-         |    "balancingChargeBpra": 145.98,
-         |    "balancingChargeOther": 457.23,
-         |    "goodsAndServicesOwnUse": 432.9
-         |  },
-         |  "annualAllowances": {
-         |    "annualInvestmentAllowance": 564.76,
-         |    "capitalAllowanceMainPool": 456.98,
-         |    "capitalAllowanceSpecialRatePool": 352.87,
-         |    "zeroEmissionGoodsVehicleAllowance": 653.9,
-         |    "businessPremisesRenovationAllowance": 452.98,
-         |    "enhanceCapitalAllowance": 563.23,
-         |    "allowanceOnSales": 678.9,
-         |    "capitalAllowanceSingleAssetPool": 563.89,
-         |    "electricChargePointAllowance": 0,
-         |    "structuredBuildingAllowance": [
-         |      {
-         |        "amount": 564.89,
-         |        "firstYear": {
-         |          "qualifyingDate": "2019-05-29",
-         |          "qualifyingAmountExpenditure": 567.67
-         |        },
-         |        "building": {
-         |          "name": "Victoria Building",
-         |          "number": "23",
-         |          "postCode": "TF3 5GH"
-         |        }
-         |      }
-         |    ],
-         |    "enhancedStructuredBuildingAllowance": [
-         |      {
-         |        "amount": 445.56,
-         |        "firstYear": {
-         |          "qualifyingDate": "2019-09-29",
-         |          "qualifyingAmountExpenditure": 565.56
-         |        },
-         |        "building": {
-         |          "name": "Trinity House",
-         |          "number": "20",
-         |          "postCode": "TF4 7HJ"
-         |        }
-         |      }
-         |    ],
-         |    "zeroEmissionsCarAllowance": 678.78
-         |  },
-         |  "annualNonFinancials": {
-         |    "businessDetailsChangedRecently": true,
-         |    "class4NicsExemptionReason": "001"
-         |  }
-         |}
-         |""".stripMargin)
+    val requestDESBodyJson: JsValue = downstreamRetrieveResponseJson
 
     def setupStubs(): StubMapping
 
@@ -205,12 +68,12 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUri, Status.OK, desResponseBody)
+          DesStub.onSuccess(DesStub.GET, desUri, OK, requestDESBodyJson)
         }
 
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.OK
-        response.json shouldBe responseBody
+        response.status shouldBe OK
+        response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String, businessId: String, taxYear: String )
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
@@ -240,11 +103,11 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA123", "XAIS12345678910", "2021-22", Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", "2021-22", Status.BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2020", Status.BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2020-22", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "XAIS12345678910", "2016-17", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+          ("AA123", "XAIS12345678910", "2021-22", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2021-22", BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2020", BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "2020-22", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+          ("AA123456A", "XAIS12345678910", "2016-17", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -268,12 +131,12 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE", Status.BAD_REQUEST, BusinessIdFormatError),
-          (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
-          (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
