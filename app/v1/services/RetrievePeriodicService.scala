@@ -16,15 +16,13 @@
 
 package v1.services
 
-import cats.data.EitherT
 import cats.implicits._
-
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.RetrievePeriodicConnector
 import v1.controllers.EndpointLogContext
-import v1.models.errors.{BusinessIdFormatError, DownstreamError, NinoFormatError, NotFoundError, PeriodIdFormatError}
+import v1.models.errors._
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
 import v1.models.response.retrievePeriodic.RetrievePeriodicResponse
 import v1.support.DesResponseMappingSupport
@@ -41,11 +39,7 @@ class RetrievePeriodicService @Inject()(connector: RetrievePeriodicConnector)
     logContext: EndpointLogContext,
     correlationId: String): Future[ServiceOutcome[RetrievePeriodicResponse]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.retrievePeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))
-    } yield desResponseWrapper
-
-    result.value
+    connector.retrievePeriodicSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap =

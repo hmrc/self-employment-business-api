@@ -16,7 +16,6 @@
 
 package v1.services
 
-import cats.data.EitherT
 import cats.implicits._
 
 import javax.inject.{Inject, Singleton}
@@ -41,11 +40,7 @@ class ListPeriodicService @Inject()(connector: ListPeriodicConnector)
                                       logContext: EndpointLogContext,
                                       correlationId: String): Future[ServiceOutcome[ListPeriodicResponse[PeriodDetails]]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.listPeriods(request)).leftMap(mapDesErrors(desErrorMap))
-    } yield desResponseWrapper
-
-    result.value
+    connector.listPeriods(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap =

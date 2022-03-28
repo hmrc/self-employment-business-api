@@ -129,9 +129,15 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
           (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
+          (FORBIDDEN, "MISSING_EXEMPTION_REASON", INTERNAL_SERVER_ERROR, DownstreamError),
+          (FORBIDDEN, "MISSING_EXEMPTION_INDICATOR", INTERNAL_SERVER_ERROR, DownstreamError),
+          (FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (GONE, "GONE", NOT_FOUND, NotFoundError),
+          (GONE, "GONE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, DownstreamError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError))
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

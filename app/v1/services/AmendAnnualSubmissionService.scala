@@ -16,11 +16,10 @@
 
 package v1.services
 
-import cats.data.EitherT
 import cats.implicits._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.AmendAnnualSummaryConnector
+import v1.connectors.AmendAnnualSubmissionConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -31,19 +30,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector) extends DesResponseMappingSupport with Logging {
+class AmendAnnualSubmissionService @Inject()(connector: AmendAnnualSubmissionConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
+  def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     logContext: EndpointLogContext,
     correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.amendAnnualSummary(request)).leftMap(mapDesErrors(desErrorMap))
-    } yield desResponseWrapper
-
-    result.value
+    connector.amendAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(
@@ -51,9 +46,15 @@ class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector
     "INVALID_TAX_YEAR" -> TaxYearFormatError,
     "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
     "INVALID_PAYLOAD" -> DownstreamError,
+    "INVALID_CORRELATIONID" -> DownstreamError,
+    "MISSING_EXEMPTION_REASON" -> DownstreamError,
+    "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
+    "ALLOWANCE_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+    "NOT_FOUND" -> NotFoundError,
     "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-    "GONE" -> NotFoundError,
+    "GONE" -> DownstreamError,
     "SERVER_ERROR" -> DownstreamError,
+    "BAD_GATEWAY" -> DownstreamError,
     "SERVICE_UNAVAILABLE" -> DownstreamError
   )
 }

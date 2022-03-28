@@ -16,7 +16,6 @@
 
 package v1.services
 
-import cats.data.EitherT
 import cats.implicits._
 
 import javax.inject.{Inject, Singleton}
@@ -41,11 +40,9 @@ class RetrieveAnnualSubmissionService @Inject()(connector: RetrieveAnnualSubmiss
                                          logContext: EndpointLogContext,
                                          correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
-      val result = for {
-        desResponseWrapper <- EitherT(connector.retrieveAnnualSubmission(request)).leftMap(mapDesErrors(desErrorMap))
-      } yield desResponseWrapper
 
-      result.value
+      connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+
     }
 
   private def desErrorMap =

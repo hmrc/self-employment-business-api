@@ -17,7 +17,7 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockAmendAnnualSummaryConnector
+import v1.mocks.connectors.MockAmendAnnualSubmissionConnector
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -25,7 +25,8 @@ import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnua
 
 import scala.concurrent.Future
 
-class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
+class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
+
 
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -41,33 +42,35 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
     body = requestBody
   )
 
-  trait Test extends MockAmendAnnualSummaryConnector {
+
+
+  trait Test extends MockAmendAnnualSubmissionConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new AmendAnnualSummaryService(
-      connector = mockAmendAnnualSummaryConnector
+    val service = new AmendAnnualSubmissionService(
+      connector = mockAmendAnnualSubmissionConnector
     )
   }
 
-  "AmendAnnualSummaryService" when {
+  "AmendAnnualSubmissionService" when {
     "amendAnnualSubmission" must {
       "return correct result for a success" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
+        MockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
           .returns(Future.successful(outcome))
 
-        await(service.amendAnnualSummary(requestData)) shouldBe outcome
+        await(service.amendAnnualSubmission(requestData)) shouldBe outcome
       }
 
       "map errors according to spec" when {
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
+            MockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.amendAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.amendAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(
@@ -75,9 +78,15 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec with AmendAnnualSubmissi
           ("INVALID_TAX_YEAR", TaxYearFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
           ("INVALID_PAYLOAD", DownstreamError),
+          ("INVALID_CORRELATIONID", DownstreamError),
+          ("MISSING_EXEMPTION_REASON", DownstreamError),
+          ("MISSING_EXEMPTION_INDICATOR", DownstreamError),
+          ("ALLOWANCE_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+          ("NOT_FOUND", NotFoundError),
           ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
-          ("GONE", NotFoundError),
+          ("GONE", DownstreamError),
           ("SERVER_ERROR", DownstreamError),
+          ("BAD_GATEWAY", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)
         )
 

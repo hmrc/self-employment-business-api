@@ -23,19 +23,19 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
-import v1.services.AmendAnnualSummaryService
+import v1.services.AmendAnnualSubmissionService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendAnnualSummaryService extends MockFactory {
+trait MockAmendAnnualSubmissionService extends MockFactory {
 
-  val mockAmendAnnualSummaryService: AmendAnnualSummaryService = mock[AmendAnnualSummaryService]
+  val mockAmendAnnualSubmissionService: AmendAnnualSubmissionService = mock[AmendAnnualSubmissionService]
 
-  object MockAmendAnnualSummaryService {
+  object MockAmendAnnualSubmissionService {
 
-    def amendAnnualSummary(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockAmendAnnualSummaryService
-        .amendAnnualSummary(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+    def amendAnnualSubmission(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockAmendAnnualSubmissionService
+        .amendAnnualSubmission(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
   }

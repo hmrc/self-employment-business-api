@@ -17,20 +17,20 @@
 package v1.connectors
 
 import config.AppConfig
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.DesUri
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
-
 import javax.inject.{Inject, Singleton}
+import v1.connectors.DownstreamUri.DesUri
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
-                                            val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendAnnualSubmissionConnector @Inject()(val http: HttpClient,
+                                               val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendAnnualSummary(request: AmendAnnualSubmissionRequest)(
+  def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
     correlationId: String): Future[DownstreamOutcome[Unit]] = {
@@ -40,6 +40,7 @@ class AmendAnnualSummaryConnector @Inject()(val http: HttpClient,
     val businessId = request.businessId.value
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
+
 
     put(
       body = request.body,
