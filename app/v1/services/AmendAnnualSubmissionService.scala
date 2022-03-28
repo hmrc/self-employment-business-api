@@ -40,7 +40,7 @@ class AmendAnnualSubmissionService @Inject()(connector: AmendAnnualSubmissionCon
     correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.amendAnnualSubmission(request)).leftMap(mapDesErrors(desErrorMap))
+      desResponseWrapper <- EitherT(connector.amendAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap))))
     } yield desResponseWrapper
 
     result.value

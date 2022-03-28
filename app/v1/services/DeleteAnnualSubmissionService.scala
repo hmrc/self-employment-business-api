@@ -40,7 +40,7 @@ class DeleteAnnualSubmissionService @Inject()(connector: DeleteAnnualSubmissionC
                                          correlationId: String): Future[ServiceOutcome[Unit]] = {
 
       val result = for {
-        desResponseWrapper <- EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDesErrors(desErrorMap))
+        desResponseWrapper <- EitherT(connector.deleteAnnualSubmission(request)map(_.leftMap(mapDesErrors(desErrorMap))))
       } yield desResponseWrapper
 
       result.value

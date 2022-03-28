@@ -42,7 +42,7 @@ class RetrieveAnnualSubmissionService @Inject()(connector: RetrieveAnnualSubmiss
                                          correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
       val result = for {
-        desResponseWrapper <- EitherT(connector.retrieveAnnualSubmission(request)).leftMap(mapDesErrors(desErrorMap))
+        desResponseWrapper <- EitherT(connector.retrieveAnnualSubmission(request)map(_.leftMap(mapDesErrors(desErrorMap))))
       } yield desResponseWrapper
 
       result.value

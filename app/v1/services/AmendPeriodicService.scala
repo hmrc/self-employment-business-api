@@ -40,7 +40,7 @@ class AmendPeriodicService @Inject()(connector: AmendPeriodicConnector) extends 
     correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.amendPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))
+      desResponseWrapper <- EitherT(connector.amendPeriodicSummary(request)map(_.leftMap(mapDesErrors(desErrorMap))))
     } yield desResponseWrapper
 
     result.value

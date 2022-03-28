@@ -41,7 +41,7 @@ class CreatePeriodicService @Inject()(connector: CreatePeriodicConnector) extend
                     correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))
+      desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)map(_.leftMap(mapDesErrors(desErrorMap))))
       mtdResponseWrapper <- EitherT.fromEither[Future](createPeriodId(desResponseWrapper, request.body.periodFromDate, request.body.periodToDate))
     } yield mtdResponseWrapper
 

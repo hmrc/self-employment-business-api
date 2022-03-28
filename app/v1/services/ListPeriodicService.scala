@@ -42,7 +42,7 @@ class ListPeriodicService @Inject()(connector: ListPeriodicConnector)
                                       correlationId: String): Future[ServiceOutcome[ListPeriodicResponse[PeriodDetails]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.listPeriods(request)).leftMap(mapDesErrors(desErrorMap))
+      desResponseWrapper <- EitherT(connector.listPeriods(request)map(_.leftMap(mapDesErrors(desErrorMap))))
     } yield desResponseWrapper
 
     result.value
