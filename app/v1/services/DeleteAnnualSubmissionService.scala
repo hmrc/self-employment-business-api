@@ -16,7 +16,6 @@
 
 package v1.services
 
-import cats.data.EitherT
 import utils.Logging
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
