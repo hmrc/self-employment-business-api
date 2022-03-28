@@ -30,15 +30,16 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
     nonFinancials = Some(NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
-  "writes" when {
-    "passed valid mtd JSON" should {
-      "return the model" in {
+  "reads" should {
+    "return a valid model" when {
+      "passed valid JSON" in {
         Json.parse(
           s"""{
-             |  "allowances": {},
-             |  "adjustments": {},
-             |  "nonFinancials": {
-             |    "businessDetailsChangedRecently": true
+             |  "annualAllowances": {},
+             |  "annualAdjustments": {},
+             |  "annualNonFinancials": {
+             |    "businessDetailsChangedRecently": true,
+             |    "exemptFromPayingClass4Nics": false
              |  }
              |}
              |""".stripMargin).as[RetrieveAnnualSubmissionResponse] shouldBe model
@@ -46,17 +47,16 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
     }
   }
 
-  "reads" when {
-    "passed a model" should {
-      "return downstream JSON" in {
+  "writes" should {
+    "return valid JSON" when {
+      "passed a valid model" in {
         Json.toJson(model) shouldBe
           Json.parse(
             s"""{
-               |  "annualAllowances": {},
-               |  "annualAdjustments": {},
-               |  "annualNonFinancials": {
-               |    "businessDetailsChangedRecently": true,
-               |    "exemptFromPayingClass4Nics": false
+               |  "allowances": {},
+               |  "adjustments": {},
+               |  "nonFinancials": {
+               |    "businessDetailsChangedRecently": true
                |  }
                |}
                |""".stripMargin)

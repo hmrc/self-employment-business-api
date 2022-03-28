@@ -194,6 +194,12 @@ trait RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
+  val retrieveResponseModel: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
+    Some(adjustments),
+    Some(allowances),
+    Some(nonFinancials)
+  )
+
   def retrieveAnnualSubmissionBody(adjustmentsModel: Option[Adjustments] = Some(adjustments),
                                 allowancesModel: Option[Allowances] = Some(allowances),
                                 nonFinancialsModel: Option[NonFinancials] = Some(nonFinancials)): RetrieveAnnualSubmissionResponse =
@@ -207,6 +213,15 @@ trait RetrieveAnnualSubmissionFixture {
       allowances.map("allowances" -> _),
       nonFinancials.map("nonFinancials" -> _)
     ).collect { case Some((a, b)) => a -> b })
+
+  val downstreamRetrieveResponseJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "adjustments": $adjustmentsDownstreamJson,
+       |  "allowances": $allowancesDownstreamJson,
+       |  "nonFinancials": $nonFinancialsDownstreamJson
+       |}
+       |""".stripMargin)
 
   def retrieveAnnualSubmissionBodyDownstreamJson(adjustments: Option[JsValue] = Some(adjustmentsDownstreamJson),
                                               allowances: Option[JsValue] = Some(allowancesDownstreamJson),
