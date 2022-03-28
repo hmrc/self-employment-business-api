@@ -39,11 +39,7 @@ class AmendAnnualSubmissionService @Inject()(connector: AmendAnnualSubmissionCon
     logContext: EndpointLogContext,
     correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.amendAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap))))
-    } yield desResponseWrapper
-
-    result.value
+    connector.amendAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(

@@ -39,11 +39,7 @@ class AmendPeriodicService @Inject()(connector: AmendPeriodicConnector) extends 
     logContext: EndpointLogContext,
     correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.amendPeriodicSummary(request)map(_.leftMap(mapDesErrors(desErrorMap))))
-    } yield desResponseWrapper
-
-    result.value
+    connector.amendPeriodicSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(

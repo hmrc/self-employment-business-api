@@ -41,11 +41,7 @@ class RetrievePeriodicService @Inject()(connector: RetrievePeriodicConnector)
     logContext: EndpointLogContext,
     correlationId: String): Future[ServiceOutcome[RetrievePeriodicResponse]] = {
 
-    val result = for {
-      desResponseWrapper <- EitherT(connector.retrievePeriodicSummary(request)map(_.leftMap(mapDesErrors(desErrorMap))))
-    } yield desResponseWrapper
-
-    result.value
+    connector.retrievePeriodicSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap =

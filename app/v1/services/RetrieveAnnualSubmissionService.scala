@@ -41,11 +41,9 @@ class RetrieveAnnualSubmissionService @Inject()(connector: RetrieveAnnualSubmiss
                                          logContext: EndpointLogContext,
                                          correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
-      val result = for {
-        desResponseWrapper <- EitherT(connector.retrieveAnnualSubmission(request)map(_.leftMap(mapDesErrors(desErrorMap))))
-      } yield desResponseWrapper
 
-      result.value
+      connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+
     }
 
   private def desErrorMap =
