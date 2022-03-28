@@ -53,7 +53,7 @@ class AmendAnnualSubmissionControllerSpec
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
-    val controller = new AmendAnnualSummaryController(
+    val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       parser = mockAmendSelfEmploymentAnnualSummaryRequestParser,

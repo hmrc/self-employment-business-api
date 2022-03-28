@@ -33,7 +33,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
+class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
                                              val lookupService: MtdIdLookupService,
                                              parser: AmendSelfEmploymentAnnualSummaryRequestParser,
                                              service: AmendAnnualSubmissionService,
