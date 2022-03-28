@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.domain.ex.MtdNicExemption
 
-class NonFinancialsSpec extends UnitSpec {
+class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
 
   "reads" should {
     "passed valid mtd JSON" should {
@@ -41,17 +41,14 @@ class NonFinancialsSpec extends UnitSpec {
     }
 
     "writes" when {
-      "there is an exemption reason" must {
-        "set exemptFromPayingClass4Nics false" in {
-          Json.toJson(NonFinancials(
-            businessDetailsChangedRecently = true,
-            class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
+      "passed a model" must {
+        "return json" in {
+          Json.toJson(nonFinancialsMtdJson) shouldBe
             Json.parse(
               s"""
                  |{
-                 |  "businessDetailsChangedRecently": true,
-                 |  "exemptFromPayingClass4Nics": true,
-                 |  "class4NicsExemptionReason": "001"
+                 |    "businessDetailsChangedRecently": true,
+                 |    "class4NicsExemptionReason": "non-resident"
                  |}
                  |""".stripMargin)
         }
@@ -65,8 +62,7 @@ class NonFinancialsSpec extends UnitSpec {
             Json.parse(
               s"""
                  |{
-                 |  "businessDetailsChangedRecently": true,
-                 |  "exemptFromPayingClass4Nics": false
+                 |  "businessDetailsChangedRecently": true
                  |}
                  |""".stripMargin)
         }

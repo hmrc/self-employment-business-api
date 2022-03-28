@@ -38,8 +38,7 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
              |  "annualAllowances": {},
              |  "annualAdjustments": {},
              |  "annualNonFinancials": {
-             |    "businessDetailsChangedRecently": true,
-             |    "exemptFromPayingClass4Nics": false
+             |    "businessDetailsChangedRecently": true
              |  }
              |}
              |""".stripMargin).as[RetrieveAnnualSubmissionResponse] shouldBe model

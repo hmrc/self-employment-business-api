@@ -38,27 +38,26 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
       s"""
          |{
          |  "adjustments": {
-         |    "includedNonTaxableProfits": 200.00,
-         |    "basisAdjustment": 200.00,
-         |    "overlapReliefUsed": 200.00,
-         |    "accountingAdjustment": 200.00,
-         |    "averagingAdjustment": 200.00,
-         |    "outstandingBusinessIncome": 200.00,
-         |    "balancingChargeBpra": 200.00,
-         |    "balancingChargeOther": 200.00,
-         |    "goodsAndServicesOwnUse": 200.00
+         |    "includedNonTaxableProfits": 210,
+         |    "basisAdjustment": 178.23,
+         |    "overlapReliefUsed": 123.78,
+         |    "accountingAdjustment": 678.9,
+         |    "averagingAdjustment": 674.98,
+         |    "outstandingBusinessIncome": 342.67,
+         |    "balancingChargeBpra": 145.98,
+         |    "balancingChargeOther": 457.23,
+         |    "goodsAndServicesOwnUse": 432.9
          |  },
          |  "allowances": {
-         |    "annualInvestmentAllowance": 200.00,
-         |    "capitalAllowanceMainPool": 200.00,
-         |    "capitalAllowanceSpecialRatePool": 200.00,
-         |    "zeroEmissionsGoodsVehicleAllowance": 200.00,
-         |    "businessPremisesRenovationAllowance": 200.00,
-         |    "enhancedCapitalAllowance": 200.00,
-         |    "allowanceOnSales": 200.00,
-         |    "capitalAllowanceSingleAssetPool": 200.00,
-         |    "electricChargePointAllowance": 200.00,
-         |    "zeroEmissionsCarAllowance": 200.00,
+         |    "annualInvestmentAllowance": 564.76,
+         |    "capitalAllowanceMainPool": 456.98,
+         |    "capitalAllowanceSpecialRatePool": 352.87,
+         |    "zeroEmissionsGoodsVehicleAllowance": 653.9,
+         |    "businessPremisesRenovationAllowance": 452.98,
+         |    "enhancedCapitalAllowance": 563.23,
+         |    "allowanceOnSales": 678.9,
+         |    "capitalAllowanceSingleAssetPool": 563.89,
+         |    "electricChargePointAllowance": 0,
          |    "structuredBuildingAllowance": [
          |      {
          |        "amount": 564.89,
@@ -170,7 +169,6 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
          |  },
          |  "annualNonFinancials": {
          |    "businessDetailsChangedRecently": true,
-         |    "exemptFromPayingClass4Nics": true,
          |    "class4NicsExemptionReason": "001"
          |  }
          |}
@@ -209,7 +207,6 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
           DesStub.onSuccess(DesStub.GET, desUri, Status.OK, desResponseBody)
         }
-
 
         val response: WSResponse = await(request().get())
         response.status shouldBe Status.OK
