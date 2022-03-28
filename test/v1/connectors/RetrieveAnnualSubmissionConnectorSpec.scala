@@ -25,7 +25,7 @@ import v1.models.response.retrieveAnnual._
 
 import scala.concurrent.Future
 
-class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec {
+class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveAnnualSubmissionFixture {
 
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -39,9 +39,9 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec {
   )
 
   val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
-    allowances = Some(Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Adjustments(None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(NonFinancials(businessDetailsChangedRecently = true, None))
+    adjustments = Some(adjustments),
+    allowances = Some(allowances),
+    nonFinancials = Some(nonFinancials)
   )
 
   class Test extends MockHttpClient with MockAppConfig {

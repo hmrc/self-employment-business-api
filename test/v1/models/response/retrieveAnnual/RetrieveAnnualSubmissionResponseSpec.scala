@@ -17,12 +17,12 @@
 package v1.models.response.retrieveAnnual
 
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import support.UnitSpec
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{Link, Method}
 
-class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with RetrieveAnnualSubmissionFixture with MockAppConfig {
+class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with RetrieveAnnualSubmissionFixture {
 
   val model: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
     allowances = Some(Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
@@ -30,7 +30,7 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with RetrieveAnnualS
     nonFinancials = Some(NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
-  "reads" when {
+  "writes" when {
     "passed valid mtd JSON" should {
       "return the model" in {
         Json.parse(
@@ -44,15 +44,9 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with RetrieveAnnualS
              |""".stripMargin).as[RetrieveAnnualSubmissionResponse] shouldBe model
       }
     }
-
-    "passed populated JSON" should {
-      "return the corresponding model" in {
-        retrieveAnnualSubmissionBodyMtdJson().as[RetrieveAnnualSubmissionResponse] shouldBe retrieveAnnualSubmissionBody()
-      }
-    }
   }
 
-  "writes" when {
+  "reads" when {
     "passed a model" should {
       "return downstream JSON" in {
         Json.toJson(model) shouldBe
@@ -66,95 +60,6 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with RetrieveAnnualS
                |  }
                |}
                |""".stripMargin)
-      }
-    }
-
-    "passed a populated model" should {
-      "return the populated downstream JSON" in {
-        Json.toJson(retrieveAnnualSubmissionBody()) shouldBe retrieveAnnualSubmissionBodyDownstreamJson()
-      }
-    }
-  }
-
-  val desJson: JsValue = Json.parse(
-    """
-      |{
-      |  "annualAdjustments": {
-      |    "includedNonTaxableProfits": 500.25,
-      |    "basisAdjustment": 500.25,
-      |    "overlapReliefUsed": 500.25,
-      |    "accountingAdjustment": 500.25,
-      |    "averagingAdjustment": 500.25,
-      |    "outstandingBusinessIncome": 500.25,
-      |    "balancingChargeBpra": 500.25,
-      |    "balancingChargeOther": 500.25,
-      |    "goodsAndServicesOwnUse": 500.25
-      |  },
-      |  "annualAllowances": {
-      |    "annualInvestmentAllowance": 500.25,
-      |    "businessPremisesRenovationAllowance": 500.25,
-      |    "capitalAllowanceMainPool": 500.25,
-      |    "capitalAllowanceSpecialRatePool": 500.25,
-      |    "zeroEmissionGoodsVehicleAllowance": 500.25,
-      |    "enhanceCapitalAllowance": 500.25,
-      |    "allowanceOnSales": 500.25,
-      |    "capitalAllowanceSingleAssetPool": 500.25,
-      |    "tradingIncomeAllowance":  500.25
-      |  },
-      |  "annualNonFinancials": {
-      |    "exemptFromPayingClass4Nics": true,
-      |    "class4NicsExemptionReason": "001"
-      |  }
-      |}
-    """.stripMargin
-  )
-
-  val mtdJson: JsValue = Json.parse(
-    """
-      |{
-      |  "adjustments": {
-      |    "includedNonTaxableProfits": 500.25,
-      |    "basisAdjustment": 500.25,
-      |    "overlapReliefUsed":500.25,
-      |    "accountingAdjustment": 500.25,
-      |    "averagingAdjustment": 500.25,
-      |    "outstandingBusinessIncome": 500.25,
-      |    "balancingChargeBPRA": 500.25,
-      |    "balancingChargeOther":500.25,
-      |    "goodsAndServicesOwnUse": 500.25
-      |  },
-      |  "allowances": {
-      |    "annualInvestmentAllowance": 500.25,
-      |    "capitalAllowanceMainPool": 500.25,
-      |    "capitalAllowanceSpecialRatePool":500.25,
-      |    "zeroEmissionGoodsVehicleAllowance": 500.25,
-      |    "businessPremisesRenovationAllowance": 500.25,
-      |    "enhancedCapitalAllowance": 500.25,
-      |    "allowanceOnSales": 500.25,
-      |    "capitalAllowanceSingleAssetPool": 500.25,
-      |    "tradingAllowance": 500.25
-      |  },
-      |  "nonFinancials": {
-      |    "class4NicInfo": {
-      |      "exemptionCode": "non-resident"
-      |    }
-      |  }
-      |}
-    """.stripMargin
-  )
-
-  "reads" should {
-    "return a model" when {
-      "passed valid json" in {
-        desJson.as[RetrieveAnnualSubmissionResponse] shouldBe model
-      }
-    }
-  }
-
-  "writes" should {
-    "return json" when {
-      "passed a model" in {
-        Json.toJson(model) shouldBe mtdJson
       }
     }
   }
