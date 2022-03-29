@@ -24,7 +24,6 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveAnnualSubmissionRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveAnnualSubmissionService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.domain.ex.MtdNicExemption
 import v1.models.errors._
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
@@ -42,7 +41,8 @@ class RetrieveAnnualSubmissionControllerSpec extends ControllerBaseSpec
   with MockRetrieveAnnualSubmissionRequestParser
   with MockHateoasFactory
   with MockAuditService
-  with MockIdGenerator {
+  with MockIdGenerator
+  with RetrieveAnnualSubmissionFixture {
 
   private val nino = "AA123456A"
   private val businessId = "XAIS12345678910"
@@ -71,16 +71,6 @@ class RetrieveAnnualSubmissionControllerSpec extends ControllerBaseSpec
   private val requestData = RetrieveAnnualSubmissionRequest(Nino(nino), businessId, taxYear)
 
   private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/annual/$taxYear", method = GET, rel = "self")
-
-  private val adjustments = Adjustments(
-    Some(1000), Some(1000), Some(1000), Some(1000),
-    Some(1000), Some(1000), Some(1000), Some(1000), Some(1000)
-  )
-  private val allowances = Allowances(
-    Some(1000), Some(1000), Some(1000), Some(1000), Some(1000),
-    Some(1000), Some(1000), Some(1000), Some(1000)
-  )
-  private val nonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.trustee))))
 
   val responseBody: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
     adjustments = Some(adjustments),

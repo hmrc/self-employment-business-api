@@ -20,24 +20,52 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.domain.ex.MtdNicExemption
 
-class NonFinancialsSpec extends UnitSpec {
+class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
 
-  val mtdJson: JsValue = Json.parse(
-    """
-      |{
-      |  "class4NicInfo": {
-      |    "exemptionCode": "non-resident"
-      |  }
-      |}
-    """.stripMargin
-  )
+  "reads" should {
+    "passed a valid JSON" should {
+      "return the model" in {
+        val requestJson: JsValue = Json.parse(
+          s"""
+             |{
+             |  "businessDetailsChangedRecently": true,
+             |  "class4NicsExemptionReason": "001"
+             |}
+             |""".stripMargin)
 
-  val model: NonFinancials = NonFinancials(Some(Class4NicInfo(Some(MtdNicExemption.`non-resident`))))
+        requestJson.as[NonFinancials] shouldBe NonFinancials(
+          businessDetailsChangedRecently = true,
+          class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
+        )
+      }
+    }
 
-  "writes" should {
-    "return json" when {
-      "passed a model" in {
-        Json.toJson(model) shouldBe mtdJson
+    "writes" when {
+      "passed a model" must {
+        "return json" in {
+          Json.toJson(nonFinancialsMtdJson) shouldBe
+            Json.parse(
+              s"""
+                 |{
+                 |    "businessDetailsChangedRecently": true,
+                 |    "class4NicsExemptionReason": "non-resident"
+                 |}
+                 |""".stripMargin)
+        }
+      }
+
+      "there is no exemption reason" must {
+        "set exemptFromPayingClass4Nics true" in {
+          Json.toJson(NonFinancials(
+            businessDetailsChangedRecently = true,
+            class4NicsExemptionReason = None)) shouldBe
+            Json.parse(
+              s"""
+                 |{
+                 |  "businessDetailsChangedRecently": true
+                 |}
+                 |""".stripMargin)
+        }
       }
     }
   }

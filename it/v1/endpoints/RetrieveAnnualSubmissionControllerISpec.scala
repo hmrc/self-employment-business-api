@@ -18,109 +18,30 @@ package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
+import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionFixture
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
-class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
+class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with RetrieveAnnualSubmissionFixture{
 
   private trait Test {
 
     val nino = "AA123456A"
     val businessId = "XAIS12345678910"
     val taxYear = "2021-22"
-    val desTaxYear = "2022"
+    val downstreamTaxYear = "2022"
 
-    val responseBody: JsValue = Json.parse(
-      s"""
-         |{
-         |  "adjustments": {
-         |    "includedNonTaxableProfits": 200.00,
-         |    "basisAdjustment": 200.00,
-         |    "overlapReliefUsed": 200.00,
-         |    "accountingAdjustment": 200.00,
-         |    "averagingAdjustment": 200.00,
-         |    "outstandingBusinessIncome": 200.00,
-         |    "balancingChargeBPRA": 200.00,
-         |    "balancingChargeOther": 200.00,
-         |    "goodsAndServicesOwnUse": 200.00
-         |  },
-         |  "allowances": {
-         |    "annualInvestmentAllowance": 200.00,
-         |    "capitalAllowanceMainPool": 200.00,
-         |    "capitalAllowanceSpecialRatePool": 200.00,
-         |    "zeroEmissionGoodsVehicleAllowance": 200.00,
-         |    "businessPremisesRenovationAllowance": 200.00,
-         |    "enhancedCapitalAllowance": 200.00,
-         |    "allowanceOnSales": 200.00,
-         |    "capitalAllowanceSingleAssetPool": 200.00,
-         |    "tradingAllowance": 200.00
-         |  },
-         |  "nonFinancials": {
-         |    "class4NicInfo": {
-         |      "exemptionCode": "trustee"
-         |    }
-         |  },
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "rel": "create-and-amend-self-employment-annual-submission",
-         |      "method": "PUT"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "rel": "self",
-         |      "method": "GET"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "rel": "delete-self-employment-annual-submission",
-         |      "method": "DELETE"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin)
-
-    val desResponseBody: JsValue = Json.parse(
-      s"""
-         |{
-         |   "annualAdjustments": {
-         |      "includedNonTaxableProfits": 200.00,
-         |      "basisAdjustment": 200.00,
-         |      "overlapReliefUsed": 200.00,
-         |      "accountingAdjustment": 200.00,
-         |      "averagingAdjustment": 200.00,
-         |      "outstandingBusinessIncome": 200.00,
-         |      "balancingChargeBpra": 200.00,
-         |      "balancingChargeOther": 200.00,
-         |      "goodsAndServicesOwnUse": 200.00
-         |   },
-         |   "annualAllowances": {
-         |      "annualInvestmentAllowance": 200.00,
-         |      "capitalAllowanceMainPool": 200.00,
-         |      "capitalAllowanceSpecialRatePool": 200.00,
-         |      "zeroEmissionGoodsVehicleAllowance": 200.00,
-         |      "businessPremisesRenovationAllowance": 200.00,
-         |      "enhanceCapitalAllowance": 200.00,
-         |      "allowanceOnSales": 200.00,
-         |      "capitalAllowanceSingleAssetPool": 200.00,
-         |      "tradingIncomeAllowance":  200.00
-         |   },
-         |   "annualNonFinancials": {
-         |      "exemptFromPayingClass4Nics": true,
-         |      "class4NicsExemptionReason": "002"
-         |   }
-         |}
-         |""".stripMargin)
+    val requestDESBodyJson: JsValue = downstreamRetrieveResponseJson
 
     def setupStubs(): StubMapping
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
+    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear"
 
     def request(): WSRequest = {
       setupStubs()
@@ -147,13 +68,12 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUri, Status.OK, desResponseBody)
+          DesStub.onSuccess(DesStub.GET, desUri, OK, requestDESBodyJson)
         }
 
-
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.OK
-        response.json shouldBe responseBody
+        response.status shouldBe OK
+        response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String, businessId: String, taxYear: String )
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
@@ -183,11 +103,11 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA123", "XAIS12345678910", "2021-22", Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", "2021-22", Status.BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2020", Status.BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2020-22", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "XAIS12345678910", "2016-17", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+          ("AA123", "XAIS12345678910", "2021-22", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2021-22", BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2020", BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "2020-22", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+          ("AA123456A", "XAIS12345678910", "2016-17", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -211,12 +131,12 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE", Status.BAD_REQUEST, BusinessIdFormatError),
-          (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
-          (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

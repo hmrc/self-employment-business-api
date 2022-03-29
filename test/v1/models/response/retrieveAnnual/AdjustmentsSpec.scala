@@ -16,67 +16,60 @@
 
 package v1.models.response.retrieveAnnual
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import support.UnitSpec
 
 class AdjustmentsSpec extends UnitSpec {
 
-  val desJson: JsValue = Json.parse(
-    """
-      |{
-      |  "includedNonTaxableProfits": 500.25,
-      |  "basisAdjustment": 500.25,
-      |  "overlapReliefUsed": 500.25,
-      |  "accountingAdjustment": 500.25,
-      |  "averagingAdjustment": 500.25,
-      |  "outstandingBusinessIncome": 500.25,
-      |  "balancingChargeBpra": 500.25,
-      |  "balancingChargeOther": 500.25,
-      |  "goodsAndServicesOwnUse": 500.25
-      |}
-      |""".stripMargin)
+  val model: Adjustments =
+    Adjustments(
+      includedNonTaxableProfits = Some(1.12),
+      basisAdjustment = Some(2.12),
+      overlapReliefUsed = Some(3.12),
+      accountingAdjustment = Some(4.12),
+      averagingAdjustment = Some(5.12),
+      outstandingBusinessIncome = Some(6.12),
+      balancingChargeBpra = Some(7.12),
+      balancingChargeOther = Some(8.12),
+      goodsAndServicesOwnUse = Some(9.12))
 
-  val mtdJson: JsValue = Json.parse(
-    """
-      |{
-      |  "includedNonTaxableProfits": 500.25,
-      |  "basisAdjustment": 500.25,
-      |  "overlapReliefUsed":500.25,
-      |  "accountingAdjustment": 500.25,
-      |  "averagingAdjustment": 500.25,
-      |  "outstandingBusinessIncome": 500.25,
-      |  "balancingChargeBPRA": 500.25,
-      |  "balancingChargeOther":500.25,
-      |  "goodsAndServicesOwnUse": 500.25
-      |}
-      |""".stripMargin)
-
-  val model: Adjustments = Adjustments(
-    includedNonTaxableProfits = Some(500.25),
-    basisAdjustment = Some(500.25),
-    overlapReliefUsed = Some(500.25),
-    accountingAdjustment= Some(500.25),
-    averagingAdjustment = Some(500.25),
-    outstandingBusinessIncome = Some(500.25),
-    balancingChargeBPRA = Some(500.25),
-    balancingChargeOther = Some(500.25),
-    goodsAndServicesOwnUse = Some(500.25)
-  )
-
-  "reads" should {
-    "return a model" when {
-      "passed valid json" in {
-        desJson.as[Adjustments] shouldBe model
+  "reads" when {
+    "passed valid mtd JSON" should {
+      "return the model" in {
+        Json.parse(
+          s"""{
+             |  "includedNonTaxableProfits": 1.12,
+             |  "basisAdjustment": 2.12,
+             |  "overlapReliefUsed": 3.12,
+             |  "accountingAdjustment": 4.12,
+             |  "averagingAdjustment": 5.12,
+             |  "outstandingBusinessIncome": 6.12,
+             |  "balancingChargeBpra": 7.12,
+             |  "balancingChargeOther": 8.12,
+             |  "goodsAndServicesOwnUse": 9.12
+             |}
+             |""".stripMargin).as[Adjustments] shouldBe model
       }
     }
   }
 
-  "writes" should {
-    "return json" when {
-      "passed a model" in {
-        Json.toJson(model) shouldBe mtdJson
+  "writes" when {
+    "passed a model" should {
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe Json.parse(
+          s"""{
+             |  "includedNonTaxableProfits": 1.12,
+             |  "basisAdjustment": 2.12,
+             |  "overlapReliefUsed": 3.12,
+             |  "accountingAdjustment": 4.12,
+             |  "averagingAdjustment": 5.12,
+             |  "outstandingBusinessIncome": 6.12,
+             |  "balancingChargeBpra": 7.12,
+             |  "balancingChargeOther": 8.12,
+             |  "goodsAndServicesOwnUse": 9.12
+             |}
+             |""".stripMargin)
       }
     }
   }
-
 }

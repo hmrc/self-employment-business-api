@@ -19,29 +19,37 @@ package v1.models.response.retrieveAnnual
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Allowances(
-                       annualInvestmentAllowance: Option[BigDecimal],
-                       businessPremisesRenovationAllowance: Option[BigDecimal],
-                       capitalAllowanceMainPool: Option[BigDecimal],
-                       capitalAllowanceSpecialRatePool: Option[BigDecimal],
-                       zeroEmissionGoodsVehicleAllowance: Option[BigDecimal],
-                       enhancedCapitalAllowance: Option[BigDecimal],
-                       allowanceOnSales: Option[BigDecimal],
-                       capitalAllowanceSingleAssetPool: Option[BigDecimal],
-                       tradingAllowance: Option[BigDecimal]
-                     )
+case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
+                      businessPremisesRenovationAllowance: Option[BigDecimal],
+                      capitalAllowanceMainPool: Option[BigDecimal],
+                      capitalAllowanceSpecialRatePool: Option[BigDecimal],
+                      zeroEmissionsGoodsVehicleAllowance: Option[BigDecimal],
+                      enhancedCapitalAllowance: Option[BigDecimal],
+                      allowanceOnSales: Option[BigDecimal],
+                      capitalAllowanceSingleAssetPool: Option[BigDecimal],
+                      tradingIncomeAllowance: Option[BigDecimal],
+                      electricChargePointAllowance: Option[BigDecimal],
+                      zeroEmissionsCarAllowance: Option[BigDecimal],
+                      structuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]],
+                      enhancedStructuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]])
 
 object Allowances {
   implicit val reads: Reads[Allowances] = (
     (JsPath \ "annualInvestmentAllowance").readNullable[BigDecimal] and
-    (JsPath \ "businessPremisesRenovationAllowance").readNullable[BigDecimal] and
-    (JsPath \ "capitalAllowanceMainPool").readNullable[BigDecimal] and
-    (JsPath \ "capitalAllowanceSpecialRatePool").readNullable[BigDecimal] and
-    (JsPath \ "zeroEmissionGoodsVehicleAllowance").readNullable[BigDecimal] and
-    (JsPath \ "enhanceCapitalAllowance").readNullable[BigDecimal] and
-    (JsPath \ "allowanceOnSales").readNullable[BigDecimal] and
-    (JsPath \ "capitalAllowanceSingleAssetPool").readNullable[BigDecimal] and
-    (JsPath \ "tradingIncomeAllowance").readNullable[BigDecimal]
-  )(Allowances.apply _)
+      (JsPath \ "businessPremisesRenovationAllowance").readNullable[BigDecimal] and
+      (JsPath \ "capitalAllowanceMainPool").readNullable[BigDecimal] and
+      (JsPath \ "capitalAllowanceSpecialRatePool").readNullable[BigDecimal] and
+      (JsPath \ "zeroEmissionGoodsVehicleAllowance").readNullable[BigDecimal] and
+      (JsPath \ "enhanceCapitalAllowance").readNullable[BigDecimal] and
+      (JsPath \ "allowanceOnSales").readNullable[BigDecimal] and
+      (JsPath \ "capitalAllowanceSingleAssetPool").readNullable[BigDecimal] and
+      (JsPath \ "tradingIncomeAllowance").readNullable[BigDecimal] and
+      (JsPath \ "electricChargePointAllowance").readNullable[BigDecimal] and
+      (JsPath \ "zeroEmissionsCarAllowance").readNullable[BigDecimal] and
+      (JsPath \ "structuredBuildingAllowance").readNullable[Seq[StructuredBuildingAllowance]] and
+      (JsPath \ "enhancedStructuredBuildingAllowance").readNullable[Seq[StructuredBuildingAllowance]]
+    )(Allowances.apply _)
+
   implicit val writes: OWrites[Allowances] = Json.writes[Allowances]
+
 }
