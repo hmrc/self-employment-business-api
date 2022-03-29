@@ -211,9 +211,9 @@ trait RetrieveAnnualSubmissionFixture {
   val downstreamRetrieveResponseJson: JsValue = Json.parse(
     s"""
        |{
-       |  "adjustments": $adjustmentsDownstreamJson,
-       |  "allowances": $allowancesDownstreamJson,
-       |  "nonFinancials": $nonFinancialsDownstreamJson
+       |  "annualAdjustments": $adjustmentsDownstreamJson,
+       |  "annualAllowances": $allowancesDownstreamJson,
+       |  "annualNonFinancials": $nonFinancialsDownstreamJson
        |}
        |""".stripMargin)
 
