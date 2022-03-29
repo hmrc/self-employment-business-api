@@ -35,6 +35,31 @@ trait RetrieveAnnualSubmissionFixture {
       )
     )
 
+  val buildingMtdModel: Building =
+    Building(
+      Some("house name"),
+      Some("house number"),
+      "GF4 9JH"
+    )
+
+  val buildingAllowanceMtdJson: JsValue = Json.parse(
+    """
+      |{
+      |    "name": "house name",
+      |    "number": "house number",
+      |    "postcode": "GF4 9JH"
+      |}
+      |""".stripMargin)
+
+  val buildingAllowanceDownstreamJson: JsValue = Json.parse(
+    """
+      |{
+      |    "name": "house name",
+      |    "number": "house number",
+      |    "postCode": "GF4 9JH"
+      |}
+      |""".stripMargin)
+
   val structuredBuildingAllowanceMtdJson: JsValue = Json.parse(
     """
       |{
@@ -87,7 +112,7 @@ trait RetrieveAnnualSubmissionFixture {
        |  "accountingAdjustment": 4.12,
        |  "averagingAdjustment": 5.12,
        |  "outstandingBusinessIncome": 6.12,
-       |  "balancingChargeBPRA": 7.12,
+       |  "balancingChargeBpra": 7.12,
        |  "balancingChargeOther": 8.12,
        |  "goodsAndServicesOwnUse": 9.12
        |}

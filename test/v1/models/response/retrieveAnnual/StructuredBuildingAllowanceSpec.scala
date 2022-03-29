@@ -24,15 +24,15 @@ class StructuredBuildingAllowanceSpec extends UnitSpec with RetrieveAnnualSubmis
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        structuredBuildingAllowanceMtdJson.as[StructuredBuildingAllowance] shouldBe structuredBuildingAllowance
+        structuredBuildingAllowanceDownstreamJson.as[StructuredBuildingAllowance] shouldBe structuredBuildingAllowance
       }
     }
   }
 
   "writes" when {
     "passed a model" should {
-      "return downstream JSON" in {
-        Json.toJson(structuredBuildingAllowance) shouldBe structuredBuildingAllowanceDownstreamJson
+      "return Mtd JSON" in {
+        Json.toJson(structuredBuildingAllowance) shouldBe structuredBuildingAllowanceMtdJson
       }
     }
   }

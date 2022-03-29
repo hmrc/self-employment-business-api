@@ -28,9 +28,7 @@ object NonFinancials {
 
   implicit val reads: Reads[NonFinancials] = (
     (JsPath \ "businessDetailsChangedRecently").read[Boolean] and
-    (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption]
-    ) (NonFinancials.apply(_: NonFinancials).map {
-    case (changed, exemption: Option[MtdNicExemption]) => (changed, exemption.isDefined, exemption.map(_.toDownstream))
-  })
+    (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd))
+    )(NonFinancials.apply _)
 
 }

@@ -23,14 +23,14 @@ import v1.models.domain.ex.MtdNicExemption
 class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
 
   "reads" should {
-    "passed valid mtd JSON" should {
+    "passed a valid JSON" should {
       "return the model" in {
         val requestJson: JsValue = Json.parse(
           s"""
              |{
-             |    "businessDetailsChangedRecently": true,
-             |    "class4NicsExemptionReason": "non-resident"
-             |  }
+             |  "businessDetailsChangedRecently": true,
+             |  "class4NicsExemptionReason": "001"
+             |}
              |""".stripMargin)
 
         requestJson.as[NonFinancials] shouldBe NonFinancials(
