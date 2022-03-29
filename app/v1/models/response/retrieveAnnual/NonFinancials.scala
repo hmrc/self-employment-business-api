@@ -27,8 +27,8 @@ object NonFinancials {
   implicit val writes: OWrites[NonFinancials] = Json.writes[NonFinancials]
 
   implicit val reads: Reads[NonFinancials] = (
-    (JsPath \ "businessDetailsChangedRecently").write[Boolean] and
-    (JsPath \ "class4NicsExemptionReason").writeNullable[DownstreamNicExemption]
+    (JsPath \ "businessDetailsChangedRecently").read[Boolean] and
+    (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption]
     ) (NonFinancials.apply(_: NonFinancials).map {
     case (changed, exemption: Option[MtdNicExemption]) => (changed, exemption.isDefined, exemption.map(_.toDownstream))
   })
