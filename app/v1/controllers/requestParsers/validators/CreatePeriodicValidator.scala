@@ -48,7 +48,7 @@ class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
   private def bodyFieldValidation: CreatePeriodicRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[CreatePeriodicBody]
 
-    List(flattenErrors(
+    List(Validator.flattenErrors(
       List(
         validateDates(body.periodFromDate, body.periodToDate),
         body.incomes.map(validateIncome).getOrElse(NoValidationErrors),

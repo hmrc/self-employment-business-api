@@ -53,7 +53,7 @@ class AmendSelfEmploymentAnnualSubmissionValidator extends Validator[AmendAnnual
   private def bodyFieldValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSubmissionBody]
     List(
-      flattenErrors(
+      Validator.flattenErrors(
         List(
       body.adjustments.map(validateAdjustments).getOrElse(Nil),
       body.allowances.map(validateAllowances).getOrElse(Nil),
