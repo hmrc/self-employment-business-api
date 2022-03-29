@@ -53,13 +53,13 @@ uses:
         put: !include endpoints/createAndAmendAnnualSubmission.raml
         get: !include endpoints/retrieveAnnualSubmission.raml
         delete: !include endpoints/deleteAnnualSubmission.raml
-      /period:
-        post: !include endpoints/createPeriodicUpdatePeriod.raml
-        get: !include endpoints/listPeriodicUpdatePeriod.raml
-        /{periodId}:
-          uriParameters:
-            periodId:
-              description: "An identifier for the update period, unique to the customer's self-employment business."
-              example: "2019-01-25_2020-01-25"
-          get: !include endpoints/retrievePeriodicUpdate.raml
-          put: !include endpoints/amendPeriodicUpdate.raml
+#      /period:
+#        post: !include endpoints/createPeriodicUpdatePeriod.raml
+#        get: !include endpoints/listPeriodicUpdatePeriod.raml
+#        /{periodId}:
+#          uriParameters:
+#            periodId:
+#              description: "An identifier for the update period, unique to the customer's self-employment business."
+#              example: "2019-01-25_2020-01-25"
+#          get: !include endpoints/retrievePeriodicUpdate.raml
+#          put: !include endpoints/amendPeriodicUpdate.raml
