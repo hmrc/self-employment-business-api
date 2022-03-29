@@ -21,7 +21,7 @@ import cats.implicits._
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ Action, ControllerComponents }
 import utils.{ IdGenerator, Logging }
-import v1.controllers.requestParsers.CreateAmendSelfEmploymentAnnualSubmissionRequestParser
+import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSubmissionRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
                                              val lookupService: MtdIdLookupService,
-                                             parser: CreateAmendSelfEmploymentAnnualSubmissionRequestParser,
+                                             parser: AmendSelfEmploymentAnnualSubmissionRequestParser,
                                              service: AmendAnnualSubmissionService,
                                              hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,

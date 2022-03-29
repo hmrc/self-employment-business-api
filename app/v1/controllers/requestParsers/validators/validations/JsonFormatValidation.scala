@@ -18,9 +18,12 @@ package v1.controllers.requestParsers.validators.validations
 
 import play.api.Logger
 import play.api.libs.json._
+import utils.{EmptinessChecker, EmptyPathsResult}
 import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 
 object JsonFormatValidation {
+
+  private val logger: Logger = Logger(this.getClass)
 
   def validate[A: OFormat](data: JsValue): List[MtdError] = {
     if (data == JsObject.empty) List(RuleIncorrectOrEmptyBodyError) else {
@@ -31,32 +34,60 @@ object JsonFormatValidation {
     }
   }
 
-  private def handleErrors(errors: Seq[(JsPath, Seq[JsonValidationError])]): List[MtdError] = {
-    val failures = errors.map {
-      case (path: JsPath, Seq(JsonValidationError(Seq("error.path.missing")))) => MissingMandatoryField(path)
-      case (path: JsPath, Seq(JsonValidationError(Seq(error: String)))) if error.contains("error.expected") => WrongFieldType(path)
-      case (path: JsPath, _) => OtherFailure(path)
+
+  def validateAndCheckNonEmpty[A: OFormat: EmptinessChecker](data: JsValue): List[MtdError] =
+    validateOrRead[A](data) match {
+      case Left(schemaErrors) => schemaErrors
+      case Right(body) =>
+        EmptinessChecker.findEmptyPaths(body) match {
+          case EmptyPathsResult.CompletelyEmpty   => List(RuleIncorrectOrEmptyBodyError)
+          case EmptyPathsResult.EmptyPaths(paths) => List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(paths)))
+          case EmptyPathsResult.NoEmptyPaths      => Nil
+        }
+      case _ => Nil
     }
 
-    val logString = failures.groupBy(_.getClass)
-      .values.map(failure => s"${failure.head.failureReason}: " + s"${failure.map(_.fromJsPath)}")
-      .toString().dropRight(1).drop(5)
+  def validateOrRead[A: OFormat](data: JsValue): Either[List[MtdError], A] = {
+    if (data == JsObject.empty) {
+      Left(List(RuleIncorrectOrEmptyBodyError))
+    } else {
+      data.validate[A] match {
+        case JsSuccess(a, _)                                          => Right(a)
+        case JsError(errors: Seq[(JsPath, Seq[JsonValidationError])]) => Left(handleErrors(errors))
+      }
+    }
+  }
 
-    val logger: Logger = Logger(this.getClass)
+  private def handleErrors(errors: Seq[(JsPath, Seq[JsonValidationError])]): List[MtdError] = {
+    val failures = errors.map {
+      case (path: JsPath, Seq(JsonValidationError(Seq("error.path.missing"))))                              => MissingMandatoryField(path)
+      case (path: JsPath, Seq(JsonValidationError(Seq(error: String)))) if error.contains("error.expected") => WrongFieldType(path)
+      case (path: JsPath, _)                                                                                => OtherFailure(path)
+    }
+
+    val logString = failures
+      .groupBy(_.getClass)
+      .values
+      .map(failure => s"${failure.head.failureReason}: " + s"${failure.map(_.fromJsPath)}")
+      .toString()
+      .dropRight(1)
+      .drop(5)
+
     logger.warn(s"[JsonFormatValidation][validate] - Request body failed validation with errors - $logString")
     List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(failures.map(_.fromJsPath))))
   }
 
   private class JsonFormatValidationFailure(path: JsPath, failure: String) {
-    val failureReason: String = this.failure
+    val failureReason: String = failure
 
-    def fromJsPath: String = this.path
-      .toString()
-      .replace("(", "/")
-      .replace(")", "")
+    def fromJsPath: String =
+      path
+        .toString()
+        .replace("(", "/")
+        .replace(")", "")
   }
 
   private case class MissingMandatoryField(path: JsPath) extends JsonFormatValidationFailure(path, "Missing mandatory field")
-  private case class WrongFieldType(path: JsPath) extends JsonFormatValidationFailure(path, "Wrong field type")
-  private case class OtherFailure(path: JsPath) extends JsonFormatValidationFailure(path, "Other failure")
+  private case class WrongFieldType(path: JsPath)        extends JsonFormatValidationFailure(path, "Wrong field type")
+  private case class OtherFailure(path: JsPath)          extends JsonFormatValidationFailure(path, "Other failure")
 }

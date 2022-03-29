@@ -16,7 +16,6 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.Validator.flattenErrors
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.{FromDateFormatError, MtdError, RuleIncorrectOrEmptyBodyError, ToDateFormatError}
 import v1.models.request.createPeriodic.{ConsolidatedExpenses, CreatePeriodicBody, CreatePeriodicRawData, Expenses, Incomes}

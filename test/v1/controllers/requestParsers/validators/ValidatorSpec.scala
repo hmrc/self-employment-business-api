@@ -18,8 +18,8 @@ package v1.controllers.requestParsers.validators
 
 import org.scalamock.scalatest.MockFactory
 import support.UnitSpec
-import v1.models.errors.{MtdError, NinoFormatError, NotFoundError}
 import v1.models.request.RawData
+import v1.models.errors.MtdError
 
 class ValidatorSpec extends UnitSpec with MockFactory {
 
@@ -69,7 +69,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
         val validationSet = List(levelOneValidations)
 
-        val inputData:TestRawData = TestRawData("ABCDEF", "12345")
+        val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1
@@ -114,39 +114,6 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         levelTwoValidationOne.called shouldBe 1
         levelTwoValidationTwo.called shouldBe 1
       }
-    }
-  }
-
-  "flattenErrors" should {
-    "combine errors of the same type" in {
-      val errors: List[List[MtdError]] = List(
-        List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one")))),
-        List(NinoFormatError.copy(paths = Some(Seq("two"))))
-      )
-
-      val flatErrors: List[MtdError] = List(
-        NotFoundError,
-        NinoFormatError.copy(paths = Some(Seq("one", "two")))
-      )
-
-      Validator.flattenErrors(errors) shouldBe flatErrors
-    }
-
-    "return the input for a list of unique errors" in {
-      val errors: List[List[MtdError]] = List(
-        List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one"))))
-      )
-
-      Validator.flattenErrors(errors) shouldBe errors.flatten
-    }
-
-    "handle empty lists correctly" in {
-      val emptyErrorList: List[List[MtdError]] = List.empty[List[MtdError]]
-      val listOfEmptyLists: List[List[MtdError]] = List(List.empty[MtdError])
-      Validator.flattenErrors(emptyErrorList) shouldBe List.empty[MtdError]
-      Validator.flattenErrors(listOfEmptyLists) shouldBe List.empty[MtdError]
     }
   }
 

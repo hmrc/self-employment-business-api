@@ -21,7 +21,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockCreateAmendSelfEmploymentAnnualSubmissionRequestParser
+import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSubmissionRequestParser
 import v1.mocks.services.{MockAmendAnnualSubmissionService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
@@ -39,7 +39,7 @@ class AmendAnnualSubmissionControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendAnnualSubmissionService
-    with MockCreateAmendSelfEmploymentAnnualSubmissionRequestParser
+    with MockAmendSelfEmploymentAnnualSubmissionRequestParser
     with MockHateoasFactory
     with MockIdGenerator
     with AmendAnnualSubmissionFixture {

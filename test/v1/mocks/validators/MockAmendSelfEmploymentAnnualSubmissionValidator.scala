@@ -18,13 +18,13 @@ package v1.mocks.validators
 
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.CreateAmendSelfEmploymentAnnualSubmissionValidator
+import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSubmissionValidator
 import v1.models.errors.MtdError
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 
-trait MockCreateAmendSelfEmploymentAnnualSubmissionValidator extends MockFactory {
+trait MockAmendSelfEmploymentAnnualSubmissionValidator extends MockFactory {
 
-  val mockValidator: CreateAmendSelfEmploymentAnnualSubmissionValidator = mock[CreateAmendSelfEmploymentAnnualSubmissionValidator]
+  val mockValidator: AmendSelfEmploymentAnnualSubmissionValidator = mock[AmendSelfEmploymentAnnualSubmissionValidator]
 
   object MockAmendSelfEmploymentAnnualSummaryValidator {
 

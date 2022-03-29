@@ -82,10 +82,16 @@ object StringFormatError
     message = "The supplied string format is not valid"
   )
 
-object DateFormatErrors
+object DateFormatError
   extends MtdError(
     code = "FORMAT_DATE",
     message = "The supplied date format is not valid"
+  )
+
+object Class4ExemptionReasonFormatError
+  extends MtdError(
+    code = "FORMAT_CLASS_4_EXEMPTION_REASON",
+    message = "The format of the supplied Class 4 National Insurance exemption reason is not valid"
   )
 
 // Rule Errors
@@ -143,7 +149,7 @@ object RuleBothAllowancesSuppliedError
     message = "Both allowances and trading allowances must not be present at the same time"
   )
 
-object RuleBuildingNameNumber
+object RuleBuildingNameNumberError
   extends MtdError(
     code = "RULE_BUILDING_NAME_NUMBER",
     message = "Postcode must be supplied along with at least one of name or number"

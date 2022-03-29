@@ -17,12 +17,12 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.mocks.validators.MockAmendSelfEmploymentAnnualSummaryValidator
+import v1.mocks.validators.MockAmendSelfEmploymentAnnualSubmissionValidator
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.request.amendSEAnnual._
 
-class AmendSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
+class AmendSelfEmploymentAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
 
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
@@ -38,8 +38,8 @@ class AmendSelfEmploymentAnnualSummaryRequestParserSpec extends UnitSpec with Am
     body = requestBodyJson
   )
 
-  trait Test extends MockAmendSelfEmploymentAnnualSummaryValidator {
-    lazy val parser = new AmendSelfEmploymentAnnualSummaryRequestParser(mockValidator)
+  trait Test extends MockAmendSelfEmploymentAnnualSubmissionValidator {
+    lazy val parser = new AmendSelfEmploymentAnnualSubmissionRequestParser(mockValidator)
   }
 
   "parse" should {

@@ -36,9 +36,6 @@ trait Validator[A <: RawData] {
         }
     }
   }
-}
-
-object Validator {
 
   def flattenErrors(errors: List[List[MtdError]]): List[MtdError] = {
     errors.flatten.groupBy(_.message).map { case (_, errors) =>

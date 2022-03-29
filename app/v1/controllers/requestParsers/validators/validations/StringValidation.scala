@@ -16,14 +16,21 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.MtdError
+import v1.models.errors.{MtdError, StringFormatError}
 
-object BuildingNameValidation {
+object StringValidation {
 
-  def validate(building: Building): List[MtdError] = {
-    building match {
-      case Building(None, None) =>
+  private val regex = "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$"
+
+  def validateOptional(field: Option[String], path: String): List[MtdError] = {
+    field match {
+      case None => NoValidationErrors
+      case Some(value) => validate(value, path)
     }
-
   }
+
+  def validate(field: String, path: String): List[MtdError] = {
+    if (field.matches(regex)) NoValidationErrors else List(StringFormatError.copy(paths = Some(Seq(path))))
+  }
+
 }

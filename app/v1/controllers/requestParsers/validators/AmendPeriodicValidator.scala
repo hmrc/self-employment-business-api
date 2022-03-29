@@ -55,12 +55,15 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
 
   private def bodyFieldValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendPeriodicBody]
-    val errorsO: List[List[MtdError]] = List(
-      body.incomes.map(validateIncomes).getOrElse(Nil),
-      body.consolidatedExpenses.map(validateConsolidatedExpenses).getOrElse(Nil),
-      body.expenses.map(validateExpenses).getOrElse(Nil)
-    ).flatten
-    List(Validator.flattenErrors(errorsO))
+    List(
+      flattenErrors(
+        List(
+          body.incomes.map(validateIncomes).getOrElse(Nil),
+          body.consolidatedExpenses.map(validateConsolidatedExpenses).getOrElse(Nil),
+          body.expenses.map(validateExpenses).getOrElse(Nil)
+        ).flatten
+      )
+    )
   }
 
   private def validateIncomes(incomes: Incomes): List[List[MtdError]] = {

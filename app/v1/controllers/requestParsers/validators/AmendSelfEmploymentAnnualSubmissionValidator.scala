@@ -20,9 +20,9 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.amendSEAnnual._
 
-class CreateAmendSelfEmploymentAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
+class AmendSelfEmploymentAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
 
-  private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
+  private val validationSet = List(parameterFormatValidation, parameterRuleValidation, enumValidation, bodyFormatValidation, bodyFieldValidation)
 
   private def parameterFormatValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = (data: AmendAnnualSubmissionRawData) => {
     List(
@@ -39,30 +39,34 @@ class CreateAmendSelfEmploymentAnnualSubmissionValidator extends Validator[Amend
   }
 
   private def bodyFormatValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
-    val baseValidation = List(JsonFormatValidation.validate[AmendAnnualSubmissionBody](data.body))
+    JsonFormatValidation.validateAndCheckNonEmpty[AmendAnnualSubmissionBody](data.body) match {
+      case Nil => NoValidationErrors
+      case schemaErrors => List(schemaErrors)
+    }
+  }
 
-    // TODO use JsonFormatValidation.validateAndCheckNonEmpty[AmendAnnualSubmissionBody] which does not require isEmpty methods
-//    val  extraValidation: List[List[MtdError]] = {
-//      data.body.asOpt[AmendAnnualSubmissionBody].map(_.isEmpty).map {
-//        case true => List(List(RuleIncorrectOrEmptyBodyError))
-//        case false => NoValidationErrors
-//      }.getOrElse(NoValidationErrors)
-//    }
-
-    baseValidation // ++ extraValidation
+  private def enumValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
+    val class4 = (data.body \ "nonFinancials" \ "class4NicsExemptionReason").asOpt[String]
+    List(Class4Validation.validateOptional(class4))
   }
 
   private def bodyFieldValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSubmissionBody]
-    val errorsO: List[List[MtdError]] = List(
+    List(
+      flattenErrors(
+        List(
       body.adjustments.map(validateAdjustments).getOrElse(Nil),
       body.allowances.map(validateAllowances).getOrElse(Nil),
-      body.nonFinancials.map(validateNonFinancials).getOrElse(Nil)
-    ).flatten
-    List(Validator.flattenErrors(errorsO))
+      body.allowances.map(validateTradingIncomeAllowance).getOrElse(Nil),
+      body.allowances.flatMap(_.structuredBuildingAllowance.map(_.zipWithIndex.toList.flatMap {
+        case (entry, i) => validateStructuredBuildingAllowance(entry, i)
+      })).getOrElse(NoValidationErrors),
+      body.allowances.flatMap(_.enhancedStructuredBuildingAllowance.map(_.zipWithIndex.toList.flatMap {
+        case (entry, i) => validateEnhancedStructuredBuildingAllowance(entry, i)
+      })).getOrElse(NoValidationErrors))))
   }
 
-  private def validateAdjustments(adjustments: Adjustments): List[List[MtdError]] = {
+  private def validateAdjustments(adjustments: Adjustments): List[MtdError] = {
     List(
       NumberValidation.validateOptional(
         field = adjustments.includedNonTaxableProfits,
@@ -102,10 +106,10 @@ class CreateAmendSelfEmploymentAnnualSubmissionValidator extends Validator[Amend
         field = adjustments.goodsAndServicesOwnUse,
         path = s"/adjustments/goodsAndServicesOwnUse"
       )
-    )
+    ).flatten
   }
 
-  private def validateAllowances(allowances: Allowances): List[List[MtdError]] = {
+  private def validateAllowances(allowances: Allowances): List[MtdError] = {
     List(
       NumberValidation.validateOptional(
         field = allowances.annualInvestmentAllowance,
@@ -141,7 +145,8 @@ class CreateAmendSelfEmploymentAnnualSubmissionValidator extends Validator[Amend
       ),
       NumberValidation.validateOptional(
         field = allowances.tradingIncomeAllowance,
-        path = s"/allowances/tradingIncomeAllowance"
+        path = s"/allowances/tradingIncomeAllowance",
+        max = 1000
       ),
       NumberValidation.validateOptional(
         field = allowances.electricChargePointAllowance,
@@ -150,69 +155,79 @@ class CreateAmendSelfEmploymentAnnualSubmissionValidator extends Validator[Amend
       NumberValidation.validateOptional(
         field = allowances.zeroEmissionsCarAllowance,
         path = s"/allowances/zeroEmissionsCarAllowance"
-      ),
-      NumberValidation.validateOptional(
-        field = structuredBuildingAllowance.amount,
-        path = s"/allowances/structuredBuildingAllowance/amount"
-      ),
-      DateValidation.validateOptional(
-        field = structuredBuildingAllowance.firstYear.qualifyingDate,
-        path = s"/allowances/structuredBuildingAllowance/firstYear/qualifyingDate"
-      ),
-      NumberValidation.validateOptional(
-        field = structuredBuildingAllowance.firstYear.qualifyingAmountExpenditure,
-        path = s"/allowances/structuredBuildingAllowance/firstYear/qualifyingAmountExpenditure"
-      ),
-      NameValidation.validateOptional(
-        field = structuredBuildingAllowance.building.name,
-        path = s"/allowances/structuredBuildingAllowance/building/name"
-      ),
-      NumberValidation.validateOptional(
-        field = structuredBuildingAllowance.building.number,
-        path = s"/allowances/structuredBuildingAllowance/building/number"
-      ),
-      PostCodeValidation.validateOptional(
-        field = structuredBuildingAllowance.building.postcode,
-        path = s"/allowances/structuredBuildingAllowance/building/postcode"
-      ),
-      NumberValidation.validateOptional(
-        field = enhancedStructuredBuildingAllowance.amount,
-        path = s"/allowances/enhancedStructuredBuildingAllowance/amount"
-      ),
-      DateValidation.validateOptional(
-        field = enhancedStructuredBuildingAllowance.firstYear.qualifyingDate,
-        path = s"/allowances/enhancedStructuredBuildingAllowance/firstYear/qualifyingDate"
-      ),
-      NumberValidation.validateOptional(
-        field = enhancedStructuredBuildingAllowance.firstYear.qualifyingAmountExpenditure,
-        path = s"/allowances/enhancedStructuredBuildingAllowance/firstYear/qualifyingAmountExpenditure"
-      ),
-      NameValidation.validateOptional(
-        field = enhancedStructuredBuildingAllowance.building.name,
-        path = s"/allowances/enhancedStructuredBuildingAllowance/building/name"
-      ),
-      NumberValidation.validateOptional(
-        field = enhancedStructuredBuildingAllowance.building.number,
-        path = s"/allowances/enhancedStructuredBuildingAllowance/building/number"
-      ),
-      PostCodeValidation.validateOptional(
-        field = enhancedStructuredBuildingAllowance.building.postcode,
-        path = s"/allowances/enhancedStructuredBuildingAllowance/building/postcode"
       )
-    )
+    ).flatten
   }
 
-  private def validateNonFinancials(nonFinancials: NonFinancials): List[List[MtdError]] = {
+  private def validateStructuredBuildingAllowance(structuredBuildingAllowance: StructuredBuildingAllowance, index: Int): List[MtdError] = {
     List(
-      NumberValidation.validateOptional(
-        field = allowances.annualInvestmentAllowance,
-        path = s"/nonFinancials/businessDetailsChangedRecently"
+      NumberValidation.validate(
+        field = structuredBuildingAllowance.amount,
+        path = s"/allowances/structuredBuildingAllowance/$index/amount"
+      ),
+      DateValidation.validateOptional(
+        field = structuredBuildingAllowance.firstYear.map(_.qualifyingDate),
+        path = s"/allowances/structuredBuildingAllowance/$index/firstYear/qualifyingDate"
       ),
       NumberValidation.validateOptional(
-        field = allowances.businessPremisesRenovationAllowance,
-        path = s"/nonFinancials/class4NicsExemptionReason"
+        field = structuredBuildingAllowance.firstYear.map(_.qualifyingAmountExpenditure),
+        path = s"/allowances/structuredBuildingAllowance/$index/firstYear/qualifyingAmountExpenditure"
+      ),
+      StringValidation.validateOptional(
+        field = structuredBuildingAllowance.building.name,
+        path = s"/allowances/structuredBuildingAllowance/$index/building/name"
+      ),
+      StringValidation.validateOptional(
+        field = structuredBuildingAllowance.building.number,
+        path = s"/allowances/structuredBuildingAllowance/$index/building/number"
+      ),
+      StringValidation.validate(
+        field = structuredBuildingAllowance.building.postcode,
+        path = s"/allowances/structuredBuildingAllowance/$index/building/postcode"
+      ),
+      BuildingNameNumberValidation.validate(
+        building = structuredBuildingAllowance.building,
+        path = s"/allowances/structuredBuildingAllowance/$index/building"
       )
-    )
+    ).flatten
+  }
+
+  private def validateEnhancedStructuredBuildingAllowance(enhancedStructuredBuildingAllowance: StructuredBuildingAllowance,
+                                                          index: Int): List[MtdError] = {
+    List(
+      NumberValidation.validate(
+        field = enhancedStructuredBuildingAllowance.amount,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/$index/amount"
+      ),
+      DateValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.firstYear.map(_.qualifyingDate),
+        path = s"/allowances/enhancedStructuredBuildingAllowance/$index/firstYear/qualifyingDate"
+      ),
+      NumberValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.firstYear.map(_.qualifyingAmountExpenditure),
+        path = s"/allowances/enhancedStructuredBuildingAllowance/$index/firstYear/qualifyingAmountExpenditure"
+      ),
+      StringValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.building.name,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/$index/building/name"
+      ),
+      StringValidation.validateOptional(
+        field = enhancedStructuredBuildingAllowance.building.number,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/$index/building/number"
+      ),
+      StringValidation.validate(
+        field = enhancedStructuredBuildingAllowance.building.postcode,
+        path = s"/allowances/enhancedStructuredBuildingAllowance/$index/building/postcode"
+      ),
+      BuildingNameNumberValidation.validate(
+        building = enhancedStructuredBuildingAllowance.building,
+        s"/allowances/enhancedStructuredBuildingAllowance/$index/building"
+      )
+    ).flatten
+  }
+
+  private def validateTradingIncomeAllowance(allowances: Allowances): List[MtdError] = {
+    BothAllowancesValidation.validate(allowances)
   }
 
   override def validate(data: AmendAnnualSubmissionRawData): List[MtdError] = {
