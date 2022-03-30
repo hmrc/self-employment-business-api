@@ -17,11 +17,9 @@
 package v1.connectors
 
 import config.AppConfig
-
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
-import v1.connectors.DownstreamUri.DesUri
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.IfsUri
 import v1.connectors.httpparsers.StandardDesHttpParser._
 import v1.models.domain.TaxYear
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
@@ -39,7 +37,7 @@ class RetrieveAnnualSubmissionConnector @Inject()(val http: HttpClient,
     correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     get(
-      uri = DesUri[RetrieveAnnualSubmissionResponse](
+      uri = IfsUri[RetrieveAnnualSubmissionResponse](
         s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/annual-summaries/${TaxYear.fromMtd(request.taxYear).toDownstream}"
       )
     )
