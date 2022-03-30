@@ -50,10 +50,10 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockAppConfig.ifsBaseUrl returns baseUrl
+    MockAppConfig.ifsToken returns "ifs-token"
+    MockAppConfig.ifsEnvironment returns "ifs-environment"
+    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
 
   "connector" must {
@@ -63,8 +63,8 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
       MockHttpClient
         .get(
           url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-          config = dummyDesHeaderCarrierConfig,
-          requiredHeaders = requiredDesHeaders,
+          config = dummyIfsHeaderCarrierConfig,
+          requiredHeaders = requiredIfsHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         ).returns(Future.successful(outcome))
 
