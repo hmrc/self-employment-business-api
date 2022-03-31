@@ -21,7 +21,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSubmissionRequestParser
+import v1.mocks.requestParsers.MockAmendAnnualSubmissionRequestParser
 import v1.mocks.services.{MockAmendAnnualSubmissionService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
@@ -39,7 +39,7 @@ class AmendAnnualSubmissionControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendAnnualSubmissionService
-    with MockAmendSelfEmploymentAnnualSubmissionRequestParser
+    with MockAmendAnnualSubmissionRequestParser
     with MockHateoasFactory
     with MockIdGenerator
     with AmendAnnualSubmissionFixture {
@@ -55,7 +55,7 @@ class AmendAnnualSubmissionControllerSpec
     val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockAmendSelfEmploymentAnnualSummaryRequestParser,
+      parser = mockAmendAnnualSummaryRequestParser,
       service = mockAmendAnnualSubmissionService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
@@ -93,7 +93,7 @@ class AmendAnnualSubmissionControllerSpec
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
-        MockAmendSelfEmploymentAnnualSummaryRequestParser
+        MockAmendAnnualSummaryRequestParser
           .requestFor(rawData)
           .returns(Right(requestData))
 
@@ -116,7 +116,7 @@ class AmendAnnualSubmissionControllerSpec
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
-            MockAmendSelfEmploymentAnnualSummaryRequestParser
+            MockAmendAnnualSummaryRequestParser
               .requestFor(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
@@ -153,7 +153,7 @@ class AmendAnnualSubmissionControllerSpec
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {
 
-            MockAmendSelfEmploymentAnnualSummaryRequestParser
+            MockAmendAnnualSummaryRequestParser
               .requestFor(rawData)
               .returns(Right(requestData))
 

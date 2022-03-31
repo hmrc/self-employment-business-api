@@ -85,7 +85,7 @@ class AmendPeriodicController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case BadRequestError | NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | RuleBothExpensesSuppliedError |
-           RuleNotAllowedConsolidatedExpenses | MtdErrorWithCustomMessage(ValueFormatError.code) | MtdErrorWithCustomMessage(
+           RuleNotAllowedConsolidatedExpenses | MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(
             RuleIncorrectOrEmptyBodyError.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))

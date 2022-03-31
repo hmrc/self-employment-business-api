@@ -17,11 +17,11 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import v1.controllers.requestParsers.validators.AmendSelfEmploymentAnnualSubmissionValidator
+import v1.controllers.requestParsers.validators.AmendAnnualSubmissionValidator
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest}
 
-class AmendSelfEmploymentAnnualSubmissionRequestParser @Inject()(val validator: AmendSelfEmploymentAnnualSubmissionValidator)
+class AmendAnnualSubmissionRequestParser @Inject()(val validator: AmendAnnualSubmissionValidator)
   extends RequestParser[AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest] {
 
   override protected def requestFor(data: AmendAnnualSubmissionRawData): AmendAnnualSubmissionRequest =

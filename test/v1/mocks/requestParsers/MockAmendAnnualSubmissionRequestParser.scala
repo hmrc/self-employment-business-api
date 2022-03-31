@@ -18,17 +18,17 @@ package v1.mocks.requestParsers
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSubmissionRequestParser
+import v1.controllers.requestParsers.AmendAnnualSubmissionRequestParser
 import v1.models.errors.ErrorWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest}
 
-trait MockAmendSelfEmploymentAnnualSubmissionRequestParser extends MockFactory {
+trait MockAmendAnnualSubmissionRequestParser extends MockFactory {
 
-  val mockAmendSelfEmploymentAnnualSummaryRequestParser: AmendSelfEmploymentAnnualSubmissionRequestParser = mock[AmendSelfEmploymentAnnualSubmissionRequestParser]
+  val mockAmendAnnualSummaryRequestParser: AmendAnnualSubmissionRequestParser = mock[AmendAnnualSubmissionRequestParser]
 
-  object MockAmendSelfEmploymentAnnualSummaryRequestParser {
+  object MockAmendAnnualSummaryRequestParser {
     def requestFor(data: AmendAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, AmendAnnualSubmissionRequest]] = {
-      (mockAmendSelfEmploymentAnnualSummaryRequestParser.parseRequest(_: AmendAnnualSubmissionRawData)(_: String)).expects(data, *)
+      (mockAmendAnnualSummaryRequestParser.parseRequest(_: AmendAnnualSubmissionRawData)(_: String)).expects(data, *)
     }
   }
 

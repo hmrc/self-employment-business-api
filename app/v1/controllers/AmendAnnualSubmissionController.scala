@@ -21,7 +21,7 @@ import cats.implicits._
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ Action, ControllerComponents }
 import utils.{ IdGenerator, Logging }
-import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSubmissionRequestParser
+import v1.controllers.requestParsers.AmendAnnualSubmissionRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
@@ -35,7 +35,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 @Singleton
 class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
                                                 val lookupService: MtdIdLookupService,
-                                                parser: AmendSelfEmploymentAnnualSubmissionRequestParser,
+                                                parser: AmendAnnualSubmissionRequestParser,
                                                 service: AmendAnnualSubmissionService,
                                                 hateoasFactory: HateoasFactory,
                                                 cc: ControllerComponents,
@@ -83,12 +83,12 @@ class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthS
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case MtdErrorWithCustomMessage(BadRequestError.code) | MtdErrorWithCustomMessage(NinoFormatError.code) | MtdErrorWithCustomMessage(
-            BusinessIdFormatError.code) | MtdErrorWithCustomMessage(TaxYearFormatError.code) | MtdErrorWithCustomMessage(ValueFormatError.code) |
-          MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCustomMessage(RuleTaxYearNotSupportedError.code) |
-          MtdErrorWithCustomMessage(RuleTaxYearRangeInvalidError.code) | MtdErrorWithCustomMessage(RuleBuildingNameNumberError.code) |
-          MtdErrorWithCustomMessage(RuleBothAllowancesSuppliedError.code) | MtdErrorWithCustomMessage(StringFormatError.code) |
-          MtdErrorWithCustomMessage(Class4ExemptionReasonFormatError.code) | MtdErrorWithCustomMessage(DateFormatError.code) =>
+      case MtdErrorWithCode(BadRequestError.code) | MtdErrorWithCode(NinoFormatError.code) | MtdErrorWithCode(
+            BusinessIdFormatError.code) | MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(ValueFormatError.code) |
+           MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCode(RuleTaxYearNotSupportedError.code) |
+           MtdErrorWithCode(RuleTaxYearRangeInvalidError.code) | MtdErrorWithCode(RuleBuildingNameNumberError.code) |
+           MtdErrorWithCode(RuleBothAllowancesSuppliedError.code) | MtdErrorWithCode(StringFormatError.code) |
+           MtdErrorWithCode(Class4ExemptionReasonFormatError.code) | MtdErrorWithCode(DateFormatError.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
