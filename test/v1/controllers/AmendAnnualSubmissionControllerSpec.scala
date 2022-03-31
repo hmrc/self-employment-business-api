@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendAnnualSubmissionControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendAnnualSubmissionService
@@ -44,9 +44,9 @@ class AmendAnnualSubmissionControllerSpec
     with MockIdGenerator
     with AmendAnnualSubmissionFixture {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val taxYear = "2019-20"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val taxYear       = "2019-20"
   private val correlationId = "X-123"
 
   trait Test {
@@ -87,7 +87,7 @@ class AmendAnnualSubmissionControllerSpec
     """.stripMargin
   )
 
-  private val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
+  private val rawData     = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
   private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
@@ -128,15 +128,22 @@ class AmendAnnualSubmissionControllerSpec
           }
         }
 
+        def withPath(mtdError: MtdError): MtdError = mtdError.copy(paths = Some(Seq("/some/path")))
+
         val input = Seq(
           (BadRequestError, BAD_REQUEST),
           (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
-          (ValueFormatError.copy(paths = Some(Seq("/foreignTaxCreditRelief/amount"))), BAD_REQUEST),
-          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+          (RuleTaxYearRangeInvalidError, BAD_REQUEST),
           (RuleTaxYearNotSupportedError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST)
+          (withPath(ValueFormatError), BAD_REQUEST),
+          (BusinessIdFormatError, BAD_REQUEST),
+          (withPath(RuleBuildingNameNumberError), BAD_REQUEST),
+          (withPath(StringFormatError), BAD_REQUEST),
+          (RuleBothAllowancesSuppliedError, BAD_REQUEST),
+          (withPath(RuleIncorrectOrEmptyBodyError), BAD_REQUEST),
+          (withPath(DateFormatError), BAD_REQUEST),
+          (withPath(Class4ExemptionReasonFormatError), BAD_REQUEST),
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -165,6 +172,7 @@ class AmendAnnualSubmissionControllerSpec
         val input = Seq(
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
+          (RuleTaxYearNotSupportedError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (DownstreamError, INTERNAL_SERVER_ERROR)

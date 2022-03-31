@@ -27,19 +27,19 @@ import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
-import v1.services.{AmendAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService }
+import v1.services.{ AmendAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService }
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
-                                             val lookupService: MtdIdLookupService,
-                                             parser: AmendSelfEmploymentAnnualSubmissionRequestParser,
-                                             service: AmendAnnualSubmissionService,
-                                             hateoasFactory: HateoasFactory,
-                                             cc: ControllerComponents,
-                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                                val lookupService: MtdIdLookupService,
+                                                parser: AmendSelfEmploymentAnnualSubmissionRequestParser,
+                                                service: AmendAnnualSubmissionService,
+                                                hateoasFactory: HateoasFactory,
+                                                cc: ControllerComponents,
+                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -53,14 +53,14 @@ class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthS
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, request.body)
+
       val result =
         for {
-          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
+          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(AmendAnnualSubmissionRawData(nino, businessId, taxYear, request.body)))
           serviceResponse <- EitherT(service.amendAnnualSubmission(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory.wrap(serviceResponse.responseData, AmendAnnualSubmissionHateoasData(
-              parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear)).asRight[ErrorWrapper])
+          vendorResponse <- EitherT.fromEither[Future](hateoasFactory
+            .wrap(serviceResponse.responseData, AmendAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear))
+            .asRight[ErrorWrapper])
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -83,8 +83,12 @@ class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthS
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case BadRequestError | NinoFormatError | BusinessIdFormatError | TaxYearFormatError | MtdErrorWithCustomMessage(ValueFormatError.code) |
-          MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) | RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalidError =>
+      case MtdErrorWithCustomMessage(BadRequestError.code) | MtdErrorWithCustomMessage(NinoFormatError.code) | MtdErrorWithCustomMessage(
+            BusinessIdFormatError.code) | MtdErrorWithCustomMessage(TaxYearFormatError.code) | MtdErrorWithCustomMessage(ValueFormatError.code) |
+          MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCustomMessage(RuleTaxYearNotSupportedError.code) |
+          MtdErrorWithCustomMessage(RuleTaxYearRangeInvalidError.code) | MtdErrorWithCustomMessage(RuleBuildingNameNumberError.code) |
+          MtdErrorWithCustomMessage(RuleBothAllowancesSuppliedError.code) | MtdErrorWithCustomMessage(StringFormatError.code) |
+          MtdErrorWithCustomMessage(Class4ExemptionReasonFormatError.code) | MtdErrorWithCustomMessage(DateFormatError.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

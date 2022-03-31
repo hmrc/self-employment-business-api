@@ -36,12 +36,12 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
         links(mockAppConfig, AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))) shouldBe
         Seq(
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
-            GET,
-            "self"
-          ),
-          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             PUT,
             "create-and-amend-self-employment-annual-submission"
+          ),
+          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
+            GET,
+            "self"
           ),
           Link(s"/my/context/$nino/$businessId/annual/$taxYear",
             DELETE,

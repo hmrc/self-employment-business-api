@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
 
@@ -163,7 +163,7 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.POST, desUri, OK, desResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, desUri, OK, desResponse)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -854,7 +854,7 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.POST, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.POST, desUri, desStatus, errorBody(desCode))
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
