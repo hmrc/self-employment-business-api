@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
@@ -25,8 +25,7 @@ import v1.mocks.requestParsers.MockRetrieveAnnualSubmissionRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveAnnualSubmissionService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
-import v1.models.hateoas.{HateoasWrapper, Link}
-import v1.models.hateoas.Method.GET
+import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
 import v1.models.response.retrieveAnnual._
@@ -34,19 +33,20 @@ import v1.models.response.retrieveAnnual._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrieveAnnualSubmissionControllerSpec extends ControllerBaseSpec
-  with MockEnrolmentsAuthService
-  with MockMtdIdLookupService
-  with MockRetrieveAnnualSubmissionService
-  with MockRetrieveAnnualSubmissionRequestParser
-  with MockHateoasFactory
-  with MockAuditService
-  with MockIdGenerator
-  with RetrieveAnnualSubmissionFixture {
+class RetrieveAnnualSubmissionControllerSpec
+    extends ControllerBaseSpec
+    with MockEnrolmentsAuthService
+    with MockMtdIdLookupService
+    with MockRetrieveAnnualSubmissionService
+    with MockRetrieveAnnualSubmissionRequestParser
+    with MockHateoasFactory
+    with MockAuditService
+    with MockIdGenerator
+    with RetrieveAnnualSubmissionFixture {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val taxYear = "2020-21"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val taxYear       = "2020-21"
   private val correlationId = "X-123"
 
   trait Test {
@@ -67,16 +67,10 @@ class RetrieveAnnualSubmissionControllerSpec extends ControllerBaseSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData = RetrieveAnnualSubmissionRawData(nino, businessId, taxYear)
-  private val requestData = RetrieveAnnualSubmissionRequest(Nino(nino), businessId, taxYear)
+  private val rawData     = RetrieveAnnualSubmissionRawData(nino, businessId, taxYear)
+  private val requestData = RetrieveAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
-  private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/annual/$taxYear", method = GET, rel = "self")
-
-  val responseBody: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
-    adjustments = Some(adjustments),
-    allowances = Some(allowances),
-    nonFinancials = Some(nonFinancials)
-  )
+  private val responseBody: RetrieveAnnualSubmissionResponse = retrieveResponseModel
 
   "handleRequest" should {
     "return Ok" when {
@@ -91,9 +85,11 @@ class RetrieveAnnualSubmissionControllerSpec extends ControllerBaseSpec
 
         MockHateoasFactory
           .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
-          .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(responseBody, testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
+
+        contentAsJson(result) shouldBe Json.toJson(responseBody).as[JsObject] ++ testHateoasLinksJson
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
@@ -151,6 +147,7 @@ class RetrieveAnnualSubmissionControllerSpec extends ControllerBaseSpec
         val input = Seq(
           (NinoFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
+          (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )
