@@ -59,8 +59,10 @@ object PeriodIdFormatError
 object ValueFormatError
     extends MtdError(
       code = "FORMAT_VALUE",
-      message = "One or more monetary fields are invalid"
-    )
+      message = "The value must be between 0 and 99999999999.99") {
+  def forPathAndRange(path : String, min: String, max: String): MtdError =
+    ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max")
+}
 
 object FromDateFormatError
     extends MtdError(
@@ -74,17 +76,35 @@ object ToDateFormatError
       message = "The provided To date is invalid"
     )
 
+object StringFormatError
+  extends MtdError(
+    code = "FORMAT_STRING",
+    message = "The supplied string format is not valid"
+  )
+
+object DateFormatError
+  extends MtdError(
+    code = "FORMAT_DATE",
+    message = "The supplied date format is not valid"
+  )
+
+object Class4ExemptionReasonFormatError
+  extends MtdError(
+    code = "FORMAT_CLASS_4_EXEMPTION_REASON",
+    message = "The format of the supplied Class 4 National Insurance exemption reason is not valid"
+  )
+
 // Rule Errors
 object RuleTaxYearNotSupportedError
     extends MtdError(
       code = "RULE_TAX_YEAR_NOT_SUPPORTED",
-      message = "The tax year specified is before the minimum tax year value"
+      message = "The specified tax year is not supported. The tax year specified is before the minimum tax year value"
     )
 
 object RuleTaxYearRangeInvalidError
     extends MtdError(
       code = "RULE_TAX_YEAR_RANGE_INVALID",
-      message = "The Tax year range is invalid"
+      message = "Tax year range invalid. A tax year range of one year is required"
     )
 
 object RuleOverlappingPeriod
@@ -122,6 +142,18 @@ object RuleBothExpensesSuppliedError
       code = "RULE_BOTH_EXPENSES_SUPPLIED",
       message = "Both expenses and consolidatedExpenses can not be present at the same time"
     )
+
+object RuleBothAllowancesSuppliedError
+  extends MtdError(
+    code = "RULE_BOTH_ALLOWANCES_SUPPLIED",
+    message = "Both allowances and trading allowances must not be present at the same time"
+  )
+
+object RuleBuildingNameNumberError
+  extends MtdError(
+    code = "RULE_BUILDING_NAME_NUMBER",
+    message = "Postcode must be supplied along with at least one of name or number"
+  )
 
 object RuleIncorrectOrEmptyBodyError
     extends MtdError(

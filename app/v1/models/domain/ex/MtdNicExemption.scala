@@ -17,6 +17,7 @@
 package v1.models.domain.ex
 
 import play.api.libs.json.Format
+import utils.EmptinessChecker
 import utils.enums.Enums
 
 sealed trait MtdNicExemption {
@@ -49,4 +50,6 @@ object MtdNicExemption {
   }
 
   implicit val format: Format[MtdNicExemption] = Enums.format[MtdNicExemption]
+  implicit val emptinessChecker : EmptinessChecker[MtdNicExemption] = EmptinessChecker.primitive
+  val parser: PartialFunction[String, MtdNicExemption] = Enums.parser[MtdNicExemption]
 }

@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.{RuleToDateBeforeFromDateError, ToDateFormatError}
+import v1.models.errors.{DateFormatError, RuleToDateBeforeFromDateError, ToDateFormatError}
 import v1.models.utils.JsonErrorValidators
 
 class DateValidationSpec extends UnitSpec with JsonErrorValidators {
@@ -30,14 +30,33 @@ class DateValidationSpec extends UnitSpec with JsonErrorValidators {
 
         validateResult.isEmpty shouldBe true
       }
+      "a valid date is supplied with paths" in {
+        val date = "2020-03-20"
+        val paths = "/testObject/testField"
+        val validationResult = DateValidation.validateWithPaths(date, paths)
+
+        validationResult.isEmpty shouldBe true
+      }
+      "no date is supplied" in {
+        val validationResult = DateValidation.validateOptional(None, "")
+
+        validationResult.isEmpty shouldBe true
+      }
     }
     "return an error" when {
-      "an invalid error is supplied" in {
+      "an invalid date is supplied" in {
         val validationResult = DateValidation.validate("930-213", ToDateFormatError)
 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe ToDateFormatError
+      }
+      "an invalid date is supplied with paths" in {
+        val validationResult = DateValidation.validateWithPaths("930-213", "/testObject/testField")
+
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe DateFormatError.copy(paths = Some(Seq("/testObject/testField")))
       }
     }
   }
