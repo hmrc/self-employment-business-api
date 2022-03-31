@@ -21,7 +21,7 @@ import v1.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 
 import scala.util.{Failure, Success, Try}
 
-object Class4Validation {
+object Class4ExemptionReasonValidation {
 
   def validateOptional(field: Option[String]): List[MtdError] = {
     field match {

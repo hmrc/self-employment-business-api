@@ -44,14 +44,14 @@ class DateValidationSpec extends UnitSpec with JsonErrorValidators {
       }
     }
     "return an error" when {
-      "an invalid error is supplied" in {
+      "an invalid date is supplied" in {
         val validationResult = DateValidation.validate("930-213", ToDateFormatError)
 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe ToDateFormatError
       }
-      "an invalid error is supplied with paths" in {
+      "an invalid date is supplied with paths" in {
         val validationResult = DateValidation.validateWithPaths("930-213", "/testObject/testField")
 
         validationResult.isEmpty shouldBe false

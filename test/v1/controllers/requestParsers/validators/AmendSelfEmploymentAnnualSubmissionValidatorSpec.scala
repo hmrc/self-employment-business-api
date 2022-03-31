@@ -216,6 +216,73 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
         """{"nonFinancials": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/nonFinancials/businessDetailsChangedRecently"))))
       }
+      "structuredBuildingAllowance with a building without the mandatory postcode is submitted" in {
+        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+          """{
+            |   "allowances": {
+            |    "structuredBuildingAllowance": [
+            |      {
+            |        "amount": 1.23,
+            |        "building": {
+            |        }
+            |      }
+            |    ]
+            |  }
+            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/postcode"))))
+      }
+      "structuredBuildingAllowance without the mandatory amount field is submitted" in {
+        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+          """{
+            |   "allowances": {
+            |    "structuredBuildingAllowance": [
+            |      {
+            |        "building": {
+            |           "name": "Burn house",
+            |           "postcode": "THB 8HA"
+            |        }
+            |      }
+            |    ]
+            |  }
+            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/amount"))))
+      }
+      "structuredBuildingAllowance with a firstYear without the mandatory qualifyingDate field is submitted" in {
+        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+          """{
+            |   "allowances": {
+            |    "structuredBuildingAllowance": [
+            |      {
+            |        "amount": 1.45,
+            |        "firstYear": {
+            |           "qualifyingAmountExpenditure": 23.42
+            |        },
+            |        "building": {
+            |           "name": "Burn house",
+            |           "postcode": "THB 8HA"
+            |        }
+            |      }
+            |    ]
+            |  }
+            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate"))))
+      }
+      "structuredBuildingAllowance with a firstYear without the mandatory qualifyingAmountExpenditure field is submitted" in {
+        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
+          """{
+            |   "allowances": {
+            |    "structuredBuildingAllowance": [
+            |      {
+            |        "amount": 1.45,
+            |        "firstYear": {
+            |           "qualifyingDate": "2020-01-01"
+            |        },
+            |        "building": {
+            |           "name": "Burn house",
+            |           "postcode": "THB 8HA"
+            |        }
+            |      }
+            |    ]
+            |  }
+            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))))
+      }
     }
    "return ValueFormatError" when {
       "/adjustments/includedNonTaxableProfits is invalid" in {
@@ -223,57 +290,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": -1,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "includedNonTaxableProfits": -1
             |  }
             |}
             |""".stripMargin
@@ -284,57 +301,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": -1.999,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "basisAdjustment": -1.999
             |  }
             |}
             |""".stripMargin
@@ -345,57 +312,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": -1,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "overlapReliefUsed": -1
             |  }
             |}
             |""".stripMargin
@@ -406,57 +323,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": -1,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "accountingAdjustment": -1
             |  }
             |}
             |""".stripMargin
@@ -467,57 +334,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": -1.999,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "averagingAdjustment": -1.999
             |  }
             |}
             |""".stripMargin
@@ -529,57 +346,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": -1,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "outstandingBusinessIncome": -1
             |  }
             |}
             |""".stripMargin
@@ -590,57 +357,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": -200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "balancingChargeBpra": -200.12
             |  }
             |}
             |""".stripMargin
@@ -651,57 +368,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": -200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "balancingChargeOther": -200.12
             |  }
             |}
             |""".stripMargin
@@ -712,57 +379,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
           """
             |{
             |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
             |    "goodsAndServicesOwnUse": -200.12
-            |  },
-            |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
             |  }
             |}
             |""".stripMargin
@@ -772,58 +389,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": -200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "annualInvestmentAllowance": -200.12
             |  }
             |}
             |""".stripMargin
@@ -833,58 +400,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": -200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "businessPremisesRenovationAllowance": -200.12
             |  }
             |}
             |""".stripMargin
@@ -894,58 +411,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": -200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "capitalAllowanceMainPool": -200.12
             |  }
             |}
             |""".stripMargin
@@ -955,58 +422,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": -200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "capitalAllowanceSpecialRatePool": -200.12
             |  }
             |}
             |""".stripMargin
@@ -1016,58 +433,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": -200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "zeroEmissionsGoodsVehicleAllowance": -200.12
             |  }
             |}
             |""".stripMargin
@@ -1077,58 +444,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": -200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "enhancedCapitalAllowance": -200.12
             |  }
             |}
             |""".stripMargin
@@ -1138,58 +455,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": -200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "allowanceOnSales": -200.12
             |  }
             |}
             |""".stripMargin
@@ -1199,58 +466,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": -200.12,
-            |    "electricChargePointAllowance": 200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "capitalAllowanceSingleAssetPool": -200.12
             |  }
             |}
             |""".stripMargin
@@ -1260,58 +477,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
           """
             |{
-            |  "adjustments": {
-            |    "includedNonTaxableProfits": 200.12,
-            |    "basisAdjustment": 200.12,
-            |    "overlapReliefUsed": 200.12,
-            |    "accountingAdjustment": 200.12,
-            |    "averagingAdjustment": 200.12,
-            |    "outstandingBusinessIncome": 200.12,
-            |    "balancingChargeBpra": 200.12,
-            |    "balancingChargeOther": 200.12,
-            |    "goodsAndServicesOwnUse": 200.12
-            |  },
             |  "allowances": {
-            |    "annualInvestmentAllowance": 200.12,
-            |    "capitalAllowanceMainPool": 200.12,
-            |    "capitalAllowanceSpecialRatePool": 200.12,
-            |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-            |    "businessPremisesRenovationAllowance": 200.12,
-            |    "enhancedCapitalAllowance": 200.12,
-            |    "allowanceOnSales": 200.12,
-            |    "capitalAllowanceSingleAssetPool": 200.12,
-            |    "electricChargePointAllowance": -200.12,
-            |    "zeroEmissionsCarAllowance": 200.12,
-            |    "structuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ],
-            |    "enhancedStructuredBuildingAllowance": [
-            |      {
-            |        "amount": 1.23,
-            |        "firstYear": {
-            |          "qualifyingDate": "2021-11-11",
-            |          "qualifyingAmountExpenditure": 1.23
-            |        },
-            |        "building": {
-            |          "name": "Plaza 2",
-            |          "postcode": "TF3 4NT"
-            |        }
-            |      }
-            |    ]
-            |  },
-            |  "nonFinancials": {
-            |    "businessDetailsChangedRecently": true,
-            |    "class4NicsExemptionReason": "non-resident"
+            |    "electricChargePointAllowance": -200.12
             |  }
             |}
             |""".stripMargin
@@ -1321,58 +488,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": -200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
+           |    "zeroEmissionsCarAllowance": -200.12
            |  }
            |}
            |""".stripMargin
@@ -1382,23 +499,8 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
            |    "tradingIncomeAllowance": -100.20
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1408,58 +510,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
            |    "structuredBuildingAllowance": [
            |      {
            |        "amount": 1.233,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "name": "Plaza 2",
            |          "postcode": "TF3 4NT"
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1469,28 +529,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
            |    "structuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
@@ -1503,24 +542,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
            |          "postcode": "TF3 4NT"
            |        }
            |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1530,28 +552,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
            |    "structuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
@@ -1564,24 +565,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
            |          "postcode": "TF3 4NT"
            |        }
            |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1591,58 +575,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
            |    "structuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "name": "Plaza 2#",
            |          "postcode": "TF3 4NT"
            |        }
            |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1652,58 +594,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
            |    "structuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "number": "#2",
            |          "postcode": "TF3 4NT"
            |        }
            |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1713,58 +613,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
            |    "structuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "name": "Plaza 2",
            |          "postcode": "TF3 4NT#"
            |        }
            |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1775,58 +633,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
            |    "enhancedStructuredBuildingAllowance": [
            |      {
            |        "amount": 1.233,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "name": "Plaza 2",
            |          "postcode": "TF3 4NT"
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1836,41 +652,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
            |    "enhancedStructuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
@@ -1884,10 +666,6 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1897,41 +675,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.32
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
            |    "enhancedStructuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
@@ -1945,10 +689,6 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -1958,58 +698,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
            |    "enhancedStructuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "name": "Plaza 2#",
            |          "postcode": "TF3 4NT"
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -2019,58 +717,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "number": "2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
            |    "enhancedStructuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "number": "#32",
            |          "postcode": "TF3 4NT"
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -2080,58 +736,16 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
            |    "enhancedStructuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "name": "Plaza 2",
            |          "postcode": "TF3 4NT#"
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -2141,55 +755,6 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
-           |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
-           |    "structuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ],
-           |    "enhancedStructuredBuildingAllowance": [
-           |      {
-           |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
-           |        "building": {
-           |          "name": "Plaza 2",
-           |          "postcode": "TF3 4NT"
-           |        }
-           |      }
-           |    ]
-           |  },
            |  "nonFinancials": {
            |    "businessDetailsChangedRecently": true,
            |    "class4NicsExemptionReason": "non-resident 131231"
@@ -2202,17 +767,6 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
            |    "annualInvestmentAllowance": 200.12,
            |    "capitalAllowanceMainPool": 200.12,
@@ -2251,10 +805,6 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin
@@ -2264,35 +814,10 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
          """
            |{
-           |  "adjustments": {
-           |    "includedNonTaxableProfits": 200.12,
-           |    "basisAdjustment": 200.12,
-           |    "overlapReliefUsed": 200.12,
-           |    "accountingAdjustment": 200.12,
-           |    "averagingAdjustment": 200.12,
-           |    "outstandingBusinessIncome": 200.12,
-           |    "balancingChargeBpra": 200.12,
-           |    "balancingChargeOther": 200.12,
-           |    "goodsAndServicesOwnUse": 200.12
-           |  },
            |  "allowances": {
-           |    "annualInvestmentAllowance": 200.12,
-           |    "capitalAllowanceMainPool": 200.12,
-           |    "capitalAllowanceSpecialRatePool": 200.12,
-           |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
-           |    "businessPremisesRenovationAllowance": 200.12,
-           |    "enhancedCapitalAllowance": 200.12,
-           |    "allowanceOnSales": 200.12,
-           |    "capitalAllowanceSingleAssetPool": 200.12,
-           |    "electricChargePointAllowance": 200.12,
-           |    "zeroEmissionsCarAllowance": 200.12,
            |    "structuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "postcode": "TF3 4NT"
            |        }
@@ -2301,19 +826,11 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
            |    "enhancedStructuredBuildingAllowance": [
            |      {
            |        "amount": 1.23,
-           |        "firstYear": {
-           |          "qualifyingDate": "2021-11-11",
-           |          "qualifyingAmountExpenditure": 1.23
-           |        },
            |        "building": {
            |          "postcode": "TF3 4NT"
            |        }
            |      }
            |    ]
-           |  },
-           |  "nonFinancials": {
-           |    "businessDetailsChangedRecently": true,
-           |    "class4NicsExemptionReason": "non-resident"
            |  }
            |}
            |""".stripMargin

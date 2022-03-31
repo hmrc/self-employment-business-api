@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators.validations
 import support.UnitSpec
 import v1.models.errors.Class4ExemptionReasonFormatError
 
-class Class4ValidationSpec extends UnitSpec {
+class Class4ExemptionReasonValidationSpec extends UnitSpec {
 
   "validate" should {
     "return no errors" when {
@@ -27,13 +27,13 @@ class Class4ValidationSpec extends UnitSpec {
         ).foreach {
           nic =>
             s"return an empty list for valid class4 $nic" in {
-              Class4Validation.validate(nic) shouldBe NoValidationErrors
+              Class4ExemptionReasonValidation.validate(nic) shouldBe NoValidationErrors
             }
         }
     }
     "return an error" when {
       "a value that isn't one of the class4 fields is submitted" in {
-        val validationResult = Class4Validation.validate("notValid")
+        val validationResult = Class4ExemptionReasonValidation.validate("notValid")
 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1

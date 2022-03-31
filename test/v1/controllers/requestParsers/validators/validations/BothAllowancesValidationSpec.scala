@@ -53,5 +53,53 @@ class BothAllowancesValidationSpec extends UnitSpec {
       validationResult.length shouldBe 1
       validationResult.head shouldBe RuleBothAllowancesSuppliedError
     }
+    "annualInvestmentAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(annualInvestmentAllowance = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "businessPremisesRenovationAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(businessPremisesRenovationAllowance = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "capitalAllowanceMainPool is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(capitalAllowanceMainPool = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "capitalAllowanceSpecialRatePool is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(capitalAllowanceSpecialRatePool = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "zeroEmissionsGoodsVehicleAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(zeroEmissionsGoodsVehicleAllowance = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "enhancedCapitalAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(enhancedCapitalAllowance = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "allowanceOnSales is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(allowanceOnSales = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "capitalAllowanceSingleAssetPool is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(capitalAllowanceSingleAssetPool = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "electricChargePointAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(electricChargePointAllowance = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "zeroEmissionsCarAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(zeroEmissionsCarAllowance = Some(123.12))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "structuredBuildingAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(structuredBuildingAllowance = Some(Seq(structuredBuildingAllowance)))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
+    "enhancedStructuredBuildingAllowance is provided with tradingIncomeAllowance" in {
+      val allowances = allowancesWithOnlyTradingIncome.copy(enhancedStructuredBuildingAllowance = Some(Seq(structuredBuildingAllowance)))
+      BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
+    }
   }
 }
