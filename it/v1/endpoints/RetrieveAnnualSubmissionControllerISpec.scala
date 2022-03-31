@@ -24,7 +24,7 @@ import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionFixture
-import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
+import v1.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with RetrieveAnnualSubmissionFixture {
 
@@ -65,7 +65,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
         }
 
         val response: WSResponse = await(request().get())
@@ -120,7 +120,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().get())

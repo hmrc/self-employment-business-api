@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
@@ -65,7 +65,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
-          DesStub.when(method = DesStub.PUT, uri = desUri, body = Some("{}"))
+          DownstreamStub.when(method = DownstreamStub.PUT, uri = desUri, body = Some("{}"))
             .thenReturn(status = Status.NO_CONTENT)
         }
 
@@ -119,7 +119,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.PUT, desUri, desStatus, errorBody(desCode))
             }
 
             val response: WSResponse = await(request().delete())
