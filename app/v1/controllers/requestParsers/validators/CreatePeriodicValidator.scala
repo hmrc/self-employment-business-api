@@ -16,7 +16,6 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.Validator.flattenErrors
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.{FromDateFormatError, MtdError, RuleIncorrectOrEmptyBodyError, ToDateFormatError}
 import v1.models.request.createPeriodic.{ConsolidatedExpenses, CreatePeriodicBody, CreatePeriodicRawData, Expenses, Incomes}
@@ -49,7 +48,7 @@ class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
   private def bodyFieldValidation: CreatePeriodicRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[CreatePeriodicBody]
 
-    List(flattenErrors(
+    List(Validator.flattenErrors(
       List(
         validateDates(body.periodFromDate, body.periodToDate),
         body.incomes.map(validateIncome).getOrElse(NoValidationErrors),

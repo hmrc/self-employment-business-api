@@ -59,10 +59,3 @@ lazy val microservice = Project(appName, file("."))
     resolvers += Resolver.jcenterRepo
   )
   .settings(PlayKeys.playDefaultPort := 7801)
-
-dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-28")
-dependencyUpdatesFilter -= moduleFilter(organization = "com.typesafe.play")
-dependencyUpdatesFilter -= moduleFilter(name = "scala-library")
-dependencyUpdatesFilter -= moduleFilter(name = "flexmark-all")
-dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-play")
-dependencyUpdatesFailBuild := true

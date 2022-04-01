@@ -18,18 +18,33 @@ package v1.controllers.requestParsers.validators.validations
 
 import java.time.LocalDate
 
-import v1.models.errors.{MtdError, RuleToDateBeforeFromDateError}
+import v1.models.errors.{DateFormatError, MtdError, RuleToDateBeforeFromDateError}
 
 import scala.util.{Failure, Success, Try}
 
 object DateValidation {
-
   def validate(field: String, error: MtdError): List[MtdError] = {
     Try {
       LocalDate.parse(field, dateFormat)
     } match {
       case Success(_) => Nil
       case Failure(_) => List(error)
+    }
+  }
+
+  def validateOptional(field: Option[String], path: String): List[MtdError] = {
+    field match {
+      case None        => NoValidationErrors
+      case Some(value) => validateWithPaths(value, path)
+    }
+  }
+
+  def validateWithPaths(field: String, path: String): List[MtdError] = {
+    Try {
+      LocalDate.parse(field, dateFormat)
+    } match {
+      case Success(_) => Nil
+      case Failure(_) => List(DateFormatError.copy(paths = Some(Seq(path))))
     }
   }
 

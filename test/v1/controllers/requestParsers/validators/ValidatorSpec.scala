@@ -18,8 +18,8 @@ package v1.controllers.requestParsers.validators
 
 import org.scalamock.scalatest.MockFactory
 import support.UnitSpec
-import v1.models.errors.{MtdError, NinoFormatError, NotFoundError}
 import v1.models.request.RawData
+import v1.models.errors.{MtdError, NinoFormatError, NotFoundError}
 
 class ValidatorSpec extends UnitSpec with MockFactory {
 
