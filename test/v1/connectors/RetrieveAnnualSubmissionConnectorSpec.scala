@@ -18,7 +18,7 @@ package v1.connectors
 
 import mocks.MockAppConfig
 import v1.mocks.MockHttpClient
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
 import v1.models.response.retrieveAnnual._
@@ -34,8 +34,8 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
 
   val request: RetrieveAnnualSubmissionRequest = RetrieveAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
   val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(

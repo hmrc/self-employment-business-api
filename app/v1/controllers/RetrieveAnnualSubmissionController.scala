@@ -23,7 +23,6 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.RetrieveAnnualSubmissionRequestParser
 import v1.hateoas.HateoasFactory
-import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRawData
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionHateoasData
@@ -60,7 +59,8 @@ class RetrieveAnnualSubmissionController @Inject()(val authService: EnrolmentsAu
           serviceResponse <- EitherT(service.retrieveAnnualSubmission(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
+              .wrap(serviceResponse.responseData,
+                    RetrieveAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear))
               .asRight[ErrorWrapper]
           )
         } yield {

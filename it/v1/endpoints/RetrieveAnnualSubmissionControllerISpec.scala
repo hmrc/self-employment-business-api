@@ -19,29 +19,27 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.Json
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionFixture
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
-class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with RetrieveAnnualSubmissionFixture{
+class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with RetrieveAnnualSubmissionFixture {
 
   private trait Test {
 
-    val nino = "AA123456A"
-    val businessId = "XAIS12345678910"
-    val taxYear = "2021-22"
+    val nino              = "AA123456A"
+    val businessId        = "XAIS12345678910"
+    val taxYear           = "2021-22"
     val downstreamTaxYear = "2022"
-
-    val requestDESBodyJson: JsValue = downstreamRetrieveResponseJson
 
     def setupStubs(): StubMapping
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear"
 
     def request(): WSRequest = {
       setupStubs()
@@ -53,7 +51,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
       s"""
          |      {
          |        "code": "$code",
-         |        "reason": "des message"
+         |        "reason": "downstream message"
          |      }
     """.stripMargin
   }
@@ -63,32 +61,33 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
     "return a 200 status code" when {
 
       "any valid request is made" in new Test {
-
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUri, OK, requestDESBodyJson)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
         }
 
         val response: WSResponse = await(request().get())
         response.status shouldBe OK
-        response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String, businessId: String, taxYear: String )
+        response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String, businessId: String, taxYear: String)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
-    "return error according to spec" when {
 
+    "return error according to spec" when {
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestBusinessId: String, requestTaxYear: String,
-                                expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestTaxYear: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
-            override val taxYear: String = requestTaxYear
-
+            override val taxYear: String    = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -113,15 +112,15 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.GET, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().get())

@@ -17,7 +17,7 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.mocks.connectors.MockRetrieveAnnualSubmissionConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -41,8 +41,8 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
 
   private val requestData = RetrieveAnnualSubmissionRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    taxYear = taxYear
+    BusinessId(businessId),
+    TaxYear.fromMtd(taxYear)
   )
 
   trait Test extends MockRetrieveAnnualSubmissionConnector {

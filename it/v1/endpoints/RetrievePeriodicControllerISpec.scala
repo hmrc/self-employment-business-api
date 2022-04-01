@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors.{BusinessIdFormatError, DownstreamError, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError}
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
 
@@ -237,7 +237,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUri, queryParams, Status.OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.GET, desUri, queryParams, Status.OK, desResponseBody)
         }
 
 
@@ -290,7 +290,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.GET, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.GET, desUri, desStatus, errorBody(desCode))
             }
 
             val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())

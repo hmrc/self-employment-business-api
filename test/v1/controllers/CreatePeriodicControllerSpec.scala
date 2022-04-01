@@ -25,14 +25,13 @@ import v1.mocks.requestParsers.MockCreatePeriodicRequestParser
 import v1.mocks.services.{MockCreatePeriodicService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.Nino
 import v1.models.errors._
-import v1.models.hateoas.{HateoasWrapper, Link}
-import v1.models.hateoas.Method._
+import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodic._
 import v1.models.response.createPeriodic.{CreatePeriodicHateoasData, CreatePeriodicResponse}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CreatePeriodicControllerSpec
   extends ControllerBaseSpec
@@ -65,10 +64,6 @@ class CreatePeriodicControllerSpec
     MockEnrolmentsAuthService.authoriseUser()
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
-
-  private val testHateoasLinks = Seq(
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self")
-  )
 
   private val requestJson = Json.parse(
     """

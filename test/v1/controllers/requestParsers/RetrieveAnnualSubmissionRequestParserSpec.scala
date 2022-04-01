@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import v1.mocks.validators.MockRetrieveAnnualSubmissionValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
 
@@ -47,7 +47,7 @@ class RetrieveAnnualSubmissionRequestParserSpec extends UnitSpec {
         MockRetrieveAnnualSubmissionValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(RetrieveAnnualSubmissionRequest(Nino(nino), businessId, taxYear))
+          Right(RetrieveAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
       }
     }
 

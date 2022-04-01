@@ -24,7 +24,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
-import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with AmendAnnualSubmissionFixture {
 
@@ -96,7 +96,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUri, OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, desUri, OK, desResponseBody)
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
@@ -115,7 +115,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.PUT, desUri, desStatus, errorBody(desCode))
             }
 
             val response: WSResponse = await(request().put(requestBodyJson))

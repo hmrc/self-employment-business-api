@@ -23,7 +23,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.http.Status._
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
 
@@ -180,7 +180,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUri, queryParams, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, desUri, queryParams, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(requestJson))
@@ -194,7 +194,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, desUri, queryParams, NO_CONTENT, JsObject.empty)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, desUri, queryParams, NO_CONTENT, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(unconsolidatedRequestJson))
@@ -313,7 +313,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.PUT, desUri, desStatus, errorBody(desCode))
             }
 
             val response: WSResponse = await(request().put(requestJson))

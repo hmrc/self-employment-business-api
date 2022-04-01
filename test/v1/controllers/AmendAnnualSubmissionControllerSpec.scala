@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
@@ -25,8 +25,7 @@ import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSubmissionRequestPar
 import v1.mocks.services.{MockAmendAnnualSubmissionService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
-import v1.models.hateoas.Method.GET
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
@@ -67,25 +66,9 @@ class AmendAnnualSubmissionControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val testHateoasLinks = Seq(Link(href = s"/someLink", method = GET, rel = "some-rel"))
-
   private val requestJson = amendAnnualSubmissionBodyMtdJson(None, None, None)
 
   private val requestBody = AmendAnnualSubmissionBody(None, None, None)
-
-  val responseJson: JsValue = Json.parse(
-    s"""
-       |{
-       |  "links": [
-       |    {
-       |      "href": "/someLink",
-       |      "method": "GET",
-       |      "rel": "some-rel"
-       |    }
-       |  ]
-       |}
-    """.stripMargin
-  )
 
   private val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
   private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
