@@ -18,12 +18,12 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.RetrieveAnnualSubmissionValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
 
 class RetrieveAnnualSubmissionRequestParser @Inject()(val validator: RetrieveAnnualSubmissionValidator)
   extends RequestParser[RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest] {
 
   override protected def requestFor(data: RetrieveAnnualSubmissionRawData): RetrieveAnnualSubmissionRequest =
-    RetrieveAnnualSubmissionRequest(Nino(data.nino), data.businessId, data.taxYear)
+    RetrieveAnnualSubmissionRequest(Nino(data.nino), BusinessId(data.businessId), TaxYear.fromMtd(data.taxYear))
 }

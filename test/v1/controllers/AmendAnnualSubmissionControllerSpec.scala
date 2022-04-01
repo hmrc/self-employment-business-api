@@ -25,8 +25,7 @@ import v1.mocks.requestParsers.MockAmendAnnualSubmissionRequestParser
 import v1.mocks.services.{MockAmendAnnualSubmissionService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
-import v1.models.hateoas.Method.GET
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
@@ -67,8 +66,6 @@ class AmendAnnualSubmissionControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val testHateoasLinks = Seq(Link(href = s"/someLink", method = GET, rel = "some-rel"))
-
   private val requestJson = amendAnnualSubmissionBodyMtdJson(None, None, None)
 
   private val requestBody = AmendAnnualSubmissionBody(None, None, None)
@@ -106,6 +103,8 @@ class AmendAnnualSubmissionControllerSpec
           .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
+
+        contentAsJson(result) shouldBe testHateoasLinksJson
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }

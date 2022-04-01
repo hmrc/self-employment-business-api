@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
@@ -25,9 +25,7 @@ import v1.mocks.requestParsers.MockAmendPeriodicRequestParser
 import v1.mocks.services.{MockAmendPeriodicService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.Nino
 import v1.models.errors._
-import v1.models.hateoas.{HateoasWrapper, Link}
-import v1.models.hateoas.Method.{GET, PUT}
-import v1.models.hateoas.RelType.AMEND_PERIODIC_UPDATE_REL
+import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodic._
 import v1.models.response.amendPeriodic.AmendPeriodicHateoasData
@@ -67,11 +65,6 @@ class AmendPeriodicControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val testHateoasLinks = Seq(
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = PUT, rel = AMEND_PERIODIC_UPDATE_REL),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self")
-  )
-
   private val requestJson = Json.parse(
     """
       |{
@@ -94,25 +87,6 @@ class AmendPeriodicControllerSpec
     Some(Incomes(Some(IncomesAmountObject(500.25)),Some(IncomesAmountObject(500.15)))),
     Some(ConsolidatedExpenses(500.25)),
     None
-  )
-
-  val responseJson: JsValue = Json.parse(
-    s"""
-      |{
-      |  "links": [
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      |      "method": "PUT",
-      |      "rel": "amend-periodic-update"
-      |    },
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      |      "method": "GET",
-      |      "rel": "self"
-      |    }
-      |  ]
-      |}
-    """.stripMargin
   )
 
   private val rawData = AmendPeriodicRawData(nino, businessId, periodId, requestJson)
