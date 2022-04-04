@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Retrieve Self Employment Annual Summary",
+  "title": "Retrieve Self-Employment Annual Summary",
   "description": "Retrieves a self-employment annual summary for a tax year.",
   "type": "object",
   "properties": {
