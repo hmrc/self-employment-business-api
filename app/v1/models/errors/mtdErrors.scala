@@ -27,7 +27,7 @@ object MtdError {
     writes.contramap[T](c => c: MtdError)
 }
 
-object MtdErrorWithCustomMessage {
+object MtdErrorWithCode {
   def unapply(arg: MtdError): Option[String] = Some(arg.code)
 }
 

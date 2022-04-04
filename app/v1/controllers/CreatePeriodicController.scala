@@ -84,7 +84,7 @@ class CreatePeriodicController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case MtdErrorWithCustomMessage(ValueFormatError.code) | MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) =>
+      case MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) =>
         BadRequest(Json.toJson(errorWrapper))
 
       case BadRequestError | NinoFormatError | BusinessIdFormatError | FromDateFormatError | ToDateFormatError | RuleBothExpensesSuppliedError |

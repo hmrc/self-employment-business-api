@@ -16,12 +16,12 @@
 
 package v1.controllers
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockAmendSelfEmploymentAnnualSubmissionRequestParser
+import v1.mocks.requestParsers.MockAmendAnnualSubmissionRequestParser
 import v1.mocks.services.{MockAmendAnnualSubmissionService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
@@ -34,18 +34,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendAnnualSubmissionControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendAnnualSubmissionService
-    with MockAmendSelfEmploymentAnnualSubmissionRequestParser
+    with MockAmendAnnualSubmissionRequestParser
     with MockHateoasFactory
     with MockIdGenerator
     with AmendAnnualSubmissionFixture {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val taxYear = "2019-20"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val taxYear       = "2019-20"
   private val correlationId = "X-123"
 
   trait Test {
@@ -54,7 +54,7 @@ class AmendAnnualSubmissionControllerSpec
     val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockAmendSelfEmploymentAnnualSummaryRequestParser,
+      parser = mockAmendAnnualSummaryRequestParser,
       service = mockAmendAnnualSubmissionService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
@@ -70,13 +70,27 @@ class AmendAnnualSubmissionControllerSpec
 
   private val requestBody = AmendAnnualSubmissionBody(None, None, None)
 
-  private val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
+  val responseJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "links": [
+       |    {
+       |      "href": "/someLink",
+       |      "method": "GET",
+       |      "rel": "some-rel"
+       |    }
+       |  ]
+       |}
+    """.stripMargin
+  )
+
+  private val rawData     = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
   private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
-        MockAmendSelfEmploymentAnnualSummaryRequestParser
+        MockAmendAnnualSummaryRequestParser
           .requestFor(rawData)
           .returns(Right(requestData))
 
@@ -89,6 +103,8 @@ class AmendAnnualSubmissionControllerSpec
           .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
+
+        contentAsJson(result) shouldBe testHateoasLinksJson
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
@@ -99,7 +115,7 @@ class AmendAnnualSubmissionControllerSpec
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
-            MockAmendSelfEmploymentAnnualSummaryRequestParser
+            MockAmendAnnualSummaryRequestParser
               .requestFor(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
@@ -111,15 +127,22 @@ class AmendAnnualSubmissionControllerSpec
           }
         }
 
+        def withPath(mtdError: MtdError): MtdError = mtdError.copy(paths = Some(Seq("/some/path")))
+
         val input = Seq(
           (BadRequestError, BAD_REQUEST),
           (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
-          (ValueFormatError.copy(paths = Some(Seq("/foreignTaxCreditRelief/amount"))), BAD_REQUEST),
-          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+          (RuleTaxYearRangeInvalidError, BAD_REQUEST),
           (RuleTaxYearNotSupportedError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST)
+          (withPath(ValueFormatError), BAD_REQUEST),
+          (BusinessIdFormatError, BAD_REQUEST),
+          (withPath(RuleBuildingNameNumberError), BAD_REQUEST),
+          (withPath(StringFormatError), BAD_REQUEST),
+          (RuleBothAllowancesSuppliedError, BAD_REQUEST),
+          (withPath(RuleIncorrectOrEmptyBodyError), BAD_REQUEST),
+          (withPath(DateFormatError), BAD_REQUEST),
+          (withPath(Class4ExemptionReasonFormatError), BAD_REQUEST),
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -129,7 +152,7 @@ class AmendAnnualSubmissionControllerSpec
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {
 
-            MockAmendSelfEmploymentAnnualSummaryRequestParser
+            MockAmendAnnualSummaryRequestParser
               .requestFor(rawData)
               .returns(Right(requestData))
 
@@ -148,6 +171,7 @@ class AmendAnnualSubmissionControllerSpec
         val input = Seq(
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
+          (RuleTaxYearNotSupportedError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (DownstreamError, INTERNAL_SERVER_ERROR)

@@ -21,7 +21,7 @@ import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 
-class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
+class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
 
   private val validNino = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
@@ -86,7 +86,7 @@ class AmendSelfEmploymentAnnualSubmissionValidatorSpec extends UnitSpec {
       |""".stripMargin
   )
 
-  val validator = new AmendSelfEmploymentAnnualSubmissionValidator()
+  val validator = new AmendAnnualSubmissionValidator()
 
   "running a validation" should {
     "return no errors" when {

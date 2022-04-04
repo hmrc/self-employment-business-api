@@ -17,12 +17,12 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.mocks.validators.MockAmendSelfEmploymentAnnualSubmissionValidator
+import v1.mocks.validators.MockAmendAnnualSubmissionValidator
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.request.amendSEAnnual._
 
-class AmendSelfEmploymentAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
+class AmendAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
 
   val nino: String = "AA123456B"
   val businessId: String = "XAIS12345678910"
@@ -38,14 +38,14 @@ class AmendSelfEmploymentAnnualSubmissionRequestParserSpec extends UnitSpec with
     body = requestBodyJson
   )
 
-  trait Test extends MockAmendSelfEmploymentAnnualSubmissionValidator {
-    lazy val parser = new AmendSelfEmploymentAnnualSubmissionRequestParser(mockValidator)
+  trait Test extends MockAmendAnnualSubmissionValidator {
+    lazy val parser = new AmendAnnualSubmissionRequestParser(mockValidator)
   }
 
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData).returns(Nil)
+        MockAmendAnnualSummaryValidator.validate(inputData).returns(Nil)
 
         val amendAnnualSummaryRequestBody: AmendAnnualSubmissionBody = amendAnnualSubmissionBody()
 
@@ -56,7 +56,7 @@ class AmendSelfEmploymentAnnualSubmissionRequestParserSpec extends UnitSpec with
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData)
+        MockAmendAnnualSummaryValidator.validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -64,7 +64,7 @@ class AmendSelfEmploymentAnnualSubmissionRequestParserSpec extends UnitSpec with
       }
 
       "multiple validation errors occur" in new Test {
-        MockAmendSelfEmploymentAnnualSummaryValidator.validate(inputData)
+        MockAmendAnnualSummaryValidator.validate(inputData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 
         parser.parseRequest(inputData) shouldBe

@@ -16,7 +16,7 @@
 
 package v1.models.request.amendSEAnnual
 
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
 import v1.models.domain.ex.MtdNicExemption
 
 trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
@@ -61,7 +61,8 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |}
        |""".stripMargin)
 
-  val allowances: Allowances = Allowances(
+  def allowancesWith(structuredBuildingAllowances: Seq[StructuredBuildingAllowance] = Seq(structuredBuildingAllowance),
+                     enhancedStructuredBuildingAllowances: Seq[StructuredBuildingAllowance]= Seq(structuredBuildingAllowance)): Allowances = Allowances(
     annualInvestmentAllowance = Some(1.12),
     capitalAllowanceMainPool = Some(2.12),
     capitalAllowanceSpecialRatePool = Some(3.12),
@@ -73,11 +74,14 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
     electricChargePointAllowance = Some(9.12),
     tradingIncomeAllowance = None,
     zeroEmissionsCarAllowance = Some(11.12),
-    structuredBuildingAllowance = Some(Seq(structuredBuildingAllowance)),
-    enhancedStructuredBuildingAllowance = Some(Seq(structuredBuildingAllowance))
+    structuredBuildingAllowance = Some(structuredBuildingAllowances),
+    enhancedStructuredBuildingAllowance = Some(enhancedStructuredBuildingAllowances)
   )
 
-  val allowancesMtdJson: JsValue = Json.parse(
+  val allowances: Allowances = allowancesWith()
+
+  def allowancesMtdJsonWith(structuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceMtdJson),
+                            enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceMtdJson)): JsValue = Json.parse(
     s"""{
        |  "annualInvestmentAllowance": 1.12,
        |  "capitalAllowanceMainPool": 2.12,
@@ -89,12 +93,15 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |  "capitalAllowanceSingleAssetPool": 8.12,
        |  "electricChargePointAllowance": 9.12,
        |  "zeroEmissionsCarAllowance": 11.12,
-       |  "structuredBuildingAllowance": [ $structuredBuildingAllowanceMtdJson ],
-       |  "enhancedStructuredBuildingAllowance": [ $structuredBuildingAllowanceMtdJson ]
+       |  "structuredBuildingAllowance": ${JsArray(structuredBuildingAllowances)},
+       |  "enhancedStructuredBuildingAllowance": ${JsArray(enhancedStructuredBuildingAllowances)}
        |}
        |""".stripMargin)
 
-  val allowancesDownstreamJson: JsValue = Json.parse(
+  val allowancesMtdJson: JsValue = allowancesMtdJsonWith()
+
+  def allowancesDownstreamJsonWith(structuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceDownstreamJson),
+                                   enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceDownstreamJson)): JsValue = Json.parse(
     s"""{
        |  "annualInvestmentAllowance": 1.12,
        |  "capitalAllowanceMainPool": 2.12,
@@ -106,11 +113,12 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |  "capitalAllowanceSingleAssetPool": 8.12,
        |  "electricChargePointAllowance": 9.12,
        |  "zeroEmissionsCarAllowance": 11.12,
-       |  "structuredBuildingAllowance": [ $structuredBuildingAllowanceDownstreamJson ],
-       |  "enhancedStructuredBuildingAllowance": [ $structuredBuildingAllowanceDownstreamJson]
+       |  "structuredBuildingAllowance": ${JsArray(structuredBuildingAllowances)},
+       |  "enhancedStructuredBuildingAllowance": ${JsArray(enhancedStructuredBuildingAllowances)}
        |}
        |""".stripMargin)
 
+  val allowancesDownstreamJson: JsValue = allowancesDownstreamJsonWith()
 
   val allowancesTradingIncomeAllowance: Allowances = Allowances(
     None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(10.12), None, None, None, None

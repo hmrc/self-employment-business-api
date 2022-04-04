@@ -20,7 +20,7 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.amendSEAnnual._
 
-class AmendSelfEmploymentAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
+class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, enumValidation, bodyFormatValidation, bodyFieldValidation)
 

@@ -65,7 +65,8 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
-          DownstreamStub.when(method = DownstreamStub.PUT, uri = desUri, body = Some("{}"))
+          DownstreamStub.when(method = DownstreamStub.PUT, uri = desUri)
+            .withRequestBody(Json.parse("{}"))
             .thenReturn(status = Status.NO_CONTENT)
         }
 

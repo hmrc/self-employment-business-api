@@ -27,8 +27,8 @@ object AmendAnnualSubmissionResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: AmendAnnualSubmissionHateoasData): Seq[Link] = {
       import data._
       Seq(
-        retrieveAnnualSubmission(appConfig, nino, businessId, taxYear),
         amendAnnualSubmission(appConfig, nino, businessId, taxYear),
+        retrieveAnnualSubmission(appConfig, nino, businessId, taxYear),
         deleteAnnualSubmission(appConfig, nino, businessId, taxYear)
       )
     }
