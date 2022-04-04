@@ -1,6 +1,6 @@
-Self Employment Business API
+Self-Employment Business API
 ========================
-The Self Employment Business API allows software packages to:
+The Self-Employment Business API allows software packages to:
 
 * to create or amend a self-employment annual summary for a tax year.
 * to delete the self-employment annual summary for a tax year.
@@ -29,7 +29,7 @@ sbt it:test
 
 ## To view the RAML
 
-To view documentation locally ensure the Self Employment Business API is running, and run api-documentation-frontend:
+To view documentation locally ensure the Self-Employment Business API is running, and run api-documentation-frontend:
 `./run_local_with_dependencies.sh`
 
 Then go to http://localhost:9680/api-documentation/docs/api/preview and use this port and version:
