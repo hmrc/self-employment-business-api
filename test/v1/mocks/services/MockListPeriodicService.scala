@@ -33,11 +33,14 @@ trait MockListPeriodicService extends MockFactory {
   val mockListPeriodicService: ListPeriodicService = mock[ListPeriodicService]
 
   object MockListPeriodicService {
-    def listPeriods(requestData: ListPeriodicRequest):
-    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListPeriodicResponse[PeriodDetails]]]]] = {
+
+    def listPeriods(
+        requestData: ListPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListPeriodicResponse[PeriodDetails]]]]] = {
       (mockListPeriodicService
         .listPeriods(_: ListPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
+
 }

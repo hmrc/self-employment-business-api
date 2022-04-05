@@ -19,10 +19,10 @@ package v1.models.hateoas
 object RelType {
   val SELF = "self"
 
-  val AMEND_ANNUAL_SUBMISSION_REL = "create-and-amend-self-employment-annual-submission"
+  val AMEND_ANNUAL_SUBMISSION_REL  = "create-and-amend-self-employment-annual-submission"
   val DELETE_ANNUAL_SUBMISSION_REL = "delete-self-employment-annual-submission"
 
   val CREATE_PERIODIC_UPDATE_REL = "create-periodic-update"
-  val AMEND_PERIODIC_UPDATE_REL = "amend-periodic-update"
+  val AMEND_PERIODIC_UPDATE_REL  = "amend-periodic-update"
 
 }

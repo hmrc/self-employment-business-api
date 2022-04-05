@@ -19,26 +19,26 @@ package v1.controllers
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.ListPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.listPeriodic.ListPeriodicRawData
 import v1.models.response.listPeriodic.ListPeriodicHateoasData
-import v1.services.{ EnrolmentsAuthService, ListPeriodicService, MtdIdLookupService }
+import v1.services.{EnrolmentsAuthService, ListPeriodicService, MtdIdLookupService}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodicController @Inject()(val authService: EnrolmentsAuthService,
-                                       val lookupService: MtdIdLookupService,
-                                       parser: ListPeriodicRequestParser,
-                                       service: ListPeriodicService,
-                                       hateoasFactory: HateoasFactory,
-                                       cc: ControllerComponents,
-                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class ListPeriodicController @Inject() (val authService: EnrolmentsAuthService,
+                                        val lookupService: MtdIdLookupService,
+                                        parser: ListPeriodicRequestParser,
+                                        service: ListPeriodicService,
+                                        hateoasFactory: HateoasFactory,
+                                        cc: ControllerComponents,
+                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -88,4 +88,5 @@ class ListPeriodicController @Inject()(val authService: EnrolmentsAuthService,
       case DownstreamError                                           => InternalServerError(Json.toJson(errorWrapper))
       case _                                                         => unhandledError(errorWrapper)
     }
+
 }

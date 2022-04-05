@@ -46,4 +46,5 @@ class ConsolidatedExpensesSpec extends UnitSpec {
       }
     }
   }
+
 }

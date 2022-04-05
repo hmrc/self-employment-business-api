@@ -28,22 +28,22 @@ import v1.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMap,
-                                             errorHandler: HttpErrorHandler,
-                                             httpConfiguration: HttpConfiguration,
-                                             config: AppConfig,
-                                             filters: HttpFilters,
-                                             action: DefaultActionBuilder)
-  extends DefaultHttpRequestHandler(
-    webCommands = new DefaultWebCommands,
-    optDevContext = None,
-    router = versionRoutingMap.defaultRouter,
-    errorHandler = errorHandler,
-    configuration = httpConfiguration,
-    filters = filters.filters
-  ) {
+class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingMap,
+                                              errorHandler: HttpErrorHandler,
+                                              httpConfiguration: HttpConfiguration,
+                                              config: AppConfig,
+                                              filters: HttpFilters,
+                                              action: DefaultActionBuilder)
+    extends DefaultHttpRequestHandler(
+      webCommands = new DefaultWebCommands,
+      optDevContext = None,
+      router = versionRoutingMap.defaultRouter,
+      errorHandler = errorHandler,
+      configuration = httpConfiguration,
+      filters = filters.filters
+    ) {
 
-  private val featureSwitch            = FeatureSwitch(config.featureSwitch)
+  private val featureSwitch = FeatureSwitch(config.featureSwitch)
 
   private val unsupportedVersionAction = action(Results.NotFound(Json.toJson(UnsupportedVersionError)))
 

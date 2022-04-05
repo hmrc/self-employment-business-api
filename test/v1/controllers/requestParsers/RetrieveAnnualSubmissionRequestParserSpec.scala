@@ -24,9 +24,9 @@ import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, Retrie
 
 class RetrieveAnnualSubmissionRequestParserSpec extends UnitSpec {
 
-  val nino: String = "AA123456B"
-  val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2017-18"
+  val nino: String                   = "AA123456B"
+  val businessId: String             = "XAIS12345678910"
+  val taxYear: String                = "2017-18"
   implicit val correlationId: String = "X-123"
 
   val rawData: RetrieveAnnualSubmissionRawData = RetrieveAnnualSubmissionRawData(
@@ -36,9 +36,11 @@ class RetrieveAnnualSubmissionRequestParserSpec extends UnitSpec {
   )
 
   trait Test extends MockRetrieveAnnualSubmissionValidator {
+
     lazy val parser: RetrieveAnnualSubmissionRequestParser = new RetrieveAnnualSubmissionRequestParser(
       validator = mockRetrieveAnnualSubmissionValidator
     )
+
   }
 
   "parse" should {
@@ -53,7 +55,8 @@ class RetrieveAnnualSubmissionRequestParserSpec extends UnitSpec {
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockRetrieveAnnualSubmissionValidator.validate(rawData)
+        MockRetrieveAnnualSubmissionValidator
+          .validate(rawData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(rawData) shouldBe
@@ -61,7 +64,8 @@ class RetrieveAnnualSubmissionRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockRetrieveAnnualSubmissionValidator.validate(rawData)
+        MockRetrieveAnnualSubmissionValidator
+          .validate(rawData)
           .returns(List(NinoFormatError, BusinessIdFormatError, TaxYearFormatError))
 
         parser.parseRequest(rawData) shouldBe
@@ -69,4 +73,5 @@ class RetrieveAnnualSubmissionRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

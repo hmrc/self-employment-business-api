@@ -40,8 +40,8 @@ class AllowancesSpec extends UnitSpec {
   "reads" when {
     "passed valid mtd JSON" should {
       "return the model" in {
-        Json.parse(
-          s"""{
+        Json
+          .parse(s"""{
              |  "annualInvestmentAllowance": 1.12,
              |  "capitalAllowanceMainPool": 2.12,
              |  "capitalAllowanceSpecialRatePool": 3.12,
@@ -56,7 +56,8 @@ class AllowancesSpec extends UnitSpec {
              |  "structuredBuildingAllowance": [],
              |  "enhancedStructuredBuildingAllowance": []
              |}
-             |""".stripMargin).as[Allowances] shouldBe model
+             |""".stripMargin)
+          .as[Allowances] shouldBe model
       }
     }
   }
@@ -64,8 +65,7 @@ class AllowancesSpec extends UnitSpec {
   "writes" when {
     "passed a model" should {
       "return downstream JSON" in {
-        Json.toJson(model) shouldBe Json.parse(
-          s"""{
+        Json.toJson(model) shouldBe Json.parse(s"""{
              |  "annualInvestmentAllowance": 1.12,
              |  "capitalAllowanceMainPool": 2.12,
              |  "capitalAllowanceSpecialRatePool": 3.12,
@@ -84,4 +84,5 @@ class AllowancesSpec extends UnitSpec {
       }
     }
   }
+
 }

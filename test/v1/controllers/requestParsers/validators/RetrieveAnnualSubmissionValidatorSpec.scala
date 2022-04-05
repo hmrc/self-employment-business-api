@@ -22,9 +22,9 @@ import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRawData
 
 class RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
-  private val validTaxYear = "2017-18"
+  private val validTaxYear    = "2017-18"
 
   val validator = new RetrieveAnnualSubmissionValidator()
 
@@ -77,4 +77,5 @@ class RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

@@ -149,21 +149,21 @@ class ExpensesSpec extends UnitSpec {
   )
 
   val model: Expenses = Expenses(
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
     None,
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25))),
-    Some(ExpensesAmountObject(500.25,Some(500.25)))
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25))),
+    Some(ExpensesAmountObject(500.25, Some(500.25)))
   )
 
   "reads" should {
@@ -181,4 +181,5 @@ class ExpensesSpec extends UnitSpec {
       }
     }
   }
+
 }

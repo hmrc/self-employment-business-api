@@ -40,7 +40,7 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
 
   private def bodyFormatValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
     JsonFormatValidation.validateAndCheckNonEmpty[AmendAnnualSubmissionBody](data.body) match {
-      case Nil => NoValidationErrors
+      case Nil          => NoValidationErrors
       case schemaErrors => List(schemaErrors)
     }
   }
@@ -53,17 +53,21 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
   private def bodyFieldValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendAnnualSubmissionBody]
     List(
-      Validator.flattenErrors(
-        List(
-      body.adjustments.map(validateAdjustments).getOrElse(Nil),
-      body.allowances.map(validateAllowances).getOrElse(Nil),
-      body.allowances.map(validateTradingIncomeAllowance).getOrElse(Nil),
-      body.allowances.flatMap(_.structuredBuildingAllowance.map(_.zipWithIndex.toList.flatMap {
-        case (entry, i) => validateStructuredBuildingAllowance(entry, i, "structuredBuildingAllowance")
-      })).getOrElse(NoValidationErrors),
-      body.allowances.flatMap(_.enhancedStructuredBuildingAllowance.map(_.zipWithIndex.toList.flatMap {
-        case (entry, i) => validateStructuredBuildingAllowance(entry, i, "enhancedStructuredBuildingAllowance")
-      })).getOrElse(NoValidationErrors))))
+      Validator.flattenErrors(List(
+        body.adjustments.map(validateAdjustments).getOrElse(Nil),
+        body.allowances.map(validateAllowances).getOrElse(Nil),
+        body.allowances.map(validateTradingIncomeAllowance).getOrElse(Nil),
+        body.allowances
+          .flatMap(_.structuredBuildingAllowance.map(_.zipWithIndex.toList.flatMap { case (entry, i) =>
+            validateStructuredBuildingAllowance(entry, i, "structuredBuildingAllowance")
+          }))
+          .getOrElse(NoValidationErrors),
+        body.allowances
+          .flatMap(_.enhancedStructuredBuildingAllowance.map(_.zipWithIndex.toList.flatMap { case (entry, i) =>
+            validateStructuredBuildingAllowance(entry, i, "enhancedStructuredBuildingAllowance")
+          }))
+          .getOrElse(NoValidationErrors)
+      )))
   }
 
   private def validateAdjustments(adjustments: Adjustments): List[MtdError] = {
@@ -160,7 +164,8 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
   }
 
   private def validateStructuredBuildingAllowance(structuredBuildingAllowance: StructuredBuildingAllowance,
-                                                  index: Int, typeOfBuildingAllowance: String): List[MtdError] = {
+                                                  index: Int,
+                                                  typeOfBuildingAllowance: String): List[MtdError] = {
     List(
       NumberValidation.validate(
         field = structuredBuildingAllowance.amount,
@@ -200,4 +205,5 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
   override def validate(data: AmendAnnualSubmissionRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
+
 }

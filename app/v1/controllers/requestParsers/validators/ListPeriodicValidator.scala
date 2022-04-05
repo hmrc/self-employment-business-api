@@ -34,4 +34,5 @@ class ListPeriodicValidator extends Validator[ListPeriodicRawData] {
       BusinessIdValidation.validate(data.businessId)
     )
   }
+
 }

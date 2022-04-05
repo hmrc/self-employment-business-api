@@ -24,12 +24,14 @@ import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, Retrie
 
 trait MockRetrieveAnnualSubmissionRequestParser extends MockFactory {
 
-  val mockRetrieveAnnualSubmissionRequestParser:
-    RetrieveAnnualSubmissionRequestParser = mock[RetrieveAnnualSubmissionRequestParser]
+  val mockRetrieveAnnualSubmissionRequestParser: RetrieveAnnualSubmissionRequestParser = mock[RetrieveAnnualSubmissionRequestParser]
 
   object MockRetrieveAnnualSubmissionRequestParser {
+
     def parse(data: RetrieveAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, RetrieveAnnualSubmissionRequest]] = {
       (mockRetrieveAnnualSubmissionRequestParser.parseRequest(_: RetrieveAnnualSubmissionRawData)(_: String)).expects(data, *)
     }
+
   }
+
 }

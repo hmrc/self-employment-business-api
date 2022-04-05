@@ -18,28 +18,28 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, ControllerComponents}
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendAnnualSubmissionRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
-import v1.services.{ AmendAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService }
+import v1.services.{AmendAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
-                                                val lookupService: MtdIdLookupService,
-                                                parser: AmendAnnualSubmissionRequestParser,
-                                                service: AmendAnnualSubmissionService,
-                                                hateoasFactory: HateoasFactory,
-                                                cc: ControllerComponents,
-                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
+                                                 val lookupService: MtdIdLookupService,
+                                                 parser: AmendAnnualSubmissionRequestParser,
+                                                 service: AmendAnnualSubmissionService,
+                                                 hateoasFactory: HateoasFactory,
+                                                 cc: ControllerComponents,
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -83,12 +83,11 @@ class AmendAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthS
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case MtdErrorWithCode(BadRequestError.code) | MtdErrorWithCode(NinoFormatError.code) | MtdErrorWithCode(
-            BusinessIdFormatError.code) | MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(ValueFormatError.code) |
-           MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) | MtdErrorWithCode(RuleTaxYearNotSupportedError.code) |
-           MtdErrorWithCode(RuleTaxYearRangeInvalidError.code) | MtdErrorWithCode(RuleBuildingNameNumberError.code) |
-           MtdErrorWithCode(RuleBothAllowancesSuppliedError.code) | MtdErrorWithCode(StringFormatError.code) |
-           MtdErrorWithCode(Class4ExemptionReasonFormatError.code) | MtdErrorWithCode(DateFormatError.code) =>
+      case MtdErrorWithCode(BadRequestError.code) | MtdErrorWithCode(NinoFormatError.code) | MtdErrorWithCode(BusinessIdFormatError.code) |
+          MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) |
+          MtdErrorWithCode(RuleTaxYearNotSupportedError.code) | MtdErrorWithCode(RuleTaxYearRangeInvalidError.code) | MtdErrorWithCode(
+            RuleBuildingNameNumberError.code) | MtdErrorWithCode(RuleBothAllowancesSuppliedError.code) | MtdErrorWithCode(StringFormatError.code) |
+          MtdErrorWithCode(Class4ExemptionReasonFormatError.code) | MtdErrorWithCode(DateFormatError.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

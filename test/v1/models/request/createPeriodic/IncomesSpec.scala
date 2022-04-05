@@ -79,4 +79,5 @@ class IncomesSpec extends UnitSpec {
       }
     }
   }
+
 }

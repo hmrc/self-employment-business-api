@@ -24,9 +24,9 @@ import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnu
 
 class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
 
-  val nino: String = "AA123456B"
-  val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2017-18"
+  val nino: String                   = "AA123456B"
+  val businessId: String             = "XAIS12345678910"
+  val taxYear: String                = "2017-18"
   implicit val correlationId: String = "X-123"
 
   val deleteAnnualSubmissionRawData: DeleteAnnualSubmissionRawData = DeleteAnnualSubmissionRawData(
@@ -36,9 +36,11 @@ class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
   )
 
   trait Test extends MockDeleteAnnualSubmissionValidator {
+
     lazy val parser: DeleteAnnualSubmissionRequestParser = new DeleteAnnualSubmissionRequestParser(
       validator = mockDeleteAnnualSubmissionValidator
     )
+
   }
 
   "parse" should {
@@ -53,7 +55,8 @@ class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockDeleteAnnualSubmissionValidator.validate(deleteAnnualSubmissionRawData)
+        MockDeleteAnnualSubmissionValidator
+          .validate(deleteAnnualSubmissionRawData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(deleteAnnualSubmissionRawData) shouldBe
@@ -61,7 +64,8 @@ class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockDeleteAnnualSubmissionValidator.validate(deleteAnnualSubmissionRawData)
+        MockDeleteAnnualSubmissionValidator
+          .validate(deleteAnnualSubmissionRawData)
           .returns(List(NinoFormatError, BusinessIdFormatError, TaxYearFormatError))
 
         parser.parseRequest(deleteAnnualSubmissionRawData) shouldBe
@@ -69,4 +73,5 @@ class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

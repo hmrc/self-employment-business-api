@@ -33,11 +33,13 @@ trait MockRetrievePeriodicService extends MockFactory {
   val mockRetrievePeriodicService: RetrievePeriodicService = mock[RetrievePeriodicService]
 
   object MockRetrievePeriodicService {
-    def retrieve(requestData: RetrievePeriodicRequest):
-    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrievePeriodicResponse]]]] = {
+
+    def retrieve(requestData: RetrievePeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrievePeriodicResponse]]]] = {
       (mockRetrievePeriodicService
         .retrievePeriodicSummary(_: RetrievePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
+
 }

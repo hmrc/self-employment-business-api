@@ -52,4 +52,5 @@ class MtdNicExemptionSpec extends UnitSpec with EnumJsonSpecSupport {
       }
     }
   }
+
 }

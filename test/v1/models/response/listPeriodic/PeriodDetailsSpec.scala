@@ -47,11 +47,12 @@ class PeriodDetailsSpec extends UnitSpec {
 
     "read from a json" when {
 
-      "a valid request is made" in  {
+      "a valid request is made" in {
         desJson.as[PeriodDetails] shouldBe model
       }
     }
   }
+
   "writes" should {
 
     "write to a model" when {
@@ -61,4 +62,5 @@ class PeriodDetailsSpec extends UnitSpec {
       }
     }
   }
+
 }

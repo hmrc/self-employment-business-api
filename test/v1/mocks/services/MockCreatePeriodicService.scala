@@ -39,5 +39,7 @@ trait MockCreatePeriodicService extends MockFactory {
         .createPeriodicSummary(_: CreatePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
+
 }

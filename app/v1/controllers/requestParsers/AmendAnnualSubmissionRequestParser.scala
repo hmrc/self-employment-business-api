@@ -21,9 +21,10 @@ import v1.controllers.requestParsers.validators.AmendAnnualSubmissionValidator
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest}
 
-class AmendAnnualSubmissionRequestParser @Inject()(val validator: AmendAnnualSubmissionValidator)
-  extends RequestParser[AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest] {
+class AmendAnnualSubmissionRequestParser @Inject() (val validator: AmendAnnualSubmissionValidator)
+    extends RequestParser[AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest] {
 
   override protected def requestFor(data: AmendAnnualSubmissionRawData): AmendAnnualSubmissionRequest =
     AmendAnnualSubmissionRequest(Nino(data.nino), BusinessId(data.businessId), TaxYear.fromMtd(data.taxYear), data.body.as[AmendAnnualSubmissionBody])
+
 }

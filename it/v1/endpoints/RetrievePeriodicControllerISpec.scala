@@ -29,14 +29,13 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
+    val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
-    val periodId = "2019-01-01_2020-01-01"
-    val fromDate = "2019-01-01"
-    val toDate = "2020-01-01"
+    val periodId   = "2019-01-01_2020-01-01"
+    val fromDate   = "2019-01-01"
+    val toDate     = "2020-01-01"
 
-    val responseBody: JsValue = Json.parse(
-      s"""
+    val responseBody: JsValue = Json.parse(s"""
          |{
          |  "periodFromDate": "2019-01-01",
          |  "periodToDate": "2020-01-01",
@@ -125,8 +124,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    val desResponseBody: JsValue = Json.parse(
-      s"""
+    val desResponseBody: JsValue = Json.parse(s"""
          |{
          |   "from": "2019-01-01",
          |   "to": "2020-01-01",
@@ -207,7 +205,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
 
     def queryParams: Map[String, String] = Map(
       "from" -> fromDate,
-      "to" -> toDate
+      "to"   -> toDate
     )
 
     def desUri: String = s"/income-store/nino/$nino/self-employments/$businessId/periodic-summary-detail"
@@ -225,6 +223,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
          |        "reason": "des message"
          |      }
     """.stripMargin
+
   }
 
   "calling the retrieve endpoint" should {
@@ -240,7 +239,6 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
           DownstreamStub.onSuccess(DownstreamStub.GET, desUri, queryParams, Status.OK, desResponseBody)
         }
 
-
         val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
         response.status shouldBe Status.OK
         response.json shouldBe responseBody
@@ -251,14 +249,16 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
     "return error according to spec" when {
 
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestBusinessId: String, requestPeriodId: String,
-                                expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestPeriodId: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
-            override val periodId: String = requestPeriodId
-
+            override val periodId: String   = requestPeriodId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -284,7 +284,6 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
       "des service error" when {
         def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"des returns an $desCode error and status $desStatus" in new Test {
-
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -314,4 +313,5 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

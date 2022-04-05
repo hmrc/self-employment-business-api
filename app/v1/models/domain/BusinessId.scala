@@ -16,4 +16,4 @@
 
 package v1.models.domain
 
-case class BusinessId(value : String) extends AnyVal
+case class BusinessId(value: String) extends AnyVal

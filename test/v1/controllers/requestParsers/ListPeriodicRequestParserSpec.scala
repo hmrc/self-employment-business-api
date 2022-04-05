@@ -24,8 +24,8 @@ import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
 
 class ListPeriodicRequestParserSpec extends UnitSpec {
 
-  val nino: String = "AA123456B"
-  val businessId: String = "XAIS12345678910"
+  val nino: String                   = "AA123456B"
+  val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   val rawData: ListPeriodicRawData = ListPeriodicRawData(
@@ -34,9 +34,11 @@ class ListPeriodicRequestParserSpec extends UnitSpec {
   )
 
   trait Test extends MockListPeriodicValidator {
+
     lazy val parser: ListPeriodicRequestParser = new ListPeriodicRequestParser(
       validator = mockListPeriodicValidator
     )
+
   }
 
   "parse" should {
@@ -51,7 +53,8 @@ class ListPeriodicRequestParserSpec extends UnitSpec {
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockListPeriodicValidator.validate(rawData)
+        MockListPeriodicValidator
+          .validate(rawData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(rawData) shouldBe
@@ -59,7 +62,8 @@ class ListPeriodicRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockListPeriodicValidator.validate(rawData)
+        MockListPeriodicValidator
+          .validate(rawData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 
         parser.parseRequest(rawData) shouldBe
@@ -67,4 +71,5 @@ class ListPeriodicRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

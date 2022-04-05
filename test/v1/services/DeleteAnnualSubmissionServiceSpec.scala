@@ -27,9 +27,9 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
 
-  val taxYear: String = "2017-18"
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
+  val taxYear: String                = "2017-18"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   private val requestData = DeleteAnnualSubmissionRequest(
@@ -44,12 +44,14 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
     val service = new DeleteAnnualSubmissionService(
       connector = mockDeleteAnnualSubmissionConnector
     )
+
   }
 
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockDeleteAnnualSubmissionConnector.deleteAnnualSubmission(requestData)
+        MockDeleteAnnualSubmissionConnector
+          .deleteAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         await(service.deleteAnnualSubmission(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
@@ -62,30 +64,32 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockDeleteAnnualSubmissionConnector.deleteAnnualSubmission(requestData)
+          MockDeleteAnnualSubmissionConnector
+            .deleteAnnualSubmission(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.deleteAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
-        "INVALID_TAX_YEAR" -> TaxYearFormatError,
-        "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-        "INVALID_CORRELATIONID" -> DownstreamError,
-        "INVALID_PAYLOAD" -> DownstreamError,
-        "MISSING_EXEMPTION_REASON" -> DownstreamError,
+        "INVALID_NINO"                -> NinoFormatError,
+        "INVALID_TAX_YEAR"            -> TaxYearFormatError,
+        "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
+        "INVALID_CORRELATIONID"       -> DownstreamError,
+        "INVALID_PAYLOAD"             -> DownstreamError,
+        "MISSING_EXEMPTION_REASON"    -> DownstreamError,
         "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
-        "ALLOWANCE_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
-        "NOT_FOUND" -> NotFoundError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "GONE" -> NotFoundError,
-        "SERVER_ERROR" -> DownstreamError,
-        "BAD_GATEWAY" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "ALLOWANCE_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+        "NOT_FOUND"                   -> NotFoundError,
+        "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+        "GONE"                        -> NotFoundError,
+        "SERVER_ERROR"                -> DownstreamError,
+        "BAD_GATEWAY"                 -> DownstreamError,
+        "SERVICE_UNAVAILABLE"         -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

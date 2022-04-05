@@ -27,8 +27,9 @@ object BothAllowancesValidation {
       case Some(_) =>
         allowances match {
           case Allowances(None, None, None, None, None, None, None, None, Some(_), None, None, None, None) => NoValidationErrors
-          case _ => List(RuleBothAllowancesSuppliedError)
+          case _                                                                                           => List(RuleBothAllowancesSuppliedError)
         }
     }
   }
+
 }

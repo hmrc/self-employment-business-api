@@ -22,7 +22,12 @@ import v1.models.request.createPeriodic.{ConsolidatedExpenses, CreatePeriodicBod
 
 class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
 
-  private val validationSet = List(parameterFormatValidation, incorrectOrEmptyBodySubmittedValidation, bodyFieldValidation, dateRuleValidation, consolidatedExpensesRuleValidation)
+  private val validationSet = List(
+    parameterFormatValidation,
+    incorrectOrEmptyBodySubmittedValidation,
+    bodyFieldValidation,
+    dateRuleValidation,
+    consolidatedExpensesRuleValidation)
 
   private def parameterFormatValidation: CreatePeriodicRawData => List[List[MtdError]] = (data: CreatePeriodicRawData) => {
     List(
@@ -48,20 +53,21 @@ class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
   private def bodyFieldValidation: CreatePeriodicRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[CreatePeriodicBody]
 
-    List(Validator.flattenErrors(
-      List(
-        validateDates(body.periodFromDate, body.periodToDate),
-        body.incomes.map(validateIncome).getOrElse(NoValidationErrors),
-        body.consolidatedExpenses.map(validateConsolidatedExpenses).getOrElse(NoValidationErrors),
-        body.expenses.map(validateExpenses).getOrElse(NoValidationErrors)
-      )
-    ))
+    List(
+      Validator.flattenErrors(
+        List(
+          validateDates(body.periodFromDate, body.periodToDate),
+          body.incomes.map(validateIncome).getOrElse(NoValidationErrors),
+          body.consolidatedExpenses.map(validateConsolidatedExpenses).getOrElse(NoValidationErrors),
+          body.expenses.map(validateExpenses).getOrElse(NoValidationErrors)
+        )
+      ))
   }
 
   private def dateRuleValidation: CreatePeriodicRawData => List[List[MtdError]] = (data: CreatePeriodicRawData) => {
     val body = data.body.as[CreatePeriodicBody]
     List(
-      DateValidation.validateToDateBeforeFromDate(body.periodFromDate, body.periodToDate),
+      DateValidation.validateToDateBeforeFromDate(body.periodFromDate, body.periodToDate)
     )
   }
 
@@ -90,7 +96,6 @@ class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
       )
     ).flatten
   }
-
 
   private def validateConsolidatedExpenses(consolidatedExpenses: ConsolidatedExpenses): List[MtdError] = {
     List(
@@ -229,4 +234,5 @@ class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
   override def validate(data: CreatePeriodicRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
+
 }

@@ -22,10 +22,11 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesAmountObject])
 
 object Incomes {
+
   implicit val reads: Reads[Incomes] = (
     (JsPath \ "turnover").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_))) and
       (JsPath \ "other").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_)))
-    ) (Incomes.apply _)
+  )(Incomes.apply _)
 
   implicit val writes: OWrites[Incomes] = Json.writes[Incomes]
 }

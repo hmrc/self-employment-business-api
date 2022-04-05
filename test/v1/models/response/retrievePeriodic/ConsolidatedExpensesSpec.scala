@@ -33,7 +33,7 @@ class ConsolidatedExpensesSpec extends UnitSpec {
 
   "reads" should {
     "read from a json" when {
-      "a valid request is made" in  {
+      "a valid request is made" in {
         json.as[ConsolidatedExpenses] shouldBe model
       }
     }
@@ -46,4 +46,5 @@ class ConsolidatedExpensesSpec extends UnitSpec {
       }
     }
   }
+
 }

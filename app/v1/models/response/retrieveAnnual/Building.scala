@@ -19,9 +19,7 @@ package v1.models.response.retrieveAnnual
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Building(name: Option[String],
-                    number: Option[String],
-                    postcode: String)
+case class Building(name: Option[String], number: Option[String], postcode: String)
 
 object Building {
   implicit val writes: OWrites[Building] = Json.writes[Building]
@@ -30,5 +28,6 @@ object Building {
     (JsPath \ "name").readNullable[String] and
       (JsPath \ "number").readNullable[String] and
       (JsPath \ "postCode").read[String]
-    )(Building.apply _)
+  )(Building.apply _)
+
 }

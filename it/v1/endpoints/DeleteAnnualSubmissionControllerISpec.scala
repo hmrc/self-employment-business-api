@@ -28,9 +28,9 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
+    val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
-    val taxYear = "2021-22"
+    val taxYear    = "2021-22"
     val desTaxYear = "2022"
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
@@ -52,6 +52,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
          |        "reason": "des message"
          |      }
     """.stripMargin
+
   }
 
   "Calling the deleteAnnualSubmission endpoint" should {
@@ -65,7 +66,8 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
-          DownstreamStub.when(method = DownstreamStub.PUT, uri = desUri)
+          DownstreamStub
+            .when(method = DownstreamStub.PUT, uri = desUri)
             .withRequestBody(Json.parse("{}"))
             .thenReturn(status = Status.NO_CONTENT)
         }
@@ -79,13 +81,16 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     "return error according to spec" when {
 
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestBusinessId: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestTaxYear: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
-            override val taxYear: String = requestTaxYear
-
+            override val taxYear: String    = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -105,9 +110,8 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "notABusinessId", "2019-20", Status.BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "203100", Status.BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2016-17", Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
-          ("AA123456A", "XAIS12345678910" ,"2018-20", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
+          ("AA123456A", "XAIS12345678910", "2018-20", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
-
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -150,4 +154,5 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

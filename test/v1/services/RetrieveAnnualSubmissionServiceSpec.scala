@@ -28,9 +28,9 @@ import scala.concurrent.Future
 
 class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnualSubmissionFixture {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2019-20"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
+  val taxYear: String                = "2019-20"
   implicit val correlationId: String = "X-123"
 
   val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
@@ -51,12 +51,14 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
     val service = new RetrieveAnnualSubmissionService(
       connector = mockRetrieveAnnualSubmissionConnector
     )
+
   }
 
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockRetrieveConnector.retrieveAnnualSubmission(requestData)
+        MockRetrieveConnector
+          .retrieveAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.retrieveAnnualSubmission(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
@@ -69,24 +71,26 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockRetrieveConnector.retrieveAnnualSubmission(requestData)
+          MockRetrieveConnector
+            .retrieveAnnualSubmission(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrieveAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
-        "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-        "INVALID_TAX_YEAR" -> TaxYearFormatError,
+        "INVALID_NINO"            -> NinoFormatError,
+        "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
+        "INVALID_TAX_YEAR"        -> TaxYearFormatError,
         "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
-        "NOT_FOUND_PERIOD" -> NotFoundError,
-        "INVALID_CORRELATIONID" -> DownstreamError,
-        "SERVER_ERROR" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "NOT_FOUND_PERIOD"        -> NotFoundError,
+        "INVALID_CORRELATIONID"   -> DownstreamError,
+        "SERVER_ERROR"            -> DownstreamError,
+        "SERVICE_UNAVAILABLE"     -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

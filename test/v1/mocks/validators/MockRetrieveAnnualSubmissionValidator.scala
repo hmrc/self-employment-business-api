@@ -33,5 +33,7 @@ trait MockRetrieveAnnualSubmissionValidator extends MockFactory {
         .validate(_: RetrieveAnnualSubmissionRawData))
         .expects(data)
     }
+
   }
+
 }

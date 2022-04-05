@@ -21,6 +21,6 @@ import java.time.format.DateTimeFormatter
 package object validations {
 
   val NoValidationErrors = List()
-  val dateFormat = DateTimeFormatter ofPattern "yyyy-MM-dd"
+  val dateFormat         = DateTimeFormatter ofPattern "yyyy-MM-dd"
 
 }

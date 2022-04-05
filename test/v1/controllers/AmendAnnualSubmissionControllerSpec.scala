@@ -142,7 +142,7 @@ class AmendAnnualSubmissionControllerSpec
           (RuleBothAllowancesSuppliedError, BAD_REQUEST),
           (withPath(RuleIncorrectOrEmptyBodyError), BAD_REQUEST),
           (withPath(DateFormatError), BAD_REQUEST),
-          (withPath(Class4ExemptionReasonFormatError), BAD_REQUEST),
+          (withPath(Class4ExemptionReasonFormatError), BAD_REQUEST)
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -181,4 +181,5 @@ class AmendAnnualSubmissionControllerSpec
       }
     }
   }
+
 }

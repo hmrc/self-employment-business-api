@@ -30,28 +30,27 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodicService @Inject()(connector: RetrievePeriodicConnector)
-  extends DesResponseMappingSupport with Logging {
+class RetrievePeriodicService @Inject() (connector: RetrievePeriodicConnector) extends DesResponseMappingSupport with Logging {
 
-  def retrievePeriodicSummary(request: RetrievePeriodicRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[ServiceOutcome[RetrievePeriodicResponse]] = {
+  def retrievePeriodicSummary(request: RetrievePeriodicRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[RetrievePeriodicResponse]] = {
 
     connector.retrievePeriodicSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap =
     Map(
-      "INVALID_NINO" -> NinoFormatError,
+      "INVALID_NINO"             -> NinoFormatError,
       "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "INVALID_DATE_FROM" -> PeriodIdFormatError,
-      "INVALID_DATE_TO" -> PeriodIdFormatError,
-      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "NOT_FOUND_PERIOD" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "INVALID_DATE_FROM"        -> PeriodIdFormatError,
+      "INVALID_DATE_TO"          -> PeriodIdFormatError,
+      "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+      "NOT_FOUND_PERIOD"         -> NotFoundError,
+      "SERVER_ERROR"             -> DownstreamError,
+      "SERVICE_UNAVAILABLE"      -> DownstreamError
     )
-}
 
+}

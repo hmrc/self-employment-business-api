@@ -24,7 +24,16 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrievePeriodicRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodicService}
 import v1.models.domain.Nino
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, DownstreamError, ErrorWrapper, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError}
+import v1.models.errors.{
+  BadRequestError,
+  BusinessIdFormatError,
+  DownstreamError,
+  ErrorWrapper,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  PeriodIdFormatError
+}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
@@ -34,18 +43,19 @@ import v1.models.response.retrievePeriodic._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrievePeriodicControllerSpec extends ControllerBaseSpec
-  with MockEnrolmentsAuthService
-  with MockMtdIdLookupService
-  with MockRetrievePeriodicService
-  with MockRetrievePeriodicRequestParser
-  with MockHateoasFactory
-  with MockAuditService
-  with MockIdGenerator {
+class RetrievePeriodicControllerSpec
+    extends ControllerBaseSpec
+    with MockEnrolmentsAuthService
+    with MockMtdIdLookupService
+    with MockRetrievePeriodicService
+    with MockRetrievePeriodicRequestParser
+    with MockHateoasFactory
+    with MockAuditService
+    with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val periodId = "2019-01-01_2020-01-01"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val periodId      = "2019-01-01_2020-01-01"
   private val correlationId = "X-123"
 
   trait Test {
@@ -66,7 +76,7 @@ class RetrievePeriodicControllerSpec extends ControllerBaseSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData = RetrievePeriodicRawData(nino, businessId, periodId)
+  private val rawData     = RetrievePeriodicRawData(nino, businessId, periodId)
   private val requestData = RetrievePeriodicRequest(Nino(nino), businessId, periodId)
 
   private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/period/$periodId", method = GET, rel = "self")
@@ -159,4 +169,5 @@ class RetrievePeriodicControllerSpec extends ControllerBaseSpec
       }
     }
   }
+
 }

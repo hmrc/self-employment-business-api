@@ -27,9 +27,9 @@ import scala.concurrent.Future
 
 class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveAnnualSubmissionFixture {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2019-20"
+  val nino: String              = "AA123456A"
+  val businessId: String        = "XAIS12345678910"
+  val taxYear: String           = "2019-20"
   val downstreamTaxYear: String = "2020"
 
   val request: RetrieveAnnualSubmissionRequest = RetrieveAnnualSubmissionRequest(
@@ -45,6 +45,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
   )
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: RetrieveAnnualSubmissionConnector = new RetrieveAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -66,9 +67,11 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
           config = dummyIfsHeaderCarrierConfig,
           requiredHeaders = requiredIfsHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        ).returns(Future.successful(outcome))
+        )
+        .returns(Future.successful(outcome))
 
       await(connector.retrieveAnnualSubmission(request)) shouldBe outcome
     }
   }
+
 }

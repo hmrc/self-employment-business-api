@@ -27,16 +27,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveAnnualSubmissionConnector @Inject()(val http: HttpClient,
-                                                  val appConfig: AppConfig) extends BaseDownstreamConnector {
+class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
+  def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
-    val nino = request.nino.nino
-    val taxYear = request.taxYear.toDownstream
+    val nino       = request.nino.nino
+    val taxYear    = request.taxYear.toDownstream
     val businessId = request.businessId.value
 
     get(
@@ -45,4 +44,5 @@ class RetrieveAnnualSubmissionConnector @Inject()(val http: HttpClient,
       )
     )
   }
+
 }

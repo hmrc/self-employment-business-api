@@ -22,10 +22,10 @@ import v1.models.request.amendSEAnnual.Building
 
 class BuildingNameNumberValidationSpec extends UnitSpec {
 
-  val buildingWithName: Building = Building(Some("TestName"), None, "HGH 232")
-  val buildingWithNumber: Building = Building(None, Some("4815162342"), "HGH 232")
+  val buildingWithName: Building          = Building(Some("TestName"), None, "HGH 232")
+  val buildingWithNumber: Building        = Building(None, Some("4815162342"), "HGH 232")
   val buildingWithNameAndNumber: Building = Building(Some("TestName"), Some("4815162342"), "HGH 232")
-  val invalidBuilding: Building = Building(None, None, "HGH 232")
+  val invalidBuilding: Building           = Building(None, None, "HGH 232")
 
   "validate" should {
     "return no errors" when {

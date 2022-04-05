@@ -38,4 +38,5 @@ class JsonErrorSanitiserSpec extends UnitSpec {
         "Some not sensitive message."
     }
   }
+
 }

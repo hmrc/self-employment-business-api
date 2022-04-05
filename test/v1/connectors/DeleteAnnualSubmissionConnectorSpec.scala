@@ -28,10 +28,10 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val taxYear: String = "2017-18"
+  val taxYear: String           = "2017-18"
   val downstreamTaxYear: String = "2018"
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
+  val nino: String              = "AA123456A"
+  val businessId: String        = "XAIS12345678910"
 
   val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
     nino = Nino(nino),
@@ -40,6 +40,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -56,7 +57,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
       "the downstream call is successful" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
@@ -66,10 +67,12 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
             body = JsObject.empty,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(outcome))
+          )
+          .returns(Future.successful(outcome))
 
         await(connector.deleteAnnualSubmission(request)) shouldBe outcome
       }
     }
   }
+
 }

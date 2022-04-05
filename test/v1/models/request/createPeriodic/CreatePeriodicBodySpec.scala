@@ -24,42 +24,47 @@ class CreatePeriodicBodySpec extends UnitSpec {
   val fullMtdModel: CreatePeriodicBody = CreatePeriodicBody(
     "2017-01-25",
     "2018-01-24",
-    Some(Incomes(
-      Some(IncomesAmountObject(500.25)),
-      Some(IncomesAmountObject(500.25))
-    )),
-    Some(ConsolidatedExpenses(
-      500.25
-    )),
-    Some(Expenses(
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25)))
-    ))
+    Some(
+      Incomes(
+        Some(IncomesAmountObject(500.25)),
+        Some(IncomesAmountObject(500.25))
+      )),
+    Some(
+      ConsolidatedExpenses(
+        500.25
+      )),
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25)))
+      ))
   )
 
   val someOptionalMtdModel: CreatePeriodicBody = CreatePeriodicBody(
     "2017-01-25",
     "2018-01-24",
-    Some(Incomes(
-      Some(IncomesAmountObject(500.25)),
-      Some(IncomesAmountObject(500.25))
-    )),
-    Some(ConsolidatedExpenses(
-      500.25
-    )),
+    Some(
+      Incomes(
+        Some(IncomesAmountObject(500.25)),
+        Some(IncomesAmountObject(500.25))
+      )),
+    Some(
+      ConsolidatedExpenses(
+        500.25
+      )),
     None
   )
 
@@ -303,4 +308,5 @@ class CreatePeriodicBodySpec extends UnitSpec {
       }
     }
   }
+
 }

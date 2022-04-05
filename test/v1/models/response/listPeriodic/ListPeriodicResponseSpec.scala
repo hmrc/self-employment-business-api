@@ -27,11 +27,12 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
   val generateModelEmpty: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(Seq())
 
   private val model = ListPeriodicResponse(
-    Seq(PeriodDetails(
-      "2019-01-01_2020-01-01",
-      "2019-01-01",
-      "2020-01-01"
-    ))
+    Seq(
+      PeriodDetails(
+        "2019-01-01_2020-01-01",
+        "2019-01-01",
+        "2020-01-01"
+      ))
   )
 
   private val modelMultiple = ListPeriodicResponse(
@@ -157,19 +158,23 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "return the correct top-level links" in {
-      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
+      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
       ListPeriodicResponse.LinksFactory.links(mockAppConfig, ListPeriodicHateoasData("nino", "id")) shouldBe Seq(
         Link(href = "/test/context/nino/id/period", method = GET, rel = "self"),
-        Link(href = "/test/context/nino/id/period", method = POST, rel = "create-periodic-update"),
+        Link(href = "/test/context/nino/id/period", method = POST, rel = "create-periodic-update")
       )
     }
     "return the correct item-level links" in {
-      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes()
+      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
-      ListPeriodicResponse.LinksFactory.itemLinks(mockAppConfig, ListPeriodicHateoasData("nino", "id"), PeriodDetails("periodId", "", "")) shouldBe Seq(
-        Link(href = "/test/context/nino/id/period/periodId", method = GET, rel = "self"),
+      ListPeriodicResponse.LinksFactory.itemLinks(
+        mockAppConfig,
+        ListPeriodicHateoasData("nino", "id"),
+        PeriodDetails("periodId", "", "")) shouldBe Seq(
+        Link(href = "/test/context/nino/id/period/periodId", method = GET, rel = "self")
       )
     }
   }
+
 }

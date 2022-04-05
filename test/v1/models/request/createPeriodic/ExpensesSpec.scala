@@ -40,7 +40,21 @@ class ExpensesSpec extends UnitSpec {
   )
 
   val emptyModel: Expenses = Expenses(
-    None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None
   )
 
   val fullJson: JsValue = Json.parse(
@@ -114,7 +128,7 @@ class ExpensesSpec extends UnitSpec {
 
   "reads" should {
     "read from a json" when {
-      "a valid request is made" in  {
+      "a valid request is made" in {
         fullJson.as[Expenses] shouldBe fullModel
       }
     }
@@ -206,4 +220,5 @@ class ExpensesSpec extends UnitSpec {
       }
     }
   }
+
 }

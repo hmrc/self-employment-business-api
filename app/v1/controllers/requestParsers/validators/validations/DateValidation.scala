@@ -23,6 +23,7 @@ import v1.models.errors.{DateFormatError, MtdError, RuleToDateBeforeFromDateErro
 import scala.util.{Failure, Success, Try}
 
 object DateValidation {
+
   def validate(field: String, error: MtdError): List[MtdError] = {
     Try {
       LocalDate.parse(field, dateFormat)
@@ -50,9 +51,10 @@ object DateValidation {
 
   def validateToDateBeforeFromDate(fromDate: String, toDate: String): List[MtdError] = {
     val convertedFromDate = LocalDate.parse(fromDate, dateFormat)
-    val convertedToDate = LocalDate.parse(toDate, dateFormat)
+    val convertedToDate   = LocalDate.parse(toDate, dateFormat)
 
     if (convertedToDate.isBefore(convertedFromDate)) List(RuleToDateBeforeFromDateError) else Nil
 
   }
+
 }

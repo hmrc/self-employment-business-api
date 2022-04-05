@@ -29,33 +29,33 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteAnnualSubmissionService @Inject()(connector: DeleteAnnualSubmissionConnector)
-  extends DesResponseMappingSupport with Logging {
+class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmissionConnector) extends DesResponseMappingSupport with Logging {
 
-    def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(
-                                         implicit hc: HeaderCarrier,
-                                         ec: ExecutionContext,
-                                         logContext: EndpointLogContext,
-                                         correlationId: String): Future[ServiceOutcome[Unit]] = {
+  def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[Unit]] = {
 
-      connector.deleteAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
-    }
+    connector.deleteAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+  }
 
   private val desErrorMap: Map[String, MtdError] =
     Map(
-      "INVALID_NINO" -> NinoFormatError,
-      "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "INVALID_PAYLOAD" -> DownstreamError,
-      "MISSING_EXEMPTION_REASON" -> DownstreamError,
+      "INVALID_NINO"                -> NinoFormatError,
+      "INVALID_TAX_YEAR"            -> TaxYearFormatError,
+      "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
+      "INVALID_CORRELATIONID"       -> DownstreamError,
+      "INVALID_PAYLOAD"             -> DownstreamError,
+      "MISSING_EXEMPTION_REASON"    -> DownstreamError,
       "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
-      "ALLOWANCE_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
-      "NOT_FOUND" -> NotFoundError,
-      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "GONE" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "BAD_GATEWAY" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "ALLOWANCE_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+      "NOT_FOUND"                   -> NotFoundError,
+      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+      "GONE"                        -> NotFoundError,
+      "SERVER_ERROR"                -> DownstreamError,
+      "BAD_GATEWAY"                 -> DownstreamError,
+      "SERVICE_UNAVAILABLE"         -> DownstreamError
     )
+
 }

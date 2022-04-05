@@ -69,4 +69,5 @@ class ExpensesAmountObjectSpec extends UnitSpec {
       }
     }
   }
+
 }

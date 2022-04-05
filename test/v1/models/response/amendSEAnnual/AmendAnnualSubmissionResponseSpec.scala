@@ -26,28 +26,21 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "return the correct links" in {
-      val nino = "AA111111A"
+      val nino       = "AA111111A"
       val businessId = "XAIS12345678910"
-      val taxYear = "2019-20"
+      val taxYear    = "2019-20"
 
       MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
 
-      AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory.
-        links(mockAppConfig, AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))) shouldBe
+      AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory.links(
+        mockAppConfig,
+        AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))) shouldBe
         Seq(
-          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
-            PUT,
-            "create-and-amend-self-employment-annual-submission"
-          ),
-          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
-            GET,
-            "self"
-          ),
-          Link(s"/my/context/$nino/$businessId/annual/$taxYear",
-            DELETE,
-            "delete-self-employment-annual-submission"
-          )
+          Link(s"/my/context/$nino/$businessId/annual/$taxYear", PUT, "create-and-amend-self-employment-annual-submission"),
+          Link(s"/my/context/$nino/$businessId/annual/$taxYear", GET, "self"),
+          Link(s"/my/context/$nino/$businessId/annual/$taxYear", DELETE, "delete-self-employment-annual-submission")
         )
     }
   }
+
 }

@@ -20,10 +20,12 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class AmendPeriodicBody(incomes: Option[Incomes], consolidatedExpenses: Option[ConsolidatedExpenses], expenses: Option[Expenses]) {
+
   def isEmpty: Boolean =
     (incomes.isEmpty && consolidatedExpenses.isEmpty && expenses.isEmpty) ||
       incomes.exists(_.isEmpty) ||
       expenses.exists(_.isEmpty)
+
 }
 
 object AmendPeriodicBody {
@@ -31,11 +33,11 @@ object AmendPeriodicBody {
   implicit val reads: Reads[AmendPeriodicBody] = Json.reads[AmendPeriodicBody]
 
   implicit val writes: OWrites[AmendPeriodicBody] = (
-      (JsPath \ "incomes").writeNullable[Incomes] and
+    (JsPath \ "incomes").writeNullable[Incomes] and
       (JsPath \ "deductions" \ "simplifiedExpenses").writeNullable[BigDecimal] and
       (JsPath \ "deductions").writeNullable[Expenses]
-    )(unlift(AmendPeriodicBody.unapply(_: AmendPeriodicBody).map {
-    case (incomesO, consolidatedExpensesO, expensesO) =>
-      (incomesO, consolidatedExpensesO.map(_.consolidatedExpenses), expensesO)
+  )(unlift(AmendPeriodicBody.unapply(_: AmendPeriodicBody).map { case (incomesO, consolidatedExpensesO, expensesO) =>
+    (incomesO, consolidatedExpensesO.map(_.consolidatedExpenses), expensesO)
   }))
+
 }

@@ -35,4 +35,5 @@ class RetrievePeriodicValidator extends Validator[RetrievePeriodicRawData] {
       PeriodIdValidation.validate(data.periodId)
     )
   }
+
 }

@@ -21,9 +21,10 @@ import v1.controllers.requestParsers.validators.RetrieveAnnualSubmissionValidato
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
 
-class RetrieveAnnualSubmissionRequestParser @Inject()(val validator: RetrieveAnnualSubmissionValidator)
-  extends RequestParser[RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest] {
+class RetrieveAnnualSubmissionRequestParser @Inject() (val validator: RetrieveAnnualSubmissionValidator)
+    extends RequestParser[RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest] {
 
   override protected def requestFor(data: RetrieveAnnualSubmissionRawData): RetrieveAnnualSubmissionRequest =
     RetrieveAnnualSubmissionRequest(Nino(data.nino), BusinessId(data.businessId), TaxYear.fromMtd(data.taxYear))
+
 }

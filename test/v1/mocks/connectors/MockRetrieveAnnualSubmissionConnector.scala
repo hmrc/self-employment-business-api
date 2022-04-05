@@ -31,12 +31,13 @@ trait MockRetrieveAnnualSubmissionConnector extends MockFactory {
 
   object MockRetrieveConnector {
 
-    def retrieveAnnualSubmission(requestData: RetrieveAnnualSubmissionRequest):
-    CallHandler[Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]]] = {
+    def retrieveAnnualSubmission(
+        requestData: RetrieveAnnualSubmissionRequest): CallHandler[Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]]] = {
       (mockRetrieveAnnualSubmissionConnector
         .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
 
 }

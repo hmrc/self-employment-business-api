@@ -22,11 +22,10 @@ import v1.models.request.listPeriodic.ListPeriodicRawData
 
 class ListPeriodicValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
 
   val validator = new ListPeriodicValidator()
-
 
   "running a validation" should {
     "return no errors" when {
@@ -53,4 +52,5 @@ class ListPeriodicValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

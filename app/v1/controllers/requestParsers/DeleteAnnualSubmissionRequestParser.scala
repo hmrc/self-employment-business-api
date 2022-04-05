@@ -21,9 +21,10 @@ import v1.controllers.requestParsers.validators.DeleteAnnualSubmissionValidator
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
-class DeleteAnnualSubmissionRequestParser @Inject()(val validator: DeleteAnnualSubmissionValidator)
-  extends RequestParser[DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest] {
+class DeleteAnnualSubmissionRequestParser @Inject() (val validator: DeleteAnnualSubmissionValidator)
+    extends RequestParser[DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest] {
 
   override protected def requestFor(data: DeleteAnnualSubmissionRawData): DeleteAnnualSubmissionRequest =
     DeleteAnnualSubmissionRequest(Nino(data.nino), BusinessId(data.businessId), TaxYear.fromMtd(data.taxYear))
+
 }

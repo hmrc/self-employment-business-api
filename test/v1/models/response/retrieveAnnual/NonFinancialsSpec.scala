@@ -25,8 +25,7 @@ class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
   "reads" should {
     "passed a valid JSON" should {
       "return the model" in {
-        val requestJson: JsValue = Json.parse(
-          s"""
+        val requestJson: JsValue = Json.parse(s"""
              |{
              |  "businessDetailsChangedRecently": true,
              |  "class4NicsExemptionReason": "001"
@@ -44,8 +43,7 @@ class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
       "passed a model" must {
         "return json" in {
           Json.toJson(nonFinancialsMtdJson) shouldBe
-            Json.parse(
-              s"""
+            Json.parse(s"""
                  |{
                  |    "businessDetailsChangedRecently": true,
                  |    "class4NicsExemptionReason": "non-resident"
@@ -56,11 +54,8 @@ class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-          Json.toJson(NonFinancials(
-            businessDetailsChangedRecently = true,
-            class4NicsExemptionReason = None)) shouldBe
-            Json.parse(
-              s"""
+          Json.toJson(NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+            Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true
                  |}
@@ -69,4 +64,5 @@ class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
       }
     }
   }
+
 }

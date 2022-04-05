@@ -27,13 +27,12 @@ import scala.concurrent.Future
 
 class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
 
-
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2017-18"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
+  val taxYear: String                = "2017-18"
   implicit val correlationId: String = "X-123"
 
-  private val requestBody =  amendAnnualSubmissionBody()
+  private val requestBody = amendAnnualSubmissionBody()
 
   private val requestData = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
@@ -42,14 +41,13 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
     body = requestBody
   )
 
-
-
   trait Test extends MockAmendAnnualSubmissionConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendAnnualSubmissionService(
       connector = mockAmendAnnualSubmissionConnector
     )
+
   }
 
   "AmendAnnualSubmissionService" when {
@@ -57,7 +55,8 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
       "return correct result for a success" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
+        MockAmendAnnualSubmissionConnector
+          .amendAnnualSubmission(requestData)
           .returns(Future.successful(outcome))
 
         await(service.amendAnnualSubmission(requestData)) shouldBe outcome
@@ -67,7 +66,8 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockAmendAnnualSubmissionConnector.amendAnnualSubmission(requestData)
+            MockAmendAnnualSubmissionConnector
+              .amendAnnualSubmission(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
             await(service.amendAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
@@ -94,4 +94,5 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
       }
     }
   }
+
 }

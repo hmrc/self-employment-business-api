@@ -178,32 +178,36 @@ class RetrievePeriodicResponseSpec extends UnitSpec with MockAppConfig {
   val model: RetrievePeriodicResponse = RetrievePeriodicResponse(
     "2017-01-25",
     "2017-01-25",
-    Some(Incomes(
-      Some(IncomesAmountObject(
-        500.25
+    Some(
+      Incomes(
+        Some(
+          IncomesAmountObject(
+            500.25
+          )),
+        Some(
+          IncomesAmountObject(
+            500.25
+          ))
       )),
-      Some(IncomesAmountObject(
-        500.25
-      ))
-    )),
     Some(ConsolidatedExpenses(500.25)),
-    Some(Expenses(
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      None,
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25)))
-    ))
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        None,
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25)))
+      ))
   )
 
   "reads" should {
@@ -236,4 +240,5 @@ class RetrievePeriodicResponseSpec extends UnitSpec with MockAppConfig {
       }
     }
   }
+
 }

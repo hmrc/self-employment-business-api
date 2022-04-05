@@ -30,29 +30,29 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodicService @Inject()(connector: AmendPeriodicConnector) extends DesResponseMappingSupport with Logging {
+class AmendPeriodicService @Inject() (connector: AmendPeriodicConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendPeriodicSummary(request: AmendPeriodicRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendPeriodicSummary(request: AmendPeriodicRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     connector.amendPeriodicSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(
-    "INVALID_NINO" -> NinoFormatError,
-    "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-    "INVALID_DATE_FROM" -> PeriodIdFormatError,
-    "INVALID_DATE_TO" -> PeriodIdFormatError,
-    "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-    "NOT_FOUND_PERIOD" -> NotFoundError,
-    "NOT_FOUND_NINO" -> NotFoundError,
-    "BOTH_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError,
+    "INVALID_NINO"                    -> NinoFormatError,
+    "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
+    "INVALID_DATE_FROM"               -> PeriodIdFormatError,
+    "INVALID_DATE_TO"                 -> PeriodIdFormatError,
+    "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
+    "NOT_FOUND_PERIOD"                -> NotFoundError,
+    "NOT_FOUND_NINO"                  -> NotFoundError,
+    "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
     "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "SERVER_ERROR"                    -> DownstreamError,
+    "SERVICE_UNAVAILABLE"             -> DownstreamError
   )
-}
 
+}

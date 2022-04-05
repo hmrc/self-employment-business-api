@@ -27,9 +27,9 @@ import scala.concurrent.Future
 
 class AmendPeriodicServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  val periodId: String = "2019-01-25_2020-01-25"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
+  val periodId: String               = "2019-01-25_2020-01-25"
   implicit val correlationId: String = "X-123"
 
   private val requestData = AmendPeriodicRequest(
@@ -45,12 +45,14 @@ class AmendPeriodicServiceSpec extends ServiceSpec {
     val service = new AmendPeriodicService(
       connector = mockAmendPeriodicConnector
     )
+
   }
 
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockAmendPeriodicConnector.amendPeriodicSummary(requestData)
+        MockAmendPeriodicConnector
+          .amendPeriodicSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         await(service.amendPeriodicSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
@@ -63,27 +65,29 @@ class AmendPeriodicServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockAmendPeriodicConnector.amendPeriodicSummary(requestData)
+          MockAmendPeriodicConnector
+            .amendPeriodicSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.amendPeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
-        "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-        "INVALID_DATE_FROM" -> PeriodIdFormatError,
-        "INVALID_DATE_TO" -> PeriodIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "NOT_FOUND_PERIOD" -> NotFoundError,
-        "NOT_FOUND_NINO" -> NotFoundError,
-        "BOTH_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError,
+        "INVALID_NINO"                    -> NinoFormatError,
+        "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
+        "INVALID_DATE_FROM"               -> PeriodIdFormatError,
+        "INVALID_DATE_TO"                 -> PeriodIdFormatError,
+        "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
+        "NOT_FOUND_PERIOD"                -> NotFoundError,
+        "NOT_FOUND_NINO"                  -> NotFoundError,
+        "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
         "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-        "SERVER_ERROR" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "SERVER_ERROR"                    -> DownstreamError,
+        "SERVICE_UNAVAILABLE"             -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

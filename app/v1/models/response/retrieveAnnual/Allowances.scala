@@ -34,6 +34,7 @@ case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
                       enhancedStructuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]])
 
 object Allowances {
+
   implicit val reads: Reads[Allowances] = (
     (JsPath \ "annualInvestmentAllowance").readNullable[BigDecimal] and
       (JsPath \ "businessPremisesRenovationAllowance").readNullable[BigDecimal] and
@@ -48,7 +49,7 @@ object Allowances {
       (JsPath \ "zeroEmissionsCarAllowance").readNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").readNullable[Seq[StructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").readNullable[Seq[StructuredBuildingAllowance]]
-    )(Allowances.apply _)
+  )(Allowances.apply _)
 
   implicit val writes: OWrites[Allowances] = Json.writes[Allowances]
 

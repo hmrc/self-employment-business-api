@@ -23,9 +23,10 @@ import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 
 class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validTaxYear = "2021-22"
+  private val validTaxYear    = "2021-22"
+
   private val requestBodyJson = Json.parse(
     """
       |{
@@ -95,19 +96,30 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
       }
 
       "a minimal adjustments request is supplied" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |   "adjustments":{
             |         "includedNonTaxableProfits": 216.12
             |   }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
       "only adjustments is supplied" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "includedNonTaxableProfits": 200.12,
@@ -122,11 +134,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
       "only allowances is supplied" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |   "allowances": {
             |    "annualInvestmentAllowance": 200.12,
@@ -168,18 +186,25 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
       "only tradingIncomeAllowance is supplied" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |   "allowances": {
             |    "tradingIncomeAllowance": 200.20
             |   }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
     }
     "return a path parameter error" when {
@@ -193,32 +218,41 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
         validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, "2103/01", requestBodyJson)) shouldBe List(TaxYearFormatError)
       }
       "an invalid taxYear range is supplied" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, "2022-24", requestBodyJson)) shouldBe List(RuleTaxYearRangeInvalidError)
+        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, "2022-24", requestBodyJson)) shouldBe List(
+          RuleTaxYearRangeInvalidError)
       }
       "a below minimum taxYear is supplied" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, "2010-11", requestBodyJson)) shouldBe List(RuleTaxYearNotSupportedError)
+        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, "2010-11", requestBodyJson)) shouldBe List(
+          RuleTaxYearNotSupportedError)
       }
     }
     "return RuleIncorrectOrEmptyBodyError" when {
       "an empty body is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-        """{}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse("""{}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError)
       }
       "an empty adjustments is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-        """{"adjustments": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/adjustments"))))
+        validator.validate(
+          AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse("""{"adjustments": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/adjustments"))))
       }
       "an empty allowances is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-        """{"allowances": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances"))))
+        validator.validate(
+          AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse("""{"allowances": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances"))))
       }
       "an empty nonFinancials is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-        """{"nonFinancials": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/nonFinancials/businessDetailsChangedRecently"))))
+        validator.validate(
+          AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse("""{"nonFinancials": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/nonFinancials/businessDetailsChangedRecently"))))
       }
       "structuredBuildingAllowance with a building without the mandatory postcode is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """{
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse("""{
             |   "allowances": {
             |    "structuredBuildingAllowance": [
             |      {
@@ -228,11 +262,16 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             |      }
             |    ]
             |  }
-            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/postcode"))))
+            |}""".stripMargin)
+          )) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/postcode"))))
       }
       "structuredBuildingAllowance without the mandatory amount field is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """{
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse("""{
             |   "allowances": {
             |    "structuredBuildingAllowance": [
             |      {
@@ -243,11 +282,16 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             |      }
             |    ]
             |  }
-            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/amount"))))
+            |}""".stripMargin)
+          )) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/amount"))))
       }
       "structuredBuildingAllowance with a firstYear without the mandatory qualifyingDate field is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """{
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse("""{
             |   "allowances": {
             |    "structuredBuildingAllowance": [
             |      {
@@ -262,11 +306,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             |      }
             |    ]
             |  }
-            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate"))))
+            |}""".stripMargin)
+          )) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate"))))
       }
       "structuredBuildingAllowance with a firstYear without the mandatory qualifyingAmountExpenditure field is submitted" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """{
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse("""{
             |   "allowances": {
             |    "structuredBuildingAllowance": [
             |      {
@@ -281,234 +331,363 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             |      }
             |    ]
             |  }
-            |}""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))))
+            |}""".stripMargin)
+          )) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))))
       }
     }
-   "return ValueFormatError" when {
+    "return ValueFormatError" when {
       "/adjustments/includedNonTaxableProfits is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "includedNonTaxableProfits": -1
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/includedNonTaxableProfits"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/includedNonTaxableProfits"))))
       }
       "/adjustments/basisAdjustment is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "basisAdjustment": -1.999
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.forPathAndRange(path = "/adjustments/basisAdjustment", min = "-99999999999.99", max = "99999999999.99"))
+            )
+          )) shouldBe List(ValueFormatError.forPathAndRange(path = "/adjustments/basisAdjustment", min = "-99999999999.99", max = "99999999999.99"))
       }
       "/adjustments/overlapReliefUsed is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "overlapReliefUsed": -1
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/overlapReliefUsed"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/overlapReliefUsed"))))
       }
       "/adjustments/accountingAdjustment is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "accountingAdjustment": -1
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/accountingAdjustment"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/accountingAdjustment"))))
       }
       "/adjustments/averagingAdjustment is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "averagingAdjustment": -1.999
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.forPathAndRange(path = "/adjustments/averagingAdjustment", min = "-99999999999.99", max = "99999999999.99"))
+            )
+          )) shouldBe List(
+          ValueFormatError.forPathAndRange(path = "/adjustments/averagingAdjustment", min = "-99999999999.99", max = "99999999999.99"))
       }
 
       "/adjustments/outstandingBusinessIncome is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "outstandingBusinessIncome": -1
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/outstandingBusinessIncome"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/outstandingBusinessIncome"))))
       }
       "/adjustments/balancingChargeBpra is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "balancingChargeBpra": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/balancingChargeBpra"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/balancingChargeBpra"))))
       }
       "/adjustments/balancingChargeOther is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "balancingChargeOther": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/balancingChargeOther"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/balancingChargeOther"))))
       }
       "/adjustments/goodsAndServicesOwnUse is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "goodsAndServicesOwnUse": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/goodsAndServicesOwnUse"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/adjustments/goodsAndServicesOwnUse"))))
       }
       "/allowances/annualInvestmentAllowance is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "annualInvestmentAllowance": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/annualInvestmentAllowance"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/annualInvestmentAllowance"))))
       }
       "/allowances/businessPremisesRenovationAllowance is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "businessPremisesRenovationAllowance": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/businessPremisesRenovationAllowance"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/businessPremisesRenovationAllowance"))))
       }
       "/allowances/capitalAllowanceMainPool is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "capitalAllowanceMainPool": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceMainPool"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceMainPool"))))
       }
       "/allowances/capitalAllowanceSpecialRatePool is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "capitalAllowanceSpecialRatePool": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSpecialRatePool"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSpecialRatePool"))))
       }
       "/allowances/zeroEmissionsGoodsVehicleAllowance is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "zeroEmissionsGoodsVehicleAllowance": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/zeroEmissionsGoodsVehicleAllowance"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/zeroEmissionsGoodsVehicleAllowance"))))
       }
       "/allowances/enhancedCapitalAllowance is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "enhancedCapitalAllowance": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/enhancedCapitalAllowance"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/enhancedCapitalAllowance"))))
       }
       "/allowances/allowanceOnSales is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "allowanceOnSales": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/allowanceOnSales"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/allowanceOnSales"))))
       }
       "/allowances/capitalAllowanceSingleAssetPool is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "capitalAllowanceSingleAssetPool": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSingleAssetPool"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/capitalAllowanceSingleAssetPool"))))
       }
       "/allowances/electricChargePointAllowance is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "allowances": {
             |    "electricChargePointAllowance": -200.12
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/electricChargePointAllowance"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/electricChargePointAllowance"))))
       }
-     "/allowances/zeroEmissionsCarAllowance is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+      "/allowances/zeroEmissionsCarAllowance is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "zeroEmissionsCarAllowance": -200.12
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/zeroEmissionsCarAllowance"))))
-     }
-     "/allowances/tradingIncomeAllowance is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/zeroEmissionsCarAllowance"))))
+      }
+      "/allowances/tradingIncomeAllowance is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "tradingIncomeAllowance": -100.20
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(ValueFormatError.forPathAndRange("", min = "0", max = "1000").copy(paths = Some(Seq("/allowances/tradingIncomeAllowance"))))
-     }
-     "/allowances/structuredBuildingAllowance/amount is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(
+          ValueFormatError.forPathAndRange("", min = "0", max = "1000").copy(paths = Some(Seq("/allowances/tradingIncomeAllowance"))))
+      }
+      "/allowances/structuredBuildingAllowance/amount is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "structuredBuildingAllowance": [
@@ -523,11 +702,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/amount"))))
-     }
-     "/allowances/structuredBuildingAllowance/firstYear/qualifyingDate is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/amount"))))
+      }
+      "/allowances/structuredBuildingAllowance/firstYear/qualifyingDate is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "structuredBuildingAllowance": [
@@ -546,11 +731,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate"))))
-     }
-     "/allowances/structuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate"))))
+      }
+      "/allowances/structuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "structuredBuildingAllowance": [
@@ -569,11 +760,18 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))))
-     }
-     "/allowances/structuredBuildingAllowance/building/name is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(
+          ValueFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))))
+      }
+      "/allowances/structuredBuildingAllowance/building/name is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "structuredBuildingAllowance": [
@@ -588,11 +786,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/name"))))
-     }
-     "/allowances/structuredBuildingAllowance/building/number is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/name"))))
+      }
+      "/allowances/structuredBuildingAllowance/building/number is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "structuredBuildingAllowance": [
@@ -607,11 +811,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/number"))))
-     }
-     "/allowances/structuredBuildingAllowance/building/postcode is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/number"))))
+      }
+      "/allowances/structuredBuildingAllowance/building/postcode is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "structuredBuildingAllowance": [
@@ -626,12 +836,18 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/postcode"))))
-     }
+            )
+          )) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/postcode"))))
+      }
 
-     "/allowances/enhancedStructuredBuildingAllowance/amount is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+      "/allowances/enhancedStructuredBuildingAllowance/amount is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "enhancedStructuredBuildingAllowance": [
@@ -646,11 +862,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/amount"))))
-     }
-     "/allowances/enhancedStructuredBuildingAllowance/firstYear/qualifyingDate is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/amount"))))
+      }
+      "/allowances/enhancedStructuredBuildingAllowance/firstYear/qualifyingDate is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "enhancedStructuredBuildingAllowance": [
@@ -669,11 +891,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))))
-     }
-     "/allowances/enhancedStructuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))))
+      }
+      "/allowances/enhancedStructuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "enhancedStructuredBuildingAllowance": [
@@ -692,11 +920,18 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))))
-     }
-     "/allowances/enhancedStructuredBuildingAllowance/building/name is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(
+          ValueFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))))
+      }
+      "/allowances/enhancedStructuredBuildingAllowance/building/name is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "enhancedStructuredBuildingAllowance": [
@@ -711,11 +946,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/building/name"))))
-     }
-     "/allowances/enhancedStructuredBuildingAllowance/building/number is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/building/name"))))
+      }
+      "/allowances/enhancedStructuredBuildingAllowance/building/number is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "enhancedStructuredBuildingAllowance": [
@@ -730,11 +971,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/building/number"))))
-     }
-     "/allowances/enhancedStructuredBuildingAllowance/building/postcode is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/building/number"))))
+      }
+      "/allowances/enhancedStructuredBuildingAllowance/building/postcode is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "enhancedStructuredBuildingAllowance": [
@@ -749,11 +996,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/building/postcode"))))
-     }
-     "/nonFinancials/class4NicsExemptionReason is invalid" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(StringFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/building/postcode"))))
+      }
+      "/nonFinancials/class4NicsExemptionReason is invalid" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "nonFinancials": {
            |    "businessDetailsChangedRecently": true,
@@ -761,11 +1014,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(Class4ExemptionReasonFormatError)
-     }
-     "both allowances are supplied" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(Class4ExemptionReasonFormatError)
+      }
+      "both allowances are supplied" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "annualInvestmentAllowance": 200.12,
@@ -808,11 +1067,17 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(RuleBothAllowancesSuppliedError)
-     }
-     "name or number aren't supplied with a postcode" in {
-       validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-         """
+            )
+          )) shouldBe List(RuleBothAllowancesSuppliedError)
+      }
+      "name or number aren't supplied with a postcode" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
            |{
            |  "allowances": {
            |    "structuredBuildingAllowance": [
@@ -834,16 +1099,27 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
            |  }
            |}
            |""".stripMargin
-       ))) shouldBe List(RuleBuildingNameNumberError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building", "/allowances/enhancedStructuredBuildingAllowance/0/building"))))
-     }
+            )
+          )) shouldBe List(
+          RuleBuildingNameNumberError.copy(paths =
+            Some(Seq("/allowances/structuredBuildingAllowance/0/building", "/allowances/enhancedStructuredBuildingAllowance/0/building"))))
+      }
     }
     "return multiple errors" when {
       "every path parameter format is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData("AJAA12", "XASOE12", "201219", requestBodyJson)) shouldBe List(NinoFormatError, BusinessIdFormatError, TaxYearFormatError)
+        validator.validate(AmendAnnualSubmissionRawData("AJAA12", "XASOE12", "201219", requestBodyJson)) shouldBe List(
+          NinoFormatError,
+          BusinessIdFormatError,
+          TaxYearFormatError)
       }
       "every field in the body is invalid" in {
-        validator.validate(AmendAnnualSubmissionRawData(validNino, validBusinessId, validTaxYear, Json.parse(
-          """
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
             |{
             |  "adjustments": {
             |    "includedNonTaxableProfits": 200.132,
@@ -900,7 +1176,8 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             |  }
             |}
             |""".stripMargin
-        ))) shouldBe List(
+            )
+          )) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/adjustments/includedNonTaxableProfits",
             "/adjustments/overlapReliefUsed",
@@ -922,19 +1199,24 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             "/allowances/structuredBuildingAllowance/0/amount",
             "/allowances/structuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure",
             "/allowances/enhancedStructuredBuildingAllowance/0/amount",
-            "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))),
-          ValueFormatError.forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99").copy(
-            paths = Some(Seq("/adjustments/basisAdjustment", "/adjustments/averagingAdjustment"))),
-          DateFormatError.copy(paths = Some(Seq(
-            "/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate",
-            "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))),
+            "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"
+          ))),
+          ValueFormatError
+            .forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99")
+            .copy(paths = Some(Seq("/adjustments/basisAdjustment", "/adjustments/averagingAdjustment"))),
+          DateFormatError.copy(paths = Some(
+            Seq(
+              "/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate",
+              "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))),
           StringFormatError.copy(paths = Some(Seq(
             "/allowances/structuredBuildingAllowance/0/building/name",
             "/allowances/structuredBuildingAllowance/0/building/postcode",
             "/allowances/enhancedStructuredBuildingAllowance/0/building/number",
-            "/allowances/enhancedStructuredBuildingAllowance/0/building/postcode")))
+            "/allowances/enhancedStructuredBuildingAllowance/0/building/postcode"
+          )))
         )
       }
     }
   }
+
 }

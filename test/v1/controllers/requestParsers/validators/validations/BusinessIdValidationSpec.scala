@@ -26,7 +26,7 @@ class BusinessIdValidationSpec extends UnitSpec with JsonErrorValidators {
     "return no errors" when {
       "when a valid BusinessId is supplied" in {
 
-        val validBusinessId = "XAIS12345678910"
+        val validBusinessId  = "XAIS12345678910"
         val validationResult = BusinessIdValidation.validate(validBusinessId)
         validationResult.isEmpty shouldBe true
 
@@ -37,7 +37,7 @@ class BusinessIdValidationSpec extends UnitSpec with JsonErrorValidators {
       "when an invalid BusinessId is supplied" in {
 
         val invalidBusinessId = "XAIS12345678910A"
-        val validationResult = BusinessIdValidation.validate(invalidBusinessId)
+        val validationResult  = BusinessIdValidation.validate(invalidBusinessId)
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe BusinessIdFormatError
@@ -46,4 +46,5 @@ class BusinessIdValidationSpec extends UnitSpec with JsonErrorValidators {
     }
 
   }
+
 }

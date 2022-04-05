@@ -21,9 +21,9 @@ import v1.models.errors.StringFormatError
 
 class StringValidationSpec extends UnitSpec {
 
-  val validString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- _&():.'^aaaaaaaaaaaaaaaaaa"
+  val validString                     = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- _&():.'^aaaaaaaaaaaaaaaaaa"
   val stringThatExceedsCharacterLimit = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- _&():.'^aaaaaaaaaaaaaaaaaab"
-  val stringWithInvalidChar = "#"
+  val stringWithInvalidChar           = "#"
 
   "validate" should {
     "return no errors" when {

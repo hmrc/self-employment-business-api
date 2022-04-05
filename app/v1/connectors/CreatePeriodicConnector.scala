@@ -28,15 +28,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
-class CreatePeriodicConnector @Inject()(val http: HttpClient,
-                                        val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodicConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def createPeriodicSummary(request: CreatePeriodicRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def createPeriodicSummary(
+      request: CreatePeriodicRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino = request.nino.nino
+    val nino       = request.nino.nino
     val businessId = request.businessId
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
@@ -46,4 +43,5 @@ class CreatePeriodicConnector @Inject()(val http: HttpClient,
       DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
     )
   }
+
 }

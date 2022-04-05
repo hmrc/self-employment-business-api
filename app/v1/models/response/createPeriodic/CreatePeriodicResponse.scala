@@ -21,21 +21,22 @@ import play.api.libs.json.{Json, OFormat}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-
 case class CreatePeriodicResponse(periodId: String)
-
 
 object CreatePeriodicResponse extends HateoasLinks {
   implicit val format: OFormat[CreatePeriodicResponse] = Json.format[CreatePeriodicResponse]
 
   implicit object LinksFactory extends HateoasLinksFactory[CreatePeriodicResponse, CreatePeriodicHateoasData] {
+
     override def links(appConfig: AppConfig, data: CreatePeriodicHateoasData): Seq[Link] = {
       import data._
       Seq(
         retrievePeriodicSummary(appConfig, nino, businessId, periodId)
       )
     }
+
   }
+
 }
 
 case class CreatePeriodicHateoasData(nino: String, businessId: String, periodId: String) extends HateoasData

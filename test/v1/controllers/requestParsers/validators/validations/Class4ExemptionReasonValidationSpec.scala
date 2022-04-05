@@ -23,13 +23,11 @@ class Class4ExemptionReasonValidationSpec extends UnitSpec {
 
   "validate" should {
     "return no errors" when {
-        Seq("non-resident", "trustee", "diver", "ITTOIA-2005", "over-state-pension-age", "under-16"
-        ).foreach {
-          nic =>
-            s"return an empty list for valid class4 $nic" in {
-              Class4ExemptionReasonValidation.validate(nic) shouldBe NoValidationErrors
-            }
+      Seq("non-resident", "trustee", "diver", "ITTOIA-2005", "over-state-pension-age", "under-16").foreach { nic =>
+        s"return an empty list for valid class4 $nic" in {
+          Class4ExemptionReasonValidation.validate(nic) shouldBe NoValidationErrors
         }
+      }
     }
     "return an error" when {
       "a value that isn't one of the class4 fields is submitted" in {

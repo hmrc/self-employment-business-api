@@ -24,9 +24,9 @@ import v1.models.request.amendSEAnnual._
 
 class AmendAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSubmissionFixture {
 
-  val nino: String = "AA123456B"
-  val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2019-20"
+  val nino: String                   = "AA123456B"
+  val businessId: String             = "XAIS12345678910"
+  val taxYear: String                = "2019-20"
   implicit val correlationId: String = "X-123"
 
   private val requestBodyJson = amendAnnualSubmissionBodyMtdJson()
@@ -56,7 +56,8 @@ class AmendAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSu
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockAmendAnnualSummaryValidator.validate(inputData)
+        MockAmendAnnualSummaryValidator
+          .validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -64,7 +65,8 @@ class AmendAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSu
       }
 
       "multiple validation errors occur" in new Test {
-        MockAmendAnnualSummaryValidator.validate(inputData)
+        MockAmendAnnualSummaryValidator
+          .validate(inputData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -72,4 +74,5 @@ class AmendAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSu
       }
     }
   }
+
 }

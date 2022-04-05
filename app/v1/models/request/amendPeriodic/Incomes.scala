@@ -24,15 +24,17 @@ case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesA
 }
 
 object Incomes {
+
   implicit val reads: Reads[Incomes] = (
     (JsPath \ "turnover" \ "amount").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_))) and
       (JsPath \ "other" \ "amount").readNullable[BigDecimal].map(_.map(IncomesAmountObject(_)))
-    ) (Incomes.apply _)
+  )(Incomes.apply _)
 
   implicit val writes: OWrites[Incomes] = (
-      (JsPath \ "turnover").writeNullable[BigDecimal] and
-        (JsPath \ "other").writeNullable[BigDecimal]
-      ) (unlift(Incomes.unapply(_: Incomes).map {
-    case (turnoverO, otherO) => (turnoverO.map(_.amount), otherO.map(_.amount))
+    (JsPath \ "turnover").writeNullable[BigDecimal] and
+      (JsPath \ "other").writeNullable[BigDecimal]
+  )(unlift(Incomes.unapply(_: Incomes).map { case (turnoverO, otherO) =>
+    (turnoverO.map(_.amount), otherO.map(_.amount))
   }))
+
 }

@@ -23,9 +23,10 @@ import v1.models.request.amendPeriodic.AmendPeriodicRawData
 
 class AmendPeriodicValidatorSpec extends UnitSpec {
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validPeriodId = "2019-01-01_2019-02-02"
+  private val validPeriodId   = "2019-01-01_2019-02-02"
+
   private val requestBodyJson = Json.parse(
     """
       |{
@@ -111,8 +112,13 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
         validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, requestBodyJson)) shouldBe Nil
       }
       "a valid request is supplied with consolidated expenses" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -127,11 +133,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
       "only incomes is supplied" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -143,11 +155,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
       "only expenses is supplied" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "expenses": {
             |        "costOfGoodsBought": {
@@ -213,18 +231,25 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
       "only consolidatedExpenses is supplied" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "consolidatedExpenses": {
             |        "consolidatedExpenses": 200.00
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe Nil
+            )
+          )) shouldBe Nil
       }
     }
     "return a path parameter error" when {
@@ -240,24 +265,29 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
     }
     "return RuleIncorrectOrEmptyBodyError" when {
       "an empty body is submitted" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-        """{}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError)
       }
       "an empty adjustments is submitted" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-        """{"income": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"income": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError)
       }
       "an empty allowances is submitted" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-        """{"consolidatedExpenses": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/consolidatedExpenses/consolidatedExpenses"))))
+        validator.validate(
+          AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"consolidatedExpenses": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/consolidatedExpenses/consolidatedExpenses"))))
       }
       "an empty nonFinancials is submitted" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-        """{"expenses": {}}"""))) shouldBe List(RuleIncorrectOrEmptyBodyError)
+        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"expenses": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError)
       }
       "a body with a mandatory field is missing is submitted" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-        """{
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse("""{
           |    "incomes": {
           |        "turnover": {
           |            "amount": 200.00
@@ -328,13 +358,18 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
           |        }
           |    }
           |}
-          |""".stripMargin))) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/expenses/costOfGoodsBought/amount"))))
+          |""".stripMargin)
+          )) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/expenses/costOfGoodsBought/amount"))))
       }
     }
     "return RuleBothExpensesSuppliedError" when {
       "Both expenses and consolidatedExpenses are supplied" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse("""
             |{
             |    "incomes": {
             |        "turnover": {
@@ -410,14 +445,20 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |        }
             |    }
             |}
-            |""".stripMargin))) shouldBe List(RuleBothExpensesSuppliedError)
+            |""".stripMargin)
+          )) shouldBe List(RuleBothExpensesSuppliedError)
       }
     }
 
     "return ValueFormatError" when {
       "/incomes/turnover/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -432,11 +473,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/incomes/turnover/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/incomes/turnover/amount"))))
       }
       "/incomes/other/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -451,11 +498,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/incomes/other/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/incomes/other/amount"))))
       }
       "/consolidatedExpenses/consolidatedExpenses is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -470,11 +523,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/consolidatedExpenses/consolidatedExpenses"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/consolidatedExpenses/consolidatedExpenses"))))
       }
       "/expenses/costOfGoodsBought/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -548,11 +607,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/costOfGoodsBought/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/costOfGoodsBought/amount"))))
       }
       "/expenses/costOfGoodsBought/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -626,11 +691,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/costOfGoodsBought/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/costOfGoodsBought/disallowableAmount"))))
       }
       "/expenses/cisPaymentsTo/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -704,11 +775,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/cisPaymentsTo/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/cisPaymentsTo/amount"))))
       }
       "/expenses/cisPaymentsTo/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -782,11 +859,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/cisPaymentsTo/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/cisPaymentsTo/disallowableAmount"))))
       }
       "/expenses/staffCosts/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -860,11 +943,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/staffCosts/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/staffCosts/amount"))))
       }
       "/expenses/staffCosts/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -938,11 +1027,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/staffCosts/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/staffCosts/disallowableAmount"))))
       }
       "/expenses/travelCosts/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1016,11 +1111,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/travelCosts/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/travelCosts/amount"))))
       }
       "/expenses/travelCosts/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1094,11 +1195,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/travelCosts/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/travelCosts/disallowableAmount"))))
       }
       "/expenses/premisesRunningCosts/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1172,11 +1279,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/premisesRunningCosts/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/premisesRunningCosts/amount"))))
       }
       "/expenses/premisesRunningCosts/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1250,11 +1363,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/premisesRunningCosts/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/premisesRunningCosts/disallowableAmount"))))
       }
       "/expenses/maintenanceCosts/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1328,11 +1447,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/maintenanceCosts/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/maintenanceCosts/amount"))))
       }
       "/expenses/maintenanceCosts/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1406,11 +1531,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/maintenanceCosts/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/maintenanceCosts/disallowableAmount"))))
       }
       "/expenses/adminCosts/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1484,11 +1615,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/adminCosts/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/adminCosts/amount"))))
       }
       "/expenses/adminCosts/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1562,11 +1699,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/adminCosts/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/adminCosts/disallowableAmount"))))
       }
       "/expenses/advertisingCosts/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1640,11 +1783,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/advertisingCosts/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/advertisingCosts/amount"))))
       }
       "/expenses/advertisingCosts/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1718,11 +1867,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/advertisingCosts/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/advertisingCosts/disallowableAmount"))))
       }
       "/expenses/businessEntertainmentCosts/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1796,11 +1951,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/businessEntertainmentCosts/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/businessEntertainmentCosts/amount"))))
       }
       "/expenses/businessEntertainmentCosts/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1874,11 +2035,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/businessEntertainmentCosts/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/businessEntertainmentCosts/disallowableAmount"))))
       }
       "/expenses/interestOnLoans/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -1952,11 +2119,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/interestOnLoans/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/interestOnLoans/amount"))))
       }
       "/expenses/interestOnLoans/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2030,11 +2203,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/interestOnLoans/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/interestOnLoans/disallowableAmount"))))
       }
       "/expenses/financialCharges/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2108,11 +2287,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/financialCharges/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/financialCharges/amount"))))
       }
       "/expenses/financialCharges/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2186,11 +2371,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/financialCharges/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/financialCharges/disallowableAmount"))))
       }
       "/expenses/badDebt/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2264,11 +2455,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/badDebt/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/badDebt/amount"))))
       }
       "/expenses/badDebt/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2342,11 +2539,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/badDebt/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/badDebt/disallowableAmount"))))
       }
       "/expenses/professionalFees/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2420,11 +2623,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/professionalFees/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/professionalFees/amount"))))
       }
       "/expenses/professionalFees/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2498,11 +2707,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/professionalFees/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/professionalFees/disallowableAmount"))))
       }
       "/expenses/depreciation/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2576,11 +2791,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/depreciation/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/depreciation/amount"))))
       }
       "/expenses/depreciation/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2654,11 +2875,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/depreciation/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/depreciation/disallowableAmount"))))
       }
       "/expenses/other/amount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2732,11 +2959,17 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/other/amount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/other/amount"))))
       }
       "/expenses/other/disallowableAmount is invalid" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2810,7 +3043,8 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/other/disallowableAmount"))))
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/other/disallowableAmount"))))
       }
     }
     "return multiple errors" when {
@@ -2819,8 +3053,13 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
           List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError)
       }
       "every field in the body is invalid when consolidated expenses are supplied" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2835,15 +3074,18 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(
-          ValueFormatError.copy(paths = Some(Seq(
-            "/incomes/turnover/amount",
-            "/incomes/other/amount",
-            "/consolidatedExpenses/consolidatedExpenses"))))
+            )
+          )) shouldBe List(
+          ValueFormatError.copy(paths = Some(Seq("/incomes/turnover/amount", "/incomes/other/amount", "/consolidatedExpenses/consolidatedExpenses"))))
       }
       "every field in the body is invalid when expenses are supplied" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse(
-          """
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
             |{
             |    "incomes": {
             |        "turnover": {
@@ -2917,7 +3159,8 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             |    }
             |}
             |""".stripMargin
-        ))) shouldBe List(
+            )
+          )) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/incomes/turnover/amount",
             "/incomes/other/amount",
@@ -2955,4 +3198,5 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

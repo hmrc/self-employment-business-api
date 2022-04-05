@@ -19,23 +19,23 @@ package v1.models.request.amendSEAnnual
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Allowances(
-                       annualInvestmentAllowance: Option[BigDecimal],
-                       businessPremisesRenovationAllowance: Option[BigDecimal],
-                       capitalAllowanceMainPool: Option[BigDecimal],
-                       capitalAllowanceSpecialRatePool: Option[BigDecimal],
-                       zeroEmissionsGoodsVehicleAllowance: Option[BigDecimal],
-                       enhancedCapitalAllowance: Option[BigDecimal],
-                       allowanceOnSales: Option[BigDecimal],
-                       capitalAllowanceSingleAssetPool: Option[BigDecimal],
-                       tradingIncomeAllowance: Option[BigDecimal],
-                       electricChargePointAllowance: Option[BigDecimal],
-                       zeroEmissionsCarAllowance: Option[BigDecimal],
-                       structuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]],
-                       enhancedStructuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]])
+case class Allowances(annualInvestmentAllowance: Option[BigDecimal],
+                      businessPremisesRenovationAllowance: Option[BigDecimal],
+                      capitalAllowanceMainPool: Option[BigDecimal],
+                      capitalAllowanceSpecialRatePool: Option[BigDecimal],
+                      zeroEmissionsGoodsVehicleAllowance: Option[BigDecimal],
+                      enhancedCapitalAllowance: Option[BigDecimal],
+                      allowanceOnSales: Option[BigDecimal],
+                      capitalAllowanceSingleAssetPool: Option[BigDecimal],
+                      tradingIncomeAllowance: Option[BigDecimal],
+                      electricChargePointAllowance: Option[BigDecimal],
+                      zeroEmissionsCarAllowance: Option[BigDecimal],
+                      structuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]],
+                      enhancedStructuredBuildingAllowance: Option[Seq[StructuredBuildingAllowance]])
 
 object Allowances {
   implicit val reads: Reads[Allowances] = Json.reads[Allowances]
+
   implicit val writes: OWrites[Allowances] = (
     (JsPath \ "annualInvestmentAllowance").writeNullable[BigDecimal] and
       (JsPath \ "businessPremisesRenovationAllowance").writeNullable[BigDecimal] and
@@ -50,5 +50,6 @@ object Allowances {
       (JsPath \ "zeroEmissionsCarAllowance").writeNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").writeNullable[Seq[StructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").writeNullable[Seq[StructuredBuildingAllowance]]
-    ) (unlift(Allowances.unapply))
+  )(unlift(Allowances.unapply))
+
 }

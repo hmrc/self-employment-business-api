@@ -25,11 +25,7 @@ import support.UnitSpec
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method.GET
 
-class ControllerBaseSpec extends UnitSpec
-  with Status
-  with MimeTypes
-  with HeaderNames
-  with ResultExtractors {
+class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors {
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
@@ -46,11 +42,12 @@ class ControllerBaseSpec extends UnitSpec
   val testHateoasLinks: Seq[Link] =
     Seq(Link(href = "/some/link", method = GET, rel = "someRel"))
 
-  val testHateoasLinksJson: JsObject = Json.parse(
-    """{
+  val testHateoasLinksJson: JsObject = Json
+    .parse("""{
       |  "links": [ { "href":"/some/link", "method":"GET", "rel":"someRel" } ]
       |}
-      |""".stripMargin).as[JsObject]
+      |""".stripMargin)
+    .as[JsObject]
 
   def fakePostRequest[T](body: T): FakeRequest[T] = fakeRequest.withBody(body)
 

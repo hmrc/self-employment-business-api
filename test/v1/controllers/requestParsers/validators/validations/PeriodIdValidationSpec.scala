@@ -21,12 +21,11 @@ import v1.models.errors.PeriodIdFormatError
 
 class PeriodIdValidationSpec extends UnitSpec {
 
-
   "validate" should {
     "return no errors" when {
       "a valid period id is supplied" in {
 
-        val validPeriodId = "2017-01-25_2017-02-25"
+        val validPeriodId    = "2017-01-25_2017-02-25"
         val validationResult = PeriodIdValidation.validate(validPeriodId)
         validationResult.isEmpty shouldBe true
       }
@@ -35,7 +34,7 @@ class PeriodIdValidationSpec extends UnitSpec {
     "return an error" when {
       "an invalid period id is supplied" in {
 
-        val invalidPeriodId = "201839127"
+        val invalidPeriodId  = "201839127"
         val validationResult = PeriodIdValidation.validate(invalidPeriodId)
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
@@ -44,7 +43,7 @@ class PeriodIdValidationSpec extends UnitSpec {
 
       "a period id is supplied that is too long" in {
 
-        val invalidPeriodId = "2017-01-25_2017-02-2512"
+        val invalidPeriodId  = "2017-01-25_2017-02-2512"
         val validationResult = PeriodIdValidation.validate(invalidPeriodId)
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
@@ -53,4 +52,5 @@ class PeriodIdValidationSpec extends UnitSpec {
     }
 
   }
+
 }

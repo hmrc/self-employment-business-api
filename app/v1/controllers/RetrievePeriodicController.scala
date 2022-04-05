@@ -19,26 +19,26 @@ package v1.controllers
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.RetrievePeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.retrievePeriodic.RetrievePeriodicRawData
 import v1.models.response.retrievePeriodic.RetrievePeriodicHateoasData
-import v1.services.{ EnrolmentsAuthService, MtdIdLookupService, RetrievePeriodicService }
+import v1.services.{EnrolmentsAuthService, MtdIdLookupService, RetrievePeriodicService}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodicController @Inject()(val authService: EnrolmentsAuthService,
-                                           val lookupService: MtdIdLookupService,
-                                           parser: RetrievePeriodicRequestParser,
-                                           service: RetrievePeriodicService,
-                                           hateoasFactory: HateoasFactory,
-                                           cc: ControllerComponents,
-                                           idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrievePeriodicController @Inject() (val authService: EnrolmentsAuthService,
+                                            val lookupService: MtdIdLookupService,
+                                            parser: RetrievePeriodicRequestParser,
+                                            service: RetrievePeriodicService,
+                                            hateoasFactory: HateoasFactory,
+                                            cc: ControllerComponents,
+                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -88,4 +88,5 @@ class RetrievePeriodicController @Inject()(val authService: EnrolmentsAuthServic
       case DownstreamError                                                                 => InternalServerError(Json.toJson(errorWrapper))
       case _                                                                               => unhandledError(errorWrapper)
     }
+
 }

@@ -177,7 +177,7 @@ class AmendPeriodicBodySpec extends UnitSpec {
     """
       |{}
     """.stripMargin
-   )
+  )
 
   val fullDesJson: JsValue = Json.parse(
     """
@@ -324,54 +324,59 @@ class AmendPeriodicBodySpec extends UnitSpec {
   )
 
   val fullMtdModel: AmendPeriodicBody = AmendPeriodicBody(
-    Some(Incomes(
-      Some(IncomesAmountObject(
-        200.00
+    Some(
+      Incomes(
+        Some(
+          IncomesAmountObject(
+            200.00
+          )),
+        Some(
+          IncomesAmountObject(
+            200.00
+          ))
       )),
-      Some(IncomesAmountObject(
-        200.00
-      ))
-    )),
     Some(ConsolidatedExpenses(200.00)),
-    Some(Expenses(
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00)))
-    ))
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00)))
+      ))
   )
 
-  val partialMtdModel: AmendPeriodicBody  = AmendPeriodicBody (
+  val partialMtdModel: AmendPeriodicBody = AmendPeriodicBody(
     None,
     Some(ConsolidatedExpenses(200.00)),
-    Some(Expenses(
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00))),
-      Some(ExpensesAmountObject(200.00, Some(200.00)))
-    ))
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00))),
+        Some(ExpensesAmountObject(200.00, Some(200.00)))
+      ))
   )
 
   val emptyMtdModel: AmendPeriodicBody = AmendPeriodicBody(
@@ -411,4 +416,5 @@ class AmendPeriodicBodySpec extends UnitSpec {
       }
     }
   }
+
 }
