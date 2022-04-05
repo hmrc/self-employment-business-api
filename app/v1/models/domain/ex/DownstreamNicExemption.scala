@@ -24,6 +24,7 @@ sealed trait DownstreamNicExemption {
 }
 
 object DownstreamNicExemption {
+
   case object `001` extends DownstreamNicExemption {
     override def toMtd: MtdNicExemption = MtdNicExemption.`non-resident`
   }

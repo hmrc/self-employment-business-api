@@ -24,15 +24,17 @@ case class Incomes(turnover: Option[IncomesAmountObject], other: Option[IncomesA
   def isEmpty: Boolean = {
     turnover.isEmpty && other.isEmpty
   }
+
 }
 
 object Incomes {
   implicit val reads: Reads[Incomes] = Json.reads[Incomes]
+
   implicit val writes: OWrites[Incomes] = (
     (JsPath \ "turnover").writeNullable[BigDecimal] and
       (JsPath \ "other").writeNullable[BigDecimal]
-    )(unlift(Incomes.unapply(_: Incomes).map {
-    case (turnoverO, otherO) => (turnoverO.map(_.amount), otherO.map(_.amount))
+  )(unlift(Incomes.unapply(_: Incomes).map { case (turnoverO, otherO) =>
+    (turnoverO.map(_.amount), otherO.map(_.amount))
   }))
 
 }

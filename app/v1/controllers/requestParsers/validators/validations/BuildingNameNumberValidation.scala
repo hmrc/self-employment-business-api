@@ -24,7 +24,8 @@ object BuildingNameNumberValidation {
   def validate(building: Building, path: String): List[MtdError] = {
     building match {
       case Building(None, None, _) => List(RuleBuildingNameNumberError.copy(paths = Some(Seq(path))))
-      case _ => NoValidationErrors
+      case _                       => NoValidationErrors
     }
   }
+
 }

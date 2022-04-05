@@ -28,25 +28,29 @@ import scala.concurrent.Future
 
 class RetrievePeriodicServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  val periodId: String = "2019-01-25_2020-01-25"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
+  val periodId: String               = "2019-01-25_2020-01-25"
   implicit val correlationId: String = "X-123"
 
   val response: RetrievePeriodicResponse = RetrievePeriodicResponse(
     "2019-01-25",
     "2020-01-25",
-    Some(Incomes(
-      Some(IncomesAmountObject(
+    Some(
+      Incomes(
+        Some(
+          IncomesAmountObject(
+            1000.20
+          )),
+        Some(
+          IncomesAmountObject(
+            1000.20
+          ))
+      )),
+    Some(
+      ConsolidatedExpenses(
         1000.20
       )),
-      Some(IncomesAmountObject(
-        1000.20
-      ))
-    )),
-    Some(ConsolidatedExpenses(
-      1000.20
-    )),
     None
   )
 
@@ -62,12 +66,14 @@ class RetrievePeriodicServiceSpec extends ServiceSpec {
     val service = new RetrievePeriodicService(
       connector = mockRetrievePeriodicConnector
     )
+
   }
 
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockRetrievePeriodicConnector.retrievePeriodicSummary(requestData)
+        MockRetrievePeriodicConnector
+          .retrievePeriodicSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.retrievePeriodicSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
@@ -80,24 +86,26 @@ class RetrievePeriodicServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockRetrievePeriodicConnector.retrievePeriodicSummary(requestData)
+          MockRetrievePeriodicConnector
+            .retrievePeriodicSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrievePeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
+        "INVALID_NINO"             -> NinoFormatError,
         "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-        "INVALID_DATE_FROM" -> PeriodIdFormatError,
-        "INVALID_DATE_TO" -> PeriodIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "NOT_FOUND_PERIOD" -> NotFoundError,
-        "SERVER_ERROR" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "INVALID_DATE_FROM"        -> PeriodIdFormatError,
+        "INVALID_DATE_TO"          -> PeriodIdFormatError,
+        "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+        "NOT_FOUND_PERIOD"         -> NotFoundError,
+        "SERVER_ERROR"             -> DownstreamError,
+        "SERVICE_UNAVAILABLE"      -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

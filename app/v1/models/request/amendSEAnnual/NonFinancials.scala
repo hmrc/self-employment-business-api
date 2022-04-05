@@ -20,8 +20,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
 import v1.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
 
-case class NonFinancials(businessDetailsChangedRecently: Boolean,
-                         class4NicsExemptionReason: Option[MtdNicExemption])
+case class NonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
 
 object NonFinancials {
   implicit val reads: Reads[NonFinancials] = Json.reads[NonFinancials]
@@ -30,7 +29,8 @@ object NonFinancials {
     (JsPath \ "businessDetailsChangedRecently").write[Boolean] and
       (JsPath \ "exemptFromPayingClass4Nics").write[Boolean] and
       (JsPath \ "class4NicsExemptionReason").writeNullable[DownstreamNicExemption]
-    ) (unlift(NonFinancials.unapply(_: NonFinancials).map {
-    case (changed, exemption) => (changed, exemption.isDefined, exemption.map(_.toDownstream))
+  )(unlift(NonFinancials.unapply(_: NonFinancials).map { case (changed, exemption) =>
+    (changed, exemption.isDefined, exemption.map(_.toDownstream))
   }))
+
 }

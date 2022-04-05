@@ -30,15 +30,16 @@ class AmendAnnualSubmissionBodySpec extends UnitSpec with AmendAnnualSubmissionF
   "reads" when {
     "passed valid mtd JSON" should {
       "return the model" in {
-        Json.parse(
-          s"""{
+        Json
+          .parse(s"""{
              |  "allowances": {},
              |  "adjustments": {},
              |  "nonFinancials": {
              |    "businessDetailsChangedRecently": true
              |  }
              |}
-             |""".stripMargin).as[AmendAnnualSubmissionBody] shouldBe model
+             |""".stripMargin)
+          .as[AmendAnnualSubmissionBody] shouldBe model
       }
     }
 
@@ -53,8 +54,7 @@ class AmendAnnualSubmissionBodySpec extends UnitSpec with AmendAnnualSubmissionF
     "passed a model" should {
       "return downstream JSON" in {
         Json.toJson(model) shouldBe
-          Json.parse(
-            s"""{
+          Json.parse(s"""{
                |  "annualAllowances": {},
                |  "annualAdjustments": {},
                |  "annualNonFinancials": {
@@ -72,4 +72,5 @@ class AmendAnnualSubmissionBodySpec extends UnitSpec with AmendAnnualSubmissionF
       }
     }
   }
+
 }

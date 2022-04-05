@@ -24,7 +24,8 @@ object AmendConsolidatedExpensesValidation {
   def validate(consolidatedExpenses: Option[ConsolidatedExpenses], expenses: Option[Expenses]): List[MtdError] = {
     (consolidatedExpenses, expenses) match {
       case (Some(_), Some(_)) => List(RuleBothExpensesSuppliedError)
-      case _ => NoValidationErrors
+      case _                  => NoValidationErrors
     }
   }
+
 }

@@ -34,9 +34,18 @@ trait MockAmendAnnualSubmissionService extends MockFactory {
   object MockAmendAnnualSubmissionService {
 
     def amendAnnualSubmission(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockAmendAnnualSubmissionService
-        .amendAnnualSubmission(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+      (
+        mockAmendAnnualSubmissionService
+          .amendAnnualSubmission(_: AmendAnnualSubmissionRequest)(
+            _: HeaderCarrier,
+            _: ExecutionContext,
+            _: EndpointLogContext,
+            _: String
+          )
+        )
         .expects(requestData, *, *, *, *)
     }
+
   }
+
 }

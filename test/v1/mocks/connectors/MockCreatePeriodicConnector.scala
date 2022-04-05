@@ -35,5 +35,7 @@ trait MockCreatePeriodicConnector extends MockFactory {
         .createPeriodicSummary(_: CreatePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
+
 }

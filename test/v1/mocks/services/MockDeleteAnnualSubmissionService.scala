@@ -34,10 +34,18 @@ trait MockDeleteAnnualSubmissionService extends MockFactory {
   object MockDeleteAnnualSubmissionService {
 
     def deleteAnnualSubmission(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockDeleteAnnualSubmissionService
-        .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequest)(_:HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+      (
+        mockDeleteAnnualSubmissionService
+          .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequest)(
+            _: HeaderCarrier,
+            _: ExecutionContext,
+            _: EndpointLogContext,
+            _: String
+          )
+        )
         .expects(requestData, *, *, *, *)
     }
+
   }
 
 }

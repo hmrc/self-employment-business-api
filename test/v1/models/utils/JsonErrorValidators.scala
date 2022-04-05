@@ -49,6 +49,7 @@ trait JsonErrorValidators {
       case JsError(jsErrors) => jsErrors
       case JsSuccess(_, _)   => fail("A JSON error was expected")
     }
+
   }
 
   private def jsPathFrom(str: String) =
@@ -78,6 +79,7 @@ trait JsonErrorValidators {
 
     def replaceWithEmptyObject(path: String): JsValue =
       removeProperty(path).update(path, JsObject.empty)
+
   }
 
   def testMandatoryProperty[A: Reads](json: JsValue)(property: String): Unit = {
@@ -141,4 +143,5 @@ trait JsonErrorValidators {
       case (path, errs @ _ :: _)                      => fail(s"multiple errors returned for $path but only 1 required : $errs")
     }
   }
+
 }

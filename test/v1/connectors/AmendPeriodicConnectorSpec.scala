@@ -27,9 +27,9 @@ import scala.concurrent.Future
 
 class AmendPeriodicConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val periodId: String = "2020-01-01_2020-01-01"
+  val periodId: String   = "2020-01-01_2020-01-01"
 
   val request: AmendPeriodicRequest = AmendPeriodicRequest(
     nino = Nino(nino),
@@ -43,6 +43,7 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: AmendPeriodicConnector = new AmendPeriodicConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -60,9 +61,9 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         val fromDate: String = request.periodId.substring(0, 10)
-        val toDate: String = request.periodId.substring(11, 21)
+        val toDate: String   = request.periodId.substring(11, 21)
 
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
@@ -72,10 +73,12 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(outcome))
+          )
+          .returns(Future.successful(outcome))
 
         await(connector.amendPeriodicSummary(request)) shouldBe outcome
       }
     }
   }
+
 }

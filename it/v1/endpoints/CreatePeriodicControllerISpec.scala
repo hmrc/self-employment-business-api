@@ -29,9 +29,9 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String = "AA123456A"
+    val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val periodId: String = "2017-01-25_2017-04-25"
+    val periodId: String   = "2017-01-25_2017-04-25"
 
     val requestBodyJson: JsValue = Json.parse(
       s"""
@@ -112,8 +112,7 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
          |""".stripMargin
     )
 
-    val responseBody: JsValue = Json.parse(
-      s"""
+    val responseBody: JsValue = Json.parse(s"""
          |{
          |  "periodId": "2017-01-25_2017-04-25",
          |  "links": [
@@ -126,8 +125,7 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    val desResponse: JsValue = Json.parse(
-      s"""
+    val desResponse: JsValue = Json.parse(s"""
          |{
          |  "transactionReference": "2017090920170909"
          |}
@@ -152,6 +150,7 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
          |        "reason": "des message"
          |      }
     """.stripMargin
+
   }
 
   "Calling the create endpoint" should {
@@ -760,8 +759,7 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
         }
 
         s"a body missing mandatory fields is provided" in new Test {
-          override val requestBodyJson: JsValue = Json.parse(
-            """{
+          override val requestBodyJson: JsValue = Json.parse("""{
               |   "periodToDate": "2017-04-25",
               |   "incomes": {
               |      "turnover": {
@@ -873,10 +871,12 @@ class CreatePeriodicControllerISpec extends IntegrationBaseSpec {
           (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
           (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError))
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+        )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
   }
+
 }

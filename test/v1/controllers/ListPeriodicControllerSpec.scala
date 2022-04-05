@@ -34,20 +34,21 @@ import v1.models.response.listPeriodic._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ListPeriodicControllerSpec extends ControllerBaseSpec
-  with MockEnrolmentsAuthService
-  with MockMtdIdLookupService
-  with MockListPeriodicService
-  with MockListPeriodicRequestParser
-  with MockHateoasFactory
-  with MockAuditService
-  with MockIdGenerator {
+class ListPeriodicControllerSpec
+    extends ControllerBaseSpec
+    with MockEnrolmentsAuthService
+    with MockMtdIdLookupService
+    with MockListPeriodicService
+    with MockListPeriodicRequestParser
+    with MockHateoasFactory
+    with MockAuditService
+    with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val from = "2019-01-01"
-  private val to = "2020-01-01"
-  private val periodId = s"${from}_$to"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val from          = "2019-01-01"
+  private val to            = "2020-01-01"
+  private val periodId      = s"${from}_$to"
   private val correlationId = "X-123"
 
   trait Test {
@@ -68,10 +69,10 @@ class ListPeriodicControllerSpec extends ControllerBaseSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData = ListPeriodicRawData(nino, businessId)
+  private val rawData     = ListPeriodicRawData(nino, businessId)
   private val requestData = ListPeriodicRequest(Nino(nino), businessId)
 
-  private val testHateoasLink = Link(href = s"test/href", method = GET, rel = "self")
+  private val testHateoasLink      = Link(href = s"test/href", method = GET, rel = "self")
   private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
   private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to)
@@ -187,4 +188,5 @@ class ListPeriodicControllerSpec extends ControllerBaseSpec
       }
     }
   }
+
 }

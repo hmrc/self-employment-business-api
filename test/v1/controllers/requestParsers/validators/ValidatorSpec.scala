@@ -69,7 +69,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
         val validationSet = List(levelOneValidations)
 
-        val inputData:TestRawData = TestRawData("ABCDEF", "12345")
+        val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
         result.isEmpty shouldBe false
         result.size shouldBe 1
@@ -143,7 +143,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     }
 
     "handle empty lists correctly" in {
-      val emptyErrorList: List[List[MtdError]] = List.empty[List[MtdError]]
+      val emptyErrorList: List[List[MtdError]]   = List.empty[List[MtdError]]
       val listOfEmptyLists: List[List[MtdError]] = List(List.empty[MtdError])
       Validator.flattenErrors(emptyErrorList) shouldBe List.empty[MtdError]
       Validator.flattenErrors(listOfEmptyLists) shouldBe List.empty[MtdError]
@@ -166,6 +166,7 @@ private case class TestRawData(fieldOne: String, fieldTwo: String) extends RawDa
 
 // Create a Validator based off the trait to be able to test it
 private class TestValidator extends Validator[TestRawData] {
+
   override def validate(data: TestRawData): List[MtdError] = {
     run(List(), data) match {
       case Nil        => List()
@@ -173,4 +174,5 @@ private class TestValidator extends Validator[TestRawData] {
       case errs       => errs
     }
   }
+
 }

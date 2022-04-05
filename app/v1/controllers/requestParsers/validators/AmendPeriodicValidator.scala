@@ -35,11 +35,15 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
   private def bodyFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
     val baseValidation = List(JsonFormatValidation.validate[AmendPeriodicBody](data.body))
 
-    val  extraValidation: List[List[MtdError]] = {
-      data.body.asOpt[AmendPeriodicBody].map(_.isEmpty).map {
-        case true => List(List(RuleIncorrectOrEmptyBodyError))
-        case false => NoValidationErrors
-      }.getOrElse(NoValidationErrors)
+    val extraValidation: List[List[MtdError]] = {
+      data.body
+        .asOpt[AmendPeriodicBody]
+        .map(_.isEmpty)
+        .map {
+          case true  => List(List(RuleIncorrectOrEmptyBodyError))
+          case false => NoValidationErrors
+        }
+        .getOrElse(NoValidationErrors)
     }
 
     baseValidation ++ extraValidation
@@ -213,8 +217,8 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
     )
   }
 
-
   override def validate(data: AmendPeriodicRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
+
 }

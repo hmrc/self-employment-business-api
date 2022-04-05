@@ -49,4 +49,5 @@ class TaxYearSpec extends UnitSpec {
       }
     }
   }
+
 }

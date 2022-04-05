@@ -27,9 +27,11 @@ trait MockAmendAnnualSubmissionRequestParser extends MockFactory {
   val mockAmendAnnualSummaryRequestParser: AmendAnnualSubmissionRequestParser = mock[AmendAnnualSubmissionRequestParser]
 
   object MockAmendAnnualSummaryRequestParser {
+
     def requestFor(data: AmendAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, AmendAnnualSubmissionRequest]] = {
       (mockAmendAnnualSummaryRequestParser.parseRequest(_: AmendAnnualSubmissionRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

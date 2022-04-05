@@ -23,9 +23,7 @@ import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrieveAnnualSubmissionResponse(adjustments: Option[Adjustments],
-                                            allowances: Option[Allowances],
-                                            nonFinancials: Option[NonFinancials])
+case class RetrieveAnnualSubmissionResponse(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials])
 
 object RetrieveAnnualSubmissionResponse extends HateoasLinks {
 
@@ -33,12 +31,13 @@ object RetrieveAnnualSubmissionResponse extends HateoasLinks {
     (JsPath \ "annualAdjustments").readNullable[Adjustments] and
       (JsPath \ "annualAllowances").readNullable[Allowances] and
       (JsPath \ "annualNonFinancials").readNullable[NonFinancials]
-    )(RetrieveAnnualSubmissionResponse.apply _)
+  )(RetrieveAnnualSubmissionResponse.apply _)
 
   implicit val writes: OWrites[RetrieveAnnualSubmissionResponse] = Json.writes[RetrieveAnnualSubmissionResponse]
 
-  implicit object RetrieveAnnualSubmissionLinksFactory extends
-    HateoasLinksFactory[RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
+  implicit object RetrieveAnnualSubmissionLinksFactory
+      extends HateoasLinksFactory[RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
+
     override def links(appConfig: AppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
       import data._
       Seq(
@@ -47,7 +46,9 @@ object RetrieveAnnualSubmissionResponse extends HateoasLinks {
         deleteAnnualSubmission(appConfig, nino, businessId, taxYear)
       )
     }
+
   }
+
 }
 
 case class RetrieveAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends HateoasData

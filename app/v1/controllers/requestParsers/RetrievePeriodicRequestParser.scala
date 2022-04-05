@@ -21,9 +21,10 @@ import v1.controllers.requestParsers.validators.RetrievePeriodicValidator
 import v1.models.domain.Nino
 import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
 
-class RetrievePeriodicRequestParser @Inject()(val validator: RetrievePeriodicValidator)
-  extends RequestParser[RetrievePeriodicRawData, RetrievePeriodicRequest] {
+class RetrievePeriodicRequestParser @Inject() (val validator: RetrievePeriodicValidator)
+    extends RequestParser[RetrievePeriodicRawData, RetrievePeriodicRequest] {
 
   override protected def requestFor(data: RetrievePeriodicRawData): RetrievePeriodicRequest =
     RetrievePeriodicRequest(Nino(data.nino), data.businessId, data.periodId)
+
 }

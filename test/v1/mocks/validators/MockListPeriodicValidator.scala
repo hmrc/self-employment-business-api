@@ -26,12 +26,14 @@ trait MockListPeriodicValidator extends MockFactory {
 
   val mockListPeriodicValidator: ListPeriodicValidator = mock[ListPeriodicValidator]
 
- object MockListPeriodicValidator {
+  object MockListPeriodicValidator {
 
-   def validate(data: ListPeriodicRawData): CallHandler1[ListPeriodicRawData, List[MtdError]] = {
-     (mockListPeriodicValidator
-       .validate(_: ListPeriodicRawData))
-       .expects(data)
-   }
- }
+    def validate(data: ListPeriodicRawData): CallHandler1[ListPeriodicRawData, List[MtdError]] = {
+      (mockListPeriodicValidator
+        .validate(_: ListPeriodicRawData))
+        .expects(data)
+    }
+
+  }
+
 }

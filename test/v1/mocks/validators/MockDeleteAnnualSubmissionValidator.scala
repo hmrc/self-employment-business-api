@@ -33,5 +33,7 @@ trait MockDeleteAnnualSubmissionValidator extends MockFactory {
         .validate(_: DeleteAnnualSubmissionRawData))
         .expects(data)
     }
+
   }
+
 }

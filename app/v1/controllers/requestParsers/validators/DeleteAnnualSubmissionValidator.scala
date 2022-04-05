@@ -41,4 +41,5 @@ class DeleteAnnualSubmissionValidator extends Validator[DeleteAnnualSubmissionRa
       TaxYearNotSupportedValidation.validate(data.taxYear)
     )
   }
+
 }

@@ -27,11 +27,11 @@ import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {
-    val nino: String = "AA123456A"
+    val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val taxYear: String = "2020-21"
+    val taxYear: String    = "2020-21"
     val desTaxYear: String = "2021"
-    val data: String = "someData"
+    val data: String       = "someData"
 
     val requestJson: String =
       s"""
@@ -52,10 +52,10 @@ class AuthISpec extends IntegrationBaseSpec {
 
     def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
 
-    val desResponseBody: JsValue = Json.parse(
-      """{
+    val desResponseBody: JsValue = Json.parse("""{
         |   "transactionReference": "2017090920170909"
         |}""".stripMargin)
+
   }
 
   "Calling the sample endpoint" when {
@@ -117,4 +117,5 @@ class AuthISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

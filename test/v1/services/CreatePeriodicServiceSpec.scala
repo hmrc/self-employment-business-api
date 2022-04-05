@@ -28,35 +28,37 @@ import scala.concurrent.Future
 
 class CreatePeriodicServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   private val requestBody = CreatePeriodicBody(
     "2017-01-25",
     "2017-01-25",
-    Some(Incomes(
-      Some(IncomesAmountObject(500.12)),
-      Some(IncomesAmountObject(500.12))
-    )),
+    Some(
+      Incomes(
+        Some(IncomesAmountObject(500.12)),
+        Some(IncomesAmountObject(500.12))
+      )),
     Some(ConsolidatedExpenses(500.12)),
-    Some(Expenses(
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12)))
-    ))
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12)))
+      ))
   )
 
   private val requestData = CreatePeriodicRequest(
@@ -71,15 +73,17 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
     val service = new CreatePeriodicService(
       connector = mockCreatePeriodicConnector
     )
+
   }
 
   "CreateSEPeriodic" when {
     "createPeriodicSummary" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome = Right(ResponseWrapper(correlationId, CreatePeriodicResponse("2017-01-25_2017-01-25")))
+        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodicResponse("2017-01-25_2017-01-25")))
 
-        MockCreatePeriodicConnector.createPeriodicSummary(requestData)
+        MockCreatePeriodicConnector
+          .createPeriodicSummary(requestData)
           .returns(Future.successful(connectorOutcome))
 
         await(service.createPeriodicSummary(requestData)) shouldBe outcome
@@ -89,7 +93,8 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockCreatePeriodicConnector.createPeriodicSummary(requestData)
+            MockCreatePeriodicConnector
+              .createPeriodicSummary(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
             await(service.createPeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
@@ -113,4 +118,5 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
       }
     }
   }
+
 }

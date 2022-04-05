@@ -33,8 +33,9 @@ object PeriodIdValidation {
         case Success(_) => Nil
         case Failure(_) => List(PeriodIdFormatError)
       }
-    } else{
-       List(PeriodIdFormatError)
+    } else {
+      List(PeriodIdFormatError)
     }
   }
+
 }

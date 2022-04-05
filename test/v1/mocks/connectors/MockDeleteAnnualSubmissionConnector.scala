@@ -28,7 +28,6 @@ trait MockDeleteAnnualSubmissionConnector extends MockFactory {
 
   val mockDeleteAnnualSubmissionConnector: DeleteAnnualSubmissionConnector = mock[DeleteAnnualSubmissionConnector]
 
-
   object MockDeleteAnnualSubmissionConnector {
 
     def deleteAnnualSubmission(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
@@ -36,6 +35,7 @@ trait MockDeleteAnnualSubmissionConnector extends MockFactory {
         .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
 
 }

@@ -36,4 +36,5 @@ class StructuredBuildingAllowanceSpec extends UnitSpec with StructuredBuildingAl
       }
     }
   }
+
 }

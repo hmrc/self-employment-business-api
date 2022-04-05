@@ -25,14 +25,15 @@ import v1.models.hateoas.{HateoasData, Link}
 case class ListPeriodicResponse[I](periods: Seq[I])
 
 object ListPeriodicResponse extends HateoasLinks {
-  implicit def reads: Reads[ListPeriodicResponse[PeriodDetails]] = Json.format[ListPeriodicResponse[PeriodDetails]]
+  implicit def reads: Reads[ListPeriodicResponse[PeriodDetails]]   = Json.format[ListPeriodicResponse[PeriodDetails]]
   implicit def writes[I: Writes]: OWrites[ListPeriodicResponse[I]] = Json.writes[ListPeriodicResponse[I]]
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListPeriodicResponse, PeriodDetails, ListPeriodicHateoasData] {
+
     override def links(appConfig: AppConfig, data: ListPeriodicHateoasData): Seq[Link] = {
       Seq(
         listPeriodicSummary(appConfig, data.nino, data.businessId),
-        createPeriodicSummary(appConfig, data.nino, data.businessId),
+        createPeriodicSummary(appConfig, data.nino, data.businessId)
       )
     }
 
@@ -40,12 +41,16 @@ object ListPeriodicResponse extends HateoasLinks {
       Seq(
         retrievePeriodicSummary(appConfig, data.nino, data.businessId, item.periodId)
       )
+
   }
 
   implicit object ResponseFunctor extends Functor[ListPeriodicResponse] {
+
     override def map[A, B](fa: ListPeriodicResponse[A])(f: A => B): ListPeriodicResponse[B] =
       ListPeriodicResponse(fa.periods.map(f))
+
   }
+
 }
 
 case class ListPeriodicHateoasData(nino: String, businessId: String) extends HateoasData

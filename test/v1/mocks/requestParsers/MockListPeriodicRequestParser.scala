@@ -24,12 +24,14 @@ import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
 
 trait MockListPeriodicRequestParser extends MockFactory {
 
-  val mockListPeriodicRequestParser:
-    ListPeriodicRequestParser = mock[ListPeriodicRequestParser]
+  val mockListPeriodicRequestParser: ListPeriodicRequestParser = mock[ListPeriodicRequestParser]
 
   object MockListPeriodicRequestParser {
+
     def parse(data: ListPeriodicRawData): CallHandler[Either[ErrorWrapper, ListPeriodicRequest]] = {
       (mockListPeriodicRequestParser.parseRequest(_: ListPeriodicRawData)(_: String)).expects(data, *)
     }
+
   }
+
 }

@@ -27,7 +27,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
     lazy val target = new MtdIdLookupService(mockMtdIdLookupConnector)
   }
 
-  val nino: String = "AA123456A"
+  val nino: String        = "AA123456A"
   val invalidNino: String = "INVALID_NINO"
 
   "calling .getMtdId" when {
@@ -38,7 +38,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
         val expected = Left(NinoFormatError)
 
         // should not call the connector
-        MockMtdIdLookupConnector.lookup(invalidNino)
+        MockMtdIdLookupConnector
+          .lookup(invalidNino)
           .never()
 
         private val result = await(target.lookup(invalidNino))
@@ -51,7 +52,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       "proxy the error to the caller" in new Test {
         val connectorResponse = Left(UnauthorisedError)
 
-        MockMtdIdLookupConnector.lookup(nino)
+        MockMtdIdLookupConnector
+          .lookup(nino)
           .returns(Future.successful(connectorResponse))
 
         private val result = await(target.lookup(nino))
@@ -64,7 +66,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       "proxy the error to the caller" in new Test {
         val connectorResponse = Left(DownstreamError)
 
-        MockMtdIdLookupConnector.lookup(nino)
+        MockMtdIdLookupConnector
+          .lookup(nino)
           .returns(Future.successful(connectorResponse))
 
         private val result = await(target.lookup(nino))
@@ -73,4 +76,5 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       }
     }
   }
+
 }

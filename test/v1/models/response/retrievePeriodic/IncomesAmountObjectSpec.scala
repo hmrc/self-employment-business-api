@@ -46,4 +46,5 @@ class IncomesAmountObjectSpec extends UnitSpec {
       }
     }
   }
+
 }

@@ -25,14 +25,14 @@ class DateValidationSpec extends UnitSpec with JsonErrorValidators {
   "validate" should {
     "return no errors" when {
       "a valid date is supplied" in {
-        val date = "2020-03-20"
+        val date           = "2020-03-20"
         val validateResult = DateValidation.validate(date, ToDateFormatError)
 
         validateResult.isEmpty shouldBe true
       }
       "a valid date is supplied with paths" in {
-        val date = "2020-03-20"
-        val paths = "/testObject/testField"
+        val date             = "2020-03-20"
+        val paths            = "/testObject/testField"
         val validationResult = DateValidation.validateWithPaths(date, paths)
 
         validationResult.isEmpty shouldBe true
@@ -79,4 +79,5 @@ class DateValidationSpec extends UnitSpec with JsonErrorValidators {
       }
     }
   }
+
 }

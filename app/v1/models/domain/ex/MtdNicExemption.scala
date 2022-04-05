@@ -25,6 +25,7 @@ sealed trait MtdNicExemption {
 }
 
 object MtdNicExemption {
+
   case object `non-resident` extends MtdNicExemption {
     override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`001`
   }
@@ -49,7 +50,7 @@ object MtdNicExemption {
     override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`006`
   }
 
-  implicit val format: Format[MtdNicExemption] = Enums.format[MtdNicExemption]
-  implicit val emptinessChecker : EmptinessChecker[MtdNicExemption] = EmptinessChecker.primitive
-  val parser: PartialFunction[String, MtdNicExemption] = Enums.parser[MtdNicExemption]
+  implicit val format: Format[MtdNicExemption]                     = Enums.format[MtdNicExemption]
+  implicit val emptinessChecker: EmptinessChecker[MtdNicExemption] = EmptinessChecker.primitive
+  val parser: PartialFunction[String, MtdNicExemption]             = Enums.parser[MtdNicExemption]
 }

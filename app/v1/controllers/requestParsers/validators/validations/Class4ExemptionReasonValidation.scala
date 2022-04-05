@@ -25,7 +25,7 @@ object Class4ExemptionReasonValidation {
 
   def validateOptional(field: Option[String]): List[MtdError] = {
     field match {
-      case None => NoValidationErrors
+      case None        => NoValidationErrors
       case Some(value) => validate(value)
     }
   }
@@ -37,4 +37,5 @@ object Class4ExemptionReasonValidation {
       case Failure(_) => List(Class4ExemptionReasonFormatError)
       case Success(_) => NoValidationErrors
     }
+
 }

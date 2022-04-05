@@ -31,25 +31,24 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodicService @Inject()(connector: ListPeriodicConnector)
-  extends DesResponseMappingSupport with Logging {
+class ListPeriodicService @Inject() (connector: ListPeriodicConnector) extends DesResponseMappingSupport with Logging {
 
-  def listPeriods(request: ListPeriodicRequest)(
-                                      implicit hc: HeaderCarrier,
-                                      ec: ExecutionContext,
-                                      logContext: EndpointLogContext,
-                                      correlationId: String): Future[ServiceOutcome[ListPeriodicResponse[PeriodDetails]]] = {
+  def listPeriods(request: ListPeriodicRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[ListPeriodicResponse[PeriodDetails]]] = {
 
     connector.listPeriods(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap =
     Map(
-      "INVALID_NINO" -> NinoFormatError,
+      "INVALID_NINO"             -> NinoFormatError,
       "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+      "SERVER_ERROR"             -> DownstreamError,
+      "SERVICE_UNAVAILABLE"      -> DownstreamError
     )
-}
 
+}

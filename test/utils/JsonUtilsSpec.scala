@@ -25,17 +25,20 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
   case class Foo(foo1: String, foo2: String)
 
   object Foo {
+
     implicit val reads: Reads[Foo] =
       ((__ \ "baz" \ "foo" \ "foo1").read[String] and
-        (__ \ "foo2").read[String]) (Foo.apply _)
+        (__ \ "foo2").read[String])(Foo.apply _)
+
   }
 
   case class Bar(p1: String, foo: Option[Foo])
 
   object Bar extends JsonUtils {
+
     implicit val reads: Reads[Bar] =
       ((__ \ "b1").read[String] and
-        emptyIfNotPresent[Foo](__ \ "baz" \ "foo")) (Bar.apply _)
+        emptyIfNotPresent[Foo](__ \ "baz" \ "foo"))(Bar.apply _)
 
   }
 
@@ -56,46 +59,49 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
   "emptyIfNotPresent" when {
     "required path not present" must {
       "read as None" in {
-        Json.parse(
-          """
+        Json
+          .parse("""
             |{
             |  "b1": "B1",
             |  "foo2": "F2"
             |}
-            |""".stripMargin).as[Bar] shouldBe Bar("B1", None)
+            |""".stripMargin)
+          .as[Bar] shouldBe Bar("B1", None)
       }
     }
 
     "part of required path not present" must {
       "read as None" in {
-        Json.parse(
-          """
+        Json
+          .parse("""
             |{
             |  "b1": "B1",
             |  "baz": {
             |  },
             |  "foo2": "F2"
             |}
-            |""".stripMargin).as[Bar] shouldBe Bar("B1", None)
+            |""".stripMargin)
+          .as[Bar] shouldBe Bar("B1", None)
       }
     }
 
     "no fields of the optional object are present" must {
       "read as None" in {
-        Json.parse(
-          """
+        Json
+          .parse("""
             |{
             |  "b1": "B1"
             |}
-            |""".stripMargin).as[Bar] shouldBe Bar("B1", None)
+            |""".stripMargin)
+          .as[Bar] shouldBe Bar("B1", None)
       }
     }
 
     "required path is present" when {
       "the schema is correct for the target object" must {
         "read it" in {
-          Json.parse(
-            """
+          Json
+            .parse("""
               |{
               |  "b1": "B1",
               |  "baz": {
@@ -105,15 +111,16 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
               |  },
               |  "foo2": "F2"
               |}
-              |""".stripMargin).as[Bar] shouldBe Bar("B1", Some(Foo("F1", "F2")))
+              |""".stripMargin)
+            .as[Bar] shouldBe Bar("B1", Some(Foo("F1", "F2")))
         }
       }
 
       "the schema is incorrect for the target object under the parent" must {
         "validate with an error" in {
           // Invalid because required field missing...
-          Json.parse(
-            """
+          Json
+            .parse("""
               |{
               |  "b1": "B1",
               |  "baz": {
@@ -122,15 +129,16 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
               |  },
               |  "foo2": "F2"
               |}
-              |""".stripMargin).validate[Bar] shouldBe a[JsError]
+              |""".stripMargin)
+            .validate[Bar] shouldBe a[JsError]
         }
       }
 
       "the schema is incorrect for the target object under a field not under the parent" must {
         "validate with an error" in {
           // Invalid because required field missing...
-          Json.parse(
-            """
+          Json
+            .parse("""
               |{
               |  "b1": "B1",
               |  "baz": {
@@ -139,15 +147,15 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
               |    }
               |  }
               |}
-              |""".stripMargin).validate[Bar] shouldBe a[JsError]
+              |""".stripMargin)
+            .validate[Bar] shouldBe a[JsError]
         }
       }
     }
   }
 
   "filteredArrayReads" should {
-    val json = Json.parse(
-      """
+    val json = Json.parse("""
         |[
         |   {
         |     "id" : "1",
@@ -188,7 +196,8 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
 
       "provided with a matching parameter for multiple values" in {
         filteredArrayReads[MatchClass]("id", "1")
-          .reads(json).get shouldBe Seq(
+          .reads(json)
+          .get shouldBe Seq(
           MatchClass("1", NameClass("John Doe", "John", "Doe")),
           MatchClass("1", NameClass("John Smith", "John", "Smith"))
         )
@@ -196,12 +205,14 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
 
       "provided with a non-matching parameter value" in {
         filteredArrayReads[MatchClass]("id", "2")
-          .reads(json).get shouldBe Seq()
+          .reads(json)
+          .get shouldBe Seq()
       }
 
       "provided with a non-matching parameter" in {
         filteredArrayReads[MatchClass]("badId", "1")
-          .reads(json).get shouldBe Seq()
+          .reads(json)
+          .get shouldBe Seq()
       }
     }
 
@@ -220,13 +231,12 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
     implicit val reads: Reads[NestedDataClass] = (
       (JsPath \ "data").read[String] and
         (JsPath \ "topLevel" \ "midLevel" \ "bottomLevel").readNestedNullable[MatchClass]
-      ) (NestedDataClass.apply _)
+    )(NestedDataClass.apply _)
 
     "return Some data" when {
 
       "provided with Json with valid data" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             | "data" : "data",
             | "topLevel" : {
@@ -252,8 +262,7 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
     "return a None" when {
 
       "provided with json with a missing path component" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             | "data" : "data",
             | "topLevel" : {
@@ -271,8 +280,7 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
     "return a JsError" when {
 
       "provided with invalid data" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             | "data" : "data",
             | "topLevel" : {
@@ -292,13 +300,14 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
 
         val result = json.validate[NestedDataClass]
         result shouldBe a[JsError]
-        result.asInstanceOf[JsError].errors.head._1 shouldBe JsPath(List(
-          KeyPathNode("topLevel"),
-          KeyPathNode("midLevel"),
-          KeyPathNode("bottomLevel"),
-          KeyPathNode("name"),
-          KeyPathNode("fullName")
-        ))
+        result.asInstanceOf[JsError].errors.head._1 shouldBe JsPath(
+          List(
+            KeyPathNode("topLevel"),
+            KeyPathNode("midLevel"),
+            KeyPathNode("bottomLevel"),
+            KeyPathNode("name"),
+            KeyPathNode("fullName")
+          ))
       }
     }
   }
@@ -334,4 +343,5 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
       JsNull.as(reads) shouldBe None
     }
   }
+
 }

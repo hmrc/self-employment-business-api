@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreatePeriodicControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreatePeriodicService
@@ -42,9 +42,9 @@ class CreatePeriodicControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val periodId = "2017-01-25_2017-01-25"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val periodId      = "2017-01-25_2017-01-25"
   private val correlationId = "X-123"
 
   trait Test {
@@ -149,23 +149,24 @@ class CreatePeriodicControllerSpec
     "2018-01-24",
     Some(Incomes(Some(IncomesAmountObject(500.25)), Some(IncomesAmountObject(500.25)))),
     None,
-    Some(Expenses(
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25)))
-    ))
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25)))
+      ))
   )
 
   val responseJson: JsValue = Json.parse(
@@ -183,7 +184,7 @@ class CreatePeriodicControllerSpec
     """.stripMargin
   )
 
-  private val rawData = CreatePeriodicRawData(nino, businessId, requestJson)
+  private val rawData     = CreatePeriodicRawData(nino, businessId, requestJson)
   private val requestData = CreatePeriodicRequest(Nino(nino), businessId, requestBody)
 
   "handleRequest" should {
@@ -273,4 +274,5 @@ class CreatePeriodicControllerSpec
       }
     }
   }
+
 }

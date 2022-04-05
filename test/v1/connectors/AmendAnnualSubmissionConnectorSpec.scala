@@ -27,10 +27,10 @@ import scala.concurrent.Future
 
 class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
-  val taxYear: String = "2018-19"
+  val nino: String              = "AA123456A"
+  val taxYear: String           = "2018-19"
   val downstreamTaxYear: String = "2019"
-  val businessId: String = "XAIS12345678910"
+  val businessId: String        = "XAIS12345678910"
 
   val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
@@ -40,6 +40,7 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: AmendAnnualSubmissionConnector = new AmendAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -56,7 +57,7 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
       "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
@@ -66,10 +67,12 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(outcome))
+          )
+          .returns(Future.successful(outcome))
 
         await(connector.amendAnnualSubmission(request)) shouldBe outcome
       }
     }
   }
+
 }

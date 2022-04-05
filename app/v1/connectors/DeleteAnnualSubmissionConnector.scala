@@ -27,16 +27,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteAnnualSubmissionConnector @Inject()(val http: HttpClient,
-                                                val appConfig: AppConfig) extends BaseDownstreamConnector {
+class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino = request.nino.nino
-    val taxYear = request.taxYear.toDownstream
+    val nino       = request.nino.nino
+    val taxYear    = request.taxYear.toDownstream
     val businessId = request.businessId.value
 
     put(
@@ -46,4 +45,5 @@ class DeleteAnnualSubmissionConnector @Inject()(val http: HttpClient,
       )
     )
   }
+
 }

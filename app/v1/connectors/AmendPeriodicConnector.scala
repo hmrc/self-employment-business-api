@@ -27,18 +27,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import v1.connectors.httpparsers.StandardDesHttpParser._
 
 @Singleton
-class AmendPeriodicConnector @Inject()(val http: HttpClient,
-                                       val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendPeriodicConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendPeriodicSummary(request: AmendPeriodicRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def amendPeriodicSummary(
+      request: AmendPeriodicRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino = request.nino.nino
+    val nino       = request.nino.nino
     val businessId = request.businessId
-    val fromDate = request.periodId.substring(0, 10)
-    val toDate = request.periodId.substring(11, 21)
+    val fromDate   = request.periodId.substring(0, 10)
+    val toDate     = request.periodId.substring(11, 21)
 
     put(
       body = request.body,
@@ -47,4 +44,5 @@ class AmendPeriodicConnector @Inject()(val http: HttpClient,
       )
     )
   }
+
 }

@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 class CreatePeriodicConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
   val request: CreatePeriodicRequest = CreatePeriodicRequest(
@@ -37,36 +37,40 @@ class CreatePeriodicConnectorSpec extends ConnectorSpec {
     body = CreatePeriodicBody(
       "2017-01-25",
       "2018-01-24",
-      Some(Incomes(
-        Some(IncomesAmountObject(500.25)),
-        Some(IncomesAmountObject(500.25))
-      )),
-      Some(ConsolidatedExpenses(
-        500.25
-      )),
-      Some(Expenses(
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25)))
-      ))
+      Some(
+        Incomes(
+          Some(IncomesAmountObject(500.25)),
+          Some(IncomesAmountObject(500.25))
+        )),
+      Some(
+        ConsolidatedExpenses(
+          500.25
+        )),
+      Some(
+        Expenses(
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25))),
+          Some(ExpensesAmountObject(500.25, Some(500.25)))
+        ))
     )
   )
 
   val response: CreatePeriodicResponse = CreatePeriodicResponse("2017090920170909")
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: CreatePeriodicConnector = new CreatePeriodicConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -83,7 +87,7 @@ class CreatePeriodicConnectorSpec extends ConnectorSpec {
       "return a 200 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, response))
 
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        implicit val hc: HeaderCarrier                    = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockHttpClient
@@ -93,10 +97,12 @@ class CreatePeriodicConnectorSpec extends ConnectorSpec {
             body = request.body,
             requiredHeaders = requiredDesHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        ).returns(Future.successful(outcome))
+          )
+          .returns(Future.successful(outcome))
 
         await(connector.createPeriodicSummary(request)) shouldBe outcome
       }
     }
   }
+
 }

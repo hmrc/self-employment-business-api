@@ -31,13 +31,14 @@ class AdjustmentsSpec extends UnitSpec {
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12))
+      goodsAndServicesOwnUse = Some(9.12)
+    )
 
   "reads" when {
     "passed valid mtd JSON" should {
       "return the model" in {
-        Json.parse(
-          s"""{
+        Json
+          .parse(s"""{
              |  "includedNonTaxableProfits": 1.12,
              |  "basisAdjustment": 2.12,
              |  "overlapReliefUsed": 3.12,
@@ -48,7 +49,8 @@ class AdjustmentsSpec extends UnitSpec {
              |  "balancingChargeOther": 8.12,
              |  "goodsAndServicesOwnUse": 9.12
              |}
-             |""".stripMargin).as[Adjustments] shouldBe model
+             |""".stripMargin)
+          .as[Adjustments] shouldBe model
       }
     }
   }
@@ -56,8 +58,7 @@ class AdjustmentsSpec extends UnitSpec {
   "writes" when {
     "passed a model" should {
       "return downstream JSON" in {
-        Json.toJson(model) shouldBe Json.parse(
-          s"""{
+        Json.toJson(model) shouldBe Json.parse(s"""{
              |  "includedNonTaxableProfits": 1.12,
              |  "basisAdjustment": 2.12,
              |  "overlapReliefUsed": 3.12,
@@ -72,4 +73,5 @@ class AdjustmentsSpec extends UnitSpec {
       }
     }
   }
+
 }

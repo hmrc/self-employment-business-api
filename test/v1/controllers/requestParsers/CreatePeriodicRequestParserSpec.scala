@@ -25,8 +25,8 @@ import v1.models.request.createPeriodic._
 
 class CreatePeriodicRequestParserSpec extends UnitSpec {
 
-  val nino: String = "AA123456B"
-  val businessId: String = "XAIS12345678910"
+  val nino: String                   = "AA123456B"
+  val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   private val requestBodyJson = Json.parse(
@@ -79,7 +79,8 @@ class CreatePeriodicRequestParserSpec extends UnitSpec {
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockCreatePeriodicValidator.validate(inputData)
+        MockCreatePeriodicValidator
+          .validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -87,7 +88,8 @@ class CreatePeriodicRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockCreatePeriodicValidator.validate(inputData)
+        MockCreatePeriodicValidator
+          .validate(inputData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -95,4 +97,5 @@ class CreatePeriodicRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

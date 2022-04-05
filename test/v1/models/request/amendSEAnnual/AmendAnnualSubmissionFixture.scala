@@ -31,10 +31,10 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12))
+      goodsAndServicesOwnUse = Some(9.12)
+    )
 
-  val adjustmentsMtdJson: JsValue = Json.parse(
-    s"""{
+  val adjustmentsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
        |  "overlapReliefUsed": 3.12,
@@ -47,8 +47,7 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |}
        |""".stripMargin)
 
-  val adjustmentsDownstreamJson: JsValue = Json.parse(
-    s"""{
+  val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
        |  "overlapReliefUsed": 3.12,
@@ -62,27 +61,27 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |""".stripMargin)
 
   def allowancesWith(structuredBuildingAllowances: Seq[StructuredBuildingAllowance] = Seq(structuredBuildingAllowance),
-                     enhancedStructuredBuildingAllowances: Seq[StructuredBuildingAllowance]= Seq(structuredBuildingAllowance)): Allowances = Allowances(
-    annualInvestmentAllowance = Some(1.12),
-    capitalAllowanceMainPool = Some(2.12),
-    capitalAllowanceSpecialRatePool = Some(3.12),
-    zeroEmissionsGoodsVehicleAllowance = Some(4.12),
-    businessPremisesRenovationAllowance = Some(5.12),
-    enhancedCapitalAllowance = Some(6.12),
-    allowanceOnSales = Some(7.12),
-    capitalAllowanceSingleAssetPool = Some(8.12),
-    electricChargePointAllowance = Some(9.12),
-    tradingIncomeAllowance = None,
-    zeroEmissionsCarAllowance = Some(11.12),
-    structuredBuildingAllowance = Some(structuredBuildingAllowances),
-    enhancedStructuredBuildingAllowance = Some(enhancedStructuredBuildingAllowances)
-  )
+                     enhancedStructuredBuildingAllowances: Seq[StructuredBuildingAllowance] = Seq(structuredBuildingAllowance)): Allowances =
+    Allowances(
+      annualInvestmentAllowance = Some(1.12),
+      capitalAllowanceMainPool = Some(2.12),
+      capitalAllowanceSpecialRatePool = Some(3.12),
+      zeroEmissionsGoodsVehicleAllowance = Some(4.12),
+      businessPremisesRenovationAllowance = Some(5.12),
+      enhancedCapitalAllowance = Some(6.12),
+      allowanceOnSales = Some(7.12),
+      capitalAllowanceSingleAssetPool = Some(8.12),
+      electricChargePointAllowance = Some(9.12),
+      tradingIncomeAllowance = None,
+      zeroEmissionsCarAllowance = Some(11.12),
+      structuredBuildingAllowance = Some(structuredBuildingAllowances),
+      enhancedStructuredBuildingAllowance = Some(enhancedStructuredBuildingAllowances)
+    )
 
   val allowances: Allowances = allowancesWith()
 
   def allowancesMtdJsonWith(structuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceMtdJson),
-                            enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceMtdJson)): JsValue = Json.parse(
-    s"""{
+                            enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceMtdJson)): JsValue = Json.parse(s"""{
        |  "annualInvestmentAllowance": 1.12,
        |  "capitalAllowanceMainPool": 2.12,
        |  "capitalAllowanceSpecialRatePool": 3.12,
@@ -101,8 +100,8 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
   val allowancesMtdJson: JsValue = allowancesMtdJsonWith()
 
   def allowancesDownstreamJsonWith(structuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceDownstreamJson),
-                                   enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceDownstreamJson)): JsValue = Json.parse(
-    s"""{
+                                   enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceDownstreamJson)): JsValue =
+    Json.parse(s"""{
        |  "annualInvestmentAllowance": 1.12,
        |  "capitalAllowanceMainPool": 2.12,
        |  "capitalAllowanceSpecialRatePool": 3.12,
@@ -121,35 +120,42 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
   val allowancesDownstreamJson: JsValue = allowancesDownstreamJsonWith()
 
   val allowancesTradingIncomeAllowance: Allowances = Allowances(
-    None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(10.12), None, None, None, None
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    tradingIncomeAllowance = Some(10.12),
+    None,
+    None,
+    None,
+    None
   )
 
-  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(
-    s"""{
+  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(s"""{
        |  "tradingIncomeAllowance": 10.12
        |}
        |""".stripMargin)
 
-  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(
-    s"""{
+  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(s"""{
        |  "tradingIncomeAllowance": 10.12
        |}
        |""".stripMargin)
 
-  val nonFinancials: NonFinancials = NonFinancials(
-    businessDetailsChangedRecently = true,
-    class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
+  val nonFinancials: NonFinancials =
+    NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
 
-  val nonFinancialsMtdJson: JsValue = Json.parse(
-    s"""
+  val nonFinancialsMtdJson: JsValue = Json.parse(s"""
        |{
        |    "businessDetailsChangedRecently": true,
        |    "class4NicsExemptionReason": "non-resident"
        |  }
        |""".stripMargin)
 
-  val nonFinancialsDownstreamJson: JsValue = Json.parse(
-    s"""
+  val nonFinancialsDownstreamJson: JsValue = Json.parse(s"""
        |{
        |  "businessDetailsChangedRecently": true,
        |  "exemptFromPayingClass4Nics": true,
@@ -165,19 +171,21 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
   def amendAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
                                        allowances: Option[JsValue] = Some(allowancesMtdJson),
                                        nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
-    JsObject(Seq(
-      adjustments.map("adjustments" -> _),
-      allowances.map("allowances" -> _),
-      nonFinancials.map("nonFinancials" -> _)
-    ).collect { case Some((a, b)) => a -> b })
+    JsObject(
+      Seq(
+        adjustments.map("adjustments"     -> _),
+        allowances.map("allowances"       -> _),
+        nonFinancials.map("nonFinancials" -> _)
+      ).collect { case Some((a, b)) => a -> b })
 
   def amendAnnualSubmissionBodyDownstreamJson(adjustments: Option[JsValue] = Some(adjustmentsDownstreamJson),
                                               allowances: Option[JsValue] = Some(allowancesDownstreamJson),
                                               nonFinancials: Option[JsValue] = Some(nonFinancialsDownstreamJson)): JsValue =
-    JsObject(Seq(
-      adjustments.map("annualAdjustments" -> _),
-      allowances.map("annualAllowances" -> _),
-      nonFinancials.map("annualNonFinancials" -> _)
-    ).collect { case Some((a, b)) => a -> b })
+    JsObject(
+      Seq(
+        adjustments.map("annualAdjustments"     -> _),
+        allowances.map("annualAllowances"       -> _),
+        nonFinancials.map("annualNonFinancials" -> _)
+      ).collect { case Some((a, b)) => a -> b })
 
 }

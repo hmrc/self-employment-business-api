@@ -28,14 +28,13 @@ import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
-    val nino: String = "AA123456A"
+    val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val periodId: String = "2019-01-01_2020-01-01"
-    val fromDate: String = "2019-01-01"
-    val toDate: String = "2020-01-01"
+    val periodId: String   = "2019-01-01_2020-01-01"
+    val fromDate: String   = "2019-01-01"
+    val toDate: String     = "2020-01-01"
 
-    val requestJson: JsValue = Json.parse(
-      """
+    val requestJson: JsValue = Json.parse("""
         |{
         |    "incomes": {
         |        "turnover": {
@@ -51,8 +50,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
         |}
         |""".stripMargin)
 
-    val unconsolidatedRequestJson: JsValue = Json.parse(
-      """
+    val unconsolidatedRequestJson: JsValue = Json.parse("""
         |{
         |    "incomes": {
         |        "turnover": {
@@ -127,8 +125,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
         |}
         |""".stripMargin)
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |  "links": [
          |    {
@@ -149,7 +146,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
 
     def queryParams: Map[String, String] = Map(
       "from" -> fromDate,
-      "to" -> toDate
+      "to"   -> toDate
     )
 
     def desUri: String = s"/income-store/nino/$nino/self-employments/$businessId/periodic-summaries"
@@ -169,6 +166,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
          |        "reason": "des message"
          |      }
     """.stripMargin
+
   }
 
   "Calling the amend endpoint" should {
@@ -203,7 +201,6 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
-
 
     "return error according to spec" when {
 
@@ -245,8 +242,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
           response.json shouldBe Json.toJson(PeriodIdFormatError)
         }
         "a single invalid amount is provided" in new Test {
-          override val requestJson: JsValue = Json.parse(
-            """
+          override val requestJson: JsValue = Json.parse("""
               |{
               |    "incomes": {
               |        "turnover": {
@@ -273,8 +269,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
         }
 
         "multiple invalid amounts are provided" in new Test {
-          override val requestJson: JsValue = Json.parse(
-            """
+          override val requestJson: JsValue = Json.parse("""
               |{
               |    "incomes": {
               |        "turnover": {
@@ -297,11 +292,13 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
 
           val response: WSResponse = await(request().put(requestJson))
           response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq(
-            "/incomes/turnover/amount",
-            "/incomes/other/amount",
-            "/consolidatedExpenses/consolidatedExpenses"
-          ))))
+          response.json shouldBe Json.toJson(
+            ValueFormatError.copy(paths = Some(
+              Seq(
+                "/incomes/turnover/amount",
+                "/incomes/other/amount",
+                "/consolidatedExpenses/consolidatedExpenses"
+              ))))
         }
 
       }
@@ -333,10 +330,12 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
           (NOT_FOUND, "NOT_FOUND_NINO", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError))
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError)
+        )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
   }
+
 }

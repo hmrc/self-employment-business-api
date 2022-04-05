@@ -37,25 +37,27 @@ case class Expenses(costOfGoodsBought: Option[ExpensesAmountObject],
 
   def isEmpty: Boolean = {
     costOfGoodsBought.isEmpty &&
-      cisPaymentsTo.isEmpty &&
-      staffCosts.isEmpty &&
-      travelCosts.isEmpty &&
-      premisesRunningCosts.isEmpty &&
-      maintenanceCosts.isEmpty &&
-      adminCosts.isEmpty &&
-      advertisingCosts.isEmpty &&
-      businessEntertainmentCosts.isEmpty &&
-      interestOnLoans.isEmpty &&
-      financialCharges.isEmpty &&
-      badDebt.isEmpty &&
-      professionalFees.isEmpty &&
-      depreciation.isEmpty &&
-      other.isEmpty
+    cisPaymentsTo.isEmpty &&
+    staffCosts.isEmpty &&
+    travelCosts.isEmpty &&
+    premisesRunningCosts.isEmpty &&
+    maintenanceCosts.isEmpty &&
+    adminCosts.isEmpty &&
+    advertisingCosts.isEmpty &&
+    businessEntertainmentCosts.isEmpty &&
+    interestOnLoans.isEmpty &&
+    financialCharges.isEmpty &&
+    badDebt.isEmpty &&
+    professionalFees.isEmpty &&
+    depreciation.isEmpty &&
+    other.isEmpty
   }
+
 }
 
 object Expenses {
   implicit val reads: Reads[Expenses] = Json.reads[Expenses]
+
   implicit val writes: OWrites[Expenses] = (
     (JsPath \ "costOfGoods").writeNullable[ExpensesAmountObject] and
       (JsPath \ "constructionIndustryScheme").writeNullable[ExpensesAmountObject] and
@@ -72,5 +74,6 @@ object Expenses {
       (JsPath \ "professionalFees").writeNullable[ExpensesAmountObject] and
       (JsPath \ "depreciation").writeNullable[ExpensesAmountObject] and
       (JsPath \ "other").writeNullable[ExpensesAmountObject]
-    ) (unlift(Expenses.unapply))
+  )(unlift(Expenses.unapply))
+
 }

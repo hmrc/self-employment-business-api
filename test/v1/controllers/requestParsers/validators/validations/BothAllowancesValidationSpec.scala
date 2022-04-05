@@ -21,17 +21,43 @@ import v1.models.errors.RuleBothAllowancesSuppliedError
 import v1.models.request.amendSEAnnual.{Allowances, Building, StructuredBuildingAllowance}
 
 class BothAllowancesValidationSpec extends UnitSpec {
-  val building: Building = Building(None, None, "postcode")
+  val building: Building                                       = Building(None, None, "postcode")
   val structuredBuildingAllowance: StructuredBuildingAllowance = StructuredBuildingAllowance(1.00, None, building)
 
   val allowancesWithoutTradingIncome: Allowances =
-    Allowances(Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), None,
-      Some(1.00), Some(1.00), Some(Seq(structuredBuildingAllowance)), Some(Seq(structuredBuildingAllowance)))
+    Allowances(
+      Some(1.00),
+      Some(1.00),
+      Some(1.00),
+      Some(1.00),
+      Some(1.00),
+      Some(1.00),
+      Some(1.00),
+      Some(1.00),
+      None,
+      Some(1.00),
+      Some(1.00),
+      Some(Seq(structuredBuildingAllowance)),
+      Some(Seq(structuredBuildingAllowance))
+    )
+
   val allowancesWithOnlyTradingIncome: Allowances =
-    Allowances(None, None, None, None, None, None, None, None,tradingIncomeAllowance = Some(1.00), None, None, None, None)
+    Allowances(None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(1.00), None, None, None, None)
+
   val invalidAllowance: Allowances = Allowances(
-    Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00), Some(1.00),
-    Some(1.00), Some(1.00), Some(Seq(structuredBuildingAllowance)), Some(Seq(structuredBuildingAllowance))
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(1.00),
+    Some(Seq(structuredBuildingAllowance)),
+    Some(Seq(structuredBuildingAllowance))
   )
 
   "validate" should {
@@ -46,6 +72,7 @@ class BothAllowancesValidationSpec extends UnitSpec {
       }
     }
   }
+
   "return an error" when {
     "allowance contains both tradingIncomeAllowance and other allowances" in {
       val validationResult = BothAllowancesValidation.validate(invalidAllowance)
@@ -102,4 +129,5 @@ class BothAllowancesValidationSpec extends UnitSpec {
       BothAllowancesValidation.validate(allowances) shouldBe List(RuleBothAllowancesSuppliedError)
     }
   }
+
 }

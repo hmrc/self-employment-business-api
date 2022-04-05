@@ -23,12 +23,11 @@ class FirstYearSpec extends UnitSpec {
 
   val model: FirstYear =
     FirstYear(
-        "2020-01-01",
-        3000.40
-      )
+      "2020-01-01",
+      3000.40
+    )
 
-  val json: JsValue = Json.parse(
-    """
+  val json: JsValue = Json.parse("""
       |{
       |  "qualifyingDate": "2020-01-01",
       |  "qualifyingAmountExpenditure": 3000.40
@@ -50,4 +49,5 @@ class FirstYearSpec extends UnitSpec {
       }
     }
   }
+
 }

@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class ListPeriodicConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
   val request: ListPeriodicRequest = ListPeriodicRequest(
@@ -36,14 +36,16 @@ class ListPeriodicConnectorSpec extends ConnectorSpec {
   )
 
   val response: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(
-    Seq(PeriodDetails(
-      "2020-01-01_2020-01-01",
-      "2020-01-01",
-      "2020-01-01"
-    ))
+    Seq(
+      PeriodDetails(
+        "2020-01-01_2020-01-01",
+        "2020-01-01",
+        "2020-01-01"
+      ))
   )
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: ListPeriodicConnector = new ListPeriodicConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -65,9 +67,11 @@ class ListPeriodicConnectorSpec extends ConnectorSpec {
           config = dummyDesHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        ).returns(Future.successful(outcome))
+        )
+        .returns(Future.successful(outcome))
 
       await(connector.listPeriods(request)) shouldBe outcome
     }
   }
+
 }

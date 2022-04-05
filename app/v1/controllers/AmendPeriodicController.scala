@@ -18,28 +18,28 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ Action, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, ControllerComponents}
+import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.amendPeriodic.AmendPeriodicRawData
 import v1.models.response.amendPeriodic.AmendPeriodicHateoasData
 import v1.models.response.amendPeriodic.AmendPeriodicResponse.LinksFactory
-import v1.services.{ AmendPeriodicService, EnrolmentsAuthService, MtdIdLookupService }
+import v1.services.{AmendPeriodicService, EnrolmentsAuthService, MtdIdLookupService}
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodicController @Inject()(val authService: EnrolmentsAuthService,
-                                        val lookupService: MtdIdLookupService,
-                                        parser: AmendPeriodicRequestParser,
-                                        service: AmendPeriodicService,
-                                        hateoasFactory: HateoasFactory,
-                                        cc: ControllerComponents,
-                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class AmendPeriodicController @Inject() (val authService: EnrolmentsAuthService,
+                                         val lookupService: MtdIdLookupService,
+                                         parser: AmendPeriodicRequestParser,
+                                         service: AmendPeriodicService,
+                                         hateoasFactory: HateoasFactory,
+                                         cc: ControllerComponents,
+                                         idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -85,11 +85,11 @@ class AmendPeriodicController @Inject()(val authService: EnrolmentsAuthService,
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case BadRequestError | NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | RuleBothExpensesSuppliedError |
-           RuleNotAllowedConsolidatedExpenses | MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(
-            RuleIncorrectOrEmptyBodyError.code) =>
+          RuleNotAllowedConsolidatedExpenses | MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case _               => unhandledError(errorWrapper)
     }
+
 }

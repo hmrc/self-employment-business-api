@@ -16,7 +16,7 @@
 
 package v1.models.errors
 
-import play.api.libs.json.{ Json, OWrites }
+import play.api.libs.json.{Json, OWrites}
 
 sealed case class MtdError(code: String, message: String, paths: Option[Seq[String]] = None)
 
@@ -25,6 +25,7 @@ object MtdError {
 
   implicit def genericWrites[T <: MtdError]: OWrites[T] =
     writes.contramap[T](c => c: MtdError)
+
 }
 
 object MtdErrorWithCode {
@@ -56,12 +57,11 @@ object PeriodIdFormatError
       message = "The provided Period ID is invalid"
     )
 
-object ValueFormatError
-    extends MtdError(
-      code = "FORMAT_VALUE",
-      message = "The value must be between 0 and 99999999999.99") {
-  def forPathAndRange(path : String, min: String, max: String): MtdError =
+object ValueFormatError extends MtdError(code = "FORMAT_VALUE", message = "The value must be between 0 and 99999999999.99") {
+
+  def forPathAndRange(path: String, min: String, max: String): MtdError =
     ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max")
+
 }
 
 object FromDateFormatError
@@ -77,22 +77,22 @@ object ToDateFormatError
     )
 
 object StringFormatError
-  extends MtdError(
-    code = "FORMAT_STRING",
-    message = "The supplied string format is not valid"
-  )
+    extends MtdError(
+      code = "FORMAT_STRING",
+      message = "The supplied string format is not valid"
+    )
 
 object DateFormatError
-  extends MtdError(
-    code = "FORMAT_DATE",
-    message = "The supplied date format is not valid"
-  )
+    extends MtdError(
+      code = "FORMAT_DATE",
+      message = "The supplied date format is not valid"
+    )
 
 object Class4ExemptionReasonFormatError
-  extends MtdError(
-    code = "FORMAT_CLASS_4_EXEMPTION_REASON",
-    message = "The format of the supplied Class 4 National Insurance exemption reason is not valid"
-  )
+    extends MtdError(
+      code = "FORMAT_CLASS_4_EXEMPTION_REASON",
+      message = "The format of the supplied Class 4 National Insurance exemption reason is not valid"
+    )
 
 // Rule Errors
 object RuleTaxYearNotSupportedError
@@ -144,16 +144,16 @@ object RuleBothExpensesSuppliedError
     )
 
 object RuleBothAllowancesSuppliedError
-  extends MtdError(
-    code = "RULE_BOTH_ALLOWANCES_SUPPLIED",
-    message = "Both allowances and trading allowances must not be present at the same time"
-  )
+    extends MtdError(
+      code = "RULE_BOTH_ALLOWANCES_SUPPLIED",
+      message = "Both allowances and trading allowances must not be present at the same time"
+    )
 
 object RuleBuildingNameNumberError
-  extends MtdError(
-    code = "RULE_BUILDING_NAME_NUMBER",
-    message = "Postcode must be supplied along with at least one of name or number"
-  )
+    extends MtdError(
+      code = "RULE_BUILDING_NAME_NUMBER",
+      message = "Postcode must be supplied along with at least one of name or number"
+    )
 
 object RuleIncorrectOrEmptyBodyError
     extends MtdError(

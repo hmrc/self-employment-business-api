@@ -27,20 +27,18 @@ import v1.connectors.DownstreamUri.DesUri
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSubmissionConnector @Inject()(val http: HttpClient,
-                                               val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino = request.nino.nino
-    val taxYear = request.taxYear.toDownstream
+    val nino       = request.nino.nino
+    val taxYear    = request.taxYear.toDownstream
     val businessId = request.businessId.value
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
-
 
     put(
       body = request.body,
@@ -49,4 +47,5 @@ class AmendAnnualSubmissionConnector @Inject()(val http: HttpClient,
       )
     )
   }
+
 }

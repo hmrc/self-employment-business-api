@@ -31,29 +31,28 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveAnnualSubmissionService @Inject()(connector: RetrieveAnnualSubmissionConnector)
-  extends DesResponseMappingSupport with Logging {
+class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmissionConnector) extends DesResponseMappingSupport with Logging {
 
-    def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(
-                                         implicit hc: HeaderCarrier,
-                                         ec: ExecutionContext,
-                                         logContext: EndpointLogContext,
-                                         correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
+  def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
+    connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
 
-      connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
-
-    }
+  }
 
   private def desErrorMap =
     Map(
-      "INVALID_NINO" -> NinoFormatError,
-      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-      "INVALID_TAX_YEAR" -> TaxYearFormatError,
+      "INVALID_NINO"            -> NinoFormatError,
+      "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
+      "INVALID_TAX_YEAR"        -> TaxYearFormatError,
       "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
-      "NOT_FOUND_PERIOD" -> NotFoundError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "NOT_FOUND_PERIOD"        -> NotFoundError,
+      "INVALID_CORRELATIONID"   -> DownstreamError,
+      "SERVER_ERROR"            -> DownstreamError,
+      "SERVICE_UNAVAILABLE"     -> DownstreamError
     )
+
 }

@@ -27,8 +27,11 @@ trait MockDeleteAnnualSubmissionRequestParser extends MockFactory {
   val mockDeleteAnnualSubmissionRequestParser: DeleteAnnualSubmissionRequestParser = mock[DeleteAnnualSubmissionRequestParser]
 
   object MockDeleteAnnualSubmissionRequestParser {
+
     def parse(data: DeleteAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, DeleteAnnualSubmissionRequest]] = {
       (mockDeleteAnnualSubmissionRequestParser.parseRequest(_: DeleteAnnualSubmissionRawData)(_: String)).expects(data, *)
     }
+
   }
+
 }

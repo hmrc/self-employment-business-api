@@ -30,17 +30,18 @@ class RetrieveAnnualSubmissionValidator extends Validator[RetrieveAnnualSubmissi
 
   private def parameterFormatValidation: RetrieveAnnualSubmissionRawData => List[List[MtdError]] =
     (data: RetrieveAnnualSubmissionRawData) => {
-    List(
-      NinoValidation.validate(data.nino),
-      BusinessIdValidation.validate(data.businessId),
-      TaxYearValidation.validate(data.taxYear)
-    )
-  }
+      List(
+        NinoValidation.validate(data.nino),
+        BusinessIdValidation.validate(data.businessId),
+        TaxYearValidation.validate(data.taxYear)
+      )
+    }
 
   private def parameterRuleValidation: RetrieveAnnualSubmissionRawData => List[List[MtdError]] =
     (data: RetrieveAnnualSubmissionRawData) => {
-    List(
-      TaxYearNotSupportedValidation.validate(data.taxYear)
-    )
-  }
+      List(
+        TaxYearNotSupportedValidation.validate(data.taxYear)
+      )
+    }
+
 }

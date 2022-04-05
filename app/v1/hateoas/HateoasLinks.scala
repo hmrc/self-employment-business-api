@@ -24,7 +24,7 @@ import v1.models.hateoas.RelType._
 
 trait HateoasLinks {
 
-  //Domain URIs
+  // Domain URIs
   private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.toMtd}"
 
@@ -42,7 +42,6 @@ trait HateoasLinks {
 
   def deleteAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUBMISSION_REL)
-
 
   def listPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String): Link =
     Link(href = periodicSummaryUri(appConfig, nino, businessId), method = GET, rel = SELF)

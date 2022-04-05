@@ -16,28 +16,29 @@
 
 package v1.models.domain
 
-/**
-  * Opaque representation of a tax year
+/** Opaque representation of a tax year
   */
 case class TaxYear(private val value: String) extends AnyVal {
   def toDownstream: String = value
 
   def toMtd: String = {
-    val prefix = value.take(2)
+    val prefix  = value.take(2)
     val yearTwo = value.drop(2)
     val yearOne = (yearTwo.toInt - 1).toString
     prefix + yearOne + "-" + yearTwo
   }
+
 }
 
 object TaxYear {
 
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
+  /** @param taxYear
+    *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear =
     TaxYear(taxYear.take(2) + taxYear.drop(5))
 
   def fromDownstream(taxYear: String): TaxYear =
     TaxYear(taxYear)
+
 }

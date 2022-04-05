@@ -31,28 +31,31 @@ trait Validator[A <: RawData] {
       case Nil => List()
       case thisLevel :: remainingLevels =>
         thisLevel(data).flatten match {
-          case x if x.isEmpty => run(remainingLevels, data)
+          case x if x.isEmpty  => run(remainingLevels, data)
           case x if x.nonEmpty => x
         }
     }
   }
+
 }
 
 object Validator {
 
   def flattenErrors(errors: List[List[MtdError]]): List[MtdError] = {
-    errors.flatten.groupBy(_.message).map { case (_, errors) =>
+    errors.flatten
+      .groupBy(_.message)
+      .map { case (_, errors) =>
+        val baseError = errors.head.copy(paths = None)
 
-      val baseError = errors.head.copy(paths = None)
-
-      errors.fold(baseError)(
-        (error1: MtdError, error2: MtdError) => (error1, error2) match {
-          case (MtdError(_, _, Some(paths1)), MtdError(_, _, Some(paths2))) => error1.copy(paths = Some(paths1 ++ paths2))
-          case (MtdError(_, _, Some(_)), MtdError(_, _, None)) => error1
-          case (MtdError(_, _, None), MtdError(_, _, Some(_))) => error2
-          case _ => error1
-        }
-      )
-    }.toList
+        errors.fold(baseError)((error1: MtdError, error2: MtdError) =>
+          (error1, error2) match {
+            case (MtdError(_, _, Some(paths1)), MtdError(_, _, Some(paths2))) => error1.copy(paths = Some(paths1 ++ paths2))
+            case (MtdError(_, _, Some(_)), MtdError(_, _, None))              => error1
+            case (MtdError(_, _, None), MtdError(_, _, Some(_)))              => error2
+            case _                                                            => error1
+          })
+      }
+      .toList
   }
+
 }

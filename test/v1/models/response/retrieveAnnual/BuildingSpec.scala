@@ -36,4 +36,5 @@ class BuildingSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
       }
     }
   }
+
 }

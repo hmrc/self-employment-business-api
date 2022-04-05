@@ -33,11 +33,21 @@ trait MockRetrieveAnnualSubmissionService extends MockFactory {
   val mockRetrieveAnnualSubmissionService: RetrieveAnnualSubmissionService = mock[RetrieveAnnualSubmissionService]
 
   object MockRetrieveAnnualSubmissionService {
-    def retrieve(requestData: RetrieveAnnualSubmissionRequest):
-    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveAnnualSubmissionResponse]]]] = {
-      (mockRetrieveAnnualSubmissionService
-        .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+
+    def retrieve(requestData: RetrieveAnnualSubmissionRequest)
+        : CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveAnnualSubmissionResponse]]]] = {
+      (
+        mockRetrieveAnnualSubmissionService
+          .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequest)(
+            _: HeaderCarrier,
+            _: ExecutionContext,
+            _: EndpointLogContext,
+            _: String
+          )
+        )
         .expects(requestData, *, *, *, *)
     }
+
   }
+
 }

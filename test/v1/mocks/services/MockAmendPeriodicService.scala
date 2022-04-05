@@ -38,6 +38,7 @@ trait MockAmendPeriodicService extends MockFactory {
         .amendPeriodicSummary(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
+
   }
 
 }

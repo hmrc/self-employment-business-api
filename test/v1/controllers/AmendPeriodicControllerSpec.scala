@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendPeriodicControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendPeriodicService
@@ -42,9 +42,9 @@ class AmendPeriodicControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val periodId = "2019-01-01_2020-01-01"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val periodId      = "2019-01-01_2020-01-01"
   private val correlationId = "X-123"
 
   trait Test {
@@ -84,12 +84,12 @@ class AmendPeriodicControllerSpec
   )
 
   private val requestBody = AmendPeriodicBody(
-    Some(Incomes(Some(IncomesAmountObject(500.25)),Some(IncomesAmountObject(500.15)))),
+    Some(Incomes(Some(IncomesAmountObject(500.25)), Some(IncomesAmountObject(500.15)))),
     Some(ConsolidatedExpenses(500.25)),
     None
   )
 
-  private val rawData = AmendPeriodicRawData(nino, businessId, periodId, requestJson)
+  private val rawData     = AmendPeriodicRawData(nino, businessId, periodId, requestJson)
   private val requestData = AmendPeriodicRequest(Nino(nino), businessId, periodId, requestBody)
 
   "handleRequest" should {
@@ -176,4 +176,5 @@ class AmendPeriodicControllerSpec
       }
     }
   }
+
 }

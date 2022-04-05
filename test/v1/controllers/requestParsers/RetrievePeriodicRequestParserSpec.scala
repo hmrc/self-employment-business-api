@@ -24,9 +24,9 @@ import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeri
 
 class RetrievePeriodicRequestParserSpec extends UnitSpec {
 
-  val nino: String = "AA123456B"
-  val businessId: String = "XAIS12345678910"
-  val periodId: String = "2017-01-25_2017-02-25"
+  val nino: String                   = "AA123456B"
+  val businessId: String             = "XAIS12345678910"
+  val periodId: String               = "2017-01-25_2017-02-25"
   implicit val correlationId: String = "X-123"
 
   val rawData: RetrievePeriodicRawData = RetrievePeriodicRawData(
@@ -36,9 +36,11 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
   )
 
   trait Test extends MockRetrievePeriodicValidator {
+
     lazy val parser: RetrievePeriodicRequestParser = new RetrievePeriodicRequestParser(
       validator = mockRetrievePeriodicValidator
     )
+
   }
 
   "parse" should {
@@ -53,7 +55,8 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockRetrievePeriodicValidator.validate(rawData)
+        MockRetrievePeriodicValidator
+          .validate(rawData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(rawData) shouldBe
@@ -61,7 +64,8 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockRetrievePeriodicValidator.validate(rawData)
+        MockRetrievePeriodicValidator
+          .validate(rawData)
           .returns(List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError))
 
         parser.parseRequest(rawData) shouldBe
@@ -69,4 +73,5 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

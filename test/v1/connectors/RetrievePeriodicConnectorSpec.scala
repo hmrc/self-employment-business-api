@@ -27,30 +27,35 @@ import scala.concurrent.Future
 
 class RetrievePeriodicConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val periodId: String = "2019-01-25_2020-01-25"
+  val periodId: String   = "2019-01-25_2020-01-25"
 
   val request: RetrievePeriodicRequest = RetrievePeriodicRequest(Nino(nino), businessId, periodId)
 
   val response: RetrievePeriodicResponse = RetrievePeriodicResponse(
     "2019-01-25",
     "2020-01-25",
-    Some(Incomes(
-      Some(IncomesAmountObject(
+    Some(
+      Incomes(
+        Some(
+          IncomesAmountObject(
+            1000.20
+          )),
+        Some(
+          IncomesAmountObject(
+            1000.20
+          ))
+      )),
+    Some(
+      ConsolidatedExpenses(
         1000.20
       )),
-      Some(IncomesAmountObject(
-        1000.20
-      ))
-    )),
-    Some(ConsolidatedExpenses(
-      1000.20
-    )),
     None
   )
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: RetrievePeriodicConnector = new RetrievePeriodicConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -65,7 +70,7 @@ class RetrievePeriodicConnectorSpec extends ConnectorSpec {
   "connector" must {
     "send a request and return a body" in new Test {
       val fromDate: String = request.periodId.substring(0, 10)
-      val toDate: String = request.periodId.substring(11, 21)
+      val toDate: String   = request.periodId.substring(11, 21)
 
       val outcome = Right(ResponseWrapper(correlationId, response))
 
@@ -75,9 +80,11 @@ class RetrievePeriodicConnectorSpec extends ConnectorSpec {
           config = dummyDesHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        ).returns(Future.successful(outcome))
+        )
+        .returns(Future.successful(outcome))
 
       await(connector.retrievePeriodicSummary(request)) shouldBe outcome
     }
   }
+
 }

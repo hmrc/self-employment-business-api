@@ -32,13 +32,13 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodicService @Inject()(connector: CreatePeriodicConnector) extends DesResponseMappingSupport with Logging {
+class CreatePeriodicService @Inject() (connector: CreatePeriodicConnector) extends DesResponseMappingSupport with Logging {
 
-  def createPeriodicSummary(request: CreatePeriodicRequest)(
-                    implicit hc: HeaderCarrier,
-                    ec:ExecutionContext,
-                    logContext: EndpointLogContext,
-                    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]] = {
+  def createPeriodicSummary(request: CreatePeriodicRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))
@@ -49,16 +49,17 @@ class CreatePeriodicService @Inject()(connector: CreatePeriodicConnector) extend
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(
-    "INVALID_NINO" -> NinoFormatError,
-    "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-    "INVALID_PERIOD" -> RuleToDateBeforeFromDateError,
-    "OVERLAPS_IN_PERIOD" -> RuleOverlappingPeriod,
-    "NOT_ALIGN_PERIOD" -> RuleMisalignedPeriod,
-    "BOTH_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError,
-    "NOT_CONTIGUOUS_PERIOD" -> RuleNotContiguousPeriod,
+    "INVALID_NINO"                    -> NinoFormatError,
+    "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
+    "INVALID_PERIOD"                  -> RuleToDateBeforeFromDateError,
+    "OVERLAPS_IN_PERIOD"              -> RuleOverlappingPeriod,
+    "NOT_ALIGN_PERIOD"                -> RuleMisalignedPeriod,
+    "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
+    "NOT_CONTIGUOUS_PERIOD"           -> RuleNotContiguousPeriod,
     "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-    "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
+    "SERVER_ERROR"                    -> DownstreamError,
+    "SERVICE_UNAVAILABLE"             -> DownstreamError
   )
+
 }

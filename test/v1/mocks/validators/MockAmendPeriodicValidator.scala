@@ -33,5 +33,7 @@ trait MockAmendPeriodicValidator extends MockFactory {
         .validate(_: AmendPeriodicRawData))
         .expects(data)
     }
+
   }
+
 }

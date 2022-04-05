@@ -31,12 +31,12 @@ trait MockListPeriodicConnector extends MockFactory {
 
   object MockListPeriodicConnector {
 
-    def listPeriods(requestData: ListPeriodicRequest):
-    CallHandler[Future[DownstreamOutcome[ListPeriodicResponse[PeriodDetails]]]] = {
+    def listPeriods(requestData: ListPeriodicRequest): CallHandler[Future[DownstreamOutcome[ListPeriodicResponse[PeriodDetails]]]] = {
       (mockListPeriodicConnector
         .listPeriods(_: ListPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
 
 }

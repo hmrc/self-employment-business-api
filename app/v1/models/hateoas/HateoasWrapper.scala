@@ -19,6 +19,7 @@ package v1.models.hateoas
 import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 
 object HateoasWrapper {
+
   implicit def writesEmpty: Writes[HateoasWrapper[Unit]] = Writes { w =>
     if (w.links.nonEmpty) {
       Json.obj("links" -> Json.toJson(w.links))
@@ -33,13 +34,14 @@ object HateoasWrapper {
     implicitly[OWrites[A]].writes(w.payload) match {
       case payloadJson: JsObject =>
         if (w.links.nonEmpty) {
-          //Manually construct JsObject circumventing `.+` operator to preserve order of fields
+          // Manually construct JsObject circumventing `.+` operator to preserve order of fields
           JsObject(payloadJson.fields :+ "links" -> Json.toJson(w.links))
         } else {
           payloadJson
         }
     }
   }
+
 }
 
 case class HateoasWrapper[A](payload: A, links: Seq[Link])

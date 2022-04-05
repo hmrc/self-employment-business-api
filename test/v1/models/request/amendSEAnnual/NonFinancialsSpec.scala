@@ -25,8 +25,7 @@ class NonFinancialsSpec extends UnitSpec {
   "reads" should {
     "passed valid mtd JSON" should {
       "return the model" in {
-        val requestJson: JsValue = Json.parse(
-          s"""
+        val requestJson: JsValue = Json.parse(s"""
              |{
              |    "businessDetailsChangedRecently": true,
              |    "class4NicsExemptionReason": "non-resident"
@@ -43,11 +42,8 @@ class NonFinancialsSpec extends UnitSpec {
     "writes" when {
       "there is an exemption reason" must {
         "set exemptFromPayingClass4Nics false" in {
-          Json.toJson(NonFinancials(
-            businessDetailsChangedRecently = true,
-            class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
-            Json.parse(
-              s"""
+          Json.toJson(NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
+            Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true,
                  |  "exemptFromPayingClass4Nics": true,
@@ -59,11 +55,8 @@ class NonFinancialsSpec extends UnitSpec {
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-          Json.toJson(NonFinancials(
-            businessDetailsChangedRecently = true,
-            class4NicsExemptionReason = None)) shouldBe
-            Json.parse(
-              s"""
+          Json.toJson(NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+            Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true,
                  |  "exemptFromPayingClass4Nics": false
@@ -73,4 +66,5 @@ class NonFinancialsSpec extends UnitSpec {
       }
     }
   }
+
 }

@@ -31,12 +31,12 @@ trait MockRetrievePeriodicConnector extends MockFactory {
 
   object MockRetrievePeriodicConnector {
 
-    def retrievePeriodicSummary(requestData: RetrievePeriodicRequest):
-    CallHandler[Future[DownstreamOutcome[RetrievePeriodicResponse]]] = {
+    def retrievePeriodicSummary(requestData: RetrievePeriodicRequest): CallHandler[Future[DownstreamOutcome[RetrievePeriodicResponse]]] = {
       (mockRetrievePeriodicConnector
         .retrievePeriodicSummary(_: RetrievePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
 
 }

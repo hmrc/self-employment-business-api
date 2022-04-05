@@ -24,12 +24,14 @@ import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeri
 
 trait MockRetrievePeriodicRequestParser extends MockFactory {
 
-  val mockRetrievePeriodicRequestParser:
-    RetrievePeriodicRequestParser = mock[RetrievePeriodicRequestParser]
+  val mockRetrievePeriodicRequestParser: RetrievePeriodicRequestParser = mock[RetrievePeriodicRequestParser]
 
   object MockRetrievePeriodicRequestParser {
+
     def parse(data: RetrievePeriodicRawData): CallHandler[Either[ErrorWrapper, RetrievePeriodicRequest]] = {
       (mockRetrievePeriodicRequestParser.parseRequest(_: RetrievePeriodicRawData)(_: String)).expects(data, *)
     }
+
   }
+
 }

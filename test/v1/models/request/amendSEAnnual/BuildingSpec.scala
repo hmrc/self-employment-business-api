@@ -22,31 +22,32 @@ import support.UnitSpec
 class BuildingSpec extends UnitSpec {
 
   val model: Building =
-      Building(
-        Some("house name"),
-        Some("house number"),
-        "GF49JH"
-      )
+    Building(
+      Some("house name"),
+      Some("house number"),
+      "GF49JH"
+    )
 
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        Json.parse(
-          """
+        Json
+          .parse("""
             |{
             |  "name": "house name",
             |  "number": "house number",
             |  "postcode": "GF49JH"
             |}
-            |""".stripMargin).as[Building] shouldBe model
+            |""".stripMargin)
+          .as[Building] shouldBe model
       }
     }
   }
+
   "writes" when {
     "passed a model" should {
       "return downstream JSON" in {
-        Json.toJson(model) shouldBe Json.parse(
-          """
+        Json.toJson(model) shouldBe Json.parse("""
             |{
             |  "name": "house name",
             |  "number": "house number",
@@ -56,4 +57,5 @@ class BuildingSpec extends UnitSpec {
       }
     }
   }
+
 }

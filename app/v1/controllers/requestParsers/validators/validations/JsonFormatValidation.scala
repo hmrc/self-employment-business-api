@@ -26,14 +26,14 @@ object JsonFormatValidation {
   private val logger: Logger = Logger(this.getClass)
 
   def validate[A: OFormat](data: JsValue): List[MtdError] = {
-    if (data == JsObject.empty) List(RuleIncorrectOrEmptyBodyError) else {
+    if (data == JsObject.empty) List(RuleIncorrectOrEmptyBodyError)
+    else {
       data.validate[A] match {
         case JsSuccess(body, _) => if (Json.toJson(body) == JsObject.empty) List(RuleIncorrectOrEmptyBodyError) else NoValidationErrors
         case JsError(errors: Seq[(JsPath, Seq[JsonValidationError])]) => handleErrors(errors)
       }
     }
   }
-
 
   def validateAndCheckNonEmpty[A: OFormat: EmptinessChecker](data: JsValue): List[MtdError] =
     validateOrRead[A](data) match {
@@ -85,6 +85,7 @@ object JsonFormatValidation {
         .toString()
         .replace("(", "/")
         .replace(")", "")
+
   }
 
   private case class MissingMandatoryField(path: JsPath) extends JsonFormatValidationFailure(path, "Missing mandatory field")

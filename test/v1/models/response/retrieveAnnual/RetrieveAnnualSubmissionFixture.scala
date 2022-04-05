@@ -24,10 +24,11 @@ trait RetrieveAnnualSubmissionFixture {
   val structuredBuildingAllowance: StructuredBuildingAllowance =
     StructuredBuildingAllowance(
       3000.30,
-      Some(FirstYear(
-        "2020-01-01",
-        3000.40
-      )),
+      Some(
+        FirstYear(
+          "2020-01-01",
+          3000.40
+        )),
       Building(
         Some("house name"),
         Some("house number"),
@@ -42,8 +43,7 @@ trait RetrieveAnnualSubmissionFixture {
       "GF4 9JH"
     )
 
-  val buildingAllowanceMtdJson: JsValue = Json.parse(
-    """
+  val buildingAllowanceMtdJson: JsValue = Json.parse("""
       |{
       |    "name": "house name",
       |    "number": "house number",
@@ -51,8 +51,7 @@ trait RetrieveAnnualSubmissionFixture {
       |}
       |""".stripMargin)
 
-  val buildingAllowanceDownstreamJson: JsValue = Json.parse(
-    """
+  val buildingAllowanceDownstreamJson: JsValue = Json.parse("""
       |{
       |    "name": "house name",
       |    "number": "house number",
@@ -60,8 +59,7 @@ trait RetrieveAnnualSubmissionFixture {
       |}
       |""".stripMargin)
 
-  val structuredBuildingAllowanceMtdJson: JsValue = Json.parse(
-    """
+  val structuredBuildingAllowanceMtdJson: JsValue = Json.parse("""
       |{
       |  "amount": 3000.30,
       |  "firstYear": {
@@ -76,8 +74,7 @@ trait RetrieveAnnualSubmissionFixture {
       |}
       |""".stripMargin)
 
-  val structuredBuildingAllowanceDownstreamJson: JsValue = Json.parse(
-    """
+  val structuredBuildingAllowanceDownstreamJson: JsValue = Json.parse("""
       |{
       |  "amount": 3000.30,
       |  "firstYear": {
@@ -102,10 +99,10 @@ trait RetrieveAnnualSubmissionFixture {
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12))
+      goodsAndServicesOwnUse = Some(9.12)
+    )
 
-  val adjustmentsMtdJson: JsValue = Json.parse(
-    s"""{
+  val adjustmentsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
        |  "overlapReliefUsed": 3.12,
@@ -118,8 +115,7 @@ trait RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val adjustmentsDownstreamJson: JsValue = Json.parse(
-    s"""{
+  val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
        |  "overlapReliefUsed": 3.12,
@@ -148,8 +144,7 @@ trait RetrieveAnnualSubmissionFixture {
     enhancedStructuredBuildingAllowance = Some(Seq(structuredBuildingAllowance))
   )
 
-  val allowancesMtdJson: JsValue = Json.parse(
-    s"""{
+  val allowancesMtdJson: JsValue = Json.parse(s"""{
        |  "annualInvestmentAllowance": 1.12,
        |  "capitalAllowanceMainPool": 2.12,
        |  "capitalAllowanceSpecialRatePool": 3.12,
@@ -165,8 +160,7 @@ trait RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val allowancesDownstreamJson: JsValue = Json.parse(
-    s"""{
+  val allowancesDownstreamJson: JsValue = Json.parse(s"""{
        |  "annualInvestmentAllowance": 1.12,
        |  "capitalAllowanceMainPool": 2.12,
        |  "capitalAllowanceSpecialRatePool": 3.12,
@@ -183,35 +177,42 @@ trait RetrieveAnnualSubmissionFixture {
        |""".stripMargin)
 
   val allowancesTradingIncomeAllowance: Allowances = Allowances(
-    None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(10.12), None, None, None, None
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    tradingIncomeAllowance = Some(10.12),
+    None,
+    None,
+    None,
+    None
   )
 
-  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(
-    s"""{
+  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(s"""{
        |  "tradingIncomeAllowance": 10.12
        |}
        |""".stripMargin)
 
-  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(
-    s"""{
+  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(s"""{
        |  "tradingIncomeAllowance": 10.12
        |}
        |""".stripMargin)
 
-  val nonFinancials: NonFinancials = NonFinancials(
-    businessDetailsChangedRecently = true,
-    class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
+  val nonFinancials: NonFinancials =
+    NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
 
-  val nonFinancialsMtdJson: JsValue = Json.parse(
-    s"""
+  val nonFinancialsMtdJson: JsValue = Json.parse(s"""
        |{
        |    "businessDetailsChangedRecently": true,
        |    "class4NicsExemptionReason": "non-resident"
        |  }
        |""".stripMargin)
 
-  val nonFinancialsDownstreamJson: JsValue = Json.parse(
-    s"""
+  val nonFinancialsDownstreamJson: JsValue = Json.parse(s"""
        |{
        |  "businessDetailsChangedRecently": true,
        |  "class4NicsExemptionReason": "001"
@@ -224,8 +225,7 @@ trait RetrieveAnnualSubmissionFixture {
     Some(nonFinancials)
   )
 
-  val mtdRetrieveResponseJson: JsValue = Json.parse(
-    s"""
+  val mtdRetrieveResponseJson: JsValue = Json.parse(s"""
        |{
        |  "adjustments": $adjustmentsMtdJson,
        |  "allowances": $allowancesMtdJson,
@@ -233,8 +233,7 @@ trait RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val downstreamRetrieveResponseJson: JsValue = Json.parse(
-    s"""
+  val downstreamRetrieveResponseJson: JsValue = Json.parse(s"""
        |{
        |  "annualAdjustments": $adjustmentsDownstreamJson,
        |  "annualAllowances": $allowancesDownstreamJson,
@@ -243,8 +242,8 @@ trait RetrieveAnnualSubmissionFixture {
        |""".stripMargin)
 
   def mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String, businessId: String, taxYear: String): JsValue =
-    mtdRetrieveResponseJson.as[JsObject] ++ Json.parse(
-      s"""
+    mtdRetrieveResponseJson.as[JsObject] ++ Json
+      .parse(s"""
          |{
          |  "links": [
          |    {
@@ -264,7 +263,8 @@ trait RetrieveAnnualSubmissionFixture {
          |    }
          |  ]
          |}
-         |""".stripMargin).as[JsObject]
+         |""".stripMargin)
+      .as[JsObject]
 
   def retrieveAnnualSubmissionBody(adjustmentsModel: Option[Adjustments] = Some(adjustments),
                                    allowancesModel: Option[Allowances] = Some(allowances),
@@ -274,19 +274,21 @@ trait RetrieveAnnualSubmissionFixture {
   def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
                                           allowances: Option[JsValue] = Some(allowancesMtdJson),
                                           nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
-    JsObject(Seq(
-      adjustments.map("adjustments" -> _),
-      allowances.map("allowances" -> _),
-      nonFinancials.map("nonFinancials" -> _)
-    ).collect { case Some((a, b)) => a -> b })
+    JsObject(
+      Seq(
+        adjustments.map("adjustments"     -> _),
+        allowances.map("allowances"       -> _),
+        nonFinancials.map("nonFinancials" -> _)
+      ).collect { case Some((a, b)) => a -> b })
 
   def retrieveAnnualSubmissionBodyDownstreamJson(adjustments: Option[JsValue] = Some(adjustmentsDownstreamJson),
                                                  allowances: Option[JsValue] = Some(allowancesDownstreamJson),
                                                  nonFinancials: Option[JsValue] = Some(nonFinancialsDownstreamJson)): JsValue =
-    JsObject(Seq(
-      adjustments.map("annualAdjustments" -> _),
-      allowances.map("annualAllowances" -> _),
-      nonFinancials.map("annualNonFinancials" -> _)
-    ).collect { case Some((a, b)) => a -> b })
+    JsObject(
+      Seq(
+        adjustments.map("annualAdjustments"     -> _),
+        allowances.map("annualAllowances"       -> _),
+        nonFinancials.map("annualNonFinancials" -> _)
+      ).collect { case Some((a, b)) => a -> b })
 
 }

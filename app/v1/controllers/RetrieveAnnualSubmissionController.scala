@@ -32,13 +32,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveAnnualSubmissionController @Inject()(val authService: EnrolmentsAuthService,
-                                                   val lookupService: MtdIdLookupService,
-                                                   parser: RetrieveAnnualSubmissionRequestParser,
-                                                   service: RetrieveAnnualSubmissionService,
-                                                   hateoasFactory: HateoasFactory,
-                                                   cc: ControllerComponents,
-                                                   idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
+                                                    val lookupService: MtdIdLookupService,
+                                                    parser: RetrieveAnnualSubmissionRequestParser,
+                                                    service: RetrieveAnnualSubmissionService,
+                                                    hateoasFactory: HateoasFactory,
+                                                    cc: ControllerComponents,
+                                                    idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -59,8 +59,9 @@ class RetrieveAnnualSubmissionController @Inject()(val authService: EnrolmentsAu
           serviceResponse <- EitherT(service.retrieveAnnualSubmission(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData,
-                    RetrieveAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear))
+              .wrap(
+                serviceResponse.responseData,
+                RetrieveAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear))
               .asRight[ErrorWrapper]
           )
         } yield {
@@ -91,4 +92,5 @@ class RetrieveAnnualSubmissionController @Inject()(val authService: EnrolmentsAu
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
       case _               => unhandledError(errorWrapper)
     }
+
 }

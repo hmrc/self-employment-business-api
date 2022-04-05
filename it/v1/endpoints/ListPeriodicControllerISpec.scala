@@ -29,14 +29,13 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
+    val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
-    val periodId = "2019-01-01_2020-01-01"
-    val fromDate = "2019-01-01"
-    val toDate = "2020-01-01"
+    val periodId   = "2019-01-01_2020-01-01"
+    val fromDate   = "2019-01-01"
+    val toDate     = "2020-01-01"
 
-    val responseBody: JsValue = Json.parse(
-      s"""
+    val responseBody: JsValue = Json.parse(s"""
          |{
          |  "periods": [
          |    {
@@ -67,8 +66,7 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    val desResponseBody: JsValue = Json.parse(
-      s"""
+    val desResponseBody: JsValue = Json.parse(s"""
          |{
          |    "periods": [
          |        {
@@ -99,6 +97,7 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
          |        "reason": "des message"
          |      }
     """.stripMargin
+
   }
 
   "calling the retrieve endpoint" should {
@@ -114,7 +113,6 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
           DownstreamStub.onSuccess(DownstreamStub.GET, desUri, Status.OK, desResponseBody)
         }
 
-
         val response: WSResponse = await(request().get())
         response.status shouldBe Status.OK
         response.json shouldBe responseBody
@@ -125,11 +123,10 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
     "return error according to spec" when {
 
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestBusinessId: String,
-                                expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String, requestBusinessId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
+            override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
 
             override def setupStubs(): StubMapping = {
@@ -156,7 +153,6 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
         def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"des returns an $desCode error and status $desStatus" in new Test {
 
-
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
@@ -182,4 +178,5 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

@@ -33,5 +33,7 @@ trait MockAmendAnnualSubmissionValidator extends MockFactory {
         .validate(_: AmendAnnualSubmissionRawData))
         .expects(data)
     }
+
   }
+
 }

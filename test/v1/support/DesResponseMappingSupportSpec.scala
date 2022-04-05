@@ -16,7 +16,7 @@
 
 package v1.support
 
-import play.api.libs.json.{ Format, Json }
+import play.api.libs.json.{Format, Json}
 import support.UnitSpec
 import utils.Logging
 import v1.controllers.EndpointLogContext
@@ -122,4 +122,5 @@ class DesResponseMappingSupportSpec extends UnitSpec {
       }
     }
   }
+
 }

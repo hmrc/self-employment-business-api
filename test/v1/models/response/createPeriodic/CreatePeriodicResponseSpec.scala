@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.hateoas.{Link, Method}
 
-class CreatePeriodicResponseSpec extends UnitSpec with MockAppConfig  {
+class CreatePeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
   val json: JsValue = Json.parse(
     """
@@ -62,4 +62,5 @@ class CreatePeriodicResponseSpec extends UnitSpec with MockAppConfig  {
       }
     }
   }
+
 }

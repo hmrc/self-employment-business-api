@@ -35,5 +35,7 @@ trait MockAmendAnnualSubmissionConnector extends MockFactory {
         .amendAnnualSubmission(_: AmendAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
+
   }
+
 }

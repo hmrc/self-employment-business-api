@@ -36,6 +36,7 @@ case class Expenses(costOfGoodsBought: Option[ExpensesAmountObject],
                     other: Option[ExpensesAmountObject])
 
 object Expenses {
+
   implicit val reads: Reads[Expenses] = (
     (JsPath \ "costOfGoods").readNullable[ExpensesAmountObject] and
       (JsPath \ "constructionIndustryScheme").readNullable[ExpensesAmountObject] and
@@ -52,7 +53,7 @@ object Expenses {
       (JsPath \ "professionalFees").readNullable[ExpensesAmountObject] and
       (JsPath \ "depreciation").readNullable[ExpensesAmountObject] and
       (JsPath \ "other").readNullable[ExpensesAmountObject]
-    ) (Expenses.apply _)
+  )(Expenses.apply _)
 
   implicit val writes: OWrites[Expenses] = Json.writes[Expenses]
 

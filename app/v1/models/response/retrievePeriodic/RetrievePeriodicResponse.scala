@@ -29,19 +29,19 @@ case class RetrievePeriodicResponse(periodFromDate: String,
                                     expenses: Option[Expenses])
 
 object RetrievePeriodicResponse extends HateoasLinks {
+
   implicit val reads: Reads[RetrievePeriodicResponse] = (
     (JsPath \ "from").read[String] and
       (JsPath \ "to").read[String] and
       (JsPath \ "financials" \ "incomes").readNullable[Incomes] and
       (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses").readNullable[BigDecimal].map(_.map(ConsolidatedExpenses(_))) and
       (JsPath \ "financials" \ "deductions").readNullable[Expenses]
-    ) (RetrievePeriodicResponse.apply _)
-
+  )(RetrievePeriodicResponse.apply _)
 
   implicit val writes: OWrites[RetrievePeriodicResponse] = Json.writes[RetrievePeriodicResponse]
 
-  implicit object RetrieveAnnualSubmissionLinksFactory extends
-    HateoasLinksFactory[RetrievePeriodicResponse, RetrievePeriodicHateoasData] {
+  implicit object RetrieveAnnualSubmissionLinksFactory extends HateoasLinksFactory[RetrievePeriodicResponse, RetrievePeriodicHateoasData] {
+
     override def links(appConfig: AppConfig, data: RetrievePeriodicHateoasData): Seq[Link] = {
       import data._
       Seq(
@@ -49,6 +49,7 @@ object RetrievePeriodicResponse extends HateoasLinks {
         retrievePeriodicSummary(appConfig, nino, businessId, periodId)
       )
     }
+
   }
 
 }

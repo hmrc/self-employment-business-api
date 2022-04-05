@@ -26,12 +26,14 @@ trait MockRetrievePeriodicValidator extends MockFactory {
 
   val mockRetrievePeriodicValidator: RetrievePeriodicValidator = mock[RetrievePeriodicValidator]
 
- object MockRetrievePeriodicValidator {
+  object MockRetrievePeriodicValidator {
 
-   def validate(data: RetrievePeriodicRawData): CallHandler1[RetrievePeriodicRawData, List[MtdError]] = {
-     (mockRetrievePeriodicValidator
-       .validate(_: RetrievePeriodicRawData))
-       .expects(data)
-   }
- }
+    def validate(data: RetrievePeriodicRawData): CallHandler1[RetrievePeriodicRawData, List[MtdError]] = {
+      (mockRetrievePeriodicValidator
+        .validate(_: RetrievePeriodicRawData))
+        .expects(data)
+    }
+
+  }
+
 }

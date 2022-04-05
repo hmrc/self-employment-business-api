@@ -60,54 +60,53 @@ trait JsonUtils {
 
       step(jsPath.path, json)
     }
+
   }
 
   /*  Json Reads that replaces the standard reads for a sequence of type T. Instead of immediately reading in the json
     this takes the raw json sequence and filters out all elements which do not include the required matching element.
     After the filter it executes the standard json reads for the type T to read in only the filtered values.
- */
-  def filteredArrayReads[T](filterName: String, matching: String)
-                           (implicit rds: Reads[Seq[T]]): Reads[Seq[T]] = (json: JsValue) => {
+   */
+  def filteredArrayReads[T](filterName: String, matching: String)(implicit rds: Reads[Seq[T]]): Reads[Seq[T]] = (json: JsValue) => {
     json
       .validate[Seq[JsValue]]
-      .flatMap(
-        readJson =>
-          Json
-            .toJson(readJson.filter { element =>
-              element.\(filterName).asOpt[String].contains(matching)
-            })
-            .validate[Seq[T]])
+      .flatMap(readJson =>
+        Json
+          .toJson(readJson.filter { element =>
+            element.\(filterName).asOpt[String].contains(matching)
+          })
+          .validate[Seq[T]])
   }
 
-  /**
-    * Reads for optional fields that reads None if a path (typically a parent of the target
-    * JSON field or of a mandatory part of it) is absent from JSON.
+  /** Reads for optional fields that reads None if a path (typically a parent of the target JSON field or of a mandatory part of it) is absent from
+    * JSON.
     *
-    * @param path the Json path that must be present
+    * @param path
+    *   the Json path that must be present
     */
   def emptyIfNotPresent[A: Reads](path: JsPath): Reads[Option[A]] =
     path.readNestedNullable[JsValue].filter(_.isEmpty).map(_ => None) or JsPath.readNullable[A]
 
-  /**
-    * Extension methods for reads of a optional sequence
+  /** Extension methods for reads of a optional sequence
     */
   implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
-    /**
-      * Returns a Reads that maps the sequence to itself unless it is empty
+
+    /** Returns a Reads that maps the sequence to itself unless it is empty
       */
     def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
       reads.map {
         case Some(Nil) => None
-        case other => other
+        case other     => other
       }
 
-    /**
-      * Returns a Reads that maps the sequence to its head unless it is empty
+    /** Returns a Reads that maps the sequence to its head unless it is empty
       */
     def mapHeadOption: Reads[Option[A]] =
       reads.map {
         case Some(x) => x.headOption
-        case None => None
+        case None    => None
       }
+
   }
+
 }

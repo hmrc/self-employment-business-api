@@ -27,9 +27,11 @@ trait MockCreatePeriodicRequestParser extends MockFactory {
   val mockCreatePeriodicRequestParser: CreatePeriodicRequestParser = mock[CreatePeriodicRequestParser]
 
   object MockCreatePeriodicRequestParser {
+
     def parseRequest(data: CreatePeriodicRawData): CallHandler[Either[ErrorWrapper, CreatePeriodicRequest]] = {
       (mockCreatePeriodicRequestParser.parseRequest(_: CreatePeriodicRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

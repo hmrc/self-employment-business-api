@@ -33,15 +33,16 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
   "reads" should {
     "return a valid model" when {
       "passed valid JSON" in {
-        Json.parse(
-          s"""{
+        Json
+          .parse(s"""{
              |  "annualAllowances": {},
              |  "annualAdjustments": {},
              |  "annualNonFinancials": {
              |    "businessDetailsChangedRecently": true
              |  }
              |}
-             |""".stripMargin).as[RetrieveAnnualSubmissionResponse] shouldBe model
+             |""".stripMargin)
+          .as[RetrieveAnnualSubmissionResponse] shouldBe model
       }
     }
   }
@@ -50,8 +51,7 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
     "return valid JSON" when {
       "passed a valid model" in {
         Json.toJson(model) shouldBe
-          Json.parse(
-            s"""{
+          Json.parse(s"""{
                |  "allowances": {},
                |  "adjustments": {},
                |  "nonFinancials": {
@@ -66,9 +66,9 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
   "LinksFactory" should {
     "produce the correct links" when {
       "called" in {
-        val nino = "AA111111A"
+        val nino       = "AA111111A"
         val businessId = "XAIS12345678910"
-        val taxYear = "2019-20"
+        val taxYear    = "2019-20"
 
         val data: RetrieveAnnualSubmissionHateoasData = RetrieveAnnualSubmissionHateoasData(
           Nino(nino),
@@ -79,14 +79,15 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
-            method = Method.PUT, rel = "create-and-amend-self-employment-annual-submission"),
-          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
-            method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear",
-            method = Method.DELETE, rel = "delete-self-employment-annual-submission")
+          Link(
+            href = s"/my/context/$nino/$businessId/annual/$taxYear",
+            method = Method.PUT,
+            rel = "create-and-amend-self-employment-annual-submission"),
+          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear", method = Method.GET, rel = "self"),
+          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear", method = Method.DELETE, rel = "delete-self-employment-annual-submission")
         )
       }
     }
   }
+
 }

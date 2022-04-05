@@ -24,6 +24,7 @@ import v1.models.utils.JsonErrorValidators
 class ConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
 
   val consolidatedExpenses: ConsolidatedExpenses = ConsolidatedExpenses(100.50)
+
   val expenses: Expenses = Expenses(
     Some(ExpensesAmountObject(100.50, Some(100.50))),
     Some(ExpensesAmountObject(100.50, Some(100.50))),
@@ -39,7 +40,8 @@ class ConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidato
     Some(ExpensesAmountObject(100.50, Some(100.50))),
     Some(ExpensesAmountObject(100.50, Some(100.50))),
     Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))))
+    Some(ExpensesAmountObject(100.50, Some(100.50)))
+  )
 
   "validate" should {
     "return no errors" when {

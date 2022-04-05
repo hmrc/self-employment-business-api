@@ -23,6 +23,7 @@ import v1.models.hateoas.{HateoasData, Link}
 object AmendPeriodicResponse extends HateoasLinks {
 
   implicit object LinksFactory extends HateoasLinksFactory[Unit, AmendPeriodicHateoasData] {
+
     override def links(appConfig: AppConfig, data: AmendPeriodicHateoasData): Seq[Link] = {
       import data._
       Seq(
@@ -30,7 +31,9 @@ object AmendPeriodicResponse extends HateoasLinks {
         retrievePeriodicSummary(appConfig, nino, businessId, periodId)
       )
     }
+
   }
+
 }
 
 case class AmendPeriodicHateoasData(nino: String, businessId: String, periodId: String) extends HateoasData

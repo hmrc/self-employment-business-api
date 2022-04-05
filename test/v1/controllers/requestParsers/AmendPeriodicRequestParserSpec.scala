@@ -25,9 +25,9 @@ import v1.models.request.amendPeriodic._
 
 class AmendPeriodicRequestParserSpec extends UnitSpec {
 
-  val nino: String = "AA123456B"
-  val businessId: String = "XAIS12345678910"
-  val periodId: String = "2019-01-01_2019-02-02"
+  val nino: String                   = "AA123456B"
+  val businessId: String             = "XAIS12345678910"
+  val periodId: String               = "2019-01-01_2019-02-02"
   implicit val correlationId: String = "X-123"
 
   private val requestBodyJson = Json.parse(
@@ -126,22 +126,24 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
         val amendPeriodicRequestBody: AmendPeriodicBody = AmendPeriodicBody(
           Some(Incomes(Some(IncomesAmountObject(200.00)), Some(IncomesAmountObject(200.00)))),
           None,
-          Some(Expenses(
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00))),
-            Some(ExpensesAmountObject(200.00, Some(200.00)))))
+          Some(
+            Expenses(
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00))),
+              Some(ExpensesAmountObject(200.00, Some(200.00)))
+            ))
         )
 
         parser.parseRequest(inputData) shouldBe
@@ -151,7 +153,8 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockAmendPeriodicValidator.validate(inputData)
+        MockAmendPeriodicValidator
+          .validate(inputData)
           .returns(List(NinoFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -159,7 +162,8 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockAmendPeriodicValidator.validate(inputData)
+        MockAmendPeriodicValidator
+          .validate(inputData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 
         parser.parseRequest(inputData) shouldBe
@@ -167,4 +171,5 @@ class AmendPeriodicRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

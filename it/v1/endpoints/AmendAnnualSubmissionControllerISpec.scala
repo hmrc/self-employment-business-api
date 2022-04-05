@@ -19,13 +19,13 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{ JsNumber, JsString, JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
 import v1.models.utils.JsonErrorValidators
-import v1.stubs.{ AuthStub, DownstreamStub, MtdIdLookupStub }
+import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with AmendAnnualSubmissionFixture with JsonErrorValidators {
 
@@ -148,73 +148,79 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
           ("AA123456A", "XAIS12345678910", "20223", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2021-23", requestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2016-17", requestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
-          ("AA123456A",
-           "XAIS12345678910",
-           "2021-22",
-           requestBodyJson.update("/adjustments/includedNonTaxableProfits", JsNumber(1.234)),
-           BAD_REQUEST,
-           ValueFormatError.copy(paths = Some(Seq("/adjustments/includedNonTaxableProfits")))),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2021-22",
+            requestBodyJson.update("/adjustments/includedNonTaxableProfits", JsNumber(1.234)),
+            BAD_REQUEST,
+            ValueFormatError.copy(paths = Some(Seq("/adjustments/includedNonTaxableProfits")))),
           ("AA123456A", "XA***IS1", "2022-23", requestBodyJson, BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A",
-           "XAIS12345678910",
-           "2021-22",
-           amendAnnualSubmissionBodyMtdJson(
-             allowances = Some(
-               allowancesMtdJsonWith(
-                 structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson
-                   .removeProperty("/building/name")
-                   .removeProperty("/building/number")))),
-             adjustments = None,
-             nonFinancials = None
-           ),
-           BAD_REQUEST,
-           RuleBuildingNameNumberError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building")))),
-          ("AA123456A",
-           "XAIS12345678910",
-           "2021-22",
-           amendAnnualSubmissionBodyMtdJson(
-             allowances = Some(
-               allowancesMtdJsonWith(structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson
-                 .update("/building/postcode", JsString("X" * 91))))),
-             adjustments = None,
-             nonFinancials = None
-           ),
-           BAD_REQUEST,
-           StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/postcode")))),
-          ("AA123456A",
-           "XAIS12345678910",
-           "2021-22",
-           requestBodyJson.update("/allowances/tradingIncomeAllowance", JsNumber(1.23)),
-           BAD_REQUEST,
-           RuleBothAllowancesSuppliedError),
-          ("AA123456A",
-           "XAIS12345678910",
-           "2021-22",
-           requestBodyJson.replaceWithEmptyObject("/allowances"),
-           BAD_REQUEST,
-           RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances")))),
-          ("AA123456A",
-           "XAIS12345678910",
-           "2021-22",
-           amendAnnualSubmissionBodyMtdJson(
-             allowances = Some(
-               allowancesMtdJsonWith(
-                 structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))))),
-             adjustments = None,
-             nonFinancials = None
-           ),
-           BAD_REQUEST,
-           DateFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate")))),
-          ("AA123456A",
-           "XAIS12345678910",
-           "2021-22",
-           amendAnnualSubmissionBodyMtdJson(
-             nonFinancials = Some(nonFinancialsMtdJson.update("/class4NicsExemptionReason", JsString("not-a-valid-reason"))),
-             adjustments = None,
-             allowances = None
-           ),
-           BAD_REQUEST,
-           Class4ExemptionReasonFormatError),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2021-22",
+            amendAnnualSubmissionBodyMtdJson(
+              allowances = Some(
+                allowancesMtdJsonWith(
+                  structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson
+                    .removeProperty("/building/name")
+                    .removeProperty("/building/number")))),
+              adjustments = None,
+              nonFinancials = None
+            ),
+            BAD_REQUEST,
+            RuleBuildingNameNumberError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building")))),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2021-22",
+            amendAnnualSubmissionBodyMtdJson(
+              allowances = Some(
+                allowancesMtdJsonWith(structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson
+                  .update("/building/postcode", JsString("X" * 91))))),
+              adjustments = None,
+              nonFinancials = None
+            ),
+            BAD_REQUEST,
+            StringFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/building/postcode")))),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2021-22",
+            requestBodyJson.update("/allowances/tradingIncomeAllowance", JsNumber(1.23)),
+            BAD_REQUEST,
+            RuleBothAllowancesSuppliedError),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2021-22",
+            requestBodyJson.replaceWithEmptyObject("/allowances"),
+            BAD_REQUEST,
+            RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/allowances")))),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2021-22",
+            amendAnnualSubmissionBodyMtdJson(
+              allowances = Some(allowancesMtdJsonWith(
+                structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))))),
+              adjustments = None,
+              nonFinancials = None
+            ),
+            BAD_REQUEST,
+            DateFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate")))),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2021-22",
+            amendAnnualSubmissionBodyMtdJson(
+              nonFinancials = Some(nonFinancialsMtdJson.update("/class4NicsExemptionReason", JsString("not-a-valid-reason"))),
+              adjustments = None,
+              allowances = None
+            ),
+            BAD_REQUEST,
+            Class4ExemptionReasonFormatError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -250,11 +256,12 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
           (GONE, "GONE", INTERNAL_SERVER_ERROR, DownstreamError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
           (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
   }
+
 }
