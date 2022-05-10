@@ -1,0 +1,48 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - headers.contentTypeJson
+  - errors.formatNino
+  - errors.formatBusinessId
+  - errors.formatValueSE
+  - errors.formatStartDate
+  - errors.formatEndDate
+  - errors.ruleEndDateBeforeStartDate
+  - errors.ruleBothExpensesSupplied
+  - errors.ruleOverlappingPeriod
+  - errors.ruleMisalignedPeriod
+  - errors.ruleNotContiguousPeriod
+  - errors.ruleNotAllowedConsolidatedExpenses
+  - errors.ruleTypeOfBusinessIncorrect
+  - errors.incorrectOrEmptyBody
+  - errors.ruleDuplicateSubmission
+  - errors.clientOrAgentNotAuthorised
+  - errors.matchingResourceNotFoundSE
+displayName: Create a Self-Employment Period Summary [test only]
+description: This endpoint allows a developer to create a self-employment period summary for submission of periodic data. Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if you have no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero. A National Insurance number and business must be provided.
+(annotations.sandboxData): !include ../scenarios/create_period_summary_scenarios.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include ../schemas/create_periodic_summary_request.json
+    examples:
+     example-1:
+      description: Create Periodic Request
+      value: !include ../examples/create_periodic_summary_request.json
+     example-2:
+      description: Create Periodic Consolidated Request
+      value: !include ../examples/create_periodic_summary_consolidated_request.json.json
+responses:
+  200:
+    body:
+      application/json:
+        type: !include ../schemas/create_periodic_summary_response.json
+        examples:
+          example:
+            description: Create Periodic Response
+            value: !include ../examples/create_periodic_summary_response.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

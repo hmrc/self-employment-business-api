@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Create Periodic Update Period",
-  "description": "Create a self-employment periodic update for submission of periodic data.",
+  "title": "Create a Self-Employment Period Summary",
+  "description": "Create a Self-Employment Period Summary Response",
   "type": "object",
   "properties": {
     "periodId": {
@@ -18,7 +18,7 @@
           "href": {
             "description": "The relative url of the endpoint",
             "type": "string",
-            "example": "/individuals/business/self-employment/{nino}/{businessId}/period/{periodId}"
+            "example": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12"
           },
           "method": {
             "description": "The HTTP method type for the endpoint.",

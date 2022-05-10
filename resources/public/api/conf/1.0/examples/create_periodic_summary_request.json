@@ -1,0 +1,44 @@
+{
+  "PeriodDates": {
+    "periodStartDate": "2019-08-24",
+    "periodEndDate": "2019-08-24"
+  },
+  "PeriodIncome": {
+    "turnover": 1000.99,
+    "other": 1000.09
+  },
+  "PeriodExpenses": {
+    "costOfGoodsAllowable": 1000.99,
+    "paymentsToSubcontractorsAllowable": 1000.99,
+    "wagesAndStaffCostsAllowable": 1000.99,
+    "carVanTravelExpensesAllowable": 1000.99,
+    "premisesRunningCostsAllowable": -99999.99,
+    "maintenanceCostsAllowable": -1000.99,
+    "adminCostsAllowable": 1000.99,
+    "businessEntertainmentCostsAllowable": 1000.99,
+    "advertisingCostsAllowable": 1000.99,
+    "interestOnBankOtherLoansAllowable": -1000.99,
+    "financeChargesAllowable": -1000.99,
+    "irrecoverableDebtsAllowable": -1000.99,
+    "professionalFeesAllowable": -99999999999.99,
+    "depreciationAllowable": -1000.99,
+    "otherExpensesAllowable": 1000.99
+  },
+  "PeriodDeductions": {
+    "costOfGoodsAllowableDisallowable": 91000.99,
+    "paymentsToSubcontractorsDisallowable": 1000.99,
+    "wagesAndStaffCostsDisallowable": 1000.99,
+    "carVanTravelExpensesDisallowable": 1000.99,
+    "premisesRunningCostsDisallowable": -1000.99,
+    "maintenanceCostsDisallowable": -999.99,
+    "adminCostsDisallowable": 1000.99,
+    "businessEntertainmentCostsDisallowable": 1000.99,
+    "advertisingCostsDisallowable": 1000.99,
+    "interestOnBankOtherLoansDisallowable": -1000.99,
+    "financeChargesDisallowable": -9999.99,
+    "irrecoverableDebtsDisallowable": 1000.99,
+    "professionalFeesDisallowable": -99999999999.99,
+    "depreciationDisallowable": -99999999999.99,
+    "otherExpensesDisallowable": 1000.99
+  }
+}

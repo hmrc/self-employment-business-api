@@ -24,6 +24,17 @@ traits:
               description: The supplied income source could not be found.
               value:
                 code: MATCHING_RESOURCE_NOT_FOUND
+  matchingResourceNotFoundSE:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              matchingResourceNotFoundSE:
+                description: Matching resource not found.
+                value:
+                  code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
     responses:
       403:
@@ -288,3 +299,58 @@ traits:
                 description: Both allowances and trading allowance must not be present at the same time.
                 value:
                   code: RULE_BOTH_ALLOWANCES_SUPPLIED
+  formatStartDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatStartDate:
+                description: The format of the supplied Start date field is not valid.
+                value:
+                  code: FORMAT_START_DATE
+  formatEndDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatEndDate:
+                description: The format of the supplied End date field is not valid.
+                value:
+                  code: FORMAT_END_DATE
+  ruleEndDateBeforeStartDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleEndDateBeforeStartDate:
+                description: The End date is earlier than the Start date.
+                value:
+                  code: RULE_END_DATE_BEFORE_START_DATE
+  ruleTypeOfBusinessIncorrect:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTypeOfBusinessIncorrect:
+                description: The business ID supplied does not relate to a self-employment business.
+                value:
+                  code: RULE_TYPE_OF_BUSINESS_INCORRECT
+  ruleDuplicateSubmission:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDuplicateSubmission:
+                description: A summary has already been submitted for the period specified.
+                value:
+                  code: RULE_DUPLICATE_SUBMISSION
