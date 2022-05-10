@@ -21,6 +21,7 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
@@ -47,7 +48,10 @@ class AuthISpec extends IntegrationBaseSpec {
     def request(): WSRequest = {
       setupStubs()
       buildRequest(s"/$nino/$businessId/annual/$taxYear")
-        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
     }
 
     def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
