@@ -21,6 +21,7 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
@@ -67,7 +68,10 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
     def request(): WSRequest = {
       setupStubs()
       buildRequest(s"/$nino/$businessId/annual/$taxYear")
-        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
     }
 
     def errorBody(code: String): String =
