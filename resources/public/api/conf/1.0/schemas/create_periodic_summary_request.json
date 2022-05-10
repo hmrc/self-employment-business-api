@@ -4,17 +4,27 @@
   "description": "Create a Self-Employment Period Summary Request",
   "type": "object",
   "properties": {
-    "periodStartDate": {
-      "id": "full-date",
-      "description": "The first day that the income, expenses and deduction period summary covers.",
-      "type": "string",
-      "example": "2020-01-01"
-    },
-    "periodEndDate": {
-      "id": "full-date",
-      "description": "The last day that the income, expenses and deduction period summary covers.",
-      "type": "string",
-      "example": "2020-01-01"
+    "periodDates": {
+      "type": "object",
+      "description": "Object containing the details about self-employment period dates.",
+      "properties": {
+        "periodStartDate": {
+          "id": "full-date",
+          "description": "The first day that the income, expenses and deduction period summary covers.",
+          "type": "string",
+          "example": "2020-01-01"
+        },
+        "periodEndDate": {
+          "id": "full-date",
+          "description": "The last day that the income, expenses and deduction period summary covers.",
+          "type": "string",
+          "example": "2020-01-01"
+        }
+      },
+      "required": [
+        "periodStartDate",
+        "periodEndDate"
+      ]
     },
     "periodIncome": {
       "type": "object",
@@ -200,9 +210,5 @@
       }
     }
   },
-  "required": [
-    "periodStartDate",
-    "periodEndDate"
-  ],
   "additionalProperties": false
 }
