@@ -1,0 +1,217 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create a Self-Employment Period Summary",
+  "description": "Create a Self-Employment Period Summary Request",
+  "type": "object",
+  "properties": {
+    "periodDates": {
+      "type": "object",
+      "description": "Object containing the details about self-employment period dates.",
+      "properties": {
+        "periodStartDate": {
+          "id": "full-date",
+          "description": "The first day that the income, expenses and deduction period summary covers.",
+          "type": "string",
+          "example": "2020-01-01"
+        },
+        "periodEndDate": {
+          "id": "full-date",
+          "description": "The last day that the income, expenses and deduction period summary covers.",
+          "type": "string",
+          "example": "2020-01-01"
+        }
+      },
+      "required": [
+        "periodStartDate",
+        "periodEndDate"
+      ]
+    },
+    "periodIncome": {
+      "type": "object",
+      "description": "Object containing the details about self-employment income.",
+      "properties": {
+        "turnover": {
+          "description": "The takings, fees, sales or money earned by your business. Income associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "10000.00"
+        },
+        "other": {
+          "type": "number",
+          "description": "Any other business income not included in turnover. Income associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.00"
+        }
+      }
+    },
+    "periodExpenses": {
+      "type": "object",
+      "description": "Object containing the details about self-employment expenses.",
+      "properties": {
+        "consolidatedExpenses": {
+          "type": "number",
+          "description": "The sum of all expenses for the specified period. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.00"
+        },
+        "costOfGoodsAllowable": {
+          "type": "number",
+          "description": "Cost of goods bought for resale or goods used. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.00"
+        },
+        "paymentsToSubcontractorsAllowable": {
+          "type": "number",
+          "description": "Payments to construction Industry subcontractors. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.00"
+        },
+        "wagesAndStaffCostsAllowable": {
+          "type": "number",
+          "description": "Wages, salaries and other staff costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.00"
+        },
+        "carVanTravelExpensesAllowable": {
+          "type": "number",
+          "description": "Car, van and travel expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "premisesRunningCostsAllowable": {
+          "type": "number",
+          "description": "Rent, rates, power and insurance costs. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "maintenanceCostsAllowable": {
+          "type": "number",
+          "description": "Repairs and renewals of property and equipment. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "adminCostsAllowable": {
+          "type": "number",
+          "description": "Phone, fax, stationery and other office costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "businessEntertainmentCostsAllowable": {
+          "type": "number",
+          "description": "Business entertainment costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "advertisingCostsAllowable": {
+          "type": "number",
+          "description": "Advertising costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "interestOnBankOtherLoansAllowable": {
+          "type": "number",
+          "description": "Interest on bank and other loans. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "financeChargesAllowable": {
+          "type": "number",
+          "description": "Bank, credit card and other financial charges. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "irrecoverableDebtsAllowable": {
+          "type": "number",
+          "description": "Irrecoverable debts written off. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "professionalFeesAllowable": {
+          "type": "number",
+          "description": "Accountancy, legal and other professional fees. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "depreciationAllowable": {
+          "type": "number",
+          "description": "Depreciation and loss/profit on sales of assets. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "otherExpensesAllowable": {
+          "type": "number",
+          "description": "Other business expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        }
+      }
+    },
+    "periodDeductions": {
+      "type": "object",
+      "description": "Object containing the details about self-employment deductions,  that cannot be claimed for tax purposes.",
+      "properties": {
+        "costOfGoodsAllowableDisallowable": {
+          "type": "number",
+          "description": "Cost of goods bought for resale or goods used. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.45"
+        },
+        "paymentsToSubcontractorsDisallowable": {
+          "type": "number",
+          "description": "Payments to subcontractors - Construction Industry Scheme (CIS). Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "wagesAndStaffCostsDisallowable": {
+          "type": "number",
+          "description": "Wages, salaries and other staff costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "carVanTravelExpensesDisallowable": {
+          "type": "number",
+          "description": "Car, van and travel expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "premisesRunningCostsDisallowable": {
+          "type": "number",
+          "description": "Rent, rates, power and insurance costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "maintenanceCostsDisallowable": {
+          "type": "number",
+          "description": "Repairs and renewals of property and equipment. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "adminCostsDisallowable": {
+          "type": "number",
+          "description": "Phone, fax, stationery and other office costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "businessEntertainmentCostsDisallowable": {
+          "type": "number",
+          "description": "Business entertainment costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "advertisingCostsDisallowable": {
+          "type": "number",
+          "description": "Advertising costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "interestOnBankOtherLoansDisallowable": {
+          "type": "number",
+          "description": "Interest on bank and other loans. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "financeChargesDisallowable": {
+          "type": "number",
+          "description": "Bank, credit card and other financial charges. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "irrecoverableDebtsDisallowable": {
+          "type": "number",
+          "description": "Irrecoverable debts written off. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "professionalFeesDisallowable": {
+          "type": "number",
+          "description": "Legal and other professional fees. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "depreciationDisallowable": {
+          "type": "number",
+          "description": "Depreciation and loss/profit on sales of assets. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        },
+        "otherExpensesDisallowable": {
+          "type": "number",
+          "description": "Other business expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "example": "10000.89"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "periodDates"
+  ]
+}
