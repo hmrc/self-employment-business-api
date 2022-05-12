@@ -47,5 +47,8 @@
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "required": [
+    "periodId"
+  ]
 }
