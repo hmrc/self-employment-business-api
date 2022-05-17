@@ -42,7 +42,7 @@ class CreatePeriodicService @Inject() (connector: CreatePeriodicConnector) exten
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))
-      mtdResponseWrapper <- EitherT.fromEither[Future](createPeriodId(desResponseWrapper, request.body.periodFromDate, request.body.periodToDate))
+      mtdResponseWrapper <- EitherT.fromEither[Future](createPeriodId(desResponseWrapper, request.body.periodDates.periodStartDate, request.body.periodDates.periodEndDate))
     } yield mtdResponseWrapper
 
     result.value

@@ -16,55 +16,55 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import support.UnitSpec
-import v1.models.errors.RuleBothExpensesSuppliedError
-import v1.models.request.createPeriodic.{ConsolidatedExpenses, Expenses, ExpensesAmountObject}
-import v1.models.utils.JsonErrorValidators
-
-class ConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
-
-  val consolidatedExpenses: ConsolidatedExpenses = ConsolidatedExpenses(100.50)
-
-  val expenses: Expenses = Expenses(
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50))),
-    Some(ExpensesAmountObject(100.50, Some(100.50)))
-  )
-
-  "validate" should {
-    "return no errors" when {
-      "when expenses and consolidated expenses are both not supplied" in {
-        ConsolidatedExpensesValidation.validate(None, None).isEmpty shouldBe true
-      }
-      "when expenses is only supplied" in {
-        ConsolidatedExpensesValidation.validate(None, Some(expenses)).isEmpty shouldBe true
-      }
-      "when consolidatedExpenses is only supplied" in {
-        ConsolidatedExpensesValidation.validate(Some(consolidatedExpenses), None).isEmpty shouldBe true
-      }
-    }
-
-    "return an error" when {
-      "when both expenses and consolidatedExpenses is supplied" in {
-        val validationResult = ConsolidatedExpensesValidation.validate(Some(consolidatedExpenses), Some(expenses))
-
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe RuleBothExpensesSuppliedError
-      }
-    }
-  }
-
-}
+//import support.UnitSpec
+//import v1.models.errors.RuleBothExpensesSuppliedError
+//import v1.models.request.createPeriodic.{ConsolidatedExpenses, Expenses, ExpensesAmountObject}
+//import v1.models.utils.JsonErrorValidators
+//
+//class ConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
+//
+//  val consolidatedExpenses: ConsolidatedExpenses = ConsolidatedExpenses(100.50)
+//
+//  val expenses: Expenses = Expenses(
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50))),
+//    Some(ExpensesAmountObject(100.50, Some(100.50)))
+//  )
+//
+//  "validate" should {
+//    "return no errors" when {
+//      "when expenses and consolidated expenses are both not supplied" in {
+//        ConsolidatedExpensesValidation.validate(None, None).isEmpty shouldBe true
+//      }
+//      "when expenses is only supplied" in {
+//        ConsolidatedExpensesValidation.validate(None, Some(expenses)).isEmpty shouldBe true
+//      }
+//      "when consolidatedExpenses is only supplied" in {
+//        ConsolidatedExpensesValidation.validate(Some(consolidatedExpenses), None).isEmpty shouldBe true
+//      }
+//    }
+//
+//    "return an error" when {
+//      "when both expenses and consolidatedExpenses is supplied" in {
+//        val validationResult = ConsolidatedExpensesValidation.validate(Some(consolidatedExpenses), Some(expenses))
+//
+//        validationResult.isEmpty shouldBe false
+//        validationResult.length shouldBe 1
+//        validationResult.head shouldBe RuleBothExpensesSuppliedError
+//      }
+//    }
+//  }
+//
+//}

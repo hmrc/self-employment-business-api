@@ -16,10 +16,18 @@
 
 package v1.models.request.createPeriodic
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class ConsolidatedExpenses(consolidatedExpenses: BigDecimal)
+case class PeriodIncome(turnover: Option[BigDecimal],
+                        other: Option[BigDecimal])
 
-object ConsolidatedExpenses {
-  implicit val format: Format[ConsolidatedExpenses] = Json.format[ConsolidatedExpenses]
+
+object PeriodIncome {
+  implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
+
+  implicit val writes: OWrites[PeriodIncome] = (
+    (JsPath \ "financials" \ "incomes" \ "turnover" ).writeNullable[BigDecimal] and
+      (JsPath \ "financials" \ "incomes" \ "other").writeNullable[BigDecimal]
+  )(unlift(PeriodIncome.unapply))
 }

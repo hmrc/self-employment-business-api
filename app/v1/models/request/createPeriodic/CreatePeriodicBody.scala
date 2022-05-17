@@ -19,29 +19,18 @@ package v1.models.request.createPeriodic
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class CreatePeriodicBody(periodFromDate: String,
-                              periodToDate: String,
-                              incomes: Option[Incomes],
-                              consolidatedExpenses: Option[ConsolidatedExpenses],
-                              expenses: Option[Expenses]) {
-
-  def isEmpty: Boolean = {
-    incomes.exists(_.isEmpty) || expenses.exists(_.isEmpty)
-  }
-
-}
+case class CreatePeriodicBody(periodDates: PeriodDates,
+                              periodIncome: Option[PeriodIncome],
+                              periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                              periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
 object CreatePeriodicBody {
   implicit val reads: Reads[CreatePeriodicBody] = Json.reads[CreatePeriodicBody]
 
   implicit val writes: OWrites[CreatePeriodicBody] = (
-    (JsPath \ "from").write[String] and
-      (JsPath \ "to").write[String] and
-      (JsPath \ "financials" \ "incomes").writeNullable[Incomes] and
-      (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions").writeNullable[Expenses]
-  )(unlift(CreatePeriodicBody.unapply(_: CreatePeriodicBody).map { case (periodFromDate, periodToDate, incomesO, consolidatedExpensesO, expensesO) =>
-    (periodFromDate, periodToDate, incomesO, consolidatedExpensesO.map(_.consolidatedExpenses), expensesO)
-  }))
-
+    (JsPath \ "periodDates").write[PeriodDates] and
+      (JsPath \ "financials" \ "incomes").writeNullable[PeriodIncome] and
+      (JsPath \ "financials" \ "deductions").writeNullable[PeriodAllowableExpenses] and
+      (JsPath \ "financials" \ "deductions").writeNullable[PeriodDisallowableExpenses]
+    )(unlift(CreatePeriodicBody.unapply))
 }
