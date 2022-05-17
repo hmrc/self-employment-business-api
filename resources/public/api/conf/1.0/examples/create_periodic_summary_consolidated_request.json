@@ -7,10 +7,10 @@
     "turnover": 1000.99,
     "other": 1000.09
   },
-  "periodExpenses": {
+  "periodAllowableExpenses": {
     "consolidatedExpenses": 99999999999.99
   },
-  "periodDeductions": {
+  "periodDisallowableExpenses": {
     "costOfGoodsDisallowable": 91000.99,
     "paymentsToSubcontractorsDisallowable": 1000.99,
     "wagesAndStaffCostsDisallowable": 1000.99,

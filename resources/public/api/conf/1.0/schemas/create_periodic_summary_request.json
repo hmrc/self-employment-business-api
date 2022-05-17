@@ -10,10 +10,10 @@
     "periodIncome": {
       "$ref": "periodic/period_income.json"
     },
-    "periodExpenses": {
+    "periodAllowableExpenses": {
       "$ref": "periodic/period_allowable_expenses.json"
     },
-    "periodDeductions": {
+    "periodDisallowableExpenses": {
       "$ref": "periodic/period_disallowable_expenses.json"
     }
   },
