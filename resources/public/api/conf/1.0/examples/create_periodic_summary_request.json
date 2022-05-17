@@ -25,7 +25,7 @@
     "otherExpensesAllowable": 1000.99
   },
   "periodDeductions": {
-    "costOfGoodsAllowableDisallowable": 91000.99,
+    "costOfGoodsDisallowable": 91000.99,
     "paymentsToSubcontractorsDisallowable": 1000.99,
     "wagesAndStaffCostsDisallowable": 1000.99,
     "carVanTravelExpensesDisallowable": 1000.99,

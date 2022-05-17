@@ -16,6 +16,7 @@
       "example": "2020-01-01"
     }
   },
+  "additionalProperties": false,
   "required": [
     "periodStartDate",
     "periodEndDate"

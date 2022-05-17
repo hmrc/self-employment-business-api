@@ -13,7 +13,7 @@
           "href": {
             "description": "The relative url of the endpoint",
             "type": "string",
-            "example": "/individuals/business/self-employment/{nino}/{businessId}/period/{periodId}"
+            "example": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12"
           },
           "method": {
             "description": "The HTTP method type for the endpoint.",
@@ -27,7 +27,8 @@
             "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
             "type": "string",
             "enum": [
-              "amend-periodic-update",
+              "amend-self-employment-period-summary",
+              "list-self-employment-period-summaries",
               "self"
             ]
           }
