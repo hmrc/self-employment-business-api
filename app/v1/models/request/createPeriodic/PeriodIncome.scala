@@ -27,7 +27,7 @@ object PeriodIncome {
   implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
 
   implicit val writes: OWrites[PeriodIncome] = (
-    (JsPath \ "financials" \ "incomes" \ "turnover" ).writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "incomes" \ "other").writeNullable[BigDecimal]
+    (JsPath \  "turnover" ).writeNullable[BigDecimal] and
+      (JsPath \ "other").writeNullable[BigDecimal]
   )(unlift(PeriodIncome.unapply))
 }

@@ -16,13 +16,12 @@
 
 package v1.controllers.requestParsers.validators
 
-//import v1.controllers.requestParsers.validators.validations._
-//import v1.models.errors.{FromDateFormatError, MtdError, RuleIncorrectOrEmptyBodyError, ToDateFormatError}
-//import v1.models.request.createPeriodic.{ConsolidatedExpenses, CreatePeriodicBody, CreatePeriodicRawData, Expenses, Incomes}
-//
-//class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
-//
-//  private val validationSet = List(
+import v1.models.errors.MtdError
+import v1.models.request.createPeriodic.CreatePeriodicRawData
+
+class CreatePeriodicValidator extends Validator[CreatePeriodicRawData] {
+
+  private val validationSet = List()
 //    parameterFormatValidation,
 //    incorrectOrEmptyBodySubmittedValidation,
 //    bodyFieldValidation,
@@ -49,7 +48,7 @@ package v1.controllers.requestParsers.validators
 //      ConsolidatedExpensesValidation.validate(body.consolidatedExpenses, body.expenses)
 //    )
 //  }
-//
+
 //  private def bodyFieldValidation: CreatePeriodicRawData => List[List[MtdError]] = { data =>
 //    val body = data.body.as[CreatePeriodicBody]
 //
@@ -63,14 +62,14 @@ package v1.controllers.requestParsers.validators
 //        )
 //      ))
 //  }
-//
+
 //  private def dateRuleValidation: CreatePeriodicRawData => List[List[MtdError]] = (data: CreatePeriodicRawData) => {
 //    val body = data.body.as[CreatePeriodicBody]
 //    List(
 //      DateValidation.validateToDateBeforeFromDate(body.periodFromDate, body.periodToDate)
 //    )
 //  }
-//
+
 //  private def validateDates(fromDate: String, toDate: String): List[MtdError] = {
 //    List(
 //      DateValidation.validate(
@@ -96,7 +95,7 @@ package v1.controllers.requestParsers.validators
 //      )
 //    ).flatten
 //  }
-//
+
 //  private def validateConsolidatedExpenses(consolidatedExpenses: ConsolidatedExpenses): List[MtdError] = {
 //    List(
 //      NumberValidation.validateOptionalIncludeNegatives(
@@ -105,7 +104,7 @@ package v1.controllers.requestParsers.validators
 //      )
 //    ).flatten
 //  }
-//
+
 //  private def validateExpenses(expenses: Expenses): List[MtdError] = {
 //    List(
 //      NumberValidation.validateOptionalIncludeNegatives(
@@ -230,9 +229,9 @@ package v1.controllers.requestParsers.validators
 //      )
 //    ).flatten
 //  }
-//
-//  override def validate(data: CreatePeriodicRawData): List[MtdError] = {
-//    run(validationSet, data).distinct
-//  }
-//
-//}
+
+  override def validate(data: CreatePeriodicRawData): List[MtdError] = {
+    run(validationSet, data).distinct
+  }
+
+}

@@ -41,21 +41,21 @@ object PeriodAllowableExpenses {
   implicit val reads: Reads[PeriodAllowableExpenses] = Json.reads[PeriodAllowableExpenses]
 
   implicit val writes: OWrites[PeriodAllowableExpenses] = (
-    (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses" ).writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "costOfGoods" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "constructionIndustryScheme" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "staffCosts" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "travelCosts" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "premisesRunningCosts" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "maintenanceCosts" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "adminCosts" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "businessEntertainmentCosts" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "advertisingCosts" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "interest" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "financialCharges" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "badDebt" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "depreciation" \ "amount").writeNullable[BigDecimal] and
-      (JsPath \ "financials" \ "deductions" \ "other" \ "amount").writeNullable[BigDecimal]
+    (JsPath \ "simplifiedExpenses" ).writeNullable[BigDecimal] and
+      (JsPath \ "costOfGoods" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "constructionIndustryScheme" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "staffCosts" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "travelCosts" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "premisesRunningCosts" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "maintenanceCosts" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "adminCosts" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "businessEntertainmentCosts" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "advertisingCosts" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "interest" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "financialCharges" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "badDebt" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "depreciation" \ "amount").writeNullable[BigDecimal] and
+      (JsPath \ "other" \ "amount").writeNullable[BigDecimal]
     )(unlift(PeriodAllowableExpenses.unapply))
 }

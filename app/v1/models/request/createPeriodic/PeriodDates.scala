@@ -16,25 +16,11 @@
 
 package v1.models.request.createPeriodic
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.libs.json.{Json, Reads}
 
 case class PeriodDates(periodStartDate: String,
                        periodEndDate: String)
 
 object PeriodDates {
   implicit val reads: Reads[PeriodDates] = Json.reads[PeriodDates]
-  implicit val writes: OWrites[PeriodDates] = Json.writes[PeriodDates]
-}
-
-//to flatten from a periodDates object to just from and to fields.
-case class OuterObjectPeriodDates(periodDates: PeriodDates)
-
-object OuterObjectPeriodDates {
-
-  implicit val readsOuter: Reads[OuterObjectPeriodDates] = Json.reads[OuterObjectPeriodDates]
-
-  implicit val writesOuter: OWrites[OuterObjectPeriodDates] = (o: OuterObjectPeriodDates) => Json.obj(
-    "from" -> o.periodDates.periodStartDate,
-    "to" -> o.periodDates.periodEndDate
-  )
 }
