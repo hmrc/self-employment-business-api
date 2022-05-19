@@ -1,72 +1,40 @@
 {
-  "incomes": {
-    "turnover": {
-      "amount": 172.89
-    },
-    "other": {
-      "amount": 634.14
-    }
+  "periodIncome": {
+    "turnover": 1000.99,
+    "other": 1000.99
   },
-  "expenses": {
-    "costOfGoodsBought": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "cisPaymentsTo": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "staffCosts": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "travelCosts": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "premisesRunningCosts": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "maintenanceCosts": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "adminCosts": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "advertisingCosts": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "businessEntertainmentCosts": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "interestOnLoans": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "financialCharges": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "badDebt": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "professionalFees": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "depreciation": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    },
-    "other": {
-      "amount": 627.90,
-      "disallowableAmount": 657.02
-    }
+  "periodAllowableExpenses": {
+    "costOfGoodsAllowable": 1000.99,
+    "paymentsToSubcontractorsAllowable": 1000.99,
+    "wagesAndStaffCostsAllowable": 1000.99,
+    "carVanTravelExpensesAllowable": 1000.99,
+    "premisesRunningCostsAllowable": 1000.99,
+    "maintenanceCostsAllowable": 1000.99,
+    "adminCostsAllowable": 1000.99,
+    "businessEntertainmentCostsAllowable": 1000.99,
+    "advertisingCostsAllowable": 1000.99,
+    "interestOnBankOtherLoansAllowable": 1000.99,
+    "financeChargesAllowable": 1000.99,
+    "irrecoverableDebtsAllowable": 1000.99,
+    "professionalFeesAllowable": 1000.99,
+    "depreciationAllowable": 1000.99,
+    "otherExpensesAllowable": 1000.99
+  },
+  "periodDisallowableExpenses": {
+    "costOfGoodsDisallowable": 1000.99,
+    "paymentsToSubcontractorsDisallowable": 1000.99,
+    "wagesAndStaffCostsDisallowable": 1000.99,
+    "carVanTravelExpensesDisallowable": 1000.99,
+    "premisesRunningCostsDisallowable": 1000.99,
+    "maintenanceCostsDisallowable": 1000.99,
+    "adminCostsDisallowable": 1000.99,
+    "businessEntertainmentCostsDisallowable": 1000.99,
+    "advertisingCostsDisallowable": 1000.99,
+    "interestOnBankOtherLoansDisallowable": 1000.99,
+    "financeChargesDisallowable": 1000.99,
+    "irrecoverableDebtsDisallowable": 1000.99,
+    "professionalFeesDisallowable": 1000.99,
+    "depreciationDisallowable": 1000.99,
+    "otherExpensesDisallowable": 1000.99
   }
 }

@@ -1,13 +1,9 @@
 {
-  "incomes": {
-    "turnover": {
-      "amount": 172.89
-    },
-    "other": {
-      "amount": 634.14
-    }
+  "periodIncome": {
+    "turnover": 1000.99,
+    "other": 1000.99
   },
-  "consolidatedExpenses": {
-    "consolidatedExpenses": 647.89
+  "periodAllowableExpenses": {
+    "consolidatedExpenses": 1000.99
   }
 }

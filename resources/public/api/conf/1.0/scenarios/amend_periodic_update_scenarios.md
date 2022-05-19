@@ -9,15 +9,15 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success response.</p></td>
+            <td><p>Simulates success response with full expenses.</p></td>
         </tr>
         <tr>
             <td><p>NOT_ALLOWED_CONSOLIDATED_EXPENSES</p></td>
-            <td><p>Simulate scenario where the accumulative turnover amount exceeds the threshold.</p></td>
+            <td><p>Simulates the scenario where the cumulative turnover amount exceeds the consolidated expenses threshold.</p></td>
         </tr>
         <tr>
             <td><p>NOT_FOUND</p></td>
-            <td><p>Simulate scenario where no data found.</p></td>
+            <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>
     </tbody>
 </table>
