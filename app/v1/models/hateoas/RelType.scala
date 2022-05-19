@@ -22,8 +22,8 @@ object RelType {
   val AMEND_ANNUAL_SUBMISSION_REL  = "create-and-amend-self-employment-annual-submission"
   val DELETE_ANNUAL_SUBMISSION_REL = "delete-self-employment-annual-submission"
 
-  val CREATE_PERIODIC_UPDATE_REL = "create-periodic-update"
-  val AMEND_PERIODIC_UPDATE_REL  = "amend-periodic-update"
-  val LIST_PERIODIC_UPDATE_REL = "list-self-employment-period-summaries"
+  val CREATE_PERIOD_SUMMARY_REL = "create-self-employment-period-summary"
+  val AMEND_PERIOD_SUMMARY_REL  = "amend-self-employment-period-summary"
+  val LIST_PERIOD_SUMMARIES_REL = "list-self-employment-period-summaries"
 
 }

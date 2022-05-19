@@ -32,7 +32,7 @@ object ListPeriodicResponse extends HateoasLinks {
 
     override def links(appConfig: AppConfig, data: ListPeriodicHateoasData): Seq[Link] = {
       Seq(
-        listPeriodicSummarySelf(appConfig, data.nino, data.businessId),
+        listPeriodicSummary(appConfig, data.nino, data.businessId, true),
         createPeriodicSummary(appConfig, data.nino, data.businessId)
       )
     }

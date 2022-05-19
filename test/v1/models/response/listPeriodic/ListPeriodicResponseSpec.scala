@@ -162,7 +162,7 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
       ListPeriodicResponse.LinksFactory.links(mockAppConfig, ListPeriodicHateoasData("nino", "id")) shouldBe Seq(
         Link(href = "/test/context/nino/id/period", method = GET, rel = "self"),
-        Link(href = "/test/context/nino/id/period", method = POST, rel = "create-periodic-update")
+        Link(href = "/test/context/nino/id/period", method = POST, rel = "create-self-employment-period-summary")
       )
     }
     "return the correct item-level links" in {

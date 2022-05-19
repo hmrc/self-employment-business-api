@@ -234,7 +234,7 @@ class RetrievePeriodicResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrievePeriodicResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.PUT, rel = "amend-periodic-update"),
+          Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.GET, rel = "self")
         )
       }

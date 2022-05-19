@@ -43,19 +43,16 @@ trait HateoasLinks {
   def deleteAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUBMISSION_REL)
 
-  def listPeriodicSummarySelf(appConfig: AppConfig, nino: String, businessId: String): Link =
-    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = GET, rel = SELF)
-
-  def listPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String): Link =
-    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = GET, rel = LIST_PERIODIC_UPDATE_REL)
+  def listPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String, isSelf: Boolean): Link =
+    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
 
   def createPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String): Link =
-    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIODIC_UPDATE_REL)
+    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
 
   def retrievePeriodicSummary(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
     Link(href = periodicSummaryItemUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
 
   def amendPeriodicSummary(appConfig: AppConfig, nino: String, businessId: String, periodId: String): Link =
-    Link(href = periodicSummaryItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIODIC_UPDATE_REL)
+    Link(href = periodicSummaryItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
 
 }

@@ -61,7 +61,7 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
          |      "method": "POST",
-         |      "rel": "create-periodic-update"
+         |      "rel": "create-self-employment-period-summary"
          |    }
          |  ]
          |}
