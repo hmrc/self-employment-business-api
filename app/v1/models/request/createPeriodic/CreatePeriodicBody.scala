@@ -28,8 +28,7 @@ object CreatePeriodicBody {
   implicit val reads: Reads[CreatePeriodicBody] = Json.reads[CreatePeriodicBody]
 
   implicit val writes: OWrites[CreatePeriodicBody] = (
-    ((JsPath \ "from").write[String] and
-      (JsPath \ "to").write[String])(unlift(PeriodDates.unapply)) and
+    JsPath.write[PeriodDates] and
       (JsPath \ "financials" \ "incomes").writeNullable[PeriodIncome] and
       (JsPath \ "financials" \ "deductions").writeNullable[PeriodAllowableExpenses] and
       (JsPath \ "financials" \ "deductions").writeNullable[PeriodDisallowableExpenses]

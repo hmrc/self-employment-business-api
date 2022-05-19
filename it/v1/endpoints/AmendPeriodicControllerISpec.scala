@@ -132,7 +132,7 @@ class AmendPeriodicControllerISpec extends IntegrationBaseSpec {
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
          |      "method": "PUT",
-         |      "rel": "amend-periodic-update"
+         |      "rel": "amend-self-employment-period-summary"
          |    },
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",

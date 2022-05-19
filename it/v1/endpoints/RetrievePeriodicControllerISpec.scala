@@ -113,7 +113,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
          |  "links": [
          |    {
          |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |      "rel": "amend-periodic-update",
+         |      "rel": "amend-self-employment-period-summary",
          |      "method": "PUT"
          |    },
          |    {

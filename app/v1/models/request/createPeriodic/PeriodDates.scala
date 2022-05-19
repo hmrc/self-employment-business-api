@@ -16,11 +16,18 @@
 
 package v1.models.request.createPeriodic
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class PeriodDates(periodStartDate: String,
                        periodEndDate: String)
 
 object PeriodDates {
   implicit val reads: Reads[PeriodDates] = Json.reads[PeriodDates]
+
+  implicit val writes: OWrites[PeriodDates] = (
+    (JsPath \ "from").write[String] and
+      (JsPath \ "to").write[String]
+    )(unlift(PeriodDates.unapply))
+
 }
