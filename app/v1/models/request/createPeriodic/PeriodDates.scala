@@ -16,10 +16,11 @@
 
 package v1.models.request.createPeriodic
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, Reads}
 
-case class ConsolidatedExpenses(consolidatedExpenses: BigDecimal)
+case class PeriodDates(periodStartDate: String,
+                       periodEndDate: String)
 
-object ConsolidatedExpenses {
-  implicit val format: Format[ConsolidatedExpenses] = Json.format[ConsolidatedExpenses]
+object PeriodDates {
+  implicit val reads: Reads[PeriodDates] = Json.reads[PeriodDates]
 }

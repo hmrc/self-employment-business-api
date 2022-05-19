@@ -16,24 +16,24 @@
 
 package v1.mocks.validators
 
-import org.scalamock.handlers.CallHandler1
-import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.CreatePeriodicValidator
-import v1.models.errors.MtdError
-import v1.models.request.createPeriodic.CreatePeriodicRawData
+//import org.scalamock.handlers.CallHandler1
+//import org.scalamock.scalatest.MockFactory
+//import v1.controllers.requestParsers.validators.CreatePeriodicValidator
+//import v1.models.errors.MtdError
+//import v1.models.request.createPeriodic.CreatePeriodicRawData
 
-trait MockCreatePeriodicValidator extends MockFactory {
-
-  val mockValidator: CreatePeriodicValidator = mock[CreatePeriodicValidator]
-
-  object MockCreatePeriodicValidator {
-
-    def validate(data: CreatePeriodicRawData): CallHandler1[CreatePeriodicRawData, List[MtdError]] = {
-      (mockValidator
-        .validate(_: CreatePeriodicRawData))
-        .expects(data)
-    }
-
-  }
-
-}
+//trait MockCreatePeriodicValidator extends MockFactory {
+//
+//  val mockValidator: CreatePeriodicValidator = mock[CreatePeriodicValidator]
+//
+//  object MockCreatePeriodicValidator {
+//
+//    def validate(data: CreatePeriodicRawData): CallHandler1[CreatePeriodicRawData, List[MtdError]] = {
+//      (mockValidator
+//        .validate(_: CreatePeriodicRawData))
+//        .expects(data)
+//    }
+//
+//  }
+//
+//}

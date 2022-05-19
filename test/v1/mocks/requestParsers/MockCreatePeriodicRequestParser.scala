@@ -16,22 +16,22 @@
 
 package v1.mocks.requestParsers
 
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.CreatePeriodicRequestParser
-import v1.models.errors.ErrorWrapper
-import v1.models.request.createPeriodic.{CreatePeriodicRawData, CreatePeriodicRequest}
-
-trait MockCreatePeriodicRequestParser extends MockFactory {
-
-  val mockCreatePeriodicRequestParser: CreatePeriodicRequestParser = mock[CreatePeriodicRequestParser]
-
-  object MockCreatePeriodicRequestParser {
-
-    def parseRequest(data: CreatePeriodicRawData): CallHandler[Either[ErrorWrapper, CreatePeriodicRequest]] = {
-      (mockCreatePeriodicRequestParser.parseRequest(_: CreatePeriodicRawData)(_: String)).expects(data, *)
-    }
-
-  }
-
-}
+//import org.scalamock.handlers.CallHandler
+//import org.scalamock.scalatest.MockFactory
+//import v1.controllers.requestParsers.CreatePeriodicRequestParser
+//import v1.models.errors.ErrorWrapper
+//import v1.models.request.createPeriodic.{CreatePeriodicRawData, CreatePeriodicRequest}
+//
+//trait MockCreatePeriodicRequestParser extends MockFactory {
+//
+//  val mockCreatePeriodicRequestParser: CreatePeriodicRequestParser = mock[CreatePeriodicRequestParser]
+//
+//  object MockCreatePeriodicRequestParser {
+//
+//    def parseRequest(data: CreatePeriodicRawData): CallHandler[Either[ErrorWrapper, CreatePeriodicRequest]] = {
+//      (mockCreatePeriodicRequestParser.parseRequest(_: CreatePeriodicRawData)(_: String)).expects(data, *)
+//    }
+//
+//  }
+//
+//}

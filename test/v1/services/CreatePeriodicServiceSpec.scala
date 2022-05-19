@@ -32,34 +32,52 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  private val requestBody = CreatePeriodicBody(
-    "2017-01-25",
-    "2017-01-25",
-    Some(
-      Incomes(
-        Some(IncomesAmountObject(500.12)),
-        Some(IncomesAmountObject(500.12))
+  private val requestBody =
+    CreatePeriodicBody(
+      PeriodDates(
+        "2019-08-24",
+        "2019-08-24"),
+      Some(PeriodIncome(
+        Some(1000.99),
+        Some(1000.99)
       )),
-    Some(ConsolidatedExpenses(500.12)),
-    Some(
-      Expenses(
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12))),
-        Some(ExpensesAmountObject(500.12, Some(500.12)))
+      Some(PeriodAllowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-99999.99),
+        Some(-1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-1000.99),
+        Some(1000.99)
+      )),
+      Some(PeriodDisallowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-999.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-9999.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-99999999999.99),
+        Some(1000.99)
       ))
-  )
+    )
+
 
   private val requestData = CreatePeriodicRequest(
     nino = Nino(nino),
@@ -80,7 +98,7 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
     "createPeriodicSummary" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodicResponse("2017-01-25_2017-01-25")))
+        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodicResponse("2019-08-24_2019-08-24")))
 
         MockCreatePeriodicConnector
           .createPeriodicSummary(requestData)

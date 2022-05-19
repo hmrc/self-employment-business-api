@@ -34,36 +34,49 @@ class CreatePeriodicConnectorSpec extends ConnectorSpec {
   val request: CreatePeriodicRequest = CreatePeriodicRequest(
     nino = Nino(nino),
     businessId = businessId,
-    body = CreatePeriodicBody(
-      "2017-01-25",
-      "2018-01-24",
-      Some(
-        Incomes(
-          Some(IncomesAmountObject(500.25)),
-          Some(IncomesAmountObject(500.25))
-        )),
-      Some(
-        ConsolidatedExpenses(
-          500.25
-        )),
-      Some(
-        Expenses(
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25))),
-          Some(ExpensesAmountObject(500.25, Some(500.25)))
-        ))
+    body =  CreatePeriodicBody(
+      PeriodDates(
+        "2019-08-24",
+        "2019-08-24"),
+      Some(PeriodIncome(
+        Some(1000.99),
+        Some(1000.99)
+      )),
+      Some(PeriodAllowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-99999.99),
+        Some(-1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-1000.99),
+        Some(1000.99)
+      )),
+      Some(PeriodDisallowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-999.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-9999.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-99999999999.99),
+        Some(1000.99)
+      ))
     )
   )
 

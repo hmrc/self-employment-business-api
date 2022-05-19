@@ -16,10 +16,14 @@
 
 package v1.models.request.createPeriodic
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OWrites, Reads}
 
-case class ExpensesAmountObject(amount: BigDecimal, disallowableAmount: Option[BigDecimal])
+case class PeriodIncome(turnover: Option[BigDecimal],
+                        other: Option[BigDecimal])
 
-object ExpensesAmountObject {
-  implicit val format: Format[ExpensesAmountObject] = Json.format[ExpensesAmountObject]
+
+object PeriodIncome {
+  implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
+
+  implicit val writes: OWrites[PeriodIncome] = Json.writes[PeriodIncome]
 }

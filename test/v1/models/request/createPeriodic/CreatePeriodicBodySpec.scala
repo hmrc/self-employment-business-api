@@ -21,292 +21,356 @@ import support.UnitSpec
 
 class CreatePeriodicBodySpec extends UnitSpec {
 
-  val fullMtdModel: CreatePeriodicBody = CreatePeriodicBody(
-    "2017-01-25",
-    "2018-01-24",
-    Some(
-      Incomes(
-        Some(IncomesAmountObject(500.25)),
-        Some(IncomesAmountObject(500.25))
+  val fullMtdBody: CreatePeriodicBody =
+    CreatePeriodicBody(
+      PeriodDates(
+        "2019-08-24",
+        "2019-08-24"),
+      Some(PeriodIncome(
+        Some(1000.99),
+        Some(1000.99)
       )),
-    Some(
-      ConsolidatedExpenses(
-        500.25
+      Some(PeriodAllowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-99999.99),
+        Some(-1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-1000.99),
+        Some(1000.99)
       )),
-    Some(
-      Expenses(
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25)))
+      Some(PeriodDisallowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-999.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-9999.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-99999999999.99),
+        Some(1000.99)
       ))
-  )
+    )
 
-  val someOptionalMtdModel: CreatePeriodicBody = CreatePeriodicBody(
-    "2017-01-25",
-    "2018-01-24",
-    Some(
-      Incomes(
-        Some(IncomesAmountObject(500.25)),
-        Some(IncomesAmountObject(500.25))
+  val someOptionalFieldsMtdBody: CreatePeriodicBody =
+    CreatePeriodicBody(
+      PeriodDates(
+        "2019-08-24",
+        "2019-08-24"),
+      Some(PeriodIncome(
+        Some(1000.99),
+        Some(1000.99)
       )),
-    Some(
-      ConsolidatedExpenses(
-        500.25
+      Some(PeriodAllowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-99999.99),
+        Some(-1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-1000.99),
+        Some(1000.99)
       )),
-    None
-  )
+      None
+    )
 
-  val noOptionalMtdModel: CreatePeriodicBody = CreatePeriodicBody(
-    "2017-01-25",
-    "2018-01-24",
-    None,
-    None,
-    None
-  )
+  val noOptionalFieldsMtdBody: CreatePeriodicBody =
+    CreatePeriodicBody(
+      PeriodDates(
+        "2019-08-24",
+        "2019-08-24"),
+      None,
+      None,
+      None
+    )
 
   "reads" should {
-    "read from JSON" when {
+    "read from a JSON" when {
       val fullRequestJson = Json.parse(
         """
           |{
-          |   "periodFromDate": "2017-01-25",
-          |   "periodToDate": "2018-01-24",
-          |   "incomes": {
-          |     "turnover": {
-          |       "amount": 500.25
+          |     "periodDates": {
+          |           "periodStartDate": "2019-08-24",
+          |           "periodEndDate": "2019-08-24"
           |     },
-          |     "other": {
-          |       "amount": 500.25
-          |     }
-          |   },
-          |   "consolidatedExpenses": {
-          |     "consolidatedExpenses": 500.25
-          |   },
-          |   "expenses": {
-          |     "costOfGoodsBought": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
+          |     "periodIncome": {
+          |          "turnover": 1000.99,
+          |          "other": 1000.99
           |     },
-          |     "cisPaymentsTo": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "staffCosts": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "travelCosts": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "premisesRunningCosts": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "maintenanceCosts": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "adminCosts": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "advertisingCosts": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "businessEntertainmentCosts": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "interestOnLoans": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "financialCharges": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "badDebt": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "professionalFees": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "depreciation": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     },
-          |     "other": {
-          |       "amount": 500.25,
-          |       "disallowableAmount": 500.25
-          |     }
-          |   }
+          |     "periodAllowableExpenses": {
+          |          "costOfGoodsAllowable": 1000.99,
+          |          "paymentsToSubcontractorsAllowable": 1000.99,
+          |          "wagesAndStaffCostsAllowable": 1000.99,
+          |          "carVanTravelExpensesAllowable": 1000.99,
+          |          "premisesRunningCostsAllowable": -99999.99,
+          |          "maintenanceCostsAllowable": -1000.99,
+          |          "adminCostsAllowable": 1000.99,
+          |          "businessEntertainmentCostsAllowable": 1000.99,
+          |          "advertisingCostsAllowable": 1000.99,
+          |          "interestOnBankOtherLoansAllowable": -1000.99,
+          |          "financeChargesAllowable": -1000.99,
+          |          "irrecoverableDebtsAllowable": -1000.99,
+          |          "professionalFeesAllowable": -99999999999.99,
+          |          "depreciationAllowable": -1000.99,
+          |          "otherExpensesAllowable": 1000.99
+          |      },
+          |     "periodDisallowableExpenses": {
+          |          "costOfGoodsDisallowable": 1000.99,
+          |          "paymentsToSubcontractorsDisallowable": 1000.99,
+          |          "wagesAndStaffCostsDisallowable": 1000.99,
+          |          "carVanTravelExpensesDisallowable": 1000.99,
+          |          "premisesRunningCostsDisallowable": -1000.99,
+          |          "maintenanceCostsDisallowable": -999.99,
+          |          "adminCostsDisallowable": 1000.99,
+          |          "businessEntertainmentCostsDisallowable": 1000.99,
+          |          "advertisingCostsDisallowable": 1000.99,
+          |          "interestOnBankOtherLoansDisallowable": -1000.99,
+          |          "financeChargesDisallowable": -9999.99,
+          |          "irrecoverableDebtsDisallowable": -1000.99,
+          |          "professionalFeesDisallowable": -99999999999.99,
+          |          "depreciationDisallowable": -99999999999.99,
+          |          "otherExpensesDisallowable": 1000.99
+          |      }
           |}
-        """.stripMargin
-      )
+          |""".stripMargin)
 
       val someOptionalRequestJson = Json.parse(
         """
           |{
-          |   "periodFromDate": "2017-01-25",
-          |   "periodToDate": "2018-01-24",
-          |   "incomes": {
-          |     "turnover": {
-          |       "amount": 500.25
+          |     "periodDates": {
+          |           "periodStartDate": "2019-08-24",
+          |           "periodEndDate": "2019-08-24"
           |     },
-          |     "other": {
-          |       "amount": 500.25
-          |     }
-          |   },
-          |   "consolidatedExpenses": {
-          |     "consolidatedExpenses": 500.25
-          |   }
+          |     "periodIncome": {
+          |          "turnover": 1000.99,
+          |          "other": 1000.99
+          |     },
+          |     "periodAllowableExpenses": {
+          |          "costOfGoodsAllowable": 1000.99,
+          |          "paymentsToSubcontractorsAllowable": 1000.99,
+          |          "wagesAndStaffCostsAllowable": 1000.99,
+          |          "carVanTravelExpensesAllowable": 1000.99,
+          |          "premisesRunningCostsAllowable": -99999.99,
+          |          "maintenanceCostsAllowable": -1000.99,
+          |          "adminCostsAllowable": 1000.99,
+          |          "businessEntertainmentCostsAllowable": 1000.99,
+          |          "advertisingCostsAllowable": 1000.99,
+          |          "interestOnBankOtherLoansAllowable": -1000.99,
+          |          "financeChargesAllowable": -1000.99,
+          |          "irrecoverableDebtsAllowable": -1000.99,
+          |          "professionalFeesAllowable": -99999999999.99,
+          |          "depreciationAllowable": -1000.99,
+          |          "otherExpensesAllowable": 1000.99
+          |      }
           |}
-        """.stripMargin
-      )
+          |""".stripMargin)
+
 
       val noOptionalRequestJson = Json.parse(
         """
           |{
-          |   "periodFromDate": "2017-01-25",
-          |   "periodToDate": "2018-01-24"
+          |     "periodDates": {
+          |           "periodStartDate": "2019-08-24",
+          |           "periodEndDate": "2019-08-24"
+          |     }
           |}
-        """.stripMargin
-      )
+          |""".stripMargin)
+
 
       "a valid request with all optional fields is made" in {
-        fullRequestJson.as[CreatePeriodicBody] shouldBe fullMtdModel
+        fullRequestJson.as[CreatePeriodicBody] shouldBe fullMtdBody
       }
 
       "a valid request with some optional fields is made" in {
-        someOptionalRequestJson.as[CreatePeriodicBody] shouldBe someOptionalMtdModel
+        someOptionalRequestJson.as[CreatePeriodicBody] shouldBe someOptionalFieldsMtdBody
       }
 
       "a valid request with no optional fields is made" in {
-        noOptionalRequestJson.as[CreatePeriodicBody] shouldBe noOptionalMtdModel
+        noOptionalRequestJson.as[CreatePeriodicBody] shouldBe noOptionalFieldsMtdBody
       }
-
     }
   }
 
   "writes" should {
     "write to des" when {
-      val nonConsolidatedJson = Json.parse(
-        """{
-          |   "from": "2017-01-25",
-          |   "to": "2018-01-24",
+      val fullDesJson = Json.parse(
+        """
+          |{
+          |   "from": "2019-08-24",
+          |   "to": "2019-08-24",
           |   "financials": {
-          |     "incomes": {
-          |       "turnover":  500.25,
-          |       "other": 500.25
-          |     },
-          |     "deductions": {
-          |       "costOfGoods": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "constructionIndustryScheme": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "staffCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "travelCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "premisesRunningCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "maintenanceCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "adminCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "advertisingCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "businessEntertainmentCosts": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "interest": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "financialCharges": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "badDebt": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "professionalFees": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "depreciation": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       },
-          |       "other": {
-          |         "amount": 500.25,
-          |         "disallowableAmount": 500.25
-          |       }
-          |     }
-          |  }
-          |}
-        """.stripMargin
-      )
-
-      val consolidatedJson = Json.parse(
-        """{
-          |   "from": "2017-01-25",
-          |   "to": "2018-01-24",
-          |   "financials": {
-          |     "incomes": {
-          |       "turnover":  500.25,
-          |       "other":  500.25
-          |     },
-          |     "deductions": {
-          |       "simplifiedExpenses": 500.25
-          |     }
+          |      "incomes": {
+          |         "turnover": 1000.99,
+          |         "other": 1000.99
+          |      },
+          |      "deductions": {
+          |         "adminCosts": {
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
+          |         },
+          |         "other": {
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
+          |         },
+          |         "professionalFees": {
+          |            "amount": -99999999999.99,
+          |            "disallowableAmount": -99999999999.99
+          |         },
+          |         "staffCosts": {
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
+          |         },
+          |         "premisesRunningCosts": {
+          |            "amount": -99999.99,
+          |            "disallowableAmount": -1000.99
+          |         },
+          |         "financialCharges": {
+          |            "amount": -1000.99,
+          |            "disallowableAmount": -9999.99
+          |         },
+          |         "maintenanceCosts": {
+          |            "amount": -1000.99,
+          |            "disallowableAmount": -999.99
+          |         },
+          |         "badDebt": {
+          |            "amount": -1000.99,
+          |            "disallowableAmount": -1000.99
+          |         },
+          |         "advertisingCosts": {
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
+          |         },
+          |         "costOfGoods": {
+          |            "amount": 1000.99
+          |         },
+          |         "constructionIndustryScheme": {
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
+          |         },
+          |         "interest": {
+          |            "amount": -1000.99,
+          |            "disallowableAmount": -1000.99
+          |         },
+          |         "depreciation": {
+          |            "amount": -1000.99,
+          |            "disallowableAmount": -99999999999.99
+          |         },
+          |         "travelCosts": {
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
+          |         },
+          |        "businessEntertainmentCosts": {
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
+          |        }
+          |      }
           |   }
           |}
-        """.stripMargin
-      )
+          |""".stripMargin)
 
-      "a valid request is made with non-consolidated body" in {
-        Json.toJson(fullMtdModel.copy(consolidatedExpenses = None)) shouldBe nonConsolidatedJson
+      val someOptionalDesJson = Json.parse(
+        """
+          |{
+          |   "from": "2019-08-24",
+          |   "to": "2019-08-24",
+          |   "financials": {
+          |      "incomes": {
+          |         "turnover": 1000.99,
+          |         "other": 1000.99
+          |      },
+          |      "deductions": {
+          |         "adminCosts": {
+          |            "amount": 1000.99
+          |         },
+          |         "other": {
+          |            "amount": 1000.99
+          |         },
+          |         "professionalFees": {
+          |            "amount": -99999999999.99
+          |         },
+          |         "staffCosts": {
+          |            "amount": 1000.99
+          |         },
+          |         "premisesRunningCosts": {
+          |            "amount": -99999.99
+          |         },
+          |         "financialCharges": {
+          |            "amount": -1000.99
+          |         },
+          |         "maintenanceCosts": {
+          |            "amount": -1000.99
+          |         },
+          |         "badDebt": {
+          |            "amount": -1000.99
+          |         },
+          |         "advertisingCosts": {
+          |            "amount": 1000.99
+          |         },
+          |         "costOfGoods": {
+          |            "amount": 1000.99
+          |         },
+          |         "constructionIndustryScheme": {
+          |            "amount": 1000.99
+          |         },
+          |         "interest": {
+          |            "amount": -1000.99
+          |         },
+          |         "depreciation": {
+          |            "amount": -1000.99
+          |         },
+          |         "travelCosts": {
+          |            "amount": 1000.99
+          |         },
+          |        "businessEntertainmentCosts": {
+          |            "amount": 1000.99
+          |        }
+          |      }
+          |   }
+          |}
+          |""".stripMargin)
+
+      val noOptionalDesJson = Json.parse(
+        """
+          |{
+          |   "from": "2019-08-24",
+          |   "to": "2019-08-24"
+          |}
+          |""".stripMargin)
+
+      "a valid request with all optional fields is made" in {
+        Json.toJson(fullMtdBody) shouldBe fullDesJson
       }
 
-      "a valid request is made with consolidated body" in {
-        Json.toJson(fullMtdModel.copy(expenses = None)) shouldBe consolidatedJson
+      "a valid request with some optional fields is made" in {
+        Json.toJson(someOptionalFieldsMtdBody) shouldBe someOptionalDesJson
+      }
+
+      "a valid request with no optional fields is made" in {
+        Json.toJson(noOptionalFieldsMtdBody) shouldBe noOptionalDesJson
       }
     }
   }
-
 }

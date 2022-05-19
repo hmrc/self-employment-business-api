@@ -24,5 +24,6 @@ object RelType {
 
   val CREATE_PERIODIC_UPDATE_REL = "create-periodic-update"
   val AMEND_PERIODIC_UPDATE_REL  = "amend-periodic-update"
+  val LIST_PERIODIC_UPDATE_REL = "list-self-employment-period-summaries"
 
 }
