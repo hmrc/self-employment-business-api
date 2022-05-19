@@ -29,7 +29,7 @@ object AmendPeriodicResponse extends HateoasLinks {
       Seq(
         amendPeriodicSummary(appConfig, nino, businessId, periodId),
         retrievePeriodicSummary(appConfig, nino, businessId, periodId),
-        listPeriodicSummary(appConfig, nino, businessId)
+        listPeriodicSummary(appConfig, nino, businessId, isSelf = false)
       )
     }
 
