@@ -38,24 +38,7 @@ case class PeriodAllowableExpenses(consolidatedExpenses: Option[BigDecimal],
 
 object PeriodAllowableExpenses {
 
-  implicit val reads: Reads[PeriodAllowableExpenses] = (
-    (JsPath \ "consolidatedExpenses").readNullable[BigDecimal] and
-      (JsPath \ "costOfGoodsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "paymentsToSubcontractorsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "wagesAndStaffCostsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "carVanTravelExpensesAllowable").readNullable[BigDecimal] and
-      (JsPath \ "premisesRunningCostsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "maintenanceCostsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "adminCostsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "businessEntertainmentCostsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "advertisingCostsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "interestOnBankOtherLoansAllowable").readNullable[BigDecimal] and
-      (JsPath \ "financeChargesAllowable").readNullable[BigDecimal] and
-      (JsPath \ "irrecoverableDebtsAllowable").readNullable[BigDecimal] and
-      (JsPath \ "professionalFeesAllowable").readNullable[BigDecimal] and
-      (JsPath \ "depreciationAllowable").readNullable[BigDecimal] and
-      (JsPath \ "otherExpensesAllowable").readNullable[BigDecimal]
-    )(PeriodAllowableExpenses.apply _)
+  implicit val reads: Reads[PeriodAllowableExpenses] = Json.reads[PeriodAllowableExpenses]
 
   implicit val writes: OWrites[PeriodAllowableExpenses] = (
     (JsPath \ "simplifiedExpenses").writeNullable[BigDecimal] and

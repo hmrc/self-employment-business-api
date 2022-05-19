@@ -40,7 +40,7 @@ class AmendPeriodicConnector @Inject() (val http: HttpClient, val appConfig: App
     put(
       body = request.body,
       DesUri[Unit](
-        s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
+        s"income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
       )
     )
   }

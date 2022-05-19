@@ -85,7 +85,7 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
 
         MockHttpClient
           .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
+            url = s"$baseUrl/income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,

@@ -23,11 +23,7 @@ case class AmendPeriodicBody(periodIncome: Option[PeriodIncome], periodAllowable
 
 object AmendPeriodicBody {
 
-  implicit val reads: Reads[AmendPeriodicBody] = (
-    (JsPath \ "periodIncome").readNullable[PeriodIncome] and
-      (JsPath \ "periodAllowableExpenses").readNullable[PeriodAllowableExpenses] and
-      (JsPath \ "periodDisallowableExpenses").readNullable[PeriodDisallowableExpenses]
-    ) (AmendPeriodicBody.apply _)
+  implicit val reads: Reads[AmendPeriodicBody] = Json.reads[AmendPeriodicBody]
 
   implicit val writes: OWrites[AmendPeriodicBody] = (
     (JsPath \ "incomes").writeNullable[PeriodIncome] and
