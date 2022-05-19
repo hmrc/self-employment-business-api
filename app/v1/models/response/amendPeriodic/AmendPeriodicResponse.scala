@@ -28,7 +28,8 @@ object AmendPeriodicResponse extends HateoasLinks {
       import data._
       Seq(
         amendPeriodicSummary(appConfig, nino, businessId, periodId),
-        retrievePeriodicSummary(appConfig, nino, businessId, periodId)
+        retrievePeriodicSummary(appConfig, nino, businessId, periodId),
+        listPeriodicSummary(appConfig, nino, businessId)
       )
     }
 

@@ -16,35 +16,14 @@
 
 package v1.models.request.amendPeriodic
 
-import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import play.api.libs.json.{Json, OWrites, Reads}
 
-class IncomesAmountObjectSpec extends UnitSpec {
+case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal])
 
-  val model: IncomesAmountObject = IncomesAmountObject(500.12)
+object PeriodIncome {
 
-  val json: JsValue = Json.parse(
-    """
-      |{
-      |  "amount": 500.12
-      |}
-    """.stripMargin
-  )
+  implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
 
-  "reads" should {
-    "read from a model" when {
-      "a valid request is made" in {
-        json.as[IncomesAmountObject] shouldBe model
-      }
-    }
-  }
-
-  "writes" should {
-    "write to a model" when {
-      "a valid request is made" in {
-        Json.toJson(model) shouldBe json
-      }
-    }
-  }
+  implicit val writes: OWrites[PeriodIncome] = Json.writes[PeriodIncome]
 
 }

@@ -19,17 +19,13 @@ package v1.models.request.amendPeriodic
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
-class IncomesSpec extends UnitSpec {
+class PeriodIncomeSpec extends UnitSpec {
 
   val mtdJson: JsValue = Json.parse(
     """
       |{
-      |  "turnover": {
-      |    "amount": 500.25
-      |  },
-      |  "other": {
-      |    "amount": 500.25
-      |  }
+      |  "turnover":  500.25,
+      |  "other": 500.25
       |}
     """.stripMargin
   )
@@ -43,15 +39,15 @@ class IncomesSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val model: Incomes = Incomes(
-    Some(IncomesAmountObject(500.25)),
-    Some(IncomesAmountObject(500.25))
+  val model: PeriodIncome = PeriodIncome(
+    Some(500.25),
+    Some(500.25)
   )
 
   "reads" should {
     "return a model" when {
       "passed a valid json" in {
-        mtdJson.as[Incomes] shouldBe model
+        mtdJson.as[PeriodIncome] shouldBe model
       }
     }
   }

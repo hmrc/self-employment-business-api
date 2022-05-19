@@ -21,7 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
 import v1.models.domain.Nino
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendPeriodic.{AmendPeriodicBody, AmendPeriodicRequest, ConsolidatedExpenses}
+import v1.models.request.amendPeriodic._
 
 import scala.concurrent.Future
 
@@ -37,7 +37,24 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
     periodId = periodId,
     body = AmendPeriodicBody(
       None,
-      Some(ConsolidatedExpenses(200.10)),
+      Some(PeriodAllowableExpenses(
+        Some(200.10),
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None
+      )),
       None
     )
   )
@@ -68,7 +85,7 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
 
         MockHttpClient
           .put(
-            url = s"$baseUrl/income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
+            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,

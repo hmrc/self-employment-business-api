@@ -5,4 +5,4 @@ DELETE     /:nino/:businessId/annual/:taxYear       v1.controllers.DeleteAnnualS
 #POST       /:nino/:businessId/period                v1.controllers.CreatePeriodicController.handleRequest(nino: String, businessId: String)
 GET        /:nino/:businessId/period                v1.controllers.ListPeriodicController.handleRequest(nino: String, businessId: String)
 GET        /:nino/:businessId/period/:periodId      v1.controllers.RetrievePeriodicController.handleRequest(nino: String, businessId: String, periodId: String)
-PUT        /:nino/:businessId/period/:periodId      v1.controllers.AmendPeriodicController.handleRequest(nino: String, businessId: String, periodId: String)
+#PUT        /:nino/:businessId/period/:periodId      v1.controllers.AmendPeriodicController.handleRequest(nino: String, businessId: String, periodId: String)
