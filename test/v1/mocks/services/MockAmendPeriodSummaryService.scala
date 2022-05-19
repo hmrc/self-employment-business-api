@@ -31,9 +31,9 @@ trait MockAmendPeriodSummaryService extends MockFactory {
 
   val mockAmendPeriodicService: AmendPeriodSummaryService = mock[AmendPeriodSummaryService]
 
-  object MockAmendPeriodicService {
+  object MockAmendPeriodSummaryService {
 
-    def amendPeriodicSummary(requestData: AmendPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def amendPeriodSummary(requestData: AmendPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendPeriodicService
         .amendPeriodSummary(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
