@@ -22,7 +22,7 @@ import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.CreatePeriodicRequestParser
+import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.createPeriodic.CreatePeriodicRawData
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService,
                                           val lookupService: MtdIdLookupService,
-                                          parser: CreatePeriodicRequestParser,
+                                          parser: CreatePeriodSummaryRequestParser,
                                           service: CreatePeriodicService,
                                           hateoasFactory: HateoasFactory,
                                           cc: ControllerComponents,

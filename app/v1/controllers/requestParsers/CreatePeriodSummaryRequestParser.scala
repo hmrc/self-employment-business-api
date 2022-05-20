@@ -17,14 +17,14 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import v1.controllers.requestParsers.validators.CreatePeriodicValidator
-import v1.models.domain.{BusinessId, Nino}
+import v1.controllers.requestParsers.validators.CreatePeriodSummaryValidator
+import v1.models.domain.Nino
 import v1.models.request.createPeriodic.{CreatePeriodicBody, CreatePeriodicRawData, CreatePeriodicRequest}
 
-class CreatePeriodicRequestParser @Inject() (val validator: CreatePeriodicValidator)
+class CreatePeriodSummaryRequestParser @Inject()(val validator: CreatePeriodSummaryValidator)
     extends RequestParser[CreatePeriodicRawData, CreatePeriodicRequest] {
 
   override protected def requestFor(data: CreatePeriodicRawData): CreatePeriodicRequest =
-    CreatePeriodicRequest(Nino(data.nino), BusinessId(data.businessId), data.body.as[CreatePeriodicBody])
+    CreatePeriodicRequest(Nino(data.nino), data.businessId, data.body.as[CreatePeriodicBody])
 
 }
