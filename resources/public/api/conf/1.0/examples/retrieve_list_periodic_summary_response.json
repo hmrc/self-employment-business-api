@@ -1,9 +1,9 @@
 {
-  "periods": [
+  "periodSummary": [
     {
       "periodId": "2017-04-06_2017-07-04",
-      "from": "2017-04-06",
-      "to": "2017-07-04",
+      "periodStartDate": "2017-04-06",
+      "periodEndDate": "2017-07-04",
       "links": [
         {
           "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2017-04-06_2017-07-04",
@@ -16,7 +16,7 @@
   "links": [
     {
       "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period",
-      "rel": "create-periodic-update",
+      "rel": "create-self-employment-period-summary",
       "method": "POST"
     },
     {

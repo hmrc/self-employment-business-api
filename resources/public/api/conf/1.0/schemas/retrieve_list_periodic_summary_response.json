@@ -4,32 +4,32 @@
   "description": "Retrieves a self-employment annual summary for a tax year.",
   "type": "object",
   "properties": {
-    "periods": {
+    "periodSummary": {
       "type": "array",
       "items": {
         "type": "object",
-        "description": "Details about Self-Employment periods ",
+        "description": "Details about Self-Employment periods",
         "properties": {
           "periodId": {
-            "description": "Concatenated from and to dates",
+            "description": "Concatenated Period Start and End dates.",
             "type": "string",
             "example": "2017-04-06_2017-07-04"
           },
-          "from": {
-            "description": "The start date of this update period",
+          "periodStartDate": {
+            "description": "The first day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
             "type": "string",
-            "example": "2018-04-06"
+            "example": "2020-01-01"
           },
-          "to": {
-            "description": "The end date of this update period",
+          "periodEndDate": {
+            "description": "The last day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
             "type": "string",
-            "example": "2018-04-06"
+            "example": "2020-01-01"
           }
         },
         "required": [
           "periodId",
-          "from",
-          "to"
+          "periodStartDate",
+          "periodEndDate"
         ]
       },
       "additionalProperties": false
@@ -50,7 +50,7 @@
             "type": "string",
             "enum": [
               "self",
-              "create-periodic-update"
+              "create-self-employment-period-summary"
             ]
           },
           "method": {
@@ -72,7 +72,7 @@
     }
   },
   "required": [
-    "periods"
+    "periodSummary"
   ],
   "additionalProperties": false
 }
