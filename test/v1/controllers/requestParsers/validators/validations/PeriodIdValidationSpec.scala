@@ -41,6 +41,15 @@ class PeriodIdValidationSpec extends UnitSpec {
         validationResult.head shouldBe PeriodIdFormatError
       }
 
+      "an invalid period id with length of 21 is supplied" in {
+
+        val invalidPeriodId  = "201839127125364718273"
+        val validationResult = PeriodIdValidation.validate(invalidPeriodId)
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe PeriodIdFormatError
+      }
+
       "a period id is supplied that is too long" in {
 
         val invalidPeriodId  = "2017-01-25_2017-02-2512"
