@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.createPeriodic.CreatePeriodicRequest
+import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v1.models.response.createPeriodic.CreatePeriodicResponse
 import v1.services.CreatePeriodicService
 
@@ -34,9 +34,9 @@ trait MockCreatePeriodicService extends MockFactory {
 
   object MockCreatePeriodicService {
 
-    def createPeriodic(requestData: CreatePeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]]] = {
+    def createPeriodic(requestData: CreatePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]]] = {
       (mockCreatePeriodicService
-        .createPeriodicSummary(_: CreatePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .createPeriodicSummary(_: CreatePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
 

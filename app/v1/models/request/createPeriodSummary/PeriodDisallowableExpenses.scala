@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.models.request.createPeriodic
+package v1.models.request.createPeriodSummary
 
 import play.api.libs.functional.syntax.unlift
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class PeriodDisallowableExpenses(costOfGoodsAllowableDisallowable: Option[BigDecimal],
+case class PeriodDisallowableExpenses(costOfGoodsDisallowable: Option[BigDecimal],
                                       paymentsToSubcontractorsDisallowable: Option[BigDecimal],
                                       wagesAndStaffCostsDisallowable: Option[BigDecimal],
                                       carVanTravelExpensesDisallowable: Option[BigDecimal],

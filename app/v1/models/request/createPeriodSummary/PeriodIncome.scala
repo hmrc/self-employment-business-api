@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.request.createPeriodic
+package v1.models.request.createPeriodSummary
 
-import v1.models.domain.{BusinessId, Nino}
+import play.api.libs.json.{Json, OWrites, Reads}
 
-case class CreatePeriodicRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodicBody)
+case class PeriodIncome(turnover: Option[BigDecimal],
+                        other: Option[BigDecimal])
+
+
+object PeriodIncome {
+  implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
+
+  implicit val writes: OWrites[PeriodIncome] = Json.writes[PeriodIncome]
+}
