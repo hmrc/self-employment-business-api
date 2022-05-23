@@ -18,7 +18,7 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockListPeriodicConnector
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listPeriodic.ListPeriodicRequest
@@ -58,7 +58,7 @@ class ListPeriodicServiceSpec extends ServiceSpec {
 
   private val requestData = ListPeriodicRequest(
     nino = Nino(nino),
-    businessId = businessId
+    businessId = BusinessId(businessId)
   )
 
   trait Test extends MockListPeriodicConnector {

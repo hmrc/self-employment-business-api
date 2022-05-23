@@ -18,28 +18,32 @@ package v1.models.response.listPeriodic
 
 import cats.Functor
 import config.AppConfig
-import play.api.libs.json.{Json, OWrites, Reads, Writes}
+import play.api.libs.json.{JsPath, Json, OWrites, Reads, Writes}
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import v1.models.domain.BusinessId
 import v1.models.hateoas.{HateoasData, Link}
 
-case class ListPeriodicResponse[I](periods: Seq[I])
+case class ListPeriodicResponse[I](periodSummary: Seq[I])
 
 object ListPeriodicResponse extends HateoasLinks {
-  implicit def reads: Reads[ListPeriodicResponse[PeriodDetails]]   = Json.format[ListPeriodicResponse[PeriodDetails]]
+
+  implicit val reads: Reads[ListPeriodicResponse[PeriodDetails]] =
+    (JsPath \ "periods").read[Seq[PeriodDetails]].map(ListPeriodicResponse(_))
+
   implicit def writes[I: Writes]: OWrites[ListPeriodicResponse[I]] = Json.writes[ListPeriodicResponse[I]]
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListPeriodicResponse, PeriodDetails, ListPeriodicHateoasData] {
 
     override def links(appConfig: AppConfig, data: ListPeriodicHateoasData): Seq[Link] = {
       Seq(
-        listPeriodicSummary(appConfig, data.nino, data.businessId, true),
-        createPeriodicSummary(appConfig, data.nino, data.businessId)
+        listPeriodicSummary(appConfig, data.nino, data.businessId.value, isSelf = true),
+        createPeriodicSummary(appConfig, data.nino, data.businessId.value)
       )
     }
 
     override def itemLinks(appConfig: AppConfig, data: ListPeriodicHateoasData, item: PeriodDetails): Seq[Link] =
       Seq(
-        retrievePeriodicSummary(appConfig, data.nino, data.businessId, item.periodId)
+        retrievePeriodicSummary(appConfig, data.nino, data.businessId.value, item.periodId)
       )
 
   }
@@ -47,10 +51,10 @@ object ListPeriodicResponse extends HateoasLinks {
   implicit object ResponseFunctor extends Functor[ListPeriodicResponse] {
 
     override def map[A, B](fa: ListPeriodicResponse[A])(f: A => B): ListPeriodicResponse[B] =
-      ListPeriodicResponse(fa.periods.map(f))
+      ListPeriodicResponse(fa.periodSummary.map(f))
 
   }
 
 }
 
-case class ListPeriodicHateoasData(nino: String, businessId: String) extends HateoasData
+case class ListPeriodicHateoasData(nino: String, businessId: BusinessId) extends HateoasData

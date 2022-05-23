@@ -18,12 +18,12 @@ package v1.controllers.requestParsers
 
 import javax.inject.Inject
 import v1.controllers.requestParsers.validators.ListPeriodicValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
 
 class ListPeriodicRequestParser @Inject() (val validator: ListPeriodicValidator) extends RequestParser[ListPeriodicRawData, ListPeriodicRequest] {
 
   override protected def requestFor(data: ListPeriodicRawData): ListPeriodicRequest =
-    ListPeriodicRequest(Nino(data.nino), data.businessId)
+    ListPeriodicRequest(Nino(data.nino), BusinessId(data.businessId))
 
 }
