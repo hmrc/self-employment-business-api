@@ -37,9 +37,12 @@ class RetrievePeriodicConnector @Inject() (val http: HttpClient, val appConfig: 
     val fromDate = request.periodId.substring(0, 10)
     val toDate   = request.periodId.substring(11, 21)
 
+    val nino       = request.nino.nino
+    val businessId = request.businessId.value
+
     get(
       uri = DesUri[RetrievePeriodicResponse](
-        s"income-store/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate"
+        s"income-store/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
       )
     )
   }

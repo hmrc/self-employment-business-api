@@ -16,6 +16,6 @@
 
 package v1.models.request.amendPeriodic
 
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 
-case class AmendPeriodicRequest(nino: Nino, businessId: String, periodId: String, body: AmendPeriodicBody)
+case class AmendPeriodicRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodicBody)

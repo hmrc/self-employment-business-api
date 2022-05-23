@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import v1.mocks.validators.MockRetrievePeriodicValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
 
@@ -49,7 +49,7 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
         MockRetrievePeriodicValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(RetrievePeriodicRequest(Nino(nino), businessId, periodId))
+          Right(RetrievePeriodicRequest(Nino(nino), BusinessId(businessId), periodId))
       }
     }
 

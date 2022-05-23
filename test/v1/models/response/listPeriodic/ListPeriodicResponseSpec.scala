@@ -19,7 +19,7 @@ package v1.models.response.listPeriodic
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.domain.BusinessId
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 
@@ -89,14 +89,15 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
   }
 
   "LinksFactory" should {
-    val nino       = "nino"
-    val businessId = "id"
-    val periodId   = "periodId"
+    val nino        = "AA111111A"
+    val businessId  = "id"
+    val periodId    = "periodId"
+    val hateoasData = ListPeriodicHateoasData(Nino(nino), BusinessId(businessId))
 
     "return the correct top-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
-      ListPeriodicResponse.LinksFactory.links(mockAppConfig, ListPeriodicHateoasData(nino, BusinessId(businessId))) shouldBe Seq(
+      ListPeriodicResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
         Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self"),
         Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary")
       )
@@ -105,10 +106,7 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
     "return the correct item-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
-      ListPeriodicResponse.LinksFactory.itemLinks(
-        mockAppConfig,
-        ListPeriodicHateoasData(nino, BusinessId(businessId)),
-        PeriodDetails(periodId, "", "")) shouldBe Seq(
+      ListPeriodicResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "")) shouldBe Seq(
         Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
       )
     }

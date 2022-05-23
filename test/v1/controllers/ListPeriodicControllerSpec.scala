@@ -121,7 +121,7 @@ class ListPeriodicControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, ListPeriodicHateoasData(nino, BusinessId(businessId)))
+          .wrapList(response, ListPeriodicHateoasData(Nino(nino), BusinessId(businessId)))
           .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)

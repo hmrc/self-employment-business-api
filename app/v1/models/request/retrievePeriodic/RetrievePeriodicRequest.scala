@@ -16,6 +16,6 @@
 
 package v1.models.request.retrievePeriodic
 
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 
-case class RetrievePeriodicRequest(nino: Nino, businessId: String, periodId: String)
+case class RetrievePeriodicRequest(nino: Nino, businessId: BusinessId, periodId: String)

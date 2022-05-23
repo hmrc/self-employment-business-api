@@ -20,6 +20,7 @@ import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrievePeriodicResponse(periodFromDate: String,
@@ -54,4 +55,4 @@ object RetrievePeriodicResponse extends HateoasLinks {
 
 }
 
-case class RetrievePeriodicHateoasData(nino: String, businessId: String, periodId: String) extends HateoasData
+case class RetrievePeriodicHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData

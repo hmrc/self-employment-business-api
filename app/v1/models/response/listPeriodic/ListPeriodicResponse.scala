@@ -20,7 +20,7 @@ import cats.Functor
 import config.AppConfig
 import play.api.libs.json.{JsPath, Json, OWrites, Reads, Writes}
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import v1.models.domain.BusinessId
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
 case class ListPeriodicResponse[I](periodSummary: Seq[I])
@@ -36,14 +36,14 @@ object ListPeriodicResponse extends HateoasLinks {
 
     override def links(appConfig: AppConfig, data: ListPeriodicHateoasData): Seq[Link] = {
       Seq(
-        listPeriodicSummary(appConfig, data.nino, data.businessId.value, isSelf = true),
-        createPeriodicSummary(appConfig, data.nino, data.businessId.value)
+        listPeriodicSummary(appConfig, data.nino, data.businessId, isSelf = true),
+        createPeriodicSummary(appConfig, data.nino, data.businessId)
       )
     }
 
     override def itemLinks(appConfig: AppConfig, data: ListPeriodicHateoasData, item: PeriodDetails): Seq[Link] =
       Seq(
-        retrievePeriodicSummary(appConfig, data.nino, data.businessId.value, item.periodId)
+        retrievePeriodicSummary(appConfig, data.nino, data.businessId, item.periodId)
       )
 
   }
@@ -57,4 +57,4 @@ object ListPeriodicResponse extends HateoasLinks {
 
 }
 
-case class ListPeriodicHateoasData(nino: String, businessId: BusinessId) extends HateoasData
+case class ListPeriodicHateoasData(nino: Nino, businessId: BusinessId) extends HateoasData
