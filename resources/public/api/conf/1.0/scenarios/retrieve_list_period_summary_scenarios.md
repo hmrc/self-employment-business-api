@@ -9,15 +9,11 @@
     <tbody>
         <tr>
             <td><p>N/A - DEFAULT</p></td>
-            <td><p>Simulate success response.</p></td>
-        </tr>
-        <tr>
-            <td><p>MULTIPLE_PERIODS</p></td>
-            <td><p>Simulate a response with multiple periods.</p></td>
+            <td><p>Simulates success response.</p></td>
         </tr>
         <tr>
             <td><p>NOT_FOUND</p></td>
-            <td><p>Simulate scenario where no data found.</p></td>
+            <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>
     </tbody>
 </table>
