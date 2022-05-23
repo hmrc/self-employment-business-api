@@ -16,17 +16,22 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-//
-//import v1.models.errors.{MtdError, RuleBothExpensesSuppliedError}
-//import v1.models.request.amendPeriodic._
-//
-//object AmendConsolidatedExpensesValidation {
-//
-//  def validate(consolidatedExpenses: Option[ConsolidatedExpenses], expenses: Option[PeriodDisallowableExpenses]): List[MtdError] = {
-//    (consolidatedExpenses, expenses) match {
-//      case (Some(_), Some(_)) => List(RuleBothExpensesSuppliedError)
-//      case _                  => NoValidationErrors
-//    }
-//  }
-//
-//}
+
+import v1.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import v1.models.request.amendPeriodic._
+
+object AmendConsolidatedExpensesValidation {
+
+  def validate(allowableExpenses: PeriodAllowableExpenses): List[MtdError] = {
+    allowableExpenses.consolidatedExpenses match {
+      case None => NoValidationErrors
+      case Some(_) =>
+        allowableExpenses match {
+          case PeriodAllowableExpenses(
+            Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) => NoValidationErrors
+          case _ => List(RuleBothExpensesSuppliedError)
+        }
+    }
+  }
+
+}

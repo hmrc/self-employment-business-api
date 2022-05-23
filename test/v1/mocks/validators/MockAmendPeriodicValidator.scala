@@ -16,24 +16,24 @@
 
 package v1.mocks.validators
 
-//import org.scalamock.handlers.CallHandler1
-//import org.scalamock.scalatest.MockFactory
-//import v1.controllers.requestParsers.validators.AmendPeriodicValidator
-//import v1.models.errors.MtdError
-//import v1.models.request.amendPeriodic.AmendPeriodSummaryRawData
-//
-//trait MockAmendPeriodicValidator extends MockFactory {
-//
-//  val mockValidator: AmendPeriodicValidator = mock[AmendPeriodicValidator]
-//
-//  object MockAmendPeriodicValidator {
-//
-//    def validate(data: AmendPeriodSummaryRawData): CallHandler1[AmendPeriodSummaryRawData, List[MtdError]] = {
-//      (mockValidator
-//        .validate(_: AmendPeriodSummaryRawData))
-//        .expects(data)
-//    }
-//
-//  }
-//
-//}
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.AmendPeriodicValidator
+import v1.models.errors.MtdError
+import v1.models.request.amendPeriodic.AmendPeriodicRawData
+
+trait MockAmendPeriodicValidator extends MockFactory {
+
+  val mockValidator: AmendPeriodicValidator = mock[AmendPeriodicValidator]
+
+  object MockAmendPeriodicValidator {
+
+    def validate(data: AmendPeriodicRawData): CallHandler1[AmendPeriodicRawData, List[MtdError]] = {
+      (mockValidator
+        .validate(_: AmendPeriodicRawData))
+        .expects(data)
+    }
+
+  }
+
+}

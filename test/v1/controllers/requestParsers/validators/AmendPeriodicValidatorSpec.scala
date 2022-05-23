@@ -29,6 +29,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
 
   private val requestBodyJson = Json.parse(
     """
+      |{
       |    "periodIncome": {
       |        "turnover": 1000.99,
       |        "other": 1000.99
@@ -86,6 +87,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
+                |{
                 |    "periodIncome": {
                 |        "turnover": 1000.99,
                 |        "other": 1000.99
@@ -204,8 +206,8 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
       }
       "an empty allowances is submitted" in {
         validator.validate(
-          AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"consolidatedExpenses": {}}"""))) shouldBe List(
-          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/consolidatedExpenses/consolidatedExpenses"))))
+          AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError)
       }
       "an empty nonFinancials is submitted" in {
         validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"expenses": {}}"""))) shouldBe List(
@@ -268,10 +270,202 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
 
     "return ValueFormatError" when {
 
-      val input = Seq(
+      "/periodIncome/turnover is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
+                |{
+                |    "periodIncome": {
+                |        "turnover": -1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin)
+            )
+          ) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/turnover"))))
+      }
+      "/periodIncome/other is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": -1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/other"))))
+      }
+      "/periodAllowableExpenses/consolidatedExpenses is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "consolidatedExpenses": -1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/consolidatedExpenses"))))
+      }
+      "/periodAllowableExpenses/costOfGoodsAllowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse(
+              """
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.9999,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
+            )
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/costOfGoodsAllowable"))))
+      }
 
-      )
-      "/incomes/turnover/amount is invalid" in {
+      "/periodAllowableExpenses/paymentsToSubcontractorsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -279,24 +473,51 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": -200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "consolidatedExpenses": {
-            |        "consolidatedExpenses": 200.00
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": -1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/incomes/turnover/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/paymentsToSubcontractorsAllowable"))))
       }
-      "/incomes/other/amount is invalid" in {
+      "/periodAllowableExpenses/wagesAndStaffCostsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -304,24 +525,51 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": -200.00
-            |        }
-            |    },
-            |    "consolidatedExpenses": {
-            |        "consolidatedExpenses": 200.00
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": -1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/incomes/other/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/wagesAndStaffCostsAllowable"))))
       }
-      "/consolidatedExpenses/consolidatedExpenses is invalid" in {
+      "/periodAllowableExpenses/carVanTravelExpensesAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -329,24 +577,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "consolidatedExpenses": {
-            |        "consolidatedExpenses": 200.046750
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": -1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/consolidatedExpenses/consolidatedExpenses"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/carVanTravelExpensesAllowable"))))
       }
-      "/expenses/costOfGoodsBought/amount is invalid" in {
+
+      "/periodAllowableExpenses/premisesRunningCostsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -354,83 +630,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.07640,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.9999,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/costOfGoodsBought/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/premisesRunningCostsAllowable"))))
       }
-      "/expenses/costOfGoodsBought/disallowableAmount is invalid" in {
+
+      "/periodAllowableExpenses/maintenanceCostsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -438,83 +683,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.052260
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.9999,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/costOfGoodsBought/disallowableAmount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/maintenanceCostsAllowable"))))
       }
-      "/expenses/cisPaymentsTo/amount is invalid" in {
+
+      "/periodAllowableExpenses/adminCostsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -522,83 +736,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": -1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/cisPaymentsTo/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/adminCostsAllowable"))))
       }
-      "/expenses/cisPaymentsTo/disallowableAmount is invalid" in {
+
+      "/periodAllowableExpenses/businessEntertainmentCostsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -606,83 +789,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": -1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/cisPaymentsTo/disallowableAmount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/businessEntertainmentCostsAllowable"))))
       }
-      "/expenses/staffCosts/amount is invalid" in {
+
+      "/periodAllowableExpenses/advertisingCostsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -690,83 +842,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": -1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/staffCosts/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/advertisingCostsAllowable"))))
       }
-      "/expenses/staffCosts/disallowableAmount is invalid" in {
+
+      "/periodAllowableExpenses/interestOnBankOtherLoansAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -774,83 +895,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.9999,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/staffCosts/disallowableAmount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/interestOnBankOtherLoansAllowable"))))
       }
-      "/expenses/travelCosts/amount is invalid" in {
+
+      "/periodAllowableExpenses/financeChargesAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -858,83 +948,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.9999,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/travelCosts/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/financeChargesAllowable"))))
       }
-      "/expenses/travelCosts/disallowableAmount is invalid" in {
+
+      "/periodAllowableExpenses/irrecoverableDebtsAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -942,83 +1001,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.9999,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/travelCosts/disallowableAmount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/irrecoverableDebtsAllowable"))))
       }
-      "/expenses/premisesRunningCosts/amount is invalid" in {
+
+      "/periodAllowableExpenses/professionalFeesAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -1026,83 +1054,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.06540,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.9999,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/premisesRunningCosts/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/professionalFeesAllowable"))))
       }
-      "/expenses/premisesRunningCosts/disallowableAmount is invalid" in {
+
+      "/periodAllowableExpenses/depreciationAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -1110,83 +1107,52 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.6534200
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.9999,
+                |        "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/premisesRunningCosts/disallowableAmount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/depreciationAllowable"))))
       }
-      "/expenses/maintenanceCosts/amount is invalid" in {
+
+      "/periodAllowableExpenses/otherExpensesAllowable is invalid" in {
         validator.validate(
           AmendPeriodicRawData(
             validNino,
@@ -1194,1709 +1160,57 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.0765430,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": 1000.99,
+                |        "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": 1000.99,
+                |        "paymentsToSubcontractorsAllowable": 1000.99,
+                |        "wagesAndStaffCostsAllowable": 1000.99,
+                |        "carVanTravelExpensesAllowable": 1000.99,
+                |        "premisesRunningCostsAllowable": 1000.99,
+                |        "maintenanceCostsAllowable": 1000.99,
+                |        "adminCostsAllowable": 1000.99,
+                |        "businessEntertainmentCostsAllowable": 1000.99,
+                |        "advertisingCostsAllowable": 1000.99,
+                |        "interestOnBankOtherLoansAllowable": 1000.99,
+                |        "financeChargesAllowable": 1000.99,
+                |        "irrecoverableDebtsAllowable": 1000.99,
+                |        "professionalFeesAllowable": 1000.99,
+                |        "depreciationAllowable": 1000.99,
+                |        "otherExpensesAllowable": -1000.99
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": 1000.99,
+                |        "paymentsToSubcontractorsDisallowable": 1000.99,
+                |        "wagesAndStaffCostsDisallowable": 1000.99,
+                |        "carVanTravelExpensesDisallowable": 1000.99,
+                |        "premisesRunningCostsDisallowable": 1000.99,
+                |        "maintenanceCostsDisallowable": 1000.99,
+                |        "adminCostsDisallowable": 1000.99,
+                |        "businessEntertainmentCostsDisallowable": 1000.99,
+                |        "advertisingCostsDisallowable": 1000.99,
+                |        "interestOnBankOtherLoansDisallowable": 1000.99,
+                |        "financeChargesDisallowable": 1000.99,
+                |        "irrecoverableDebtsDisallowable": 1000.99,
+                |        "professionalFeesDisallowable": 1000.99,
+                |        "depreciationDisallowable": 1000.99,
+                |        "otherExpensesDisallowable": 1000.99
+                |    }
+                |}
+                |""".stripMargin
             )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/maintenanceCosts/amount"))))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/otherExpensesAllowable"))))
       }
-      "/expenses/maintenanceCosts/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.7654300
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/maintenanceCosts/disallowableAmount"))))
-      }
-      "/expenses/adminCosts/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/adminCosts/amount"))))
-      }
-      "/expenses/adminCosts/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/adminCosts/disallowableAmount"))))
-      }
-      "/expenses/advertisingCosts/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/advertisingCosts/amount"))))
-      }
-      "/expenses/advertisingCosts/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/advertisingCosts/disallowableAmount"))))
-      }
-      "/expenses/businessEntertainmentCosts/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/businessEntertainmentCosts/amount"))))
-      }
-      "/expenses/businessEntertainmentCosts/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/businessEntertainmentCosts/disallowableAmount"))))
-      }
-      "/expenses/interestOnLoans/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.06790,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/interestOnLoans/amount"))))
-      }
-      "/expenses/interestOnLoans/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.046350
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/interestOnLoans/disallowableAmount"))))
-      }
-      "/expenses/financialCharges/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.067850,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/financialCharges/amount"))))
-      }
-      "/expenses/financialCharges/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.003674
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/financialCharges/disallowableAmount"))))
-      }
-      "/expenses/badDebt/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.054680,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/badDebt/amount"))))
-      }
-      "/expenses/badDebt/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.003485
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/badDebt/disallowableAmount"))))
-      }
-      "/expenses/professionalFees/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.0093648,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/professionalFees/amount"))))
-      }
-      "/expenses/professionalFees/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/professionalFees/disallowableAmount"))))
-      }
-      "/expenses/depreciation/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.009021896,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/depreciation/amount"))))
-      }
-      "/expenses/depreciation/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.004957
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/depreciation/disallowableAmount"))))
-      }
-      "/expenses/other/amount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": 200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/other/amount"))))
-      }
-      "/expenses/other/disallowableAmount is invalid" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "adminCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": 200.00
-            |        },
-            |        "other": {
-            |            "amount": 200.00,
-            |            "disallowableAmount": -200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/expenses/other/disallowableAmount"))))
-      }
+
+
     }
     "return multiple errors" when {
       "every path parameter format is invalid" in {
         validator.validate(AmendPeriodicRawData("AJAA12", "XASOE12", "201219", requestBodyJson)) shouldBe
           List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError)
-      }
-      "every field in the body is invalid when consolidated expenses are supplied" in {
-        validator.validate(
-          AmendPeriodicRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse(
-              """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": -200.00
-            |        },
-            |        "other": {
-            |            "amount": -200.00
-            |        }
-            |    },
-            |    "consolidatedExpenses": {
-            |        "consolidatedExpenses": 200.034650
-            |    }
-            |}
-            |""".stripMargin
-            )
-          )) shouldBe List(
-          ValueFormatError.copy(paths = Some(Seq("/incomes/turnover/amount", "/incomes/other/amount", "/consolidatedExpenses/consolidatedExpenses"))))
       }
       "every field in the body is invalid when expenses are supplied" in {
         validator.validate(
@@ -2906,114 +1220,82 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validPeriodId,
             Json.parse(
               """
-            |{
-            |    "incomes": {
-            |        "turnover": {
-            |            "amount": -200.00
-            |        },
-            |        "other": {
-            |            "amount": -200.00
-            |        }
-            |    },
-            |    "expenses": {
-            |        "costOfGoodsBought": {
-            |            "amount": 200.07640,
-            |            "disallowableAmount": 200.037450
-            |        },
-            |        "cisPaymentsTo": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "staffCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "travelCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "premisesRunningCosts": {
-            |            "amount": 200.03670,
-            |            "disallowableAmount": 200.036750
-            |        },
-            |        "maintenanceCosts": {
-            |            "amount": 200.04630,
-            |            "disallowableAmount": 200.0132540
-            |        },
-            |        "adminCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "advertisingCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "businessEntertainmentCosts": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "interestOnLoans": {
-            |            "amount": 200.023450,
-            |            "disallowableAmount": 200.034250
-            |        },
-            |        "financialCharges": {
-            |            "amount": 200.035420,
-            |            "disallowableAmount": 200.542300
-            |        },
-            |        "badDebt": {
-            |            "amount": 200.023450,
-            |            "disallowableAmount": 200.043520
-            |        },
-            |        "professionalFees": {
-            |            "amount": 200.034250,
-            |            "disallowableAmount": -200.00
-            |        },
-            |        "depreciation": {
-            |            "amount": 200.023450,
-            |            "disallowableAmount": 200.023450
-            |        },
-            |        "other": {
-            |            "amount": -200.00,
-            |            "disallowableAmount": -200.00
-            |        }
-            |    }
-            |}
-            |""".stripMargin
+                |{
+                |    "periodIncome": {
+                |        "turnover": -1000.999,
+                |        "other": -1000.999
+                |    },
+                |    "periodAllowableExpenses": {
+                |        "costOfGoodsAllowable": -1000.999,
+                |        "paymentsToSubcontractorsAllowable": -1000.999,
+                |        "wagesAndStaffCostsAllowable": -1000.999,
+                |        "carVanTravelExpensesAllowable": -1000.999,
+                |        "premisesRunningCostsAllowable": -1000.999,
+                |        "maintenanceCostsAllowable": -1000.999,
+                |        "adminCostsAllowable": -1000.999,
+                |        "businessEntertainmentCostsAllowable": -1000.999,
+                |        "advertisingCostsAllowable": -1000.999,
+                |        "interestOnBankOtherLoansAllowable": -1000.999,
+                |        "financeChargesAllowable": -1000.999,
+                |        "irrecoverableDebtsAllowable": -1000.999,
+                |        "professionalFeesAllowable": -1000.999,
+                |        "depreciationAllowable": -1000.999,
+                |        "otherExpensesAllowable": -1000.999
+                |    },
+                |    "periodDisallowableExpenses": {
+                |        "costOfGoodsDisallowable": -1000.999,
+                |        "paymentsToSubcontractorsDisallowable": -1000.999,
+                |        "wagesAndStaffCostsDisallowable": -1000.999,
+                |        "carVanTravelExpensesDisallowable": -1000.999,
+                |        "premisesRunningCostsDisallowable": -1000.999,
+                |        "maintenanceCostsDisallowable": -1000.999,
+                |        "adminCostsDisallowable": -1000.999,
+                |        "businessEntertainmentCostsDisallowable": -1000.999,
+                |        "advertisingCostsDisallowable": -1000.999,
+                |        "interestOnBankOtherLoansDisallowable": -1000.999,
+                |        "financeChargesDisallowable": -1000.999,
+                |        "irrecoverableDebtsDisallowable": -1000.999,
+                |        "professionalFeesDisallowable": -1000.999,
+                |        "depreciationDisallowable": -1000.999,
+                |        "otherExpensesDisallowable": -1000.999
+                |    }
+                |}
+                |""".stripMargin
             )
           )) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
-            "/incomes/turnover/amount",
-            "/incomes/other/amount",
-            "/expenses/costOfGoodsBought/amount",
-            "/expenses/costOfGoodsBought/disallowableAmount",
-            "/expenses/cisPaymentsTo/amount",
-            "/expenses/cisPaymentsTo/disallowableAmount",
-            "/expenses/staffCosts/amount",
-            "/expenses/staffCosts/disallowableAmount",
-            "/expenses/travelCosts/amount",
-            "/expenses/travelCosts/disallowableAmount",
-            "/expenses/premisesRunningCosts/amount",
-            "/expenses/premisesRunningCosts/disallowableAmount",
-            "/expenses/maintenanceCosts/amount",
-            "/expenses/maintenanceCosts/disallowableAmount",
-            "/expenses/adminCosts/amount",
-            "/expenses/adminCosts/disallowableAmount",
-            "/expenses/advertisingCosts/amount",
-            "/expenses/advertisingCosts/disallowableAmount",
-            "/expenses/businessEntertainmentCosts/amount",
-            "/expenses/businessEntertainmentCosts/disallowableAmount",
-            "/expenses/interestOnLoans/amount",
-            "/expenses/interestOnLoans/disallowableAmount",
-            "/expenses/financialCharges/amount",
-            "/expenses/financialCharges/disallowableAmount",
-            "/expenses/badDebt/amount",
-            "/expenses/badDebt/disallowableAmount",
-            "/expenses/professionalFees/amount",
-            "/expenses/professionalFees/disallowableAmount",
-            "/expenses/depreciation/amount",
-            "/expenses/depreciation/disallowableAmount",
-            "/expenses/other/amount",
-            "/expenses/other/disallowableAmount"
+            "/periodIncome/turnover",
+            "/periodIncome/other",
+            "/periodAllowableExpenses/costOfGoodsAllowable",
+            "/periodAllowableExpenses/paymentsToSubcontractorsAllowable",
+            "/periodAllowableExpenses/wagesAndStaffCostsAllowable",
+            "/periodAllowableExpenses/carVanTravelExpensesAllowable",
+            "/periodAllowableExpenses/premisesRunningCostsAllowable",
+            "/periodAllowableExpenses/maintenanceCostsAllowable",
+            "/periodAllowableExpenses/adminCostsAllowable",
+            "/periodAllowableExpenses/businessEntertainmentCostsAllowable",
+            "/periodAllowableExpenses/advertisingCostsAllowable",
+            "/periodAllowableExpenses/interestOnBankOtherLoansAllowable",
+            "/periodAllowableExpenses/financeChargesAllowable",
+            "/periodAllowableExpenses/irrecoverableDebtsAllowable",
+            "/periodAllowableExpenses/professionalFeesAllowable",
+            "/periodAllowableExpenses/depreciationAllowable",
+            "/periodAllowableExpenses/otherExpensesAllowable",
+            "/periodDisallowableExpenses/costOfGoodsDisallowable",
+            "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
+            "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
+            "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
+            "/periodDisallowableExpenses/premisesRunningCostsDisallowable",
+            "/periodDisallowableExpenses/maintenanceCostsDisallowable",
+            "/periodDisallowableExpenses/adminCostsDisallowable",
+            "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
+            "/periodDisallowableExpenses/advertisingCostsDisallowable",
+            "/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable",
+            "/periodDisallowableExpenses/financeChargesDisallowable",
+            "/periodDisallowableExpenses/irrecoverableDebtsDisallowable",
+            "/periodDisallowableExpenses/professionalFeesDisallowable",
+            "/periodDisallowableExpenses/depreciationDisallowable",
+            "/periodDisallowableExpenses/otherExpensesDisallowable",
           ))))
       }
     }
