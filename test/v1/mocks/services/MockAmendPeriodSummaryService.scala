@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.mocks.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{AmendPeriodicConnector, DownstreamOutcome}
+import v1.controllers.EndpointLogContext
+import v1.models.errors.ErrorWrapper
+import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodic.AmendPeriodicRequest
+import v1.services.AmendPeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendPeriodicConnector extends MockFactory {
+trait MockAmendPeriodSummaryService extends MockFactory {
 
-  val mockAmendPeriodicConnector: AmendPeriodicConnector = mock[AmendPeriodicConnector]
+  val mockAmendPeriodicService: AmendPeriodSummaryService = mock[AmendPeriodSummaryService]
 
-  object MockAmendPeriodicConnector {
+  object MockAmendPeriodicService {
 
-    def amendPeriodicSummary(requestData: AmendPeriodicRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
-      (mockAmendPeriodicConnector
-        .amendPeriodicSummary(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(requestData, *, *, *)
+    def amendPeriodicSummary(requestData: AmendPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockAmendPeriodicService
+        .amendPeriodSummary(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .expects(requestData, *, *, *, *)
     }
 
   }

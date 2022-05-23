@@ -17,7 +17,7 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockAmendPeriodicConnector
+import v1.mocks.connectors.MockAmendPeriodSummaryConnector
 import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -25,7 +25,7 @@ import v1.models.request.amendPeriodic.{AmendPeriodicBody, AmendPeriodicRequest}
 
 import scala.concurrent.Future
 
-class AmendPeriodicServiceSpec extends ServiceSpec {
+class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
@@ -39,10 +39,10 @@ class AmendPeriodicServiceSpec extends ServiceSpec {
     body = AmendPeriodicBody(None, None, None)
   )
 
-  trait Test extends MockAmendPeriodicConnector {
+  trait Test extends MockAmendPeriodSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new AmendPeriodicService(
+    val service = new AmendPeriodSummaryService(
       connector = mockAmendPeriodicConnector
     )
 
@@ -55,7 +55,7 @@ class AmendPeriodicServiceSpec extends ServiceSpec {
           .amendPeriodicSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        await(service.amendPeriodicSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
+        await(service.amendPeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
       }
     }
   }
@@ -69,7 +69,7 @@ class AmendPeriodicServiceSpec extends ServiceSpec {
             .amendPeriodicSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.amendPeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.amendPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
@@ -77,9 +77,9 @@ class AmendPeriodicServiceSpec extends ServiceSpec {
         "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
         "INVALID_DATE_FROM"               -> PeriodIdFormatError,
         "INVALID_DATE_TO"                 -> PeriodIdFormatError,
+        "INVALID_PAYLOAD"                 -> DownstreamError,
         "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
         "NOT_FOUND_PERIOD"                -> NotFoundError,
-        "NOT_FOUND_NINO"                  -> NotFoundError,
         "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
         "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
         "SERVER_ERROR"                    -> DownstreamError,
