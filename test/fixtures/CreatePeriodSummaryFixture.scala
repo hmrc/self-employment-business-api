@@ -17,14 +17,11 @@
 package fixtures
 
 import play.api.libs.json.{JsValue, Json}
-import v1.models.request.createPeriodSummary.{PeriodAllowableExpenses, PeriodDates, PeriodIncome}
+import v1.models.request.createPeriodSummary._
 
 trait CreatePeriodSummaryFixture {
 
-  private val validNino       = "AA123456A"
-  private val validBusinessId = "XAIS12345678901"
-
-  private val requestMtdBodyJson = Json.parse(
+  val requestMtdBodyJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates": {
@@ -33,7 +30,7 @@ trait CreatePeriodSummaryFixture {
       |    },
       |    "periodIncome": {
       |      "turnover": 1000.99,
-      |      "other": 1000.09
+      |      "other": 1000.99
       |    },
       |    "periodAllowableExpenses": {
       |      "costOfGoodsAllowable": 1000.99,
@@ -53,7 +50,7 @@ trait CreatePeriodSummaryFixture {
       |      "otherExpensesAllowable": 1000.99
       |    },
       |    "periodDisallowableExpenses": {
-      |      "costOfGoodsDisallowable": 91000.99,
+      |      "costOfGoodsDisallowable": 1000.99,
       |      "paymentsToSubcontractorsDisallowable": 1000.99,
       |      "wagesAndStaffCostsDisallowable": 1000.99,
       |      "carVanTravelExpensesDisallowable": 1000.99,
@@ -73,7 +70,128 @@ trait CreatePeriodSummaryFixture {
     """.stripMargin
   )
 
-  private val requestConsolidatedMtdJson = Json.parse(
+  val requestMtdFullBodyJson: JsValue = Json.parse(
+    """
+      |{
+      |   "periodDates": {
+      |     "periodStartDate": "2019-08-24",
+      |     "periodEndDate": "2019-08-24"
+      |    },
+      |    "periodIncome": {
+      |      "turnover": 1000.99,
+      |      "other": 1000.99
+      |    },
+      |    "periodAllowableExpenses": {
+      |      "consolidatedExpenses": 1000.99,
+      |      "costOfGoodsAllowable": 1000.99,
+      |      "paymentsToSubcontractorsAllowable": 1000.99,
+      |      "wagesAndStaffCostsAllowable": 1000.99,
+      |      "carVanTravelExpensesAllowable": 1000.99,
+      |      "premisesRunningCostsAllowable": -99999.99,
+      |      "maintenanceCostsAllowable": -1000.99,
+      |      "adminCostsAllowable": 1000.99,
+      |      "businessEntertainmentCostsAllowable": 1000.99,
+      |      "advertisingCostsAllowable": 1000.99,
+      |      "interestOnBankOtherLoansAllowable": -1000.99,
+      |      "financeChargesAllowable": -1000.99,
+      |      "irrecoverableDebtsAllowable": -1000.99,
+      |      "professionalFeesAllowable": -99999999999.99,
+      |      "depreciationAllowable": -1000.99,
+      |      "otherExpensesAllowable": 1000.99
+      |    },
+      |    "periodDisallowableExpenses": {
+      |      "costOfGoodsDisallowable": 1000.99,
+      |      "paymentsToSubcontractorsDisallowable": 1000.99,
+      |      "wagesAndStaffCostsDisallowable": 1000.99,
+      |      "carVanTravelExpensesDisallowable": 1000.99,
+      |      "premisesRunningCostsDisallowable": -1000.99,
+      |      "maintenanceCostsDisallowable": -999.99,
+      |      "adminCostsDisallowable": 1000.99,
+      |      "businessEntertainmentCostsDisallowable": 1000.99,
+      |      "advertisingCostsDisallowable": 1000.99,
+      |      "interestOnBankOtherLoansDisallowable": -1000.99,
+      |      "financeChargesDisallowable": -9999.99,
+      |      "irrecoverableDebtsDisallowable": 1000.99,
+      |      "professionalFeesDisallowable": 9999999999.99,
+      |      "depreciationDisallowable": -99999999999.99,
+      |      "otherExpensesDisallowable": 1000.99
+      |     }
+      |}
+    """.stripMargin
+  )
+
+  val mtdMimimumFieldsJson: JsValue = Json.parse(
+      """
+        |{
+        |   "periodDates": {
+        |     "periodStartDate": "2019-08-24",
+        |     "periodEndDate": "2019-08-24"
+        |   }
+        |}
+          """.stripMargin
+  )
+
+  val mtdIncomeOnlyJson: JsValue = Json.parse(
+    """
+      |{
+      |   "periodDates": {
+      |     "periodStartDate": "2019-08-24",
+      |     "periodEndDate": "2019-08-24"
+      |    },
+      |    "periodIncome": {
+      |      "turnover": 1000.99,
+      |      "other": 1000.09
+      |    }
+      |}
+        """.stripMargin
+  )
+
+  val mtdExpensesOnlyJson: JsValue = Json.parse(
+    """
+      |{
+      |   "periodDates": {
+      |     "periodStartDate": "2019-08-24",
+      |     "periodEndDate": "2019-08-24"
+      |    },
+      |    "periodAllowableExpenses": {
+      |      "costOfGoodsAllowable": 1000.99,
+      |      "paymentsToSubcontractorsAllowable": 1000.99,
+      |      "wagesAndStaffCostsAllowable": 1000.99,
+      |      "carVanTravelExpensesAllowable": 1000.99,
+      |      "premisesRunningCostsAllowable": -99999.99,
+      |      "maintenanceCostsAllowable": -1000.99,
+      |      "adminCostsAllowable": 1000.99,
+      |      "businessEntertainmentCostsAllowable": 1000.99,
+      |      "advertisingCostsAllowable": 1000.99,
+      |      "interestOnBankOtherLoansAllowable": -1000.99,
+      |      "financeChargesAllowable": -1000.99,
+      |      "irrecoverableDebtsAllowable": -1000.99,
+      |      "professionalFeesAllowable": -99999999999.99,
+      |      "depreciationAllowable": -1000.99,
+      |      "otherExpensesAllowable": 1000.99
+      |    },
+      |    "periodDisallowableExpenses": {
+      |      "costOfGoodsDisallowable": 1000.99,
+      |      "paymentsToSubcontractorsDisallowable": 1000.99,
+      |      "wagesAndStaffCostsDisallowable": 1000.99,
+      |      "carVanTravelExpensesDisallowable": 1000.99,
+      |      "premisesRunningCostsDisallowable": -1000.99,
+      |      "maintenanceCostsDisallowable": -999.99,
+      |      "adminCostsDisallowable": 1000.99,
+      |      "businessEntertainmentCostsDisallowable": 1000.99,
+      |      "advertisingCostsDisallowable": 1000.99,
+      |      "interestOnBankOtherLoansDisallowable": -1000.99,
+      |      "financeChargesDisallowable": -9999.99,
+      |      "irrecoverableDebtsDisallowable": 1000.99,
+      |      "professionalFeesDisallowable": 9999999999.99,
+      |      "depreciationDisallowable": -99999999999.99,
+      |      "otherExpensesDisallowable": 1000.99
+      |     }
+      |}
+    """.stripMargin
+  )
+
+  val requestConsolidatedMtdJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates": {
@@ -88,7 +206,7 @@ trait CreatePeriodSummaryFixture {
       |      "consolidatedExpenses": 999999999.99
       |    },
       |    "periodDisallowableExpenses": {
-      |      "costOfGoodsDisallowable": 91000.99,
+      |      "costOfGoodsDisallowable": 1000.99,
       |      "paymentsToSubcontractorsDisallowable": 1000.99,
       |      "wagesAndStaffCostsDisallowable": 1000.99,
       |      "carVanTravelExpensesDisallowable": 1000.99,
@@ -108,7 +226,7 @@ trait CreatePeriodSummaryFixture {
     """.stripMargin
   )
 
-  private val requestDownstreamBodyJson = Json.parse(
+  val requestDownstreamBodyJson: JsValue = Json.parse(
     """
       |{
       |   "from": "2019-08-24",
@@ -185,7 +303,7 @@ trait CreatePeriodSummaryFixture {
     """.stripMargin
   )
 
-  private val requestConsolidatedDownstreamJson = Json.parse(
+  val requestConsolidatedDownstreamJson: JsValue = Json.parse(
     """
       |{
       |   "from": "2019-08-24",
@@ -209,12 +327,52 @@ trait CreatePeriodSummaryFixture {
   )
 
   val periodIncomeMTDModel: PeriodIncome = PeriodIncome (
-    turnover = Some(5.00),
-    other = Some(5.15)
+    turnover = Some(1000.99),
+    other = Some(1000.99)
   )
 
-  val periodAllowableExpenses: PeriodAllowableExpenses = PeriodAllowableExpenses (
-    costOfGoodsAllowable =
+  val periodAllowableExpensesModel: PeriodAllowableExpenses = PeriodAllowableExpenses (
+    consolidatedExpenses = None,
+    costOfGoodsAllowable = Some(1000.99),
+    paymentsToSubcontractorsAllowable = Some(1000.99),
+    wagesAndStaffCostsAllowable = Some(1000.99),
+    carVanTravelExpensesAllowable = Some(1000.99),
+    premisesRunningCostsAllowable = Some(-99999.99),
+    maintenanceCostsAllowable = Some(-1000.99),
+    adminCostsAllowable = Some(1000.99),
+    businessEntertainmentCostsAllowable = Some(1000.99),
+    advertisingCostsAllowable = Some(1000.99),
+    interestOnBankOtherLoansAllowable = Some(-1000.99),
+    financeChargesAllowable = Some(-1000.99),
+    irrecoverableDebtsAllowable = Some(-1000.99),
+    professionalFeesAllowable = Some(-99999999999.99),
+    depreciationAllowable = Some(-1000.99),
+    otherExpensesAllowable = Some(1000.99)
+  )
+
+  val periodDisallowableExpensesModel: PeriodDisallowableExpenses = PeriodDisallowableExpenses (
+    costOfGoodsDisallowable = Some(1000.99),
+    paymentsToSubcontractorsDisallowable = Some(1000.99),
+    wagesAndStaffCostsDisallowable = Some(1000.99),
+    carVanTravelExpensesDisallowable = Some(1000.99),
+    premisesRunningCostsDisallowable = Some(-1000.99),
+    maintenanceCostsDisallowable = Some(-999.99),
+    adminCostsDisallowable = Some(1000.99),
+    businessEntertainmentCostsDisallowable = Some(1000.99),
+    advertisingCostsDisallowable = Some(1000.99),
+    interestOnBankOtherLoansDisallowable = Some(-1000.99),
+    financeChargesDisallowable = Some(-9999.99),
+    irrecoverableDebtsDisallowable = Some(1000.99),
+    professionalFeesDisallowable = Some(9999999999.99),
+    depreciationDisallowable = Some(-99999999999.99),
+    otherExpensesDisallowable = Some(1000.99),
+  )
+
+  val fullMTDResponseModel: CreatePeriodSummaryBody = CreatePeriodSummaryBody (
+    periodDates = periodDatesMTDModel,
+    periodIncome = Some(periodIncomeMTDModel),
+    periodAllowableExpenses = Some(periodAllowableExpensesModel),
+    periodDisallowableExpenses = Some(periodDisallowableExpensesModel)
   )
 
 }
