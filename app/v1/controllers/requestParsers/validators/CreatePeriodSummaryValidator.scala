@@ -22,9 +22,6 @@ import v1.models.request.createPeriodSummary._
 
 class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData] {
 
-  val periodStartDate = "2019-08-24"
-  val periodEndDate   = "2019-08-24"
-
   private val validationSet =
     List(parameterFormatValidation,
       bodyFormatValidation,
@@ -48,9 +45,12 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
 
   private def consolidatedExpensesRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
     val body = data.body.as[CreatePeriodSummaryBody]
-
     List(
-      body.periodAllowableExpenses.map(validateConsolidatedExpenses).getOrElse(NoValidationErrors))
+      ConsolidatedExpensesValidation.validate(
+        allowableExpenses = body.periodAllowableExpenses,
+        disallowableExpenses = body.periodDisallowableExpenses
+      )
+    )
   }
 
   private def bodyFieldValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = { data =>
@@ -59,9 +59,8 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     List(
       Validator.flattenErrors(
         List(
-          validateDates(periodStartDate, periodEndDate),
+          validateDates(body.periodDates.periodStartDate, body.periodDates.periodEndDate),
           body.periodIncome.map(validateIncome).getOrElse(NoValidationErrors),
-          body.periodAllowableExpenses.map(validateConsolidatedExpenses).getOrElse(NoValidationErrors),
           body.periodAllowableExpenses.map(validateAllowableExpenses).getOrElse(NoValidationErrors),
           body.periodDisallowableExpenses.map(validateDisallowableExpenses).getOrElse(NoValidationErrors)
         )
@@ -101,17 +100,12 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     ).flatten
   }
 
-  private def validateConsolidatedExpenses(periodAllowableExpenses: PeriodAllowableExpenses): List[MtdError] = {
+  private def validateAllowableExpenses(periodAllowableExpenses: PeriodAllowableExpenses): List[MtdError] =
     List(
       NumberValidation.validateOptional(
         field = periodAllowableExpenses.consolidatedExpenses,
         path = s"/periodAllowableExpenses/consolidatedExpenses"
-      )
-    ).flatten
-  }
-
-  private def validateAllowableExpenses(periodAllowableExpenses: PeriodAllowableExpenses): List[MtdError] =
-    List(
+      ),
       NumberValidation.validateOptionalIncludeNegatives(
         field = periodAllowableExpenses.costOfGoodsAllowable,
         path = s"/periodAllowableExpenses/costOfGoodsAllowable"
