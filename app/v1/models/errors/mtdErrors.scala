@@ -149,6 +149,12 @@ object RuleBothAllowancesSuppliedError
       message = "Both allowances and trading allowances must not be present at the same time"
     )
 
+object RuleAllowanceNotSupportedError
+  extends MtdError(
+    code = "RULE_ALLOWANCE_NOT_SUPPORTED",
+    message = "One or more of the supplied allowances is not supported for the supplied tax year"
+  )
+
 object RuleBuildingNameNumberError
     extends MtdError(
       code = "RULE_BUILDING_NAME_NUMBER",

@@ -299,6 +299,17 @@ traits:
                 description: Both allowances and trading allowance must not be present at the same time.
                 value:
                   code: RULE_BOTH_ALLOWANCES_SUPPLIED
+  ruleAllowanceNotSupported:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleAllowanceNotSupported:
+                description: One or more of the supplied allowances is not supported for the supplied tax year.
+                value:
+                  code: RULE_ALLOWANCE_NOT_SUPPORTED
   formatStartDate:
     responses:
       400:

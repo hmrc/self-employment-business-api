@@ -49,7 +49,7 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       "INVALID_PAYLOAD"             -> DownstreamError,
       "MISSING_EXEMPTION_REASON"    -> DownstreamError,
       "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
-      "ALLOWANCE_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+      "ALLOWANCE_NOT_SUPPORTED"     -> DownstreamError,
       "NOT_FOUND"                   -> NotFoundError,
       "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
       "GONE"                        -> NotFoundError,
