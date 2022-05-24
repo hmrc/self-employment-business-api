@@ -16,207 +16,202 @@
 
 package v1.controllers.requestParsers.validators
 
-//import v1.controllers.requestParsers.validators.validations._
-//import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-//import v1.models.request.amendPeriodic._
-//
-//class AmendPeriodicValidator extends Validator[AmendPeriodSummaryRawData] {
-//
-//  private val validationSet = List(parameterFormatValidation, bodyFormatValidation, consolidatedExpensesRuleValidation, bodyFieldValidation)
-//
-//  private def parameterFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
-//    List(
-//      NinoValidation.validate(data.nino),
-//      BusinessIdValidation.validate(data.businessId),
-//      PeriodIdValidation.validate(data.periodId)
-//    )
-//  }
-//
-//  private def bodyFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = { data =>
-//    val baseValidation = List(JsonFormatValidation.validate[AmendPeriodicBody](data.body))
-//
-//    // TODO use JsonFormatValidation.validateAndCheckNonEmpty[AmendAnnualSubmissionBody] which does not require isEmpty methods
-////    val extraValidation: List[List[MtdError]] = {
-////      data.body.asOpt[AmendPeriodicBody].map(_.isEmpty).map {
-////        case true  => List(List(RuleIncorrectOrEmptyBodyError))
-////        case false => NoValidationErrors
-////      }.getOrElse(NoValidationErrors)
-////    }
-//
-//    baseValidation // ++ extraValidation
-//  }
-//
-////  TODO
-////  private def consolidatedExpensesRuleValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
-////    val body = data.body.as[AmendPeriodicBody]
-////
-////    List(
-////      AmendConsolidatedExpensesValidation.validate(body.consolidatedExpenses, body.expenses)
-////    )
-////  }
-//
-//  private def bodyFieldValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = { data =>
-//    val body = data.body.as[AmendPeriodicBody]
-//    List(
-//      Validator.flattenErrors(
-//        List(
-//          body.periodIncome.map(validatePeriodIncome).getOrElse(Nil),
-//          body.periodAllowableExpenses.map(validatePeriodAllowableExpenses).getOrElse(Nil),
-//          body.periodDisallowableExpenses.map(validatePeriodDisallowableExpenses).getOrElse(Nil)
-//        ).flatten
-//      )
-//    )
-//  }
-//
-//  private def validateIncomes(incomes: PeriodIncome): List[List[MtdError]] = {
-//    List(
-//      NumberValidation.validate(
-//        field = periodIncome.turnover,
-//        path = s"/incomes/turnover"
-//      ),
-//      NumberValidation.validate(
-//        field = periodIncome.other,
-//        path = s"/incomes/other"
-//      )
-//    )
-//  }
-//
-//  private def validateConsolidatedExpenses(consolidatedExpenses: ConsolidatedExpenses): List[List[MtdError]] = {
-//    List(
-//      NumberValidation.validateIncludeNegatives(
-//        field = consolidatedExpenses.consolidatedExpenses,
-//        path = s"/consolidatedExpenses/consolidatedExpenses"
-//      )
-//    )
-//  }
-//
-//  private def validateExpenses(expenses: PeriodDisallowableExpenses): List[List[MtdError]] = {
-//    List(
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.costOfGoodsBought.get.amount,
-//        path = s"/expenses/costOfGoodsBought/amount"
-//      ),
-//      NumberValidation.validateOptionalIncludeNegatives(
-//        field = expenses.costOfGoodsBought.get.disallowableAmount,
-//        path = s"/expenses/costOfGoodsBought/disallowableAmount"
-//      ),
-//      NumberValidation.validate(
-//        field = expenses.cisPaymentsTo.get.amount,
-//        path = s"/expenses/cisPaymentsTo/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.cisPaymentsTo.get.disallowableAmount,
-//        path = s"/expenses/cisPaymentsTo/disallowableAmount"
-//      ),
-//      NumberValidation.validate(
-//        field = expenses.staffCosts.get.amount,
-//        path = s"/expenses/staffCosts/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.staffCosts.get.disallowableAmount,
-//        path = s"/expenses/staffCosts/disallowableAmount"
-//      ),
-//      NumberValidation.validate(
-//        field = expenses.travelCosts.get.amount,
-//        path = s"/expenses/travelCosts/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.travelCosts.get.disallowableAmount,
-//        path = s"/expenses/travelCosts/disallowableAmount"
-//      ),
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.premisesRunningCosts.get.amount,
-//        path = s"/expenses/premisesRunningCosts/amount"
-//      ),
-//      NumberValidation.validateOptionalIncludeNegatives(
-//        field = expenses.premisesRunningCosts.get.disallowableAmount,
-//        path = s"/expenses/premisesRunningCosts/disallowableAmount"
-//      ),
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.maintenanceCosts.get.amount,
-//        path = s"/expenses/maintenanceCosts/amount"
-//      ),
-//      NumberValidation.validateOptionalIncludeNegatives(
-//        field = expenses.maintenanceCosts.get.disallowableAmount,
-//        path = s"/expenses/maintenanceCosts/disallowableAmount"
-//      ),
-//      NumberValidation.validate(
-//        field = expenses.adminCosts.get.amount,
-//        path = s"/expenses/adminCosts/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.adminCosts.get.disallowableAmount,
-//        path = s"/expenses/adminCosts/disallowableAmount"
-//      ),
-//      NumberValidation.validate(
-//        field = expenses.advertisingCosts.get.amount,
-//        path = s"/expenses/advertisingCosts/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.advertisingCosts.get.disallowableAmount,
-//        path = s"/expenses/advertisingCosts/disallowableAmount"
-//      ),
-//      NumberValidation.validate(
-//        field = expenses.businessEntertainmentCosts.get.amount,
-//        path = s"/expenses/businessEntertainmentCosts/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.businessEntertainmentCosts.get.disallowableAmount,
-//        path = s"/expenses/businessEntertainmentCosts/disallowableAmount"
-//      ),
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.interestOnLoans.get.amount,
-//        path = s"/expenses/interestOnLoans/amount"
-//      ),
-//      NumberValidation.validateOptionalIncludeNegatives(
-//        field = expenses.interestOnLoans.get.disallowableAmount,
-//        path = s"/expenses/interestOnLoans/disallowableAmount"
-//      ),
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.financialCharges.get.amount,
-//        path = s"/expenses/financialCharges/amount"
-//      ),
-//      NumberValidation.validateOptionalIncludeNegatives(
-//        field = expenses.financialCharges.get.disallowableAmount,
-//        path = s"/expenses/financialCharges/disallowableAmount"
-//      ),
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.badDebt.get.amount,
-//        path = s"/expenses/badDebt/amount"
-//      ),
-//      NumberValidation.validateOptionalIncludeNegatives(
-//        field = expenses.badDebt.get.disallowableAmount,
-//        path = s"/expenses/badDebt/disallowableAmount"
-//      ),
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.professionalFees.get.amount,
-//        path = s"/expenses/professionalFees/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.professionalFees.get.disallowableAmount,
-//        path = s"/expenses/professionalFees/disallowableAmount"
-//      ),
-//      NumberValidation.validateIncludeNegatives(
-//        field = expenses.depreciation.get.amount,
-//        path = s"/expenses/depreciation/amount"
-//      ),
-//      NumberValidation.validateOptionalIncludeNegatives(
-//        field = expenses.depreciation.get.disallowableAmount,
-//        path = s"/expenses/depreciation/disallowableAmount"
-//      ),
-//      NumberValidation.validate(
-//        field = expenses.other.get.amount,
-//        path = s"/expenses/other/amount"
-//      ),
-//      NumberValidation.validateOptional(
-//        field = expenses.other.get.disallowableAmount,
-//        path = s"/expenses/other/disallowableAmount"
-//      )
-//    )
-//  }
-//
-//  override def validate(data: AmendPeriodSummaryRawData): List[MtdError] = {
-//    run(validationSet, data).distinct
-//  }
-//
-//}
+import v1.controllers.requestParsers.validators.validations._
+import v1.models.errors.{MtdError}
+import v1.models.request.amendPeriodic._
+
+class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
+
+  private val validationSet = List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation)
+
+  private def parameterFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = (data: AmendPeriodicRawData) => {
+    List(
+      NinoValidation.validate(data.nino),
+      BusinessIdValidation.validate(data.businessId),
+      PeriodIdValidation.validate(data.periodId)
+    )
+  }
+
+  private def bodyFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
+      JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodicBody](data.body) match {
+        case Nil => NoValidationErrors
+        case schemaErrors => List(schemaErrors)
+      }
+    }
+
+
+  private def bodyFieldValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
+    val body = data.body.as[AmendPeriodicBody]
+    List(
+      Validator.flattenErrors(
+        List(
+          body.periodIncome.map(validatePeriodIncome).getOrElse(Nil),
+          body.periodAllowableExpenses.map(validateAllowableExpenses).getOrElse(Nil),
+          validateConsolidatedExpenses(body.periodAllowableExpenses, body.periodDisallowableExpenses),
+          body.periodDisallowableExpenses.map(validateDisallowableExpenses).getOrElse(Nil)
+        ).flatten
+      )
+    )
+  }
+
+
+  private def validatePeriodIncome(income: PeriodIncome): List[List[MtdError]] = {
+    List(
+      NumberValidation.
+        validateOptional(
+          field = income.turnover,
+          path = s"/periodIncome/turnover"
+      ),
+      NumberValidation.
+        validateOptional(
+          field = income.other,
+          path = s"/periodIncome/other"
+        )
+    )
+  }
+
+  private def validateAllowableExpenses(expenses: PeriodAllowableExpenses): List[List[MtdError]] = {
+    List(
+      NumberValidation.validateOptional(
+        field = expenses.consolidatedExpenses,
+        path = s"/periodAllowableExpenses/consolidatedExpenses"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.costOfGoodsAllowable,
+        path = s"/periodAllowableExpenses/costOfGoodsAllowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.paymentsToSubcontractorsAllowable,
+        path = s"/periodAllowableExpenses/paymentsToSubcontractorsAllowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.wagesAndStaffCostsAllowable,
+        path = s"/periodAllowableExpenses/wagesAndStaffCostsAllowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.carVanTravelExpensesAllowable,
+        path = s"/periodAllowableExpenses/carVanTravelExpensesAllowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.premisesRunningCostsAllowable,
+        path = s"/periodAllowableExpenses/premisesRunningCostsAllowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.maintenanceCostsAllowable,
+        path = s"/periodAllowableExpenses/maintenanceCostsAllowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.adminCostsAllowable,
+        path = s"/periodAllowableExpenses/adminCostsAllowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.businessEntertainmentCostsAllowable,
+        path = s"/periodAllowableExpenses/businessEntertainmentCostsAllowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.advertisingCostsAllowable,
+        path = s"/periodAllowableExpenses/advertisingCostsAllowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.interestOnBankOtherLoansAllowable,
+        path = s"/periodAllowableExpenses/interestOnBankOtherLoansAllowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.financeChargesAllowable,
+        path = s"/periodAllowableExpenses/financeChargesAllowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.irrecoverableDebtsAllowable,
+        path = s"/periodAllowableExpenses/irrecoverableDebtsAllowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.professionalFeesAllowable,
+        path = s"/periodAllowableExpenses/professionalFeesAllowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.depreciationAllowable,
+        path = s"/periodAllowableExpenses/depreciationAllowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.otherExpensesAllowable,
+        path = s"/periodAllowableExpenses/otherExpensesAllowable"
+      )
+    )
+  }
+
+  private def validateDisallowableExpenses(expenses: PeriodDisallowableExpenses): List[List[MtdError]] = {
+    List(
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.costOfGoodsDisallowable,
+        path = s"/periodDisallowableExpenses/costOfGoodsDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.paymentsToSubcontractorsDisallowable,
+        path = s"/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.wagesAndStaffCostsDisallowable,
+        path = s"/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.carVanTravelExpensesDisallowable,
+        path = s"/periodDisallowableExpenses/carVanTravelExpensesDisallowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.premisesRunningCostsDisallowable,
+        path = s"/periodDisallowableExpenses/premisesRunningCostsDisallowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.maintenanceCostsDisallowable,
+        path = s"/periodDisallowableExpenses/maintenanceCostsDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.adminCostsDisallowable,
+        path = s"/periodDisallowableExpenses/adminCostsDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.businessEntertainmentCostsDisallowable,
+        path = s"/periodDisallowableExpenses/businessEntertainmentCostsDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.advertisingCostsDisallowable,
+        path = s"/periodDisallowableExpenses/advertisingCostsDisallowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.interestOnBankOtherLoansDisallowable,
+        path = s"/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.financeChargesDisallowable,
+        path = s"/periodDisallowableExpenses/financeChargesDisallowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.irrecoverableDebtsDisallowable,
+        path = s"/periodDisallowableExpenses/irrecoverableDebtsDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.professionalFeesDisallowable,
+        path = s"/periodDisallowableExpenses/professionalFeesDisallowable"
+      ),
+      NumberValidation.validateOptionalIncludeNegatives(
+        field = expenses.depreciationDisallowable,
+        path = s"/periodDisallowableExpenses/depreciationDisallowable"
+      ),
+      NumberValidation.validateOptional(
+        field = expenses.otherExpensesDisallowable,
+        path = s"/periodDisallowableExpenses/otherExpensesDisallowable"
+      )
+    )
+  }
+
+  private def validateConsolidatedExpenses(allowableExpenses: Option[PeriodAllowableExpenses], disallowableExpenses: Option[PeriodDisallowableExpenses]):
+  List[List[MtdError]] = {
+    List(AmendConsolidatedExpensesValidation.validate(allowableExpenses, disallowableExpenses))
+  }
+
+
+  override def validate(data: AmendPeriodicRawData): List[MtdError] = {
+    run(validationSet, data).distinct
+  }
+
+}
