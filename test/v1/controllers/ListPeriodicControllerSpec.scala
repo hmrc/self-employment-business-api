@@ -23,7 +23,7 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListPeriodicRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListPeriodicService, MockMtdIdLookupService}
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -70,7 +70,7 @@ class ListPeriodicControllerSpec
   }
 
   private val rawData     = ListPeriodicRawData(nino, businessId)
-  private val requestData = ListPeriodicRequest(Nino(nino), businessId)
+  private val requestData = ListPeriodicRequest(Nino(nino), BusinessId(businessId))
 
   private val testHateoasLink      = Link(href = s"test/href", method = GET, rel = "self")
   private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
@@ -84,11 +84,11 @@ class ListPeriodicControllerSpec
   private val responseBody = Json.parse(
     s"""
       |{
-      |  "periods": [
+      |  "periodSummary": [
       |    {
       |      "periodId": "$periodId",
-      |      "from": "$from",
-      |      "to": "$to",
+      |      "periodStartDate": "$from",
+      |      "periodEndDate": "$to",
       |      "links": [
       |        {
       |          "href": "test/href/$periodId",
@@ -121,7 +121,7 @@ class ListPeriodicControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, ListPeriodicHateoasData(nino, businessId))
+          .wrapList(response, ListPeriodicHateoasData(Nino(nino), BusinessId(businessId)))
           .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)

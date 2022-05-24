@@ -19,160 +19,95 @@ package v1.models.response.listPeriodic
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 
 class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
-  val generateModelEmpty: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(Seq())
-
   private val model = ListPeriodicResponse(
     Seq(
       PeriodDetails(
-        "2019-01-01_2020-01-01",
-        "2019-01-01",
-        "2020-01-01"
-      ))
-  )
-
-  private val modelMultiple = ListPeriodicResponse(
-    Seq(
-      PeriodDetails(
-        "2019-01-01_2020-01-01",
-        "2019-01-01",
-        "2020-01-01"
+        periodId = "2019-01-01_2020-01-01",
+        periodStartDate = "2019-01-01",
+        periodEndDate = "2020-01-01"
       ),
       PeriodDetails(
-        "2019-01-01_2020-01-01",
-        "2019-01-01",
-        "2020-01-01"
+        periodId = "2019-01-01_2020-01-01",
+        periodStartDate = "2019-01-01",
+        periodEndDate = "2020-01-01"
       )
     )
   )
 
-  private val jsonEmptyArray = Json.parse(
-    """
-      |{
-      |   "periods": [ ]
-      |}
-    """.stripMargin
-  )
-
-  private val json = Json.parse(
-    """
-      |{
-      |   "periods": [
-      |       {
-      |           "periodId": "2019-01-01_2020-01-01",
-      |           "from": "2019-01-01",
-      |           "to": "2020-01-01"
-      |       }
-      |    ]
-      |}
-    """.stripMargin
-  )
-
-  private val jsonMultiple = Json.parse(
-    """
-      |{
-      |   "periods": [
-      |     {
-      |         "periodId": "2019-01-01_2020-01-01",
-      |         "from": "2019-01-01",
-      |         "to": "2020-01-01"
-      |     },
-      |     {
-      |         "periodId": "2019-01-01_2020-01-01",
-      |         "from": "2019-01-01",
-      |         "to": "2020-01-01"
-      |     }
-      |   ]
-      |}
-    """.stripMargin
-  )
-
-  private val desJson = Json.parse(
-    """
-      |{
-      |   "periods": [
-      |      {
-      |           "transactionReference": "3123123123121",
-      |           "from": "2019-01-01",
-      |           "to": "2020-01-01"
-      |      }
-      |   ]
-      |}
-    """.stripMargin
-  )
-
-  private val desJsonMultiple = Json.parse(
-    """
-      |{
-      |   "periods": [
-      |      {
-      |           "transactionReference": "32131123131",
-      |           "from": "2019-01-01",
-      |           "to": "2020-01-01"
-      |      },
-      |      {
-      |           "transactionReference": "3123123123121",
-      |           "from": "2019-01-01",
-      |           "to": "2020-01-01"
-      |      }
-      |   ]
-      |}
-    """.stripMargin
-  )
-
   "reads" should {
-    "read from a json" when {
-      "a valid request is made" in {
-        desJson.as[ListPeriodicResponse[PeriodDetails]] shouldBe model
-      }
-
-      "a valid empty request is made" in {
-        jsonEmptyArray.as[ListPeriodicResponse[PeriodDetails]] shouldBe generateModelEmpty
-      }
-
-      "a valid request with multiple fields is made" in {
-        desJsonMultiple.as[ListPeriodicResponse[PeriodDetails]] shouldBe modelMultiple
-      }
+    "read from downstream json" in {
+      Json
+        .parse(
+          """
+          |{
+          |   "periods": [
+          |      {
+          |           "transactionReference": "32131123131",
+          |           "from": "2019-01-01",
+          |           "to": "2020-01-01"
+          |      },
+          |      {
+          |           "transactionReference": "3123123123121",
+          |           "from": "2019-01-01",
+          |           "to": "2020-01-01"
+          |      }
+          |   ]
+          |}
+    """.stripMargin
+        )
+        .as[ListPeriodicResponse[PeriodDetails]] shouldBe model
     }
   }
 
   "writes" should {
-    "write to a model" when {
-      "a valid request is made" in {
-        Json.toJson(model) shouldBe json
-      }
-
-      "a valid empty request is made" in {
-        Json.toJson(generateModelEmpty) shouldBe jsonEmptyArray
-      }
-
-      "a valid request with multiple fields is made" in {
-        Json.toJson(modelMultiple) shouldBe jsonMultiple
-      }
+    "write to mtd json" in {
+      Json.toJson(model) shouldBe Json.parse(
+        """
+            |{
+            |   "periodSummary": [
+            |     {
+            |         "periodId": "2019-01-01_2020-01-01",
+            |         "periodStartDate": "2019-01-01",
+            |         "periodEndDate": "2020-01-01"
+            |     },
+            |     {
+            |         "periodId": "2019-01-01_2020-01-01",
+            |         "periodStartDate": "2019-01-01",
+            |         "periodEndDate": "2020-01-01"
+            |     }
+            |   ]
+            |}
+    """.stripMargin
+      )
     }
   }
 
   "LinksFactory" should {
+    val nino        = "AA111111A"
+    val businessId  = "id"
+    val periodId    = "periodId"
+    val hateoasData = ListPeriodicHateoasData(Nino(nino), BusinessId(businessId))
+
     "return the correct top-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
-      ListPeriodicResponse.LinksFactory.links(mockAppConfig, ListPeriodicHateoasData("nino", "id")) shouldBe Seq(
-        Link(href = "/test/context/nino/id/period", method = GET, rel = "self"),
-        Link(href = "/test/context/nino/id/period", method = POST, rel = "create-self-employment-period-summary")
+      ListPeriodicResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
+        Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self"),
+        Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary")
       )
     }
+
     "return the correct item-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
-      ListPeriodicResponse.LinksFactory.itemLinks(
-        mockAppConfig,
-        ListPeriodicHateoasData("nino", "id"),
-        PeriodDetails("periodId", "", "")) shouldBe Seq(
-        Link(href = "/test/context/nino/id/period/periodId", method = GET, rel = "self")
+      ListPeriodicResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "")) shouldBe Seq(
+        Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
       )
     }
   }

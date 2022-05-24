@@ -18,7 +18,7 @@ package v1.connectors
 
 import mocks.MockAppConfig
 import v1.mocks.MockHttpClient
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listPeriodic.ListPeriodicRequest
 import v1.models.response.listPeriodic.{ListPeriodicResponse, PeriodDetails}
@@ -32,7 +32,7 @@ class ListPeriodicConnectorSpec extends ConnectorSpec {
 
   val request: ListPeriodicRequest = ListPeriodicRequest(
     nino = Nino(nino),
-    businessId = businessId
+    businessId = BusinessId(businessId)
   )
 
   val response: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(

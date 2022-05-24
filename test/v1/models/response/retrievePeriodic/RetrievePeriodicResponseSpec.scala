@@ -19,6 +19,7 @@ package v1.models.response.retrievePeriodic
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{Link, Method}
 
 class RetrievePeriodicResponseSpec extends UnitSpec with MockAppConfig {
@@ -229,13 +230,16 @@ class RetrievePeriodicResponseSpec extends UnitSpec with MockAppConfig {
   "LinksFactory" should {
     "produce the correct links" when {
       "called" in {
-        val data: RetrievePeriodicHateoasData = RetrievePeriodicHateoasData("mynino", "myBusinessId", "myPeriodId")
+        val nino                              = "AA111111A"
+        val businessId                        = "id"
+        val periodId                          = "periodId"
+        val data: RetrievePeriodicHateoasData = RetrievePeriodicHateoasData(Nino(nino), BusinessId(businessId), periodId)
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrievePeriodicResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.PUT, rel = "amend-self-employment-period-summary"),
-          Link(href = s"/my/context/${data.nino}/${data.businessId}/period/${data.periodId}", method = Method.GET, rel = "self")
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self")
         )
       }
     }

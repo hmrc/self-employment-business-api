@@ -59,7 +59,7 @@ class RetrievePeriodicController @Inject() (val authService: EnrolmentsAuthServi
           serviceResponse <- EitherT(service.retrievePeriodicSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, RetrievePeriodicHateoasData(nino, businessId, periodId))
+              .wrap(serviceResponse.responseData, RetrievePeriodicHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
               .asRight[ErrorWrapper]
           )
         } yield {

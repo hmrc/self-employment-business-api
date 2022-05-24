@@ -21,45 +21,37 @@ import support.UnitSpec
 
 class PeriodDetailsSpec extends UnitSpec {
 
-  private val model = PeriodDetails("2020-01-01_2020-02-02", "2020-01-01", "2020-02-02")
-
-  private val json = Json.parse(
-    """
-      |{
-      |   "periodId": "2020-01-01_2020-02-02",
-      |   "from": "2020-01-01",
-      |   "to": "2020-02-02"
-      |}
-      |""".stripMargin
-  )
-
-  private val desJson = Json.parse(
-    """
-      |{
-      |   "transactionReference": "1111111111",
-      |   "from": "2020-01-01",
-      |   "to": "2020-02-02"
-      |}
-      |""".stripMargin
-  )
+  private val model = PeriodDetails(periodId = "2020-01-01_2020-02-02", periodStartDate = "2020-01-01", periodEndDate = "2020-02-02")
 
   "reads" should {
 
-    "read from a json" when {
-
-      "a valid request is made" in {
-        desJson.as[PeriodDetails] shouldBe model
-      }
+    "read from downstream json" in {
+      Json
+        .parse(
+          """
+          |{
+          |   "transactionReference": "1111111111",
+          |   "from": "2020-01-01",
+          |   "to": "2020-02-02"
+          |}
+          |""".stripMargin
+        )
+        .as[PeriodDetails] shouldBe model
     }
   }
 
   "writes" should {
 
-    "write to a model" when {
-
-      "a valid request is made" in {
-        Json.toJson(model) shouldBe json
-      }
+    "write to mtd json" in {
+      Json.toJson(model) shouldBe Json.parse(
+        """
+          |{
+          |   "periodId": "2020-01-01_2020-02-02",
+          |   "periodStartDate": "2020-01-01",
+          |   "periodEndDate": "2020-02-02"
+          |}
+          |""".stripMargin
+      )
     }
   }
 

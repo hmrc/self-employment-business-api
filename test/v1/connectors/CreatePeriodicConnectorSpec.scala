@@ -19,7 +19,7 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodic._
 import v1.models.response.createPeriodic.CreatePeriodicResponse
@@ -33,50 +33,51 @@ class CreatePeriodicConnectorSpec extends ConnectorSpec {
 
   val request: CreatePeriodicRequest = CreatePeriodicRequest(
     nino = Nino(nino),
-    businessId = businessId,
-    body =  CreatePeriodicBody(
-      PeriodDates(
-        "2019-08-24",
-        "2019-08-24"),
-      Some(PeriodIncome(
-        Some(1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodAllowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-99999.99),
-        Some(-1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodDisallowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-999.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-9999.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-99999999999.99),
-        Some(1000.99)
-      ))
+    businessId = BusinessId(businessId),
+    body = CreatePeriodicBody(
+      PeriodDates("2019-08-24", "2019-08-24"),
+      Some(
+        PeriodIncome(
+          Some(1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodAllowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-99999.99),
+          Some(-1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodDisallowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-999.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-9999.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-99999999999.99),
+          Some(1000.99)
+        ))
     )
   )
 

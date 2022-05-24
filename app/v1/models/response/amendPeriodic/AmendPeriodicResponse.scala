@@ -18,6 +18,7 @@ package v1.models.response.amendPeriodic
 
 import config.AppConfig
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
 object AmendPeriodicResponse extends HateoasLinks {
@@ -37,4 +38,4 @@ object AmendPeriodicResponse extends HateoasLinks {
 
 }
 
-case class AmendPeriodicHateoasData(nino: String, businessId: String, periodId: String) extends HateoasData
+case class AmendPeriodicHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData

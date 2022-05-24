@@ -23,7 +23,7 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrievePeriodicRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodicService}
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors.{
   BadRequestError,
   BusinessIdFormatError,
@@ -77,7 +77,7 @@ class RetrievePeriodicControllerSpec
   }
 
   private val rawData     = RetrievePeriodicRawData(nino, businessId, periodId)
-  private val requestData = RetrievePeriodicRequest(Nino(nino), businessId, periodId)
+  private val requestData = RetrievePeriodicRequest(Nino(nino), BusinessId(businessId), periodId)
 
   private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/period/$periodId", method = GET, rel = "self")
 
@@ -101,7 +101,7 @@ class RetrievePeriodicControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodicHateoasData(nino, businessId, periodId))
+          .wrap(responseBody, RetrievePeriodicHateoasData(Nino(nino), BusinessId(businessId), periodId))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)

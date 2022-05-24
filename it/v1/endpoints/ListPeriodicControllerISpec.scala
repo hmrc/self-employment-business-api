@@ -38,11 +38,11 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
 
     val responseBody: JsValue = Json.parse(s"""
          |{
-         |  "periods": [
+         |  "periodSummary": [
          |    {
          |      "periodId": "$periodId",
-         |      "from": "$fromDate",
-         |      "to": "$toDate",
+         |      "periodStartDate": "$fromDate",
+         |      "periodEndDate": "$toDate",
          |      "links": [
          |        {
          |          "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",

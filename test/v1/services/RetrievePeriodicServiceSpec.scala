@@ -18,7 +18,7 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockRetrievePeriodicConnector
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
@@ -56,7 +56,7 @@ class RetrievePeriodicServiceSpec extends ServiceSpec {
 
   private val requestData = RetrievePeriodicRequest(
     nino = Nino(nino),
-    businessId = businessId,
+    businessId = BusinessId(businessId),
     periodId = periodId
   )
 

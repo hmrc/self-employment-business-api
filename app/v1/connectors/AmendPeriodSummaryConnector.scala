@@ -33,7 +33,7 @@ class AmendPeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig:
       request: AmendPeriodicRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
-    val businessId = request.businessId
+    val businessId = request.businessId.value
     val fromDate   = request.periodId.substring(0, 10)
     val toDate     = request.periodId.substring(11, 21)
 

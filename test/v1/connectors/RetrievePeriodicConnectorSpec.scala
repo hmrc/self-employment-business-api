@@ -17,7 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
@@ -31,7 +31,7 @@ class RetrievePeriodicConnectorSpec extends ConnectorSpec {
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2019-01-25_2020-01-25"
 
-  val request: RetrievePeriodicRequest = RetrievePeriodicRequest(Nino(nino), businessId, periodId)
+  val request: RetrievePeriodicRequest = RetrievePeriodicRequest(Nino(nino), BusinessId(businessId), periodId)
 
   val response: RetrievePeriodicResponse = RetrievePeriodicResponse(
     "2019-01-25",

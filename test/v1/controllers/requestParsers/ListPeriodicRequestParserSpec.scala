@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import v1.mocks.validators.MockListPeriodicValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
 
@@ -47,7 +47,7 @@ class ListPeriodicRequestParserSpec extends UnitSpec {
         MockListPeriodicValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(ListPeriodicRequest(Nino(nino), businessId))
+          Right(ListPeriodicRequest(Nino(nino), BusinessId(businessId)))
       }
     }
 

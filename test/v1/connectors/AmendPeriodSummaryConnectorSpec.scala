@@ -19,7 +19,7 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodic._
 
@@ -33,28 +33,29 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
 
   val request: AmendPeriodicRequest = AmendPeriodicRequest(
     nino = Nino(nino),
-    businessId = businessId,
+    businessId = BusinessId(businessId),
     periodId = periodId,
     body = AmendPeriodicBody(
       None,
-      Some(PeriodAllowableExpenses(
-        Some(200.10),
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-      )),
+      Some(
+        PeriodAllowableExpenses(
+          Some(200.10),
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None
+        )),
       None
     )
   )

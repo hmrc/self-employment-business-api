@@ -19,6 +19,7 @@ package v1.models.response.createPeriodic
 import config.AppConfig
 import play.api.libs.json.{Json, OFormat}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
 case class CreatePeriodicResponse(periodId: String)
@@ -33,7 +34,7 @@ object CreatePeriodicResponse extends HateoasLinks {
       Seq(
         amendPeriodicSummary(appConfig, nino, businessId, periodId),
         retrievePeriodicSummary(appConfig, nino, businessId, periodId),
-        listPeriodicSummary(appConfig, nino, businessId, false)
+        listPeriodicSummary(appConfig, nino, businessId, isSelf = false)
       )
     }
 
@@ -41,4 +42,4 @@ object CreatePeriodicResponse extends HateoasLinks {
 
 }
 
-case class CreatePeriodicHateoasData(nino: String, businessId: String, periodId: String) extends HateoasData
+case class CreatePeriodicHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData

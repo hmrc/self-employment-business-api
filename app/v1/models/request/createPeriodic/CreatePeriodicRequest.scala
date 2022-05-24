@@ -16,6 +16,6 @@
 
 package v1.models.request.createPeriodic
 
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 
-case class CreatePeriodicRequest(nino: Nino, businessId: String, body: CreatePeriodicBody)
+case class CreatePeriodicRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodicBody)

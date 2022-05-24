@@ -35,9 +35,12 @@ class ListPeriodicConnector @Inject() (val http: HttpClient, val appConfig: AppC
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListPeriodicResponse[PeriodDetails]]] = {
 
+    val nino       = request.nino.nino
+    val businessId = request.businessId.value
+
     get(
       uri = DesUri[ListPeriodicResponse[PeriodDetails]](
-        s"income-tax/nino/${request.nino.nino}/self-employments/${request.businessId}/periodic-summaries"
+        s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
       )
     )
   }

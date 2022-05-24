@@ -16,6 +16,6 @@
 
 package v1.models.request.listPeriodic
 
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 
-case class ListPeriodicRequest(nino: Nino, businessId: String)
+case class ListPeriodicRequest(nino: Nino, businessId: BusinessId)
