@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+/*
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
@@ -31,6 +32,7 @@ import v1.services.{CreatePeriodicService, EnrolmentsAuthService, MtdIdLookupSer
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+
 
 @Singleton
 class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService,
@@ -99,3 +101,4 @@ class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService
     }
 
 }
+ */
