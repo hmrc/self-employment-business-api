@@ -271,7 +271,43 @@ trait CreatePeriodSummaryFixture {
     """.stripMargin
   )
 
-  val mtdDisAllowableExpensesOnlyJson: JsValue = Json.parse(
+  val mtdAllowableExpensesOnlyJson: JsValue = Json.parse(
+    """
+      |{
+      |   "periodDates": {
+      |     "periodStartDate": "2019-08-24",
+      |     "periodEndDate": "2019-08-24"
+      |    },
+      |   "periodIncome": {
+      |      "turnover": 1000.99,
+      |      "other": 1000.09
+      |    },
+      |   "periodDates": {
+      |     "periodStartDate": "2019-08-24",
+      |     "periodEndDate": "2019-08-24"
+      |    },
+      |    "periodAllowableExpenses": {
+      |      "costOfGoodsAllowable": 1000.99,
+      |      "paymentsToSubcontractorsAllowable": 1000.99,
+      |      "wagesAndStaffCostsAllowable": 1000.99,
+      |      "carVanTravelExpensesAllowable": 1000.99,
+      |      "premisesRunningCostsAllowable": -99999.99,
+      |      "maintenanceCostsAllowable": -1000.99,
+      |      "adminCostsAllowable": 1000.99,
+      |      "businessEntertainmentCostsAllowable": 1000.99,
+      |      "advertisingCostsAllowable": 1000.99,
+      |      "interestOnBankOtherLoansAllowable": -1000.99,
+      |      "financeChargesAllowable": -1000.99,
+      |      "irrecoverableDebtsAllowable": -1000.99,
+      |      "professionalFeesAllowable": -99999999999.99,
+      |      "depreciationAllowable": -1000.99,
+      |      "otherExpensesAllowable": 1000.99
+      |    }
+      |}
+    """.stripMargin
+  )
+
+  val mtdDisallowableExpensesOnlyJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates": {

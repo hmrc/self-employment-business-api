@@ -33,7 +33,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
   "running a validation" should {
     "return no errors" when {
       "a valid expenses request is supplied" in {
-        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdDisAllowableExpensesOnlyJson)) shouldBe Nil
+        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, requestMtdBodyJson)) shouldBe Nil
       }
 
       "a valid consolidated expenses request is supplied" in {
@@ -48,12 +48,12 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdIncomeOnlyJson)) shouldBe Nil
       }
 
-      "only expenses are supplied" in {
-        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdDisAllowableExpensesOnlyJson)) shouldBe Nil
+      "a valid request with only disallowable expenses is supplied" in {
+        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdDisallowableExpensesOnlyJson)) shouldBe Nil
       }
 
-      "only consolidatedExpense is supplied" in {
-        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, requestConsolidatedMtdJson)) shouldBe Nil
+      "a valid request with only allowable expenses is supplied" in {
+        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdAllowableExpensesOnlyJson)) shouldBe Nil
       }
 
       "return a path parameter error" when {
