@@ -311,13 +311,13 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 |     "periodStartDate": "2019-08-24",
                 |     "periodEndDate": "2019-08-24"
                 |   },
-                |   "": {
+                |   "periodIncomess": {
                 |     "turnover": 1000.99,
                 |     "other": 1000.99
                 |   }
                 |}
               """.stripMargin))
-        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
+        ) shouldBe List(RuleIncorrectOrEmptyBodyError)
       }
     }
 
@@ -331,13 +331,13 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
               """
                 |{
                 |   "periodDates": {
-                |     "periodStartDate": "2319-123",
+                |     "periodStartDate": "2019-08-025",
                 |     "periodEndDate": "2019-08-24"
                 |    }
                 |}
               """.stripMargin
             )
-          )) shouldBe List(StartDateFormatError.copy(paths = Some(Seq("/periodDates/periodStartDate"))))
+          )) shouldBe List(StartDateFormatError)
       }
 
       "an invalid periodEndDate is supplied" in {
@@ -350,12 +350,12 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 |{
                 |   "periodDates": {
                 |     "periodStartDate": "2019-08-24",
-                |     "periodEndDate": "3129921"
+                |     "periodEndDate": "30"
                 |    }
                 |}
-          """.stripMargin
+              """.stripMargin
             )
-          )) shouldBe List(EndDateFormatError.copy(paths = Some(Seq("/periodDates/periodEndDate"))))
+          )) shouldBe List(EndDateFormatError)
       }
 
       "periodStartDate is before periodEndDate" in {
@@ -367,13 +367,13 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
               """
                 |{
                 |   "periodDates": {
-                |     "periodStartDate": "2019-08-25",
+                |     "periodStartDate": "3020-01-31",
                 |     "periodEndDate": "2019-08-24"
                 |    }
                 |}
-          """.stripMargin
+              """.stripMargin
             )
-          )) shouldBe List(RuleEndDateBeforeStartDateError.copy(paths = Some(Seq("/periodDates/periodStartDate"))))
+          )) shouldBe List(RuleToDateBeforeFromDateError)
       }
 
       "both dates are invalid" in {
@@ -385,15 +385,13 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
               """
                 |{
                 |   "periodDates": {
-                |     "periodStartDate": "2020-01-31",
-                |     "periodEndDate": "2020-01-01"
+                |     "periodStartDate": "3020-01-31",
+                |     "periodEndDate": "3020-01-31"
                 |    }
                 |}
           """.stripMargin
             )
-          )) shouldBe List(StartDateFormatError, EndDateFormatError.copy(paths = Some(Seq(
-          "/periodDates"
-        ))))
+          )) shouldBe List(StartDateFormatError, EndDateFormatError)
       }
     }
 

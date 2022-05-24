@@ -50,8 +50,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     val body = data.body.as[CreatePeriodSummaryBody]
 
     List(
-      ConsolidatedExpensesValidation.validate(body.periodAllowableExpenses, "/periodAllowableExpenses/consolidatedExpenses")
-    )
+      body.periodAllowableExpenses.map(validateConsolidatedExpenses).getOrElse(NoValidationErrors))
   }
 
   private def bodyFieldValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = { data =>
@@ -70,7 +69,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
   }
 
     private def dateRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
-      val body = data.body.as[PeriodDates]
+      val body = data.body.as[CreatePeriodSummaryBody].periodDates
       List(
         DateValidation.validateToDateBeforeFromDate(body.periodStartDate, body.periodEndDate)
       )
