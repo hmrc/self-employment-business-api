@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.models.errors.{MtdError}
 import v1.models.request.amendPeriodic._
 
 class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
@@ -33,17 +33,11 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
   }
 
   private def bodyFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
-    val baseValidation = List(JsonFormatValidation.validate[AmendPeriodicBody](data.body))
-
-    // TODO use JsonFormatValidation.validateAndCheckNonEmpty[AmendAnnualSubmissionBody] which does not require isEmpty methods
-    val extraValidation: List[List[MtdError]] = {
-      data.body.asOpt[AmendPeriodicBody].isEmpty match {
-        case true => List(List(RuleIncorrectOrEmptyBodyError))
-        case false => NoValidationErrors
+      JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodicBody](data.body) match {
+        case Nil => NoValidationErrors
+        case schemaErrors => List(schemaErrors)
       }
     }
-    baseValidation  ++ extraValidation
-  }
 
 
   private def bodyFieldValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
@@ -53,7 +47,7 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
         List(
           body.periodIncome.map(validatePeriodIncome).getOrElse(Nil),
           body.periodAllowableExpenses.map(validateAllowableExpenses).getOrElse(Nil),
-          body.periodAllowableExpenses.map(validateConsolidatedExpenses).getOrElse(Nil),
+          validateConsolidatedExpenses(body.periodAllowableExpenses, body.periodDisallowableExpenses),
           body.periodDisallowableExpenses.map(validateDisallowableExpenses).getOrElse(Nil)
         ).flatten
       )
@@ -151,15 +145,15 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
         field = expenses.costOfGoodsDisallowable,
         path = s"/periodDisallowableExpenses/costOfGoodsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.paymentsToSubcontractorsDisallowable,
         path = s"/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.wagesAndStaffCostsDisallowable,
         path = s"/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.carVanTravelExpensesDisallowable,
         path = s"/periodDisallowableExpenses/carVanTravelExpensesDisallowable"
       ),
@@ -171,15 +165,15 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
         field = expenses.maintenanceCostsDisallowable,
         path = s"/periodDisallowableExpenses/maintenanceCostsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.adminCostsDisallowable,
         path = s"/periodDisallowableExpenses/adminCostsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.businessEntertainmentCostsDisallowable,
         path = s"/periodDisallowableExpenses/businessEntertainmentCostsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.advertisingCostsDisallowable,
         path = s"/periodDisallowableExpenses/advertisingCostsDisallowable"
       ),
@@ -195,7 +189,7 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
         field = expenses.irrecoverableDebtsDisallowable,
         path = s"/periodDisallowableExpenses/irrecoverableDebtsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.professionalFeesDisallowable,
         path = s"/periodDisallowableExpenses/professionalFeesDisallowable"
       ),
@@ -203,15 +197,16 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
         field = expenses.depreciationDisallowable,
         path = s"/periodDisallowableExpenses/depreciationDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = expenses.otherExpensesDisallowable,
         path = s"/periodDisallowableExpenses/otherExpensesDisallowable"
       )
     )
   }
 
-  private def validateConsolidatedExpenses(expenses: PeriodAllowableExpenses): List[List[MtdError]] = {
-    List(AmendConsolidatedExpensesValidation.validate(expenses))
+  private def validateConsolidatedExpenses(allowableExpenses: Option[PeriodAllowableExpenses], disallowableExpenses: Option[PeriodDisallowableExpenses]):
+  List[List[MtdError]] = {
+    List(AmendConsolidatedExpensesValidation.validate(allowableExpenses, disallowableExpenses))
   }
 
 

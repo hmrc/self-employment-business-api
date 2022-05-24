@@ -16,12 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.amendPeriodic.AmendPeriodicRawData
+import v1.models.utils.JsonErrorValidators
 
-class AmendPeriodicValidatorSpec extends UnitSpec {
+class AmendPeriodicValidatorSpec extends UnitSpec with JsonErrorValidators {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
@@ -94,23 +95,6 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
                 |    },
                 |    "periodAllowableExpenses": {
                 |        "consolidatedExpenses": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
                 |    }
                 |}
             |""".stripMargin
@@ -200,18 +184,18 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
         validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""))) shouldBe List(
           RuleIncorrectOrEmptyBodyError)
       }
-      "an empty adjustments is submitted" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"income": {}}"""))) shouldBe List(
-          RuleIncorrectOrEmptyBodyError)
+      "an empty income is submitted" in {
+        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodIncome": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
       }
-      "an empty allowances is submitted" in {
+      "an empty allowable expenses is submitted" in {
         validator.validate(
-          AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""))) shouldBe List(
-          RuleIncorrectOrEmptyBodyError)
+          AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodAllowableExpenses": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
       }
-      "an empty nonFinancials is submitted" in {
-        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"expenses": {}}"""))) shouldBe List(
-          RuleIncorrectOrEmptyBodyError)
+      "an empty disallowable expenses is submitted" in {
+        validator.validate(AmendPeriodicRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodDisallowableExpenses": {}}"""))) shouldBe List(
+          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
       }
     }
     "return RuleBothExpensesSuppliedError" when {
@@ -276,50 +260,8 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": -1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin)
-            )
+            requestBodyJson.update("/periodIncome/turnover", JsNumber(123.123))
+          )
           ) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/turnover"))))
       }
       "/periodIncome/other is invalid" in {
@@ -328,50 +270,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": -1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodIncome/other", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/other"))))
       }
       "/periodAllowableExpenses/consolidatedExpenses is invalid" in {
@@ -389,23 +288,6 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
                 |    },
                 |    "periodAllowableExpenses": {
                 |        "consolidatedExpenses": -1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
                 |    }
                 |}
                 |""".stripMargin
@@ -418,50 +300,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.9999,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/costOfGoodsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/costOfGoodsAllowable"))))
       }
 
@@ -471,50 +310,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": -1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/paymentsToSubcontractorsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/paymentsToSubcontractorsAllowable"))))
       }
       "/periodAllowableExpenses/wagesAndStaffCostsAllowable is invalid" in {
@@ -523,50 +319,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": -1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/wagesAndStaffCostsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/wagesAndStaffCostsAllowable"))))
       }
       "/periodAllowableExpenses/carVanTravelExpensesAllowable is invalid" in {
@@ -575,50 +328,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": -1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/carVanTravelExpensesAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/carVanTravelExpensesAllowable"))))
       }
 
@@ -628,50 +338,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.9999,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/premisesRunningCostsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/premisesRunningCostsAllowable"))))
       }
 
@@ -681,50 +348,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.9999,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/maintenanceCostsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/maintenanceCostsAllowable"))))
       }
 
@@ -734,50 +358,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": -1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/adminCostsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/adminCostsAllowable"))))
       }
 
@@ -787,50 +368,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": -1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/businessEntertainmentCostsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/businessEntertainmentCostsAllowable"))))
       }
 
@@ -840,50 +378,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": -1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/advertisingCostsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/advertisingCostsAllowable"))))
       }
 
@@ -893,50 +388,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.9999,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/interestOnBankOtherLoansAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/interestOnBankOtherLoansAllowable"))))
       }
 
@@ -946,50 +398,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.9999,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/financeChargesAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/financeChargesAllowable"))))
       }
 
@@ -999,50 +408,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.9999,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/irrecoverableDebtsAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/irrecoverableDebtsAllowable"))))
       }
 
@@ -1052,50 +418,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.9999,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/professionalFeesAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/professionalFeesAllowable"))))
       }
 
@@ -1105,50 +428,7 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.9999,
-                |        "otherExpensesAllowable": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/depreciationAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/depreciationAllowable"))))
       }
 
@@ -1158,54 +438,159 @@ class AmendPeriodicValidatorSpec extends UnitSpec {
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodAllowableExpenses": {
-                |        "costOfGoodsAllowable": 1000.99,
-                |        "paymentsToSubcontractorsAllowable": 1000.99,
-                |        "wagesAndStaffCostsAllowable": 1000.99,
-                |        "carVanTravelExpensesAllowable": 1000.99,
-                |        "premisesRunningCostsAllowable": 1000.99,
-                |        "maintenanceCostsAllowable": 1000.99,
-                |        "adminCostsAllowable": 1000.99,
-                |        "businessEntertainmentCostsAllowable": 1000.99,
-                |        "advertisingCostsAllowable": 1000.99,
-                |        "interestOnBankOtherLoansAllowable": 1000.99,
-                |        "financeChargesAllowable": 1000.99,
-                |        "irrecoverableDebtsAllowable": 1000.99,
-                |        "professionalFeesAllowable": 1000.99,
-                |        "depreciationAllowable": 1000.99,
-                |        "otherExpensesAllowable": -1000.99
-                |    },
-                |    "periodDisallowableExpenses": {
-                |        "costOfGoodsDisallowable": 1000.99,
-                |        "paymentsToSubcontractorsDisallowable": 1000.99,
-                |        "wagesAndStaffCostsDisallowable": 1000.99,
-                |        "carVanTravelExpensesDisallowable": 1000.99,
-                |        "premisesRunningCostsDisallowable": 1000.99,
-                |        "maintenanceCostsDisallowable": 1000.99,
-                |        "adminCostsDisallowable": 1000.99,
-                |        "businessEntertainmentCostsDisallowable": 1000.99,
-                |        "advertisingCostsDisallowable": 1000.99,
-                |        "interestOnBankOtherLoansDisallowable": 1000.99,
-                |        "financeChargesDisallowable": 1000.99,
-                |        "irrecoverableDebtsDisallowable": 1000.99,
-                |        "professionalFeesDisallowable": 1000.99,
-                |        "depreciationDisallowable": 1000.99,
-                |        "otherExpensesDisallowable": 1000.99
-                |    }
-                |}
-                |""".stripMargin
-            )
+            requestBodyJson.update("/periodAllowableExpenses/otherExpensesAllowable", JsNumber(123.123))
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/otherExpensesAllowable"))))
       }
 
+      "/periodDisallowableExpenses/costOfGoodsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/costOfGoodsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/costOfGoodsDisallowable"))))
+      }
 
+      "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/wagesAndStaffCostsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/carVanTravelExpensesDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/carVanTravelExpensesDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/carVanTravelExpensesDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/premisesRunningCostsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/premisesRunningCostsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/premisesRunningCostsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/maintenanceCostsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/maintenanceCostsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/maintenanceCostsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/adminCostsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/adminCostsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/adminCostsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/businessEntertainmentCostsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/businessEntertainmentCostsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/advertisingCostsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/advertisingCostsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/advertisingCostsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/financeChargesDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/financeChargesDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/financeChargesDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/irrecoverableDebtsDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/irrecoverableDebtsDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/irrecoverableDebtsDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/professionalFeesDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/professionalFeesDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/professionalFeesDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/depreciationDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/depreciationDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/depreciationDisallowable"))))
+      }
+
+      "/periodDisallowableExpenses/otherExpensesDisallowable is invalid" in {
+        validator.validate(
+          AmendPeriodicRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodDisallowableExpenses/otherExpensesDisallowable", JsNumber(123.123))
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/otherExpensesDisallowable"))))
+      }
     }
     "return multiple errors" when {
       "every path parameter format is invalid" in {

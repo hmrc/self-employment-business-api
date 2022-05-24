@@ -22,16 +22,18 @@ import v1.models.request.amendPeriodic._
 
 object AmendConsolidatedExpensesValidation {
 
-  def validate(allowableExpenses: PeriodAllowableExpenses): List[MtdError] = {
-    allowableExpenses.consolidatedExpenses match {
-      case None => NoValidationErrors
+  def validate(allowableExpenses: Option[PeriodAllowableExpenses], disallowableExpenses: Option[PeriodDisallowableExpenses]): List[MtdError] = {
+    allowableExpenses match {
       case Some(_) =>
-        allowableExpenses match {
-          case PeriodAllowableExpenses(
-            Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) => NoValidationErrors
-          case _ => List(RuleBothExpensesSuppliedError)
-        }
+        allowableExpenses.get.consolidatedExpenses match {
+          case None => NoValidationErrors
+          case Some(_) =>
+            (allowableExpenses, disallowableExpenses) match {
+              case (Some(PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)), None) => NoValidationErrors
+              case _ => List(RuleBothExpensesSuppliedError)
+          }
+      }
+      case _ => NoValidationErrors
     }
   }
-
 }
