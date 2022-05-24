@@ -12,6 +12,10 @@
             <td><p>Simulate success response.</p></td>
         </tr>
         <tr>
+            <td><p>ALLOWANCE_NOT_SUPPORTED</p></td>
+            <td><p>Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year.</p></td>
+        </tr>
+        <tr>
             <td><p>NOT_FOUND</p></td>
             <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>

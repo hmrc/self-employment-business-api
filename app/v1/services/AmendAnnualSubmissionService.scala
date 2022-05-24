@@ -49,7 +49,7 @@ class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionCo
     "INVALID_CORRELATIONID"       -> DownstreamError,
     "MISSING_EXEMPTION_REASON"    -> DownstreamError,
     "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
-    "ALLOWANCE_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+    "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
     "NOT_FOUND"                   -> NotFoundError,
     "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
     "GONE"                        -> DownstreamError,

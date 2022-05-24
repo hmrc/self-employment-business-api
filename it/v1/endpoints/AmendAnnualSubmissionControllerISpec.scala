@@ -254,7 +254,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
           (FORBIDDEN, "MISSING_EXEMPTION_REASON", INTERNAL_SERVER_ERROR, DownstreamError),
           (FORBIDDEN, "MISSING_EXEMPTION_INDICATOR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", BAD_REQUEST, RuleAllowanceNotSupportedError),
           (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
           (GONE, "GONE", INTERNAL_SERVER_ERROR, DownstreamError),
