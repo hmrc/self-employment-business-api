@@ -4,7 +4,7 @@
   "description": "Retrieves a self-employment annual summary for a tax year.",
   "type": "object",
   "properties": {
-    "periodSummary": {
+    "periods": {
       "type": "array",
       "items": {
         "type": "object",
@@ -72,7 +72,7 @@
     }
   },
   "required": [
-    "periodSummary"
+    "periods"
   ],
   "additionalProperties": false
 }
