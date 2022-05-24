@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import play.api.libs.json.Json
 import support.UnitSpec
 import v1.mocks.validators.MockAmendPeriodicValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.request.amendPeriodic._
 
@@ -138,7 +138,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
         )
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendPeriodicRequest(Nino(nino), businessId, periodId, amendPeriodicRequestBody))
+          Right(AmendPeriodicRequest(Nino(nino), BusinessId(businessId), periodId, amendPeriodicRequestBody))
       }
     }
 
