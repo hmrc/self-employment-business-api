@@ -113,6 +113,9 @@ class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorVal
       "when consolidatedExpenses is only supplied" in {
         AmendConsolidatedExpensesValidation.validate(allowableExpensesConsolidated, None).isEmpty shouldBe true
       }
+      "only disallowable expenses is supplied" in {
+        AmendConsolidatedExpensesValidation.validate(None, disallowableExpenses).isEmpty shouldBe true
+      }
     }
 
     "return an error" when {
