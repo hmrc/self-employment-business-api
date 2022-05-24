@@ -20,7 +20,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.AmendPeriodicConnector
+import v1.connectors.AmendPeriodSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -30,15 +30,15 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodicService @Inject() (connector: AmendPeriodicConnector) extends DesResponseMappingSupport with Logging {
+class AmendPeriodSummaryService @Inject()(connector: AmendPeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendPeriodicSummary(request: AmendPeriodicRequest)(implicit
-                                                          hc: HeaderCarrier,
-                                                          ec: ExecutionContext,
-                                                          logContext: EndpointLogContext,
-                                                          correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendPeriodSummary(request: AmendPeriodicRequest)(implicit
+                                                        hc: HeaderCarrier,
+                                                        ec: ExecutionContext,
+                                                        logContext: EndpointLogContext,
+                                                        correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    connector.amendPeriodicSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    connector.amendPeriodSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(
@@ -46,9 +46,9 @@ class AmendPeriodicService @Inject() (connector: AmendPeriodicConnector) extends
     "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
     "INVALID_DATE_FROM"               -> PeriodIdFormatError,
     "INVALID_DATE_TO"                 -> PeriodIdFormatError,
+    "INVALID_PAYLOAD"                 -> DownstreamError,
     "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
     "NOT_FOUND_PERIOD"                -> NotFoundError,
-    "NOT_FOUND_NINO"                  -> NotFoundError,
     "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
     "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
     "SERVER_ERROR"                    -> DownstreamError,

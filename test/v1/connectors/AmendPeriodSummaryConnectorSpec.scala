@@ -25,7 +25,7 @@ import v1.models.request.amendPeriodic._
 
 import scala.concurrent.Future
 
-class AmendPeriodicConnectorSpec extends ConnectorSpec {
+class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -62,7 +62,7 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
 
-    val connector: AmendPeriodicConnector = new AmendPeriodicConnector(
+    val connector: AmendPeriodSummaryConnector = new AmendPeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
@@ -73,8 +73,8 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
-  "AmendPeriodicConnector" when {
-    "amendPeriodicSummary" must {
+  "AmendPeriodSummaryConnector" when {
+    "amendPeriodSummary" must {
       "return a 204 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
@@ -86,7 +86,7 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
 
         MockHttpClient
           .put(
-            url = s"$baseUrl/income-store/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
+            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
             config = dummyDesHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,
@@ -94,7 +94,7 @@ class AmendPeriodicConnectorSpec extends ConnectorSpec {
           )
           .returns(Future.successful(outcome))
 
-        await(connector.amendPeriodicSummary(request)) shouldBe outcome
+        await(connector.amendPeriodSummary(request)) shouldBe outcome
       }
     }
   }
