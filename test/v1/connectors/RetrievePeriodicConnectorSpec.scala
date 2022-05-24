@@ -17,11 +17,11 @@
 package v1.connectors
 
 import mocks.MockAppConfig
-import v1.models.domain.{BusinessId, Nino}
 import v1.mocks.MockHttpClient
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
-import v1.models.response.retrievePeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrievePeriodicResponse}
+import v1.models.response.retrievePeriodic.{PeriodDates, RetrievePeriodicResponse}
 
 import scala.concurrent.Future
 
@@ -34,23 +34,9 @@ class RetrievePeriodicConnectorSpec extends ConnectorSpec {
   val request: RetrievePeriodicRequest = RetrievePeriodicRequest(Nino(nino), BusinessId(businessId), periodId)
 
   val response: RetrievePeriodicResponse = RetrievePeriodicResponse(
-    "2019-01-25",
-    "2020-01-25",
-    Some(
-      Incomes(
-        Some(
-          IncomesAmountObject(
-            1000.20
-          )),
-        Some(
-          IncomesAmountObject(
-            1000.20
-          ))
-      )),
-    Some(
-      ConsolidatedExpenses(
-        1000.20
-      )),
+    PeriodDates("2019-01-25", "2020-01-25"),
+    None,
+    None,
     None
   )
 

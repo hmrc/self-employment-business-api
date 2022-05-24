@@ -82,11 +82,10 @@ class RetrievePeriodicControllerSpec
   private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/period/$periodId", method = GET, rel = "self")
 
   val responseBody: RetrievePeriodicResponse = RetrievePeriodicResponse(
-    "2019-01-01",
-    "2020-01-01",
-    Some(Incomes(Some(IncomesAmountObject(100.99)), Some(IncomesAmountObject(100.99)))),
-    Some(ConsolidatedExpenses(100.99)),
-    None
+    periodDates = PeriodDates("2019-01-01", "2020-01-01"),
+    periodIncome = None,
+    periodAllowableExpenses = None,
+    periodDisallowableExpenses = None
   )
 
   "handleRequest" should {
