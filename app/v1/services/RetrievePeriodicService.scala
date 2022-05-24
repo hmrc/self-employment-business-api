@@ -43,14 +43,14 @@ class RetrievePeriodicService @Inject() (connector: RetrievePeriodicConnector) e
 
   private def desErrorMap =
     Map(
-      "INVALID_NINO"             -> NinoFormatError,
-      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "INVALID_DATE_FROM"        -> PeriodIdFormatError,
-      "INVALID_DATE_TO"          -> PeriodIdFormatError,
-      "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
-      "NOT_FOUND_PERIOD"         -> NotFoundError,
-      "SERVER_ERROR"             -> DownstreamError,
-      "SERVICE_UNAVAILABLE"      -> DownstreamError
+      "INVALID_NINO"            -> NinoFormatError,
+      "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
+      "INVALID_DATE_FROM"       -> PeriodIdFormatError,
+      "INVALID_DATE_TO"         -> PeriodIdFormatError,
+      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+      "NOT_FOUND_PERIOD"        -> NotFoundError,
+      "SERVER_ERROR"            -> DownstreamError,
+      "SERVICE_UNAVAILABLE"     -> DownstreamError
     )
 
 }
