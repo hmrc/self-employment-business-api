@@ -34,7 +34,7 @@ class CreatePeriodicConnector @Inject() (val http: HttpClient, val appConfig: Ap
       request: CreatePeriodSummaryRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
-    val businessId = request.businessId.value
+    val businessId = request.businessId
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
