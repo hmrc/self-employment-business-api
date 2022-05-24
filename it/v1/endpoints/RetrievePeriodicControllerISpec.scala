@@ -209,7 +209,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
       "to"   -> toDate
     )
 
-    def desUri: String = s"/income-store/nino/$nino/self-employments/$businessId/periodic-summary-detail"
+    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
@@ -250,7 +250,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
-    
+
     "return error according to spec" when {
 
       "validation error" when {
@@ -305,7 +305,7 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError),
           (Status.BAD_REQUEST, "INVALID_DATE_FROM", Status.BAD_REQUEST, PeriodIdFormatError),
           (Status.BAD_REQUEST, "INVALID_DATE_TO", Status.BAD_REQUEST, PeriodIdFormatError),
           (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
