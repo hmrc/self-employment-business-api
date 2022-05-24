@@ -38,7 +38,7 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
 
     val responseBody: JsValue = Json.parse(s"""
          |{
-         |  "periodSummary": [
+         |  "periods": [
          |    {
          |      "periodId": "$periodId",
          |      "periodStartDate": "$fromDate",
@@ -172,7 +172,7 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_INCOME_SOURCEID", Status.BAD_REQUEST, BusinessIdFormatError),
           (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
           (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)

@@ -84,7 +84,7 @@ class ListPeriodicControllerSpec
   private val responseBody = Json.parse(
     s"""
       |{
-      |  "periodSummary": [
+      |  "periods": [
       |    {
       |      "periodId": "$periodId",
       |      "periodStartDate": "$from",

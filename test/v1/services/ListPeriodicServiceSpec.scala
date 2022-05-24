@@ -41,21 +41,6 @@ class ListPeriodicServiceSpec extends ServiceSpec {
       ))
   )
 
-  val multipleResponse: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(
-    Seq(
-      PeriodDetails(
-        "2019-04-06_2020-04-05",
-        "2019-04-06",
-        "2020-04-05"
-      ),
-      PeriodDetails(
-        "2019-04-06_2020-04-05",
-        "2020-04-06",
-        "2020-04-05"
-      )
-    )
-  )
-
   private val requestData = ListPeriodicRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId)
@@ -79,13 +64,6 @@ class ListPeriodicServiceSpec extends ServiceSpec {
 
         await(service.listPeriods(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
-      "return multiple responses" in new Test {
-        MockListPeriodicConnector
-          .listPeriods(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, multipleResponse))))
-
-        await(service.listPeriods(requestData)) shouldBe Right(ResponseWrapper(correlationId, multipleResponse))
-      }
     }
   }
 
@@ -102,11 +80,11 @@ class ListPeriodicServiceSpec extends ServiceSpec {
         }
 
       val input = Seq(
-        "INVALID_NINO"             -> NinoFormatError,
-        "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
-        "SERVER_ERROR"             -> DownstreamError,
-        "SERVICE_UNAVAILABLE"      -> DownstreamError
+        "INVALID_NINO"            -> NinoFormatError,
+        "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
+        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+        "SERVER_ERROR"            -> DownstreamError,
+        "SERVICE_UNAVAILABLE"     -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

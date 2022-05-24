@@ -42,13 +42,13 @@ class ListPeriodicService @Inject() (connector: ListPeriodicConnector) extends D
     connector.listPeriods(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
-  private def desErrorMap =
+  private val desErrorMap =
     Map(
-      "INVALID_NINO"             -> NinoFormatError,
-      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
-      "SERVER_ERROR"             -> DownstreamError,
-      "SERVICE_UNAVAILABLE"      -> DownstreamError
+      "INVALID_NINO"            -> NinoFormatError,
+      "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
+      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+      "SERVER_ERROR"            -> DownstreamError,
+      "SERVICE_UNAVAILABLE"     -> DownstreamError
     )
 
 }

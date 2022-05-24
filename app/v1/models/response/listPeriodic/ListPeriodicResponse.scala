@@ -18,19 +18,18 @@ package v1.models.response.listPeriodic
 
 import cats.Functor
 import config.AppConfig
-import play.api.libs.json.{JsPath, Json, OWrites, Reads, Writes}
+import play.api.libs.json.{Json, OWrites, Reads, Writes}
 import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class ListPeriodicResponse[I](periodSummary: Seq[I])
+case class ListPeriodicResponse[I](periods: Seq[I])
 
 object ListPeriodicResponse extends HateoasLinks {
 
-  implicit val reads: Reads[ListPeriodicResponse[PeriodDetails]] =
-    (JsPath \ "periods").read[Seq[PeriodDetails]].map(ListPeriodicResponse(_))
+  implicit val reads: Reads[ListPeriodicResponse[PeriodDetails]] = Json.reads
 
-  implicit def writes[I: Writes]: OWrites[ListPeriodicResponse[I]] = Json.writes[ListPeriodicResponse[I]]
+  implicit def writes[I: Writes]: OWrites[ListPeriodicResponse[I]] = Json.writes
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListPeriodicResponse, PeriodDetails, ListPeriodicHateoasData] {
 
@@ -51,7 +50,7 @@ object ListPeriodicResponse extends HateoasLinks {
   implicit object ResponseFunctor extends Functor[ListPeriodicResponse] {
 
     override def map[A, B](fa: ListPeriodicResponse[A])(f: A => B): ListPeriodicResponse[B] =
-      ListPeriodicResponse(fa.periodSummary.map(f))
+      ListPeriodicResponse(fa.periods.map(f))
 
   }
 
