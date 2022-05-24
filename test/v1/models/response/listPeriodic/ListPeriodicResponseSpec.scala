@@ -70,7 +70,7 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
       Json.toJson(model) shouldBe Json.parse(
         """
             |{
-            |   "periodSummary": [
+            |   "periods": [
             |     {
             |         "periodId": "2019-01-01_2020-01-01",
             |         "periodStartDate": "2019-01-01",

@@ -38,7 +38,7 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
 
     val responseBody: JsValue = Json.parse(s"""
          |{
-         |  "periodSummary": [
+         |  "periods": [
          |    {
          |      "periodId": "$periodId",
          |      "periodStartDate": "$fromDate",
