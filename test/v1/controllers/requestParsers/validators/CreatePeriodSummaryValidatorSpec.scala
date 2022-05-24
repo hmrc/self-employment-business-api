@@ -17,8 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import fixtures.CreatePeriodSummaryFixture
-import play.api.libs.json._
-import play.api.mvc.AnyContent
+import play.api.libs.json.{JsValue, _}
 import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.createPeriodSummary._
@@ -26,7 +25,7 @@ import v1.models.utils.JsonErrorValidators
 
 class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummaryFixture with JsonErrorValidators {
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
 
   val validator = new CreatePeriodSummaryValidator()
@@ -140,26 +139,30 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
 
           "consolidated expenses is invalid" when {
             Seq(
-              "/periodAllowableExpenses/consolidatedExpenses",
+              "/periodAllowableExpenses/consolidatedExpenses"
             ).foreach(path => testWith(requestMtdFullBodyJson.update(path, _), path))
           }
 
           "multiple fields are invalid" in {
             val path1 = "/periodIncome/turnover"
             val path2 = "/periodAllowableExpenses/consolidatedExpenses"
-            val path3 = "/periodDisallowableExpenses/costOfGoodsDisallowable"
+            val path3 = "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
 
             val json: JsValue = Json.parse(
               s"""{
-                 |	"periodIncome": {
-                 |		"turnover": 0
-                 |	},
-                 |	"periodAllowableExpenses": {
+                 |    "periodDates": {
+                 |      "periodStartDate": "2019-08-24",
+                 |      "periodEndDate": "2019-08-24"
+                 |    },
+                 |	  "periodIncome": {
+                 |		"turnover": -1000
+                 |	  },
+                 |	  "periodAllowableExpenses": {
                  |		"consolidatedExpenses": 123.123
-                 |	},
-                 |  "periodDisallowableExpenses": {
-                 |    "paymentsToSubcontractorsDisallowable": 999999999999.99
-                 | }
+                 |	  },
+                 |    "periodDisallowableExpenses": {
+                 |      "paymentsToSubcontractorsDisallowable": 999999999999.99
+                 |    }
                  |}
                  |""".stripMargin
             )
@@ -186,57 +189,16 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
           }
         }
 
-        "an empty PeriodIncome object is supplied" in {
-          validator.validate(
-            CreatePeriodSummaryRawData(validNino, validBusinessId, Json.obj("periodIncome" -> JsObject.empty))
-          ) shouldBe List(RuleIncorrectOrEmptyBodyError)
-        }
-
-        "an empty PeriodAllowableExpenses object is supplied" in {
-          validator.validate(
-            CreatePeriodSummaryRawData(validNino, validBusinessId, Json.obj("periodAllowableExpenses" -> JsObject.empty))
-          ) shouldBe List(RuleIncorrectOrEmptyBodyError)
-        }
-
-        "an empty PeriodDisallowableExpenses object is supplied" in {
-          validator.validate(
-            CreatePeriodSummaryRawData(validNino, validBusinessId, Json.obj("periodDisallowableExpenses" -> JsObject.empty))
-          ) shouldBe List(RuleIncorrectOrEmptyBodyError)
-        }
-
-        "fields are empty" in {
-          validator.validate(
-            CreatePeriodSummaryRawData(validNino, validBusinessId, Json.obj("wagesAndStaffCostsDisallowable" -> JsObject.empty))
-          ) shouldBe List(RuleIncorrectOrEmptyBodyError)
-        }
-
-        "object is invalid" in {
-          validator.validate(
-            CreatePeriodSummaryRawData(validNino, validBusinessId, Json.obj("periodIncome" -> "beans"))
-          ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
-        }
-      }
-
-      "return date errors" when {
-        "an invalid periodStartDate is supplied" in {
+        "an empty body is submitted" in {
           validator.validate(
             CreatePeriodSummaryRawData(
               validNino,
               validBusinessId,
-              Json.parse(
-                """
-                  |{
-                  |   "periodDates": {
-                  |     "periodStartDate": "2319-123",
-                  |     "periodEndDate": "2019-08-24"
-                  |    }
-                  |}
-          """.stripMargin
-              )
-            )) shouldBe List(StartDateFormatError)
+              Json.parse("""{}"""))
+          ) shouldBe List(RuleIncorrectOrEmptyBodyError)
         }
 
-        "an invalid periodEndDate is supplied" in {
+        "an empty PeriodIncome object is supplied" in {
           validator.validate(
             CreatePeriodSummaryRawData(
               validNino,
@@ -246,50 +208,194 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                   |{
                   |   "periodDates": {
                   |     "periodStartDate": "2019-08-24",
-                  |     "periodEndDate": "3129921"
-                  |    }
-                  |}
-          """.stripMargin
-              )
-            )) shouldBe List(EndDateFormatError)
-        }
-
-        "periodStartDate is before periodEndDate" in {
-          validator.validate(
-            CreatePeriodSummaryRawData(
-              validNino,
-              validBusinessId,
-              Json.parse(
-                """
-                  |{
-                  |   "periodDates": {
-                  |     "periodStartDate": "2019-08-25",
                   |     "periodEndDate": "2019-08-24"
-                  |    }
+                  |    },
+                  |    "periodIncome": {}
                   |}
-          """.stripMargin
-              )
-            )) shouldBe List(RuleEndDateBeforeStartDateError)
-        }
-
-        "both dates are invalid" in {
-          validator.validate(
-            CreatePeriodSummaryRawData(
-              validNino,
-              validBusinessId,
-              Json.parse(
-                """
-                  |{
-                  |   "periodDates": {
-                  |     "periodStartDate": "2019-08-25",
-                  |     "periodEndDate": "2019-08-24"
-                  |    }
-                  |}
-          """.stripMargin
-              )
-            )) shouldBe List(StartDateFormatError, EndDateFormatError)
+                       """.stripMargin)
+            )
+          ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
         }
       }
+
+      "an empty PeriodAllowableExpenses object is supplied" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2019-08-24",
+                |     "periodEndDate": "2019-08-24"
+                |    },
+                |    "periodIncome": {
+                |      "turnover": 1000.99,
+                |      "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {},
+                |    "periodDisallowableExpenses": {
+                |      "costOfGoodsDisallowable": 1000.99,
+                |      "paymentsToSubcontractorsDisallowable": 1000.99,
+                |      "wagesAndStaffCostsDisallowable": 1000.99,
+                |      "carVanTravelExpensesDisallowable": 1000.99,
+                |      "premisesRunningCostsDisallowable": -1000.99,
+                |      "maintenanceCostsDisallowable": -999.99,
+                |      "adminCostsDisallowable": 1000.99,
+                |      "businessEntertainmentCostsDisallowable": 1000.99,
+                |      "advertisingCostsDisallowable": 1000.99,
+                |      "interestOnBankOtherLoansDisallowable": -1000.99,
+                |      "financeChargesDisallowable": -9999.99,
+                |      "irrecoverableDebtsDisallowable": 1000.99,
+                |      "professionalFeesDisallowable": 9999999999.99,
+                |      "depreciationDisallowable": -99999999999.99,
+                |      "otherExpensesDisallowable": 1000.99
+                |     }
+                |}
+              """.stripMargin)
+          )
+        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
+      }
+
+      "an empty PeriodDisallowableExpenses object is supplied" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2019-08-24",
+                |     "periodEndDate": "2019-08-24"
+                |    },
+                |    "periodIncome": {
+                |      "turnover": 1000.99,
+                |      "other": 1000.99
+                |    },
+                |    "periodAllowableExpenses": {
+                |      "consolidatedExpenses": 1000.99,
+                |      "costOfGoodsAllowable": 1000.99,
+                |      "paymentsToSubcontractorsAllowable": 1000.99,
+                |      "wagesAndStaffCostsAllowable": 1000.99,
+                |      "carVanTravelExpensesAllowable": 1000.99,
+                |      "premisesRunningCostsAllowable": -99999.99,
+                |      "maintenanceCostsAllowable": -1000.99,
+                |      "adminCostsAllowable": 1000.99,
+                |      "businessEntertainmentCostsAllowable": 1000.99,
+                |      "advertisingCostsAllowable": 1000.99,
+                |      "interestOnBankOtherLoansAllowable": -1000.99,
+                |      "financeChargesAllowable": -1000.99,
+                |      "irrecoverableDebtsAllowable": -1000.99,
+                |      "professionalFeesAllowable": -99999999999.99,
+                |      "depreciationAllowable": -1000.99,
+                |      "otherExpensesAllowable": 1000.99
+                |    },
+                |    "periodDisallowableExpenses": {}
+                |}
+              """.stripMargin)
+          )
+        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
+      }
+
+      "object is invalid" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2019-08-24",
+                |     "periodEndDate": "2019-08-24"
+                |   },
+                |   "": {
+                |     "turnover": 1000.99,
+                |     "other": 1000.99
+                |   }
+                |}
+              """.stripMargin))
+        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
+      }
+    }
+
+    "return date errors" when {
+      "an invalid periodStartDate is supplied" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2319-123",
+                |     "periodEndDate": "2019-08-24"
+                |    }
+                |}
+              """.stripMargin
+            )
+          )) shouldBe List(StartDateFormatError.copy(paths = Some(Seq("/periodDates/periodStartDate"))))
+      }
+
+      "an invalid periodEndDate is supplied" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2019-08-24",
+                |     "periodEndDate": "3129921"
+                |    }
+                |}
+          """.stripMargin
+            )
+          )) shouldBe List(EndDateFormatError.copy(paths = Some(Seq("/periodDates/periodEndDate"))))
+      }
+
+      "periodStartDate is before periodEndDate" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2019-08-25",
+                |     "periodEndDate": "2019-08-24"
+                |    }
+                |}
+          """.stripMargin
+            )
+          )) shouldBe List(RuleEndDateBeforeStartDateError.copy(paths = Some(Seq("/periodDates/periodStartDate"))))
+      }
+
+      "both dates are invalid" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2020-01-31",
+                |     "periodEndDate": "2020-01-01"
+                |    }
+                |}
+          """.stripMargin
+            )
+          )) shouldBe List(StartDateFormatError, EndDateFormatError.copy(paths = Some(Seq(
+          "/periodDates"
+        ))))
+      }
+    }
 
       "return RuleBothExpensesSuppliedError" when {
         "expenses and consolidatedExpenses are supplied" in {
@@ -298,16 +404,16 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
               validNino,
               validBusinessId,
               requestMtdFullBodyJson
-            )) shouldBe List(RuleBothExpensesSuppliedError)
+            )) shouldBe List(RuleBothExpensesSuppliedError.copy(paths = Some(Seq("/periodAllowableExpenses/consolidatedExpenses"))))
         }
       }
 
-      "return all errors" when {
-        "all path parameters are invalid" in {
-          validator.validate(CreatePeriodSummaryRawData("walrus", "beans", requestMtdBodyJson)) shouldBe
-            List(NinoFormatError, BusinessIdFormatError)
-        }
+    "return all errors" when {
+      "all path parameters are invalid" in {
+        validator.validate(CreatePeriodSummaryRawData("walrus", "beans", requestMtdBodyJson)) shouldBe
+          List(NinoFormatError, BusinessIdFormatError)
       }
     }
   }
+
 }
