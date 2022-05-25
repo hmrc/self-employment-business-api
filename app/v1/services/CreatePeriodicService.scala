@@ -35,10 +35,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreatePeriodicService @Inject() (connector: CreatePeriodicConnector) extends DesResponseMappingSupport with Logging {
 
   def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
-                                                                 hc: HeaderCarrier,
-                                                                 ec: ExecutionContext,
-                                                                 logContext: EndpointLogContext,
-                                                                 correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))

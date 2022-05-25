@@ -18,7 +18,7 @@ package v1.models.response.retrievePeriodic
 
 import play.api.libs.json.{Json, OWrites}
 
-case class PeriodDates (periodStartDate: String, periodEndDate: String)
+case class PeriodDates(periodStartDate: String, periodEndDate: String)
 
 object PeriodDates {
   implicit val writes: OWrites[PeriodDates] = Json.writes

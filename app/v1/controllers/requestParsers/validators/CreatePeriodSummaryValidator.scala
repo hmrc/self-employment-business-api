@@ -23,16 +23,12 @@ import v1.models.request.createPeriodSummary._
 class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData] {
 
   private val validationSet =
-    List(parameterFormatValidation,
-      bodyFormatValidation,
-      bodyFieldValidation,
-      dateRuleValidation,
-      consolidatedExpensesRuleValidation)
+    List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation, dateRuleValidation, consolidatedExpensesRuleValidation)
 
   private def parameterFormatValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      BusinessIdValidation.validate(data.businessId),
+      BusinessIdValidation.validate(data.businessId)
     )
   }
 
@@ -67,25 +63,25 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       ))
   }
 
-    private def dateRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
-      val body = data.body.as[CreatePeriodSummaryBody].periodDates
-      List(
-        DateValidation.validateToDateBeforeFromDate(body.periodStartDate, body.periodEndDate)
-      )
-    }
+  private def dateRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
+    val body = data.body.as[CreatePeriodSummaryBody].periodDates
+    List(
+      DateValidation.validateToDateBeforeFromDate(body.periodStartDate, body.periodEndDate)
+    )
+  }
 
-    private def validateDates(periodStartDate: String, periodEndDate: String): List[MtdError] = {
-      List(
-        DateValidation.validate(
-          field = periodStartDate,
-          error = StartDateFormatError
-        ),
-        DateValidation.validate(
-          field = periodEndDate,
-          error = EndDateFormatError
-        )
-      ).flatten
-    }
+  private def validateDates(periodStartDate: String, periodEndDate: String): List[MtdError] = {
+    List(
+      DateValidation.validate(
+        field = periodStartDate,
+        error = StartDateFormatError
+      ),
+      DateValidation.validate(
+        field = periodEndDate,
+        error = EndDateFormatError
+      )
+    ).flatten
+  }
 
   private def validateIncome(periodIncome: PeriodIncome): List[MtdError] = {
     List(

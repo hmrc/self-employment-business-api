@@ -29,7 +29,8 @@ object ConsolidatedExpensesValidation {
           case None => NoValidationErrors
           case Some(_) =>
             allowableExpenses match {
-              case Some(PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)) => NoValidationErrors
+              case Some(PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)) =>
+                NoValidationErrors
               case _ => List(RuleBothExpensesSuppliedError)
             }
         }

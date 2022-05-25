@@ -32,5 +32,6 @@ object CreatePeriodSummaryBody {
       (JsPath \ "financials" \ "incomes").writeNullable[PeriodIncome] and
       (JsPath \ "financials" \ "deductions").writeNullable[PeriodAllowableExpenses] and
       (JsPath \ "financials" \ "deductions").writeNullable[PeriodDisallowableExpenses]
-    )(unlift(CreatePeriodSummaryBody.unapply))
+  )(unlift(CreatePeriodSummaryBody.unapply))
+
 }

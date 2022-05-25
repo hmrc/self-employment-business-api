@@ -30,8 +30,10 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 @Singleton
 class CreatePeriodicConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def createPeriodicSummary(
-      request: CreatePeriodSummaryRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
     val businessId = request.businessId
