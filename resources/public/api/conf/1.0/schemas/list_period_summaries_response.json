@@ -1,14 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "List Self-Employment Period SummariesResponse",
-  "description": "List Self-Employment Period SummariesResponse",
+  "title": "List Self-Employment Period Summaries Response",
+  "description": "List Self-Employment Period Summaries Response",
   "type": "object",
   "properties": {
     "periods": {
       "type": "array",
       "items": {
         "type": "object",
-        "description": "Details about Self-Employment periods",
+        "description": "Details about Self-Employment periods.",
         "properties": {
           "periodId": {
             "description": "Concatenated Period Start and End dates.",
@@ -43,7 +43,7 @@
           "href": {
             "description": "The relative url of the endpoint.",
             "type": "string",
-            "example": "/individuals/business/self-employment/sample/{nino}/{businessId}/period"
+            "example": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period"
           },
           "rel": {
             "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
