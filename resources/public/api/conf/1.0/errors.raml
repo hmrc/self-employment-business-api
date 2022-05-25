@@ -332,25 +332,3 @@ traits:
                 description: The End date is earlier than the Start date.
                 value:
                   code: RULE_END_DATE_BEFORE_START_DATE
-  ruleTypeOfBusinessIncorrect:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleTypeOfBusinessIncorrect:
-                description: The business ID supplied does not relate to a self-employment business.
-                value:
-                  code: RULE_TYPE_OF_BUSINESS_INCORRECT
-  ruleDuplicateSubmission:
-    responses:
-      400:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              ruleDuplicateSubmission:
-                description: A summary has already been submitted for the period specified.
-                value:
-                  code: RULE_DUPLICATE_SUBMISSION

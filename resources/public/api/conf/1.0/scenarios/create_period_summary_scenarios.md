@@ -12,10 +12,6 @@
             <td><p>Simulates success response.</p></td>
         </tr>
         <tr>
-            <td><p>DUPLICATE_SUBMISSION</p></td>
-            <td><p>Simulates the scenario where a summary has already been submitted for the specified period.</p></td>
-        </tr>
-        <tr>
             <td><p>OVERLAPPING_PERIOD</p></td>
             <td><p>Simulates the scenario where the period summary overlaps with an existing period summary.</p></td>
         </tr>
@@ -30,10 +26,6 @@
         <tr>
             <td><p>NOT_ALLOWED_CONSOLIDATED_EXPENSES</p></td>
             <td><p>Simulates the scenario where the cumulative turnover amount exceeds the consolidated expenses threshold.</p></td>
-        </tr>
-        <tr>
-            <td><p>TYPE_OF_BUSINESS_INCORRECT</p></td>
-            <td><p>Simulates the scenario where an businessId for something  other than a self-employment business is supplied.</p></td>
         </tr>
         <tr>
             <td><p>NOT_FOUND</p></td>
