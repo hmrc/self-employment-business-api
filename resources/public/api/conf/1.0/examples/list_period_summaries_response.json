@@ -4,7 +4,7 @@
       "periodId": "2017-04-06_2017-07-04",
       "periodStartDate": "2017-04-06",
       "periodEndDate": "2017-07-04",
-      "links":[
+      "links": [
         {
           "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2017-04-06_2017-07-04",
           "method": "GET",
@@ -16,7 +16,7 @@
       "periodId": "2017-07-05_2017-10-04",
       "periodStartDate": "2017-07-05",
       "periodEndDate": "2017-10-04",
-      "links":[
+      "links": [
         {
           "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2017-07-05_2017-10-04",
           "method": "GET",
