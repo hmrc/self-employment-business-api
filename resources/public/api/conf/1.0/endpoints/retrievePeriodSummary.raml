@@ -5,10 +5,10 @@ is:
   - errors.formatBusinessId
   - errors.formatPeriodId
   - errors.clientOrAgentNotAuthorised
-  - errors.notFound
-displayName: Retrieve a Self-Employment Periodic Update [test only]
-description: "This endpoint allows a developer to retrieve a single self-employment periodic update for a given identifier. A Business ID and Period ID must be provided."
-(annotations.sandboxData): !include ../scenarios/retrieve_periodic_update_scenarios.md
+  - errors.matchingResourceNotFound
+displayName: Retrieve a Self-Employment Period Summary [test only]
+description: "This endpoint allows a developer to retrieve a single self-employment period summary for a given identifier. A National Insurance number, business ID and period ID must be provided."
+(annotations.sandboxData): !include ../scenarios/retrieve_period_summary_scenarios.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
 responses:
@@ -19,11 +19,11 @@ responses:
         description: Unique ID for operation tracking <br> String, 36 characters.
     body:
       application/json:
-        type: !include ../schemas/retrieve_periodic_update_response.json
+        type: !include ../schemas/retrieve_period_summary_response.json
         examples:
          example-1:
           description: Non-Consolidated Response
-          value: !include ../examples/retrieve_periodic_update_non_consolidated_response.json
+          value: !include ../examples/retrieve_period_summary_non_consolidated_response.json
          example-2:
           description: Consolidated Response
-          value: !include ../examples/retrieve_periodic_update_consolidated_response.json
+          value: !include ../examples/retrieve_period_summary_consolidated_response.json
