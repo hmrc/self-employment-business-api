@@ -17,27 +17,35 @@
 package v1.models.response.retrievePeriodic
 
 import config.AppConfig
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrievePeriodicResponse(periodFromDate: String,
-                                    periodToDate: String,
-                                    incomes: Option[Incomes],
-                                    consolidatedExpenses: Option[ConsolidatedExpenses],
-                                    expenses: Option[Expenses])
+case class RetrievePeriodicResponse(periodDates: PeriodDates,
+                                    periodIncome: Option[PeriodIncome],
+                                    periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                                    periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
 object RetrievePeriodicResponse extends HateoasLinks {
 
-  implicit val reads: Reads[RetrievePeriodicResponse] = (
-    (JsPath \ "from").read[String] and
-      (JsPath \ "to").read[String] and
-      (JsPath \ "financials" \ "incomes").readNullable[Incomes] and
-      (JsPath \ "financials" \ "deductions" \ "simplifiedExpenses").readNullable[BigDecimal].map(_.map(ConsolidatedExpenses(_))) and
-      (JsPath \ "financials" \ "deductions").readNullable[Expenses]
-  )(RetrievePeriodicResponse.apply _)
+  implicit val reads: Reads[RetrievePeriodicResponse] = for {
+    periodStartDate <- (JsPath \ "from").read[String]
+    periodEndDate   <- (JsPath \ "to").read[String]
+
+    periodDates = PeriodDates(periodStartDate = periodStartDate, periodEndDate = periodEndDate)
+
+    periodIncome               <- (JsPath \ "financials" \ "incomes").readNullable[PeriodIncome]
+    periodAllowableExpenses    <- (JsPath \ "financials").readNullable[PeriodAllowableExpenses]
+    periodDisallowableExpenses <- (JsPath \ "financials").readNullable[PeriodDisallowableExpenses]
+  } yield {
+    RetrievePeriodicResponse(
+      periodDates = periodDates,
+      periodIncome = if (periodIncome.exists(_.isEmptyObject)) None else periodIncome,
+      periodAllowableExpenses = if (periodAllowableExpenses.exists(_.isEmptyObject)) None else periodAllowableExpenses,
+      periodDisallowableExpenses = if (periodDisallowableExpenses.exists(_.isEmptyObject)) None else periodDisallowableExpenses
+    )
+  }
 
   implicit val writes: OWrites[RetrievePeriodicResponse] = Json.writes[RetrievePeriodicResponse]
 
@@ -47,7 +55,8 @@ object RetrievePeriodicResponse extends HateoasLinks {
       import data._
       Seq(
         amendPeriodicSummary(appConfig, nino, businessId, periodId),
-        retrievePeriodicSummary(appConfig, nino, businessId, periodId)
+        retrievePeriodicSummary(appConfig, nino, businessId, periodId),
+        listPeriodicSummary(appConfig, nino, businessId, isSelf = false)
       )
     }
 

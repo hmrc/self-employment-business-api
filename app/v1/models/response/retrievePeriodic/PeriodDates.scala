@@ -16,10 +16,10 @@
 
 package v1.models.response.retrievePeriodic
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OWrites}
 
-case class ExpensesAmountObject(amount: BigDecimal, disallowableAmount: Option[BigDecimal])
+case class PeriodDates (periodStartDate: String, periodEndDate: String)
 
-object ExpensesAmountObject {
-  implicit val format: Format[ExpensesAmountObject] = Json.format[ExpensesAmountObject]
+object PeriodDates {
+  implicit val writes: OWrites[PeriodDates] = Json.writes
 }

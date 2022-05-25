@@ -16,35 +16,12 @@
 
 package v1.models.response.retrievePeriodic
 
-import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import play.api.libs.json.{Json, OFormat}
 
-class IncomesAmountObjectSpec extends UnitSpec {
+case class PeriodIncome (turnover: Option[BigDecimal], other: Option[BigDecimal]) {
+  def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty
+}
 
-  val model: IncomesAmountObject = IncomesAmountObject(500.12)
-
-  val json: JsValue = Json.parse(
-    """
-      |{
-      |  "amount": 500.12
-      |}
-    """.stripMargin
-  )
-
-  "reads" should {
-    "read from a model" when {
-      "a valid request is made" in {
-        json.as[IncomesAmountObject] shouldBe model
-      }
-    }
-  }
-
-  "writes" should {
-    "write to a model" when {
-      "a valid request is made" in {
-        Json.toJson(model) shouldBe json
-      }
-    }
-  }
-
+object PeriodIncome {
+  implicit val format: OFormat[PeriodIncome] = Json.format
 }
