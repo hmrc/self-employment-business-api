@@ -55,8 +55,8 @@ uses:
         get: !include endpoints/retrieveAnnualSubmission.raml
         delete: !include endpoints/deleteAnnualSubmission.raml
       /period:
-        post: !include endpoints/createPeriodicSummary.raml
-        get: !include endpoints/listPeriodSummary.raml
+        post: !include endpoints/createPeriodSummary.raml
+        get: !include endpoints/listPeriodSummaries.raml
         /{periodId}:
           uriParameters:
             periodId:

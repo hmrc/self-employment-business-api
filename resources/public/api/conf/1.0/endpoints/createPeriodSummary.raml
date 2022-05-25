@@ -13,9 +13,7 @@ is:
   - errors.ruleMisalignedPeriod
   - errors.ruleNotContiguousPeriod
   - errors.ruleNotAllowedConsolidatedExpenses
-  - errors.ruleTypeOfBusinessIncorrect
   - errors.incorrectOrEmptyBody
-  - errors.ruleDuplicateSubmission
   - errors.clientOrAgentNotAuthorised
   - errors.matchingResourceNotFoundSE
 displayName: Create a Self-Employment Period Summary [test only]
@@ -25,23 +23,23 @@ description: This endpoint allows a developer to create a self-employment period
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 body:
   application/json:
-    type: !include ../schemas/create_periodic_summary_request.json
+    type: !include ../schemas/create_period_summary_request.json
     examples:
      example-1:
-      description: Create Periodic Request
-      value: !include ../examples/create_periodic_summary_request.json
+      description: Create Period Summary Request
+      value: !include ../examples/create_period_summary_request.json
      example-2:
-      description: Create Periodic With Consolidated Request
-      value: !include ../examples/create_periodic_summary_consolidated_request.json
+      description: Create Period Summary With Consolidated Request
+      value: !include ../examples/create_period_summary_consolidated_request.json
 responses:
   200:
     body:
       application/json:
-        type: !include ../schemas/create_periodic_summary_response.json
+        type: !include ../schemas/create_period_summary_response.json
         examples:
           example:
-            description: Create Periodic Response
-            value: !include ../examples/create_periodic_summary_response.json
+            description: Create Period Summary Response
+            value: !include ../examples/create_period_summary_response.json
     headers:
       X-CorrelationId:
         example: c75f40a6-a3df-4429-a697-471eeec46435
