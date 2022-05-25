@@ -16,55 +16,129 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-//import support.UnitSpec
-//import v1.models.errors.RuleBothExpensesSuppliedError
-//import v1.models.request.createPeriodic.{ConsolidatedExpenses, Expenses, ExpensesAmountObject}
-//import v1.models.utils.JsonErrorValidators
-//
-//class ConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
-//
-//  val consolidatedExpenses: ConsolidatedExpenses = ConsolidatedExpenses(100.50)
-//
-//  val expenses: Expenses = Expenses(
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50))),
-//    Some(ExpensesAmountObject(100.50, Some(100.50)))
-//  )
-//
-//  "validate" should {
-//    "return no errors" when {
-//      "when expenses and consolidated expenses are both not supplied" in {
-//        ConsolidatedExpensesValidation.validate(None, None).isEmpty shouldBe true
-//      }
-//      "when expenses is only supplied" in {
-//        ConsolidatedExpensesValidation.validate(None, Some(expenses)).isEmpty shouldBe true
-//      }
-//      "when consolidatedExpenses is only supplied" in {
-//        ConsolidatedExpensesValidation.validate(Some(consolidatedExpenses), None).isEmpty shouldBe true
-//      }
-//    }
-//
-//    "return an error" when {
-//      "when both expenses and consolidatedExpenses is supplied" in {
-//        val validationResult = ConsolidatedExpensesValidation.validate(Some(consolidatedExpenses), Some(expenses))
-//
-//        validationResult.isEmpty shouldBe false
-//        validationResult.length shouldBe 1
-//        validationResult.head shouldBe RuleBothExpensesSuppliedError
-//      }
-//    }
-//  }
-//
-//}
+import support.UnitSpec
+import v1.models.errors.RuleBothExpensesSuppliedError
+import v1.models.request.createPeriodSummary._
+
+class ConsolidatedExpensesValidationSpec extends UnitSpec {
+
+  val allowableExpensesWithoutConsolidated: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
+    consolidatedExpenses = None,
+    costOfGoodsAllowable = Some(100.50),
+    paymentsToSubcontractorsAllowable = Some(100.50),
+    wagesAndStaffCostsAllowable = Some(100.50),
+    carVanTravelExpensesAllowable = Some(100.50),
+    premisesRunningCostsAllowable = Some(100.50),
+    maintenanceCostsAllowable = Some(100.50),
+    adminCostsAllowable = Some(100.50),
+    businessEntertainmentCostsAllowable = Some(100.50),
+    advertisingCostsAllowable = Some(100.50),
+    interestOnBankOtherLoansAllowable = Some(100.50),
+    financeChargesAllowable = Some(100.50),
+    irrecoverableDebtsAllowable = Some(100.50),
+    professionalFeesAllowable = Some(100.50),
+    depreciationAllowable = Some(100.50),
+    otherExpensesAllowable = Some(100.50)
+  ))
+
+  val allowableExpensesWithConsolidated: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
+    consolidatedExpenses = Some(100.50),
+    costOfGoodsAllowable = Some(100.50),
+    paymentsToSubcontractorsAllowable = Some(100.50),
+    wagesAndStaffCostsAllowable = Some(100.50),
+    carVanTravelExpensesAllowable = Some(100.50),
+    premisesRunningCostsAllowable = Some(100.50),
+    maintenanceCostsAllowable = Some(100.50),
+    adminCostsAllowable = None,
+    businessEntertainmentCostsAllowable = Some(100.50),
+    advertisingCostsAllowable = Some(100.50),
+    interestOnBankOtherLoansAllowable = Some(100.50),
+    financeChargesAllowable = Some(100.50),
+    irrecoverableDebtsAllowable = Some(100.50),
+    professionalFeesAllowable = Some(100.50),
+    depreciationAllowable = Some(100.50),
+    otherExpensesAllowable = Some(100.50)
+  ))
+
+  val allowableExpensesWithConsolidatedOnly: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
+    consolidatedExpenses = Some(100.50),
+    costOfGoodsAllowable = None,
+    paymentsToSubcontractorsAllowable = None,
+    wagesAndStaffCostsAllowable = None,
+    carVanTravelExpensesAllowable = None,
+    premisesRunningCostsAllowable = None,
+    maintenanceCostsAllowable = None,
+    adminCostsAllowable = None,
+    businessEntertainmentCostsAllowable = None,
+    advertisingCostsAllowable = None,
+    interestOnBankOtherLoansAllowable = None,
+    financeChargesAllowable = None,
+    irrecoverableDebtsAllowable = None,
+    professionalFeesAllowable = None,
+    depreciationAllowable = None,
+    otherExpensesAllowable = None
+  ))
+
+  val disallowableExpenses: Option[PeriodDisallowableExpenses] = Some(PeriodDisallowableExpenses(
+    costOfGoodsDisallowable = Some(100.50),
+    paymentsToSubcontractorsDisallowable = Some(100.50),
+    wagesAndStaffCostsDisallowable = Some(100.50),
+    carVanTravelExpensesDisallowable = Some(100.50),
+    premisesRunningCostsDisallowable = Some(100.50),
+    maintenanceCostsDisallowable = Some(100.50),
+    adminCostsDisallowable = Some(100.50),
+    businessEntertainmentCostsDisallowable = Some(100.50),
+    advertisingCostsDisallowable = Some(100.50),
+    interestOnBankOtherLoansDisallowable = Some(100.50),
+    financeChargesDisallowable = Some(100.50),
+    irrecoverableDebtsDisallowable = Some(100.50),
+    professionalFeesDisallowable = Some(100.50),
+    depreciationDisallowable = Some(100.50),
+    otherExpensesDisallowable = Some(100.50)
+  ))
+
+  "validate" should {
+    "return no errors" when {
+      "no expenses is supplied" in {
+        ConsolidatedExpensesValidation.validate(None, None).isEmpty shouldBe true
+      }
+      "other allowable expenses without consolidated expenses are supplied" in {
+        ConsolidatedExpensesValidation.validate(allowableExpensesWithoutConsolidated, None).isEmpty shouldBe true
+      }
+      "disallowable expenses without allowable expenses are supplied" in {
+        ConsolidatedExpensesValidation.validate(None, disallowableExpenses).isEmpty shouldBe true
+      }
+      "other allowable expenses without consolidated expenses and disallowable expenses are supplied" in {
+        ConsolidatedExpensesValidation.validate(allowableExpensesWithoutConsolidated, disallowableExpenses).isEmpty shouldBe true
+      }
+      "consolidatedExpenses is only supplied" in {
+        ConsolidatedExpensesValidation.validate(allowableExpensesWithConsolidatedOnly, None).isEmpty shouldBe true
+      }
+    }
+
+    "return RuleBothExpensesSuppliedError" when {
+      "all allowable expenses (consolidated expenses included) are supplied" in {
+        val validationResult = ConsolidatedExpensesValidation.validate(allowableExpensesWithConsolidated, None)
+
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe RuleBothExpensesSuppliedError
+      }
+      "all allowable expenses (consolidated expenses included) and disallowable expenses are supplied" in {
+        val validationResult = ConsolidatedExpensesValidation.validate(allowableExpensesWithConsolidated, disallowableExpenses)
+
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe RuleBothExpensesSuppliedError
+      }
+      "only consolidated expenses (excluding all other allowable expenses) and disallowable expenses are supplied" in {
+        val validationResult = ConsolidatedExpensesValidation.validate(allowableExpensesWithConsolidatedOnly, disallowableExpenses)
+
+        validationResult.isEmpty shouldBe false
+        validationResult.length shouldBe 1
+        validationResult.head shouldBe RuleBothExpensesSuppliedError
+      }
+    }
+  }
+
+}
