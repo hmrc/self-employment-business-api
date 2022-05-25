@@ -331,7 +331,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
           )) shouldBe List(EndDateFormatError)
       }
 
-      "periodStartDate is before periodEndDate" in {
+      "periodStartDate is after periodEndDate" in {
         validator.validate(
           CreatePeriodSummaryRawData(
             validNino,
