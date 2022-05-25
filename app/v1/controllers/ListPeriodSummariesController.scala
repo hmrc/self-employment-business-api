@@ -32,13 +32,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesController @Inject()(val authService: EnrolmentsAuthService,
-                                              val lookupService: MtdIdLookupService,
-                                              parser: ListPeriodSummariesRequestParser,
-                                              service: ListPeriodSummariesService,
-                                              hateoasFactory: HateoasFactory,
-                                              cc: ControllerComponents,
-                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthService,
+                                               val lookupService: MtdIdLookupService,
+                                               parser: ListPeriodSummariesRequestParser,
+                                               service: ListPeriodSummariesService,
+                                               hateoasFactory: HateoasFactory,
+                                               cc: ControllerComponents,
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {

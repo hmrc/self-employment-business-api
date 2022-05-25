@@ -33,12 +33,11 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
   }
 
   private def bodyFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
-      JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodicBody](data.body) match {
-        case Nil => NoValidationErrors
-        case schemaErrors => List(schemaErrors)
-      }
+    JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodicBody](data.body) match {
+      case Nil          => NoValidationErrors
+      case schemaErrors => List(schemaErrors)
     }
-
+  }
 
   private def bodyFieldValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
     val body = data.body.as[AmendPeriodicBody]
@@ -54,19 +53,16 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
     )
   }
 
-
   private def validatePeriodIncome(income: PeriodIncome): List[List[MtdError]] = {
     List(
-      NumberValidation.
-        validateOptional(
-          field = income.turnover,
-          path = s"/periodIncome/turnover"
+      NumberValidation.validateOptional(
+        field = income.turnover,
+        path = s"/periodIncome/turnover"
       ),
-      NumberValidation.
-        validateOptional(
-          field = income.other,
-          path = s"/periodIncome/other"
-        )
+      NumberValidation.validateOptional(
+        field = income.other,
+        path = s"/periodIncome/other"
+      )
     )
   }
 
@@ -204,11 +200,10 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
     )
   }
 
-  private def validateConsolidatedExpenses(allowableExpenses: Option[PeriodAllowableExpenses], disallowableExpenses: Option[PeriodDisallowableExpenses]):
-  List[List[MtdError]] = {
+  private def validateConsolidatedExpenses(allowableExpenses: Option[PeriodAllowableExpenses],
+                                           disallowableExpenses: Option[PeriodDisallowableExpenses]): List[List[MtdError]] = {
     List(AmendConsolidatedExpensesValidation.validate(allowableExpenses, disallowableExpenses))
   }
-
 
   override def validate(data: AmendPeriodicRawData): List[MtdError] = {
     run(validationSet, data).distinct

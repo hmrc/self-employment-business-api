@@ -168,10 +168,10 @@ object RuleBothAllowancesSuppliedError
     )
 
 object RuleAllowanceNotSupportedError
-  extends MtdError(
-    code = "RULE_ALLOWANCE_NOT_SUPPORTED",
-    message = "One or more of the supplied allowances is not supported for the supplied tax year"
-  )
+    extends MtdError(
+      code = "RULE_ALLOWANCE_NOT_SUPPORTED",
+      message = "One or more of the supplied allowances is not supported for the supplied tax year"
+    )
 
 object RuleBuildingNameNumberError
     extends MtdError(

@@ -30,24 +30,24 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesService @Inject()(connector: ListPeriodSummariesConnector) extends DesResponseMappingSupport with Logging {
+class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends DesResponseMappingSupport with Logging {
 
   def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
-                                                               hc: HeaderCarrier,
-                                                               ec: ExecutionContext,
-                                                               logContext: EndpointLogContext,
-                                                               correlationId: String): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
     connector.listPeriodSummaries(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private val desErrorMap =
     Map(
-      "INVALID_NINO" -> NinoFormatError,
+      "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "SERVER_ERROR"            -> DownstreamError,
+      "SERVICE_UNAVAILABLE"     -> DownstreamError
     )
 
 }

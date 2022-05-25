@@ -19,7 +19,9 @@ package v1.models.request.amendPeriodic
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class AmendPeriodicBody(periodIncome: Option[PeriodIncome], periodAllowableExpenses: Option[PeriodAllowableExpenses], periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+case class AmendPeriodicBody(periodIncome: Option[PeriodIncome],
+                             periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                             periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
 object AmendPeriodicBody {
 
@@ -29,6 +31,6 @@ object AmendPeriodicBody {
     (JsPath \ "incomes").writeNullable[PeriodIncome] and
       (JsPath \ "deductions").writeNullable[PeriodAllowableExpenses] and
       (JsPath \ "deductions").writeNullable[PeriodDisallowableExpenses]
-    ) (unlift(AmendPeriodicBody.unapply))
+  )(unlift(AmendPeriodicBody.unapply))
 
 }

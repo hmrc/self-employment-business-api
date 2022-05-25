@@ -30,13 +30,13 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodSummaryService @Inject()(connector: AmendPeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
+class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
 
   def amendPeriodSummary(request: AmendPeriodicRequest)(implicit
-                                                        hc: HeaderCarrier,
-                                                        ec: ExecutionContext,
-                                                        logContext: EndpointLogContext,
-                                                        correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     connector.amendPeriodSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }

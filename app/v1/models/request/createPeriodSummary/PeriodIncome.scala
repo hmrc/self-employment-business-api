@@ -18,9 +18,7 @@ package v1.models.request.createPeriodSummary
 
 import play.api.libs.json.{Json, OWrites, Reads}
 
-case class PeriodIncome(turnover: Option[BigDecimal],
-                        other: Option[BigDecimal])
-
+case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal])
 
 object PeriodIncome {
   implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
