@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.createPeriodic
+package v1.models.request.createPeriodSummary
 
-import play.api.libs.json.JsValue
-import v1.models.request.RawData
+import v1.models.domain.Nino
 
-case class CreatePeriodicRawData(nino: String, businessId: String, body: JsValue) extends RawData
+case class CreatePeriodSummaryRequest(nino: Nino, businessId: String, body: CreatePeriodSummaryBody)

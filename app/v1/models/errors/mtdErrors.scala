@@ -76,6 +76,18 @@ object ToDateFormatError
       message = "The provided To date is invalid"
     )
 
+object StartDateFormatError
+  extends MtdError(
+    code = "FORMAT_START_DATE",
+    message = "The provided Start date is invalid"
+  )
+
+object EndDateFormatError
+  extends MtdError(
+    code = "FORMAT_END_DATE",
+    message = "The provided End date is invalid"
+  )
+
 object StringFormatError
     extends MtdError(
       code = "FORMAT_STRING",
@@ -136,6 +148,12 @@ object RuleToDateBeforeFromDateError
       code = "RULE_TO_DATE_BEFORE_FROM_DATE",
       message = "The To date cannot be earlier than the From date"
     )
+
+object RuleEndDateBeforeStartDateError
+  extends MtdError(
+    code = "RULE_END_DATE_BEFORE_START_DATE",
+    message = "The End date cannot be earlier than the Start date"
+  )
 
 object RuleBothExpensesSuppliedError
     extends MtdError(

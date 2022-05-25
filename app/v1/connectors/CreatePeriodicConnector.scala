@@ -22,7 +22,7 @@ import play.api.http.Status.OK
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.DesUri
-import v1.models.request.createPeriodic.CreatePeriodicRequest
+import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 import v1.connectors.httpparsers.StandardDesHttpParser._
@@ -31,10 +31,10 @@ import v1.connectors.httpparsers.StandardDesHttpParser._
 class CreatePeriodicConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodicSummary(
-      request: CreatePeriodicRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
+      request: CreatePeriodSummaryRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
-    val businessId = request.businessId.value
+    val businessId = request.businessId
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
 

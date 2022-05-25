@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v1.models.request.createPeriodic
+package v1.models.request.createPeriodSummary
 
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class CreatePeriodicBodySpec extends UnitSpec {
+class CreatePeriodSummaryBodySpec extends UnitSpec {
 
-  val fullMtdBody: CreatePeriodicBody =
-    CreatePeriodicBody(
+  val fullMtdBody: CreatePeriodSummaryBody =
+    CreatePeriodSummaryBody(
       PeriodDates(
         "2019-08-24",
         "2019-08-24"),
@@ -49,7 +49,7 @@ class CreatePeriodicBodySpec extends UnitSpec {
         Some(1000.99)
       )),
       Some(PeriodDisallowableExpenses(
-        None,
+        Some(1000.99),
         Some(1000.99),
         Some(1000.99),
         Some(1000.99),
@@ -67,8 +67,8 @@ class CreatePeriodicBodySpec extends UnitSpec {
       ))
     )
 
-  val someOptionalFieldsMtdBody: CreatePeriodicBody =
-    CreatePeriodicBody(
+  val someOptionalFieldsMtdBody: CreatePeriodSummaryBody =
+    CreatePeriodSummaryBody(
       PeriodDates(
         "2019-08-24",
         "2019-08-24"),
@@ -97,8 +97,8 @@ class CreatePeriodicBodySpec extends UnitSpec {
       None
     )
 
-  val noOptionalFieldsMtdBody: CreatePeriodicBody =
-    CreatePeriodicBody(
+  val noOptionalFieldsMtdBody: CreatePeriodSummaryBody =
+    CreatePeriodSummaryBody(
       PeriodDates(
         "2019-08-24",
         "2019-08-24"),
@@ -201,15 +201,15 @@ class CreatePeriodicBodySpec extends UnitSpec {
 
 
       "a valid request with all optional fields is made" in {
-        fullRequestJson.as[CreatePeriodicBody] shouldBe fullMtdBody
+        fullRequestJson.as[CreatePeriodSummaryBody] shouldBe fullMtdBody
       }
 
       "a valid request with some optional fields is made" in {
-        someOptionalRequestJson.as[CreatePeriodicBody] shouldBe someOptionalFieldsMtdBody
+        someOptionalRequestJson.as[CreatePeriodSummaryBody] shouldBe someOptionalFieldsMtdBody
       }
 
       "a valid request with no optional fields is made" in {
-        noOptionalRequestJson.as[CreatePeriodicBody] shouldBe noOptionalFieldsMtdBody
+        noOptionalRequestJson.as[CreatePeriodSummaryBody] shouldBe noOptionalFieldsMtdBody
       }
     }
   }
@@ -264,7 +264,8 @@ class CreatePeriodicBodySpec extends UnitSpec {
           |            "disallowableAmount": 1000.99
           |         },
           |         "costOfGoods": {
-          |            "amount": 1000.99
+          |            "amount": 1000.99,
+          |            "disallowableAmount": 1000.99
           |         },
           |         "constructionIndustryScheme": {
           |            "amount": 1000.99,

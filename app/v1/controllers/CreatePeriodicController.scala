@@ -22,10 +22,10 @@ import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.CreatePeriodicRequestParser
+import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.models.request.createPeriodic.CreatePeriodicRawData
+import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import v1.models.response.createPeriodic.CreatePeriodicHateoasData
 import v1.models.response.createPeriodic.CreatePeriodicResponse.LinksFactory
 import v1.services.{CreatePeriodicService, EnrolmentsAuthService, MtdIdLookupService}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService,
                                           val lookupService: MtdIdLookupService,
-                                          parser: CreatePeriodicRequestParser,
+                                          parser: CreatePeriodSummaryRequestParser,
                                           service: CreatePeriodicService,
                                           hateoasFactory: HateoasFactory,
                                           cc: ControllerComponents,
@@ -55,7 +55,7 @@ class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = CreatePeriodicRawData(nino, businessId, request.body)
+      val rawData = CreatePeriodSummaryRawData(nino, businessId, request.body)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))

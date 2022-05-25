@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.request.createPeriodic
+package v1.models.request.createPeriodSummary
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.JsValue
+import v1.models.request.RawData
 
-case class PeriodDates(periodStartDate: String,
-                       periodEndDate: String)
-
-object PeriodDates {
-  implicit val reads: Reads[PeriodDates] = Json.reads[PeriodDates]
-
-  implicit val writes: OWrites[PeriodDates] = (
-    (JsPath \ "from").write[String] and
-      (JsPath \ "to").write[String]
-    )(unlift(PeriodDates.unapply))
-
-}
+case class CreatePeriodSummaryRawData(nino: String, businessId: String, body: JsValue) extends RawData
