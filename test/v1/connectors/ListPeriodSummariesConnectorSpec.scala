@@ -20,22 +20,22 @@ import mocks.MockAppConfig
 import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.listPeriodic.ListPeriodicRequest
-import v1.models.response.listPeriodic.{ListPeriodicResponse, PeriodDetails}
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.Future
 
-class ListPeriodicConnectorSpec extends ConnectorSpec {
+class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
-  val request: ListPeriodicRequest = ListPeriodicRequest(
+  val request: ListPeriodSummariesRequest = ListPeriodSummariesRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId)
   )
 
-  val response: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(
+  val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
     Seq(
       PeriodDetails(
         "2020-01-01_2020-01-01",
@@ -46,7 +46,7 @@ class ListPeriodicConnectorSpec extends ConnectorSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
 
-    val connector: ListPeriodicConnector = new ListPeriodicConnector(
+    val connector: ListPeriodSummariesConnector = new ListPeriodSummariesConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
@@ -70,7 +70,7 @@ class ListPeriodicConnectorSpec extends ConnectorSpec {
         )
         .returns(Future.successful(outcome))
 
-      await(connector.listPeriods(request)) shouldBe outcome
+      await(connector.listPeriodSummaries(request)) shouldBe outcome
     }
   }
 

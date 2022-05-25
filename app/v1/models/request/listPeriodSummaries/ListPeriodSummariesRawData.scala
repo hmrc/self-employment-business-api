@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.response.listPeriodic
+package v1.models.request.listPeriodSummaries
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import play.api.libs.functional.syntax._
+import v1.models.request.RawData
 
-case class PeriodDetails(periodId: String, periodStartDate: String, periodEndDate: String)
-
-object PeriodDetails {
-
-  implicit val reads: Reads[PeriodDetails] = (
-    (JsPath \ "from").read[String] and
-      (JsPath \ "to").read[String]
-  )((from, to) => PeriodDetails(periodId = s"${from}_$to", periodStartDate = from, periodEndDate = to))
-
-  implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
-}
+case class ListPeriodSummariesRawData(nino: String, businessId: String) extends RawData

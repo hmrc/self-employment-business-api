@@ -21,25 +21,25 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockListPeriodicRequestParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListPeriodicService, MockMtdIdLookupService}
+import v1.mocks.requestParsers.MockListPeriodSummariesRequestParser
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListPeriodSummariesService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
-import v1.models.response.listPeriodic._
+import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData, ListPeriodSummariesRequest}
+import v1.models.response.listPeriodSummaries._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ListPeriodicControllerSpec
-    extends ControllerBaseSpec
+class ListPeriodSummariesControllerSpec
+  extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockListPeriodicService
-    with MockListPeriodicRequestParser
+    with MockListPeriodSummariesService
+    with MockListPeriodSummariesRequestParser
     with MockHateoasFactory
     with MockAuditService
     with MockIdGenerator {
@@ -54,11 +54,11 @@ class ListPeriodicControllerSpec
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
-    val controller = new ListPeriodicController(
+    val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockListPeriodicRequestParser,
-      service = mockListPeriodicService,
+      parser = mockListPeriodSummariesRequestParser,
+      service = mockListPeriodSummariesService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -69,17 +69,17 @@ class ListPeriodicControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData     = ListPeriodicRawData(nino, businessId)
-  private val requestData = ListPeriodicRequest(Nino(nino), BusinessId(businessId))
+  private val rawData     = ListPeriodSummariesRawData(nino, businessId)
+  private val requestData = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId))
 
-  private val testHateoasLink      = Link(href = s"test/href", method = GET, rel = "self")
+  private val testHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
   private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
   private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to)
 
-  private val response: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(Seq(periodDetails))
+  private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
 
-  private val hateoasResponse = ListPeriodicResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+  private val hateoasResponse = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
 
   private val responseBody = Json.parse(
     s"""
@@ -112,16 +112,16 @@ class ListPeriodicControllerSpec
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
-        MockListPeriodicRequestParser
+        MockListPeriodSummariesRequestParser
           .parse(rawData)
           .returns(Right(requestData))
 
-        MockListPeriodicService
-          .listPeriods(requestData)
+        MockListPeriodSummariesService
+          .listPeriodSummaries(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, ListPeriodicHateoasData(Nino(nino), BusinessId(businessId)))
+          .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId)))
           .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)
@@ -136,7 +136,7 @@ class ListPeriodicControllerSpec
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
-            MockListPeriodicRequestParser
+            MockListPeriodSummariesRequestParser
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
@@ -161,12 +161,12 @@ class ListPeriodicControllerSpec
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {
 
-            MockListPeriodicRequestParser
+            MockListPeriodSummariesRequestParser
               .parse(rawData)
               .returns(Right(requestData))
 
-            MockListPeriodicService
-              .listPeriods(requestData)
+            MockListPeriodSummariesService
+              .listPeriodSummaries(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)

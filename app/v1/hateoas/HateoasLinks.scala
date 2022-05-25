@@ -28,10 +28,10 @@ trait HateoasLinks {
   private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.toMtd}"
 
-  private def periodicSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId) =
+  private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period"
 
-  private def periodicSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String) =
+  private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period/$periodId"
 
   def retrieveAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
@@ -43,16 +43,16 @@ trait HateoasLinks {
   def deleteAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUBMISSION_REL)
 
-  def listPeriodicSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, isSelf: Boolean): Link =
-    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
+  def listPeriodSummaries(appConfig: AppConfig, nino: Nino, businessId: BusinessId, isSelf: Boolean): Link =
+    Link(href = periodSummaryUri(appConfig, nino, businessId), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
 
-  def createPeriodicSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId): Link =
-    Link(href = periodicSummaryUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
+  def createPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId): Link =
+    Link(href = periodSummaryUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
 
-  def retrievePeriodicSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String): Link =
-    Link(href = periodicSummaryItemUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
+  def retrievePeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String): Link =
+    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
 
-  def amendPeriodicSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String): Link =
-    Link(href = periodicSummaryItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
+  def amendPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String): Link =
+    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
 
 }

@@ -18,19 +18,19 @@ package v1.mocks.validators
 
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.ListPeriodicValidator
+import v1.controllers.requestParsers.validators.ListPeriodSummariesValidator
 import v1.models.errors.MtdError
-import v1.models.request.listPeriodic.ListPeriodicRawData
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 
-trait MockListPeriodicValidator extends MockFactory {
+trait MockListPeriodSummariesValidator extends MockFactory {
 
-  val mockListPeriodicValidator: ListPeriodicValidator = mock[ListPeriodicValidator]
+  val mockListPeriodSummariesValidator: ListPeriodSummariesValidator = mock[ListPeriodSummariesValidator]
 
-  object MockListPeriodicValidator {
+  object MockListPeriodSummariesValidator {
 
-    def validate(data: ListPeriodicRawData): CallHandler1[ListPeriodicRawData, List[MtdError]] = {
-      (mockListPeriodicValidator
-        .validate(_: ListPeriodicRawData))
+    def validate(data: ListPeriodSummariesRawData): CallHandler1[ListPeriodSummariesRawData, List[MtdError]] = {
+      (mockListPeriodSummariesValidator
+        .validate(_: ListPeriodSummariesRawData))
         .expects(data)
     }
 

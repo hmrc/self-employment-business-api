@@ -18,37 +18,37 @@ package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.request.listPeriodic.ListPeriodicRawData
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 
-class ListPeriodicValidatorSpec extends UnitSpec {
+class ListPeriodSummariesValidatorSpec extends UnitSpec {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
 
-  val validator = new ListPeriodicValidator()
+  val validator = new ListPeriodSummariesValidator()
 
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(ListPeriodicRawData(validNino, validBusinessId)) shouldBe Nil
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId)) shouldBe Nil
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(ListPeriodicRawData("A12344A", validBusinessId)) shouldBe List(NinoFormatError)
+        validator.validate(ListPeriodSummariesRawData("A12344A", validBusinessId)) shouldBe List(NinoFormatError)
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(ListPeriodicRawData(validNino, "Walruses")) shouldBe List(BusinessIdFormatError)
+        validator.validate(ListPeriodSummariesRawData(validNino, "Walruses")) shouldBe List(BusinessIdFormatError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(ListPeriodicRawData("A12344A", "Baked Beans")) shouldBe List(NinoFormatError, BusinessIdFormatError)
+        validator.validate(ListPeriodSummariesRawData("A12344A", "Baked Beans")) shouldBe List(NinoFormatError, BusinessIdFormatError)
       }
     }
   }
