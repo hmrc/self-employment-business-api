@@ -6,8 +6,8 @@ is:
   - errors.formatPeriodId
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
-displayName: Retrieve a Self-Employment Periodic Update [test only]
-description: "This endpoint allows a developer to retrieve a single self-employment periodic update for a given identifier. A Business ID and Period ID must be provided."
+displayName: Retrieve a Self-Employment Period Summary [test only]
+description: "This endpoint allows a developer to retrieve a single self-employment period summary for a given identifier. A National Insurance number, business ID and period ID must be provided."
 (annotations.sandboxData): !include ../scenarios/retrieve_period_summary_scenarios.md
 (annotations.scope): "read:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]

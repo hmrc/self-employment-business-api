@@ -12,6 +12,10 @@
             <td><p>Simulate success response.</p></td>
         </tr>
         <tr>
+            <td><p>CONSOLIDATED_EXPENSES</p></td>
+            <td><p>Simulates success response with consolidatedExpenses.</p></td>
+        </tr>        
+        <tr>
             <td><p>NOT_FOUND</p></td>
             <td><p>Simulate scenario where no data found.</p></td>
         </tr>
