@@ -18,9 +18,9 @@ package v1.models.request.amendPeriodic
 
 import play.api.libs.json.{JsValue, Json}
 
-trait AmendPeriodicFixture {
+trait AmendPeriodSummaryFixture {
 
-  val amendPeriodicSummaryBodyMtdJson: JsValue = Json.parse(
+  val amendPeriodSummaryBodyMtdJson: JsValue = Json.parse(
     """
       |{
       |    "periodIncome": {
@@ -65,7 +65,7 @@ trait AmendPeriodicFixture {
     """.stripMargin
   )
 
-  val amendPeriodicBody: AmendPeriodicBody = AmendPeriodicBody(
+  val amendPeriodSummaryBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
     periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
     periodAllowableExpenses = Some(
       PeriodAllowableExpenses(
@@ -106,7 +106,7 @@ trait AmendPeriodicFixture {
       ))
   )
 
-  val amendPeriodicSummaryBodyDownstreamJson: JsValue = Json.parse(
+  val amendPeriodSummaryBodyDownstreamJson: JsValue = Json.parse(
     """
       |{
       |    "incomes": {
@@ -179,7 +179,7 @@ trait AmendPeriodicFixture {
     """.stripMargin
   )
 
-  val amendPeriodicSummaryConsolidatedBodyMtdJson: JsValue = Json.parse(
+  val amendPeriodSummaryConsolidatedBodyMtdJson: JsValue = Json.parse(
     """
       |{
       |    "periodIncome": {
@@ -193,7 +193,7 @@ trait AmendPeriodicFixture {
     """.stripMargin
   )
 
-  val amendPeriodicConsolidatedBody: AmendPeriodicBody = AmendPeriodicBody(
+  val amendPeriodSummaryConsolidatedBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
     periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
     periodAllowableExpenses = Some(
       PeriodAllowableExpenses(
@@ -217,7 +217,7 @@ trait AmendPeriodicFixture {
     periodDisallowableExpenses = None
   )
 
-  val amendPeriodicSummaryConsolidatedBodyDownstreamJson: JsValue = Json.parse(
+  val amendPeriodSummaryConsolidatedBodyDownstreamJson: JsValue = Json.parse(
     """
       |{
       |    "incomes": {

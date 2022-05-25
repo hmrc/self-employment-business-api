@@ -19,16 +19,18 @@ package v1.models.request.amendPeriodic
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class AmendPeriodicBody(periodIncome: Option[PeriodIncome], periodAllowableExpenses: Option[PeriodAllowableExpenses], periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+case class AmendPeriodSummaryBody(periodIncome: Option[PeriodIncome],
+                                  periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                                  periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
-object AmendPeriodicBody {
+object AmendPeriodSummaryBody {
 
-  implicit val reads: Reads[AmendPeriodicBody] = Json.reads[AmendPeriodicBody]
+  implicit val reads: Reads[AmendPeriodSummaryBody] = Json.reads[AmendPeriodSummaryBody]
 
-  implicit val writes: OWrites[AmendPeriodicBody] = (
+  implicit val writes: OWrites[AmendPeriodSummaryBody] = (
     (JsPath \ "incomes").writeNullable[PeriodIncome] and
       (JsPath \ "deductions").writeNullable[PeriodAllowableExpenses] and
       (JsPath \ "deductions").writeNullable[PeriodDisallowableExpenses]
-    ) (unlift(AmendPeriodicBody.unapply))
+  )(unlift(AmendPeriodSummaryBody.unapply))
 
 }

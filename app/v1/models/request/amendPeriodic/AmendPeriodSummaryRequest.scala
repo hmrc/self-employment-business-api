@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.models.request.amendPeriodic
 
-import javax.inject.Inject
-import v1.controllers.requestParsers.validators.AmendPeriodicValidator
 import v1.models.domain.{BusinessId, Nino}
-import v1.models.request.amendPeriodic.{AmendPeriodicBody, AmendPeriodicRawData, AmendPeriodicRequest}
 
-class AmendPeriodicRequestParser @Inject() (val validator: AmendPeriodicValidator)
-  extends RequestParser[AmendPeriodicRawData, AmendPeriodicRequest] {
-
-  override protected def requestFor(data: AmendPeriodicRawData): AmendPeriodicRequest =
-    AmendPeriodicRequest(Nino(data.nino), BusinessId(data.businessId), data.periodId, data.body.as[AmendPeriodicBody])
-
-}
+case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody)

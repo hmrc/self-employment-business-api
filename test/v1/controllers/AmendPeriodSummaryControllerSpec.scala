@@ -21,14 +21,14 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockAmendPeriodicRequestParser
+import v1.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
 import v1.mocks.services.{MockAmendPeriodSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodic._
-import v1.models.response.amendPeriodic.AmendPeriodicHateoasData
+import v1.models.response.amendPeriodic.AmendPeriodSumaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,10 +38,10 @@ class AmendPeriodSummaryControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAmendPeriodSummaryService
-    with MockAmendPeriodicRequestParser
+    with MockAmendPeriodSummaryRequestParser
     with MockHateoasFactory
     with MockIdGenerator
-    with AmendPeriodicFixture {
+    with AmendPeriodSummaryFixture {
 
   private val nino          = "AA123456A"
   private val businessId    = "XAIS12345678910"
@@ -55,7 +55,7 @@ class AmendPeriodSummaryControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       parser = mockAmendPeriodSummaryRequestParser,
-      service = mockAmendPeriodicService,
+      service = mockAmendPeriodSummaryService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -66,16 +66,16 @@ class AmendPeriodSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val requestBodyJson = amendPeriodicSummaryBodyMtdJson
-  private val requestBody     = amendPeriodicBody
+  private val requestBodyJson = amendPeriodSummaryBodyMtdJson
+  private val requestBody     = amendPeriodSummaryBody
 
-  private val rawData     = AmendPeriodicRawData(nino, businessId, periodId, requestBodyJson)
-  private val requestData = AmendPeriodicRequest(Nino(nino), BusinessId(businessId), periodId, requestBody)
+  private val rawData     = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson)
+  private val requestData = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody)
 
   "handleRequest" should {
     "return OK" when {
       "the request received is valid" in new Test {
-        MockAmendPeriodicRequestParser
+        MockAmendPeriodSummaryRequestParser
           .requestFor(rawData)
           .returns(Right(requestData))
 
@@ -84,7 +84,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodicHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap((), AmendPeriodSumaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakePostRequest(requestBodyJson))
@@ -98,7 +98,7 @@ class AmendPeriodSummaryControllerSpec
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
-            MockAmendPeriodicRequestParser
+            MockAmendPeriodSummaryRequestParser
               .requestFor(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
@@ -127,7 +127,7 @@ class AmendPeriodSummaryControllerSpec
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {
 
-            MockAmendPeriodicRequestParser
+            MockAmendPeriodSummaryRequestParser
               .requestFor(rawData)
               .returns(Right(requestData))
 

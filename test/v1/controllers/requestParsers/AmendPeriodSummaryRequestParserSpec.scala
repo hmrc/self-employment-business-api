@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.mocks.validators.MockAmendPeriodicValidator
+import v1.mocks.validators.MockAmendPeriodSummaryValidator
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.request.amendPeriodic._
@@ -76,23 +76,23 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val inputData: AmendPeriodicRawData = AmendPeriodicRawData(
+  val inputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
     body = requestBodyJson
   )
 
-  trait Test extends MockAmendPeriodicValidator {
-    lazy val parser = new AmendPeriodicRequestParser(mockValidator)
+  trait Test extends MockAmendPeriodSummaryValidator {
+    lazy val parser = new AmendPeriodSummaryRequestParser(mockValidator)
   }
 
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockAmendPeriodicValidator.validate(inputData).returns(Nil)
+        MockAmendPeriodSummaryValidator.validate(inputData).returns(Nil)
 
-        val amendPeriodicRequestBody: AmendPeriodicBody = AmendPeriodicBody(
+        val requestBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
           Some(
             PeriodIncome(
               Some(200.00),
@@ -138,13 +138,13 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
         )
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendPeriodicRequest(Nino(nino), BusinessId(businessId), periodId, amendPeriodicRequestBody))
+          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody))
       }
     }
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockAmendPeriodicValidator
+        MockAmendPeriodSummaryValidator
           .validate(inputData)
           .returns(List(NinoFormatError))
 
@@ -153,7 +153,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockAmendPeriodicValidator
+        MockAmendPeriodSummaryValidator
           .validate(inputData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 

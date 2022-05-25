@@ -21,12 +21,12 @@ import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.AmendPeriodicRequestParser
+import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.models.request.amendPeriodic.AmendPeriodicRawData
-import v1.models.response.amendPeriodic.AmendPeriodicHateoasData
-import v1.models.response.amendPeriodic.AmendPeriodicResponse.LinksFactory
+import v1.models.request.amendPeriodic.AmendPeriodSummaryRawData
+import v1.models.response.amendPeriodic.AmendPeriodSumaryHateoasData
+import v1.models.response.amendPeriodic.AmendPeriodSummaryResponse.LinksFactory
 import v1.services.{AmendPeriodSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
 import javax.inject.{Inject, Singleton}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
                                               val lookupService: MtdIdLookupService,
-                                              parser: AmendPeriodicRequestParser,
+                                              parser: AmendPeriodSummaryRequestParser,
                                               service: AmendPeriodSummaryService,
                                               hateoasFactory: HateoasFactory,
                                               cc: ControllerComponents,
@@ -53,14 +53,14 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = AmendPeriodicRawData(nino, businessId, periodId, request.body)
+      val rawData = AmendPeriodSummaryRawData(nino, businessId, periodId, request.body)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.amendPeriodSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, AmendPeriodicHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
+              .wrap(serviceResponse.responseData, AmendPeriodSumaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
               .asRight[ErrorWrapper])
         } yield {
           logger.info(

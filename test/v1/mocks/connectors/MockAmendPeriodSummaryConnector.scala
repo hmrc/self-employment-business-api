@@ -20,19 +20,19 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{AmendPeriodSummaryConnector, DownstreamOutcome}
-import v1.models.request.amendPeriodic.AmendPeriodicRequest
+import v1.models.request.amendPeriodic.AmendPeriodSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendPeriodSummaryConnector extends MockFactory {
 
-  val mockAmendPeriodicConnector: AmendPeriodSummaryConnector = mock[AmendPeriodSummaryConnector]
+  val mockAmendPeriodSummaryConnector: AmendPeriodSummaryConnector = mock[AmendPeriodSummaryConnector]
 
-  object MockAmendPeriodicConnector {
+  object MockAmendPeriodSummaryConnector {
 
-    def amendPeriodicSummary(requestData: AmendPeriodicRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
-      (mockAmendPeriodicConnector
-        .amendPeriodSummary(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+    def amendPeriodSummary(requestData: AmendPeriodSummaryRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+      (mockAmendPeriodSummaryConnector
+        .amendPeriodSummary(_: AmendPeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

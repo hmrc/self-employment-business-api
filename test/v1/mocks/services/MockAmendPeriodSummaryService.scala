@@ -22,20 +22,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendPeriodic.AmendPeriodicRequest
+import v1.models.request.amendPeriodic.AmendPeriodSummaryRequest
 import v1.services.AmendPeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendPeriodSummaryService extends MockFactory {
 
-  val mockAmendPeriodicService: AmendPeriodSummaryService = mock[AmendPeriodSummaryService]
+  val mockAmendPeriodSummaryService: AmendPeriodSummaryService = mock[AmendPeriodSummaryService]
 
   object MockAmendPeriodSummaryService {
 
-    def amendPeriodSummary(requestData: AmendPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockAmendPeriodicService
-        .amendPeriodSummary(_: AmendPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+    def amendPeriodSummary(requestData: AmendPeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockAmendPeriodSummaryService
+        .amendPeriodSummary(_: AmendPeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
 

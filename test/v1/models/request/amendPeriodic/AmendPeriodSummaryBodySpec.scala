@@ -19,7 +19,7 @@ package v1.models.request.amendPeriodic
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
-class AmendPeriodicBodySpec extends UnitSpec with AmendPeriodicFixture {
+class AmendPeriodSummaryBodySpec extends UnitSpec with AmendPeriodSummaryFixture {
 
   val emptyJson: JsValue = Json.parse(
     """
@@ -27,7 +27,7 @@ class AmendPeriodicBodySpec extends UnitSpec with AmendPeriodicFixture {
     """.stripMargin
   )
 
-  val emptyMtdModel: AmendPeriodicBody = AmendPeriodicBody(
+  val emptyMtdModel: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
     None,
     None,
     None
@@ -36,15 +36,15 @@ class AmendPeriodicBodySpec extends UnitSpec with AmendPeriodicFixture {
   "reads" should {
     "return a model" when {
       "a valid request with all (non-consolidated) data is made" in {
-        amendPeriodicSummaryBodyMtdJson.as[AmendPeriodicBody] shouldBe amendPeriodicBody
+        amendPeriodSummaryBodyMtdJson.as[AmendPeriodSummaryBody] shouldBe amendPeriodSummaryBody
       }
 
       "a valid request with some data is made" in {
-        amendPeriodicSummaryConsolidatedBodyMtdJson.as[AmendPeriodicBody] shouldBe amendPeriodicConsolidatedBody
+        amendPeriodSummaryConsolidatedBodyMtdJson.as[AmendPeriodSummaryBody] shouldBe amendPeriodSummaryConsolidatedBody
       }
 
       "a valid request with no data is made" in {
-        emptyJson.as[AmendPeriodicBody] shouldBe emptyMtdModel
+        emptyJson.as[AmendPeriodSummaryBody] shouldBe emptyMtdModel
       }
     }
   }
@@ -52,11 +52,11 @@ class AmendPeriodicBodySpec extends UnitSpec with AmendPeriodicFixture {
   "writes" should {
     "return downstream json" when {
       "a valid request is made with full body" in {
-        Json.toJson(amendPeriodicBody) shouldBe amendPeriodicSummaryBodyDownstreamJson
+        Json.toJson(amendPeriodSummaryBody) shouldBe amendPeriodSummaryBodyDownstreamJson
       }
 
       "a valid request is made with partial body" in {
-        Json.toJson(amendPeriodicConsolidatedBody) shouldBe amendPeriodicSummaryConsolidatedBodyDownstreamJson
+        Json.toJson(amendPeriodSummaryConsolidatedBody) shouldBe amendPeriodSummaryConsolidatedBodyDownstreamJson
       }
 
       "a valid request is made with empty body" in {

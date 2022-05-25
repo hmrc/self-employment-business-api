@@ -21,19 +21,19 @@ import support.UnitSpec
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{Link, Method}
 
-class AmendPeriodicResponseSpec extends UnitSpec with MockAppConfig {
+class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "produce the correct links" when {
       "called" in {
-        val nino                           = "AA111111A"
-        val businessId                     = "id"
-        val periodId                       = "periodId"
-        val data: AmendPeriodicHateoasData = AmendPeriodicHateoasData(Nino(nino), BusinessId(businessId), periodId)
+        val nino                               = "AA111111A"
+        val businessId                         = "id"
+        val periodId                           = "periodId"
+        val data: AmendPeriodSumaryHateoasData = AmendPeriodSumaryHateoasData(Nino(nino), BusinessId(businessId), periodId)
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        AmendPeriodicResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
+        AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")

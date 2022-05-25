@@ -24,14 +24,14 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.models.request.amendPeriodic.AmendPeriodicFixture
+import v1.models.request.amendPeriodic.AmendPeriodSummaryFixture
 import v1.models.utils.JsonErrorValidators
 import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodicFixture {
+class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
-  val requestBodyJson: JsValue           = amendPeriodicSummaryBodyMtdJson
-  val downstreamRequestBodyJson: JsValue = amendPeriodicSummaryBodyDownstreamJson
+  val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJson
+  val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJson
 
   private trait Test {
     val nino: String       = "AA123456A"
