@@ -5,16 +5,16 @@
   "type": "object",
   "properties": {
     "periodDates": {
-      "$ref": "periodic/period_dates.json"
+      "$ref": "periodSummary/period_dates.json"
     },
     "periodIncome": {
-      "$ref": "periodic/period_income.json"
+      "$ref": "periodSummary/period_income.json"
     },
     "periodAllowableExpenses": {
-      "$ref": "periodic/period_allowable_expenses.json"
+      "$ref": "periodSummary/period_allowable_expenses.json"
     },
     "periodDisallowableExpenses": {
-      "$ref": "periodic/period_disallowable_expenses.json"
+      "$ref": "periodSummary/period_disallowable_expenses.json"
     }
   },
   "additionalProperties": false,
