@@ -24,21 +24,22 @@ class PeriodAllowableExpensesSpec extends UnitSpec {
   val json: JsValue = Json.parse(
     """
       |{
-      |        "costOfGoodsAllowable": 500.25,
-      |        "paymentsToSubcontractorsAllowable": 500.25,
-      |        "wagesAndStaffCostsAllowable": 500.25,
-      |        "carVanTravelExpensesAllowable": 500.25,
-      |        "premisesRunningCostsAllowable": 500.25,
-      |        "maintenanceCostsAllowable": 500.25,
-      |        "adminCostsAllowable": 500.25,
-      |        "businessEntertainmentCostsAllowable": 500.25,
-      |        "advertisingCostsAllowable": 500.25,
-      |        "interestOnBankOtherLoansAllowable": 500.25,
-      |        "financeChargesAllowable": 500.25,
-      |        "irrecoverableDebtsAllowable": 500.25,
-      |        "professionalFeesAllowable": 500.25,
-      |        "depreciationAllowable": 500.25,
-      |        "otherExpensesAllowable": 500.25
+      |        "consolidatedExpenses": 1.12,
+      |        "costOfGoodsAllowable": 2.12,
+      |        "paymentsToSubcontractorsAllowable": 3.12,
+      |        "wagesAndStaffCostsAllowable": 4.12,
+      |        "carVanTravelExpensesAllowable": 5.12,
+      |        "premisesRunningCostsAllowable": 6.12,
+      |        "maintenanceCostsAllowable": 7.12,
+      |        "adminCostsAllowable": 8.12,
+      |        "businessEntertainmentCostsAllowable": 9.12,
+      |        "advertisingCostsAllowable": 10.12,
+      |        "interestOnBankOtherLoansAllowable": 11.12,
+      |        "financeChargesAllowable": 12.12,
+      |        "irrecoverableDebtsAllowable": 13.12,
+      |        "professionalFeesAllowable": 14.12,
+      |        "depreciationAllowable": 15.12,
+      |        "otherExpensesAllowable": 16.12
       |}
     """.stripMargin
   )
@@ -46,72 +47,73 @@ class PeriodAllowableExpensesSpec extends UnitSpec {
   val desJson: JsValue = Json.parse(
     """
       |{
+      |        "simplifiedExpenses": 1.12,
       |        "costOfGoods": {
-      |            "amount": 500.25
+      |            "amount": 2.12
       |        },
       |        "constructionIndustryScheme": {
-      |            "amount": 500.25
+      |            "amount": 3.12
       |        },
       |        "staffCosts": {
-      |            "amount": 500.25
+      |            "amount": 4.12
       |        },
       |        "travelCosts": {
-      |            "amount": 500.25
+      |            "amount": 5.12
       |        },
       |        "premisesRunningCosts": {
-      |            "amount": 500.25
+      |            "amount": 6.12
       |        },
       |        "maintenanceCosts": {
-      |            "amount": 500.25
+      |            "amount": 7.12
       |        },
       |        "adminCosts": {
-      |            "amount": 500.25
+      |            "amount": 8.12
       |        },
       |        "businessEntertainmentCosts": {
-      |            "amount": 500.25
+      |            "amount": 9.12
       |        },
       |        "advertisingCosts": {
-      |            "amount": 500.25
+      |            "amount": 10.12
       |        },
       |        "interest": {
-      |            "amount": 500.25
+      |            "amount": 11.12
       |        },
       |        "financialCharges": {
-      |            "amount": 500.25
+      |            "amount": 12.12
       |        },
       |        "badDebt": {
-      |            "amount": 500.25
+      |            "amount": 13.12
       |        },
       |        "professionalFees": {
-      |            "amount": 500.25
+      |            "amount": 14.12
       |        },
       |        "depreciation": {
-      |            "amount": 500.25
+      |            "amount": 15.12
       |        },
       |        "other": {
-      |            "amount": 500.25
+      |            "amount": 16.12
       |        }
       |}
     """.stripMargin
   )
 
   val model: PeriodAllowableExpenses = PeriodAllowableExpenses(
-    None,
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25)
+    consolidatedExpenses = Some(1.12),
+    costOfGoodsAllowable = Some(2.12),
+    paymentsToSubcontractorsAllowable = Some(3.12),
+    wagesAndStaffCostsAllowable = Some(4.12),
+    carVanTravelExpensesAllowable = Some(5.12),
+    premisesRunningCostsAllowable = Some(6.12),
+    maintenanceCostsAllowable = Some(7.12),
+    adminCostsAllowable = Some(8.12),
+    businessEntertainmentCostsAllowable = Some(9.12),
+    advertisingCostsAllowable = Some(10.12),
+    interestOnBankOtherLoansAllowable = Some(11.12),
+    financeChargesAllowable = Some(12.12),
+    irrecoverableDebtsAllowable = Some(13.12),
+    professionalFeesAllowable = Some(14.12),
+    depreciationAllowable = Some(15.12),
+    otherExpensesAllowable = Some(16.12)
   )
 
   "reads" should {

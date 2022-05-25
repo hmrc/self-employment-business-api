@@ -47,8 +47,8 @@ object PeriodDisallowableExpenses {
       (JsPath \ "premisesRunningCosts" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "maintenanceCosts" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "adminCosts" \ "disallowableAmount").writeNullable[BigDecimal] and
-      (JsPath \ "advertisingCosts" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "businessEntertainmentCosts" \ "disallowableAmount").writeNullable[BigDecimal] and
+      (JsPath \ "advertisingCosts" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "interest" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "financialCharges" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "badDebt" \ "disallowableAmount").writeNullable[BigDecimal] and
