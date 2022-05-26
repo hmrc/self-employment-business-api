@@ -21,7 +21,7 @@ import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.RetrievePeriodicRequestParser
+import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.retrievePeriodic.RetrievePeriodicRawData
@@ -32,13 +32,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodicController @Inject() (val authService: EnrolmentsAuthService,
-                                            val lookupService: MtdIdLookupService,
-                                            parser: RetrievePeriodicRequestParser,
-                                            service: RetrievePeriodicService,
-                                            hateoasFactory: HateoasFactory,
-                                            cc: ControllerComponents,
-                                            idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrievePeriodSummaryController @Inject()(val authService: EnrolmentsAuthService,
+                                                val lookupService: MtdIdLookupService,
+                                                parser: RetrievePeriodSummaryRequestParser,
+                                                service: RetrievePeriodicService,
+                                                hateoasFactory: HateoasFactory,
+                                                cc: ControllerComponents,
+                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {

@@ -20,7 +20,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.RetrievePeriodicConnector
+import v1.connectors.RetrievePeriodSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
@@ -30,7 +30,7 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodicService @Inject() (connector: RetrievePeriodicConnector) extends DesResponseMappingSupport with Logging {
+class RetrievePeriodicService @Inject() (connector: RetrievePeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
 
   def retrievePeriodicSummary(request: RetrievePeriodicRequest)(implicit
       hc: HeaderCarrier,

@@ -17,12 +17,12 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.mocks.validators.MockRetrievePeriodicValidator
+import v1.mocks.validators.MockRetrievePeriodSummaryValidator
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
 
-class RetrievePeriodicRequestParserSpec extends UnitSpec {
+class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
 
   val nino: String                   = "AA123456B"
   val businessId: String             = "XAIS12345678910"
@@ -35,9 +35,9 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
     periodId = periodId
   )
 
-  trait Test extends MockRetrievePeriodicValidator {
+  trait Test extends MockRetrievePeriodSummaryValidator {
 
-    lazy val parser: RetrievePeriodicRequestParser = new RetrievePeriodicRequestParser(
+    lazy val parser: RetrievePeriodSummaryRequestParser = new RetrievePeriodSummaryRequestParser(
       validator = mockRetrievePeriodicValidator
     )
 

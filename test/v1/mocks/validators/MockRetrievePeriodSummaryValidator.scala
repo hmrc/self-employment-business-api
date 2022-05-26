@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators
+package v1.mocks.validators
 
-import v1.controllers.requestParsers.validators.validations._
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
 import v1.models.errors.MtdError
 import v1.models.request.retrievePeriodic.RetrievePeriodicRawData
 
-class RetrievePeriodicValidator extends Validator[RetrievePeriodicRawData] {
+trait MockRetrievePeriodSummaryValidator extends MockFactory {
 
-  private val validationSet = List(parameterFormatValidation)
+  val mockRetrievePeriodicValidator: RetrievePeriodSummaryValidator = mock[RetrievePeriodSummaryValidator]
 
-  override def validate(data: RetrievePeriodicRawData): List[MtdError] = {
-    run(validationSet, data).distinct
-  }
+  object MockRetrievePeriodicValidator {
 
-  private def parameterFormatValidation: RetrievePeriodicRawData => List[List[MtdError]] = (data: RetrievePeriodicRawData) => {
-    List(
-      NinoValidation.validate(data.nino),
-      BusinessIdValidation.validate(data.businessId),
-      PeriodIdValidation.validate(data.periodId)
-    )
+    def validate(data: RetrievePeriodicRawData): CallHandler1[RetrievePeriodicRawData, List[MtdError]] = {
+      (mockRetrievePeriodicValidator
+        .validate(_: RetrievePeriodicRawData))
+        .expects(data)
+    }
+
   }
 
 }

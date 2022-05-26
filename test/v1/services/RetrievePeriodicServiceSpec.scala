@@ -17,7 +17,7 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockRetrievePeriodicConnector
+import v1.mocks.connectors.MockRetrievePeriodSummaryConnector
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -46,7 +46,7 @@ class RetrievePeriodicServiceSpec extends ServiceSpec {
     periodId = periodId
   )
 
-  trait Test extends MockRetrievePeriodicConnector {
+  trait Test extends MockRetrievePeriodSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new RetrievePeriodicService(

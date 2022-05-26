@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.mocks.requestParsers
 
-import javax.inject.Inject
-import v1.controllers.requestParsers.validators.RetrievePeriodicValidator
-import v1.models.domain.{BusinessId, Nino}
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
+import v1.models.errors.ErrorWrapper
 import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
 
-class RetrievePeriodicRequestParser @Inject() (val validator: RetrievePeriodicValidator)
-    extends RequestParser[RetrievePeriodicRawData, RetrievePeriodicRequest] {
+trait MockRetrievePeriodSummaryRequestParser extends MockFactory {
 
-  override protected def requestFor(data: RetrievePeriodicRawData): RetrievePeriodicRequest =
-    RetrievePeriodicRequest(Nino(data.nino), BusinessId(data.businessId), data.periodId)
+  val mockRetrievePeriodicRequestParser: RetrievePeriodSummaryRequestParser = mock[RetrievePeriodSummaryRequestParser]
+
+  object MockRetrievePeriodicRequestParser {
+
+    def parse(data: RetrievePeriodicRawData): CallHandler[Either[ErrorWrapper, RetrievePeriodicRequest]] = {
+      (mockRetrievePeriodicRequestParser.parseRequest(_: RetrievePeriodicRawData)(_: String)).expects(data, *)
+    }
+
+  }
 
 }

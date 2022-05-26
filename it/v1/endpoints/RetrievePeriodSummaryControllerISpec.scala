@@ -26,7 +26,7 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
+class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 

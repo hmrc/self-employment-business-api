@@ -25,7 +25,7 @@ import v1.models.response.retrievePeriodic.{PeriodDates, RetrievePeriodicRespons
 
 import scala.concurrent.Future
 
-class RetrievePeriodicConnectorSpec extends ConnectorSpec {
+class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -42,7 +42,7 @@ class RetrievePeriodicConnectorSpec extends ConnectorSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
 
-    val connector: RetrievePeriodicConnector = new RetrievePeriodicConnector(
+    val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )

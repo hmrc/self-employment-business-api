@@ -20,13 +20,13 @@ import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.retrievePeriodic.RetrievePeriodicRawData
 
-class RetrievePeriodicValidatorSpec extends UnitSpec {
+class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validPeriodId   = "2017-01-25_2017-02-31"
 
-  val validator = new RetrievePeriodicValidator()
+  val validator = new RetrievePeriodSummaryValidator()
 
   "running a validation" should {
     "return no errors" when {

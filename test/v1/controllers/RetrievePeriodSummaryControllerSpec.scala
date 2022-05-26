@@ -21,7 +21,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
-import v1.mocks.requestParsers.MockRetrievePeriodicRequestParser
+import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodicService}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors.{
@@ -43,12 +43,12 @@ import v1.models.response.retrievePeriodic._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetrievePeriodicControllerSpec
+class RetrievePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrievePeriodicService
-    with MockRetrievePeriodicRequestParser
+    with MockRetrievePeriodSummaryRequestParser
     with MockHateoasFactory
     with MockAuditService
     with MockIdGenerator {
@@ -61,7 +61,7 @@ class RetrievePeriodicControllerSpec
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
-    val controller = new RetrievePeriodicController(
+    val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       parser = mockRetrievePeriodicRequestParser,
