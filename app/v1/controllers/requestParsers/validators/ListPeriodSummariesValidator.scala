@@ -18,17 +18,17 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.MtdError
-import v1.models.request.listPeriodic.ListPeriodicRawData
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 
-class ListPeriodicValidator extends Validator[ListPeriodicRawData] {
+class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData] {
 
   private val validationSet = List(parameterFormatValidation)
 
-  override def validate(data: ListPeriodicRawData): List[MtdError] = {
+  override def validate(data: ListPeriodSummariesRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
 
-  private def parameterFormatValidation: ListPeriodicRawData => List[List[MtdError]] = (data: ListPeriodicRawData) => {
+  private def parameterFormatValidation: ListPeriodSummariesRawData => List[List[MtdError]] = (data: ListPeriodSummariesRawData) => {
     List(
       NinoValidation.validate(data.nino),
       BusinessIdValidation.validate(data.businessId)

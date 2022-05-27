@@ -19,8 +19,7 @@ package v1.models.request.createPeriodSummary
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class PeriodDates(periodStartDate: String,
-                       periodEndDate: String)
+case class PeriodDates(periodStartDate: String, periodEndDate: String)
 
 object PeriodDates {
   implicit val reads: Reads[PeriodDates] = Json.reads[PeriodDates]
@@ -28,6 +27,6 @@ object PeriodDates {
   implicit val writes: OWrites[PeriodDates] = (
     (JsPath \ "from").write[String] and
       (JsPath \ "to").write[String]
-    )(unlift(PeriodDates.unapply))
+  )(unlift(PeriodDates.unapply))
 
 }

@@ -18,7 +18,7 @@ package v1.models.response.retrievePeriodic
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PeriodIncome (turnover: Option[BigDecimal], other: Option[BigDecimal]) {
+case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal]) {
   def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty
 }
 

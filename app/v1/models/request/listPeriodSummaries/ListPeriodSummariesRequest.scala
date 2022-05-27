@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.listPeriodic
+package v1.models.request.listPeriodSummaries
 
-import v1.models.request.RawData
+import v1.models.domain.{BusinessId, Nino}
 
-case class ListPeriodicRawData(nino: String, businessId: String) extends RawData
+case class ListPeriodSummariesRequest(nino: Nino, businessId: BusinessId)

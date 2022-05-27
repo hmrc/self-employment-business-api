@@ -41,7 +41,7 @@ object PeriodAllowableExpenses {
   implicit val reads: Reads[PeriodAllowableExpenses] = Json.reads[PeriodAllowableExpenses]
 
   implicit val writes: OWrites[PeriodAllowableExpenses] = (
-    (JsPath \ "simplifiedExpenses" ).writeNullable[BigDecimal] and
+    (JsPath \ "simplifiedExpenses").writeNullable[BigDecimal] and
       (JsPath \ "costOfGoods" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "constructionIndustryScheme" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "staffCosts" \ "amount").writeNullable[BigDecimal] and
@@ -57,5 +57,6 @@ object PeriodAllowableExpenses {
       (JsPath \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "amount").writeNullable[BigDecimal]
-    )(unlift(PeriodAllowableExpenses.unapply))
+  )(unlift(PeriodAllowableExpenses.unapply))
+
 }

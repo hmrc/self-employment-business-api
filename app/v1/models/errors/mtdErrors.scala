@@ -77,16 +77,16 @@ object ToDateFormatError
     )
 
 object StartDateFormatError
-  extends MtdError(
-    code = "FORMAT_START_DATE",
-    message = "The provided Start date is invalid"
-  )
+    extends MtdError(
+      code = "FORMAT_START_DATE",
+      message = "The provided Start date is invalid"
+    )
 
 object EndDateFormatError
-  extends MtdError(
-    code = "FORMAT_END_DATE",
-    message = "The provided End date is invalid"
-  )
+    extends MtdError(
+      code = "FORMAT_END_DATE",
+      message = "The provided End date is invalid"
+    )
 
 object StringFormatError
     extends MtdError(
@@ -150,10 +150,10 @@ object RuleToDateBeforeFromDateError
     )
 
 object RuleEndDateBeforeStartDateError
-  extends MtdError(
-    code = "RULE_END_DATE_BEFORE_START_DATE",
-    message = "The End date cannot be earlier than the Start date"
-  )
+    extends MtdError(
+      code = "RULE_END_DATE_BEFORE_START_DATE",
+      message = "The End date cannot be earlier than the Start date"
+    )
 
 object RuleBothExpensesSuppliedError
     extends MtdError(
@@ -168,10 +168,10 @@ object RuleBothAllowancesSuppliedError
     )
 
 object RuleAllowanceNotSupportedError
-  extends MtdError(
-    code = "RULE_ALLOWANCE_NOT_SUPPORTED",
-    message = "One or more of the supplied allowances is not supported for the supplied tax year"
-  )
+    extends MtdError(
+      code = "RULE_ALLOWANCE_NOT_SUPPORTED",
+      message = "One or more of the supplied allowances is not supported for the supplied tax year"
+    )
 
 object RuleBuildingNameNumberError
     extends MtdError(

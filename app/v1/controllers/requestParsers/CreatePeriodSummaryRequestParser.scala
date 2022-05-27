@@ -21,7 +21,7 @@ import v1.controllers.requestParsers.validators.CreatePeriodSummaryValidator
 import v1.models.domain.Nino
 import v1.models.request.createPeriodSummary.{CreatePeriodSummaryBody, CreatePeriodSummaryRawData, CreatePeriodSummaryRequest}
 
-class CreatePeriodSummaryRequestParser @Inject()(val validator: CreatePeriodSummaryValidator)
+class CreatePeriodSummaryRequestParser @Inject() (val validator: CreatePeriodSummaryValidator)
     extends RequestParser[CreatePeriodSummaryRawData, CreatePeriodSummaryRequest] {
 
   override protected def requestFor(data: CreatePeriodSummaryRawData): CreatePeriodSummaryRequest =

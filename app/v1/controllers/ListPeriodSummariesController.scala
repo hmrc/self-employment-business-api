@@ -21,30 +21,30 @@ import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.controllers.requestParsers.ListPeriodicRequestParser
+import v1.controllers.requestParsers.ListPeriodSummariesRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.models.request.listPeriodic.ListPeriodicRawData
-import v1.models.response.listPeriodic.ListPeriodicHateoasData
-import v1.services.{EnrolmentsAuthService, ListPeriodicService, MtdIdLookupService}
-
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
+import v1.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
+import v1.services.{EnrolmentsAuthService, ListPeriodSummariesService, MtdIdLookupService}
 import javax.inject.{Inject, Singleton}
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodicController @Inject() (val authService: EnrolmentsAuthService,
-                                        val lookupService: MtdIdLookupService,
-                                        parser: ListPeriodicRequestParser,
-                                        service: ListPeriodicService,
-                                        hateoasFactory: HateoasFactory,
-                                        cc: ControllerComponents,
-                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthService,
+                                               val lookupService: MtdIdLookupService,
+                                               parser: ListPeriodSummariesRequestParser,
+                                               service: ListPeriodSummariesService,
+                                               hateoasFactory: HateoasFactory,
+                                               cc: ControllerComponents,
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "ListPeriodicController", endpointName = "listSelfEmploymentPeriodicSummary")
+    EndpointLogContext(controllerName = "ListPeriodSummariesController", endpointName = "listSelfEmploymentPeriodSummaries")
 
   def handleRequest(nino: String, businessId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -52,14 +52,14 @@ class ListPeriodicController @Inject() (val authService: EnrolmentsAuthService,
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = ListPeriodicRawData(nino, businessId)
+      val rawData = ListPeriodSummariesRawData(nino, businessId)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.listPeriods(parsedRequest))
+          serviceResponse <- EitherT(service.listPeriodSummaries(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrapList(serviceResponse.responseData, ListPeriodicHateoasData(parsedRequest.nino, parsedRequest.businessId))
+              .wrapList(serviceResponse.responseData, ListPeriodSummariesHateoasData(parsedRequest.nino, parsedRequest.businessId))
               .asRight[ErrorWrapper]
           )
         } yield {

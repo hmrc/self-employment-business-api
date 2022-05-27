@@ -17,26 +17,26 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.mocks.validators.MockListPeriodicValidator
+import v1.mocks.validators.MockListPeriodSummariesValidator
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
-import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
+import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData, ListPeriodSummariesRequest}
 
-class ListPeriodicRequestParserSpec extends UnitSpec {
+class ListPeriodSummariesRequestParserSpec extends UnitSpec {
 
   val nino: String                   = "AA123456B"
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  val rawData: ListPeriodicRawData = ListPeriodicRawData(
+  val rawData: ListPeriodSummariesRawData = ListPeriodSummariesRawData(
     nino = nino,
     businessId = businessId
   )
 
-  trait Test extends MockListPeriodicValidator {
+  trait Test extends MockListPeriodSummariesValidator {
 
-    lazy val parser: ListPeriodicRequestParser = new ListPeriodicRequestParser(
-      validator = mockListPeriodicValidator
+    lazy val parser: ListPeriodSummariesRequestParser = new ListPeriodSummariesRequestParser(
+      validator = mockListPeriodSummariesValidator
     )
 
   }
@@ -44,16 +44,16 @@ class ListPeriodicRequestParserSpec extends UnitSpec {
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockListPeriodicValidator.validate(rawData).returns(Nil)
+        MockListPeriodSummariesValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(ListPeriodicRequest(Nino(nino), BusinessId(businessId)))
+          Right(ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId)))
       }
     }
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockListPeriodicValidator
+        MockListPeriodSummariesValidator
           .validate(rawData)
           .returns(List(NinoFormatError))
 
@@ -62,7 +62,7 @@ class ListPeriodicRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockListPeriodicValidator
+        MockListPeriodSummariesValidator
           .validate(rawData)
           .returns(List(NinoFormatError, BusinessIdFormatError))
 

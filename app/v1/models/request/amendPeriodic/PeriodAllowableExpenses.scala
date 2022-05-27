@@ -57,6 +57,6 @@ object PeriodAllowableExpenses {
       (JsPath \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "amount").writeNullable[BigDecimal]
-    ) (unlift(PeriodAllowableExpenses.unapply))
+  )(unlift(PeriodAllowableExpenses.unapply))
 
 }

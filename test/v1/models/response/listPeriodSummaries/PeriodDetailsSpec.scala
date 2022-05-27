@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.response.listPeriodic
+package v1.models.response.listPeriodSummaries
 
 import play.api.libs.json.Json
 import support.UnitSpec

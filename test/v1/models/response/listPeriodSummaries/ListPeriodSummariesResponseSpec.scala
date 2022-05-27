@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.response.listPeriodic
+package v1.models.response.listPeriodSummaries
 
 import mocks.MockAppConfig
 import play.api.libs.json.Json
@@ -23,9 +23,9 @@ import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 
-class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
+class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
-  private val model = ListPeriodicResponse(
+  private val model = ListPeriodSummariesResponse(
     Seq(
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
@@ -61,7 +61,7 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
           |}
     """.stripMargin
         )
-        .as[ListPeriodicResponse[PeriodDetails]] shouldBe model
+        .as[ListPeriodSummariesResponse[PeriodDetails]] shouldBe model
     }
   }
 
@@ -92,21 +92,21 @@ class ListPeriodicResponseSpec extends UnitSpec with MockAppConfig {
     val nino        = "AA111111A"
     val businessId  = "id"
     val periodId    = "periodId"
-    val hateoasData = ListPeriodicHateoasData(Nino(nino), BusinessId(businessId))
+    val hateoasData = ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId))
 
     "return the correct top-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
-      ListPeriodicResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
-        Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self"),
-        Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary")
+      ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
+        Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
+        Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self")
       )
     }
 
     "return the correct item-level links" in {
       MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
 
-      ListPeriodicResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "")) shouldBe Seq(
+      ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "")) shouldBe Seq(
         Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
       )
     }

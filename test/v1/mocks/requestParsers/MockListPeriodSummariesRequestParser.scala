@@ -18,18 +18,18 @@ package v1.mocks.requestParsers
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.ListPeriodicRequestParser
+import v1.controllers.requestParsers.ListPeriodSummariesRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
+import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData, ListPeriodSummariesRequest}
 
-trait MockListPeriodicRequestParser extends MockFactory {
+trait MockListPeriodSummariesRequestParser extends MockFactory {
 
-  val mockListPeriodicRequestParser: ListPeriodicRequestParser = mock[ListPeriodicRequestParser]
+  val mockListPeriodSummariesRequestParser: ListPeriodSummariesRequestParser = mock[ListPeriodSummariesRequestParser]
 
-  object MockListPeriodicRequestParser {
+  object MockListPeriodSummariesRequestParser {
 
-    def parse(data: ListPeriodicRawData): CallHandler[Either[ErrorWrapper, ListPeriodicRequest]] = {
-      (mockListPeriodicRequestParser.parseRequest(_: ListPeriodicRawData)(_: String)).expects(data, *)
+    def parse(data: ListPeriodSummariesRawData): CallHandler[Either[ErrorWrapper, ListPeriodSummariesRequest]] = {
+      (mockListPeriodSummariesRequestParser.parseRequest(_: ListPeriodSummariesRawData)(_: String)).expects(data, *)
     }
 
   }

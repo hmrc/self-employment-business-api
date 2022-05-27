@@ -17,22 +17,22 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockListPeriodicConnector
+import v1.mocks.connectors.MockListPeriodSummariesConnector
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.listPeriodic.ListPeriodicRequest
-import v1.models.response.listPeriodic.{ListPeriodicResponse, PeriodDetails}
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.Future
 
-class ListPeriodicServiceSpec extends ServiceSpec {
+class ListPeriodSummariesServiceSpec extends ServiceSpec {
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  val response: ListPeriodicResponse[PeriodDetails] = ListPeriodicResponse(
+  val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
     Seq(
       PeriodDetails(
         "2020-01-01_2020-01-01",
@@ -41,16 +41,16 @@ class ListPeriodicServiceSpec extends ServiceSpec {
       ))
   )
 
-  private val requestData = ListPeriodicRequest(
+  private val requestData = ListPeriodSummariesRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId)
   )
 
-  trait Test extends MockListPeriodicConnector {
+  trait Test extends MockListPeriodSummariesConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new ListPeriodicService(
-      connector = mockListPeriodicConnector
+    val service = new ListPeriodSummariesService(
+      connector = mockListPeriodSummariesConnector
     )
 
   }
@@ -58,11 +58,11 @@ class ListPeriodicServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockListPeriodicConnector
-          .listPeriods(requestData)
+        MockListPeriodSummariesConnector
+          .listPeriodSummaries(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.listPeriods(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+        await(service.listPeriodSummaries(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
     }
   }
@@ -72,11 +72,11 @@ class ListPeriodicServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockListPeriodicConnector
-            .listPeriods(requestData)
+          MockListPeriodSummariesConnector
+            .listPeriodSummaries(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.listPeriods(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.listPeriodSummaries(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(

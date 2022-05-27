@@ -17,13 +17,14 @@
 package v1.controllers.requestParsers
 
 import javax.inject.Inject
-import v1.controllers.requestParsers.validators.ListPeriodicValidator
+import v1.controllers.requestParsers.validators.ListPeriodSummariesValidator
 import v1.models.domain.{BusinessId, Nino}
-import v1.models.request.listPeriodic.{ListPeriodicRawData, ListPeriodicRequest}
+import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData, ListPeriodSummariesRequest}
 
-class ListPeriodicRequestParser @Inject() (val validator: ListPeriodicValidator) extends RequestParser[ListPeriodicRawData, ListPeriodicRequest] {
+class ListPeriodSummariesRequestParser @Inject() (val validator: ListPeriodSummariesValidator)
+    extends RequestParser[ListPeriodSummariesRawData, ListPeriodSummariesRequest] {
 
-  override protected def requestFor(data: ListPeriodicRawData): ListPeriodicRequest =
-    ListPeriodicRequest(Nino(data.nino), BusinessId(data.businessId))
+  override protected def requestFor(data: ListPeriodSummariesRawData): ListPeriodSummariesRequest =
+    ListPeriodSummariesRequest(Nino(data.nino), BusinessId(data.businessId))
 
 }

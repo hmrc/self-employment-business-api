@@ -17,29 +17,28 @@
 package v1.connectors
 
 import config.AppConfig
-
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.DesUri
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.request.listPeriodic.ListPeriodicRequest
-import v1.models.response.listPeriodic.{ListPeriodicResponse, PeriodDetails}
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodicConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def listPeriods(request: ListPeriodicRequest)(implicit
+  def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[ListPeriodicResponse[PeriodDetails]]] = {
+      correlationId: String): Future[DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
     val nino       = request.nino.nino
     val businessId = request.businessId.value
 
     get(
-      uri = DesUri[ListPeriodicResponse[PeriodDetails]](
+      uri = DesUri[ListPeriodSummariesResponse[PeriodDetails]](
         s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
       )
     )

@@ -18,7 +18,7 @@ package v1.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
@@ -26,7 +26,7 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-class ListPeriodicControllerISpec extends IntegrationBaseSpec {
+class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
@@ -36,48 +36,52 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
     val fromDate   = "2019-01-01"
     val toDate     = "2020-01-01"
 
-    val responseBody: JsValue = Json.parse(s"""
+    val responseBody: JsValue = Json.parse(
+      s"""
+        |{
+        |  "periods": [
+        |    {
+        |      "periodId": "$periodId",
+        |      "periodStartDate": "$fromDate",
+        |      "periodEndDate": "$toDate",
+        |      "links": [
+        |        {
+        |          "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+        |          "method": "GET",
+        |          "rel": "self"
+        |        }
+        |      ]
+        |    }
+        |  ],
+        |  "links": [
+        |    {
+        |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+        |      "method": "POST",
+        |      "rel": "create-self-employment-period-summary"
+        |    },
+        |    {
+        |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+        |      "method": "GET",
+        |      "rel": "self"
+        |    }
+        |  ]
+        |}
+      """.stripMargin
+    )
+
+    val desResponseBody: JsValue = Json.parse(
+      s"""
          |{
          |  "periods": [
-         |    {
-         |      "periodId": "$periodId",
-         |      "periodStartDate": "$fromDate",
-         |      "periodEndDate": "$toDate",
-         |      "links": [
-         |        {
-         |          "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |          "method": "GET",
-         |          "rel": "self"
-         |        }
-         |      ]
-         |    }
-         |  ],
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
-         |      "method": "POST",
-         |      "rel": "create-self-employment-period-summary"
-         |    }
+         |      {
+         |          "transactionReference": "1111111111",
+         |          "from": "$fromDate",
+         |          "to": "$toDate"
+         |      }
          |  ]
          |}
-         |""".stripMargin)
-
-    val desResponseBody: JsValue = Json.parse(s"""
-         |{
-         |    "periods": [
-         |        {
-         |            "transactionReference": "1111111111",
-         |            "from": "$fromDate",
-         |            "to": "$toDate"
-         |        }
-         |    ]
-         |}
-         |""".stripMargin)
+       """.stripMargin
+    )
 
     def setupStubs(): StubMapping
 
@@ -96,15 +100,15 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "des message"
-         |      }
-    """.stripMargin
+         |{
+         |   "code": "$code",
+         |   "reason": "des message"
+         |}
+       """.stripMargin
 
   }
 
-  "calling the retrieve endpoint" should {
+  "calling the list period summaries endpoint" should {
 
     "return a 200 status code" when {
 
@@ -114,11 +118,11 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, desUri, Status.OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.GET, desUri, OK, desResponseBody)
         }
 
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.OK
+        response.status shouldBe OK
         response.json shouldBe responseBody
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
@@ -146,8 +150,8 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA123", "XAIS12345678910", Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", Status.BAD_REQUEST, BusinessIdFormatError)
+          ("AA123", "XAIS12345678910", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", BAD_REQUEST, BusinessIdFormatError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -171,11 +175,11 @@ class ListPeriodicControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_INCOME_SOURCEID", Status.BAD_REQUEST, BusinessIdFormatError),
-          (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCEID", BAD_REQUEST, BusinessIdFormatError),
+          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

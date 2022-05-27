@@ -17,29 +17,28 @@
 package v1.services
 
 import cats.implicits._
-
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.ListPeriodicConnector
+import v1.connectors.ListPeriodSummariesConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
-import v1.models.request.listPeriodic.ListPeriodicRequest
-import v1.models.response.listPeriodic.{ListPeriodicResponse, PeriodDetails}
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodicService @Inject() (connector: ListPeriodicConnector) extends DesResponseMappingSupport with Logging {
+class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends DesResponseMappingSupport with Logging {
 
-  def listPeriods(request: ListPeriodicRequest)(implicit
+  def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       logContext: EndpointLogContext,
-      correlationId: String): Future[ServiceOutcome[ListPeriodicResponse[PeriodDetails]]] = {
+      correlationId: String): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
-    connector.listPeriods(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    connector.listPeriodSummaries(request).map(_.leftMap(mapDesErrors(desErrorMap)))
   }
 
   private val desErrorMap =
