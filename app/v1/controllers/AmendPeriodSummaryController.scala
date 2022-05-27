@@ -25,7 +25,7 @@ import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.amendPeriodic.AmendPeriodSummaryRawData
-import v1.models.response.amendPeriodic.AmendPeriodSumaryHateoasData
+import v1.models.response.amendPeriodic.AmendPeriodSummaryHateoasData
 import v1.models.response.amendPeriodic.AmendPeriodSummaryResponse.LinksFactory
 import v1.services.{AmendPeriodSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
@@ -60,7 +60,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
           serviceResponse <- EitherT(service.amendPeriodSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
-              .wrap(serviceResponse.responseData, AmendPeriodSumaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
+              .wrap(serviceResponse.responseData, AmendPeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
               .asRight[ErrorWrapper])
         } yield {
           logger.info(

@@ -24,205 +24,189 @@ import v1.models.hateoas.{Link, Method}
 
 class RetrievePeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
-  val mtdJson: JsValue = Json.parse(
-    """
+  val downstreamFullJson: JsValue = Json.parse("""
       |{
-      |   "periodFromDate": "2017-01-25",
-      |   "periodToDate": "2017-01-25",
-      |   "incomes": {
-      |      "turnover": {
-      |         "amount": 500.25
-      |      },
-      |      "other": {
-      |         "amount": 500.25
-      |      }
-      |   },
-      |   "consolidatedExpenses": {
-      |      "consolidatedExpenses": 500.25
-      |   },
-      |   "expenses": {
-      |      "costOfGoodsBought": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "cisPaymentsTo": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "staffCosts": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "travelCosts": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "premisesRunningCosts": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "maintenanceCosts": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "adminCosts": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "advertisingCosts": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "interestOnLoans": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "financialCharges": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "badDebt": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "professionalFees": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "depreciation": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      },
-      |      "other": {
-      |         "amount": 500.25,
-      |         "disallowableAmount": 500.25
-      |      }
-      |   }
-      |}
-    """.stripMargin
-  )
-
-  val desJson: JsValue = Json.parse(
-    """
-      |{
-      |   "from": "2017-01-25",
-      |   "to": "2017-01-25",
+      |   "from": "2019-08-24",
+      |   "to": "2020-08-24",
       |   "financials": {
       |      "deductions": {
       |         "adminCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 100.00,
+      |            "disallowableAmount": 200.00
       |         },
       |         "advertisingCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 300.00,
+      |            "disallowableAmount": 400.00
       |         },
       |         "badDebt": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 500.00,
+      |            "disallowableAmount": 600.00
       |         },
       |         "constructionIndustryScheme": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 700.00,
+      |            "disallowableAmount": 800.00
       |         },
       |         "costOfGoods": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 900.00,
+      |            "disallowableAmount": 1000.00
       |         },
       |         "depreciation": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 1100.00,
+      |            "disallowableAmount": 1200.00
       |         },
       |         "financialCharges": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 1300.00,
+      |            "disallowableAmount": 1400.00
       |         },
       |         "interest": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 1500.00,
+      |            "disallowableAmount": 1600.00
       |         },
       |         "maintenanceCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 1700.00,
+      |            "disallowableAmount": 1800.00
       |         },
       |         "other": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 1900.00,
+      |            "disallowableAmount": 2000.00
       |         },
       |         "professionalFees": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 2100.00,
+      |            "disallowableAmount": 2200.00
       |         },
       |         "premisesRunningCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 2300.00,
+      |            "disallowableAmount": 2400.00
       |         },
       |         "staffCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 2500.00,
+      |            "disallowableAmount": 2600.00
       |         },
       |         "travelCosts": {
-      |            "amount": 500.25,
-      |            "disallowableAmount": 500.25
+      |            "amount": 2700.00,
+      |            "disallowableAmount": 2800.00
       |         },
-      |         "simplifiedExpenses": 500.25
+      |         "businessEntertainmentCosts": {
+      |            "amount": 2900.00,
+      |            "disallowableAmount": 3000.00
+      |         }
       |      },
       |      "incomes": {
-      |         "turnover": 500.25,
-      |         "other": 500.25
+      |         "turnover": 3100.00,
+      |         "other": 3200.00
       |      }
       |   }
       |}
-    """.stripMargin
-  )
+      |""".stripMargin)
 
-  val model: RetrievePeriodicResponse = RetrievePeriodicResponse(
-    "2017-01-25",
-    "2017-01-25",
-    Some(
-      Incomes(
-        Some(
-          IncomesAmountObject(
-            500.25
-          )),
-        Some(
-          IncomesAmountObject(
-            500.25
-          ))
-      )),
-    Some(ConsolidatedExpenses(500.25)),
-    Some(
-      Expenses(
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        None,
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25))),
-        Some(ExpensesAmountObject(500.25, Some(500.25)))
-      ))
-  )
+  val mtdFullJson: JsValue = Json.parse("""
+      |{
+      |   "periodDates":{
+      |      "periodStartDate":"2019-08-24",
+      |      "periodEndDate":"2020-08-24"
+      |   },
+      |   "periodIncome":{
+      |      "turnover":3100.00,
+      |      "other":3200.00
+      |   },
+      |   "periodAllowableExpenses":{
+      |      "costOfGoodsAllowable":900.00,
+      |      "paymentsToSubcontractorsAllowable":700.00,
+      |      "wagesAndStaffCostsAllowable":2500.00,
+      |      "carVanTravelExpensesAllowable":2700.00,
+      |      "premisesRunningCostsAllowable":2300.00,
+      |      "maintenanceCostsAllowable":1700.00,
+      |      "adminCostsAllowable":100.00,
+      |      "businessEntertainmentCostsAllowable":2900.00,
+      |      "advertisingCostsAllowable":300.00,
+      |      "interestOnBankOtherLoansAllowable":1500.00,
+      |      "financeChargesAllowable":1300.00,
+      |      "irrecoverableDebtsAllowable":500.00,
+      |      "professionalFeesAllowable":2100.00,
+      |      "depreciationAllowable":1100.00,
+      |      "otherExpensesAllowable":1900.00
+      |   },
+      |   "periodDisallowableExpenses":{
+      |      "costOfGoodsDisallowable":1000.00,
+      |      "paymentsToSubcontractorsDisallowable":800.00,
+      |      "wagesAndStaffCostsDisallowable":2600.00,
+      |      "carVanTravelExpensesDisallowable":2800.00,
+      |      "premisesRunningCostsDisallowable":2400.00,
+      |      "maintenanceCostsDisallowable":1800.00,
+      |      "adminCostsDisallowable":200.00,
+      |      "businessEntertainmentCostsDisallowable":3000.00,
+      |      "advertisingCostsDisallowable":400.00,
+      |      "interestOnBankOtherLoansDisallowable":1600.00,
+      |      "financeChargesDisallowable":1400.00,
+      |      "irrecoverableDebtsDisallowable":600.00,
+      |      "professionalFeesDisallowable":2200.00,
+      |      "depreciationDisallowable":1200.00,
+      |      "otherExpensesDisallowable":2000.00
+      |   }
+      |}
+      |""".stripMargin)
 
-  "reads" should {
-    "return a model" when {
-      "passed a valid json" in {
-        desJson.as[RetrievePeriodicResponse] shouldBe model
+  val downstreamConsolidatedJson: JsValue = Json.parse("""
+      |{
+      |   "from": "2019-08-24",
+      |   "to": "2020-08-24",
+      |   "financials": {
+      |      "deductions": {
+      |         "simplifiedExpenses": 666.66
+      |      },
+      |      "incomes": {
+      |         "turnover": 100.00,
+      |         "other": 200.00
+      |      }
+      |   }
+      |}
+      |""".stripMargin)
+
+  val mtdConsolidatedJson: JsValue = Json.parse("""
+      |{
+      |   "periodDates":{
+      |      "periodStartDate":"2019-08-24",
+      |      "periodEndDate":"2020-08-24"
+      |   },
+      |   "periodIncome":{
+      |      "turnover":100.00,
+      |      "other":200.00
+      |   },
+      |   "periodAllowableExpenses":{
+      |      "consolidatedExpenses":666.66
+      |   }
+      |}
+      |""".stripMargin)
+
+  val downstreamMinimalJson: JsValue = Json.parse("""
+      |{
+      |   "from": "2019-08-24",
+      |   "to": "2020-08-24",
+      |   "financials": {
+      |     "incomes": {}
+      |   }
+      |}
+      |""".stripMargin)
+
+  val mtdMinimalJson: JsValue = Json.parse("""
+      |{
+      |   "periodDates":{
+      |      "periodStartDate":"2019-08-24",
+      |      "periodEndDate":"2020-08-24"
+      |   }
+      |}
+      |""".stripMargin)
+
+  "round trip" should {
+    "return mtd json" when {
+      "passed valid full downstream json" in {
+        Json.toJson(downstreamFullJson.as[RetrievePeriodicResponse]) shouldBe mtdFullJson
       }
-    }
-  }
-
-  "writes" should {
-    "return json" when {
-      "passed a valid model" in {
-        Json.toJson(model) shouldBe mtdJson
+      "passed valid consolidated downstream json" in {
+        Json.toJson(downstreamConsolidatedJson.as[RetrievePeriodicResponse]) shouldBe mtdConsolidatedJson
+      }
+      "passed valid minimal downstream json" in {
+        Json.toJson(downstreamMinimalJson.as[RetrievePeriodicResponse]) shouldBe mtdMinimalJson
       }
     }
   }
@@ -239,7 +223,8 @@ class RetrievePeriodicResponseSpec extends UnitSpec with MockAppConfig {
 
         RetrievePeriodicResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self")
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
+          Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
         )
       }
     }

@@ -5,13 +5,13 @@
   "type": "object",
   "properties": {
     "periodIncome": {
-      "$ref": "periodic/period_income.json"
+      "$ref": "periodSummary/period_income.json"
     },
     "periodAllowableExpenses": {
-      "$ref": "periodic/period_allowable_expenses.json"
+      "$ref": "periodSummary/period_allowable_expenses.json"
     },
     "periodDisallowableExpenses": {
-      "$ref": "periodic/period_disallowable_expenses.json"
+      "$ref": "periodSummary/period_disallowable_expenses.json"
     }
   },
   "additionalProperties": false

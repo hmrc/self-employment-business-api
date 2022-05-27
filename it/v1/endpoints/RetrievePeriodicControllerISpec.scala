@@ -38,163 +38,138 @@ class RetrievePeriodicControllerISpec extends IntegrationBaseSpec {
 
     val responseBody: JsValue = Json.parse(s"""
          |{
-         |  "periodFromDate": "2019-01-01",
-         |  "periodToDate": "2020-01-01",
-         |  "incomes": {
-         |    "turnover": {
-         |      "amount": 172.89
-         |    },
-         |    "other": {
-         |      "amount": 634.14
-         |    }
-         |  },
-         |    "expenses": {
-         |      "costOfGoodsBought": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
+         |  "periodDates":{
+         |      "periodStartDate":"2019-08-24",
+         |      "periodEndDate":"2020-08-24"
+         |   },
+         |   "periodIncome":{
+         |      "turnover":3100.00,
+         |      "other":3200.00
+         |   },
+         |   "periodAllowableExpenses":{
+         |      "costOfGoodsAllowable":900.00,
+         |      "paymentsToSubcontractorsAllowable":700.00,
+         |      "wagesAndStaffCostsAllowable":2500.00,
+         |      "carVanTravelExpensesAllowable":2700.00,
+         |      "premisesRunningCostsAllowable":2300.00,
+         |      "maintenanceCostsAllowable":1700.00,
+         |      "adminCostsAllowable":100.00,
+         |      "businessEntertainmentCostsAllowable":2900.00,
+         |      "advertisingCostsAllowable":300.00,
+         |      "interestOnBankOtherLoansAllowable":1500.00,
+         |      "financeChargesAllowable":1300.00,
+         |      "irrecoverableDebtsAllowable":500.00,
+         |      "professionalFeesAllowable":2100.00,
+         |      "depreciationAllowable":1100.00,
+         |      "otherExpensesAllowable":1900.00
+         |   },
+         |   "periodDisallowableExpenses":{
+         |      "costOfGoodsDisallowable":1000.00,
+         |      "paymentsToSubcontractorsDisallowable":800.00,
+         |      "wagesAndStaffCostsDisallowable":2600.00,
+         |      "carVanTravelExpensesDisallowable":2800.00,
+         |      "premisesRunningCostsDisallowable":2400.00,
+         |      "maintenanceCostsDisallowable":1800.00,
+         |      "adminCostsDisallowable":200.00,
+         |      "businessEntertainmentCostsDisallowable":3000.00,
+         |      "advertisingCostsDisallowable":400.00,
+         |      "interestOnBankOtherLoansDisallowable":1600.00,
+         |      "financeChargesDisallowable":1400.00,
+         |      "irrecoverableDebtsDisallowable":600.00,
+         |      "professionalFeesDisallowable":2200.00,
+         |      "depreciationDisallowable":1200.00,
+         |      "otherExpensesDisallowable":2000.00
+         |   },
+         |   "links": [
+         |      {
+         |         "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |         "rel": "amend-self-employment-period-summary",
+         |         "method": "PUT"
          |      },
-         |      "cisPaymentsTo": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
+         |      {
+         |         "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |         "rel": "self",
+         |         "method": "GET"
          |      },
-         |      "staffCosts": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "travelCosts": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "premisesRunningCosts": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "maintenanceCosts": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "adminCosts": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "advertisingCosts": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "businessEntertainmentCosts": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "interestOnLoans": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "financialCharges": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "badDebt": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "professionalFees": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "depreciation": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
-         |      },
-         |      "other": {
-         |        "amount": 627.90,
-         |        "disallowableAmount": 657.02
+         |      {
+         |         "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |         "rel": "list-self-employment-period-summaries",
+         |         "method": "GET"
          |      }
-         |    },
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |      "rel": "amend-self-employment-period-summary",
-         |      "method": "PUT"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |      "rel": "self",
-         |      "method": "GET"
-         |    }
-         |  ]
+         |   ]
          |}
          |""".stripMargin)
 
     val desResponseBody: JsValue = Json.parse(s"""
          |{
-         |   "from": "2019-01-01",
-         |   "to": "2020-01-01",
+         |   "from": "2019-08-24",
+         |   "to": "2020-08-24",
          |   "financials": {
          |      "deductions": {
          |         "adminCosts": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 100.00,
+         |            "disallowableAmount": 200.00
          |         },
          |         "advertisingCosts": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 300.00,
+         |            "disallowableAmount": 400.00
          |         },
          |         "badDebt": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
-         |         },
-         |         "businessEntertainmentCosts": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 500.00,
+         |            "disallowableAmount": 600.00
          |         },
          |         "constructionIndustryScheme": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 700.00,
+         |            "disallowableAmount": 800.00
          |         },
          |         "costOfGoods": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 900.00,
+         |            "disallowableAmount": 1000.00
          |         },
          |         "depreciation": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 1100.00,
+         |            "disallowableAmount": 1200.00
          |         },
          |         "financialCharges": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 1300.00,
+         |            "disallowableAmount": 1400.00
          |         },
          |         "interest": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 1500.00,
+         |            "disallowableAmount": 1600.00
          |         },
          |         "maintenanceCosts": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 1700.00,
+         |            "disallowableAmount": 1800.00
          |         },
          |         "other": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 1900.00,
+         |            "disallowableAmount": 2000.00
          |         },
          |         "professionalFees": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 2100.00,
+         |            "disallowableAmount": 2200.00
          |         },
          |         "premisesRunningCosts": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 2300.00,
+         |            "disallowableAmount": 2400.00
          |         },
          |         "staffCosts": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 2500.00,
+         |            "disallowableAmount": 2600.00
          |         },
          |         "travelCosts": {
-         |            "amount": 627.90,
-         |            "disallowableAmount": 657.02
+         |            "amount": 2700.00,
+         |            "disallowableAmount": 2800.00
+         |         },
+         |         "businessEntertainmentCosts": {
+         |            "amount": 2900.00,
+         |            "disallowableAmount": 3000.00
          |         }
          |      },
          |      "incomes": {
-         |         "turnover": 172.89,
-         |         "other": 634.14
+         |         "turnover": 3100.00,
+         |         "other": 3200.00
          |      }
          |   }
          |}

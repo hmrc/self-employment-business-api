@@ -34,7 +34,7 @@ object CreatePeriodicResponse extends HateoasLinks {
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId),
         retrievePeriodSummary(appConfig, nino, businessId, periodId),
-        listPeriodSummary(appConfig, nino, businessId, isSelf = false)
+        listPeriodSummaries(appConfig, nino, businessId, isSelf = false)
       )
     }
 

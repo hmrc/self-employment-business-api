@@ -18,10 +18,10 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockCreatePeriodicConnector
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.createPeriodic._
+import v1.models.request.createPeriodSummary._
 import v1.models.response.createPeriodic.CreatePeriodicResponse
 
 import scala.concurrent.Future
@@ -33,55 +33,55 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
   implicit val correlationId: String = "X-123"
 
   private val requestBody =
-    CreatePeriodicBody(
-      PeriodDates("2019-08-24", "2019-08-24"),
-      Some(
-        PeriodIncome(
-          Some(1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodAllowableExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-99999.99),
-          Some(-1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodDisallowableExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-999.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-9999.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-99999999999.99),
-          Some(1000.99)
-        ))
+    CreatePeriodSummaryBody(
+      PeriodDates(
+        "2019-08-24",
+        "2019-08-24"),
+      Some(PeriodIncome(
+        Some(1000.99),
+        Some(1000.99)
+      )),
+      Some(PeriodAllowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-99999.99),
+        Some(-1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-1000.99),
+        Some(1000.99)
+      )),
+      Some(PeriodDisallowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-999.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-9999.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-99999999999.99),
+        Some(1000.99)
+      ))
     )
 
-  private val requestData = CreatePeriodicRequest(
+
+  private val requestData = CreatePeriodSummaryRequest(
     nino = Nino(nino),
-    businessId = BusinessId(businessId),
+    businessId = businessId,
     body = requestBody
   )
 

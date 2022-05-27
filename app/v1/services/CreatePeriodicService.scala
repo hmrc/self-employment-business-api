@@ -25,7 +25,7 @@ import v1.connectors.CreatePeriodicConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.createPeriodic.CreatePeriodicRequest
+import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v1.models.response.createPeriodic.CreatePeriodicResponse
 import v1.support.DesResponseMappingSupport
 
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreatePeriodicService @Inject() (connector: CreatePeriodicConnector) extends DesResponseMappingSupport with Logging {
 
-  def createPeriodicSummary(request: CreatePeriodicRequest)(implicit
+  def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       logContext: EndpointLogContext,
@@ -42,7 +42,8 @@ class CreatePeriodicService @Inject() (connector: CreatePeriodicConnector) exten
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))
-      mtdResponseWrapper <- EitherT.fromEither[Future](createPeriodId(desResponseWrapper, request.body.periodDates.periodStartDate, request.body.periodDates.periodEndDate))
+      mtdResponseWrapper <- EitherT.fromEither[Future](
+        createPeriodId(desResponseWrapper, request.body.periodDates.periodStartDate, request.body.periodDates.periodEndDate))
     } yield mtdResponseWrapper
 
     result.value

@@ -19,9 +19,9 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.Nino
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.createPeriodic._
+import v1.models.request.createPeriodSummary._
 import v1.models.response.createPeriodic.CreatePeriodicResponse
 
 import scala.concurrent.Future
@@ -31,53 +31,52 @@ class CreatePeriodicConnectorSpec extends ConnectorSpec {
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
-  val request: CreatePeriodicRequest = CreatePeriodicRequest(
+  val request: CreatePeriodSummaryRequest = CreatePeriodSummaryRequest(
     nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    body = CreatePeriodicBody(
-      PeriodDates("2019-08-24", "2019-08-24"),
-      Some(
-        PeriodIncome(
-          Some(1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodAllowableExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-99999.99),
-          Some(-1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodDisallowableExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-999.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-9999.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-99999999999.99),
-          Some(1000.99)
-        ))
+    businessId = businessId,
+    body =  CreatePeriodSummaryBody(
+      PeriodDates(
+        "2019-08-24",
+        "2019-08-24"),
+      Some(PeriodIncome(
+        Some(1000.99),
+        Some(1000.99)
+      )),
+      Some(PeriodAllowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-99999.99),
+        Some(-1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-1000.99),
+        Some(1000.99)
+      )),
+      Some(PeriodDisallowableExpenses(
+        None,
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-999.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(1000.99),
+        Some(-1000.99),
+        Some(-9999.99),
+        Some(-1000.99),
+        Some(-99999999999.99),
+        Some(-99999999999.99),
+        Some(1000.99)
+      ))
     )
   )
 

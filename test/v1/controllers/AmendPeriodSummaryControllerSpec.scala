@@ -28,7 +28,7 @@ import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodic._
-import v1.models.response.amendPeriodic.AmendPeriodSumaryHateoasData
+import v1.models.response.amendPeriodic.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -84,7 +84,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodSumaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakePostRequest(requestBodyJson))

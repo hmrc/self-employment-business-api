@@ -1,0 +1,29 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatBusinessId
+  - errors.formatPeriodId
+  - errors.clientOrAgentNotAuthorised
+  - errors.matchingResourceNotFound
+displayName: Retrieve a Self-Employment Period Summary [test only]
+description: "This endpoint allows a developer to retrieve a single self-employment period summary for a given identifier. A National Insurance number, business ID and period ID must be provided."
+(annotations.sandboxData): !include ../scenarios/retrieve_period_summary_scenarios.md
+(annotations.scope): "read:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+responses:
+  200:
+    headers:
+      X-CorrelationId:
+        example: a1e8057e-fbbc-47a8-a8b4-78d9f015c253
+        description: Unique ID for operation tracking <br> String, 36 characters.
+    body:
+      application/json:
+        type: !include ../schemas/retrieve_period_summary_response.json
+        examples:
+         example-1:
+          description: Non-Consolidated Response
+          value: !include ../examples/retrieve_period_summary_non_consolidated_response.json
+         example-2:
+          description: Consolidated Response
+          value: !include ../examples/retrieve_period_summary_consolidated_response.json

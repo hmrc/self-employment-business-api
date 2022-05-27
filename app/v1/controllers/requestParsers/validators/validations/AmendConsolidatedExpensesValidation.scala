@@ -16,7 +16,6 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-
 import v1.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import v1.models.request.amendPeriodic._
 
@@ -29,11 +28,15 @@ object AmendConsolidatedExpensesValidation {
           case None => NoValidationErrors
           case Some(_) =>
             (allowableExpenses, disallowableExpenses) match {
-              case (Some(PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)), None) => NoValidationErrors
+              case (
+                    Some(PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)),
+                    None) =>
+                NoValidationErrors
               case _ => List(RuleBothExpensesSuppliedError)
-          }
-      }
+            }
+        }
       case _ => NoValidationErrors
     }
   }
+
 }

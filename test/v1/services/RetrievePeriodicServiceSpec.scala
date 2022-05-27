@@ -22,7 +22,7 @@ import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
-import v1.models.response.retrievePeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrievePeriodicResponse}
+import v1.models.response.retrievePeriodic.{PeriodDates, RetrievePeriodicResponse}
 
 import scala.concurrent.Future
 
@@ -34,23 +34,9 @@ class RetrievePeriodicServiceSpec extends ServiceSpec {
   implicit val correlationId: String = "X-123"
 
   val response: RetrievePeriodicResponse = RetrievePeriodicResponse(
-    "2019-01-25",
-    "2020-01-25",
-    Some(
-      Incomes(
-        Some(
-          IncomesAmountObject(
-            1000.20
-          )),
-        Some(
-          IncomesAmountObject(
-            1000.20
-          ))
-      )),
-    Some(
-      ConsolidatedExpenses(
-        1000.20
-      )),
+    PeriodDates("2019-01-25", "2020-01-25"),
+    None,
+    None,
     None
   )
 
