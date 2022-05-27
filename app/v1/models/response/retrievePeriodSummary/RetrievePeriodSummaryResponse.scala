@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrievePeriodic
+package v1.models.response.retrievePeriodSummary
 
 import config.AppConfig
 import play.api.libs.json._
@@ -22,14 +22,14 @@ import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrievePeriodicResponse(periodDates: PeriodDates,
+case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
                                     periodIncome: Option[PeriodIncome],
                                     periodAllowableExpenses: Option[PeriodAllowableExpenses],
                                     periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
-object RetrievePeriodicResponse extends HateoasLinks {
+object RetrievePeriodSummaryResponse extends HateoasLinks {
 
-  implicit val reads: Reads[RetrievePeriodicResponse] = for {
+  implicit val reads: Reads[RetrievePeriodSummaryResponse] = for {
     periodStartDate <- (JsPath \ "from").read[String]
     periodEndDate   <- (JsPath \ "to").read[String]
 
@@ -39,7 +39,7 @@ object RetrievePeriodicResponse extends HateoasLinks {
     periodAllowableExpenses    <- (JsPath \ "financials").readNullable[PeriodAllowableExpenses]
     periodDisallowableExpenses <- (JsPath \ "financials").readNullable[PeriodDisallowableExpenses]
   } yield {
-    RetrievePeriodicResponse(
+    RetrievePeriodSummaryResponse(
       periodDates = periodDates,
       periodIncome = if (periodIncome.exists(_.isEmptyObject)) None else periodIncome,
       periodAllowableExpenses = if (periodAllowableExpenses.exists(_.isEmptyObject)) None else periodAllowableExpenses,
@@ -47,11 +47,11 @@ object RetrievePeriodicResponse extends HateoasLinks {
     )
   }
 
-  implicit val writes: OWrites[RetrievePeriodicResponse] = Json.writes[RetrievePeriodicResponse]
+  implicit val writes: OWrites[RetrievePeriodSummaryResponse] = Json.writes[RetrievePeriodSummaryResponse]
 
-  implicit object RetrieveAnnualSubmissionLinksFactory extends HateoasLinksFactory[RetrievePeriodicResponse, RetrievePeriodicHateoasData] {
+  implicit object RetrieveAnnualSubmissionLinksFactory extends HateoasLinksFactory[RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
-    override def links(appConfig: AppConfig, data: RetrievePeriodicHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId),
@@ -64,4 +64,4 @@ object RetrievePeriodicResponse extends HateoasLinks {
 
 }
 
-case class RetrievePeriodicHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData
+case class RetrievePeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData

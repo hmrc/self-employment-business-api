@@ -20,16 +20,16 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
+import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 
 trait MockRetrievePeriodSummaryRequestParser extends MockFactory {
 
-  val mockRetrievePeriodicRequestParser: RetrievePeriodSummaryRequestParser = mock[RetrievePeriodSummaryRequestParser]
+  val mockRetrievePeriodSummaryRequestParser: RetrievePeriodSummaryRequestParser = mock[RetrievePeriodSummaryRequestParser]
 
-  object MockRetrievePeriodicRequestParser {
+  object MockRetrievePeriodSummaryRequestParser {
 
-    def parse(data: RetrievePeriodicRawData): CallHandler[Either[ErrorWrapper, RetrievePeriodicRequest]] = {
-      (mockRetrievePeriodicRequestParser.parseRequest(_: RetrievePeriodicRawData)(_: String)).expects(data, *)
+    def parse(data: RetrievePeriodSummaryRawData): CallHandler[Either[ErrorWrapper, RetrievePeriodSummaryRequest]] = {
+      (mockRetrievePeriodSummaryRequestParser.parseRequest(_: RetrievePeriodSummaryRawData)(_: String)).expects(data, *)
     }
 
   }

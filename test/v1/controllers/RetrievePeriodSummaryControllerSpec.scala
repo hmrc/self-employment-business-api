@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodicService}
+import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodSummaryService}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors.{
   BadRequestError,
@@ -37,8 +37,8 @@ import v1.models.errors.{
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
-import v1.models.response.retrievePeriodic._
+import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
+import v1.models.response.retrievePeriodSummary._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -47,7 +47,7 @@ class RetrievePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockRetrievePeriodicService
+    with MockRetrievePeriodSummaryService
     with MockRetrievePeriodSummaryRequestParser
     with MockHateoasFactory
     with MockAuditService
@@ -64,8 +64,8 @@ class RetrievePeriodSummaryControllerSpec
     val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockRetrievePeriodicRequestParser,
-      service = mockRetrievePeriodicService,
+      parser = mockRetrievePeriodSummaryRequestParser,
+      service = mockRetrievePeriodSummaryService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -76,12 +76,12 @@ class RetrievePeriodSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData     = RetrievePeriodicRawData(nino, businessId, periodId)
-  private val requestData = RetrievePeriodicRequest(Nino(nino), BusinessId(businessId), periodId)
+  private val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId)
+  private val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId)
 
   private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/period/$periodId", method = GET, rel = "self")
 
-  val responseBody: RetrievePeriodicResponse = RetrievePeriodicResponse(
+  val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     periodDates = PeriodDates("2019-01-01", "2020-01-01"),
     periodIncome = None,
     periodAllowableExpenses = None,
@@ -91,16 +91,16 @@ class RetrievePeriodSummaryControllerSpec
   "handleRequest" should {
     "return Ok" when {
       "the request received is valid" in new Test {
-        MockRetrievePeriodicRequestParser
+        MockRetrievePeriodSummaryRequestParser
           .parse(rawData)
           .returns(Right(requestData))
 
-        MockRetrievePeriodicService
+        MockRetrievePeriodSummaryService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodicHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)
@@ -114,7 +114,7 @@ class RetrievePeriodSummaryControllerSpec
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
           s"a ${error.code} error is returned from the parser" in new Test {
 
-            MockRetrievePeriodicRequestParser
+            MockRetrievePeriodSummaryRequestParser
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
@@ -140,11 +140,11 @@ class RetrievePeriodSummaryControllerSpec
         def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
           s"a $mtdError error is returned from the service" in new Test {
 
-            MockRetrievePeriodicRequestParser
+            MockRetrievePeriodSummaryRequestParser
               .parse(rawData)
               .returns(Right(requestData))
 
-            MockRetrievePeriodicService
+            MockRetrievePeriodSummaryService
               .retrieve(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 

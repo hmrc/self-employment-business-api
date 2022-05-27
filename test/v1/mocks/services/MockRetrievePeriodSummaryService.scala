@@ -22,21 +22,21 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
-import v1.models.response.retrievePeriodic.RetrievePeriodicResponse
-import v1.services.RetrievePeriodicService
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v1.services.RetrievePeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrievePeriodicService extends MockFactory {
+trait MockRetrievePeriodSummaryService extends MockFactory {
 
-  val mockRetrievePeriodicService: RetrievePeriodicService = mock[RetrievePeriodicService]
+  val mockRetrievePeriodSummaryService: RetrievePeriodSummaryService = mock[RetrievePeriodSummaryService]
 
-  object MockRetrievePeriodicService {
+  object MockRetrievePeriodSummaryService {
 
-    def retrieve(requestData: RetrievePeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrievePeriodicResponse]]]] = {
-      (mockRetrievePeriodicService
-        .retrievePeriodicSummary(_: RetrievePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+    def retrieve(requestData: RetrievePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrievePeriodSummaryResponse]]]] = {
+      (mockRetrievePeriodSummaryService
+        .retrievePeriodSummary(_: RetrievePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
 

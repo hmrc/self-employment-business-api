@@ -20,20 +20,20 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DownstreamOutcome, RetrievePeriodSummaryConnector}
-import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
-import v1.models.response.retrievePeriodic.RetrievePeriodicResponse
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockRetrievePeriodSummaryConnector extends MockFactory {
 
-  val mockRetrievePeriodicConnector: RetrievePeriodSummaryConnector = mock[RetrievePeriodSummaryConnector]
+  val mockRetrievePeriodSummaryConnector: RetrievePeriodSummaryConnector = mock[RetrievePeriodSummaryConnector]
 
-  object MockRetrievePeriodicConnector {
+  object MockRetrievePeriodSummaryConnector {
 
-    def retrievePeriodicSummary(requestData: RetrievePeriodicRequest): CallHandler[Future[DownstreamOutcome[RetrievePeriodicResponse]]] = {
-      (mockRetrievePeriodicConnector
-        .retrievePeriodicSummary(_: RetrievePeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+    def retrievePeriodSummary(requestData: RetrievePeriodSummaryRequest): CallHandler[Future[DownstreamOutcome[RetrievePeriodSummaryResponse]]] = {
+      (mockRetrievePeriodSummaryConnector
+        .retrievePeriodSummary(_: RetrievePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

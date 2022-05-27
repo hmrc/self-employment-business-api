@@ -18,7 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.request.retrievePeriodic.RetrievePeriodicRawData
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
@@ -31,34 +31,34 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(RetrievePeriodicRawData(validNino, validBusinessId, validPeriodId)) shouldBe Nil
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId)) shouldBe Nil
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(RetrievePeriodicRawData("A12344A", validBusinessId, validPeriodId)) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData("A12344A", validBusinessId, validPeriodId)) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(RetrievePeriodicRawData(validNino, "Walruses", validPeriodId)) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData(validNino, "Walruses", validPeriodId)) shouldBe
           List(BusinessIdFormatError)
       }
     }
 
     "return PeriodIdFormatError error" when {
       "an invalid period id is supplied" in {
-        validator.validate(RetrievePeriodicRawData(validNino, validBusinessId, "2647667456")) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, "2647667456")) shouldBe
           List(PeriodIdFormatError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(RetrievePeriodicRawData("A12344A", "Baked Beans", "21742624")) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData("A12344A", "Baked Beans", "21742624")) shouldBe
           List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError)
       }
     }

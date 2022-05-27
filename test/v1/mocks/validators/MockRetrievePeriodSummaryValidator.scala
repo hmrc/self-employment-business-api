@@ -20,17 +20,17 @@ import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
 import v1.models.errors.MtdError
-import v1.models.request.retrievePeriodic.RetrievePeriodicRawData
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 trait MockRetrievePeriodSummaryValidator extends MockFactory {
 
-  val mockRetrievePeriodicValidator: RetrievePeriodSummaryValidator = mock[RetrievePeriodSummaryValidator]
+  val mockRetrievePeriodSummaryValidator: RetrievePeriodSummaryValidator = mock[RetrievePeriodSummaryValidator]
 
-  object MockRetrievePeriodicValidator {
+  object MockRetrievePeriodSummaryValidator {
 
-    def validate(data: RetrievePeriodicRawData): CallHandler1[RetrievePeriodicRawData, List[MtdError]] = {
-      (mockRetrievePeriodicValidator
-        .validate(_: RetrievePeriodicRawData))
+    def validate(data: RetrievePeriodSummaryRawData): CallHandler1[RetrievePeriodSummaryRawData, List[MtdError]] = {
+      (mockRetrievePeriodSummaryValidator
+        .validate(_: RetrievePeriodSummaryRawData))
         .expects(data)
     }
 

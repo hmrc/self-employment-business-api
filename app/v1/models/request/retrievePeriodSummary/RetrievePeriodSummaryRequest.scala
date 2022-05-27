@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.retrievePeriodic
+package v1.models.request.retrievePeriodSummary
 
 import v1.models.domain.{BusinessId, Nino}
 
-case class RetrievePeriodicRequest(nino: Nino, businessId: BusinessId, periodId: String)
+case class RetrievePeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String)
