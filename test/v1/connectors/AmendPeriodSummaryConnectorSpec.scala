@@ -31,11 +31,11 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2020-01-01_2020-01-01"
 
-  val request: AmendPeriodicRequest = AmendPeriodicRequest(
+  val request: AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     periodId = periodId,
-    body = AmendPeriodicBody(
+    body = AmendPeriodSummaryBody(
       None,
       Some(
         PeriodAllowableExpenses(

@@ -19,4 +19,4 @@ package v1.models.request.amendPeriodic
 import play.api.libs.json.JsValue
 import v1.models.request.RawData
 
-case class AmendPeriodicRawData(nino: String, businessId: String, periodId: String, body: JsValue) extends RawData
+case class AmendPeriodSummaryRawData(nino: String, businessId: String, periodId: String, body: JsValue) extends RawData
