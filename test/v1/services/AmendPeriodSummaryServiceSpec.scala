@@ -21,7 +21,7 @@ import v1.mocks.connectors.MockAmendPeriodSummaryConnector
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendPeriodic.{AmendPeriodicBody, AmendPeriodicRequest}
+import v1.models.request.amendPeriodic.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
 
 import scala.concurrent.Future
 
@@ -32,18 +32,18 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   val periodId: String               = "2019-01-25_2020-01-25"
   implicit val correlationId: String = "X-123"
 
-  private val requestData = AmendPeriodicRequest(
+  private val requestData = AmendPeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     periodId = periodId,
-    body = AmendPeriodicBody(None, None, None)
+    body = AmendPeriodSummaryBody(None, None, None)
   )
 
   trait Test extends MockAmendPeriodSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendPeriodSummaryService(
-      connector = mockAmendPeriodicConnector
+      connector = mockAmendPeriodSummaryConnector
     )
 
   }
@@ -51,8 +51,8 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockAmendPeriodicConnector
-          .amendPeriodicSummary(requestData)
+        MockAmendPeriodSummaryConnector
+          .amendPeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         await(service.amendPeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
@@ -65,8 +65,8 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockAmendPeriodicConnector
-            .amendPeriodicSummary(requestData)
+          MockAmendPeriodSummaryConnector
+            .amendPeriodSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.amendPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))

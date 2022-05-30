@@ -16,22 +16,22 @@
 
 package v1.mocks.requestParsers
 
-//import org.scalamock.handlers.CallHandler
-//import org.scalamock.scalatest.MockFactory
-//import v1.controllers.requestParsers.AmendPeriodicRequestParser
-//import v1.models.errors.ErrorWrapper
-//import v1.models.request.amendPeriodic.{AmendPeriodSummaryRawData, AmendPeriodicRequest}
-//
-//trait MockAmendPeriodSummaryRequestParser extends MockFactory {
-//
-//  val mockAmendPeriodicRequestParser: AmendPeriodicRequestParser = mock[AmendPeriodicRequestParser]
-//
-//  object MockAmendPeriodicRequestParser {
-//
-//    def requestFor(data: AmendPeriodSummaryRawData): CallHandler[Either[ErrorWrapper, AmendPeriodicRequest]] = {
-//      (mockAmendPeriodicRequestParser.parseRequest(_: AmendPeriodSummaryRawData)(_: String)).expects(data, *)
-//    }
-//
-//  }
-//
-//}
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
+import v1.models.errors.ErrorWrapper
+import v1.models.request.amendPeriodic.{AmendPeriodSummaryRawData, AmendPeriodSummaryRequest}
+
+trait MockAmendPeriodSummaryRequestParser extends MockFactory {
+
+  val mockAmendPeriodSummaryRequestParser: AmendPeriodSummaryRequestParser = mock[AmendPeriodSummaryRequestParser]
+
+  object MockAmendPeriodSummaryRequestParser {
+
+    def requestFor(data: AmendPeriodSummaryRawData): CallHandler[Either[ErrorWrapper, AmendPeriodSummaryRequest]] = {
+      (mockAmendPeriodSummaryRequestParser.parseRequest(_: AmendPeriodSummaryRawData)(_: String)).expects(data, *)
+    }
+
+  }
+
+}

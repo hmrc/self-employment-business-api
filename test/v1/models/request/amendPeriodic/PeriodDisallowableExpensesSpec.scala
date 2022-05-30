@@ -24,21 +24,21 @@ class PeriodDisallowableExpensesSpec extends UnitSpec {
   val json: JsValue = Json.parse(
     """
       |{
-      |        "costOfGoodsDisallowable": 500.25,
-      |        "paymentsToSubcontractorsDisallowable": 500.25,
-      |        "wagesAndStaffCostsDisallowable": 500.25,
-      |        "carVanTravelExpensesDisallowable": 500.25,
-      |        "premisesRunningCostsDisallowable": 500.25,
-      |        "maintenanceCostsDisallowable": 500.25,
-      |        "adminCostsDisallowable": 500.25,
-      |        "businessEntertainmentCostsDisallowable": 500.25,
-      |        "advertisingCostsDisallowable": 500.25,
-      |        "interestOnBankOtherLoansDisallowable": 500.25,
-      |        "financeChargesDisallowable": 500.25,
-      |        "irrecoverableDebtsDisallowable": 500.25,
-      |        "professionalFeesDisallowable": 500.25,
-      |        "depreciationDisallowable": 500.25,
-      |        "otherExpensesDisallowable": 500.25
+      |        "costOfGoodsDisallowable": 102.12,
+      |        "paymentsToSubcontractorsDisallowable": 103.12,
+      |        "wagesAndStaffCostsDisallowable": 104.12,
+      |        "carVanTravelExpensesDisallowable": 105.12,
+      |        "premisesRunningCostsDisallowable": 106.12,
+      |        "maintenanceCostsDisallowable": 107.12,
+      |        "adminCostsDisallowable": 108.12,
+      |        "businessEntertainmentCostsDisallowable": 109.12,
+      |        "advertisingCostsDisallowable": 110.12,
+      |        "interestOnBankOtherLoansDisallowable": 111.12,
+      |        "financeChargesDisallowable": 112.12,
+      |        "irrecoverableDebtsDisallowable": 113.12,
+      |        "professionalFeesDisallowable": 114.12,
+      |        "depreciationDisallowable": 115.12,
+      |        "otherExpensesDisallowable": 116.12
       |}
     """.stripMargin
   )
@@ -47,70 +47,70 @@ class PeriodDisallowableExpensesSpec extends UnitSpec {
     """
       |{
       |        "costOfGoods": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 102.12
       |        },
       |        "constructionIndustryScheme": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 103.12
       |        },
       |        "staffCosts": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 104.12
       |        },
       |        "travelCosts": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 105.12
       |        },
       |        "premisesRunningCosts": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 106.12
       |        },
       |        "maintenanceCosts": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 107.12
       |        },
       |        "adminCosts": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 108.12
       |        },
       |        "businessEntertainmentCosts": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 109.12
       |        },
       |        "advertisingCosts": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 110.12
       |        },
       |        "interest": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 111.12
       |        },
       |        "financialCharges": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 112.12
       |        },
       |        "badDebt": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 113.12
       |        },
       |        "professionalFees": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 114.12
       |        },
       |        "depreciation": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 115.12
       |        },
       |        "other": {
-      |            "disallowableAmount": 500.25
+      |            "disallowableAmount": 116.12
       |        }
       |}
     """.stripMargin
   )
 
   val model: PeriodDisallowableExpenses = PeriodDisallowableExpenses(
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25),
-    Some(500.25)
+    costOfGoodsDisallowable = Some(102.12),
+    paymentsToSubcontractorsDisallowable = Some(103.12),
+    wagesAndStaffCostsDisallowable = Some(104.12),
+    carVanTravelExpensesDisallowable = Some(105.12),
+    premisesRunningCostsDisallowable = Some(106.12),
+    maintenanceCostsDisallowable = Some(107.12),
+    adminCostsDisallowable = Some(108.12),
+    businessEntertainmentCostsDisallowable = Some(109.12),
+    advertisingCostsDisallowable = Some(110.12),
+    interestOnBankOtherLoansDisallowable = Some(111.12),
+    financeChargesDisallowable = Some(112.12),
+    irrecoverableDebtsDisallowable = Some(113.12),
+    professionalFeesDisallowable = Some(114.12),
+    depreciationDisallowable = Some(115.12),
+    otherExpensesDisallowable = Some(116.12)
   )
 
   "reads" should {

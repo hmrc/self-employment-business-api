@@ -20,11 +20,11 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.{MtdError}
 import v1.models.request.amendPeriodic._
 
-class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
+class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
 
   private val validationSet = List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation)
 
-  private def parameterFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = (data: AmendPeriodicRawData) => {
+  private def parameterFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
     List(
       NinoValidation.validate(data.nino),
       BusinessIdValidation.validate(data.businessId),
@@ -32,15 +32,15 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
     )
   }
 
-  private def bodyFormatValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
-    JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodicBody](data.body) match {
+  private def bodyFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = { data =>
+    JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodSummaryBody](data.body) match {
       case Nil          => NoValidationErrors
       case schemaErrors => List(schemaErrors)
     }
   }
 
-  private def bodyFieldValidation: AmendPeriodicRawData => List[List[MtdError]] = { data =>
-    val body = data.body.as[AmendPeriodicBody]
+  private def bodyFieldValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = { data =>
+    val body = data.body.as[AmendPeriodSummaryBody]
     List(
       Validator.flattenErrors(
         List(
@@ -205,7 +205,7 @@ class AmendPeriodicValidator extends Validator[AmendPeriodicRawData] {
     List(AmendConsolidatedExpensesValidation.validate(allowableExpenses, disallowableExpenses))
   }
 
-  override def validate(data: AmendPeriodicRawData): List[MtdError] = {
+  override def validate(data: AmendPeriodSummaryRawData): List[MtdError] = {
     run(validationSet, data).distinct
   }
 

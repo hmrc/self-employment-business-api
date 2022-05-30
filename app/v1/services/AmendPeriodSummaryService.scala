@@ -24,7 +24,7 @@ import v1.connectors.AmendPeriodSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendPeriodic.AmendPeriodicRequest
+import v1.models.request.amendPeriodic.AmendPeriodSummaryRequest
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendPeriodSummary(request: AmendPeriodicRequest)(implicit
+  def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       logContext: EndpointLogContext,

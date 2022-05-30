@@ -21,11 +21,11 @@ import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
-object AmendPeriodicResponse extends HateoasLinks {
+object AmendPeriodSummaryResponse extends HateoasLinks {
 
-  implicit object LinksFactory extends HateoasLinksFactory[Unit, AmendPeriodicHateoasData] {
+  implicit object LinksFactory extends HateoasLinksFactory[Unit, AmendPeriodSummaryHateoasData] {
 
-    override def links(appConfig: AppConfig, data: AmendPeriodicHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: AmendPeriodSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId),
@@ -38,4 +38,4 @@ object AmendPeriodicResponse extends HateoasLinks {
 
 }
 
-case class AmendPeriodicHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData
+case class AmendPeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData
