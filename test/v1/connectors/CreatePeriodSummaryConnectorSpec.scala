@@ -19,21 +19,21 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
 import v1.models.response.createPeriodic.CreatePeriodicResponse
 
 import scala.concurrent.Future
 
-class CreatePeriodicConnectorSpec extends ConnectorSpec {
+class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
   val request: CreatePeriodSummaryRequest = CreatePeriodSummaryRequest(
     nino = Nino(nino),
-    businessId = businessId,
+    businessId = BusinessId(businessId),
     body =  CreatePeriodSummaryBody(
       PeriodDates(
         "2019-08-24",
@@ -84,7 +84,7 @@ class CreatePeriodicConnectorSpec extends ConnectorSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
 
-    val connector: CreatePeriodicConnector = new CreatePeriodicConnector(
+    val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )

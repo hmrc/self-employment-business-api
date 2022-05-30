@@ -21,7 +21,7 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.CreatePeriodicConnector
+import v1.connectors.CreatePeriodSummaryConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -32,7 +32,7 @@ import v1.support.DesResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodicService @Inject() (connector: CreatePeriodicConnector) extends DesResponseMappingSupport with Logging {
+class CreatePeriodSummaryService @Inject()(connector: CreatePeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
 
   def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
       hc: HeaderCarrier,
@@ -52,7 +52,7 @@ class CreatePeriodicService @Inject() (connector: CreatePeriodicConnector) exten
   private def desErrorMap: Map[String, MtdError] = Map(
     "INVALID_NINO"                    -> NinoFormatError,
     "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
-    "INVALID_PERIOD"                  -> RuleToDateBeforeFromDateError,
+    "INVALID_PERIOD"                  -> RuleEndDateBeforeStartDateError,
     "OVERLAPS_IN_PERIOD"              -> RuleOverlappingPeriod,
     "NOT_ALIGN_PERIOD"                -> RuleMisalignedPeriod,
     "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
