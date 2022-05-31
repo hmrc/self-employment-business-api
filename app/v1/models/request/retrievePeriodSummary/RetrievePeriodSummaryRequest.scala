@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v1.models.request.retrievePeriodSummary
 
-import javax.inject.Inject
-import v1.controllers.requestParsers.validators.RetrievePeriodicValidator
 import v1.models.domain.{BusinessId, Nino}
-import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
 
-class RetrievePeriodicRequestParser @Inject() (val validator: RetrievePeriodicValidator)
-    extends RequestParser[RetrievePeriodicRawData, RetrievePeriodicRequest] {
-
-  override protected def requestFor(data: RetrievePeriodicRawData): RetrievePeriodicRequest =
-    RetrievePeriodicRequest(Nino(data.nino), BusinessId(data.businessId), data.periodId)
-
-}
+case class RetrievePeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String)

@@ -17,28 +17,28 @@
 package v1.controllers.requestParsers
 
 import support.UnitSpec
-import v1.mocks.validators.MockRetrievePeriodicValidator
+import v1.mocks.validators.MockRetrievePeriodSummaryValidator
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
-import v1.models.request.retrievePeriodic.{RetrievePeriodicRawData, RetrievePeriodicRequest}
+import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 
-class RetrievePeriodicRequestParserSpec extends UnitSpec {
+class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
 
   val nino: String                   = "AA123456B"
   val businessId: String             = "XAIS12345678910"
   val periodId: String               = "2017-01-25_2017-02-25"
   implicit val correlationId: String = "X-123"
 
-  val rawData: RetrievePeriodicRawData = RetrievePeriodicRawData(
+  val rawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId
   )
 
-  trait Test extends MockRetrievePeriodicValidator {
+  trait Test extends MockRetrievePeriodSummaryValidator {
 
-    lazy val parser: RetrievePeriodicRequestParser = new RetrievePeriodicRequestParser(
-      validator = mockRetrievePeriodicValidator
+    lazy val parser: RetrievePeriodSummaryRequestParser = new RetrievePeriodSummaryRequestParser(
+      validator = mockRetrievePeriodSummaryValidator
     )
 
   }
@@ -46,16 +46,16 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockRetrievePeriodicValidator.validate(rawData).returns(Nil)
+        MockRetrievePeriodSummaryValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(RetrievePeriodicRequest(Nino(nino), BusinessId(businessId), periodId))
+          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId))
       }
     }
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockRetrievePeriodicValidator
+        MockRetrievePeriodSummaryValidator
           .validate(rawData)
           .returns(List(NinoFormatError))
 
@@ -64,7 +64,7 @@ class RetrievePeriodicRequestParserSpec extends UnitSpec {
       }
 
       "multiple validation errors occur" in new Test {
-        MockRetrievePeriodicValidator
+        MockRetrievePeriodSummaryValidator
           .validate(rawData)
           .returns(List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError))
 

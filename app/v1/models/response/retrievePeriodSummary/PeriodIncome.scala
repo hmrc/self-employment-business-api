@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package v1.models.request.retrievePeriodic
+package v1.models.response.retrievePeriodSummary
 
-import v1.models.request.RawData
+import play.api.libs.json.{Json, OFormat}
 
-case class RetrievePeriodicRawData(nino: String, businessId: String, periodId: String) extends RawData
+case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal]) {
+  def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty
+}
+
+object PeriodIncome {
+  implicit val format: OFormat[PeriodIncome] = Json.format
+}

@@ -20,20 +20,20 @@ import mocks.MockAppConfig
 import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
-import v1.models.response.retrievePeriodic.{PeriodDates, RetrievePeriodicResponse}
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v1.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 
-class RetrievePeriodicConnectorSpec extends ConnectorSpec {
+class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2019-01-25_2020-01-25"
 
-  val request: RetrievePeriodicRequest = RetrievePeriodicRequest(Nino(nino), BusinessId(businessId), periodId)
+  val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId)
 
-  val response: RetrievePeriodicResponse = RetrievePeriodicResponse(
+  val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
     None,
     None,
@@ -42,7 +42,7 @@ class RetrievePeriodicConnectorSpec extends ConnectorSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
 
-    val connector: RetrievePeriodicConnector = new RetrievePeriodicConnector(
+    val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
@@ -69,7 +69,7 @@ class RetrievePeriodicConnectorSpec extends ConnectorSpec {
         )
         .returns(Future.successful(outcome))
 
-      await(connector.retrievePeriodicSummary(request)) shouldBe outcome
+      await(connector.retrievePeriodSummary(request)) shouldBe outcome
     }
   }
 

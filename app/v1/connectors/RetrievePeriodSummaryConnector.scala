@@ -20,19 +20,19 @@ import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.DesUri
 import v1.connectors.httpparsers.StandardDesHttpParser._
-import v1.models.request.retrievePeriodic.RetrievePeriodicRequest
-import v1.models.response.retrievePeriodic.RetrievePeriodicResponse
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodicConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class RetrievePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def retrievePeriodicSummary(request: RetrievePeriodicRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[RetrievePeriodicResponse]] = {
+  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
+                                                                     hc: HeaderCarrier,
+                                                                     ec: ExecutionContext,
+                                                                     correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
     val fromDate = request.periodId.substring(0, 10)
     val toDate   = request.periodId.substring(11, 21)
@@ -41,7 +41,7 @@ class RetrievePeriodicConnector @Inject() (val http: HttpClient, val appConfig: 
     val businessId = request.businessId.value
 
     get(
-      uri = DesUri[RetrievePeriodicResponse](
+      uri = DesUri[RetrievePeriodSummaryResponse](
         s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
       )
     )

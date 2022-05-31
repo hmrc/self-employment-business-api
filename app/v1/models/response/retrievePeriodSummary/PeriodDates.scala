@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrievePeriodic
+package v1.models.response.retrievePeriodSummary
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OWrites}
 
-case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal]) {
-  def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty
-}
+case class PeriodDates(periodStartDate: String, periodEndDate: String)
 
-object PeriodIncome {
-  implicit val format: OFormat[PeriodIncome] = Json.format
+object PeriodDates {
+  implicit val writes: OWrites[PeriodDates] = Json.writes
 }
