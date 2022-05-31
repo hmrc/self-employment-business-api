@@ -24,7 +24,6 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.RequestParser
-import v1.hateoas.HateoasFactory
 import v1.models.errors.ErrorWrapper.WithCode
 import v1.models.errors._
 import v1.models.hateoas.HateoasData
@@ -55,14 +54,13 @@ class ControllerBuilder[InputRaw0 <: RawData, Input0, Output0, HData0 <: Hateoas
   // - auditing
   // - more general service that doesn't implement trait
 
-  def createController(idGenerator0: IdGenerator, hateoasFactory0: HateoasFactory)(
-      implicit ec0: ExecutionContext): StandardController.Aux[InputRaw0, Input0, Output0, HData0] =
+  def createController(idGenerator0: IdGenerator)(implicit ec0: ExecutionContext): StandardController.Aux[InputRaw0, Input0, Output0] =
     new StandardController with HateoasWrappingComponent with ServiceComponent with Logging {
 
-      type InputRaw = InputRaw0
-      type Input    = Input0
-      type Output   = Output0
-      type HData    = HData0
+      override type InputRaw = InputRaw0
+      override type Input    = Input0
+      override type Output   = Output0
+      override type HData    = HData0
 
       override def hateoasWrapping: Option[HateoasWrapping.Aux[InputRaw0, Output0, HData0]] = self.hateoasWrapping0
 
@@ -72,7 +70,6 @@ class ControllerBuilder[InputRaw0 <: RawData, Input0, Output0, HData0 <: Hateoas
       override val idGenerator: IdGenerator                = idGenerator0
       override val parser: RequestParser[InputRaw, Input]  = parser0
       override val service: BaseService.Aux[Input, Output] = service0
-      override val hateoasFactory: HateoasFactory          = hateoasFactory0
 
       override implicit val ec: ExecutionContext = ec0
     }
@@ -80,11 +77,10 @@ class ControllerBuilder[InputRaw0 <: RawData, Input0, Output0, HData0 <: Hateoas
 
 object StandardController {
 
-  type Aux[InputRaw0 <: RawData, Input0, Output0, HData0 <: HateoasData] = StandardController {
+  type Aux[InputRaw0 <: RawData, Input0, Output0] = StandardController {
     type InputRaw = InputRaw0
     type Input    = Input0
     type Output   = Output0
-    type HData    = HData0
   }
 }
 
@@ -94,13 +90,10 @@ trait StandardController extends BaseController {
   type InputRaw <: RawData
   type Input
   type Output
-  type HData <: HateoasData
 
   val idGenerator: IdGenerator
 
   val parser: RequestParser[InputRaw, Input]
-
-  val hateoasFactory: HateoasFactory
 
   implicit val ec: ExecutionContext
 

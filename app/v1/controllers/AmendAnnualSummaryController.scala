@@ -46,7 +46,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
         case errorWrapper @ WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
       }
       .withHateoasWrapping(HateoasWrapping.simple(hateoasFactory))
-      .createController(idGenerator, hateoasFactory)
+      .createController(idGenerator)
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
