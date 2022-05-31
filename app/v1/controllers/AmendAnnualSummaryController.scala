@@ -16,55 +16,45 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents, Result}
-import utils.{IdGenerator, Logging}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ Action, ControllerComponents }
+import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
-import v1.hateoas.{HateoasFactory, HateoasLinksFactory}
+import v1.hateoas.HateoasFactory
 import v1.models.errors.ErrorWrapper.WithCode
-import v1.models.errors._
-import v1.models.hateoas.HateoasDataBuilder
-import v1.models.request.amendSEAnnual.{AmendAnnualSummaryRawData, AmendAnnualSummaryRequest}
-import v1.models.response.amendSEAnnual.{AmendAnnualSummaryHateoasData, AmendAnnualSummaryResponse}
-import v1.services.{AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.models.errors.ValueFormatError
+import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
+import v1.services.{ AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthService,
                                              val lookupService: MtdIdLookupService,
-                                             val parser: AmendSelfEmploymentAnnualSummaryRequestParser,
-                                             val service: AmendAnnualSummaryService,
-                                             val hateoasFactory: HateoasFactory,
+                                             parser: AmendSelfEmploymentAnnualSummaryRequestParser,
+                                             service: AmendAnnualSummaryService,
+                                             hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
-                                             val idGenerator: IdGenerator)(implicit val ec: ExecutionContext)
-  extends AuthorisedController(cc)
-    with StandardController with SimpleHateoasWrapping
+                                             idGenerator: IdGenerator)(implicit val ec: ExecutionContext)
+    extends AuthorisedController(cc)
     with Logging {
 
-  type InputRaw = AmendAnnualSummaryRawData
-  type Input = AmendAnnualSummaryRequest
-  type Output = AmendAnnualSummaryResponse
-  type HData = AmendAnnualSummaryHateoasData
-
-  // TODO often raw input == hateoas data (maybe POSTs will return an id that is also reqd) but can we do away with
-  // separate InputRaw and HData types (and hence two typeclass instances) in most cases?
-  override val hateoasLinksFactory: HateoasLinksFactory[Output, HData] = implicitly
-  override val hateoasDataBuilder: HateoasDataBuilder[InputRaw, HData] = implicitly
-
-  implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
+  private val controller =
+    new ControllerBuilder(parser, service)
+      .withErrorHandling {
+        case errorWrapper @ WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
+      }
+      .withHateoasWrapping(HateoasWrapping.simple(hateoasFactory))
+      .createController(idGenerator, hateoasFactory)
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, request.body)
 
-      doHandleRequest(rawData)
-    }
+      implicit val endpointLogContext: EndpointLogContext =
+        EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
 
-  // TODO remove this unless there are controller specific errors not handled by StandardController...
-  override protected def errorResultPF(implicit endpointLogContext: EndpointLogContext): PartialFunction[ErrorWrapper, Result] = {
-    case errorWrapper@WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
-  }
+      controller.handleRequest(rawData)
+    }
 }

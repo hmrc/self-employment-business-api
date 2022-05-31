@@ -21,23 +21,30 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
+
+trait ServiceComponent {
+  type Input
+  type Output
+
+  def service: BaseService.Aux[Input, Output]
+}
 
 trait BaseService {
   type Input
   type Output
 
-  def doService(request: Input)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Output]]]
+  def doService(request: Input)(implicit hc: HeaderCarrier,
+                                ec: ExecutionContext,
+                                logContext: EndpointLogContext,
+                                correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Output]]]
 }
 
 object BaseService {
+
   type Aux[_Input, _Output] =
     BaseService {
-      type Input = _Input
+      type Input  = _Input
       type Output = _Output
     }
 }
