@@ -24,13 +24,13 @@ import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v1.models.response.createPeriodic.CreatePeriodicResponse
-import v1.services.CreatePeriodicService
+import v1.services.CreatePeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreatePeriodicService extends MockFactory {
+trait MockCreatePeriodSummaryService extends MockFactory {
 
-  val mockCreatePeriodicService: CreatePeriodicService = mock[CreatePeriodicService]
+  val mockCreatePeriodicService: CreatePeriodSummaryService = mock[CreatePeriodSummaryService]
 
   object MockCreatePeriodicService {
 

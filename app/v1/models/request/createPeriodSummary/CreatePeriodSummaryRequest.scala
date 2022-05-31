@@ -16,6 +16,6 @@
 
 package v1.models.request.createPeriodSummary
 
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 
-case class CreatePeriodSummaryRequest(nino: Nino, businessId: String, body: CreatePeriodSummaryBody)
+case class CreatePeriodSummaryRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody)

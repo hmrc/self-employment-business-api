@@ -16,10 +16,9 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import v1.models.errors.{DateFormatError, MtdError, RuleEndDateBeforeStartDateError}
+
 import java.time.LocalDate
-
-import v1.models.errors.{DateFormatError, MtdError, RuleToDateBeforeFromDateError}
-
 import scala.util.{Failure, Success, Try}
 
 object DateValidation {
@@ -49,12 +48,10 @@ object DateValidation {
     }
   }
 
-  def validateToDateBeforeFromDate(fromDate: String, toDate: String): List[MtdError] = {
-    val convertedFromDate = LocalDate.parse(fromDate, dateFormat)
-    val convertedToDate   = LocalDate.parse(toDate, dateFormat)
+  def validateEndDateBeforeStartDate(startDate: String, endDate: String): List[MtdError] = {
+    val convertedFromDate = LocalDate.parse(startDate, dateFormat)
+    val convertedToDate   = LocalDate.parse(endDate, dateFormat)
 
-    if (convertedToDate.isBefore(convertedFromDate)) List(RuleToDateBeforeFromDateError) else Nil
-
+    if (convertedToDate.isBefore(convertedFromDate)) List(RuleEndDateBeforeStartDateError) else Nil
   }
-
 }

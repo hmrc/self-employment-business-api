@@ -16,11 +16,11 @@
 
 package v1.controllers
 
-/*
+
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents}
+import play.api.mvc.{Action, ControllerComponents, Result}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
@@ -28,20 +28,20 @@ import v1.models.errors._
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import v1.models.response.createPeriodic.CreatePeriodicHateoasData
 import v1.models.response.createPeriodic.CreatePeriodicResponse.LinksFactory
-import v1.services.{CreatePeriodicService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.{CreatePeriodSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService,
-                                          val lookupService: MtdIdLookupService,
-                                          parser: CreatePeriodSummaryRequestParser,
-                                          service: CreatePeriodicService,
-                                          hateoasFactory: HateoasFactory,
-                                          cc: ControllerComponents,
-                                          idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class CreatePeriodSummaryController @Inject()(val authService: EnrolmentsAuthService,
+                                              val lookupService: MtdIdLookupService,
+                                              parser: CreatePeriodSummaryRequestParser,
+                                              service: CreatePeriodSummaryService,
+                                              hateoasFactory: HateoasFactory,
+                                              cc: ControllerComponents,
+                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -77,7 +77,7 @@ class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result: Result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -91,8 +91,8 @@ class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService
       case MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) =>
         BadRequest(Json.toJson(errorWrapper))
 
-      case BadRequestError | NinoFormatError | BusinessIdFormatError | FromDateFormatError | ToDateFormatError | RuleBothExpensesSuppliedError |
-          RuleToDateBeforeFromDateError | RuleOverlappingPeriod | RuleMisalignedPeriod | RuleNotContiguousPeriod |
+      case BadRequestError | NinoFormatError | BusinessIdFormatError | StartDateFormatError | EndDateFormatError | RuleBothExpensesSuppliedError |
+          RuleEndDateBeforeStartDateError | RuleOverlappingPeriod | RuleMisalignedPeriod | RuleNotContiguousPeriod |
           RuleNotAllowedConsolidatedExpenses =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
@@ -101,4 +101,4 @@ class CreatePeriodicController @Inject() (val authService: EnrolmentsAuthService
     }
 
 }
- */
+

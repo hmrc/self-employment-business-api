@@ -19,14 +19,14 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{CreatePeriodicConnector, DownstreamOutcome}
+import v1.connectors.{CreatePeriodSummaryConnector, DownstreamOutcome}
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreatePeriodicConnector extends MockFactory {
+trait MockCreatePeriodSummaryConnector extends MockFactory {
 
-  val mockCreatePeriodicConnector: CreatePeriodicConnector = mock[CreatePeriodicConnector]
+  val mockCreatePeriodicConnector: CreatePeriodSummaryConnector = mock[CreatePeriodSummaryConnector]
 
   object MockCreatePeriodicConnector {
 

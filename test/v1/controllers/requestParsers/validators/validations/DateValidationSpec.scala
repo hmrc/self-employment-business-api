@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.{DateFormatError, RuleToDateBeforeFromDateError, ToDateFormatError}
+import v1.models.errors.{DateFormatError, RuleEndDateBeforeStartDateError, ToDateFormatError}
 import v1.models.utils.JsonErrorValidators
 
 class DateValidationSpec extends UnitSpec with JsonErrorValidators {
@@ -61,21 +61,21 @@ class DateValidationSpec extends UnitSpec with JsonErrorValidators {
     }
   }
 
-  "validateToDateBeforeFromDate" should {
+  "validateEndDateBeforeStartDate" should {
     "return no errors" when {
       "the from date is before to date" in {
-        val validationResult = DateValidation.validateToDateBeforeFromDate("2019-01-01", "2020-01-01")
+        val validationResult = DateValidation.validateEndDateBeforeStartDate("2019-01-01", "2020-01-01")
 
         validationResult.isEmpty shouldBe true
       }
     }
     "return an error" when {
       "the to date is before from date" in {
-        val validationResult = DateValidation.validateToDateBeforeFromDate("2020-01-01", "2019-01-01")
+        val validationResult = DateValidation.validateEndDateBeforeStartDate("2020-01-01", "2019-01-01")
 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
-        validationResult.head shouldBe RuleToDateBeforeFromDateError
+        validationResult.head shouldBe RuleEndDateBeforeStartDateError
       }
     }
   }

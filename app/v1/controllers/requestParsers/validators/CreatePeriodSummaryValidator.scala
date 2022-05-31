@@ -66,7 +66,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
   private def dateRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
     val body = data.body.as[CreatePeriodSummaryBody].periodDates
     List(
-      DateValidation.validateToDateBeforeFromDate(body.periodStartDate, body.periodEndDate)
+      DateValidation.validateEndDateBeforeStartDate(body.periodStartDate, body.periodEndDate)
     )
   }
 

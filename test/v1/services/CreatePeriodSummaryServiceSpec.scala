@@ -17,8 +17,8 @@
 package v1.services
 
 import v1.controllers.EndpointLogContext
-import v1.mocks.connectors.MockCreatePeriodicConnector
-import v1.models.domain.Nino
+import v1.mocks.connectors.MockCreatePeriodSummaryConnector
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
@@ -26,13 +26,13 @@ import v1.models.response.createPeriodic.CreatePeriodicResponse
 
 import scala.concurrent.Future
 
-class CreatePeriodicServiceSpec extends ServiceSpec {
+class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  private val requestBody =
+  private val requestBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(
       PeriodDates(
         "2019-08-24",
@@ -81,14 +81,14 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
 
   private val requestData = CreatePeriodSummaryRequest(
     nino = Nino(nino),
-    businessId = businessId,
+    businessId = BusinessId(businessId),
     body = requestBody
   )
 
-  trait Test extends MockCreatePeriodicConnector {
+  trait Test extends MockCreatePeriodSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new CreatePeriodicService(
+    val service = new CreatePeriodSummaryService(
       connector = mockCreatePeriodicConnector
     )
 
@@ -121,7 +121,7 @@ class CreatePeriodicServiceSpec extends ServiceSpec {
         val input = Seq(
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
-          ("INVALID_PERIOD", RuleToDateBeforeFromDateError),
+          ("INVALID_PERIOD", RuleEndDateBeforeStartDateError),
           ("OVERLAPS_IN_PERIOD", RuleOverlappingPeriod),
           ("NOT_ALIGN_PERIOD", RuleMisalignedPeriod),
           ("BOTH_EXPENSES_SUPPLIED", RuleBothExpensesSuppliedError),

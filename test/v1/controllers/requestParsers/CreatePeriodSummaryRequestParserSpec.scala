@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import fixtures.CreatePeriodSummaryFixture
 import support.UnitSpec
 import v1.mocks.validators.MockCreatePeriodSummaryValidator
-import v1.models.domain.Nino
+import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError}
 import v1.models.request.createPeriodSummary._
 
@@ -44,7 +44,7 @@ class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSum
       "valid request data is supplied" in new Test {
         MockCreatePeriodSummaryValidator.validate(inputData).returns(Nil)
         parser.parseRequest(inputData) shouldBe
-          Right(CreatePeriodSummaryRequest(Nino(nino), businessId, fullMTDResponseModel))
+          Right(CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), fullMTDResponseModel))
       }
     }
 
