@@ -23,28 +23,14 @@ import v1.models.outcomes.ResponseWrapper
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-trait ServiceComponent {
-  type Input
-  type Output
-
-  def service: BaseService.Aux[Input, Output]
+trait ServiceComponent[Input, Output] {
+  def service: BaseService[Input, Output]
 }
 
-trait BaseService {
-  type Input
-  type Output
+trait BaseService[Input, Output] {
 
   def doService(request: Input)(implicit hc: HeaderCarrier,
                                 ec: ExecutionContext,
                                 logContext: EndpointLogContext,
                                 correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Output]]]
-}
-
-object BaseService {
-
-  type Aux[_Input, _Output] =
-    BaseService {
-      type Input  = _Input
-      type Output = _Output
-    }
 }

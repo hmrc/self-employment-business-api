@@ -20,66 +20,39 @@ import play.api.http.Status
 import play.api.libs.json.{ Json, OWrites }
 import play.api.mvc.{ Result, Results }
 import v1.hateoas.{ HateoasFactory, HateoasLinksFactory }
-import v1.models.hateoas.{ HateoasData, HateoasDataBuilder, HateoasWrapper }
+import v1.models.hateoas.{ HateoasData, HateoasDataBuilder }
 import v1.models.request.RawData
 
-trait ResultCreatorComponent {
-  type InputRaw <: RawData
-  type Output
+trait ResultCreatorComponent[InputRaw <: RawData, Output] {
 
-  def resultCreator: ResultCreator.Aux[InputRaw, Output]
+  def resultCreator: ResultCreator[InputRaw, Output]
 }
 
-trait ResultCreator {
-  type InputRaw <: RawData
-  type Output
+trait ResultCreator[InputRaw <: RawData, Output] {
 
   def createResult(raw: InputRaw, output: Output): Result
 }
 
 object ResultCreator {
 
-  type Aux[InputRaw0 <: RawData, Output0] = ResultCreator {
-    type InputRaw = InputRaw0
-    type Output   = Output0
-  }
-
-  def noContent[InputRaw0 <: RawData, Output0]: ResultCreator.Aux[InputRaw0, Output0] =
-    new ResultCreator {
-      override type InputRaw = InputRaw0
-      override type Output   = Output0
-
-      override def createResult(raw: InputRaw, output: Output): Result =
-        Results.NoContent
+  def noContent[InputRaw <: RawData, Output]: ResultCreator[InputRaw, Output] =
+    (_: InputRaw, _: Output) => {
+      Results.NoContent
     }
 
-  def simple[InputRaw0 <: RawData, Output0](successStatus: Int = Status.OK)(implicit ws: OWrites[Output0]): ResultCreator.Aux[InputRaw0, Output0] =
-    new ResultCreator {
-      override type InputRaw = InputRaw0
-      override type Output   = Output0
-
-      override def createResult(raw: InputRaw, output: Output): Result = {
-        Results.Status(successStatus)(Json.toJson(output))
-      }
+  def simple[InputRaw <: RawData, Output](successStatus: Int = Status.OK)(implicit ws: OWrites[Output]): ResultCreator[InputRaw, Output] =
+    (_: InputRaw, output: Output) => {
+      Results.Status(successStatus)(Json.toJson(output))
     }
 
-  def hateoasWrapping[InputRaw0 <: RawData, Output0, HData <: HateoasData](hateoasFactory: HateoasFactory, successStatus: Int = Status.OK)(
-      implicit linksFactory: HateoasLinksFactory[Output0, HData],
-      hateoasDataBuilder: HateoasDataBuilder[InputRaw0, HData],
-      writes: OWrites[Output0]): ResultCreator.Aux[InputRaw0, Output0] = {
-    new ResultCreator {
-      override type InputRaw = InputRaw0
-      override type Output   = Output0
+  def hateoasWrapping[InputRaw <: RawData, Output, HData <: HateoasData](hateoasFactory: HateoasFactory, successStatus: Int = Status.OK)(
+      implicit linksFactory: HateoasLinksFactory[Output, HData],
+      hateoasDataBuilder: HateoasDataBuilder[InputRaw, HData],
+      writes: OWrites[Output]): ResultCreator[InputRaw, Output] =
+    (raw: InputRaw, output: Output) => {
+      val data: HData = hateoasDataBuilder.dataFor(raw)
+      val wrapped     = hateoasFactory.wrap(output, data)
 
-      override def createResult(raw: InputRaw, output: Output): Result = {
-        Results.Status(successStatus)(Json.toJson(wrap(raw, output)))
-      }
-
-      private def wrap(raw: InputRaw, output: Output): HateoasWrapper[Output] = {
-        val data: HData = hateoasDataBuilder.dataFor(raw)
-
-        hateoasFactory.wrap(output, data)
-      }
+      Results.Status(successStatus)(Json.toJson(wrapped))
     }
-  }
 }

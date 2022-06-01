@@ -18,7 +18,7 @@ package v1.services
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.AmendAnnualSummaryConnector
@@ -29,20 +29,19 @@ import v1.models.request.amendSEAnnual.AmendAnnualSummaryRequest
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 import v1.support.DesResponseMappingSupport
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector)
-  extends BaseService with DesResponseMappingSupport with Logging {
-
-  type Input = AmendAnnualSummaryRequest
-  type Output = AmendAnnualSummaryResponse
+    extends BaseService[AmendAnnualSummaryRequest, AmendAnnualSummaryResponse]
+    with DesResponseMappingSupport
+    with Logging {
 
   override def doService(request: AmendAnnualSummaryRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    logContext: EndpointLogContext,
-    correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[AmendAnnualSummaryResponse]]] = {
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[AmendAnnualSummaryResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.amendAnnualSummary(request)).leftMap(mapDesErrors(desErrorMap))
@@ -52,13 +51,13 @@ class AmendAnnualSummaryService @Inject()(connector: AmendAnnualSummaryConnector
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(
-    "INVALID_NINO" -> NinoFormatError,
-    "INVALID_TAX_YEAR" -> TaxYearFormatError,
-    "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-    "INVALID_PAYLOAD" -> DownstreamError,
+    "INVALID_NINO"            -> NinoFormatError,
+    "INVALID_TAX_YEAR"        -> TaxYearFormatError,
+    "INVALID_INCOME_SOURCE"   -> BusinessIdFormatError,
+    "INVALID_PAYLOAD"         -> DownstreamError,
     "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-    "GONE" -> NotFoundError,
-    "SERVER_ERROR" -> DownstreamError,
-    "SERVICE_UNAVAILABLE" -> DownstreamError
+    "GONE"                    -> NotFoundError,
+    "SERVER_ERROR"            -> DownstreamError,
+    "SERVICE_UNAVAILABLE"     -> DownstreamError
   )
 }
