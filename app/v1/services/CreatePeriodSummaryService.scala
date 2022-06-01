@@ -26,7 +26,7 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
-import v1.models.response.createPeriodic.CreatePeriodicResponse
+import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import v1.support.DesResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +38,7 @@ class CreatePeriodSummaryService @Inject()(connector: CreatePeriodSummaryConnect
       hc: HeaderCarrier,
       ec: ExecutionContext,
       logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]]] = {
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))

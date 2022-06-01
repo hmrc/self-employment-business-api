@@ -14,53 +14,26 @@
  * limitations under the License.
  */
 
-package v1.models.response.createPeriodic
+package v1.models.response.amendPeriodSummary
 
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{Link, Method}
 
-class CreatePeriodicResponseSpec extends UnitSpec with MockAppConfig {
-
-  val json: JsValue = Json.parse(
-    """
-      |{
-      |   "periodId": "2017090920170909"
-      |}
-    """.stripMargin
-  )
-
-  val model: CreatePeriodicResponse = CreatePeriodicResponse("2017090920170909")
-
-  "reads" should {
-    "return a model" when {
-      "passed valid json" in {
-        json.as[CreatePeriodicResponse] shouldBe model
-      }
-    }
-  }
-
-  "writes" should {
-    "return json" when {
-      "passed a model" in {
-        Json.toJson(model) shouldBe json
-      }
-    }
-  }
+class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
     "produce the correct links" when {
       "called" in {
-        val nino       = "AA111111A"
-        val businessId = "id"
-        val periodId   = "periodId"
-        val data       = CreatePeriodicHateoasData(Nino(nino), BusinessId(businessId), periodId)
+        val nino                                = "AA111111A"
+        val businessId                          = "id"
+        val periodId                            = "periodId"
+        val data: AmendPeriodSummaryHateoasData = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId)
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        CreatePeriodicResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
+        AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")

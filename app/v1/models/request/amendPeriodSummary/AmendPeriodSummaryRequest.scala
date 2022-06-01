@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendPeriodic
+package v1.models.request.amendPeriodSummary
 
 import v1.models.domain.{BusinessId, Nino}
 

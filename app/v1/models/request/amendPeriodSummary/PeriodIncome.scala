@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendPeriodic
+package v1.models.request.amendPeriodSummary
 
-import play.api.libs.json.JsValue
-import v1.models.request.RawData
+import play.api.libs.json.{Json, OWrites, Reads}
 
-case class AmendPeriodSummaryRawData(nino: String, businessId: String, periodId: String, body: JsValue) extends RawData
+case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal])
+
+object PeriodIncome {
+
+  implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
+
+  implicit val writes: OWrites[PeriodIncome] = Json.writes[PeriodIncome]
+
+}

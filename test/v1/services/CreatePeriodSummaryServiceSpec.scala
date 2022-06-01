@@ -22,7 +22,7 @@ import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
-import v1.models.response.createPeriodic.CreatePeriodicResponse
+import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 
@@ -98,7 +98,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
     "createPeriodicSummary" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodicResponse("2019-08-24_2019-08-24")))
+        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
 
         MockCreatePeriodicConnector
           .createPeriodicSummary(requestData)

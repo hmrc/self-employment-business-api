@@ -21,7 +21,7 @@ import support.UnitSpec
 import v1.mocks.validators.MockAmendPeriodSummaryValidator
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
-import v1.models.request.amendPeriodic._
+import v1.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
 

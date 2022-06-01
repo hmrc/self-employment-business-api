@@ -27,8 +27,8 @@ import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendPeriodic._
-import v1.models.response.amendPeriodic.AmendPeriodSummaryHateoasData
+import v1.models.request.amendPeriodSummary._
+import v1.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
