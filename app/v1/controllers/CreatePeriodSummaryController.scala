@@ -26,8 +26,8 @@ import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
-import v1.models.response.createPeriodic.CreatePeriodicHateoasData
-import v1.models.response.createPeriodic.CreatePeriodicResponse.LinksFactory
+import v1.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
+import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
 import v1.services.{CreatePeriodSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
 import javax.inject.{Inject, Singleton}
@@ -64,7 +64,7 @@ class CreatePeriodSummaryController @Inject()(val authService: EnrolmentsAuthSer
             hateoasFactory
               .wrap(
                 serviceResponse.responseData,
-                CreatePeriodicHateoasData(parsedRequest.nino, parsedRequest.businessId, serviceResponse.responseData.periodId))
+                CreatePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, serviceResponse.responseData.periodId))
               .asRight[ErrorWrapper])
         } yield {
           logger.info(

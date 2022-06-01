@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.response.createPeriodic
+package v1.models.response.amendPeriodSummary
 
 import config.AppConfig
-import play.api.libs.json.{Json, OFormat}
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class CreatePeriodicResponse(periodId: String)
+object AmendPeriodSummaryResponse extends HateoasLinks {
 
-object CreatePeriodicResponse extends HateoasLinks {
-  implicit val format: OFormat[CreatePeriodicResponse] = Json.format[CreatePeriodicResponse]
+  implicit object LinksFactory extends HateoasLinksFactory[Unit, AmendPeriodSummaryHateoasData] {
 
-  implicit object LinksFactory extends HateoasLinksFactory[CreatePeriodicResponse, CreatePeriodicHateoasData] {
-
-    override def links(appConfig: AppConfig, data: CreatePeriodicHateoasData): Seq[Link] = {
+    override def links(appConfig: AppConfig, data: AmendPeriodSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId),
@@ -42,4 +38,4 @@ object CreatePeriodicResponse extends HateoasLinks {
 
 }
 
-case class CreatePeriodicHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData
+case class AmendPeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData

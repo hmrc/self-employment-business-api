@@ -21,7 +21,7 @@ import utils.Logging
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.response.createPeriodic.CreatePeriodicResponse
+import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 trait DesResponseMappingSupport {
   self: Logging =>
@@ -36,8 +36,8 @@ trait DesResponseMappingSupport {
 
   def createPeriodId(responseWrapper: ResponseWrapper[Unit],
                      fromDate: String,
-                     toDate: String): Either[ErrorWrapper, ResponseWrapper[CreatePeriodicResponse]] = {
-    Right(ResponseWrapper(responseWrapper.correlationId, CreatePeriodicResponse(s"${fromDate}_$toDate")))
+                     toDate: String): Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]] = {
+    Right(ResponseWrapper(responseWrapper.correlationId, CreatePeriodSummaryResponse(s"${fromDate}_$toDate")))
   }
 
   final def mapDesErrors[D](errorCodeMap: PartialFunction[String, MtdError])(desResponseWrapper: ResponseWrapper[DesError])(implicit

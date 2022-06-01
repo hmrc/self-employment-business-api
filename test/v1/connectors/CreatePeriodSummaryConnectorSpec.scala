@@ -22,7 +22,7 @@ import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
-import v1.models.response.createPeriodic.CreatePeriodicResponse
+import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 
@@ -80,7 +80,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
     )
   )
 
-  val response: CreatePeriodicResponse = CreatePeriodicResponse("2017090920170909")
+  val response: CreatePeriodSummaryResponse = CreatePeriodSummaryResponse("2017090920170909")
 
   class Test extends MockHttpClient with MockAppConfig {
 

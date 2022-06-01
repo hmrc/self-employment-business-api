@@ -21,7 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendPeriodic._
+import v1.models.request.amendPeriodSummary._
 
 import scala.concurrent.Future
 

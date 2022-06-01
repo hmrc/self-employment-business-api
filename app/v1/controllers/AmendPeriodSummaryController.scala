@@ -24,9 +24,9 @@ import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors._
-import v1.models.request.amendPeriodic.AmendPeriodSummaryRawData
-import v1.models.response.amendPeriodic.AmendPeriodSummaryHateoasData
-import v1.models.response.amendPeriodic.AmendPeriodSummaryResponse.LinksFactory
+import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
+import v1.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
+import v1.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
 import v1.services.{AmendPeriodSummaryService, EnrolmentsAuthService, MtdIdLookupService}
 
 import javax.inject.{Inject, Singleton}

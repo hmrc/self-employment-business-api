@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
 import v1.models.errors.ErrorWrapper
-import v1.models.request.amendPeriodic.{AmendPeriodSummaryRawData, AmendPeriodSummaryRequest}
+import v1.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, AmendPeriodSummaryRequest}
 
 trait MockAmendPeriodSummaryRequestParser extends MockFactory {
 

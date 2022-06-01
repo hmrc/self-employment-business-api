@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators
 import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
 import v1.models.errors._
-import v1.models.request.amendPeriodic.AmendPeriodSummaryRawData
+import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import v1.models.utils.JsonErrorValidators
 
 class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {

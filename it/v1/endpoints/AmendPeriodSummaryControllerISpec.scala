@@ -24,7 +24,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.models.request.amendPeriodic.AmendPeriodSummaryFixture
+import v1.models.request.amendPeriodSummary.AmendPeriodSummaryFixture
 import v1.models.utils.JsonErrorValidators
 import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 

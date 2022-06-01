@@ -21,7 +21,7 @@ import v1.mocks.connectors.MockAmendPeriodSummaryConnector
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendPeriodic.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
+import v1.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
 
 import scala.concurrent.Future
 

@@ -28,7 +28,7 @@ import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
-import v1.models.response.createPeriodic.{CreatePeriodicHateoasData, CreatePeriodicResponse}
+import v1.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -187,11 +187,11 @@ class CreatePeriodSummaryControllerSpec
 
         MockCreatePeriodicService
           .createPeriodic(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, CreatePeriodicResponse(periodId)))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse(periodId)))))
 
         MockHateoasFactory
-          .wrap(CreatePeriodicResponse(periodId), CreatePeriodicHateoasData(Nino(nino), BusinessId(businessId), periodId))
-          .returns(HateoasWrapper(CreatePeriodicResponse(periodId), testHateoasLinks))
+          .wrap(CreatePeriodSummaryResponse(periodId), CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
         status(result) shouldBe OK
