@@ -18,51 +18,46 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import play.api.libs.json.{ JsValue, Json, OWrites }
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ IdGenerator, Logging }
+import v1.controllers.ResultCreator.Aux
 import v1.controllers.requestParsers.RequestParser
 import v1.models.errors.ErrorWrapper.WithCode
 import v1.models.errors._
-import v1.models.hateoas.HateoasData
 import v1.models.request.RawData
 import v1.services.{ BaseService, ServiceComponent }
 
 import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ControllerBuilder[InputRaw0 <: RawData, Input0, Output0, HData0 <: HateoasData](
-    parser0: RequestParser[InputRaw0, Input0],
-    service0: BaseService.Aux[Input0, Output0],
-    errorHandling0: PartialFunction[ErrorWrapper, Result] = PartialFunction.empty,
-    hateoasWrapping0: Option[HateoasWrapping.Aux[InputRaw0, Output0, HData0]] = None) {
+class ControllerBuilder[InputRaw0 <: RawData, Input0, Output0](parser0: RequestParser[InputRaw0, Input0],
+                                                               service0: BaseService.Aux[Input0, Output0],
+                                                               errorHandling0: PartialFunction[ErrorWrapper, Result] = PartialFunction.empty,
+                                                               resultsCreator0: ResultCreator.Aux[InputRaw0, Output0] =
+                                                                 ResultCreator.noContent[InputRaw0, Output0]) {
   self =>
 
-  def withErrorHandling(errorHandling: PartialFunction[ErrorWrapper, Result]): ControllerBuilder[InputRaw0, Input0, Output0, HData0] =
-    new ControllerBuilder(parser0, service0, errorHandling, hateoasWrapping0)
+  def withResultCreator(resultCreator: ResultCreator.Aux[InputRaw0, Output0]): ControllerBuilder[InputRaw0, Input0, Output0] =
+    new ControllerBuilder(parser0, service0, errorHandling0, resultCreator)
 
-  def withHateoasWrapping[HData <: HateoasData](
-      hateoasWrapping: HateoasWrapping.Aux[InputRaw0, Output0, HData]): ControllerBuilder[InputRaw0, Input0, Output0, HData] =
-    new ControllerBuilder(parser0, service0, errorHandling0, Some(hateoasWrapping))
+  def withErrorHandling(errorHandling: PartialFunction[ErrorWrapper, Result]): ControllerBuilder[InputRaw0, Input0, Output0] =
+    new ControllerBuilder(parser0, service0, errorHandling, resultsCreator0)
 
   // FIXME need to handle:
-  // - other response codes
-  // - can the response (and success code) be set up withSuccessHandling(...) instead of withHateoasWrapping where the wrapping (if any)
-  // is included in the call based on some re-usable handler/wrapping???
   // - auditing
   // - more general service that doesn't implement trait
 
   def createController(idGenerator0: IdGenerator)(implicit ec0: ExecutionContext): StandardController.Aux[InputRaw0, Input0, Output0] =
-    new StandardController with HateoasWrappingComponent with ServiceComponent with Logging {
+    new StandardController with ResultCreatorComponent with ServiceComponent with Logging {
 
       override type InputRaw = InputRaw0
       override type Input    = Input0
       override type Output   = Output0
-      override type HData    = HData0
 
-      override def hateoasWrapping: Option[HateoasWrapping.Aux[InputRaw0, Output0, HData0]] = self.hateoasWrapping0
+      override def resultCreator: Aux[InputRaw0, Output0] = resultsCreator0
 
       override protected def errorResultPF(implicit endpointLogContext: EndpointLogContext): PartialFunction[ErrorWrapper, Result] =
         errorHandling0
@@ -85,7 +80,7 @@ object StandardController {
 }
 
 trait StandardController extends BaseController {
-  self: Logging with HateoasWrappingComponent with ServiceComponent =>
+  self: Logging with ServiceComponent with ResultCreatorComponent =>
 
   type InputRaw <: RawData
   type Input
@@ -99,8 +94,7 @@ trait StandardController extends BaseController {
 
   def handleRequest(rawData: InputRaw)(implicit
                                        headerCarrier: HeaderCarrier,
-                                       endpointLogContext: EndpointLogContext,
-                                       writes: OWrites[Output]): Future[Result] = {
+                                       endpointLogContext: EndpointLogContext): Future[Result] = {
 
     implicit val correlationId: String = idGenerator.getCorrelationId
 
@@ -117,7 +111,8 @@ trait StandardController extends BaseController {
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-        Ok(toJson(rawData, serviceResponse.responseData))
+        resultCreator
+          .createResult(rawData, serviceResponse.responseData)
           .withApiHeaders(serviceResponse.correlationId)
       }
 
@@ -132,19 +127,11 @@ trait StandardController extends BaseController {
     }.merge
   }
 
-  private def toJson(raw: InputRaw, output: Output)(implicit writes: OWrites[Output]): JsValue = {
-    hateoasWrapping match {
-      case None           => Json.toJson(output)
-      case Some(wrapping) => Json.toJson(wrapping.doWrap(raw, output))
-    }
-  }
-
   private def errorResult(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result =
     errorResultPF
       .orElse(stdErrorResultPF)
       .applyOrElse(errorWrapper, unhandledError)
 
-  // TODO implement in controllers if necessary
   protected def errorResultPF(implicit @nowarn endpointLogContext: EndpointLogContext): PartialFunction[ErrorWrapper, Result] =
     PartialFunction.empty
 
