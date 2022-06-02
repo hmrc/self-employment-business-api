@@ -45,11 +45,13 @@ class ControllerBuilder[InputRaw <: RawData, Input, Output](parser: RequestParse
     new ControllerBuilder(parser, service, errorHandling, resultsCreator)
 
   // FIXME need to handle:
-  // - hateoas lists
-  // - case when hateoas data reqs response info (e.g. an id from a create)
+  // - case when hateoas data reqs response info (e.g. an id from a create - do CreateSelfEmploymentPeriodicController next)
   // - auditing
   // - more general service that doesn't implement trait
   // - logging context (requires class to automate - ok for mix-in but not for builder usage)
+  // - inject controller builder (with idgenerator and other things?) - will need to be something else otherwise the type of the
+  // input and output wont be known
+  // - rename: not actually building a controller but a request handler of some sorts
 
   def createController(idGenerator: IdGenerator)(implicit ec0: ExecutionContext): StandardController[InputRaw, Input, Output] = {
     StandardController(parser, service, errorHandling, resultsCreator: ResultCreator[InputRaw, Output], idGenerator: IdGenerator)
