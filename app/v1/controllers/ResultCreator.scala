@@ -16,11 +16,13 @@
 
 package v1.controllers
 
+import scala.language.higherKinds
+import cats.Functor
 import play.api.http.Status
-import play.api.libs.json.{ Json, OWrites }
+import play.api.libs.json.{ Json, OWrites, Writes }
 import play.api.mvc.{ Result, Results }
-import v1.hateoas.{ HateoasFactory, HateoasLinksFactory }
-import v1.models.hateoas.{ HateoasData, HateoasDataBuilder }
+import v1.hateoas.{ HateoasFactory, HateoasLinksFactory, HateoasListLinksFactory }
+import v1.models.hateoas.{ HateoasData, HateoasDataBuilder, HateoasWrapper }
 import v1.models.request.RawData
 
 trait ResultCreatorComponent[InputRaw <: RawData, Output] {
@@ -52,6 +54,18 @@ object ResultCreator {
     (raw: InputRaw, output: Output) => {
       val data: HData = hateoasDataBuilder.dataFor(raw)
       val wrapped     = hateoasFactory.wrap(output, data)
+
+      Results.Status(successStatus)(Json.toJson(wrapped))
+    }
+
+  def hateoasListWrapping[InputRaw <: RawData, Output[_]: Functor, I, HData <: HateoasData](hateoasFactory: HateoasFactory,
+                                                                                            successStatus: Int = Status.OK)(
+      implicit linksFactory: HateoasListLinksFactory[Output, I, HData],
+      hateoasDataBuilder: HateoasDataBuilder[InputRaw, HData],
+      writes: Writes[HateoasWrapper[Output[HateoasWrapper[I]]]]): ResultCreator[InputRaw, Output[I]] =
+    (raw: InputRaw, output: Output[I]) => {
+      val data: HData = hateoasDataBuilder.dataFor(raw)
+      val wrapped     = hateoasFactory.wrapList(output, data)
 
       Results.Status(successStatus)(Json.toJson(wrapped))
     }

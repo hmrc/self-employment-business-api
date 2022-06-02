@@ -22,22 +22,23 @@ import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
-import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
+import v1.models.response.listSEPeriodic.{ ListSelfEmploymentPeriodicResponse, PeriodDetails }
 
 import scala.concurrent.Future
 
 class ListSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   val response: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
-    Seq(PeriodDetails(
-      "2020-01-01_2020-01-01",
-      "2020-01-01",
-      "2020-01-01"
-    ))
+    Seq(
+      PeriodDetails(
+        "2020-01-01_2020-01-01",
+        "2020-01-01",
+        "2020-01-01"
+      ))
   )
 
   val multipleResponse: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
@@ -71,16 +72,18 @@ class ListSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockListSelfEmploymentPeriodicConnector.listSelfEmployment(requestData)
+        MockListSelfEmploymentPeriodicConnector
+          .listSelfEmployment(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.listSelfEmploymentUpdatePeriods(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+        await(service.doService(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
       "return multiple responses" in new Test {
-        MockListSelfEmploymentPeriodicConnector.listSelfEmployment(requestData)
+        MockListSelfEmploymentPeriodicConnector
+          .listSelfEmployment(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, multipleResponse))))
 
-        await(service.listSelfEmploymentUpdatePeriods(requestData)) shouldBe Right(ResponseWrapper(correlationId, multipleResponse))
+        await(service.doService(requestData)) shouldBe Right(ResponseWrapper(correlationId, multipleResponse))
       }
     }
   }
@@ -90,18 +93,19 @@ class ListSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockListSelfEmploymentPeriodicConnector.listSelfEmployment(requestData)
+          MockListSelfEmploymentPeriodicConnector
+            .listSelfEmployment(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-          await(service.listSelfEmploymentUpdatePeriods(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.doService(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
+        "INVALID_NINO"             -> NinoFormatError,
         "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "SERVER_ERROR" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+        "SERVER_ERROR"             -> DownstreamError,
+        "SERVICE_UNAVAILABLE"      -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

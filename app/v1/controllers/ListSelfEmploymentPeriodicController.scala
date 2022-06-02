@@ -16,20 +16,15 @@
 
 package v1.controllers
 
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
 import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.ListSelfEmploymentPeriodicRequestParser
 import v1.hateoas.HateoasFactory
-import v1.models.errors._
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRawData
-import v1.models.response.listSEPeriodic.ListSelfEmploymentPeriodicHateoasData
 import v1.services.{ EnrolmentsAuthService, ListSelfEmploymentPeriodicService, MtdIdLookupService }
 
 import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ListSelfEmploymentPeriodicController @Inject()(val authService: EnrolmentsAuthService,
@@ -46,46 +41,15 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListSelfEmploymentPeriodicController", endpointName = "listSelfEmploymentPeriodicUpdate")
 
+  private val controller =
+    new ControllerBuilder(parser, service)
+      .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory))
+      .createController(idGenerator)
+
   def handleRequest(nino: String, businessId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(
-        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with correlationId : $correlationId")
       val rawData = ListSelfEmploymentPeriodicRawData(nino, businessId)
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.listSelfEmploymentUpdatePeriods(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory
-              .wrapList(serviceResponse.responseData, ListSelfEmploymentPeriodicHateoasData(nino, businessId))
-              .asRight[ErrorWrapper]
-          )
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Ok(Json.toJson(vendorResponse))
-            .withApiHeaders(serviceResponse.correlationId)
-        }
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-        result
-      }.merge
-    }
-
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case NinoFormatError | BusinessIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                             => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError                                           => InternalServerError(Json.toJson(errorWrapper))
-      case _                                                         => unhandledError(errorWrapper)
+      controller.handleRequest(rawData)
     }
 }

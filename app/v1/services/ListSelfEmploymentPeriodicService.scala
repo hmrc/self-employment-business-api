@@ -18,26 +18,30 @@ package v1.services
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.ListSelfEmploymentPeriodicConnector
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
+import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
+import v1.models.response.listSEPeriodic.{ ListSelfEmploymentPeriodicResponse, PeriodDetails }
 import v1.support.DesResponseMappingSupport
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class ListSelfEmploymentPeriodicService @Inject()(listSelfEmploymentPeriodicConnector: ListSelfEmploymentPeriodicConnector)
-  extends DesResponseMappingSupport with Logging {
+    extends BaseService[ListSelfEmploymentPeriodicRequest, ListSelfEmploymentPeriodicResponse[PeriodDetails]]
+    with DesResponseMappingSupport
+    with Logging {
 
-  def listSelfEmploymentUpdatePeriods(request: ListSelfEmploymentPeriodicRequest)(
-                                      implicit hc: HeaderCarrier,
-                                      ec: ExecutionContext,
-                                      logContext: EndpointLogContext,
-                                      correlationId: String): Future[ListSelfEmploymentUpdatePeriodsServiceOutcome] = {
+  override def doService(request: ListSelfEmploymentPeriodicRequest)(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[ListSelfEmploymentPeriodicResponse[PeriodDetails]]]] = {
 
     val result = for {
       desResponseWrapper <- EitherT(listSelfEmploymentPeriodicConnector.listSEPeriodic(request)).leftMap(mapDesErrors(desErrorMap))
@@ -48,11 +52,10 @@ class ListSelfEmploymentPeriodicService @Inject()(listSelfEmploymentPeriodicConn
 
   private def desErrorMap =
     Map(
-      "INVALID_NINO" -> NinoFormatError,
+      "INVALID_NINO"             -> NinoFormatError,
       "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+      "SERVER_ERROR"             -> DownstreamError,
+      "SERVICE_UNAVAILABLE"      -> DownstreamError
     )
 }
-

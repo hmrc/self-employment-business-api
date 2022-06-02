@@ -18,17 +18,19 @@ package v1.models.response.listSEPeriodic
 
 import cats.Functor
 import config.AppConfig
-import play.api.libs.json.{Json, OWrites, Reads, Writes}
-import v1.hateoas.{HateoasLinks, HateoasListLinksFactory}
-import v1.models.hateoas.{HateoasData, Link}
+import play.api.libs.json.{ Json, OWrites, Reads, Writes }
+import v1.hateoas.{ HateoasLinks, HateoasListLinksFactory }
+import v1.models.hateoas.{ HateoasData, HateoasDataBuilder, Link }
+import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRawData
 
 case class ListSelfEmploymentPeriodicResponse[I](periods: Seq[I])
 
 object ListSelfEmploymentPeriodicResponse extends HateoasLinks {
-  implicit def reads: Reads[ListSelfEmploymentPeriodicResponse[PeriodDetails]] = Json.format[ListSelfEmploymentPeriodicResponse[PeriodDetails]]
+  implicit def reads: Reads[ListSelfEmploymentPeriodicResponse[PeriodDetails]]   = Json.format[ListSelfEmploymentPeriodicResponse[PeriodDetails]]
   implicit def writes[I: Writes]: OWrites[ListSelfEmploymentPeriodicResponse[I]] = Json.writes[ListSelfEmploymentPeriodicResponse[I]]
 
-  implicit object LinksFactory extends HateoasListLinksFactory[ListSelfEmploymentPeriodicResponse, PeriodDetails, ListSelfEmploymentPeriodicHateoasData] {
+  implicit object LinksFactory
+      extends HateoasListLinksFactory[ListSelfEmploymentPeriodicResponse, PeriodDetails, ListSelfEmploymentPeriodicHateoasData] {
     override def links(appConfig: AppConfig, data: ListSelfEmploymentPeriodicHateoasData): Seq[Link] = {
       Seq(
         listPeriodicUpdate(appConfig, data.nino, data.businessId),
@@ -49,3 +51,12 @@ object ListSelfEmploymentPeriodicResponse extends HateoasLinks {
 }
 
 case class ListSelfEmploymentPeriodicHateoasData(nino: String, businessId: String) extends HateoasData
+
+object ListSelfEmploymentPeriodicHateoasData {
+  implicit object DataBuilder extends HateoasDataBuilder[ListSelfEmploymentPeriodicRawData, ListSelfEmploymentPeriodicHateoasData] {
+    override def dataFor(raw: ListSelfEmploymentPeriodicRawData): ListSelfEmploymentPeriodicHateoasData = {
+      import raw._
+      ListSelfEmploymentPeriodicHateoasData(nino = nino, businessId = businessId)
+    }
+  }
+}

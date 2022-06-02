@@ -46,6 +46,7 @@ class ControllerBuilder[InputRaw <: RawData, Input, Output](parser: RequestParse
 
   // FIXME need to handle:
   // - hateoas lists
+  // - case when hateoas data reqs response info (e.g. an id from a create)
   // - auditing
   // - more general service that doesn't implement trait
   // - logging context (requires class to automate - ok for mix-in but not for builder usage)

@@ -23,20 +23,28 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors.ErrorWrapper
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRequest
-import v1.models.response.listSEPeriodic.{ListSelfEmploymentPeriodicResponse, PeriodDetails}
+import v1.models.response.listSEPeriodic.{ ListSelfEmploymentPeriodicResponse, PeriodDetails }
 import v1.services.ListSelfEmploymentPeriodicService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockListSelfEmploymentPeriodicService extends MockFactory {
 
   val mockListSelfEmploymentPeriodicService: ListSelfEmploymentPeriodicService = mock[ListSelfEmploymentPeriodicService]
 
   object MockListSelfEmploymentPeriodicService {
-    def listSelfEmploymentUpdatePeriods(requestData: ListSelfEmploymentPeriodicRequest):
-    CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListSelfEmploymentPeriodicResponse[PeriodDetails]]]]] = {
-      (mockListSelfEmploymentPeriodicService
-        .listSelfEmploymentUpdatePeriods(_: ListSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+
+    def listSelfEmploymentUpdatePeriods(requestData: ListSelfEmploymentPeriodicRequest)
+      : CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListSelfEmploymentPeriodicResponse[PeriodDetails]]]]] = {
+      (
+        mockListSelfEmploymentPeriodicService
+          .doService(_: ListSelfEmploymentPeriodicRequest)(
+            _: HeaderCarrier,
+            _: ExecutionContext,
+            _: EndpointLogContext,
+            _: String
+          )
+        )
         .expects(requestData, *, *, *, *)
     }
   }

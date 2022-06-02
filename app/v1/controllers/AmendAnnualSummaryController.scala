@@ -40,6 +40,9 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
     extends AuthorisedController(cc)
     with Logging {
 
+  implicit val endpointLogContext: EndpointLogContext =
+    EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
+
   private val controller =
     new ControllerBuilder(parser, service)
       .withErrorHandling {
@@ -51,9 +54,6 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, request.body)
-
-      implicit val endpointLogContext: EndpointLogContext =
-        EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
 
       controller.handleRequest(rawData)
     }
