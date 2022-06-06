@@ -17,14 +17,14 @@
 package v1.models.response.amendSEAnnual
 
 import config.AppConfig
-import play.api.libs.json.{Json, OWrites, Reads}
-import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.hateoas.{HateoasData, HateoasDataBuilder, Link}
+import play.api.libs.json.{ Json, OWrites, Reads }
+import v1.hateoas.{ HateoasLinks, HateoasLinksFactory }
+import v1.models.hateoas.{ HateoasData, HateoasDataBuilder, Link }
 import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
 
 case class AmendAnnualSummaryResponse(
-                                       transactionReference: String
-                                     )
+    transactionReference: String
+)
 
 object AmendAnnualSummaryResponse extends HateoasLinks {
 
@@ -34,7 +34,8 @@ object AmendAnnualSummaryResponse extends HateoasLinks {
     Json.obj()
   }
 
-  implicit object AmendSelfEmploymentAnnualSummaryLinksFactory extends HateoasLinksFactory[AmendAnnualSummaryResponse, AmendAnnualSummaryHateoasData] {
+  implicit object AmendSelfEmploymentAnnualSummaryLinksFactory
+      extends HateoasLinksFactory[AmendAnnualSummaryResponse, AmendAnnualSummaryHateoasData] {
     override def links(appConfig: AppConfig, data: AmendAnnualSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
@@ -49,8 +50,8 @@ object AmendAnnualSummaryResponse extends HateoasLinks {
 case class AmendAnnualSummaryHateoasData(nino: String, businessId: String, taxYear: String) extends HateoasData
 
 object AmendAnnualSummaryHateoasData {
-  implicit object DataBuilder extends HateoasDataBuilder[AmendAnnualSummaryRawData, AmendAnnualSummaryHateoasData] {
-    override def dataFor(raw: AmendAnnualSummaryRawData): AmendAnnualSummaryHateoasData = {
+  implicit object DataBuilder extends HateoasDataBuilder[AmendAnnualSummaryRawData, AmendAnnualSummaryResponse, AmendAnnualSummaryHateoasData] {
+    override def dataFor(raw: AmendAnnualSummaryRawData, output: AmendAnnualSummaryResponse): AmendAnnualSummaryHateoasData = {
       import raw._
       AmendAnnualSummaryHateoasData(nino = nino, businessId = businessId, taxYear = taxYear)
     }

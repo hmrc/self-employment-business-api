@@ -26,7 +26,7 @@ import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRequest
 import v1.models.response.createSEPeriodic.CreateSelfEmploymentPeriodicResponse
 import v1.services.CreateSelfEmploymentPeriodicService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockCreateSelfEmploymentPeriodicService extends MockFactory {
 
@@ -34,9 +34,17 @@ trait MockCreateSelfEmploymentPeriodicService extends MockFactory {
 
   object MockCreateSelfEmploymentPeriodicService {
 
-    def createPeriodic(requestData: CreateSelfEmploymentPeriodicRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponse]]]] = {
-      (mockCreateSelfEmploymentPeriodicService
-        .createPeriodic(_: CreateSelfEmploymentPeriodicRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+    def createPeriodic(requestData: CreateSelfEmploymentPeriodicRequest)
+      : CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreateSelfEmploymentPeriodicResponse]]]] = {
+      (
+        mockCreateSelfEmploymentPeriodicService
+          .doService(_: CreateSelfEmploymentPeriodicRequest)(
+            _: HeaderCarrier,
+            _: ExecutionContext,
+            _: EndpointLogContext,
+            _: String
+          )
+        )
         .expects(requestData, *, *, *, *)
     }
   }

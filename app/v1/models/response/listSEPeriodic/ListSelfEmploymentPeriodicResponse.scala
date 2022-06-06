@@ -53,10 +53,10 @@ object ListSelfEmploymentPeriodicResponse extends HateoasLinks {
 case class ListSelfEmploymentPeriodicHateoasData(nino: String, businessId: String) extends HateoasData
 
 object ListSelfEmploymentPeriodicHateoasData {
-  implicit object DataBuilder extends HateoasDataBuilder[ListSelfEmploymentPeriodicRawData, ListSelfEmploymentPeriodicHateoasData] {
-    override def dataFor(raw: ListSelfEmploymentPeriodicRawData): ListSelfEmploymentPeriodicHateoasData = {
+  implicit def dataBuilder[I]
+    : HateoasDataBuilder[ListSelfEmploymentPeriodicRawData, ListSelfEmploymentPeriodicResponse[I], ListSelfEmploymentPeriodicHateoasData] =
+    (raw: ListSelfEmploymentPeriodicRawData, _: ListSelfEmploymentPeriodicResponse[I]) => {
       import raw._
       ListSelfEmploymentPeriodicHateoasData(nino = nino, businessId = businessId)
     }
-  }
 }

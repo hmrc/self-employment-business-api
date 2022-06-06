@@ -17,13 +17,12 @@
 package v1.models.response.createSEPeriodic
 
 import config.AppConfig
-import play.api.libs.json.{Json, OFormat}
-import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.hateoas.{HateoasData, Link}
-
+import play.api.libs.json.{ Json, OFormat }
+import v1.hateoas.{ HateoasLinks, HateoasLinksFactory }
+import v1.models.hateoas.{ HateoasData, HateoasDataBuilder, Link }
+import v1.models.request.createSEPeriodic.CreateSelfEmploymentPeriodicRawData
 
 case class CreateSelfEmploymentPeriodicResponse(periodId: String)
-
 
 object CreateSelfEmploymentPeriodicResponse extends HateoasLinks {
   implicit val format: OFormat[CreateSelfEmploymentPeriodicResponse] = Json.format[CreateSelfEmploymentPeriodicResponse]
@@ -39,3 +38,15 @@ object CreateSelfEmploymentPeriodicResponse extends HateoasLinks {
 }
 
 case class CreateSelfEmploymentPeriodicHateoasData(nino: String, businessId: String, periodId: String) extends HateoasData
+
+object CreateSelfEmploymentPeriodicHateoasData {
+  implicit object DataBuilder
+      extends HateoasDataBuilder[CreateSelfEmploymentPeriodicRawData, CreateSelfEmploymentPeriodicResponse, CreateSelfEmploymentPeriodicHateoasData] {
+    override def dataFor(raw: CreateSelfEmploymentPeriodicRawData,
+                         output: CreateSelfEmploymentPeriodicResponse): CreateSelfEmploymentPeriodicHateoasData = {
+      import output._
+      import raw._
+      CreateSelfEmploymentPeriodicHateoasData(nino = nino, businessId = businessId, periodId)
+    }
+  }
+}

@@ -28,35 +28,37 @@ import scala.concurrent.Future
 
 class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   private val requestBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",
     "2017-01-25",
-    Some(Incomes(
-      Some(IncomesAmountObject(500.12)),
-      Some(IncomesAmountObject(500.12))
-    )),
+    Some(
+      Incomes(
+        Some(IncomesAmountObject(500.12)),
+        Some(IncomesAmountObject(500.12))
+      )),
     Some(ConsolidatedExpenses(500.12)),
-    Some(Expenses(
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12))),
-      Some(ExpensesAmountObject(500.12, Some(500.12)))
-    ))
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12))),
+        Some(ExpensesAmountObject(500.12, Some(500.12)))
+      ))
   )
 
   private val requestData = CreateSelfEmploymentPeriodicRequest(
@@ -77,22 +79,24 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
     "createPeriodic" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome = Right(ResponseWrapper(correlationId, CreateSelfEmploymentPeriodicResponse("2017-01-25_2017-01-25")))
+        val outcome          = Right(ResponseWrapper(correlationId, CreateSelfEmploymentPeriodicResponse("2017-01-25_2017-01-25")))
 
-        MockCreateSelfEmploymentPeriodicConnector.createSelfEmploymentPeriodic(requestData)
+        MockCreateSelfEmploymentPeriodicConnector
+          .createSelfEmploymentPeriodic(requestData)
           .returns(Future.successful(connectorOutcome))
 
-        await(service.createPeriodic(requestData)) shouldBe outcome
+        await(service.doService(requestData)) shouldBe outcome
       }
 
       "map errors according to spec" when {
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockCreateSelfEmploymentPeriodicConnector.createSelfEmploymentPeriodic(requestData)
+            MockCreateSelfEmploymentPeriodicConnector
+              .createSelfEmploymentPeriodic(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.createPeriodic(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.doService(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(

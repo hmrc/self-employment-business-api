@@ -45,7 +45,6 @@ class ControllerBuilder[InputRaw <: RawData, Input, Output](parser: RequestParse
     new ControllerBuilder(parser, service, errorHandling, resultsCreator)
 
   // FIXME need to handle:
-  // - case when hateoas data reqs response info (e.g. an id from a create - do CreateSelfEmploymentPeriodicController next)
   // - auditing
   // - more general service that doesn't implement trait
   // - logging context (requires class to automate - ok for mix-in but not for builder usage)
@@ -116,8 +115,8 @@ trait StandardController[InputRaw <: RawData, Input, Output] extends BaseControl
   // between different microservices??
   private def stdErrorResultPF: PartialFunction[ErrorWrapper, Result] = {
     case errorWrapper @ (WithCode(BadRequestError.code) | WithCode(NinoFormatError.code) | WithCode(BusinessIdFormatError.code) | WithCode(
-          TaxYearFormatError.code) | WithCode(RuleIncorrectOrEmptyBodyError.code) | WithCode(RuleTaxYearNotSupportedError.code) | WithCode(
-          RuleTaxYearRangeInvalidError.code)) =>
+          TaxYearFormatError.code) | WithCode(RuleIncorrectOrEmptyBodyError.code) | WithCode(ValueFormatError.code) | WithCode(
+          RuleTaxYearNotSupportedError.code) | WithCode(RuleTaxYearRangeInvalidError.code)) =>
       BadRequest(Json.toJson(errorWrapper))
     case errorWrapper @ WithCode(NotFoundError.code)   => NotFound(Json.toJson(errorWrapper))
     case errorWrapper @ WithCode(DownstreamError.code) => InternalServerError(Json.toJson(errorWrapper))
