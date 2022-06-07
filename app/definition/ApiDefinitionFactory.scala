@@ -48,7 +48,7 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
         )
       ),
       api = APIDefinition(
-        name = "Self-Employment Business API (MTD)",
+        name = "Self-Employment Business (MTD)",
         description = "An API for providing Annual and Periodic Summary data",
         context = appConfig.apiGatewayContext,
         categories = Seq("INCOME_TAX_MTD"),
