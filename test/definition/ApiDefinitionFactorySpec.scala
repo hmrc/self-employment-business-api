@@ -64,7 +64,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               )
             ),
             api = APIDefinition(
-              name = "Self-Employment Business API (MTD)",
+              name = "Self-Employment Business (MTD)",
               description = "An API for providing Annual and Periodic Summary data",
               context = "individuals/business/self-employment",
               categories = Seq("INCOME_TAX_MTD"),
