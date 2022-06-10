@@ -22,32 +22,33 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListSelfEmploymentPeriodicRequestParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListSelfEmploymentPeriodicService, MockMtdIdLookupService}
+import v1.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockListSelfEmploymentPeriodicService, MockMtdIdLookupService }
 import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
-import v1.models.hateoas.{HateoasWrapper, Link}
+import v1.models.hateoas.{ HateoasWrapper, Link }
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.listSEPeriodic.{ListSelfEmploymentPeriodicRawData, ListSelfEmploymentPeriodicRequest}
+import v1.models.request.listSEPeriodic.{ ListSelfEmploymentPeriodicRawData, ListSelfEmploymentPeriodicRequest }
 import v1.models.response.listSEPeriodic._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
-  with MockEnrolmentsAuthService
-  with MockMtdIdLookupService
-  with MockListSelfEmploymentPeriodicService
-  with MockListSelfEmploymentPeriodicRequestParser
-  with MockHateoasFactory
-  with MockAuditService
-  with MockIdGenerator {
+class ListSelfEmploymentPeriodicControllerSpec
+    extends ControllerBaseSpec
+    with MockEnrolmentsAuthService
+    with MockMtdIdLookupService
+    with MockListSelfEmploymentPeriodicService
+    with MockListSelfEmploymentPeriodicRequestParser
+    with MockHateoasFactory
+    with MockAuditService
+    with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val from = "2019-01-01"
-  private val to = "2020-01-01"
-  private val periodId = s"${from}_$to"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val from          = "2019-01-01"
+  private val to            = "2020-01-01"
+  private val periodId      = s"${from}_$to"
   private val correlationId = "X-123"
 
   trait Test {
@@ -68,10 +69,10 @@ class ListSelfEmploymentPeriodicControllerSpec extends ControllerBaseSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData = ListSelfEmploymentPeriodicRawData(nino, businessId)
+  private val rawData     = ListSelfEmploymentPeriodicRawData(nino, businessId)
   private val requestData = ListSelfEmploymentPeriodicRequest(Nino(nino), businessId)
 
-  private val testHateoasLink = Link(href = s"test/href", method = GET, rel = "self")
+  private val testHateoasLink      = Link(href = s"test/href", method = GET, rel = "self")
   private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
   private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to)

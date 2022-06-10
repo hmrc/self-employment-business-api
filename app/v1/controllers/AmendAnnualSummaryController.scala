@@ -44,7 +44,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
     EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
 
   private val controller =
-    new ControllerBuilder(parser, service)
+    StandardControllerBuilder(parser, service)
       .withErrorHandling {
         case errorWrapper @ WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
       }

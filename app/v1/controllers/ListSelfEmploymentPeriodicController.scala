@@ -42,7 +42,7 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
     EndpointLogContext(controllerName = "ListSelfEmploymentPeriodicController", endpointName = "listSelfEmploymentPeriodicUpdate")
 
   private val controller =
-    new ControllerBuilder(parser, service)
+    StandardControllerBuilder(parser, service)
       .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory))
       .createController(idGenerator)
 

@@ -32,31 +32,6 @@ import v1.services.{ BaseService, ServiceComponent }
 import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ControllerBuilder[InputRaw <: RawData, Input, Output](parser: RequestParser[InputRaw, Input],
-                                                            service: BaseService[Input, Output],
-                                                            errorHandling: PartialFunction[ErrorWrapper, Result] = PartialFunction.empty,
-                                                            resultsCreator: ResultCreator[InputRaw, Output] =
-                                                              ResultCreator.noContent[InputRaw, Output]) {
-
-  def withResultCreator(resultCreator: ResultCreator[InputRaw, Output]): ControllerBuilder[InputRaw, Input, Output] =
-    new ControllerBuilder(parser, service, errorHandling, resultCreator)
-
-  def withErrorHandling(errorHandling: PartialFunction[ErrorWrapper, Result]): ControllerBuilder[InputRaw, Input, Output] =
-    new ControllerBuilder(parser, service, errorHandling, resultsCreator)
-
-  // FIXME need to handle:
-  // - auditing
-  // - more general service that doesn't implement trait
-  // - logging context (requires class to automate - ok for mix-in but not for builder usage)
-  // - inject controller builder (with idgenerator and other things?) - will need to be something else otherwise the type of the
-  // input and output wont be known
-  // - rename: not actually building a controller but a request handler of some sorts
-
-  def createController(idGenerator: IdGenerator)(implicit ec0: ExecutionContext): StandardController[InputRaw, Input, Output] = {
-    StandardController(parser, service, errorHandling, resultsCreator: ResultCreator[InputRaw, Output], idGenerator: IdGenerator)
-  }
-}
-
 trait StandardController[InputRaw <: RawData, Input, Output] extends BaseController {
   self: Logging with ServiceComponent[Input, Output] with ResultCreatorComponent[InputRaw, Output] =>
 

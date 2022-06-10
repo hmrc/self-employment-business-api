@@ -46,7 +46,7 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
     EndpointLogContext(controllerName = "CreateSelfEmploymentPeriodController", endpointName = "createSelfEmploymentPeriodSummary")
 
   private val controller =
-    new ControllerBuilder(parser, service)
+    StandardControllerBuilder(parser, service)
       .withErrorHandling {
         case errorWrapper @ (WithCode(FromDateFormatError.code) | WithCode(ToDateFormatError.code) | WithCode(RuleBothExpensesSuppliedError.code) |
             WithCode(RuleToDateBeforeFromDateError.code) | WithCode(RuleOverlappingPeriod.code) | WithCode(RuleMisalignedPeriod.code) |

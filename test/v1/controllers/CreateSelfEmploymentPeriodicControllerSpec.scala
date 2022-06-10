@@ -16,26 +16,26 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockCreateSelfEmploymentPeriodicRequestParser
-import v1.mocks.services.{MockCreateSelfEmploymentPeriodicService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.mocks.services.{ MockCreateSelfEmploymentPeriodicService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import v1.models.domain.Nino
 import v1.models.errors._
-import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method._
+import v1.models.hateoas.{ HateoasWrapper, Link }
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createSEPeriodic._
-import v1.models.response.createSEPeriodic.{CreateSelfEmploymentPeriodicHateoasData, CreateSelfEmploymentPeriodicResponse}
+import v1.models.response.createSEPeriodic.{ CreateSelfEmploymentPeriodicHateoasData, CreateSelfEmploymentPeriodicResponse }
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CreateSelfEmploymentPeriodicControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockCreateSelfEmploymentPeriodicService
@@ -43,9 +43,9 @@ class CreateSelfEmploymentPeriodicControllerSpec
     with MockHateoasFactory
     with MockIdGenerator {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val periodId = "2017-01-25_2017-01-25"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val periodId      = "2017-01-25_2017-01-25"
   private val correlationId = "X-123"
 
   trait Test {
@@ -154,23 +154,24 @@ class CreateSelfEmploymentPeriodicControllerSpec
     "2018-01-24",
     Some(Incomes(Some(IncomesAmountObject(500.25)), Some(IncomesAmountObject(500.25)))),
     None,
-    Some(Expenses(
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25))),
-      Some(ExpensesAmountObject(500.25, Some(500.25)))
-    ))
+    Some(
+      Expenses(
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25))),
+        Some(ExpensesAmountObject(500.25, Some(500.25)))
+      ))
   )
 
   val responseJson: JsValue = Json.parse(
@@ -188,7 +189,7 @@ class CreateSelfEmploymentPeriodicControllerSpec
     """.stripMargin
   )
 
-  private val rawData = CreateSelfEmploymentPeriodicRawData(nino, businessId, requestJson)
+  private val rawData     = CreateSelfEmploymentPeriodicRawData(nino, businessId, requestJson)
   private val requestData = CreateSelfEmploymentPeriodicRequest(Nino(nino), businessId, requestBody)
 
   "handleRequest" should {
