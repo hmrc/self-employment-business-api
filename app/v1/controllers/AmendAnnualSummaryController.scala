@@ -18,7 +18,7 @@ package v1.controllers
 
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ Action, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import utils.Logging
 import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors.ErrorWrapper.WithCode
@@ -36,7 +36,7 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
                                              service: AmendAnnualSummaryService,
                                              hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
-                                             idGenerator: IdGenerator)(implicit val ec: ExecutionContext)
+                                             controllerFactory: StandardControllerFactory)(implicit val ec: ExecutionContext)
     extends AuthorisedController(cc)
     with Logging {
 
@@ -44,12 +44,13 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
     EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
 
   private val controller =
-    StandardControllerBuilder(parser, service)
+    controllerFactory
+      .using(parser, service)
       .withErrorHandling {
         case errorWrapper @ WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
       }
       .withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory))
-      .createController(idGenerator)
+      .createController
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>

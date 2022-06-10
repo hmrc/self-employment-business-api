@@ -17,7 +17,7 @@
 package v1.controllers
 
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import utils.Logging
 import v1.controllers.requestParsers.ListSelfEmploymentPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.request.listSEPeriodic.ListSelfEmploymentPeriodicRawData
@@ -33,7 +33,7 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
                                                      service: ListSelfEmploymentPeriodicService,
                                                      hateoasFactory: HateoasFactory,
                                                      cc: ControllerComponents,
-                                                     idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                                     controllerFactory: StandardControllerFactory)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -42,9 +42,10 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
     EndpointLogContext(controllerName = "ListSelfEmploymentPeriodicController", endpointName = "listSelfEmploymentPeriodicUpdate")
 
   private val controller =
-    StandardControllerBuilder(parser, service)
+    controllerFactory
+      .using(parser, service)
       .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory))
-      .createController(idGenerator)
+      .createController
 
   def handleRequest(nino: String, businessId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

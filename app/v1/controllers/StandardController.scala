@@ -18,13 +18,10 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.mvc.Results._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.RequestParser
-import v1.models.errors.ErrorWrapper.WithCode
 import v1.models.errors._
 import v1.models.request.RawData
 import v1.services.{ BaseService, ServiceComponent }
@@ -33,7 +30,7 @@ import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
 
 trait StandardController[InputRaw <: RawData, Input, Output] extends BaseController {
-  self: Logging with ServiceComponent[Input, Output] with ResultCreatorComponent[InputRaw, Output] =>
+  self: Logging with ServiceComponent[Input, Output] with ResultCreatorComponent[InputRaw, Output] with CommonErrorHandlingComponent =>
 
   val idGenerator: IdGenerator
 
@@ -78,24 +75,11 @@ trait StandardController[InputRaw <: RawData, Input, Output] extends BaseControl
 
   private def errorResult(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result =
     errorResultPF
-      .orElse(stdErrorResultPF)
+      .orElse(commonErrorHandling.errorResultPF)
       .applyOrElse(errorWrapper, unhandledError)
 
   protected def errorResultPF(implicit @nowarn endpointLogContext: EndpointLogContext): PartialFunction[ErrorWrapper, Result] =
     PartialFunction.empty
-
-  // TODO these are just some examples error mappings and would need to cover all controller errors
-  //  (or at least all those that are in common - deferring to errorResultPF).
-  // The RHS of the = maybe should go in a separate object to keep this base controller fixed
-  // between different microservices??
-  private def stdErrorResultPF: PartialFunction[ErrorWrapper, Result] = {
-    case errorWrapper @ (WithCode(BadRequestError.code) | WithCode(NinoFormatError.code) | WithCode(BusinessIdFormatError.code) | WithCode(
-          TaxYearFormatError.code) | WithCode(RuleIncorrectOrEmptyBodyError.code) | WithCode(ValueFormatError.code) | WithCode(
-          RuleTaxYearNotSupportedError.code) | WithCode(RuleTaxYearRangeInvalidError.code)) =>
-      BadRequest(Json.toJson(errorWrapper))
-    case errorWrapper @ WithCode(NotFoundError.code)   => NotFound(Json.toJson(errorWrapper))
-    case errorWrapper @ WithCode(DownstreamError.code) => InternalServerError(Json.toJson(errorWrapper))
-  }
 }
 
 object StandardController {
@@ -105,13 +89,17 @@ object StandardController {
       service0: BaseService[Input, Output],
       errorHandling0: PartialFunction[ErrorWrapper, Result],
       resultsCreator0: ResultCreator[InputRaw, Output],
-      idGenerator0: IdGenerator)(implicit ec0: ExecutionContext): StandardController[InputRaw, Input, Output] =
-    new StandardController[InputRaw, Input, Output] with ResultCreatorComponent[InputRaw, Output] with ServiceComponent[Input, Output] with Logging {
+      idGenerator0: IdGenerator,
+      commonErrorHandling0: CommonErrorHandling)(implicit ec0: ExecutionContext): StandardController[InputRaw, Input, Output] =
+    new StandardController[InputRaw, Input, Output] with ResultCreatorComponent[InputRaw, Output] with ServiceComponent[Input, Output]
+    with CommonErrorHandlingComponent with Logging {
 
       override def resultCreator: ResultCreator[InputRaw, Output] = resultsCreator0
 
       override protected def errorResultPF(implicit endpointLogContext: EndpointLogContext): PartialFunction[ErrorWrapper, Result] =
         errorHandling0
+
+      override def commonErrorHandling: CommonErrorHandling = commonErrorHandling0
 
       override val idGenerator: IdGenerator               = idGenerator0
       override val parser: RequestParser[InputRaw, Input] = parser0

@@ -26,9 +26,9 @@ import v1.mocks.services.{ MockAmendAnnualSummaryService, MockEnrolmentsAuthServ
 import v1.models.domain.Nino
 import v1.models.domain.ex.MtdEx
 import v1.models.errors._
+import v1.models.hateoas.{ HateoasWrapper, Link }
 import v1.models.hateoas.Method.{ DELETE, GET, PUT }
 import v1.models.hateoas.RelType.{ AMEND_ANNUAL_SUMMARY_REL, DELETE_ANNUAL_SUMMARY_REL }
-import v1.models.hateoas.{ HateoasWrapper, Link }
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual._
 import v1.models.response.amendSEAnnual.{ AmendAnnualSummaryHateoasData, AmendAnnualSummaryResponse }
@@ -60,7 +60,7 @@ class AmendAnnualSummaryControllerSpec
       service = mockAmendAnnualSummaryService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
-      idGenerator = mockIdGenerator
+      new StandardControllerFactory(mockIdGenerator, ApiCommonErrorHandling)
     )
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))

@@ -25,14 +25,14 @@ import v1.mocks.requestParsers.MockCreateSelfEmploymentPeriodicRequestParser
 import v1.mocks.services.{ MockCreateSelfEmploymentPeriodicService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import v1.models.domain.Nino
 import v1.models.errors._
-import v1.models.hateoas.Method._
 import v1.models.hateoas.{ HateoasWrapper, Link }
+import v1.models.hateoas.Method._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createSEPeriodic._
 import v1.models.response.createSEPeriodic.{ CreateSelfEmploymentPeriodicHateoasData, CreateSelfEmploymentPeriodicResponse }
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CreateSelfEmploymentPeriodicControllerSpec
     extends ControllerBaseSpec
@@ -58,7 +58,7 @@ class CreateSelfEmploymentPeriodicControllerSpec
       service = mockCreateSelfEmploymentPeriodicService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
-      idGenerator = mockIdGenerator
+      new StandardControllerFactory(mockIdGenerator, ApiCommonErrorHandling)
     )
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))

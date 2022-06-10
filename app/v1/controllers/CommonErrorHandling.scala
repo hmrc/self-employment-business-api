@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package v1.controllers
 
-import com.google.inject.AbstractModule
-import v1.controllers.{ ApiCommonErrorHandling, CommonErrorHandling }
+import play.api.mvc.Result
+import v1.models.errors.ErrorWrapper
 
-class DIModule extends AbstractModule {
+trait CommonErrorHandlingComponent {
+  def commonErrorHandling: CommonErrorHandling
+}
 
-  override def configure(): Unit = {
-    bind(classOf[AppConfig]).to(classOf[AppConfigImpl]).asEagerSingleton()
-    bind(classOf[CommonErrorHandling]).toInstance(ApiCommonErrorHandling)
-  }
+/**
+  * Defines default error handling that can be used across all endpoints
+  */
+trait CommonErrorHandling {
+  def errorResultPF: PartialFunction[ErrorWrapper, Result]
 }

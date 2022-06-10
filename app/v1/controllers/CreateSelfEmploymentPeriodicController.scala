@@ -18,7 +18,7 @@ package v1.controllers
 
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ Action, ControllerComponents }
-import utils.{ IdGenerator, Logging }
+import utils.Logging
 import v1.controllers.requestParsers.CreateSelfEmploymentPeriodicRequestParser
 import v1.hateoas.HateoasFactory
 import v1.models.errors.ErrorWrapper.WithCode
@@ -37,7 +37,7 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
                                                        service: CreateSelfEmploymentPeriodicService,
                                                        hateoasFactory: HateoasFactory,
                                                        cc: ControllerComponents,
-                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                                       controllerFactory: StandardControllerFactory)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -46,7 +46,8 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
     EndpointLogContext(controllerName = "CreateSelfEmploymentPeriodController", endpointName = "createSelfEmploymentPeriodSummary")
 
   private val controller =
-    StandardControllerBuilder(parser, service)
+    controllerFactory
+      .using(parser, service)
       .withErrorHandling {
         case errorWrapper @ (WithCode(FromDateFormatError.code) | WithCode(ToDateFormatError.code) | WithCode(RuleBothExpensesSuppliedError.code) |
             WithCode(RuleToDateBeforeFromDateError.code) | WithCode(RuleOverlappingPeriod.code) | WithCode(RuleMisalignedPeriod.code) |
@@ -54,7 +55,7 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
           BadRequest(Json.toJson(errorWrapper))
       }
       .withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory))
-      .createController(idGenerator)
+      .createController
 
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
