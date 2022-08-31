@@ -27,10 +27,9 @@ import scala.concurrent.Future
 
 class DeleteSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
 
-  val taxYear: String = "2017-18"
-  val nino: String = "AA123456A"
+  val taxYear: String    = "2017-18"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
 
   private val requestData = DeleteSelfEmploymentAnnualSummaryRequest(
     nino = Nino(nino),
@@ -49,7 +48,8 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockDeleteSelfEmploymentAnnualSummaryConnector.deleteSelfEmploymentAnnualSummary(requestData)
+        MockDeleteSelfEmploymentAnnualSummaryConnector
+          .deleteSelfEmploymentAnnualSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         await(service.deleteSelfEmploymentAnnualSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
@@ -62,21 +62,22 @@ class DeleteSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockDeleteSelfEmploymentAnnualSummaryConnector.deleteSelfEmploymentAnnualSummary(requestData)
+          MockDeleteSelfEmploymentAnnualSummaryConnector
+            .deleteSelfEmploymentAnnualSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.deleteSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
-        "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-        "INVALID_TAX_YEAR" -> TaxYearFormatError,
+        "INVALID_NINO"            -> NinoFormatError,
+        "INVALID_INCOME_SOURCE"   -> BusinessIdFormatError,
+        "INVALID_TAX_YEAR"        -> TaxYearFormatError,
         "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "GONE" -> NotFoundError,
-        "INVALID_PAYLOAD" -> DownstreamError,
-        "SERVER_ERROR" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "GONE"                    -> NotFoundError,
+        "INVALID_PAYLOAD"         -> DownstreamError,
+        "SERVER_ERROR"            -> DownstreamError,
+        "SERVICE_UNAVAILABLE"     -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

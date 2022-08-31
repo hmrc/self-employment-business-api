@@ -30,7 +30,6 @@ class ListSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
 
   val response: ListSelfEmploymentPeriodicResponse[PeriodDetails] = ListSelfEmploymentPeriodicResponse(
     Seq(

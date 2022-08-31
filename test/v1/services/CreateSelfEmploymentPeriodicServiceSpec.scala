@@ -30,7 +30,6 @@ class CreateSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
 
   private val requestBody = CreateSelfEmploymentPeriodicBody(
     "2017-01-25",

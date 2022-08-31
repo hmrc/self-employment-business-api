@@ -30,7 +30,6 @@ class AmendSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
   val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val periodId: String = "2019-01-25_2020-01-25"
-  implicit val correlationId: String = "X-123"
 
   private val requestData = AmendPeriodicRequest(
     nino = Nino(nino),

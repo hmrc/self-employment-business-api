@@ -22,31 +22,34 @@ import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
-import v1.models.response.retrieveSEPeriodic.{ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse}
+import v1.models.response.retrieveSEPeriodic.{ ConsolidatedExpenses, Incomes, IncomesAmountObject, RetrieveSelfEmploymentPeriodicResponse }
 
 import scala.concurrent.Future
 
 class RetrieveSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val periodId: String = "2019-01-25_2020-01-25"
-  implicit val correlationId: String = "X-123"
+  val periodId: String   = "2019-01-25_2020-01-25"
 
   val response: RetrieveSelfEmploymentPeriodicResponse = RetrieveSelfEmploymentPeriodicResponse(
     "2019-01-25",
     "2020-01-25",
-    Some(Incomes(
-      Some(IncomesAmountObject(
+    Some(
+      Incomes(
+        Some(
+          IncomesAmountObject(
+            1000.20
+          )),
+        Some(
+          IncomesAmountObject(
+            1000.20
+          ))
+      )),
+    Some(
+      ConsolidatedExpenses(
         1000.20
       )),
-      Some(IncomesAmountObject(
-        1000.20
-      ))
-    )),
-    Some(ConsolidatedExpenses(
-      1000.20
-    )),
     None
   )
 
@@ -67,7 +70,8 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockRetrieveSelfEmploymentPeriodicUpdateConnector.retrieveSelfEmployment(requestData)
+        MockRetrieveSelfEmploymentPeriodicUpdateConnector
+          .retrieveSelfEmployment(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.retrieveSelfEmploymentPeriodicUpdate(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
@@ -80,21 +84,22 @@ class RetrieveSelfEmploymentPeriodicServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockRetrieveSelfEmploymentPeriodicUpdateConnector.retrieveSelfEmployment(requestData)
+          MockRetrieveSelfEmploymentPeriodicUpdateConnector
+            .retrieveSelfEmployment(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrieveSelfEmploymentPeriodicUpdate(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
+        "INVALID_NINO"             -> NinoFormatError,
         "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-        "INVALID_DATE_FROM" -> PeriodIdFormatError,
-        "INVALID_DATE_TO" -> PeriodIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "NOT_FOUND_PERIOD" -> NotFoundError,
-        "SERVER_ERROR" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "INVALID_DATE_FROM"        -> PeriodIdFormatError,
+        "INVALID_DATE_TO"          -> PeriodIdFormatError,
+        "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+        "NOT_FOUND_PERIOD"         -> NotFoundError,
+        "SERVER_ERROR"             -> DownstreamError,
+        "SERVICE_UNAVAILABLE"      -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

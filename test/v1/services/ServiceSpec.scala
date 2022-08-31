@@ -16,18 +16,20 @@
 
 package v1.services
 
-import play.api.http.{HeaderNames, MimeTypes, Status}
+import play.api.http.{ HeaderNames, MimeTypes, Status }
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.controllers.RequestContext
 
 import scala.concurrent.ExecutionContext
 
-trait ServiceSpec extends UnitSpec
-  with Status
-  with MimeTypes
-  with HeaderNames {
+trait ServiceSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier    = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  implicit val correlationId: String = "X-123"
+
+  implicit val ctx: RequestContext = RequestContext(hc, correlationId)
 
 }

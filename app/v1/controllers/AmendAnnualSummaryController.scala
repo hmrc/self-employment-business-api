@@ -23,7 +23,7 @@ import v1.controllers.requestParsers.AmendSelfEmploymentAnnualSummaryRequestPars
 import v1.hateoas.HateoasFactory
 import v1.models.errors.ErrorWrapper.WithCode
 import v1.models.errors.ValueFormatError
-import v1.models.request.amendSEAnnual.AmendAnnualSummaryRawData
+import v1.models.request.amendSEAnnual.{ AmendAnnualSummaryRawData, AmendAnnualSummaryRequest }
 import v1.services.{ AmendAnnualSummaryService, EnrolmentsAuthService, MtdIdLookupService }
 
 import javax.inject.{ Inject, Singleton }
@@ -45,7 +45,10 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
 
   private val controller =
     controllerFactory
-      .using(parser, service)
+      .withParser(parser)
+      .withService { request: AmendAnnualSummaryRequest => implicit ctx: RequestContext =>
+        service.amend(request)
+      }
       .withErrorHandling {
         case errorWrapper @ WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
       }

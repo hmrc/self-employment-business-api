@@ -23,41 +23,42 @@ import v1.models.domain.ex.MtdEx._
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveSEAnnual.RetrieveSelfEmploymentAnnualSummaryRequest
-import v1.models.response.retrieveSEAnnual.{Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponse}
+import v1.models.response.retrieveSEAnnual.{ Adjustments, Allowances, Class4NicInfo, NonFinancials, RetrieveSelfEmploymentAnnualSummaryResponse }
 
 import scala.concurrent.Future
 
 class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2019-20"
-  implicit val correlationId: String = "X-123"
+  val taxYear: String    = "2019-20"
 
   val response: RetrieveSelfEmploymentAnnualSummaryResponse = RetrieveSelfEmploymentAnnualSummaryResponse(
-    Some(Adjustments(
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25)
-    )),
-    Some(Allowances(
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25),
-      Some(100.25)
-    )),
+    Some(
+      Adjustments(
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25)
+      )),
+    Some(
+      Allowances(
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25),
+        Some(100.25)
+      )),
     Some(NonFinancials(Some(Class4NicInfo(Some(`001 - Non Resident`)))))
   )
 
@@ -78,7 +79,8 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockRetrieveSelfEmploymentConnector.retrieveSelfEmployment(requestData)
+        MockRetrieveSelfEmploymentConnector
+          .retrieveSelfEmployment(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.retrieveSelfEmploymentAnnualSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
@@ -91,19 +93,20 @@ class RetrieveSelfEmploymentAnnualSummaryServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-          MockRetrieveSelfEmploymentConnector.retrieveSelfEmployment(requestData)
+          MockRetrieveSelfEmploymentConnector
+            .retrieveSelfEmployment(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
           await(service.retrieveSelfEmploymentAnnualSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val input = Seq(
-        "INVALID_NINO" -> NinoFormatError,
-        "INVALID_INCOME_SOURCE" -> BusinessIdFormatError,
-        "INVALID_TAX_YEAR" -> TaxYearFormatError,
+        "INVALID_NINO"            -> NinoFormatError,
+        "INVALID_INCOME_SOURCE"   -> BusinessIdFormatError,
+        "INVALID_TAX_YEAR"        -> TaxYearFormatError,
         "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "SERVER_ERROR" -> DownstreamError,
-        "SERVICE_UNAVAILABLE" -> DownstreamError
+        "SERVER_ERROR"            -> DownstreamError,
+        "SERVICE_UNAVAILABLE"     -> DownstreamError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

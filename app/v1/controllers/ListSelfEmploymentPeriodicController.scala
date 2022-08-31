@@ -43,7 +43,8 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
 
   private val controller =
     controllerFactory
-      .using(parser, service)
+      .withParser(parser)
+      .withService(service)
       .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory))
       .createController
 

@@ -47,7 +47,8 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
 
   private val controller =
     controllerFactory
-      .using(parser, service)
+      .withParser(parser)
+      .withService(service)
       .withErrorHandling {
         case errorWrapper @ (WithCode(FromDateFormatError.code) | WithCode(ToDateFormatError.code) | WithCode(RuleBothExpensesSuppliedError.code) |
             WithCode(RuleToDateBeforeFromDateError.code) | WithCode(RuleOverlappingPeriod.code) | WithCode(RuleMisalignedPeriod.code) |

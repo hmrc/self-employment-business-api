@@ -22,19 +22,18 @@ import v1.models.domain.Nino
 import v1.models.domain.ex.MtdEx
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.{Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials}
+import v1.models.request.amendSEAnnual.{ Adjustments, Allowances, AmendAnnualSummaryBody, AmendAnnualSummaryRequest, Class4NicInfo, NonFinancials }
 import v1.models.response.amendSEAnnual.AmendAnnualSummaryResponse
 
 import scala.concurrent.Future
 
 class AmendAnnualSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val taxYear: String = "2017-18"
-  implicit val correlationId: String = "X-123"
+  val taxYear: String    = "2017-18"
 
-  private val requestBody =  AmendAnnualSummaryBody(
+  private val requestBody = AmendAnnualSummaryBody(
     Some(Adjustments(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(10.10))),
     Some(Allowances(Some(1.11), Some(2.22), Some(3.33), Some(4.44), Some(5.55), Some(6.66), Some(7.77), Some(8.88), Some(9.99), Some(11.11))),
     Some(NonFinancials(Some(Class4NicInfo(Some(MtdEx.`001 - Non Resident`)))))
@@ -64,20 +63,22 @@ class AmendAnnualSummaryServiceSpec extends ServiceSpec {
       "return correct result for a success" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, responseBody))
 
-        MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
+        MockAmendAnnualSummaryConnector
+          .amendAnnualSummary(requestData)
           .returns(Future.successful(outcome))
 
-        await(service.doService(requestData)) shouldBe outcome
+        await(service.amend(requestData)) shouldBe outcome
       }
 
       "map errors according to spec" when {
         def serviceError(desErrorCode: String, error: MtdError): Unit =
           s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockAmendAnnualSummaryConnector.amendAnnualSummary(requestData)
+            MockAmendAnnualSummaryConnector
+              .amendAnnualSummary(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.doService(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.amend(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(

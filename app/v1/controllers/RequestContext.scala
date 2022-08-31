@@ -16,7 +16,14 @@
 
 package v1.controllers
 
-case class EndpointLogContext(
-    controllerName: String,
-    endpointName: String
-)
+import uk.gov.hmrc.http.HeaderCarrier
+
+case class RequestContext(hc: HeaderCarrier, correlationId: String)
+
+object RequestContext {
+
+  implicit def toHeaderCarrier(implicit ctx: RequestContext): HeaderCarrier = ctx.hc
+
+  implicit def toCorrelationId(implicit ctx: RequestContext): String = ctx.correlationId
+
+}
