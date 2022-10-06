@@ -34,8 +34,8 @@ class RetrievePeriodSummaryConnector @Inject()(val http: HttpClient, val appConf
                                                                      ec: ExecutionContext,
                                                                      correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
-    val fromDate = request.periodId.substring(0, 10)
-    val toDate   = request.periodId.substring(11, 21)
+    val fromDate = request.periodId.from
+    val toDate   = request.periodId.to
 
     val nino       = request.nino.nino
     val businessId = request.businessId.value

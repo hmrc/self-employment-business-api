@@ -16,7 +16,9 @@
 
 package v1.services
 
+import cats.data.EitherT
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
@@ -38,19 +40,31 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
                                                                      logContext: EndpointLogContext,
                                                                      correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-    connector.retrievePeriodSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    val result = EitherT(connector.retrievePeriodSummary(request).map(_.leftMap(mapDesErrors(downstreamErrorMap))))
+
+    result.value
   }
 
-  private def desErrorMap =
-    Map(
-      "INVALID_NINO"            -> NinoFormatError,
-      "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
-      "INVALID_DATE_FROM"       -> PeriodIdFormatError,
-      "INVALID_DATE_TO"         -> PeriodIdFormatError,
+  private def downstreamErrorMap: Map[String, MtdError] = {
+    val downstreamErrors = Map(
+      "INVALID_NINO" -> NinoFormatError,
+      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
+      "INVALID_DATE_FROM" -> PeriodIdFormatError,
+      "INVALID_DATE_TO" -> PeriodIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "NOT_FOUND_PERIOD"        -> NotFoundError,
-      "SERVER_ERROR"            -> DownstreamError,
-      "SERVICE_UNAVAILABLE"     -> DownstreamError
+      "NOT_FOUND_PERIOD" -> NotFoundError,
+      "SERVER_ERROR" -> DownstreamError,
+      "SERVICE_UNAVAILABLE" -> DownstreamError
     )
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR" -> TaxYearFormatError,
+      "INVALID_INCOMESOURCE_ID" -> BusinessIdFormatError,
+      "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
+      "SUBMISSION_DATA_NOT_FOUND" -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+
+    )
+    downstreamErrors ++ extraTysErrors
+  }
 
 }
