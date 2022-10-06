@@ -20,6 +20,7 @@ import config.ConfidenceLevelConfig
 import definition.APIStatus.{ALPHA, BETA}
 import definition.Versions.VERSION_1
 import mocks.MockAppConfig
+import play.api.Configuration
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import v1.mocks.MockHttpClient
@@ -36,7 +37,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        MockAppConfig.featureSwitch returns None
+        MockAppConfig.featureSwitches returns Configuration.empty
         MockAppConfig.apiStatus returns "1.0"
         MockAppConfig.endpointsEnabled returns true
 
