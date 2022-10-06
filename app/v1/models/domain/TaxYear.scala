@@ -26,7 +26,7 @@ final case class TaxYear private (private val value: String) {
     */
   val year: Int = value.toInt
 
-  /** The tax year in MTD (vendor-facing) format, e.g. "2024".
+  /** The tax year in MTD (vendor-facing) format, e.g. "2023-24".
     */
   val asMtd: String = {
     val prefix  = value.take(2)
@@ -35,7 +35,7 @@ final case class TaxYear private (private val value: String) {
     prefix + yearOne + "-" + yearTwo
   }
 
-  /** The tax year in the pre-TYS downstream format, e.g. "2023-24".
+  /** The tax year in the pre-TYS downstream format, e.g. "2024".
     */
   val asDownstream: String = value
 
