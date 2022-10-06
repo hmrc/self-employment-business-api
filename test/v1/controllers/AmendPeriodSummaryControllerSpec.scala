@@ -150,7 +150,7 @@ class AmendPeriodSummaryControllerSpec
           (NotFoundError, NOT_FOUND),
           (RuleBothExpensesSuppliedError, BAD_REQUEST),
           (RuleNotAllowedConsolidatedExpenses, BAD_REQUEST),
-          (DownstreamError, INTERNAL_SERVER_ERROR)
+          (InternalError, INTERNAL_SERVER_ERROR)
         )
 
         input.foreach(args => (serviceErrors _).tupled(args))

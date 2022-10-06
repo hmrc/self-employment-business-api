@@ -20,7 +20,7 @@ import config.AppConfig
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import javax.inject.{Inject, Singleton}
 import v1.connectors.DownstreamUri.DesUri
 

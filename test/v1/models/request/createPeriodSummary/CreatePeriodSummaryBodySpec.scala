@@ -215,8 +215,8 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
   }
 
   "writes" should {
-    "write to des" when {
-      val fullDesJson = Json.parse(
+    "write to downstream" when {
+      val fullDownstreamJson = Json.parse(
         """
           |{
           |   "from": "2019-08-24",
@@ -362,7 +362,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |""".stripMargin)
 
       "a valid request with all optional fields is made" in {
-        Json.toJson(fullMtdBody) shouldBe fullDesJson
+        Json.toJson(fullMtdBody) shouldBe fullDownstreamJson
       }
 
       "a valid request with some optional fields is made" in {

@@ -91,7 +91,7 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
             Class4ExemptionReasonFormatError.code) | MtdErrorWithCode(DateFormatError.code) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
       case _               => unhandledError(errorWrapper)
     }
 

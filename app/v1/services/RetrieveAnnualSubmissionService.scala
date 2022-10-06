@@ -26,12 +26,12 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmissionConnector) extends DesResponseMappingSupport with Logging {
+class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmissionConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
       hc: HeaderCarrier,
@@ -39,7 +39,7 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
-    connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
 
   }
 
@@ -50,9 +50,9 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
       "INVALID_TAX_YEAR"        -> TaxYearFormatError,
       "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
       "NOT_FOUND_PERIOD"        -> NotFoundError,
-      "INVALID_CORRELATIONID"   -> DownstreamError,
-      "SERVER_ERROR"            -> DownstreamError,
-      "SERVICE_UNAVAILABLE"     -> DownstreamError
+      "INVALID_CORRELATIONID"   -> InternalError,
+      "SERVER_ERROR"            -> InternalError,
+      "SERVICE_UNAVAILABLE"     -> InternalError
     )
 
 }

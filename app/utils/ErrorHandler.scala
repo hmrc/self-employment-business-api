@@ -97,8 +97,8 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
         (e.reportAs, BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
-        (e.reportAs, DownstreamError, "ServerInternalError")
-      case _ => (INTERNAL_SERVER_ERROR, DownstreamError, "ServerInternalError")
+        (e.reportAs, InternalError, "ServerInternalError")
+      case _ => (INTERNAL_SERVER_ERROR, InternalError, "ServerInternalError")
     }
 
     auditConnector.sendEvent(

@@ -74,7 +74,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
 
           MockRetrievePeriodSummaryConnector
             .retrievePeriodSummary(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
           await(service.retrievePeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -86,8 +86,8 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
         "INVALID_DATE_TO"         -> PeriodIdFormatError,
         "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
         "NOT_FOUND_PERIOD"        -> NotFoundError,
-        "SERVER_ERROR"            -> DownstreamError,
-        "SERVICE_UNAVAILABLE"     -> DownstreamError
+        "SERVER_ERROR"            -> InternalError,
+        "SERVICE_UNAVAILABLE"     -> InternalError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

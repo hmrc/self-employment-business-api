@@ -16,50 +16,34 @@
 
 package v1.support
 
-import play.api.libs.json.{JsObject, Json, Writes}
 import utils.Logging
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
-trait DesResponseMappingSupport {
+trait DownstreamResponseMappingSupport {
   self: Logging =>
 
-  final def validateRetrieveResponse[T: Writes](desResponseWrapper: ResponseWrapper[T]): Either[ErrorWrapper, ResponseWrapper[T]] = {
-    if (Json.toJson(desResponseWrapper.responseData) == JsObject.empty) {
-      Left(ErrorWrapper(desResponseWrapper.correlationId, NotFoundError, None))
-    } else {
-      Right(desResponseWrapper)
-    }
-  }
-
-  def createPeriodId(responseWrapper: ResponseWrapper[Unit],
-                     fromDate: String,
-                     toDate: String): Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]] = {
-    Right(ResponseWrapper(responseWrapper.correlationId, CreatePeriodSummaryResponse(s"${fromDate}_$toDate")))
-  }
-
-  final def mapDesErrors[D](errorCodeMap: PartialFunction[String, MtdError])(desResponseWrapper: ResponseWrapper[DesError])(implicit
+  final def mapDownstreamErrors[D](errorCodeMap: PartialFunction[String, MtdError])(responseWrapper: ResponseWrapper[DownstreamError])(implicit
       logContext: EndpointLogContext): ErrorWrapper = {
 
     lazy val defaultErrorCodeMapping: String => MtdError = { code =>
       logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No mapping found for error code $code")
-      DownstreamError
+      InternalError
     }
 
-    desResponseWrapper match {
-      case ResponseWrapper(correlationId, DesErrors(error :: Nil)) =>
+    responseWrapper match {
+      case ResponseWrapper(correlationId, DownstreamErrors(error :: Nil)) =>
         ErrorWrapper(correlationId, errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping), None)
 
-      case ResponseWrapper(correlationId, DesErrors(errorCodes)) =>
+      case ResponseWrapper(correlationId, DownstreamErrors(errorCodes)) =>
         val mtdErrors = errorCodes.map(error => errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping))
 
-        if (mtdErrors.contains(DownstreamError)) {
+        if (mtdErrors.contains(InternalError)) {
           logger.warn(
             s"[${logContext.controllerName}] [${logContext.endpointName}] [CorrelationId - $correlationId]" +
               s" - downstream returned ${errorCodes.map(_.code).mkString(",")}. Revert to ISE")
-          ErrorWrapper(correlationId, DownstreamError, None)
+          ErrorWrapper(correlationId, InternalError, None)
         } else {
           ErrorWrapper(correlationId, BadRequestError, Some(mtdErrors))
         }

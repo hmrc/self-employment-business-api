@@ -30,9 +30,9 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String = "AA123456A"
+    val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val periodId: String = "2019-08-24_2019-08-24"
+    val periodId: String   = "2019-08-24_2019-08-24"
 
     val requestBodyJson: JsValue = Json.parse(
       s"""
@@ -83,8 +83,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |""".stripMargin
     )
 
-    val responseBody: JsValue = Json.parse(
-      s"""
+    val responseBody: JsValue = Json.parse(s"""
          |{
          |   "periodId":"2019-08-24_2019-08-24",
          |   "links":[
@@ -107,8 +106,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    val desResponse: JsValue = Json.parse(
-      s"""
+    val desResponse: JsValue = Json.parse(s"""
          |{
          |  "transactionReference": "2017090920170909"
          |}
@@ -116,7 +114,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$businessId/period"
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     def setupStubs(): StubMapping
 
@@ -133,7 +131,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       s"""
          |      {
          |        "code": "$code",
-         |        "reason": "des message"
+         |        "reason": "message"
          |      }
     """.stripMargin
 
@@ -148,7 +146,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, desUri, OK, desResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, OK, desResponse)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -376,12 +374,13 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq(
-          "/periodAllowableExpenses/premisesRunningCostsAllowable",
-          "/periodAllowableExpenses/financeChargesAllowable",
-          "/periodDisallowableExpenses/adminCostsDisallowable",
-          "/periodDisallowableExpenses/professionalFeesDisallowable"
-        ))))
+        response.json shouldBe Json.toJson(
+          ValueFormatError.copy(paths = Some(Seq(
+            "/periodAllowableExpenses/premisesRunningCostsAllowable",
+            "/periodAllowableExpenses/financeChargesAllowable",
+            "/periodDisallowableExpenses/adminCostsDisallowable",
+            "/periodDisallowableExpenses/professionalFeesDisallowable"
+          ))))
       }
 
       "both expenses and consolidated expenses are provided" in new Test {
@@ -459,8 +458,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       }
 
       s"a body missing mandatory fields is provided" in new Test {
-        override val requestBodyJson: JsValue = Json.parse(
-          """
+        override val requestBodyJson: JsValue = Json.parse("""
             | {
             |     "periodDates": {
             |           "periodEndDate": "2019-08-24"
@@ -479,14 +477,14 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-    "des service error" when {
-      def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"des returns an $desCode error and status $desStatus" in new Test {
+    "downstream service error" when {
+      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
           override def setupStubs(): StubMapping = {
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.POST, desUri, desStatus, errorBody(desCode))
+            DownstreamStub.onError(DownstreamStub.POST, downstreamUri, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().post(requestBodyJson))
@@ -504,12 +502,13 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (CONFLICT, "NOT_CONTIGUOUS_PERIOD", BAD_REQUEST, RuleNotContiguousPeriod),
         (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
         (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
-        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
+        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
       input.foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }
