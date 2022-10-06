@@ -63,7 +63,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .put(
             url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-            config = dummyIfsHeaderCarrierConfig,
+            config = dummyHeaderCarrierConfig,
             body = JsObject.empty,
             requiredHeaders = requiredIfsHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

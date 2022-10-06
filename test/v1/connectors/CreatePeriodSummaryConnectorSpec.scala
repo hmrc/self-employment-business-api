@@ -106,7 +106,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .post(
             url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries",
-            config = dummyDesHeaderCarrierConfig,
+            config = dummyHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
