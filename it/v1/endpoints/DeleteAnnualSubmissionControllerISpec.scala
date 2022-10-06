@@ -37,7 +37,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
 
     def setupStubs(): StubMapping
 
@@ -54,7 +54,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
       s"""
          |      {
          |        "code": "$code",
-         |        "reason": "des message"
+         |        "reason": "message"
          |      }
     """.stripMargin
 
@@ -72,7 +72,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino)
 
           DownstreamStub
-            .when(method = DownstreamStub.PUT, uri = desUri)
+            .when(method = DownstreamStub.PUT, uri = downstreamUri)
             .withRequestBody(Json.parse("{}"))
             .thenReturn(status = Status.NO_CONTENT)
         }
@@ -121,15 +121,15 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.PUT, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().delete())
@@ -142,17 +142,17 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
           (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE", Status.BAD_REQUEST, BusinessIdFormatError),
           (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
-          (Status.FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", Status.INTERNAL_SERVER_ERROR, DownstreamError),
+          (Status.FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", Status.INTERNAL_SERVER_ERROR, InternalError),
           (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
           (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),
           (Status.GONE, "GONE", Status.NOT_FOUND, NotFoundError),
-          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.BAD_REQUEST, "MISSING_EXEMPTION_REASON", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.BAD_REQUEST, "MISSING_EXEMPTION_INDICATOR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.BAD_REQUEST, "BAD_GATEWAY", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (Status.BAD_REQUEST, "INVALID_CORRELATIONID", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.BAD_REQUEST, "INVALID_PAYLOAD", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.BAD_REQUEST, "MISSING_EXEMPTION_REASON", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.BAD_REQUEST, "MISSING_EXEMPTION_INDICATOR", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.BAD_REQUEST, "BAD_GATEWAY", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

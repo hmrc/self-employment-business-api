@@ -16,11 +16,15 @@
 
 package v1.connectors
 
+import mocks.MockAppConfig
+import org.scalamock.handlers.CallHandler
+import play.api.Configuration
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockHttpClient
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
@@ -35,19 +39,20 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   implicit val hc: HeaderCarrier    = HeaderCarrier(otherHeaders = otherHeaders)
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
-  val dummyDesHeaderCarrierConfig: HeaderCarrier.Config =
+  val dummyHeaderCarrierConfig: HeaderCarrier.Config =
     HeaderCarrier.Config(
       Seq("^not-test-BaseUrl?$".r),
       Seq.empty[String],
-      Some("individuals-income-received-api")
+      Some("individuals-reliefs-api")
     )
 
-  val dummyIfsHeaderCarrierConfig: HeaderCarrier.Config =
-    HeaderCarrier.Config(
-      Seq("^not-test-BaseUrl?$".r),
-      Seq.empty[String],
-      Some("individuals-income-received-api")
-    )
+  val requiredDesHeaders: Seq[(String, String)] = Seq(
+    "Authorization"     -> "Bearer des-token",
+    "Environment"       -> "des-environment",
+    "User-Agent"        -> "individuals-reliefs-api",
+    "CorrelationId"     -> correlationId,
+    "Gov-Test-Scenario" -> "DEFAULT"
+  )
 
   val allowedDesHeaders: Seq[String] = Seq(
     "Accept",
@@ -56,6 +61,14 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     "Location",
     "X-Request-Timestamp",
     "X-Session-Id"
+  )
+
+  val requiredIfsHeaders: Seq[(String, String)] = Seq(
+    "Authorization"     -> "Bearer ifs-token",
+    "Environment"       -> "ifs-environment",
+    "User-Agent"        -> "individuals-reliefs-api",
+    "CorrelationId"     -> correlationId,
+    "Gov-Test-Scenario" -> "DEFAULT"
   )
 
   val allowedIfsHeaders: Seq[String] = Seq(
@@ -67,14 +80,109 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     "X-Session-Id"
   )
 
-  val requiredDesHeaders: Seq[(String, String)] = Seq(
-    "Environment"   -> "des-environment",
-    "Authorization" -> s"Bearer des-token"
+  val requiredTysIfsHeaders: Seq[(String, String)] = Seq(
+    "Authorization"     -> "Bearer TYS-IFS-token",
+    "Environment"       -> "TYS-IFS-environment",
+    "User-Agent"        -> "individuals-reliefs-api",
+    "CorrelationId"     -> correlationId,
+    "Gov-Test-Scenario" -> "DEFAULT"
   )
 
-  val requiredIfsHeaders: Seq[(String, String)] = Seq(
-    "Environment"   -> "ifs-environment",
-    "Authorization" -> s"Bearer ifs-token"
+  val allowedTysIfsHeaders: Seq[String] = Seq(
+    "Accept",
+    "Gov-Test-Scenario",
+    "Content-Type",
+    "Location",
+    "X-Request-Timestamp",
+    "X-Session-Id"
   )
+
+  protected trait ConnectorTest extends MockHttpClient with MockAppConfig {
+    protected val baseUrl: String = "http://test-BaseUrl"
+
+    implicit protected val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
+
+    protected val requiredHeaders: Seq[(String, String)]
+
+    protected def willGet[T](url: String): CallHandler[Future[T]] = {
+      MockHttpClient
+        .get(
+          url = url,
+          config = dummyHeaderCarrierConfig,
+          requiredHeaders = requiredHeaders,
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        )
+    }
+
+    protected def willPost[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
+      MockHttpClient
+        .post(
+          url = url,
+          config = dummyHeaderCarrierConfig,
+          body = body,
+          requiredHeaders = requiredHeaders ++ Seq("Content-Type" -> "application/json"),
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        )
+    }
+
+    protected def willPut[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
+      MockHttpClient
+        .put(
+          url = url,
+          config = dummyHeaderCarrierConfig,
+          body = body,
+          requiredHeaders = requiredHeaders ++ Seq("Content-Type" -> "application/json"),
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        )
+    }
+
+    protected def willDelete[T](url: String): CallHandler[Future[T]] = {
+      MockHttpClient
+        .delete(
+          url = url,
+          config = dummyHeaderCarrierConfig,
+          requiredHeaders = requiredHeaders,
+          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        )
+    }
+
+  }
+
+  protected trait DesTest extends ConnectorTest {
+
+    protected lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders
+
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+
+    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
+
+  }
+
+  protected trait IfsTest extends ConnectorTest {
+
+    protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
+
+    MockAppConfig.ifsBaseUrl returns baseUrl
+    MockAppConfig.ifsToken returns "ifs-token"
+    MockAppConfig.ifsEnvironment returns "ifs-environment"
+    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
+
+    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> false)
+  }
+
+  protected trait TysIfsTest extends ConnectorTest {
+
+    protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
+
+    MockAppConfig.tysIfsBaseUrl returns baseUrl
+    MockAppConfig.tysIfsToken returns "TYS-IFS-token"
+    MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
+    MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedIfsHeaders)
+
+    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
+  }
 
 }

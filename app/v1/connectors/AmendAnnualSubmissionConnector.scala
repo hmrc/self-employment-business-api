@@ -20,7 +20,7 @@ import config.AppConfig
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import javax.inject.{Inject, Singleton}
 import v1.connectors.DownstreamUri.DesUri
 
@@ -35,7 +35,7 @@ class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCon
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
-    val taxYear    = request.taxYear.toDownstream
+    val taxYear    = request.taxYear.asDownstream
     val businessId = request.businessId.value
 
     implicit val successCode: SuccessCode = SuccessCode(OK)

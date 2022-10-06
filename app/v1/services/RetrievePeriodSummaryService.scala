@@ -25,20 +25,20 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
+class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-                                                                     hc: HeaderCarrier,
-                                                                     ec: ExecutionContext,
-                                                                     logContext: EndpointLogContext,
-                                                                     correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-    connector.retrievePeriodSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
   }
 
   private def desErrorMap =
@@ -49,8 +49,8 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "INVALID_DATE_TO"         -> PeriodIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
       "NOT_FOUND_PERIOD"        -> NotFoundError,
-      "SERVER_ERROR"            -> DownstreamError,
-      "SERVICE_UNAVAILABLE"     -> DownstreamError
+      "SERVER_ERROR"            -> InternalError,
+      "SERVICE_UNAVAILABLE"     -> InternalError
     )
 
 }

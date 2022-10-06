@@ -64,7 +64,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
       MockHttpClient
         .get(
           url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries",
-          config = dummyDesHeaderCarrierConfig,
+          config = dummyHeaderCarrierConfig,
           requiredHeaders = requiredDesHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )

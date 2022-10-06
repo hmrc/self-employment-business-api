@@ -20,7 +20,7 @@ import config.AppConfig
 import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.IfsUri
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import javax.inject.{Inject, Singleton}
@@ -35,7 +35,7 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCo
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
-    val taxYear    = request.taxYear.toDownstream
+    val taxYear    = request.taxYear.asDownstream
     val businessId = request.businessId.value
 
     put(

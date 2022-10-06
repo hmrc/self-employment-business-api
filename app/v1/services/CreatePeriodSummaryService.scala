@@ -27,12 +27,12 @@ import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryService @Inject()(connector: CreatePeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
+class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
       hc: HeaderCarrier,
@@ -41,10 +41,11 @@ class CreatePeriodSummaryService @Inject()(connector: CreatePeriodSummaryConnect
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDesErrors(desErrorMap))
-      mtdResponseWrapper <- EitherT.fromEither[Future](
-        createPeriodId(desResponseWrapper, request.body.periodDates.periodStartDate, request.body.periodDates.periodEndDate))
-    } yield mtdResponseWrapper
+      responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(desErrorMap))
+    } yield responseWrapper.map { _ =>
+      import request.body.periodDates._
+      CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate")
+    }
 
     result.value
   }
@@ -59,8 +60,8 @@ class CreatePeriodSummaryService @Inject()(connector: CreatePeriodSummaryConnect
     "NOT_CONTIGUOUS_PERIOD"           -> RuleNotContiguousPeriod,
     "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
     "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
-    "SERVER_ERROR"                    -> DownstreamError,
-    "SERVICE_UNAVAILABLE"             -> DownstreamError
+    "SERVER_ERROR"                    -> InternalError,
+    "SERVICE_UNAVAILABLE"             -> InternalError
   )
 
 }

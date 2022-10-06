@@ -74,7 +74,7 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
 
           MockListPeriodSummariesConnector
             .listPeriodSummaries(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
           await(service.listPeriodSummaries(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -83,8 +83,8 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
         "INVALID_NINO"            -> NinoFormatError,
         "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
         "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "SERVER_ERROR"            -> DownstreamError,
-        "SERVICE_UNAVAILABLE"     -> DownstreamError
+        "SERVER_ERROR"            -> InternalError,
+        "SERVICE_UNAVAILABLE"     -> InternalError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

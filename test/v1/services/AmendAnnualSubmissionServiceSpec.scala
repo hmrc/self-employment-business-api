@@ -68,7 +68,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
 
             MockAmendAnnualSubmissionConnector
               .amendAnnualSubmission(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
             await(service.amendAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -77,17 +77,17 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
-          ("INVALID_PAYLOAD", DownstreamError),
-          ("INVALID_CORRELATIONID", DownstreamError),
-          ("MISSING_EXEMPTION_REASON", DownstreamError),
-          ("MISSING_EXEMPTION_INDICATOR", DownstreamError),
+          ("INVALID_PAYLOAD", InternalError),
+          ("INVALID_CORRELATIONID", InternalError),
+          ("MISSING_EXEMPTION_REASON", InternalError),
+          ("MISSING_EXEMPTION_INDICATOR", InternalError),
           ("ALLOWANCE_NOT_SUPPORTED", RuleAllowanceNotSupportedError),
           ("NOT_FOUND", NotFoundError),
           ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
-          ("GONE", DownstreamError),
-          ("SERVER_ERROR", DownstreamError),
-          ("BAD_GATEWAY", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
+          ("GONE", InternalError),
+          ("SERVER_ERROR", InternalError),
+          ("BAD_GATEWAY", InternalError),
+          ("SERVICE_UNAVAILABLE", InternalError)
         )
 
         input.foreach(args => (serviceError _).tupled(args))

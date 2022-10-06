@@ -20,7 +20,7 @@ import config.AppConfig
 
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.DesUri
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
 
 import javax.inject.{Inject, Singleton}

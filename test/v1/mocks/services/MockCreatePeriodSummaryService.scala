@@ -34,7 +34,8 @@ trait MockCreatePeriodSummaryService extends MockFactory {
 
   object MockCreatePeriodicService {
 
-    def createPeriodic(requestData: CreatePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]]] = {
+    def createPeriodic(
+        requestData: CreatePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]]] = {
       (mockCreatePeriodicService
         .createPeriodicSummary(_: CreatePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)

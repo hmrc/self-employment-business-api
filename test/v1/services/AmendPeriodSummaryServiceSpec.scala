@@ -67,7 +67,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
           MockAmendPeriodSummaryConnector
             .amendPeriodSummary(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
           await(service.amendPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -77,13 +77,13 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
         "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
         "INVALID_DATE_FROM"               -> PeriodIdFormatError,
         "INVALID_DATE_TO"                 -> PeriodIdFormatError,
-        "INVALID_PAYLOAD"                 -> DownstreamError,
+        "INVALID_PAYLOAD"                 -> InternalError,
         "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
         "NOT_FOUND_PERIOD"                -> NotFoundError,
         "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
         "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-        "SERVER_ERROR"                    -> DownstreamError,
-        "SERVICE_UNAVAILABLE"             -> DownstreamError
+        "SERVER_ERROR"                    -> InternalError,
+        "SERVICE_UNAVAILABLE"             -> InternalError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

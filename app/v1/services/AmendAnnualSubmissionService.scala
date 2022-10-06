@@ -24,13 +24,13 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionConnector) extends DesResponseMappingSupport with Logging {
+class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(implicit
       hc: HeaderCarrier,
@@ -38,24 +38,24 @@ class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionCo
       logContext: EndpointLogContext,
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    connector.amendAnnualSubmission(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    connector.amendAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(
     "INVALID_NINO"                -> NinoFormatError,
     "INVALID_TAX_YEAR"            -> TaxYearFormatError,
     "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-    "INVALID_PAYLOAD"             -> DownstreamError,
-    "INVALID_CORRELATIONID"       -> DownstreamError,
-    "MISSING_EXEMPTION_REASON"    -> DownstreamError,
-    "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
+    "INVALID_PAYLOAD"             -> InternalError,
+    "INVALID_CORRELATIONID"       -> InternalError,
+    "MISSING_EXEMPTION_REASON"    -> InternalError,
+    "MISSING_EXEMPTION_INDICATOR" -> InternalError,
     "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
     "NOT_FOUND"                   -> NotFoundError,
     "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-    "GONE"                        -> DownstreamError,
-    "SERVER_ERROR"                -> DownstreamError,
-    "BAD_GATEWAY"                 -> DownstreamError,
-    "SERVICE_UNAVAILABLE"         -> DownstreamError
+    "GONE"                        -> InternalError,
+    "SERVER_ERROR"                -> InternalError,
+    "BAD_GATEWAY"                 -> InternalError,
+    "SERVICE_UNAVAILABLE"         -> InternalError
   )
 
 }

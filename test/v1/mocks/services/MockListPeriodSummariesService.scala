@@ -34,8 +34,8 @@ trait MockListPeriodSummariesService extends MockFactory {
 
   object MockListPeriodSummariesService {
 
-    def listPeriodSummaries(
-        requestData: ListPeriodSummariesRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]]]] = {
+    def listPeriodSummaries(requestData: ListPeriodSummariesRequest)
+        : CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]]]] = {
       (mockListPeriodSummariesService
         .listPeriodSummaries(_: ListPeriodSummariesRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)

@@ -214,9 +214,9 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
   "LinksFactory" should {
     "produce the correct links" when {
       "called" in {
-        val nino                              = "AA111111A"
-        val businessId                        = "id"
-        val periodId                          = "periodId"
+        val nino                                   = "AA111111A"
+        val businessId                             = "id"
+        val periodId                               = "periodId"
         val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId)
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()

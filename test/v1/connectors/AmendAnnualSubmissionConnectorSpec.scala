@@ -63,7 +63,7 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
         MockHttpClient
           .put(
             url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-            config = dummyDesHeaderCarrierConfig,
+            config = dummyHeaderCarrierConfig,
             body = request.body,
             requiredHeaders = requiredDesHeadersPut,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

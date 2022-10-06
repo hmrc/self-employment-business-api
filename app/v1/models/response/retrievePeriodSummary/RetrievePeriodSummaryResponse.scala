@@ -23,9 +23,9 @@ import v1.models.domain.{BusinessId, Nino}
 import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
-                                    periodIncome: Option[PeriodIncome],
-                                    periodAllowableExpenses: Option[PeriodAllowableExpenses],
-                                    periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+                                         periodIncome: Option[PeriodIncome],
+                                         periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                                         periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
 object RetrievePeriodSummaryResponse extends HateoasLinks {
 

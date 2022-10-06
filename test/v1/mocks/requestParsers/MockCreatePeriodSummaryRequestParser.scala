@@ -31,5 +31,7 @@ trait MockCreatePeriodSummaryRequestParser extends MockFactory {
     def parseRequest(data: CreatePeriodSummaryRawData): CallHandler[Either[ErrorWrapper, CreatePeriodSummaryRequest]] = {
       (mockCreatePeriodicRequestParser.parseRequest(_: CreatePeriodSummaryRawData)(_: String)).expects(data, *)
     }
+
   }
+
 }
