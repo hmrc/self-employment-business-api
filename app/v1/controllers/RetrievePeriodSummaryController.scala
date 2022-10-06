@@ -32,13 +32,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryController @Inject()(val authService: EnrolmentsAuthService,
-                                                val lookupService: MtdIdLookupService,
-                                                parser: RetrievePeriodSummaryRequestParser,
-                                                service: RetrievePeriodSummaryService,
-                                                hateoasFactory: HateoasFactory,
-                                                cc: ControllerComponents,
-                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
+                                                 val lookupService: MtdIdLookupService,
+                                                 parser: RetrievePeriodSummaryRequestParser,
+                                                 service: RetrievePeriodSummaryService,
+                                                 hateoasFactory: HateoasFactory,
+                                                 cc: ControllerComponents,
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -85,7 +85,7 @@ class RetrievePeriodSummaryController @Inject()(val authService: EnrolmentsAuthS
     errorWrapper.error match {
       case NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError                                                                   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError                                                                 => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError                                                                   => InternalServerError(Json.toJson(errorWrapper))
       case _                                                                               => unhandledError(errorWrapper)
     }
 

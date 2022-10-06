@@ -19,7 +19,7 @@ package v1.connectors
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.DesUri
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
@@ -27,12 +27,12 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-                                                                     hc: HeaderCarrier,
-                                                                     ec: ExecutionContext,
-                                                                     correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
     val fromDate = request.periodId.from
     val toDate   = request.periodId.to

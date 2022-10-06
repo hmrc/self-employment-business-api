@@ -54,7 +54,7 @@ class AuthISpec extends IntegrationBaseSpec {
         )
     }
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
 
     val desResponseBody: JsValue = Json.parse("""{
         |   "transactionReference": "2017090920170909"
@@ -83,7 +83,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, desUri, OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, OK, desResponseBody)
         }
 
         val response: WSResponse = await(request().put(Json.parse(requestJson)))

@@ -21,31 +21,44 @@ import support.UnitSpec
 class TaxYearSpec extends UnitSpec {
 
   "TaxYear" when {
+
+    val taxYear = TaxYear.fromMtd("2023-24")
+
     "constructed from an MTD tax year" should {
-      "allow the downstream tax year to be extracted" should {
-        "return the downstream tax value" in {
-          TaxYear.fromMtd("2018-19").toDownstream shouldBe "2019"
-        }
+      "return the downstream tax value" in {
+        taxYear.asDownstream shouldBe "2024"
       }
 
-      "toMtd" should {
-        "allow the MTD tax year to be extracted" in {
-          TaxYear.fromMtd("2018-19").toMtd shouldBe "2018-19"
-        }
+      "return the MTD tax year" in {
+        taxYear.asMtd shouldBe "2023-24"
+      }
+
+      "return the tax year in the 'Tax Year Specific API' format" in {
+        taxYear.asTysDownstream shouldBe "23-24"
       }
     }
 
     "constructed from a downstream tax year" should {
-      "allow the downstream tax year to be extracted" should {
-        "return the downstream tax value" in {
-          TaxYear.fromDownstream("2019").toDownstream shouldBe "2019"
-        }
+      "return the downstream tax value" in {
+        TaxYear.fromDownstream("2019").asDownstream shouldBe "2019"
       }
 
-      "toMtd" should {
-        "allow the MTD tax year to be extracted" in {
-          TaxYear.fromDownstream("2019").toMtd shouldBe "2018-19"
-        }
+      "allow the MTD tax year to be extracted" in {
+        TaxYear.fromDownstream("2019").asMtd shouldBe "2018-19"
+      }
+    }
+
+    "constructed directly" should {
+      "not compile" in {
+        """new TaxYear("2021-22")""" shouldNot compile
+      }
+    }
+
+    "compared with equals" should {
+      "have equality based on content" in {
+        val taxYear = TaxYear.fromMtd("2021-22")
+        taxYear shouldBe TaxYear.fromDownstream("2022")
+        taxYear should not be TaxYear.fromDownstream("2021")
       }
     }
   }

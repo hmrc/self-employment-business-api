@@ -20,10 +20,10 @@ import play.api.http.Status._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import v1.connectors.DownstreamOutcome
-import v1.models.errors.{DownstreamError, OutboundError}
+import v1.models.errors.{InternalError, OutboundError}
 import v1.models.outcomes.ResponseWrapper
 
-object StandardDesHttpParser extends HttpParser {
+object StandardDownstreamHttpParser extends HttpParser {
 
   case class SuccessCode(status: Int) extends AnyVal
 
@@ -39,7 +39,7 @@ object StandardDesHttpParser extends HttpParser {
       doRead(url, response) { correlationId =>
         response.validateJson[A] match {
           case Some(ref) => Right(ResponseWrapper(correlationId, ref))
-          case None      => Left(ResponseWrapper(correlationId, OutboundError(DownstreamError)))
+          case None      => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
         }
       }
 
@@ -50,19 +50,19 @@ object StandardDesHttpParser extends HttpParser {
 
     if (response.status != successCode.status) {
       logger.warn(
-        "[StandardDesHttpParser][read] - " +
-          s"Error response received from DES with status: ${response.status} and body\n" +
+        "[StandardDownstreamHttpParser][read] - " +
+          s"Error response received with status: ${response.status} and body\n" +
           s"${response.body} and correlationId: $correlationId when calling $url")
     }
 
     response.status match {
       case successCode.status =>
         logger.info(
-          "[StandardDesHttpParser][read] - " +
-            s"Success response received from DES with correlationId: $correlationId when calling $url")
+          "[StandardDownstreamHttpParser][read] - " +
+            s"Success response received with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
       case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | GONE => Left(ResponseWrapper(correlationId, parseErrors(response)))
-      case _                                                     => Left(ResponseWrapper(correlationId, OutboundError(DownstreamError)))
+      case _                                                     => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
     }
   }
 

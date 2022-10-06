@@ -34,50 +34,50 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   private val requestBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(
-      PeriodDates(
-        "2019-08-24",
-        "2019-08-24"),
-      Some(PeriodIncome(
-        Some(1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodAllowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-99999.99),
-        Some(-1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodDisallowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-999.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-9999.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-99999999999.99),
-        Some(1000.99)
-      ))
+      PeriodDates("2019-08-24", "2019-08-24"),
+      Some(
+        PeriodIncome(
+          Some(1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodAllowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-99999.99),
+          Some(-1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodDisallowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-999.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-9999.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-99999999999.99),
+          Some(1000.99)
+        ))
     )
-
 
   private val requestData = CreatePeriodSummaryRequest(
     nino = Nino(nino),
@@ -113,7 +113,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
             MockCreatePeriodicConnector
               .createPeriodicSummary(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
             await(service.createPeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -128,8 +128,8 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
           ("NOT_ALLOWED_SIMPLIFIED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
           ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
+          ("SERVER_ERROR", InternalError),
+          ("SERVICE_UNAVAILABLE", InternalError)
         )
 
         input.foreach(args => (serviceError _).tupled(args))

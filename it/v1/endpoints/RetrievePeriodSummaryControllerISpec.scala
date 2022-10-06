@@ -184,7 +184,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       "to"   -> toDate
     )
 
-    def desUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
@@ -199,7 +199,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       s"""
          |      {
          |        "code": "$code",
-         |        "reason": "des message"
+         |        "reason": "message"
          |      }
     """.stripMargin
 
@@ -215,7 +215,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, desUri, queryParams, Status.OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, queryParams, Status.OK, desResponseBody)
         }
 
         val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
@@ -261,15 +261,15 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.GET, desUri, desStatus, errorBody(desCode))
+              DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
@@ -285,8 +285,8 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           (Status.BAD_REQUEST, "INVALID_DATE_TO", Status.BAD_REQUEST, PeriodIdFormatError),
           (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
           (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, DownstreamError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, DownstreamError)
+          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

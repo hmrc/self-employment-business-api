@@ -66,7 +66,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
 
           MockDeleteAnnualSubmissionConnector
             .deleteAnnualSubmission(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
           await(service.deleteAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -75,17 +75,17 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
         "INVALID_NINO"                -> NinoFormatError,
         "INVALID_TAX_YEAR"            -> TaxYearFormatError,
         "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-        "INVALID_CORRELATIONID"       -> DownstreamError,
-        "INVALID_PAYLOAD"             -> DownstreamError,
-        "MISSING_EXEMPTION_REASON"    -> DownstreamError,
-        "MISSING_EXEMPTION_INDICATOR" -> DownstreamError,
-        "ALLOWANCE_NOT_SUPPORTED"     -> DownstreamError,
+        "INVALID_CORRELATIONID"       -> InternalError,
+        "INVALID_PAYLOAD"             -> InternalError,
+        "MISSING_EXEMPTION_REASON"    -> InternalError,
+        "MISSING_EXEMPTION_INDICATOR" -> InternalError,
+        "ALLOWANCE_NOT_SUPPORTED"     -> InternalError,
         "NOT_FOUND"                   -> NotFoundError,
         "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
         "GONE"                        -> NotFoundError,
-        "SERVER_ERROR"                -> DownstreamError,
-        "BAD_GATEWAY"                 -> DownstreamError,
-        "SERVICE_UNAVAILABLE"         -> DownstreamError
+        "SERVER_ERROR"                -> InternalError,
+        "BAD_GATEWAY"                 -> InternalError,
+        "SERVICE_UNAVAILABLE"         -> InternalError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

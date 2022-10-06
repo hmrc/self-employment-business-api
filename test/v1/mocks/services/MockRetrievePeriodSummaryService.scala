@@ -34,9 +34,17 @@ trait MockRetrievePeriodSummaryService extends MockFactory {
 
   object MockRetrievePeriodSummaryService {
 
-    def retrieve(requestData: RetrievePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrievePeriodSummaryResponse]]]] = {
-      (mockRetrievePeriodSummaryService
-        .retrievePeriodSummary(_: RetrievePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+    def retrieve(
+        requestData: RetrievePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrievePeriodSummaryResponse]]]] = {
+      (
+        mockRetrievePeriodSummaryService
+          .retrievePeriodSummary(_: RetrievePeriodSummaryRequest)(
+            _: HeaderCarrier,
+            _: ExecutionContext,
+            _: EndpointLogContext,
+            _: String
+          )
+        )
         .expects(requestData, *, *, *, *)
     }
 

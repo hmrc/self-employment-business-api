@@ -27,20 +27,21 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
+class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-                                                                     hc: HeaderCarrier,
-                                                                     ec: ExecutionContext,
-                                                                     logContext: EndpointLogContext,
-                                                                     correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-    val result = EitherT(connector.retrievePeriodSummary(request).map(_.leftMap(mapDesErrors(downstreamErrorMap))))
+
+    val result = EitherT(connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap))))
 
     result.value
   }
@@ -52,9 +53,9 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "INVALID_DATE_FROM" -> PeriodIdFormatError,
       "INVALID_DATE_TO" -> PeriodIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "NOT_FOUND_PERIOD" -> NotFoundError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "NOT_FOUND_PERIOD"        -> NotFoundError,
+      "SERVER_ERROR"            -> InternalError,
+      "SERVICE_UNAVAILABLE"     -> InternalError
     )
     val extraTysErrors = Map(
       "INVALID_TAX_YEAR" -> TaxYearFormatError,

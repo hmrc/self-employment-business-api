@@ -25,12 +25,12 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends DesResponseMappingSupport with Logging {
+class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit
       hc: HeaderCarrier,
@@ -38,7 +38,7 @@ class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnecto
       logContext: EndpointLogContext,
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    connector.amendPeriodSummary(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
   }
 
   private def desErrorMap: Map[String, MtdError] = Map(
@@ -46,13 +46,13 @@ class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnecto
     "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
     "INVALID_DATE_FROM"               -> PeriodIdFormatError,
     "INVALID_DATE_TO"                 -> PeriodIdFormatError,
-    "INVALID_PAYLOAD"                 -> DownstreamError,
+    "INVALID_PAYLOAD"                 -> InternalError,
     "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
     "NOT_FOUND_PERIOD"                -> NotFoundError,
     "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
     "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-    "SERVER_ERROR"                    -> DownstreamError,
-    "SERVICE_UNAVAILABLE"             -> DownstreamError
+    "SERVER_ERROR"                    -> InternalError,
+    "SERVICE_UNAVAILABLE"             -> InternalError
   )
 
 }

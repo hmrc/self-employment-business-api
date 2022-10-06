@@ -64,7 +64,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
       MockHttpClient
         .get(
           url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-          config = dummyIfsHeaderCarrierConfig,
+          config = dummyHeaderCarrierConfig,
           requiredHeaders = requiredIfsHeaders,
           excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
         )

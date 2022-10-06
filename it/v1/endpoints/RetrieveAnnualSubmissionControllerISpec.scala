@@ -140,9 +140,9 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "NOT_FOUND_PERIOD", NOT_FOUND, NotFoundError),
-          (INTERNAL_SERVER_ERROR, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+          (INTERNAL_SERVER_ERROR, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

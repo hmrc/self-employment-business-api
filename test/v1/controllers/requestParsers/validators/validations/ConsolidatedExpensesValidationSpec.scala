@@ -22,80 +22,84 @@ import v1.models.request.createPeriodSummary._
 
 class ConsolidatedExpensesValidationSpec extends UnitSpec {
 
-  val allowableExpensesWithoutConsolidated: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
-    consolidatedExpenses = None,
-    costOfGoodsAllowable = Some(100.50),
-    paymentsToSubcontractorsAllowable = Some(100.50),
-    wagesAndStaffCostsAllowable = Some(100.50),
-    carVanTravelExpensesAllowable = Some(100.50),
-    premisesRunningCostsAllowable = Some(100.50),
-    maintenanceCostsAllowable = Some(100.50),
-    adminCostsAllowable = Some(100.50),
-    businessEntertainmentCostsAllowable = Some(100.50),
-    advertisingCostsAllowable = Some(100.50),
-    interestOnBankOtherLoansAllowable = Some(100.50),
-    financeChargesAllowable = Some(100.50),
-    irrecoverableDebtsAllowable = Some(100.50),
-    professionalFeesAllowable = Some(100.50),
-    depreciationAllowable = Some(100.50),
-    otherExpensesAllowable = Some(100.50)
-  ))
+  val allowableExpensesWithoutConsolidated: Option[PeriodAllowableExpenses] = Some(
+    PeriodAllowableExpenses(
+      consolidatedExpenses = None,
+      costOfGoodsAllowable = Some(100.50),
+      paymentsToSubcontractorsAllowable = Some(100.50),
+      wagesAndStaffCostsAllowable = Some(100.50),
+      carVanTravelExpensesAllowable = Some(100.50),
+      premisesRunningCostsAllowable = Some(100.50),
+      maintenanceCostsAllowable = Some(100.50),
+      adminCostsAllowable = Some(100.50),
+      businessEntertainmentCostsAllowable = Some(100.50),
+      advertisingCostsAllowable = Some(100.50),
+      interestOnBankOtherLoansAllowable = Some(100.50),
+      financeChargesAllowable = Some(100.50),
+      irrecoverableDebtsAllowable = Some(100.50),
+      professionalFeesAllowable = Some(100.50),
+      depreciationAllowable = Some(100.50),
+      otherExpensesAllowable = Some(100.50)
+    ))
 
-  val allowableExpensesWithConsolidated: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
-    consolidatedExpenses = Some(100.50),
-    costOfGoodsAllowable = Some(100.50),
-    paymentsToSubcontractorsAllowable = Some(100.50),
-    wagesAndStaffCostsAllowable = Some(100.50),
-    carVanTravelExpensesAllowable = Some(100.50),
-    premisesRunningCostsAllowable = Some(100.50),
-    maintenanceCostsAllowable = Some(100.50),
-    adminCostsAllowable = None,
-    businessEntertainmentCostsAllowable = Some(100.50),
-    advertisingCostsAllowable = Some(100.50),
-    interestOnBankOtherLoansAllowable = Some(100.50),
-    financeChargesAllowable = Some(100.50),
-    irrecoverableDebtsAllowable = Some(100.50),
-    professionalFeesAllowable = Some(100.50),
-    depreciationAllowable = Some(100.50),
-    otherExpensesAllowable = Some(100.50)
-  ))
+  val allowableExpensesWithConsolidated: Option[PeriodAllowableExpenses] = Some(
+    PeriodAllowableExpenses(
+      consolidatedExpenses = Some(100.50),
+      costOfGoodsAllowable = Some(100.50),
+      paymentsToSubcontractorsAllowable = Some(100.50),
+      wagesAndStaffCostsAllowable = Some(100.50),
+      carVanTravelExpensesAllowable = Some(100.50),
+      premisesRunningCostsAllowable = Some(100.50),
+      maintenanceCostsAllowable = Some(100.50),
+      adminCostsAllowable = None,
+      businessEntertainmentCostsAllowable = Some(100.50),
+      advertisingCostsAllowable = Some(100.50),
+      interestOnBankOtherLoansAllowable = Some(100.50),
+      financeChargesAllowable = Some(100.50),
+      irrecoverableDebtsAllowable = Some(100.50),
+      professionalFeesAllowable = Some(100.50),
+      depreciationAllowable = Some(100.50),
+      otherExpensesAllowable = Some(100.50)
+    ))
 
-  val allowableExpensesWithConsolidatedOnly: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
-    consolidatedExpenses = Some(100.50),
-    costOfGoodsAllowable = None,
-    paymentsToSubcontractorsAllowable = None,
-    wagesAndStaffCostsAllowable = None,
-    carVanTravelExpensesAllowable = None,
-    premisesRunningCostsAllowable = None,
-    maintenanceCostsAllowable = None,
-    adminCostsAllowable = None,
-    businessEntertainmentCostsAllowable = None,
-    advertisingCostsAllowable = None,
-    interestOnBankOtherLoansAllowable = None,
-    financeChargesAllowable = None,
-    irrecoverableDebtsAllowable = None,
-    professionalFeesAllowable = None,
-    depreciationAllowable = None,
-    otherExpensesAllowable = None
-  ))
+  val allowableExpensesWithConsolidatedOnly: Option[PeriodAllowableExpenses] = Some(
+    PeriodAllowableExpenses(
+      consolidatedExpenses = Some(100.50),
+      costOfGoodsAllowable = None,
+      paymentsToSubcontractorsAllowable = None,
+      wagesAndStaffCostsAllowable = None,
+      carVanTravelExpensesAllowable = None,
+      premisesRunningCostsAllowable = None,
+      maintenanceCostsAllowable = None,
+      adminCostsAllowable = None,
+      businessEntertainmentCostsAllowable = None,
+      advertisingCostsAllowable = None,
+      interestOnBankOtherLoansAllowable = None,
+      financeChargesAllowable = None,
+      irrecoverableDebtsAllowable = None,
+      professionalFeesAllowable = None,
+      depreciationAllowable = None,
+      otherExpensesAllowable = None
+    ))
 
-  val disallowableExpenses: Option[PeriodDisallowableExpenses] = Some(PeriodDisallowableExpenses(
-    costOfGoodsDisallowable = Some(100.50),
-    paymentsToSubcontractorsDisallowable = Some(100.50),
-    wagesAndStaffCostsDisallowable = Some(100.50),
-    carVanTravelExpensesDisallowable = Some(100.50),
-    premisesRunningCostsDisallowable = Some(100.50),
-    maintenanceCostsDisallowable = Some(100.50),
-    adminCostsDisallowable = Some(100.50),
-    businessEntertainmentCostsDisallowable = Some(100.50),
-    advertisingCostsDisallowable = Some(100.50),
-    interestOnBankOtherLoansDisallowable = Some(100.50),
-    financeChargesDisallowable = Some(100.50),
-    irrecoverableDebtsDisallowable = Some(100.50),
-    professionalFeesDisallowable = Some(100.50),
-    depreciationDisallowable = Some(100.50),
-    otherExpensesDisallowable = Some(100.50)
-  ))
+  val disallowableExpenses: Option[PeriodDisallowableExpenses] = Some(
+    PeriodDisallowableExpenses(
+      costOfGoodsDisallowable = Some(100.50),
+      paymentsToSubcontractorsDisallowable = Some(100.50),
+      wagesAndStaffCostsDisallowable = Some(100.50),
+      carVanTravelExpensesDisallowable = Some(100.50),
+      premisesRunningCostsDisallowable = Some(100.50),
+      maintenanceCostsDisallowable = Some(100.50),
+      adminCostsDisallowable = Some(100.50),
+      businessEntertainmentCostsDisallowable = Some(100.50),
+      advertisingCostsDisallowable = Some(100.50),
+      interestOnBankOtherLoansDisallowable = Some(100.50),
+      financeChargesDisallowable = Some(100.50),
+      irrecoverableDebtsDisallowable = Some(100.50),
+      professionalFeesDisallowable = Some(100.50),
+      depreciationDisallowable = Some(100.50),
+      otherExpensesDisallowable = Some(100.50)
+    ))
 
   "validate" should {
     "return no errors" when {

@@ -73,7 +73,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
 
           MockRetrieveConnector
             .retrieveAnnualSubmission(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
           await(service.retrieveAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -84,9 +84,9 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
         "INVALID_TAX_YEAR"        -> TaxYearFormatError,
         "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
         "NOT_FOUND_PERIOD"        -> NotFoundError,
-        "INVALID_CORRELATIONID"   -> DownstreamError,
-        "SERVER_ERROR"            -> DownstreamError,
-        "SERVICE_UNAVAILABLE"     -> DownstreamError
+        "INVALID_CORRELATIONID"   -> InternalError,
+        "SERVER_ERROR"            -> InternalError,
+        "SERVICE_UNAVAILABLE"     -> InternalError
       )
 
       input.foreach(args => (serviceError _).tupled(args))

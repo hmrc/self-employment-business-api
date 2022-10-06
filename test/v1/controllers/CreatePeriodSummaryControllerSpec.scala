@@ -116,48 +116,49 @@ class CreatePeriodSummaryControllerSpec
 
   private val requestBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(
-      PeriodDates(
-        "2019-08-24",
-        "2019-08-24"),
-      Some(PeriodIncome(
-        Some(1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodAllowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-99999.99),
-        Some(-1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodDisallowableExpenses(
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-999.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-9999.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-99999999999.99),
-        Some(1000.99)
-      ))
+      PeriodDates("2019-08-24", "2019-08-24"),
+      Some(
+        PeriodIncome(
+          Some(1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodAllowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-99999.99),
+          Some(-1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodDisallowableExpenses(
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-999.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-9999.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-99999999999.99),
+          Some(1000.99)
+        ))
     )
 
   val responseJson: JsValue = Json.parse(
@@ -258,11 +259,12 @@ class CreatePeriodSummaryControllerSpec
           (RuleNotContiguousPeriod, BAD_REQUEST),
           (RuleNotAllowedConsolidatedExpenses, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
-          (DownstreamError, INTERNAL_SERVER_ERROR)
+          (InternalError, INTERNAL_SERVER_ERROR)
         )
 
         input.foreach(args => (serviceErrors _).tupled(args))
       }
     }
   }
+
 }

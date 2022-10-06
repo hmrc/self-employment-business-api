@@ -25,12 +25,12 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends DesResponseMappingSupport with Logging {
+class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
       hc: HeaderCarrier,
@@ -38,7 +38,7 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
-    connector.listPeriodSummaries(request).map(_.leftMap(mapDesErrors(desErrorMap)))
+    connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
   }
 
   private val desErrorMap =
@@ -46,8 +46,8 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "SERVER_ERROR"            -> DownstreamError,
-      "SERVICE_UNAVAILABLE"     -> DownstreamError
+      "SERVER_ERROR"            -> InternalError,
+      "SERVICE_UNAVAILABLE"     -> InternalError
     )
 
 }

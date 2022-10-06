@@ -27,7 +27,7 @@ import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors.{
   BadRequestError,
   BusinessIdFormatError,
-  DownstreamError,
+  InternalError,
   ErrorWrapper,
   MtdError,
   NinoFormatError,
@@ -161,7 +161,7 @@ class RetrievePeriodSummaryControllerSpec
           (BusinessIdFormatError, BAD_REQUEST),
           (PeriodIdFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
-          (DownstreamError, INTERNAL_SERVER_ERROR)
+          (InternalError, INTERNAL_SERVER_ERROR)
         )
 
         input.foreach(args => (serviceErrors _).tupled(args))

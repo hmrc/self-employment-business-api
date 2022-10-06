@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.auth.UserDetails
-import v1.models.errors.{DownstreamError, UnauthorisedError}
+import v1.models.errors.{InternalError, UnauthorisedError}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -188,7 +188,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
       "return an error" in new Test {
 
-        val expected = Left(DownstreamError)
+        val expected = Left(InternalError)
 
         MockAppConfig.confidenceLevelCheckEnabled.returns(ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = false))
         MockAuthConnector

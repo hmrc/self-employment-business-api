@@ -25,10 +25,10 @@ import v1.connectors.DownstreamUri.DesUri
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 import scala.concurrent.{ExecutionContext, Future}
-import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 
 @Singleton
-class CreatePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
       hc: HeaderCarrier,

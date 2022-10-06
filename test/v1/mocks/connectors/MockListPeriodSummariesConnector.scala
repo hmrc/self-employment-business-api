@@ -31,7 +31,8 @@ trait MockListPeriodSummariesConnector extends MockFactory {
 
   object MockListPeriodSummariesConnector {
 
-    def listPeriodSummaries(requestData: ListPeriodSummariesRequest): CallHandler[Future[DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]]]] = {
+    def listPeriodSummaries(
+        requestData: ListPeriodSummariesRequest): CallHandler[Future[DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]]]] = {
       (mockListPeriodSummariesConnector
         .listPeriodSummaries(_: ListPeriodSummariesRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

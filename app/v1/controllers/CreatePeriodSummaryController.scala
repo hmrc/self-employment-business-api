@@ -16,7 +16,6 @@
 
 package v1.controllers
 
-
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
@@ -33,15 +32,14 @@ import v1.services.{CreatePeriodSummaryService, EnrolmentsAuthService, MtdIdLook
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
-class CreatePeriodSummaryController @Inject()(val authService: EnrolmentsAuthService,
-                                              val lookupService: MtdIdLookupService,
-                                              parser: CreatePeriodSummaryRequestParser,
-                                              service: CreatePeriodSummaryService,
-                                              hateoasFactory: HateoasFactory,
-                                              cc: ControllerComponents,
-                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
+                                               val lookupService: MtdIdLookupService,
+                                               parser: CreatePeriodSummaryRequestParser,
+                                               service: CreatePeriodSummaryService,
+                                               hateoasFactory: HateoasFactory,
+                                               cc: ControllerComponents,
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -77,7 +75,7 @@ class CreatePeriodSummaryController @Inject()(val authService: EnrolmentsAuthSer
 
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
-        val result: Result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val result: Result   = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
 
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -95,10 +93,9 @@ class CreatePeriodSummaryController @Inject()(val authService: EnrolmentsAuthSer
           RuleEndDateBeforeStartDateError | RuleOverlappingPeriod | RuleMisalignedPeriod | RuleNotContiguousPeriod |
           RuleNotAllowedConsolidatedExpenses =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
-      case _               => unhandledError(errorWrapper)
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
+      case _             => unhandledError(errorWrapper)
     }
 
 }
-
