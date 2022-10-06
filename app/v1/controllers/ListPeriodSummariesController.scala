@@ -85,7 +85,7 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
     errorWrapper.error match {
       case NinoFormatError | BusinessIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError                                             => NotFound(Json.toJson(errorWrapper))
-      case InternalError                                           => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError                                             => InternalServerError(Json.toJson(errorWrapper))
       case _                                                         => unhandledError(errorWrapper)
     }
 

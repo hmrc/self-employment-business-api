@@ -34,49 +34,50 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
   val request: CreatePeriodSummaryRequest = CreatePeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    body =  CreatePeriodSummaryBody(
-      PeriodDates(
-        "2019-08-24",
-        "2019-08-24"),
-      Some(PeriodIncome(
-        Some(1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodAllowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-99999.99),
-        Some(-1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodDisallowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-999.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-9999.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-99999999999.99),
-        Some(1000.99)
-      ))
+    body = CreatePeriodSummaryBody(
+      PeriodDates("2019-08-24", "2019-08-24"),
+      Some(
+        PeriodIncome(
+          Some(1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodAllowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-99999.99),
+          Some(-1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodDisallowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-999.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-9999.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-99999999999.99),
+          Some(1000.99)
+        ))
     )
   )
 

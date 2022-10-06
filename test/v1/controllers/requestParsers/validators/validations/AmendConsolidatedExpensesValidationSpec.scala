@@ -23,84 +23,84 @@ import v1.models.utils.JsonErrorValidators
 
 class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
 
+  val allowableExpenses: Option[PeriodAllowableExpenses] = Some(
+    PeriodAllowableExpenses(
+      None,
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50)
+    ))
 
+  val allowableExpensesConsolidated: Option[PeriodAllowableExpenses] = Some(
+    PeriodAllowableExpenses(
+      Some(100.50),
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None
+    ))
 
-  val allowableExpenses: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
-    None,
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50)
-  ))
+  val allowableExpensesBothSupplied: Option[PeriodAllowableExpenses] = Some(
+    PeriodAllowableExpenses(
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50)
+    ))
 
-  val allowableExpensesConsolidated: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
-    Some(100.50),
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None
-  ))
-
-  val allowableExpensesBothSupplied: Option[PeriodAllowableExpenses] = Some(PeriodAllowableExpenses(
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50)
-  ))
-
-
-
-  val disallowableExpenses: Option[PeriodDisallowableExpenses] = Some(PeriodDisallowableExpenses(
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50),
-    Some(100.50)
-  ))
+  val disallowableExpenses: Option[PeriodDisallowableExpenses] = Some(
+    PeriodDisallowableExpenses(
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50),
+      Some(100.50)
+    ))
 
   "validate" should {
     "return no errors" when {

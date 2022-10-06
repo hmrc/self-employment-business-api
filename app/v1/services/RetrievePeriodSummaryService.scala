@@ -33,10 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-                                                                     hc: HeaderCarrier,
-                                                                     ec: ExecutionContext,
-                                                                     logContext: EndpointLogContext,
-                                                                     correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      logContext: EndpointLogContext,
+      correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
     connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
   }

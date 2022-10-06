@@ -87,9 +87,9 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
       case BadRequestError | NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | RuleBothExpensesSuppliedError |
           RuleNotAllowedConsolidatedExpenses | MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))
-      case _               => unhandledError(errorWrapper)
+      case _             => unhandledError(errorWrapper)
     }
 
 }

@@ -23,85 +23,84 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
 
   val fullMtdBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(
-      PeriodDates(
-        "2019-08-24",
-        "2019-08-24"),
-      Some(PeriodIncome(
-        Some(1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodAllowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-99999.99),
-        Some(-1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodDisallowableExpenses(
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-999.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-9999.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-99999999999.99),
-        Some(1000.99)
-      ))
+      PeriodDates("2019-08-24", "2019-08-24"),
+      Some(
+        PeriodIncome(
+          Some(1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodAllowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-99999.99),
+          Some(-1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodDisallowableExpenses(
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-999.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-9999.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-99999999999.99),
+          Some(1000.99)
+        ))
     )
 
   val someOptionalFieldsMtdBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(
-      PeriodDates(
-        "2019-08-24",
-        "2019-08-24"),
-      Some(PeriodIncome(
-        Some(1000.99),
-        Some(1000.99)
-      )),
-      Some(PeriodAllowableExpenses(
-        None,
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-99999.99),
-        Some(-1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-1000.99),
-        Some(-99999999999.99),
-        Some(-1000.99),
-        Some(1000.99)
-      )),
+      PeriodDates("2019-08-24", "2019-08-24"),
+      Some(
+        PeriodIncome(
+          Some(1000.99),
+          Some(1000.99)
+        )),
+      Some(
+        PeriodAllowableExpenses(
+          None,
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-99999.99),
+          Some(-1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-1000.99),
+          Some(-99999999999.99),
+          Some(-1000.99),
+          Some(1000.99)
+        )),
       None
     )
 
   val noOptionalFieldsMtdBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(
-      PeriodDates(
-        "2019-08-24",
-        "2019-08-24"),
+      PeriodDates("2019-08-24", "2019-08-24"),
       None,
       None,
       None
@@ -109,8 +108,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
 
   "reads" should {
     "read from a JSON" when {
-      val fullRequestJson = Json.parse(
-        """
+      val fullRequestJson = Json.parse("""
           |{
           |     "periodDates": {
           |           "periodStartDate": "2019-08-24",
@@ -157,8 +155,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |}
           |""".stripMargin)
 
-      val someOptionalRequestJson = Json.parse(
-        """
+      val someOptionalRequestJson = Json.parse("""
           |{
           |     "periodDates": {
           |           "periodStartDate": "2019-08-24",
@@ -188,9 +185,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |}
           |""".stripMargin)
 
-
-      val noOptionalRequestJson = Json.parse(
-        """
+      val noOptionalRequestJson = Json.parse("""
           |{
           |     "periodDates": {
           |           "periodStartDate": "2019-08-24",
@@ -198,7 +193,6 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |     }
           |}
           |""".stripMargin)
-
 
       "a valid request with all optional fields is made" in {
         fullRequestJson.as[CreatePeriodSummaryBody] shouldBe fullMtdBody
@@ -216,8 +210,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
 
   "writes" should {
     "write to downstream" when {
-      val fullDownstreamJson = Json.parse(
-        """
+      val fullDownstreamJson = Json.parse("""
           |{
           |   "from": "2019-08-24",
           |   "to": "2019-08-24",
@@ -292,8 +285,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |}
           |""".stripMargin)
 
-      val someOptionalDesJson = Json.parse(
-        """
+      val someOptionalDesJson = Json.parse("""
           |{
           |   "from": "2019-08-24",
           |   "to": "2019-08-24",
@@ -353,8 +345,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |}
           |""".stripMargin)
 
-      val noOptionalDesJson = Json.parse(
-        """
+      val noOptionalDesJson = Json.parse("""
           |{
           |   "from": "2019-08-24",
           |   "to": "2019-08-24"
@@ -374,4 +365,5 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
       }
     }
   }
+
 }

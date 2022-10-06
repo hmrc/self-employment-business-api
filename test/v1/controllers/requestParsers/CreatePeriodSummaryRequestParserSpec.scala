@@ -23,7 +23,7 @@ import v1.models.domain.{BusinessId, Nino}
 import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError}
 import v1.models.request.createPeriodSummary._
 
-class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSummaryFixture{
+class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSummaryFixture {
 
   val nino: String                   = "AA123456B"
   val businessId: String             = "XAIS12345678910"

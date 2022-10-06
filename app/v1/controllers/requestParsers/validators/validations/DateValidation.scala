@@ -54,4 +54,5 @@ object DateValidation {
 
     if (convertedToDate.isBefore(convertedFromDate)) List(RuleEndDateBeforeStartDateError) else Nil
   }
+
 }

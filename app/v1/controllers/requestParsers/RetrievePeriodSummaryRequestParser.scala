@@ -21,7 +21,7 @@ import v1.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 
-class RetrievePeriodSummaryRequestParser @Inject()(val validator: RetrievePeriodSummaryValidator)
+class RetrievePeriodSummaryRequestParser @Inject() (val validator: RetrievePeriodSummaryValidator)
     extends RequestParser[RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest] {
 
   override protected def requestFor(data: RetrievePeriodSummaryRawData): RetrievePeriodSummaryRequest =

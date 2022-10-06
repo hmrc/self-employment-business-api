@@ -31,6 +31,7 @@ trait AppConfig {
   def desEnv: String
   def desToken: String
   def desEnvironmentHeaders: Option[Seq[String]]
+
   lazy val desDownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = desBaseUrl, env = desEnv, token = desToken, environmentHeaders = desEnvironmentHeaders)
 
@@ -39,6 +40,7 @@ trait AppConfig {
   def ifsEnv: String
   def ifsToken: String
   def ifsEnvironmentHeaders: Option[Seq[String]]
+
   lazy val ifsDownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = ifsBaseUrl, env = ifsEnv, token = ifsToken, environmentHeaders = ifsEnvironmentHeaders)
 
@@ -78,9 +80,9 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val ifsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs.environmentHeaders")
 
   // Tax Year Specific (TYS) IFS Config
-  val tysIfsBaseUrl: String = config.baseUrl("tys-ifs")
-  val tysIfsEnv: String = config.getString("microservice.services.tys-ifs.env")
-  val tysIfsToken: String = config.getString("microservice.services.tys-ifs.token")
+  val tysIfsBaseUrl: String                         = config.baseUrl("tys-ifs")
+  val tysIfsEnv: String                             = config.getString("microservice.services.tys-ifs.env")
+  val tysIfsToken: String                           = config.getString("microservice.services.tys-ifs.token")
   val tysIfsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.tys-ifs.environmentHeaders")
 
   // API Config
@@ -90,7 +92,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
 
   def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
-  def endpointsEnabled(version: String): Boolean   = config.getBoolean(s"api.$version.endpoints.enabled")
+  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
 }
 
 trait FixedConfig {

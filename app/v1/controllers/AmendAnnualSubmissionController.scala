@@ -90,9 +90,9 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
             RuleAllowanceNotSupportedError.code) | MtdErrorWithCode(StringFormatError.code) | MtdErrorWithCode(
             Class4ExemptionReasonFormatError.code) | MtdErrorWithCode(DateFormatError.code) =>
         BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError   => NotFound(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))
-      case _               => unhandledError(errorWrapper)
+      case _             => unhandledError(errorWrapper)
     }
 
 }
