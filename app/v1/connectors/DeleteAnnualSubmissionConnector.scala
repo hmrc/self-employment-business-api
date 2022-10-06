@@ -35,7 +35,7 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCo
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
-    val taxYear    = request.taxYear.toDownstream
+    val taxYear    = request.taxYear.asDownstream
     val businessId = request.businessId.value
 
     put(

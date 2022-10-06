@@ -35,7 +35,7 @@ class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCon
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino       = request.nino.nino
-    val taxYear    = request.taxYear.toDownstream
+    val taxYear    = request.taxYear.asDownstream
     val businessId = request.businessId.value
 
     implicit val successCode: SuccessCode = SuccessCode(OK)

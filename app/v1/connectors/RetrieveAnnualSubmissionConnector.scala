@@ -35,7 +35,7 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
       correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     val nino       = request.nino.nino
-    val taxYear    = request.taxYear.toDownstream
+    val taxYear    = request.taxYear.asDownstream
     val businessId = request.businessId.value
 
     get(

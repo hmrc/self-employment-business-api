@@ -26,7 +26,7 @@ trait HateoasLinks {
 
   // Domain URIs
   private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
-    s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.toMtd}"
+    s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.asMtd}"
 
   private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period"
