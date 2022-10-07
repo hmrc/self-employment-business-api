@@ -79,7 +79,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           await(service.retrievePeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
+      val errors = Seq(
         "INVALID_NINO"            -> NinoFormatError,
         "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
         "INVALID_DATE_FROM"       -> PeriodIdFormatError,
@@ -89,8 +89,15 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
         "SERVER_ERROR"            -> InternalError,
         "SERVICE_UNAVAILABLE"     -> InternalError
       )
+      val extraTysErrors = Seq(
+        "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+        "INVALID_CORRELATION_ID"       -> InternalError,
+        "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
+        "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
+        "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
+      )
 
-      input.foreach(args => (serviceError _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

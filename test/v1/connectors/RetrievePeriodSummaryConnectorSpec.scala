@@ -16,9 +16,7 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import v1.mocks.MockHttpClient
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v1.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
@@ -30,46 +28,62 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2019-01-25_2020-01-25"
+  val tysPeriodId        = "2024-05-01_2024_08-01"
 
-  val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId)
-
-  val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
-    PeriodDates("2019-01-25", "2020-01-25"),
-    None,
-    None,
-    None
-  )
-
-  class Test extends MockHttpClient with MockAppConfig {
+  trait Test extends { _: ConnectorTest =>
 
     val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
-  "connector" must {
-    "send a request and return a body" in new Test {
-      val fromDate: String = request.periodId.substring(0, 10)
-      val toDate: String   = request.periodId.substring(11, 21)
+  "RetrievePeriodSummaryConnector" when {
+    "retrievePeriodSummary called " must {
+      "send a request and return a body" in new DesTest with Test {
+        val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId)
 
-      val outcome = Right(ResponseWrapper(correlationId, response))
-
-      MockHttpClient
-        .get(
-          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate",
-          config = dummyHeaderCarrierConfig,
-          requiredHeaders = requiredDesHeaders,
-          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
+        val fromDate: String = request.periodId.substring(0, 10)
+        val toDate: String   = request.periodId.substring(11, 21)
+        val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+          PeriodDates(fromDate, toDate),
+          None,
+          None,
+          None
         )
-        .returns(Future.successful(outcome))
 
-      await(connector.retrievePeriodSummary(request)) shouldBe outcome
+        val outcome = Right(ResponseWrapper(correlationId, response))
+
+        willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+          .returns(Future.successful(outcome))
+
+        await(connector.retrievePeriodSummary(request)) shouldBe outcome
+      }
+    }
+
+    "retrievePeriodSummary called for a TYS year " must {
+      "send a request and return a body" in new TysIfsTest with Test {
+        val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), tysPeriodId)
+
+        val fromDate: String = request.periodId.substring(0, 10)
+        val toDate: String   = request.periodId.substring(11, 21)
+        val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+          PeriodDates(fromDate, toDate),
+          None,
+          None,
+          None
+        )
+        val taxYear = TaxYear.fromDate(fromDate)
+
+        val outcome = Right(ResponseWrapper(correlationId, response))
+
+        willGet(
+          s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+          .returns(Future.successful(outcome))
+
+        await(connector.retrievePeriodSummary(request)) shouldBe outcome
+      }
     }
   }
 

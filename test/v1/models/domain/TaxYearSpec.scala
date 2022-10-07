@@ -61,6 +61,21 @@ class TaxYearSpec extends UnitSpec {
         taxYear should not be TaxYear.fromDownstream("2021")
       }
     }
+
+    "fromDate" should {
+      "return current year if date is before April" in {
+        TaxYear.fromDate("2020-01-01") shouldBe TaxYear("2020")
+      }
+      "return next year if date is after April" in {
+        TaxYear.fromDate("2020-05-01") shouldBe TaxYear("2021")
+      }
+      "return current year if date is 5th April" in {
+        TaxYear.fromDate("2020-04-05") shouldBe TaxYear("2020")
+      }
+      "return next year if date is on or after 6th April" in {
+        TaxYear.fromDate("2020-04-06") shouldBe TaxYear("2021")
+      }
+    }
   }
 
 }

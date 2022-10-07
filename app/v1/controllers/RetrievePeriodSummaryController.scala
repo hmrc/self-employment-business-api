@@ -83,10 +83,11 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                                                   => NotFound(Json.toJson(errorWrapper))
-      case InternalError                                                                   => InternalServerError(Json.toJson(errorWrapper))
-      case _                                                                               => unhandledError(errorWrapper)
+      case TaxYearFormatError | RuleTaxYearNotSupportedError | NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | BadRequestError =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
+      case _             => unhandledError(errorWrapper)
     }
 
 }
