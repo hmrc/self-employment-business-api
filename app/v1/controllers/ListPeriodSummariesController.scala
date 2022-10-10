@@ -49,10 +49,12 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
   def handleRequest(nino: String, businessId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       val taxYear: Option[String] = request.queryString.get("taxYear") match {
         case None => None
         case _    => Some(request.queryString.get("taxYear").get.head)
       }
+
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")

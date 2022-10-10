@@ -31,7 +31,8 @@ class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData]
   private def parameterFormatValidation: ListPeriodSummariesRawData => List[List[MtdError]] = (data: ListPeriodSummariesRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      BusinessIdValidation.validate(data.businessId)
+      BusinessIdValidation.validate(data.businessId),
+      data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
     )
   }
 

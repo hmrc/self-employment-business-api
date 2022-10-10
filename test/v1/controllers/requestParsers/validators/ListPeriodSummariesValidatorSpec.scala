@@ -47,6 +47,12 @@ class ListPeriodSummariesValidatorSpec extends UnitSpec {
       }
     }
 
+    "return TaxYearValidation error" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, Some("1234"))) shouldBe List(TaxYearFormatError)
+      }
+    }
+
     "return multiple errors" when {
       "request supplied has multiple errors" in {
         validator.validate(ListPeriodSummariesRawData("A12344A", "Baked Beans", taxYear)) shouldBe List(NinoFormatError, BusinessIdFormatError)

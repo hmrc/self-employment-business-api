@@ -67,6 +67,20 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     }
     "return error according to spec" when {
 
+      "tys specific validation" when {
+        s"validation fails with INVALID_TAX_YEAR error" in new TysIfsTest {
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(invalidTaxYearRequest().get())
+          response.status shouldBe BAD_REQUEST
+          response.json shouldBe Json.toJson(TaxYearFormatError)
+        }
+      }
       "validation error" when {
         def validationErrorTest(requestNino: String, requestBusinessId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
@@ -218,6 +232,15 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     def request(): WSRequest = {
       setupStubs()
       buildRequest(s"$uri?taxYear=${taxYear.asMtd}")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+    def invalidTaxYearRequest(): WSRequest = {
+      setupStubs()
+      buildRequest(s"$uri?taxYear=1234")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")

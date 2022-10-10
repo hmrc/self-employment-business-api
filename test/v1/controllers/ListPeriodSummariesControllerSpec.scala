@@ -154,7 +154,7 @@ class ListPeriodSummariesControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }
-    // taxYear = Some(taxYear)
+
     "return an error as per spec" when {
       "parser errors occur" should {
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
@@ -201,12 +201,20 @@ class ListPeriodSummariesControllerSpec
           }
         }
 
-        val input = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
+        val input = {
+          val errors = Seq(
+            (NinoFormatError, BAD_REQUEST),
+            (BusinessIdFormatError, BAD_REQUEST),
+            (NotFoundError, NOT_FOUND),
+            (InternalError, INTERNAL_SERVER_ERROR)
+          )
+          val tysSpecificErrors = Seq(
+            (TaxYearFormatError           -> BAD_REQUEST),
+            (RuleTaxYearNotSupportedError -> BAD_REQUEST)
+          )
+
+          errors ++ tysSpecificErrors
+        }
 
         input.foreach(args => (serviceErrors _).tupled(args))
       }
