@@ -38,11 +38,11 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
+    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
   }
 
-  private def errorMap = {
-    val errors = Map(
+  private def desErrorMap =
+    Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
       "INVALID_DATE_FROM"       -> PeriodIdFormatError,
@@ -52,14 +52,5 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "SERVER_ERROR"            -> InternalError,
       "SERVICE_UNAVAILABLE"     -> InternalError
     )
-    val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"             -> TaxYearFormatError,
-      "INVALID_CORRELATION_ID"       -> InternalError,
-      "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
-      "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
-    )
-    errors ++ extraTysErrors
-  }
 
 }

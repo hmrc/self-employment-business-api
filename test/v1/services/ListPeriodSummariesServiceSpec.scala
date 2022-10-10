@@ -18,7 +18,7 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockListPeriodSummariesConnector
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
@@ -30,6 +30,7 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
+  val taxYear: String                = "2024-25"
   implicit val correlationId: String = "X-123"
 
   val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
@@ -43,7 +44,14 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
 
   private val requestData = ListPeriodSummariesRequest(
     nino = Nino(nino),
-    businessId = BusinessId(businessId)
+    businessId = BusinessId(businessId),
+    None
+  )
+
+  private val requestDataForTys = ListPeriodSummariesRequest(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = Some(TaxYear.fromMtd(taxYear))
   )
 
   trait Test extends MockListPeriodSummariesConnector {
@@ -56,13 +64,23 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
   }
 
   "service" should {
-    "service call successful" when {
+    "service call successful for default request" when {
       "return mapped result" in new Test {
         MockListPeriodSummariesConnector
           .listPeriodSummaries(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.listPeriodSummaries(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+      }
+    }
+
+    "service call successful for TYS request" when {
+      "return mapped result" in new Test {
+        MockListPeriodSummariesConnector
+          .listPeriodSummaries(requestDataForTys)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        await(service.listPeriodSummaries(requestDataForTys)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
     }
   }
@@ -79,13 +97,25 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
           await(service.listPeriodSummaries(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
-        "INVALID_NINO"            -> NinoFormatError,
-        "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "SERVER_ERROR"            -> InternalError,
-        "SERVICE_UNAVAILABLE"     -> InternalError
-      )
+      val input: Seq[(String, MtdError)] = {
+        val errors: Seq[(String, MtdError)] =
+          Seq(
+            "INVALID_NINO"            -> NinoFormatError,
+            "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
+            "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+            "SERVER_ERROR"            -> InternalError,
+            "SERVICE_UNAVAILABLE"     -> InternalError
+          )
+        val tysSpecificErrors: Seq[(String, MtdError)] =
+          Seq(
+            "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+            "INVALID_CORRELATION_ID"       -> InternalError,
+            "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
+            "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
+            "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
+          )
+        errors ++ tysSpecificErrors
+      }
 
       input.foreach(args => (serviceError _).tupled(args))
     }

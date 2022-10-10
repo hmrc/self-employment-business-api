@@ -66,16 +66,4 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-  def fromDate(date: String): TaxYear = {
-    val year: Int  = date.take(4).toInt
-    val month: Int = date.drop(5).take(2).toInt
-    val day: Int   = date.drop(8).take(2).toInt
-
-    month match {
-      case month if (month < 4) => TaxYear(year.toString)
-      case month if (month > 4) => TaxYear((year + 1).toString)
-      case _                    => if (day >= 6) TaxYear((year + 1).toString) else TaxYear(year.toString)
-    }
-  }
-
 }

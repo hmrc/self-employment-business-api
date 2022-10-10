@@ -38,16 +38,26 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
-    connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
+    connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private val desErrorMap =
-    Map(
-      "INVALID_NINO"            -> NinoFormatError,
-      "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
-      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-      "SERVER_ERROR"            -> InternalError,
-      "SERVICE_UNAVAILABLE"     -> InternalError
+  private def errorMap = {
+    val errors =
+      Map(
+        "INVALID_NINO"            -> NinoFormatError,
+        "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
+        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+        "SERVER_ERROR"            -> InternalError,
+        "SERVICE_UNAVAILABLE"     -> InternalError
+      )
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+      "INVALID_CORRELATION_ID"       -> InternalError,
+      "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
+      "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
+    errors ++ extraTysErrors
+  }
 
 }

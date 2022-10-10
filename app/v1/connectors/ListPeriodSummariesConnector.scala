@@ -17,13 +17,13 @@
 package v1.connectors
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -36,11 +36,17 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
 
     val nino       = request.nino.nino
     val businessId = request.businessId.value
+    val taxYear    = request.taxYear
+    val downstreamUri =
+      if (!taxYear.isEmpty) {
+        TaxYearSpecificIfsUri[ListPeriodSummariesResponse[PeriodDetails]](
+          s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+      } else {
+        DesUri[ListPeriodSummariesResponse[PeriodDetails]](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+      }
 
     get(
-      uri = DesUri[ListPeriodSummariesResponse[PeriodDetails]](
-        s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-      )
+      uri = downstreamUri
     )
   }
 

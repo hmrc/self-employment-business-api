@@ -23,7 +23,7 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockListPeriodSummariesRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockListPeriodSummariesService, MockMtdIdLookupService}
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
@@ -50,6 +50,7 @@ class ListPeriodSummariesControllerSpec
   private val to            = "2020-01-01"
   private val periodId      = s"${from}_$to"
   private val correlationId = "X-123"
+  private val taxYear       = "2024-25"
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -69,8 +70,10 @@ class ListPeriodSummariesControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData     = ListPeriodSummariesRawData(nino, businessId)
-  private val requestData = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId))
+  private val rawData        = ListPeriodSummariesRawData(nino, businessId, None)
+  private val rawTysData     = rawData.copy(taxYear = Some(taxYear))
+  private val requestData    = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
+  private val requestTysData = requestData.copy(taxYear = Some(TaxYear.fromMtd(taxYear)))
 
   private val testHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
   private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
@@ -129,8 +132,30 @@ class ListPeriodSummariesControllerSpec
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
-    }
 
+      "the Tys request received is valid" in new Test {
+        MockListPeriodSummariesRequestParser
+          .parse(rawTysData)
+          .returns(Right(requestTysData))
+
+        MockListPeriodSummariesService
+          .listPeriodSummaries(requestTysData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        MockHateoasFactory
+          .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId)))
+          .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
+
+        // val req = FakeRequest[AnyContentAsEmpty.type](GET,s"/taxYear=$taxYear")
+        // fakeRequest.rawQueryString = "taxYear"
+
+        val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)
+        status(result) shouldBe OK
+        contentAsJson(result) shouldBe responseBody
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+      }
+    }
+    // taxYear = Some(taxYear)
     "return an error as per spec" when {
       "parser errors occur" should {
         def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {

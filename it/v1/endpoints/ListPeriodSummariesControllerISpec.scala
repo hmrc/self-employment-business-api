@@ -23,107 +23,44 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
+import v1.models.domain.TaxYear
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
-  private trait Test {
-
-    val nino       = "AA123456A"
-    val businessId = "XAIS12345678910"
-    val periodId   = "2019-01-01_2020-01-01"
-    val fromDate   = "2019-01-01"
-    val toDate     = "2020-01-01"
-
-    val responseBody: JsValue = Json.parse(
-      s"""
-        |{
-        |  "periods": [
-        |    {
-        |      "periodId": "$periodId",
-        |      "periodStartDate": "$fromDate",
-        |      "periodEndDate": "$toDate",
-        |      "links": [
-        |        {
-        |          "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-        |          "method": "GET",
-        |          "rel": "self"
-        |        }
-        |      ]
-        |    }
-        |  ],
-        |  "links": [
-        |    {
-        |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
-        |      "method": "POST",
-        |      "rel": "create-self-employment-period-summary"
-        |    },
-        |    {
-        |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
-        |      "method": "GET",
-        |      "rel": "self"
-        |    }
-        |  ]
-        |}
-      """.stripMargin
-    )
-
-    val desResponseBody: JsValue = Json.parse(
-      s"""
-         |{
-         |  "periods": [
-         |      {
-         |          "transactionReference": "1111111111",
-         |          "from": "$fromDate",
-         |          "to": "$toDate"
-         |      }
-         |  ]
-         |}
-       """.stripMargin
-    )
-
-    def setupStubs(): StubMapping
-
-    def uri: String = s"/$nino/$businessId/period"
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
-    def errorBody(code: String): String =
-      s"""
-         |{
-         |   "code": "$code",
-         |   "reason": "message"
-         |}
-       """.stripMargin
-
-  }
-
   "calling the list period summaries endpoint" should {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new Test {
+      "any valid request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, downstreamResponseBody(fromDate, toDate))
         }
 
         val response: WSResponse = await(request().get())
         response.status shouldBe OK
-        response.json shouldBe responseBody
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "any valid request is made for a TYS specific year" in new TysIfsTest {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, downstreamResponseBody(fromDate, toDate))
+        }
+
+        val response: WSResponse = await(request().get())
+        response.status shouldBe OK
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
@@ -132,7 +69,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
       "validation error" when {
         def validationErrorTest(requestNino: String, requestBusinessId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+          s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -159,7 +96,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -185,6 +122,108 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
+  }
+
+  private trait Test {
+
+    val nino       = "AA123456A"
+    val businessId = "XAIS12345678910"
+
+    def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
+      s"""
+         |{
+         |  "periods": [
+         |    {
+         |      "periodId": "$periodId",
+         |      "periodStartDate": "$fromDate",
+         |      "periodEndDate": "$toDate",
+         |      "links": [
+         |        {
+         |          "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |          "method": "GET",
+         |          "rel": "self"
+         |        }
+         |      ]
+         |    }
+         |  ],
+         |  "links": [
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |      "method": "POST",
+         |      "rel": "create-self-employment-period-summary"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    }
+         |  ]
+         |}
+      """.stripMargin
+    )
+
+    def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(
+      s"""
+         |{
+         |  "periods": [
+         |      {
+         |          "transactionReference": "1111111111",
+         |          "from": "$fromDate",
+         |          "to": "$toDate"
+         |      }
+         |  ]
+         |}
+       """.stripMargin
+    )
+
+    def uri: String = s"/$nino/$businessId/period"
+
+    def setupStubs(): StubMapping
+
+    def errorBody(code: String): String =
+      s"""
+         |{
+         |   "code": "$code",
+         |   "reason": "message"
+         |}
+       """.stripMargin
+
+  }
+
+  private trait NonTysTest extends Test {
+    val periodId              = "2019-01-01_2020-01-01"
+    val fromDate              = "2019-01-01"
+    val toDate                = "2020-01-01"
+    val downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+  }
+
+  private trait TysIfsTest extends Test {
+
+    val periodId      = "2024-01-01_2024-01-02"
+    val fromDate      = "2024-01-01"
+    val toDate        = "2024-01-02"
+    val taxYear       = TaxYear.fromMtd("2024-25")
+    val downstreamUri = s"/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(s"$uri?taxYear=${taxYear.asMtd}")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
   }
 
 }

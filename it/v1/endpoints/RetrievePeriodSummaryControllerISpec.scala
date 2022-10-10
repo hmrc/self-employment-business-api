@@ -19,170 +19,24 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.models.domain.TaxYear
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
-  "calling the retrieve endpoint" should {
+  private trait Test {
 
-    "return a 200 status code" when {
+    val nino       = "AA123456A"
+    val businessId = "XAIS12345678910"
+    val periodId   = "2019-01-01_2020-01-01"
+    val fromDate   = "2019-01-01"
+    val toDate     = "2020-01-01"
 
-      "any valid request is made" in new NonTysTest {
-        def request(): WSRequest = {
-          setupStubs()
-          buildRequest(uri)
-            .withHttpHeaders(
-              (ACCEPT, "application/vnd.hmrc.1.0+json"),
-              (AUTHORIZATION, "Bearer 123")
-            )
-        }
-        def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, queryParams, Status.OK, downstreamResponseBody)
-        }
-
-        val response: WSResponse = await(request().get())
-        response.status shouldBe Status.OK
-        response.json shouldBe responseBody(periodId)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-    }
-
-    "any valid request is made in a TYS period" in new NonTysTest {
-
-      def request(): WSRequest = {
-        setupStubs()
-        buildRequest(uri)
-          .withHttpHeaders(
-            (ACCEPT, "application/vnd.hmrc.1.0+json"),
-            (AUTHORIZATION, "Bearer 123")
-          )
-      }
-      def setupStubs(): StubMapping = {
-        AuditStub.audit()
-        AuthStub.authorised()
-        MtdIdLookupStub.ninoFound(nino)
-        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, queryParams, Status.OK, downstreamResponseBody)
-      }
-
-      val response: WSResponse = await(request().get())
-      response.status shouldBe Status.OK
-      response.json shouldBe responseBody(periodId)
-      response.header("X-CorrelationId").nonEmpty shouldBe true
-      response.header("Content-Type") shouldBe Some("application/json")
-    }
-  }
-
-  "return error according to spec" when {
-
-    "validation error" when {
-      def validationErrorTest(requestNino: String,
-                              requestBusinessId: String,
-                              requestPeriodId: String,
-                              expectedStatus: Int,
-                              expectedBody: MtdError): Unit = {
-        s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-
-          override val nino: String       = requestNino
-          override val businessId: String = requestBusinessId
-          override val periodId: String   = requestPeriodId
-          def request(): WSRequest = {
-            setupStubs()
-            buildRequest(uri)
-              .withHttpHeaders(
-                (ACCEPT, "application/vnd.hmrc.1.0+json"),
-                (AUTHORIZATION, "Bearer 123")
-              )
-          }
-          def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(requestNino)
-          }
-
-          val response: WSResponse = await(request().get())
-          response.status shouldBe expectedStatus
-        }
-      }
-
-      val input = Seq(
-        ("AA123", "XAIS12345678910", "2019-01-01_2020-01-01", Status.BAD_REQUEST, NinoFormatError),
-        ("AA123456A", "203100", "2019-01-01_2020-01-01", Status.BAD_REQUEST, BusinessIdFormatError),
-        ("AA123456A", "XAIS12345678910", "2020", Status.BAD_REQUEST, PeriodIdFormatError)
-      )
-
-      input.foreach(args => (validationErrorTest _).tupled(args))
-    }
-
-    "downstream service error" when {
-      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
-
-          def request(): WSRequest = {
-            setupStubs()
-            buildRequest(uri)
-              .withHttpHeaders(
-                (ACCEPT, "application/vnd.hmrc.1.0+json"),
-                (AUTHORIZATION, "Bearer 123")
-              )
-          }
-          def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.GET, downstreamUri, queryParams, downstreamStatus, errorBody(downstreamCode))
-          }
-
-          val serviceResponse: WSResponse = await(request().get())
-          serviceResponse.status shouldBe expectedStatus
-          serviceResponse.json shouldBe Json.toJson(expectedBody)
-        }
-      }
-
-      val input = Seq(
-        (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-        (Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError),
-        (Status.BAD_REQUEST, "INVALID_DATE_FROM", Status.BAD_REQUEST, PeriodIdFormatError),
-        (Status.BAD_REQUEST, "INVALID_DATE_TO", Status.BAD_REQUEST, PeriodIdFormatError),
-        (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
-        (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
-        (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
-        (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
-      )
-
-      input.foreach(args => (serviceErrorTest _).tupled(args))
-
-      val tysInput = Seq(
-        (BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
-        (INTERNAL_SERVER_ERROR, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
-        (NOT_FOUND, "INCOME_DATA_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (NOT_FOUND, "SUBMISSION_DATA_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
-      )
-
-      tysInput.foreach(args => (serviceErrorTest _).tupled(args))
-
-    }
-  }
-
-}
-
-private trait Test {
-
-  val nino       = "AA123456A"
-  val businessId = "XAIS12345678910"
-
-  def responseBody(periodId: String): JsValue = Json.parse(s"""
+    val responseBody: JsValue = Json.parse(s"""
                                               |{
                                               |  "periodDates":{
                                               |      "periodStartDate":"2019-08-24",
@@ -229,138 +83,215 @@ private trait Test {
                                               |   "links": [
                                               |      {
                                               |         "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-                                              |         "method": "PUT",
-                                              |         "rel": "amend-self-employment-period-summary"                                              
+                                              |         "rel": "amend-self-employment-period-summary",
+                                              |         "method": "PUT"
                                               |      },
                                               |      {
                                               |         "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-                                              |         "method": "GET",
-                                              |          "rel": "self"
+                                              |         "rel": "self",
+                                              |         "method": "GET"
                                               |      },
                                               |      {
                                               |         "href": "/individuals/business/self-employment/$nino/$businessId/period",
-                                              |         "method": "GET",
-                                              |         "rel": "list-self-employment-period-summaries"
+                                              |         "rel": "list-self-employment-period-summaries",
+                                              |         "method": "GET"
                                               |      }
                                               |   ]
                                               |}
                                               |""".stripMargin)
 
-  val downstreamResponseBody: JsValue = Json.parse(s"""
-                                                        |{
-                                                        |   "from": "2019-08-24",
-                                                        |   "to": "2020-08-24",
-                                                        |   "financials": {
-                                                        |      "deductions": {
-                                                        |         "adminCosts": {
-                                                        |            "amount": 100.00,
-                                                        |            "disallowableAmount": 200.00
-                                                        |         },
-                                                        |         "advertisingCosts": {
-                                                        |            "amount": 300.00,
-                                                        |            "disallowableAmount": 400.00
-                                                        |         },
-                                                        |         "badDebt": {
-                                                        |            "amount": 500.00,
-                                                        |            "disallowableAmount": 600.00
-                                                        |         },
-                                                        |         "constructionIndustryScheme": {
-                                                        |            "amount": 700.00,
-                                                        |            "disallowableAmount": 800.00
-                                                        |         },
-                                                        |         "costOfGoods": {
-                                                        |            "amount": 900.00,
-                                                        |            "disallowableAmount": 1000.00
-                                                        |         },
-                                                        |         "depreciation": {
-                                                        |            "amount": 1100.00,
-                                                        |            "disallowableAmount": 1200.00
-                                                        |         },
-                                                        |         "financialCharges": {
-                                                        |            "amount": 1300.00,
-                                                        |            "disallowableAmount": 1400.00
-                                                        |         },
-                                                        |         "interest": {
-                                                        |            "amount": 1500.00,
-                                                        |            "disallowableAmount": 1600.00
-                                                        |         },
-                                                        |         "maintenanceCosts": {
-                                                        |            "amount": 1700.00,
-                                                        |            "disallowableAmount": 1800.00
-                                                        |         },
-                                                        |         "other": {
-                                                        |            "amount": 1900.00,
-                                                        |            "disallowableAmount": 2000.00
-                                                        |         },
-                                                        |         "professionalFees": {
-                                                        |            "amount": 2100.00,
-                                                        |            "disallowableAmount": 2200.00
-                                                        |         },
-                                                        |         "premisesRunningCosts": {
-                                                        |            "amount": 2300.00,
-                                                        |            "disallowableAmount": 2400.00
-                                                        |         },
-                                                        |         "staffCosts": {
-                                                        |            "amount": 2500.00,
-                                                        |            "disallowableAmount": 2600.00
-                                                        |         },
-                                                        |         "travelCosts": {
-                                                        |            "amount": 2700.00,
-                                                        |            "disallowableAmount": 2800.00
-                                                        |         },
-                                                        |         "businessEntertainmentCosts": {
-                                                        |            "amount": 2900.00,
-                                                        |            "disallowableAmount": 3000.00
-                                                        |         }
-                                                        |      },
-                                                        |      "incomes": {
-                                                        |         "turnover": 3100.00,
-                                                        |         "other": 3200.00
-                                                        |      }
-                                                        |   }
-                                                        |}
-                                                        |""".stripMargin)
+    val desResponseBody: JsValue = Json.parse(s"""
+                                                 |{
+                                                 |   "from": "2019-08-24",
+                                                 |   "to": "2020-08-24",
+                                                 |   "financials": {
+                                                 |      "deductions": {
+                                                 |         "adminCosts": {
+                                                 |            "amount": 100.00,
+                                                 |            "disallowableAmount": 200.00
+                                                 |         },
+                                                 |         "advertisingCosts": {
+                                                 |            "amount": 300.00,
+                                                 |            "disallowableAmount": 400.00
+                                                 |         },
+                                                 |         "badDebt": {
+                                                 |            "amount": 500.00,
+                                                 |            "disallowableAmount": 600.00
+                                                 |         },
+                                                 |         "constructionIndustryScheme": {
+                                                 |            "amount": 700.00,
+                                                 |            "disallowableAmount": 800.00
+                                                 |         },
+                                                 |         "costOfGoods": {
+                                                 |            "amount": 900.00,
+                                                 |            "disallowableAmount": 1000.00
+                                                 |         },
+                                                 |         "depreciation": {
+                                                 |            "amount": 1100.00,
+                                                 |            "disallowableAmount": 1200.00
+                                                 |         },
+                                                 |         "financialCharges": {
+                                                 |            "amount": 1300.00,
+                                                 |            "disallowableAmount": 1400.00
+                                                 |         },
+                                                 |         "interest": {
+                                                 |            "amount": 1500.00,
+                                                 |            "disallowableAmount": 1600.00
+                                                 |         },
+                                                 |         "maintenanceCosts": {
+                                                 |            "amount": 1700.00,
+                                                 |            "disallowableAmount": 1800.00
+                                                 |         },
+                                                 |         "other": {
+                                                 |            "amount": 1900.00,
+                                                 |            "disallowableAmount": 2000.00
+                                                 |         },
+                                                 |         "professionalFees": {
+                                                 |            "amount": 2100.00,
+                                                 |            "disallowableAmount": 2200.00
+                                                 |         },
+                                                 |         "premisesRunningCosts": {
+                                                 |            "amount": 2300.00,
+                                                 |            "disallowableAmount": 2400.00
+                                                 |         },
+                                                 |         "staffCosts": {
+                                                 |            "amount": 2500.00,
+                                                 |            "disallowableAmount": 2600.00
+                                                 |         },
+                                                 |         "travelCosts": {
+                                                 |            "amount": 2700.00,
+                                                 |            "disallowableAmount": 2800.00
+                                                 |         },
+                                                 |         "businessEntertainmentCosts": {
+                                                 |            "amount": 2900.00,
+                                                 |            "disallowableAmount": 3000.00
+                                                 |         }
+                                                 |      },
+                                                 |      "incomes": {
+                                                 |         "turnover": 3100.00,
+                                                 |         "other": 3200.00
+                                                 |      }
+                                                 |   }
+                                                 |}
+                                                 |""".stripMargin)
 
-  def errorBody(code: String): String =
-    s"""
+    def setupStubs(): StubMapping
+
+    def uri: String = s"/$nino/$businessId/period/$periodId"
+
+    def queryParams: Map[String, String] = Map(
+      "from" -> fromDate,
+      "to"   -> toDate
+    )
+
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+    def errorBody(code: String): String =
+      s"""
          |      {
          |        "code": "$code",
          |        "reason": "message"
          |      }
     """.stripMargin
 
-}
+  }
 
-private trait NonTysTest extends Test {
-  val periodId                  = "2019-01-01_2020-01-01"
-  val fromDate                  = "2019-01-01"
-  val toDate                    = "2020-01-01"
-  def downstreamTaxYear: String = "2020"
+  "calling the retrieve endpoint" should {
 
-  def queryParams: Map[String, String] = Map(
-    "from" -> fromDate,
-    "to"   -> toDate
-  )
+    "return a 200 status code" when {
 
-  def uri: String           = s"/$nino/$businessId/period/$periodId"
-  def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
+      "any valid request is made" in new Test {
 
-}
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, queryParams, Status.OK, desResponseBody)
+        }
 
-private trait TysIfsTest extends Test {
-  val periodId = "2024-05-01_2024_08-01"
-  val fromDate = "2024-05-01"
-  val toDate   = "2024_08-01"
-  val taxYear  = TaxYear.fromDate(fromDate)
+        val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+        response.status shouldBe Status.OK
+        response.json shouldBe responseBody
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+    }
 
-  def queryParams: Map[String, String] = Map(
-    "from" -> fromDate,
-    "to"   -> toDate
-  )
+    "return error according to spec" when {
 
-  def uri: String = s"/$nino/$businessId/period/$periodId"
+      "validation error" when {
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestPeriodId: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
+          s"validation fails with ${expectedBody.code} error" in new Test {
 
-  def downstreamUri =
-    s"/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
+            override val nino: String       = requestNino
+            override val businessId: String = requestBusinessId
+            override val periodId: String   = requestPeriodId
+
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(requestNino)
+            }
+
+            val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
+        }
+
+        val input = Seq(
+          ("AA123", "XAIS12345678910", "2019-01-01_2020-01-01", Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2019-01-01_2020-01-01", Status.BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2020", Status.BAD_REQUEST, PeriodIdFormatError)
+        )
+
+        input.foreach(args => (validationErrorTest _).tupled(args))
+      }
+
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+              DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+            }
+
+            val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
+        }
+
+        val input = Seq(
+          (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
+          (Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_DATE_FROM", Status.BAD_REQUEST, PeriodIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_DATE_TO", Status.BAD_REQUEST, PeriodIdFormatError),
+          (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
+          (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
+          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+        )
+
+        input.foreach(args => (serviceErrorTest _).tupled(args))
+      }
+    }
+  }
 
 }
