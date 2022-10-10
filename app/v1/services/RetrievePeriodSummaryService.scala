@@ -61,6 +61,7 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID" -> BusinessIdFormatError,
       "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
+      "INCOME_CORRELATION_ID" -> InternalError,
       "SUBMISSION_DATA_NOT_FOUND" -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
 

@@ -23,6 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
+import v1.models.domain.TaxYear
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
@@ -30,17 +31,16 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino       = "AA123456A"
+    val nino = "AA123456A"
     val businessId = "XAIS12345678910"
-    val periodId   = "2019-01-01_2020-01-01"
-    val fromDate   = "2019-01-01"
-    val toDate     = "2020-01-01"
+    val periodId = "2019-01-01_2020-01-01"
 
-    val responseBody: JsValue = Json.parse(s"""
+    def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
+      s"""
          |{
          |  "periodDates":{
-         |      "periodStartDate":"2019-08-24",
-         |      "periodEndDate":"2020-08-24"
+         |      "periodStartDate": "$fromDate",
+         |      "periodEndDate":"$toDate"
          |   },
          |   "periodIncome":{
          |      "turnover":3100.00,
@@ -100,10 +100,11 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    val desResponseBody: JsValue = Json.parse(s"""
+    def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(
+      s"""
          |{
-         |   "from": "2019-08-24",
-         |   "to": "2020-08-24",
+         |   "from": "$fromDate",
+         |   "to": "$toDate",
          |   "financials": {
          |      "deductions": {
          |         "adminCosts": {
@@ -179,10 +180,20 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$businessId/period/$periodId"
 
-    def queryParams: Map[String, String] = Map(
-      "from" -> fromDate,
-      "to"   -> toDate
-    )
+    def errorBody(code: String): String =
+      s"""
+         |      {
+         |        "code": "$code",
+         |        "reason": "message"
+         |      }
+    """.stripMargin
+
+  }
+
+  private trait NonTysTest extends Test {
+    override val periodId = "2019-01-01_2020-01-01"
+    val fromDate = "2019-01-01"
+    val toDate = "2020-01-01"
 
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
@@ -194,37 +205,62 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123")
         )
     }
+  }
+  private trait TysTest extends Test {
+    override val periodId = "2023-04-01_2024-01-01"
+    val fromDate = "2023-04-01"
+    val toDate = "2024-01-01"
+    val tysTaxYear = TaxYear.fromMtd("2023-24")
 
-    def errorBody(code: String): String =
-      s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "message"
-         |      }
-    """.stripMargin
+    val downstreamUri = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(s"$uri?taxYear=${tysTaxYear}")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
   }
 
   "calling the retrieve endpoint" should {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new Test {
+      "any valid request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, queryParams, Status.OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, Status.OK, downstreamResponseBody(fromDate, toDate))
         }
 
-        val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+        val response: WSResponse = await(request().get())
         response.status shouldBe Status.OK
-        response.json shouldBe responseBody
+        response.json shouldBe responseBody(periodId,fromDate,toDate)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
+
+      "any valid TYS request is made" in new TysTest {
+        override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        AuthStub.authorised()
+        MtdIdLookupStub.ninoFound(nino)
+        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, Status.OK, downstreamResponseBody(fromDate, toDate))
+      }
+
+      val response: WSResponse = await(request().get())
+      response.status shouldBe Status.OK
+      response.json shouldBe responseBody(periodId, fromDate, toDate)
+      response.header("X-CorrelationId").nonEmpty shouldBe true
+      response.header("Content-Type") shouldBe Some("application/json")
+
     }
+  }
+
 
     "return error according to spec" when {
 
@@ -234,11 +270,11 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
                                 requestPeriodId: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
-            override val nino: String       = requestNino
+            override val nino: String = requestNino
             override val businessId: String = requestBusinessId
-            override val periodId: String   = requestPeriodId
+            override val periodId: String = requestPeriodId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -246,7 +282,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(requestNino)
             }
 
-            val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -263,7 +299,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -272,22 +308,25 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
               DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
-            val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
         }
 
-        val input = Seq(
-          (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
-          (Status.BAD_REQUEST, "INVALID_INCOMESOURCEID", Status.BAD_REQUEST, BusinessIdFormatError),
-          (Status.BAD_REQUEST, "INVALID_DATE_FROM", Status.BAD_REQUEST, PeriodIdFormatError),
-          (Status.BAD_REQUEST, "INVALID_DATE_TO", Status.BAD_REQUEST, PeriodIdFormatError),
-          (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
-          (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
-          (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
-        )
+        val input = {
+          val errors = Seq(
+            (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
+            (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
+            (Status.BAD_REQUEST, "INVALID_DATE_FROM", Status.BAD_REQUEST, PeriodIdFormatError),
+            (Status.BAD_REQUEST, "INVALID_DATE_TO", Status.BAD_REQUEST, PeriodIdFormatError),
+            (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
+            (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
+            (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
+            (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+          )
+          errors
+        }
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
