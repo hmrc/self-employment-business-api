@@ -18,7 +18,7 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockRetrievePeriodSummaryConnector
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, PeriodId}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
@@ -44,7 +44,8 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   private val requestData = RetrievePeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    periodId = periodId
+    periodId = PeriodId(periodId),
+    taxYear = None
   )
 
   trait Test extends MockRetrievePeriodSummaryConnector {

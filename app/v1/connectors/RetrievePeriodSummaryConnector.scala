@@ -42,12 +42,12 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appCon
     val businessId = request.businessId.value
 
 
-    def isTys = taxYear != null
+    def isTys = !taxYear.isEmpty
 
     val downstreamUri =
       if(isTys){
         get(TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse]
-        (s" /income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"))
+        (s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"))
       }else{
         get(DesUri[RetrievePeriodSummaryResponse](
           s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"))

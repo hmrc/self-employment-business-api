@@ -32,7 +32,8 @@ class RetrievePeriodSummaryValidator extends Validator[RetrievePeriodSummaryRawD
     List(
       NinoValidation.validate(data.nino),
       BusinessIdValidation.validate(data.businessId),
-      PeriodIdValidation.validate(data.periodId)
+      PeriodIdValidation.validate(data.periodId),
+      data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
     )
   }
 

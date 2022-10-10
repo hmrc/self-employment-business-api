@@ -18,22 +18,14 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
+import play.api.mvc.request.RequestTarget
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodSummaryService}
-import v1.models.domain.{BusinessId, Nino}
-import v1.models.errors.{
-  BadRequestError,
-  BusinessIdFormatError,
-  InternalError,
-  ErrorWrapper,
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
-  PeriodIdFormatError
-}
+import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
@@ -57,6 +49,7 @@ class RetrievePeriodSummaryControllerSpec
   private val businessId    = "XAIS12345678910"
   private val periodId      = "2019-01-01_2020-01-01"
   private val correlationId = "X-123"
+  private val taxYear    = "2023-24"
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -76,10 +69,12 @@ class RetrievePeriodSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId)
-  private val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId)
+  private val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
+  private val tysRawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
+  private val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+  private val tysRequestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
-  private val testHateoasLink = Link(href = s"Individuals/business/property/$nino/$businessId/period/$periodId", method = GET, rel = "self")
+  private val testHateoasLink = Link(href = s"individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self")
 
   val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     periodDates = PeriodDates("2019-01-01", "2020-01-01"),
@@ -103,7 +98,25 @@ class RetrievePeriodSummaryControllerSpec
           .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)
+        val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakeRequest)
+        status(result) shouldBe OK
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+      }
+      "the TYS request received is valid" in new Test {
+        MockRetrievePeriodSummaryRequestParser
+          .parse(tysRawData)
+          .returns(Right(tysRequestData))
+
+        MockRetrievePeriodSummaryService
+          .retrieve(tysRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
+
+        MockHateoasFactory
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
+
+        val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(
+          fakeRequest.withTarget(newTarget = RequestTarget(uriString = "", path = "", queryString = Map("taxYear" -> Seq(taxYear)))))
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
@@ -118,7 +131,7 @@ class RetrievePeriodSummaryControllerSpec
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)
+            val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakeRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
@@ -126,12 +139,20 @@ class RetrievePeriodSummaryControllerSpec
           }
         }
 
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (PeriodIdFormatError, BAD_REQUEST)
-        )
+        val input = {
+          val errors = Seq(
+            (BadRequestError, BAD_REQUEST),
+            (NinoFormatError, BAD_REQUEST),
+            (BusinessIdFormatError, BAD_REQUEST),
+            (PeriodIdFormatError, BAD_REQUEST)
+          )
+          val tysErrors = Seq(
+            (TaxYearFormatError, BAD_REQUEST),
+            (RuleTaxYearNotSupportedError, BAD_REQUEST),
+            (RuleTaxYearRangeInvalidError, BAD_REQUEST)
+          )
+          errors ++ tysErrors
+        }
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
       }
@@ -148,7 +169,7 @@ class RetrievePeriodSummaryControllerSpec
               .retrieve(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId, periodId)(fakeRequest)
+            val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakeRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)

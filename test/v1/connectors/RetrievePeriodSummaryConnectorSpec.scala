@@ -16,9 +16,8 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import v1.mocks.MockHttpClient
-import v1.models.domain.{BusinessId, Nino}
+
+import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v1.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
@@ -27,11 +26,14 @@ import scala.concurrent.Future
 
 class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  val nino: String       = "AA123456A"
+  val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val periodId: String   = "2019-01-25_2020-01-25"
+  val periodId: String = "2019-01-25_2020-01-25"
+  val tysTaxYear: String = "2023-24"
+  val fromDate: String = "2019-01-25"
+  val toDate: String = "2020-01-25"
 
-  val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId)
+  val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
@@ -40,36 +42,38 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     None
   )
 
-  class Test extends MockHttpClient with MockAppConfig {
+  trait Test {
+    _: ConnectorTest =>
 
-    val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
+    protected val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    protected def request(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear]): RetrievePeriodSummaryRequest =
+      RetrievePeriodSummaryRequest(nino, businessId, periodId, taxYear)
+
   }
 
   "connector" must {
-    "send a request and return a body" in new Test {
-      val fromDate: String = request.periodId.substring(0, 10)
-      val toDate: String   = request.periodId.substring(11, 21)
+    "return a 200 status for a success scenario" in new DesTest with Test {
 
       val outcome = Right(ResponseWrapper(correlationId, response))
-
-      MockHttpClient
-        .get(
-          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate",
-          config = dummyHeaderCarrierConfig,
-          requiredHeaders = requiredDesHeaders,
-          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        )
+      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
         .returns(Future.successful(outcome))
 
-      await(connector.retrievePeriodSummary(request)) shouldBe outcome
+      await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))) shouldBe outcome
+    }
+
+    "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
+
+      val taxYear = TaxYear.fromMtd(tysTaxYear).asTysDownstream
+      val outcome = Right(ResponseWrapper(correlationId, response))
+      val url = s"$baseUrl/income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+      willGet(url).returns(Future.successful(outcome))
+
+      val result = await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
+      result shouldBe outcome
     }
   }
 

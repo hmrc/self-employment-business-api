@@ -60,10 +60,9 @@ class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
           Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))
       }
       "valid TYS request data is supplied" in new Test {
-        MockRetrievePeriodSummaryValidator.validate(rawData).returns(Nil)
-
+        MockRetrievePeriodSummaryValidator.validate(tysRawData).returns(Nil)
         parser.parseRequest(tysRawData) shouldBe
-          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear(tysTaxYear))))
+          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear))))
       }
     }
 

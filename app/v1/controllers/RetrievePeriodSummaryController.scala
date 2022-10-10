@@ -46,18 +46,21 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrievePeriodSummaryController", endpointName = "retrieveSelfEmploymentPeriodicSummary")
 
-  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: String): Action[AnyContent] =
+  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
-      //val tysRawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, taxYear)
-      val result =
+      val taxYear: Option[String] = request.queryString.get("taxYear") match {
+        case None => None
+        case _    => Some(request.queryString.get("taxYear").get.head)
+      }
+      val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, taxYear)
+      val result = {
+
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          //tysParsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(tysRawData))
           serviceResponse <- EitherT(service.retrievePeriodSummary(parsedRequest))
           vendorResponse <- EitherT.fromEither[Future](
             hateoasFactory
@@ -72,6 +75,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
           Ok(Json.toJson(vendorResponse))
             .withApiHeaders(serviceResponse.correlationId)
         }
+      }
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
         val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
