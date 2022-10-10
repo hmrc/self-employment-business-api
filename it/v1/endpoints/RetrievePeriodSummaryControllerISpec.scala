@@ -97,7 +97,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |         "method": "GET"
          |      }
          |   ]
-         }
+         |}
          |""".stripMargin)
 
     val desResponseBody: JsValue = Json.parse(s"""
