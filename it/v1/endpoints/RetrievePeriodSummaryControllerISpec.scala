@@ -212,11 +212,12 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val toDate = "2024-01-01"
     val tysTaxYear = TaxYear.fromMtd("2023-24")
 
-    val downstreamUri = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+    val tysDownstreamUri = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+    val tysMtdUri = s"/$nino/$businessId/period/$periodId?taxYear=${tysTaxYear.asMtd}"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=${tysTaxYear}")
+      buildRequest(tysMtdUri)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -249,7 +250,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         AuditStub.audit()
         AuthStub.authorised()
         MtdIdLookupStub.ninoFound(nino)
-        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, Status.OK, downstreamResponseBody(fromDate, toDate))
+        DownstreamStub.onSuccess(DownstreamStub.GET, tysDownstreamUri, Status.OK, downstreamResponseBody(fromDate, toDate))
       }
 
       val response: WSResponse = await(request().get())

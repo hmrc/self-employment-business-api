@@ -18,7 +18,6 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.mvc.request.RequestTarget
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
@@ -115,8 +114,7 @@ class RetrievePeriodSummaryControllerSpec
           .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(
-          fakeRequest.withTarget(newTarget = RequestTarget(uriString = "", path = "", queryString = Map("taxYear" -> Seq(taxYear)))))
+        val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakeRequest)
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }

@@ -52,11 +52,11 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val taxYear: Option[String] = request.queryString.get("taxYear") match {
+      val tysTaxYear: Option[String] = taxYear match {
         case None => None
-        case _    => Some(request.queryString.get("taxYear").get.head)
+        case _    => taxYear
       }
-      val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, taxYear)
+      val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, tysTaxYear)
       val result = {
 
         for {
