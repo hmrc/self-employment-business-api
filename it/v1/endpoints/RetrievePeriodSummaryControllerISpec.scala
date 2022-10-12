@@ -212,7 +212,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val toDate = "2024-01-01"
     val tysTaxYear = TaxYear.fromMtd("2023-24")
 
-    val tysDownstreamUri = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+    val tysDownstreamUri = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
     val tysMtdUri = s"/$nino/$businessId/period/$periodId?taxYear=${tysTaxYear.asMtd}"
 
     def request(): WSRequest = {
@@ -250,7 +250,13 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         AuditStub.audit()
         AuthStub.authorised()
         MtdIdLookupStub.ninoFound(nino)
-        DownstreamStub.onSuccess(DownstreamStub.GET, tysDownstreamUri, Status.OK, downstreamResponseBody(fromDate, toDate))
+          DownstreamStub.onSuccess(
+            method = DownstreamStub.GET,
+            uri = tysDownstreamUri,
+            queryParams = Map[String, String]("from" -> fromDate, "to" -> toDate),
+            status = Status.OK,
+            body = downstreamResponseBody(fromDate, toDate)
+          )
       }
 
       val response: WSResponse = await(request().get())
