@@ -110,7 +110,7 @@ object Class4ExemptionReasonFormatError
 object RuleTaxYearNotSupportedError
     extends MtdError(
       code = "RULE_TAX_YEAR_NOT_SUPPORTED",
-      message = "The tax year specified does not lie within the supported range."
+      message = "The tax year specified does not lie within the supported range"
     )
 
 object RuleTaxYearRangeInvalidError
