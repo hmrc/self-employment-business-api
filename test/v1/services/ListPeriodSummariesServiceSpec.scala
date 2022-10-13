@@ -108,11 +108,12 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
           )
         val tysSpecificErrors: Seq[(String, MtdError)] =
           Seq(
-            "INVALID_TAX_YEAR"             -> TaxYearFormatError,
-            "INVALID_CORRELATION_ID"       -> InternalError,
-            "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
-            "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
-            "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
+            "INVALID_INCOMESOURCE_ID"     -> BusinessIdFormatError,
+            "INVALID_TAX_YEAR"            -> TaxYearFormatError,
+            "INVALID_CORRELATION_ID"      -> InternalError,
+            "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
+            "RULE_TAX_YEAR_RANGE_INVALID" -> RuleTaxYearRangeInvalidError,
+            "FORMAT_TAX_YEAR"             -> TaxYearFormatError
           )
         errors ++ tysSpecificErrors
       }

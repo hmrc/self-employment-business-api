@@ -25,7 +25,7 @@ class ListPeriodSummariesRequestParser @Inject() (val validator: ListPeriodSumma
     extends RequestParser[ListPeriodSummariesRawData, ListPeriodSummariesRequest] {
 
   override protected def requestFor(data: ListPeriodSummariesRawData): ListPeriodSummariesRequest = {
-    val taxYear: Option[TaxYear] = if (data.taxYear.isEmpty) None else Some(TaxYear.fromMtd(data.taxYear.get))
+    val taxYear = data.taxYear.map(TaxYear.fromMtd)
     ListPeriodSummariesRequest(Nino(data.nino), BusinessId(data.businessId), taxYear)
   }
 

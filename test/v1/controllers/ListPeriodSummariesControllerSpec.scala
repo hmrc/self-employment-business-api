@@ -18,7 +18,6 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.mvc.request.RequestTarget
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
@@ -128,7 +127,7 @@ class ListPeriodSummariesControllerSpec
           .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId)))
           .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)
+        val result: Future[Result] = controller.handleRequest(nino, businessId, None)(fakeRequest)
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -147,8 +146,7 @@ class ListPeriodSummariesControllerSpec
           .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId)))
           .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId)(
-          fakeRequest.withTarget(newTarget = RequestTarget(uriString = "", path = "", queryString = Map("taxYear" -> Seq(taxYear)))))
+        val result: Future[Result] = controller.handleRequest(nino, businessId, Some(taxYear))(fakeRequest)
         status(result) shouldBe OK
         contentAsJson(result) shouldBe responseBody
         header("X-CorrelationId", result) shouldBe Some(correlationId)
@@ -164,7 +162,7 @@ class ListPeriodSummariesControllerSpec
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)
+            val result: Future[Result] = controller.handleRequest(nino, businessId, None)(fakeRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
@@ -173,6 +171,9 @@ class ListPeriodSummariesControllerSpec
         }
 
         val input = Seq(
+          (TaxYearFormatError           -> BAD_REQUEST),
+          (RuleTaxYearRangeInvalidError -> BAD_REQUEST),
+          (RuleTaxYearNotSupportedError -> BAD_REQUEST),
           (BadRequestError, BAD_REQUEST),
           (NinoFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST)
@@ -193,7 +194,7 @@ class ListPeriodSummariesControllerSpec
               .listPeriodSummaries(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId)(fakeRequest)
+            val result: Future[Result] = controller.handleRequest(nino, businessId, None)(fakeRequest)
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)

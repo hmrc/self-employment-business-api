@@ -27,7 +27,8 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val taxYear: String    = "2024-25"
+  val tysTaxYear: String = "2024-25"
+  val taxYear: String    = "2022-23"
 
   val request: ListPeriodSummariesRequest = ListPeriodSummariesRequest(
     nino = Nino(nino),
@@ -67,7 +68,15 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
     "send a request and return a body for a TYS year" in new TysIfsTest with Test {
       val outcome = Right(ResponseWrapper(correlationId, response))
-      willGet(s"$baseUrl/income-tax/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+      willGet(s"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+        .returns(Future.successful(outcome))
+
+      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(tysTaxYear))))) shouldBe outcome
+    }
+
+    "send a request and return a body for a non TYS year" in new DesTest with Test {
+      val outcome = Right(ResponseWrapper(correlationId, response))
+      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))
 
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))) shouldBe outcome

@@ -46,14 +46,14 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListPeriodSummariesController", endpointName = "listSelfEmploymentPeriodSummaries")
 
-  def handleRequest(nino: String, businessId: String): Action[AnyContent] =
+  def handleRequest(nino: String, businessId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
 
-      val taxYear: Option[String] = request.queryString.get("taxYear") match {
+      /*  val taxYear: Option[String] = request.queryString.get("taxYear") match {
         case None => None
         case _    => Some(request.queryString.get("taxYear").get.head)
-      }
+      }*/
 
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
@@ -89,7 +89,8 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case TaxYearFormatError | RuleTaxYearNotSupportedError | NinoFormatError | BusinessIdFormatError | BadRequestError =>
+      case TaxYearFormatError | RuleTaxYearRangeInvalidError | RuleTaxYearNotSupportedError | NinoFormatError | BusinessIdFormatError |
+          BadRequestError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))

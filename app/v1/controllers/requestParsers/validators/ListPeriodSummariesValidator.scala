@@ -32,7 +32,7 @@ class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData]
     List(
       NinoValidation.validate(data.nino),
       BusinessIdValidation.validate(data.businessId),
-      data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
+      data.taxYear.map(TaxYearValidation.validate) getOrElse Nil
     )
   }
 
