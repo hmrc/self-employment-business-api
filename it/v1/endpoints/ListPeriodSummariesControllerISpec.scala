@@ -68,7 +68,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     "return error according to spec" when {
 
       "tys specific validation" when {
-        s"validation fails with INVALID_TAX_YEAR error" in new TysIfsTest {
+        s"validation fails with RuleTaxYearNotSupported error" in new TysIfsTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -76,18 +76,22 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
             MtdIdLookupStub.ninoFound(nino)
           }
 
-          val response: WSResponse = await(invalidTaxYearRequest().get())
+          val response: WSResponse = await(invalidTaxYearRequest("2021-22").get())
           response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(TaxYearFormatError)
+          response.json shouldBe Json.toJson(RuleTaxYearNotSupportedError)
         }
       }
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestBusinessId: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestTaxYear: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
-
+            override val taxYear: String    = requestTaxYear
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
@@ -101,8 +105,10 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA123", "XAIS12345678910", BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", BAD_REQUEST, BusinessIdFormatError)
+          ("AA123", "XAIS12345678910", "2023-24", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2023-24", BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", "XAIS12345678910", "2021-2", BAD_REQUEST, TaxYearFormatError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -141,6 +147,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
+
     }
   }
 
@@ -211,10 +218,10 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    val periodId              = "2019-01-01_2020-01-01"
-    val fromDate              = "2019-01-01"
-    val toDate                = "2020-01-01"
-    val downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+    val periodId                = "2019-01-01_2020-01-01"
+    val fromDate                = "2019-01-01"
+    val toDate                  = "2020-01-01"
+    def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
@@ -229,24 +236,30 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   private trait TysIfsTest extends Test {
 
-    val periodId      = "2024-01-01_2024-01-02"
-    val fromDate      = "2024-01-01"
-    val toDate        = "2024-01-02"
-    val taxYear       = TaxYear.fromMtd("2024-25")
-    val downstreamUri = s"/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
+    val periodId        = "2024-01-01_2024-01-02"
+    val fromDate        = "2024-01-01"
+    val toDate          = "2024-01-02"
+    val taxYear         = "2024-25"
+    lazy val tysTaxYear = TaxYear.fromMtd(taxYear)
+
+    def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=${taxYear.asMtd}")
+      buildRequest(s"$uri?taxYear=${tysTaxYear.asMtd}")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
 
-    def invalidTaxYearRequest(): WSRequest = {
+    def invalidTaxYearRequest(taxYear: String): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=1234")
+      buildRequest(s"$uri?taxYear=$taxYear")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")
