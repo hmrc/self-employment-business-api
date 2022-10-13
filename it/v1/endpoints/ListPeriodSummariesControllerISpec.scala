@@ -70,13 +70,14 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
       "tys specific validation" when {
         s"validation fails with RuleTaxYearNotSupported error" in new TysIfsTest {
 
+          override val taxYear: String = "2021-22"
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
           }
 
-          val response: WSResponse = await(invalidTaxYearRequest("2021-22").get())
+          val response: WSResponse = await(request().get())
           response.status shouldBe BAD_REQUEST
           response.json shouldBe Json.toJson(RuleTaxYearNotSupportedError)
         }
@@ -138,9 +139,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
           (INTERNAL_SERVER_ERROR, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "FORMAT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (BAD_REQUEST, "RULE_TAX_YEAR_RANGE_INVALID", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
@@ -246,20 +245,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=${tysTaxYear.asMtd}")
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
-    def invalidTaxYearRequest(taxYear: String): WSRequest = {
-      setupStubs()
-      buildRequest(s"$uri?taxYear=$taxYear")
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
+      buildRequest(s"$uri?taxYear=${taxYear}")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")
