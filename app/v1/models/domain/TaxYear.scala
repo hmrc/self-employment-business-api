@@ -57,8 +57,9 @@ object TaxYear {
   /** @param taxYear
     *   tax year in MTD format (e.g. 2017-18)
     */
-  def fromMtd(taxYear: String): TaxYear =
-    new TaxYear(taxYear.take(2) + taxYear.drop(5))
+  def fromMtd(taxYear: String): TaxYear = new TaxYear(taxYear.take(2) + taxYear.drop(5))
+
+  val tysTaxYear: Int = 2024
 
   def fromDownstream(taxYear: String): TaxYear =
     new TaxYear(taxYear)

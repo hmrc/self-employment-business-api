@@ -22,7 +22,7 @@ import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 
 class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData] {
 
-  private val validationSet = List(parameterFormatValidation)
+  private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
 
   override def validate(data: ListPeriodSummariesRawData): List[MtdError] = {
     run(validationSet, data).distinct
@@ -31,7 +31,14 @@ class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData]
   private def parameterFormatValidation: ListPeriodSummariesRawData => List[List[MtdError]] = (data: ListPeriodSummariesRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      BusinessIdValidation.validate(data.businessId)
+      BusinessIdValidation.validate(data.businessId),
+      data.taxYear.map(TaxYearValidation.validate) getOrElse (Nil)
+    )
+  }
+
+  private def parameterRuleValidation: ListPeriodSummariesRawData => List[List[MtdError]] = (data: ListPeriodSummariesRawData) => {
+    List(
+      data.taxYear.map(TaxYearNotSupportedValidation.validateTys).getOrElse(Nil)
     )
   }
 

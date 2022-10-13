@@ -27,8 +27,8 @@ import v1.models.errors._
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 import v1.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
 import v1.services.{EnrolmentsAuthService, ListPeriodSummariesService, MtdIdLookupService}
-import javax.inject.{Inject, Singleton}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -46,13 +46,14 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListPeriodSummariesController", endpointName = "listSelfEmploymentPeriodSummaries")
 
-  def handleRequest(nino: String, businessId: String): Action[AnyContent] =
+  def handleRequest(nino: String, businessId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
+
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = ListPeriodSummariesRawData(nino, businessId)
+      val rawData = ListPeriodSummariesRawData(nino, businessId, taxYear)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
@@ -83,10 +84,12 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NinoFormatError | BusinessIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                             => NotFound(Json.toJson(errorWrapper))
-      case InternalError                                             => InternalServerError(Json.toJson(errorWrapper))
-      case _                                                         => unhandledError(errorWrapper)
+      case TaxYearFormatError | RuleTaxYearRangeInvalidError | RuleTaxYearNotSupportedError | NinoFormatError | BusinessIdFormatError |
+          BadRequestError =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
+      case _             => unhandledError(errorWrapper)
     }
 
 }

@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import v1.mocks.validators.MockListPeriodSummariesValidator
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData, ListPeriodSummariesRequest}
 
@@ -27,11 +27,15 @@ class ListPeriodSummariesRequestParserSpec extends UnitSpec {
   val nino: String                   = "AA123456B"
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
+  val taxYear: String                = "2024-25"
 
   val rawData: ListPeriodSummariesRawData = ListPeriodSummariesRawData(
     nino = nino,
-    businessId = businessId
+    businessId = businessId,
+    None
   )
+
+  val rawTysData = rawData.copy(taxYear = Some(taxYear))
 
   trait Test extends MockListPeriodSummariesValidator {
 
@@ -47,7 +51,13 @@ class ListPeriodSummariesRequestParserSpec extends UnitSpec {
         MockListPeriodSummariesValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId)))
+          Right(ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None))
+      }
+      "valid request data with Tys data is supplied" in new Test {
+        MockListPeriodSummariesValidator.validate(rawTysData).returns(Nil)
+
+        parser.parseRequest(rawTysData) shouldBe
+          Right(ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))
       }
     }
 

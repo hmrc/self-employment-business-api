@@ -16,9 +16,7 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import v1.mocks.MockHttpClient
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
@@ -29,10 +27,13 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
+  val tysTaxYear: String = "2024-25"
+  val taxYear: String    = "2022-23"
 
   val request: ListPeriodSummariesRequest = ListPeriodSummariesRequest(
     nino = Nino(nino),
-    businessId = BusinessId(businessId)
+    businessId = BusinessId(businessId),
+    None
   )
 
   val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
@@ -44,33 +45,41 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
       ))
   )
 
-  class Test extends MockHttpClient with MockAppConfig {
+  trait Test { _: ConnectorTest =>
 
-    val connector: ListPeriodSummariesConnector = new ListPeriodSummariesConnector(
+    protected val connector: ListPeriodSummariesConnector = new ListPeriodSummariesConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    protected def request(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): ListPeriodSummariesRequest =
+      ListPeriodSummariesRequest(nino, businessId, taxYear)
+
   }
 
   "connector" must {
-    "send a request and return a body" in new Test {
+    "send a request and return a body" in new DesTest with Test {
       val outcome = Right(ResponseWrapper(correlationId, response))
-
-      MockHttpClient
-        .get(
-          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries",
-          config = dummyHeaderCarrierConfig,
-          requiredHeaders = requiredDesHeaders,
-          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        )
+      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))
 
-      await(connector.listPeriodSummaries(request)) shouldBe outcome
+      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), None))) shouldBe outcome
+    }
+
+    "send a request and return a body for a TYS year" in new TysIfsTest with Test {
+      val outcome = Right(ResponseWrapper(correlationId, response))
+      willGet(s"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+        .returns(Future.successful(outcome))
+
+      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(tysTaxYear))))) shouldBe outcome
+    }
+
+    "send a request and return a body for a non TYS year" in new DesTest with Test {
+      val outcome = Right(ResponseWrapper(correlationId, response))
+      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+        .returns(Future.successful(outcome))
+
+      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))) shouldBe outcome
     }
   }
 

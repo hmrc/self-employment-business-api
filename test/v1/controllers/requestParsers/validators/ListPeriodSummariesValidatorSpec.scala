@@ -24,31 +24,49 @@ class ListPeriodSummariesValidatorSpec extends UnitSpec {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
+  private val taxYear         = Some("2024-25")
 
   val validator = new ListPeriodSummariesValidator()
 
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId)) shouldBe Nil
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, taxYear)) shouldBe Nil
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(ListPeriodSummariesRawData("A12344A", validBusinessId)) shouldBe List(NinoFormatError)
+        validator.validate(ListPeriodSummariesRawData("A12344A", validBusinessId, taxYear)) shouldBe List(NinoFormatError)
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(ListPeriodSummariesRawData(validNino, "Walruses")) shouldBe List(BusinessIdFormatError)
+        validator.validate(ListPeriodSummariesRawData(validNino, "Walruses", taxYear)) shouldBe List(BusinessIdFormatError)
+      }
+    }
+
+    "return TaxYearFormat" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, Some("1234A"))) shouldBe List(TaxYearFormatError)
+      }
+    }
+
+    "return RuleTaxYearNotSupportedError" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, Some("2021-22"))) shouldBe List(RuleTaxYearNotSupportedError)
+      }
+    }
+    "return RuleTaxYearRangeInvalidError" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, Some("2023-25"))) shouldBe List(RuleTaxYearRangeInvalidError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(ListPeriodSummariesRawData("A12344A", "Baked Beans")) shouldBe List(NinoFormatError, BusinessIdFormatError)
+        validator.validate(ListPeriodSummariesRawData("A12344A", "Baked Beans", taxYear)) shouldBe List(NinoFormatError, BusinessIdFormatError)
       }
     }
   }
