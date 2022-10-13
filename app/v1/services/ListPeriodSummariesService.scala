@@ -54,8 +54,6 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
       "INVALID_TAX_YEAR"            -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID"     -> BusinessIdFormatError,
       "INVALID_CORRELATION_ID"      -> InternalError,
-      "RULE_TAX_YEAR_RANGE_INVALID" -> RuleTaxYearRangeInvalidError,
-      "FORMAT_TAX_YEAR"             -> TaxYearFormatError,
       "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError
     )
     errors ++ extraTysErrors
