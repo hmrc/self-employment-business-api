@@ -11,7 +11,7 @@
         "description": "Details about Self-Employment periods.",
         "properties": {
           "periodId": {
-            "description": "Concatenated Period Start and End dates.",
+            "description": "Concatenated period start and end dates.",
             "type": "string",
             "example": "2017-04-06_2017-07-04"
           },
