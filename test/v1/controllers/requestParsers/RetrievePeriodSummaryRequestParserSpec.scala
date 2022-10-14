@@ -36,6 +36,7 @@ class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
     periodId = periodId,
     taxYear = None
   )
+
   val tysRawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(
     nino = nino,
     businessId = businessId,

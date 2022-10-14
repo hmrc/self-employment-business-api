@@ -31,7 +31,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   val periodId: String               = "2019-01-25_2020-01-25"
-  val tysTaxYear: String = "23-24"
+  val tysTaxYear: String             = "23-24"
   implicit val correlationId: String = "X-123"
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
@@ -93,12 +93,12 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           "SERVICE_UNAVAILABLE"     -> InternalError
         )
         val extraTysErrors: Seq[(String, MtdError)] = Seq(
-          "INVALID_TAX_YEAR" -> TaxYearFormatError,
-          "INVALID_INCOMESOURCE_ID" -> BusinessIdFormatError,
-          "INVALID_CORRELATION_ID" -> InternalError,
+          "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+          "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
+          "INVALID_CORRELATION_ID"       -> InternalError,
           "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
-          "SUBMISSION_DATA_NOT_FOUND" -> NotFoundError,
-          "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+          "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
+          "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
         )
         errors ++ extraTysErrors
       }

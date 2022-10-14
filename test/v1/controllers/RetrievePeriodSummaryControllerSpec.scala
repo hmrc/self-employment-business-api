@@ -24,7 +24,19 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodSummaryService}
 import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, InternalError, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import v1.models.errors.{
+  BadRequestError,
+  BusinessIdFormatError,
+  ErrorWrapper,
+  InternalError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  PeriodIdFormatError,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError,
+  TaxYearFormatError
+}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
@@ -48,7 +60,7 @@ class RetrievePeriodSummaryControllerSpec
   private val businessId    = "XAIS12345678910"
   private val periodId      = "2019-01-01_2020-01-01"
   private val correlationId = "X-123"
-  private val taxYear    = "2023-24"
+  private val taxYear       = "2023-24"
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -68,9 +80,9 @@ class RetrievePeriodSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
-  private val tysRawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
-  private val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+  private val rawData        = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
+  private val tysRawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
+  private val requestData    = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
   private val tysRequestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
   private val testHateoasLink = Link(href = s"individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self")

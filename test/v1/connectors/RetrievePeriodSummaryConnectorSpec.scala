@@ -16,7 +16,6 @@
 
 package v1.connectors
 
-
 import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
@@ -26,12 +25,12 @@ import scala.concurrent.Future
 
 class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  val periodId: String = "2019-01-25_2020-01-25"
+  val periodId: String   = "2019-01-25_2020-01-25"
   val tysTaxYear: String = "2023-24"
-  val fromDate: String = "2019-01-25"
-  val toDate: String = "2020-01-25"
+  val fromDate: String   = "2019-01-25"
+  val toDate: String     = "2020-01-25"
 
   val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
@@ -59,6 +58,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     "return a 200 status for a success scenario" in new DesTest with Test {
 
       val outcome = Right(ResponseWrapper(correlationId, response))
+
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
         .returns(Future.successful(outcome))
 
@@ -69,10 +69,12 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
       val taxYear = TaxYear.fromMtd(tysTaxYear).asTysDownstream
       val outcome = Right(ResponseWrapper(correlationId, response))
-      val url = s"$baseUrl/income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+      val url     = s"$baseUrl/income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+
       willGet(url).returns(Future.successful(outcome))
 
-      val result = await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
+      val result =
+        await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
       result shouldBe outcome
     }
   }

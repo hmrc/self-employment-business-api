@@ -31,12 +31,11 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino = "AA123456A"
+    val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
-    val periodId = "2019-01-01_2020-01-01"
+    val periodId   = "2019-01-01_2020-01-01"
 
-    def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
-      s"""
+    def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(s"""
          |{
          |  "periodDates":{
          |      "periodStartDate": "$fromDate",
@@ -100,8 +99,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(
-      s"""
+    def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(s"""
          |{
          |   "from": "$fromDate",
          |   "to": "$toDate",
@@ -192,8 +190,8 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   private trait NonTysTest extends Test {
     override val periodId = "2019-01-01_2020-01-01"
-    val fromDate = "2019-01-01"
-    val toDate = "2020-01-01"
+    val fromDate          = "2019-01-01"
+    val toDate            = "2020-01-01"
 
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
@@ -205,15 +203,17 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123")
         )
     }
+
   }
+
   private trait TysTest extends Test {
     override val periodId = "2023-04-01_2024-01-01"
-    val fromDate = "2023-04-01"
-    val toDate = "2024-01-01"
-    val tysTaxYear = TaxYear.fromMtd("2023-24")
+    val fromDate          = "2023-04-01"
+    val toDate            = "2024-01-01"
+    val tysTaxYear        = TaxYear.fromMtd("2023-24")
 
     val tysDownstreamUri = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
-    val tysMtdUri = s"/$nino/$businessId/period/$periodId?taxYear=${tysTaxYear.asMtd}"
+    val tysMtdUri        = s"/$nino/$businessId/period/$periodId?taxYear=${tysTaxYear.asMtd}"
 
     def request(): WSRequest = {
       setupStubs()
@@ -223,6 +223,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123")
         )
     }
+
   }
 
   "calling the retrieve endpoint" should {
@@ -240,16 +241,16 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.status shouldBe Status.OK
-        response.json shouldBe responseBody(periodId,fromDate,toDate)
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "any valid TYS request is made" in new TysTest {
         override def setupStubs(): StubMapping = {
-        AuditStub.audit()
-        AuthStub.authorised()
-        MtdIdLookupStub.ninoFound(nino)
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
           DownstreamStub.onSuccess(
             method = DownstreamStub.GET,
             uri = tysDownstreamUri,
@@ -257,17 +258,16 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
             status = Status.OK,
             body = downstreamResponseBody(fromDate, toDate)
           )
+        }
+
+        val response: WSResponse = await(request().get())
+        response.status shouldBe Status.OK
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+
       }
-
-      val response: WSResponse = await(request().get())
-      response.status shouldBe Status.OK
-      response.json shouldBe responseBody(periodId, fromDate, toDate)
-      response.header("X-CorrelationId").nonEmpty shouldBe true
-      response.header("Content-Type") shouldBe Some("application/json")
-
     }
-  }
-
 
     "return error according to spec" when {
 
@@ -279,9 +279,9 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
                                 expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
-            override val nino: String = requestNino
+            override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
-            override val periodId: String = requestPeriodId
+            override val periodId: String   = requestPeriodId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()

@@ -40,7 +40,6 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-
     val result = EitherT(connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap))))
 
     result.value
@@ -48,23 +47,22 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
 
   private def downstreamErrorMap: Map[String, MtdError] = {
     val downstreamErrors = Map(
-      "INVALID_NINO" -> NinoFormatError,
-      "INVALID_INCOMESOURCEID" -> BusinessIdFormatError,
-      "INVALID_DATE_FROM" -> PeriodIdFormatError,
-      "INVALID_DATE_TO" -> PeriodIdFormatError,
+      "INVALID_NINO"            -> NinoFormatError,
+      "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
+      "INVALID_DATE_FROM"       -> PeriodIdFormatError,
+      "INVALID_DATE_TO"         -> PeriodIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
       "NOT_FOUND_PERIOD"        -> NotFoundError,
       "SERVER_ERROR"            -> InternalError,
       "SERVICE_UNAVAILABLE"     -> InternalError
     )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "INVALID_INCOMESOURCE_ID" -> BusinessIdFormatError,
+      "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+      "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
       "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
-      "INCOME_CORRELATION_ID" -> InternalError,
-      "SUBMISSION_DATA_NOT_FOUND" -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
-
+      "INCOME_CORRELATION_ID"        -> InternalError,
+      "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
     downstreamErrors ++ extraTysErrors
   }
