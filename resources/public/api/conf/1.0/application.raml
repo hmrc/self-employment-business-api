@@ -47,6 +47,9 @@ uses:
           example: XAIS12345678910
           pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
       /annual/{taxYear}:
+        (annotations.group):
+          name: Self-Employment Annual Submission
+          description: Resources relating to an individual's self-employment annual submission.
         uriParameters:
           taxYear:
             description: 'The tax year to which the data applies in the format YYYY-YY. The start year and end year must not span two tax years. The minimum tax year is 2017-18. No gaps are allowed, for example, 2022-24 is not valid.'
@@ -55,6 +58,9 @@ uses:
         get: !include endpoints/retrieveAnnualSubmission.raml
         delete: !include endpoints/deleteAnnualSubmission.raml
       /period:
+        (annotations.group):
+          name: Self-Employment Period Summaries
+          description: Resources relating to an individual's self-employment period summaries.
         post: !include endpoints/createPeriodSummary.raml
         get: !include endpoints/listPeriodSummaries.raml
         /{periodId}:
