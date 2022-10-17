@@ -29,11 +29,4 @@ object TaxYearNotSupportedValidation extends FixedConfig {
 
     if (year >= minimumTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
   }
-
-  /**def validateTys(taxYear: String): List[MtdError] = {
-
-    val year = TaxYear.fromMtd(taxYear).year
-
-    if (year >= TaxYear.tysTaxYear) NoValidationErrors else List(RuleTaxYearNotSupportedError)
-  } */
 }
