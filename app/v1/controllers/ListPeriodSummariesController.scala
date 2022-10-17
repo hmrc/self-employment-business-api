@@ -58,7 +58,7 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.listPeriodSummaries(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory
               .wrapList(serviceResponse.responseData, ListPeriodSummariesHateoasData(parsedRequest.nino, parsedRequest.businessId))
               .asRight[ErrorWrapper]

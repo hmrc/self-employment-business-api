@@ -24,16 +24,16 @@ class TaxYearTYSParameterValidationSpec extends UnitSpec with JsonErrorValidator
 
   "validate" should {
     "return no errors" when {
-      "a tax year that is 2022-23 is supplied" in {
+      "a tax year that is 2023-24 is supplied" in {
 
-        val validTaxYear     = "2022-23"
+        val validTaxYear     = "2023-24"
         val validationResult = TaxYearTYSParameterValidation.validate(validTaxYear)
         validationResult.isEmpty shouldBe true
 
       }
 
       "the minimum allowed tax year is supplied" in {
-        val validTaxYear     = "2022-23"
+        val validTaxYear     = "2023-24"
         val validationResult = TaxYearTYSParameterValidation.validate(validTaxYear)
         validationResult.isEmpty shouldBe true
       }
