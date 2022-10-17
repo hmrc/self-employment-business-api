@@ -187,13 +187,21 @@ class RetrievePeriodSummaryControllerSpec
           }
         }
 
-        val input = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (PeriodIdFormatError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
+        val input = {
+          val errors = Seq(
+            (NinoFormatError, BAD_REQUEST),
+            (BusinessIdFormatError, BAD_REQUEST),
+            (PeriodIdFormatError, BAD_REQUEST),
+            (NotFoundError, NOT_FOUND),
+            (InternalError, INTERNAL_SERVER_ERROR)
+          )
+          val extraTysErrors = Seq(
+            (TaxYearFormatError, BAD_REQUEST),
+            (RuleTaxYearNotSupportedError, BAD_REQUEST),
+            (RuleTaxYearRangeInvalidError, BAD_REQUEST)
+          )
+          errors ++ extraTysErrors
+        }
 
         input.foreach(args => (serviceErrors _).tupled(args))
       }
