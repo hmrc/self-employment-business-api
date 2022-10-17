@@ -150,7 +150,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
   )
 
   private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
-    Seq(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT).foreach(responseCode =>
+    Seq(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, UNPROCESSABLE_ENTITY).foreach(responseCode =>
       s"receiving a $responseCode response" should {
         "be able to parse a single error" in {
           val httpResponse = HttpResponse(responseCode, singleErrorJson.toString(), Map("CorrelationId" -> Seq(correlationId)))

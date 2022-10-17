@@ -61,8 +61,8 @@ object StandardDownstreamHttpParser extends HttpParser {
           "[StandardDownstreamHttpParser][read] - " +
             s"Success response received with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
-      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | GONE => Left(ResponseWrapper(correlationId, parseErrors(response)))
-      case _                                                     => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY | GONE => Left(ResponseWrapper(correlationId, parseErrors(response)))
+      case _ => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
     }
   }
 
