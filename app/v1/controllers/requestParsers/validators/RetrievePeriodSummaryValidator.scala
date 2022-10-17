@@ -18,11 +18,12 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.MtdError
+//import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 class RetrievePeriodSummaryValidator extends Validator[RetrievePeriodSummaryRawData] {
 
-  private val validationSet = List(parameterFormatValidation)
+  private val validationSet = List(parameterFormatValidation) //, parameterRuleValidation)
 
   override def validate(data: RetrievePeriodSummaryRawData): List[MtdError] = {
     run(validationSet, data).distinct
@@ -36,4 +37,9 @@ class RetrievePeriodSummaryValidator extends Validator[RetrievePeriodSummaryRawD
     )
   }
 
+  /**private def parameterRuleValidation: RetrievePeriodSummaryRawData => List[List[MtdError]] = (data: RetrievePeriodSummaryRawData) => {
+    List(
+      data.taxYear.map(TaxYearNotSupportedValidation.validateTys).getOrElse(Nil)
+    )
+  } */
 }

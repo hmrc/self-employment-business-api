@@ -171,12 +171,13 @@ class ListPeriodSummariesControllerSpec
         }
 
         val input = Seq(
-          (TaxYearFormatError           -> BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError -> BAD_REQUEST),
-          (RuleTaxYearNotSupportedError -> BAD_REQUEST),
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST)
+          TaxYearFormatError           -> BAD_REQUEST,
+          RuleTaxYearRangeInvalidError -> BAD_REQUEST,
+          RuleTaxYearNotSupportedError -> BAD_REQUEST,
+          BadRequestError              -> BAD_REQUEST,
+          NinoFormatError              -> BAD_REQUEST,
+          BusinessIdFormatError        -> BAD_REQUEST,
+          InvalidTaxYearParameterError -> BAD_REQUEST
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -204,14 +205,15 @@ class ListPeriodSummariesControllerSpec
 
         val input = {
           val errors = Seq(
-            (NinoFormatError, BAD_REQUEST),
-            (BusinessIdFormatError, BAD_REQUEST),
-            (NotFoundError, NOT_FOUND),
-            (InternalError, INTERNAL_SERVER_ERROR)
+            NinoFormatError              -> BAD_REQUEST,
+            BusinessIdFormatError        -> BAD_REQUEST,
+            NotFoundError                -> NOT_FOUND,
+            InternalError                -> INTERNAL_SERVER_ERROR,
+            InvalidTaxYearParameterError -> BAD_REQUEST
           )
           val tysSpecificErrors = Seq(
-            (TaxYearFormatError           -> BAD_REQUEST),
-            (RuleTaxYearNotSupportedError -> BAD_REQUEST)
+            TaxYearFormatError           -> BAD_REQUEST,
+            RuleTaxYearNotSupportedError -> BAD_REQUEST
           )
 
           errors ++ tysSpecificErrors

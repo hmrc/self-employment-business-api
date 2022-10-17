@@ -197,6 +197,12 @@ object BadRequestError
       message = "Invalid request"
     )
 
+object InvalidTaxYearParameterError
+  extends MtdError(
+    code = "INVALID_TAX_YEAR_PARAMETER",
+    message = "A tax year before 2023-24 was supplied"
+  )
+
 // Standard Errors
 object NotFoundError
     extends MtdError(

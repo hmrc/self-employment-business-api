@@ -85,7 +85,7 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case TaxYearFormatError | RuleTaxYearRangeInvalidError | RuleTaxYearNotSupportedError | NinoFormatError | BusinessIdFormatError |
-          BadRequestError =>
+          BadRequestError | InvalidTaxYearParameterError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))
