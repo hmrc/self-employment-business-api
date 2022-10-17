@@ -25,7 +25,7 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validPeriodId   = "2017-01-25_2017-02-31"
-  private val validTaxYear = Some("2023-24")
+  private val validTaxYear    = Some("2023-24")
 
   val validator = new RetrievePeriodSummaryValidator()
 
@@ -41,7 +41,7 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(RetrievePeriodSummaryRawData("A12344A", validBusinessId, validPeriodId,None)) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData("A12344A", validBusinessId, validPeriodId, None)) shouldBe
           List(NinoFormatError)
       }
     }
@@ -71,6 +71,13 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
       "an invalid tax year range is supplied" in {
         validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Some("2023-26"))) shouldBe
           List(RuleTaxYearRangeInvalidError)
+      }
+    }
+
+    "return RuleTaxYearNotSupportedError" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Some("2021-22"))) shouldBe
+          List(RuleTaxYearNotSupportedError)
       }
     }
 

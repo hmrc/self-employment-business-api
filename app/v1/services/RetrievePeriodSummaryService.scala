@@ -16,7 +16,6 @@
 
 package v1.services
 
-import cats.data.EitherT
 import cats.implicits._
 
 import javax.inject.{Inject, Singleton}
@@ -40,9 +39,8 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-    val result = EitherT(connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap))))
+    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 
-    result.value
   }
 
   private def downstreamErrorMap: Map[String, MtdError] = {

@@ -22,7 +22,7 @@ import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 class RetrievePeriodSummaryValidator extends Validator[RetrievePeriodSummaryRawData] {
 
-  private val validationSet = List(parameterFormatValidation)
+  private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
 
   override def validate(data: RetrievePeriodSummaryRawData): List[MtdError] = {
     run(validationSet, data).distinct
@@ -34,6 +34,12 @@ class RetrievePeriodSummaryValidator extends Validator[RetrievePeriodSummaryRawD
       BusinessIdValidation.validate(data.businessId),
       PeriodIdValidation.validate(data.periodId),
       data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
+    )
+  }
+
+  private def parameterRuleValidation: RetrievePeriodSummaryRawData => List[List[MtdError]] = (data: RetrievePeriodSummaryRawData) => {
+    List(
+      data.taxYear.map(TaxYearNotSupportedValidation.validateTys).getOrElse(Nil)
     )
   }
 
