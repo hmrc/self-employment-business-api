@@ -255,7 +255,8 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           ("AA123", "XAIS12345678910", "2019-01-01_2020-01-01", Status.BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2019-01-01_2020-01-01", Status.BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2020", Status.BAD_REQUEST, PeriodIdFormatError)
+          ("AA123456A", "XAIS12345678910", "2020", Status.BAD_REQUEST, PeriodIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2021-22", Status.BAD_REQUEST, InvalidTaxYearParameterError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))

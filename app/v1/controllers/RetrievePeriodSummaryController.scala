@@ -57,7 +57,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.retrievePeriodSummary(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
+          vendorResponse  <- EitherT.fromEither[Future](
             hateoasFactory
               .wrap(serviceResponse.responseData, RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
               .asRight[ErrorWrapper]
@@ -83,10 +83,11 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                                                   => NotFound(Json.toJson(errorWrapper))
-      case InternalError                                                                   => InternalServerError(Json.toJson(errorWrapper))
-      case _                                                                               => unhandledError(errorWrapper)
+      case NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | BadRequestError
+           | InvalidTaxYearParameterError => BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError                  => NotFound(Json.toJson(errorWrapper))
+      case InternalError                  => InternalServerError(Json.toJson(errorWrapper))
+      case _                              => unhandledError(errorWrapper)
     }
 
 }
