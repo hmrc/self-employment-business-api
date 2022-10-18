@@ -23,6 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
+import v1.models.domain.TaxYear
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
@@ -33,14 +34,12 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
     val periodId   = "2019-01-01_2020-01-01"
-    val fromDate   = "2019-01-01"
-    val toDate     = "2020-01-01"
 
-    val responseBody: JsValue = Json.parse(s"""
+    def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(s"""
          |{
          |  "periodDates":{
-         |      "periodStartDate":"2019-08-24",
-         |      "periodEndDate":"2020-08-24"
+         |      "periodStartDate": "$fromDate",
+         |      "periodEndDate":"$toDate"
          |   },
          |   "periodIncome":{
          |      "turnover":3100.00,
@@ -100,10 +99,10 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    val desResponseBody: JsValue = Json.parse(s"""
+    def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(s"""
          |{
-         |   "from": "2019-08-24",
-         |   "to": "2020-08-24",
+         |   "from": "$fromDate",
+         |   "to": "$toDate",
          |   "financials": {
          |      "deductions": {
          |         "adminCosts": {
@@ -179,22 +178,6 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$businessId/period/$periodId"
 
-    def queryParams: Map[String, String] = Map(
-      "from" -> fromDate,
-      "to"   -> toDate
-    )
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
     def errorBody(code: String): String =
       s"""
          |      {
@@ -205,28 +188,112 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   }
 
+  private trait NonTysTest extends Test {
+    override val periodId = "2019-01-01_2020-01-01"
+    val fromDate          = "2019-01-01"
+    val toDate            = "2020-01-01"
+
+    def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+  }
+
+  private trait TysTest extends Test {
+    override val periodId = "2023-04-01_2024-01-01"
+    val fromDate          = "2023-04-01"
+    val toDate            = "2024-01-01"
+    val taxYear           = "2023-24"
+    val tysTaxYear        = TaxYear.fromMtd(taxYear)
+
+    def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(s"$uri?taxYear=${tysTaxYear.asMtd}")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+    def invalidTaxYearRequest(taxYear: String): WSRequest = {
+      setupStubs()
+      buildRequest(s"$uri?taxYear=$taxYear")
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+
+    }
+
+  }
+
   "calling the retrieve endpoint" should {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new Test {
+      "any valid request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, queryParams, Status.OK, desResponseBody)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, Status.OK, downstreamResponseBody(fromDate, toDate))
         }
 
-        val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+        val response: WSResponse = await(request().get())
         response.status shouldBe Status.OK
-        response.json shouldBe responseBody
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
+      }
+
+      "any valid TYS request is made" in new TysTest {
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(
+            method = DownstreamStub.GET,
+            uri = tysDownstreamUri,
+            queryParams = Map[String, String]("from" -> fromDate, "to" -> toDate),
+            status = Status.OK,
+            body = downstreamResponseBody(fromDate, toDate)
+          )
+        }
+
+        val response: WSResponse = await(request().get())
+        response.status shouldBe Status.OK
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+
       }
     }
 
     "return error according to spec" when {
+      "tys validation" when {
+        "validation fails with RuleTaxYearNotSupported error" in new TysTest {
+
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+          }
+
+          val response: WSResponse = await(invalidTaxYearRequest("2021-22").get())
+          response.status shouldBe Status.BAD_REQUEST
+          response.json shouldBe Json.toJson(RuleTaxYearNotSupportedError)
+        }
+      }
 
       "validation error" when {
         def validationErrorTest(requestNino: String,
@@ -234,7 +301,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
                                 requestPeriodId: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -246,33 +313,70 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(requestNino)
             }
 
-            val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
         }
 
         val input = Seq(
-          ("AA123", "XAIS12345678910", "2019-01-01_2020-01-01", Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", "2019-01-01_2020-01-01", Status.BAD_REQUEST, BusinessIdFormatError),
+          ("AA123", "XAIS12345678910", "2021-04-01_2022-01-01", Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2021-04-01_2022-01-01", Status.BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "2020", Status.BAD_REQUEST, PeriodIdFormatError)
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
+      "TYS validation error" when {
+        def validationTysErrorTest(requestNino: String,
+                                   requestBusinessId: String,
+                                   requestPeriodId: String,
+                                   requestTaxYear: TaxYear,
+                                   expectedStatus: Int,
+                                   expectedBody: MtdError): Unit = {
+          s"validation fails with ${expectedBody.code} error" in new TysTest {
+
+            override val nino: String       = requestNino
+            override val businessId: String = requestBusinessId
+            override val periodId: String   = requestPeriodId
+            override val tysTaxYear         = requestTaxYear
+
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(requestNino)
+            }
+
+            val response: WSResponse = await(request().get())
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedBody)
+          }
+        }
+
+        val input = Seq(
+          ("AA123", "XAIS12345678910", "2023-04-01_2024-01-01", TaxYear.fromMtd("2023-24"), Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2023-04-01_2024-01-01", TaxYear.fromMtd("2023-24"), Status.BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2020", TaxYear.fromMtd("2023-24"), Status.BAD_REQUEST, PeriodIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", TaxYear.fromMtd("2021-22"), Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", TaxYear.fromMtd("2023-2"), Status.BAD_REQUEST, TaxYearFormatError)
+        )
+
+        input.foreach(args => (validationTysErrorTest _).tupled(args))
+      }
+
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new TysTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.GET, tysDownstreamUri(), downstreamStatus, errorBody(downstreamCode))
             }
 
-            val response: WSResponse = await(request().withQueryStringParameters("from" -> fromDate, "to" -> toDate).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -286,7 +390,13 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           (Status.NOT_FOUND, "NOT_FOUND_PERIOD", Status.NOT_FOUND, NotFoundError),
           (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
           (Status.INTERNAL_SERVER_ERROR, "SERVER_ERROR", Status.INTERNAL_SERVER_ERROR, InternalError),
-          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
+          (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
+          (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.NOT_FOUND, "INCOME_DATA_SOURCE_NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+          (Status.NOT_FOUND, "SUBMISSION_DATA_NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+          (Status.BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))

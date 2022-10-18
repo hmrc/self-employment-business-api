@@ -46,14 +46,15 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrievePeriodSummaryController", endpointName = "retrieveSelfEmploymentPeriodicSummary")
 
-  def handleRequest(nino: String, businessId: String, periodId: String): Action[AnyContent] =
+  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val correlationId: String = idGenerator.getCorrelationId
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId)
-      val result =
+      val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, taxYear)
+      val result = {
+
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.retrievePeriodSummary(parsedRequest))
@@ -70,6 +71,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
           Ok(Json.toJson(vendorResponse))
             .withApiHeaders(serviceResponse.correlationId)
         }
+      }
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
         val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
@@ -83,10 +85,20 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NinoFormatError | BusinessIdFormatError | PeriodIdFormatError | BadRequestError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError                                                                   => NotFound(Json.toJson(errorWrapper))
-      case InternalError                                                                   => InternalServerError(Json.toJson(errorWrapper))
-      case _                                                                               => unhandledError(errorWrapper)
+      case _
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            BusinessIdFormatError,
+            PeriodIdFormatError,
+            TaxYearFormatError,
+            RuleTaxYearNotSupportedError,
+            RuleTaxYearRangeInvalidError
+          ) =>
+        BadRequest(Json.toJson(errorWrapper))
+      case NotFoundError => NotFound(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
+      case _             => unhandledError(errorWrapper)
     }
 
 }

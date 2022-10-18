@@ -18,7 +18,7 @@ package v1.services
 
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockRetrievePeriodSummaryConnector
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, PeriodId}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
@@ -31,6 +31,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   val periodId: String               = "2019-01-25_2020-01-25"
+  val tysTaxYear: String             = "23-24"
   implicit val correlationId: String = "X-123"
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
@@ -43,7 +44,8 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   private val requestData = RetrievePeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    periodId = periodId
+    periodId = PeriodId(periodId),
+    taxYear = None
   )
 
   trait Test extends MockRetrievePeriodSummaryConnector {
@@ -79,17 +81,27 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           await(service.retrievePeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
-        "INVALID_NINO"            -> NinoFormatError,
-        "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
-        "INVALID_DATE_FROM"       -> PeriodIdFormatError,
-        "INVALID_DATE_TO"         -> PeriodIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "NOT_FOUND_PERIOD"        -> NotFoundError,
-        "SERVER_ERROR"            -> InternalError,
-        "SERVICE_UNAVAILABLE"     -> InternalError
-      )
-
+      val input: Seq[(String, MtdError)] = {
+        val errors: Seq[(String, MtdError)] = Seq(
+          "INVALID_NINO"            -> NinoFormatError,
+          "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
+          "INVALID_DATE_FROM"       -> PeriodIdFormatError,
+          "INVALID_DATE_TO"         -> PeriodIdFormatError,
+          "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+          "NOT_FOUND_PERIOD"        -> NotFoundError,
+          "SERVER_ERROR"            -> InternalError,
+          "SERVICE_UNAVAILABLE"     -> InternalError
+        )
+        val extraTysErrors: Seq[(String, MtdError)] = Seq(
+          "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+          "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
+          "INVALID_CORRELATION_ID"       -> InternalError,
+          "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
+          "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
+          "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
+        )
+        errors ++ extraTysErrors
+      }
       input.foreach(args => (serviceError _).tupled(args))
     }
   }

@@ -17,6 +17,7 @@
 package v1.services
 
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
@@ -38,11 +39,12 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
+    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+
   }
 
-  private def desErrorMap =
-    Map(
+  private def downstreamErrorMap: Map[String, MtdError] = {
+    val downstreamErrors = Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
       "INVALID_DATE_FROM"       -> PeriodIdFormatError,
@@ -52,5 +54,15 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "SERVER_ERROR"            -> InternalError,
       "SERVICE_UNAVAILABLE"     -> InternalError
     )
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+      "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
+      "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
+      "INVALID_CORRELATION_ID"       -> InternalError,
+      "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
+    )
+    downstreamErrors ++ extraTysErrors
+  }
 
 }

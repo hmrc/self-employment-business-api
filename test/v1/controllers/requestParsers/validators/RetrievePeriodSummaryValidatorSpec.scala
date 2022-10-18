@@ -25,40 +25,65 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validPeriodId   = "2017-01-25_2017-02-31"
+  private val validTaxYear    = Some("2023-24")
 
   val validator = new RetrievePeriodSummaryValidator()
 
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId)) shouldBe Nil
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, None)) shouldBe Nil
+      }
+      "a valid TYS request is supplied" in {
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, validTaxYear)) shouldBe Nil
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(RetrievePeriodSummaryRawData("A12344A", validBusinessId, validPeriodId)) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData("A12344A", validBusinessId, validPeriodId, None)) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return BusinessIdFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(RetrievePeriodSummaryRawData(validNino, "Walruses", validPeriodId)) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData(validNino, "Walruses", validPeriodId, None)) shouldBe
           List(BusinessIdFormatError)
       }
     }
 
     "return PeriodIdFormatError error" when {
       "an invalid period id is supplied" in {
-        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, "2647667456")) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, "2647667456", None)) shouldBe
           List(PeriodIdFormatError)
+      }
+    }
+
+    "return TaxYearFormatError error" when {
+      "an invalid tax year format is supplied" in {
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Some("202324"))) shouldBe
+          List(TaxYearFormatError)
+      }
+    }
+
+    "return RuleTaxYearRangeInvalidError error" when {
+      "an invalid tax year range is supplied" in {
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Some("2023-26"))) shouldBe
+          List(RuleTaxYearRangeInvalidError)
+      }
+    }
+
+    "return RuleTaxYearNotSupportedError" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Some("2021-22"))) shouldBe
+          List(RuleTaxYearNotSupportedError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(RetrievePeriodSummaryRawData("A12344A", "Baked Beans", "21742624")) shouldBe
+        validator.validate(RetrievePeriodSummaryRawData("A12344A", "Baked Beans", "21742624", None)) shouldBe
           List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError)
       }
     }
