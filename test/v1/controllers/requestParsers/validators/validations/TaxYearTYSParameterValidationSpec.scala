@@ -18,9 +18,8 @@ package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
 import v1.models.errors.InvalidTaxYearParameterError
-import v1.models.utils.JsonErrorValidators
 
-class TaxYearTYSParameterValidationSpec extends UnitSpec with JsonErrorValidators {
+class TaxYearTYSParameterValidationSpec extends UnitSpec {
 
   "validate" should {
     "return no errors" when {
@@ -28,26 +27,16 @@ class TaxYearTYSParameterValidationSpec extends UnitSpec with JsonErrorValidator
 
         val validTaxYear     = "2023-24"
         val validationResult = TaxYearTYSParameterValidation.validate(validTaxYear)
-        validationResult.isEmpty shouldBe true
-
+        validationResult shouldBe empty
       }
-
-      "the minimum allowed tax year is supplied" in {
-        val validTaxYear     = "2023-24"
-        val validationResult = TaxYearTYSParameterValidation.validate(validTaxYear)
-        validationResult.isEmpty shouldBe true
-      }
-
     }
 
     "return the given error" when {
-      "a tax year below 2022-23 is supplied" in {
+      "a tax year below 2023-24 is supplied" in {
 
-        val invalidTaxYear   = "2021-22"
+        val invalidTaxYear   = "2022-23"
         val validationResult = TaxYearTYSParameterValidation.validate(invalidTaxYear)
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe InvalidTaxYearParameterError
+        validationResult shouldBe List(InvalidTaxYearParameterError)
       }
     }
   }

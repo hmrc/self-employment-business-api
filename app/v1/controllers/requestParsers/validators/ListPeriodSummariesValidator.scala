@@ -38,20 +38,9 @@ class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData]
 
   private def parameterRuleValidation: ListPeriodSummariesRawData => List[List[MtdError]] = (data: ListPeriodSummariesRawData) => {
 
-    val year = data.taxYear match {
-      case Some(value) => value.dropRight(3).toInt
-      case None        => 0
-    }
-
-    if (year < 2023) {
       List(
-        data.taxYear.map(TaxYearNotSupportedValidation.validate).getOrElse(Nil),
-      )
-    } else {
-      List(
-        data.taxYear.map(TaxYearNotSupportedValidation.validate).getOrElse(Nil),
         data.taxYear.map(TaxYearTYSParameterValidation.validate).getOrElse(Nil)
       )
     }
   }
-}
+
