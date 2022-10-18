@@ -146,7 +146,6 @@ class RetrievePeriodSummaryControllerSpec
           )
           val tysErrors = Seq(
             (TaxYearFormatError, BAD_REQUEST),
-            (RuleTaxYearNotSupportedError, BAD_REQUEST),
             (RuleTaxYearRangeInvalidError, BAD_REQUEST),
             (InvalidTaxYearParameterError, BAD_REQUEST)
           )
@@ -187,8 +186,7 @@ class RetrievePeriodSummaryControllerSpec
           val extraTysErrors = Seq(
             (TaxYearFormatError, BAD_REQUEST),
             (RuleTaxYearNotSupportedError, BAD_REQUEST),
-            (RuleTaxYearRangeInvalidError, BAD_REQUEST),
-            (InvalidTaxYearParameterError, BAD_REQUEST)
+            (RuleTaxYearRangeInvalidError, BAD_REQUEST)
           )
           errors ++ extraTysErrors
         }

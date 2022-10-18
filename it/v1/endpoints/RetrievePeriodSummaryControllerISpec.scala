@@ -280,20 +280,6 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     }
 
     "return error according to spec" when {
-      "tys validation" when {
-        "validation fails with RuleTaxYearNotSupported error" in new TysTest {
-
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(invalidTaxYearRequest("2021-22").get())
-          response.status shouldBe Status.BAD_REQUEST
-          response.json shouldBe Json.toJson(InvalidTaxYearParameterError)
-        }
-      }
 
       "validation error" when {
         def validationErrorTest(requestNino: String,

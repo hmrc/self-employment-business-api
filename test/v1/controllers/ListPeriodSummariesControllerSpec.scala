@@ -173,7 +173,6 @@ class ListPeriodSummariesControllerSpec
         val input = Seq(
           TaxYearFormatError           -> BAD_REQUEST,
           RuleTaxYearRangeInvalidError -> BAD_REQUEST,
-          RuleTaxYearNotSupportedError -> BAD_REQUEST,
           BadRequestError              -> BAD_REQUEST,
           NinoFormatError              -> BAD_REQUEST,
           BusinessIdFormatError        -> BAD_REQUEST,
@@ -208,8 +207,7 @@ class ListPeriodSummariesControllerSpec
             NinoFormatError              -> BAD_REQUEST,
             BusinessIdFormatError        -> BAD_REQUEST,
             NotFoundError                -> NOT_FOUND,
-            InternalError                -> INTERNAL_SERVER_ERROR,
-            InvalidTaxYearParameterError -> BAD_REQUEST
+            InternalError                -> INTERNAL_SERVER_ERROR
           )
           val tysSpecificErrors = Seq(
             TaxYearFormatError           -> BAD_REQUEST,

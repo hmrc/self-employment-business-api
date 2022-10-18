@@ -67,21 +67,6 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     }
     "return error according to spec" when {
 
-      "tys specific validation" when {
-        s"validation fails with RuleTaxYearNotSupported error" in new TysIfsTest {
-
-          override val taxYear: String = "2021-22"
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-          }
-
-          val response: WSResponse = await(request().get())
-          response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(InvalidTaxYearParameterError)
-        }
-      }
       "validation error" when {
         def validationErrorTest(requestNino: String,
                                 requestBusinessId: String,
@@ -146,7 +131,6 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
-
     }
   }
 

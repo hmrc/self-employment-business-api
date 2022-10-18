@@ -31,7 +31,7 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
   "running a validation" should {
     "return no errors" when {
-      "a valid non-TYS request is supplied" in {
+      "a valid request with no tax year supplied" in {
         validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, None)) shouldBe Nil
       }
 
