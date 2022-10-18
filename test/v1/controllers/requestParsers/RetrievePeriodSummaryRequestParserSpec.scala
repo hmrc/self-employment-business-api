@@ -18,7 +18,7 @@ package v1.controllers.requestParsers
 
 import support.UnitSpec
 import v1.mocks.validators.MockRetrievePeriodSummaryValidator
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import v1.models.errors._
 import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 
@@ -27,12 +27,21 @@ class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
   val nino: String                   = "AA123456B"
   val businessId: String             = "XAIS12345678910"
   val periodId: String               = "2017-01-25_2017-02-25"
+  val tysTaxYear: String             = "2023-24"
   implicit val correlationId: String = "X-123"
 
   val rawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
-    periodId = periodId
+    periodId = periodId,
+    taxYear = None
+  )
+
+  val tysRawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(
+    nino = nino,
+    businessId = businessId,
+    periodId = periodId,
+    taxYear = Some(tysTaxYear)
   )
 
   trait Test extends MockRetrievePeriodSummaryValidator {
@@ -49,7 +58,12 @@ class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
         MockRetrievePeriodSummaryValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId))
+          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))
+      }
+      "valid TYS request data is supplied" in new Test {
+        MockRetrievePeriodSummaryValidator.validate(tysRawData).returns(Nil)
+        parser.parseRequest(tysRawData) shouldBe
+          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear))))
       }
     }
 

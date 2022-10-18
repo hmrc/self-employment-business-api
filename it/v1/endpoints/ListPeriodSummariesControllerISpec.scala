@@ -79,7 +79,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
           val response: WSResponse = await(request().get())
           response.status shouldBe BAD_REQUEST
-          response.json shouldBe Json.toJson(RuleTaxYearNotSupportedError)
+          response.json shouldBe Json.toJson(InvalidTaxYearParameterError)
         }
       }
       "validation error" when {
@@ -108,7 +108,6 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           ("AA123", "XAIS12345678910", "2023-24", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2023-24", BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "XAIS12345678910", "2021-2", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )

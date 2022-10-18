@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-package v1.models.request.retrievePeriodSummary
+package v1.models.domain
 
-import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import play.api.libs.json.{ JsString, Writes }
 
-case class RetrievePeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear])
+case class PeriodId(value: String) {
+
+  val (from, to): (String, String) = {
+    if (value.length == 21) {
+      val f = value.substring(0, 10)
+      val t = value.substring(11, 21)
+      (f, t)
+    } else {
+      ("", "")
+    }
+  }
+
+}
+
+object PeriodId {
+  implicit val writes: Writes[PeriodId] = Writes(x => JsString(x.value))
+
+  def apply(from: String, to: String): PeriodId = {
+    PeriodId(s"${from}_$to")
+  }
+}

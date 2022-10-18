@@ -18,4 +18,4 @@ package v1.models.request.retrievePeriodSummary
 
 import v1.models.request.RawData
 
-case class RetrievePeriodSummaryRawData(nino: String, businessId: String, periodId: String) extends RawData
+case class RetrievePeriodSummaryRawData(nino: String, businessId: String, periodId: String, taxYear: Option[String]) extends RawData
