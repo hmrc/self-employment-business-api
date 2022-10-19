@@ -39,7 +39,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, downstreamResponseBody(fromDate, toDate))
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
         }
 
         val response: WSResponse = await(request().get())
@@ -55,7 +55,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, downstreamResponseBody(fromDate, toDate))
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
         }
 
         val response: WSResponse = await(request().get())
@@ -78,6 +78,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val taxYear: String    = requestTaxYear
+
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
@@ -94,6 +95,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           ("AA123", "XAIS12345678910", "2023-24", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2023-24", BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "2021-2", BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )
 
@@ -108,7 +110,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.GET, downstreamUri(), downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().get())
@@ -229,7 +231,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=${taxYear}")
+      buildRequest(s"$uri?taxYear=$taxYear")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")
