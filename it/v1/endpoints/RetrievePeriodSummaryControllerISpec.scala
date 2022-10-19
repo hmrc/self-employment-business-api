@@ -207,11 +207,11 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysTest extends Test {
-    override val periodId = "2023-04-01_2024-01-01"
-    val fromDate          = "2023-04-01"
-    val toDate            = "2024-01-01"
-    val taxYear           = "2023-24"
-    val tysTaxYear        = TaxYear.fromMtd(taxYear)
+    override val periodId      = "2023-04-01_2024-01-01"
+    val fromDate               = "2023-04-01"
+    val toDate                 = "2024-01-01"
+    val taxYear                = "2023-24"
+    lazy val tysTaxYear        = TaxYear.fromMtd(taxYear)
 
 
     def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
