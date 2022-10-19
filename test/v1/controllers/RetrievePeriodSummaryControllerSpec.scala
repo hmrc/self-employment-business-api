@@ -24,19 +24,7 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodSummaryService}
 import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import v1.models.errors.{
-  BadRequestError,
-  BusinessIdFormatError,
-  ErrorWrapper,
-  InternalError,
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
-  PeriodIdFormatError,
-  RuleTaxYearNotSupportedError,
-  RuleTaxYearRangeInvalidError,
-  TaxYearFormatError
-}
+import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, InternalError, InvalidTaxYearParameterError, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
@@ -158,8 +146,8 @@ class RetrievePeriodSummaryControllerSpec
           )
           val tysErrors = Seq(
             (TaxYearFormatError, BAD_REQUEST),
-            (RuleTaxYearNotSupportedError, BAD_REQUEST),
-            (RuleTaxYearRangeInvalidError, BAD_REQUEST)
+            (RuleTaxYearRangeInvalidError, BAD_REQUEST),
+            (InvalidTaxYearParameterError, BAD_REQUEST)
           )
           errors ++ tysErrors
         }

@@ -33,6 +33,9 @@ class ListPeriodSummariesValidatorSpec extends UnitSpec {
       "a valid request is supplied" in {
         validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, taxYear)) shouldBe Nil
       }
+      "a valid request with no tax year supplied" in {
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, None)) shouldBe Nil
+      }
     }
 
     "return NinoFormatError error" when {
@@ -53,14 +56,15 @@ class ListPeriodSummariesValidatorSpec extends UnitSpec {
       }
     }
 
-    "return RuleTaxYearNotSupportedError" when {
-      "an invalid tax year is supplied" in {
-        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, Some("2021-22"))) shouldBe List(RuleTaxYearNotSupportedError)
-      }
-    }
     "return RuleTaxYearRangeInvalidError" when {
       "an invalid tax year is supplied" in {
         validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, Some("2023-25"))) shouldBe List(RuleTaxYearRangeInvalidError)
+      }
+    }
+
+    "return InvalidTaxYearParameterError" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(ListPeriodSummariesRawData(validNino, validBusinessId, Some("2021-22"))) shouldBe List(InvalidTaxYearParameterError)
       }
     }
 

@@ -31,9 +31,10 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
   "running a validation" should {
     "return no errors" when {
-      "a valid request is supplied" in {
+      "a valid request with no tax year supplied" in {
         validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, None)) shouldBe Nil
       }
+
       "a valid TYS request is supplied" in {
         validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, validTaxYear)) shouldBe Nil
       }
@@ -74,10 +75,10 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
       }
     }
 
-    "return RuleTaxYearNotSupportedError" when {
+    "return InvalidTaxYearParameterError" when {
       "an invalid tax year is supplied" in {
         validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Some("2021-22"))) shouldBe
-          List(RuleTaxYearNotSupportedError)
+          List(InvalidTaxYearParameterError)
       }
     }
 
