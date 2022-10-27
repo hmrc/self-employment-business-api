@@ -17,6 +17,7 @@
 package v1.models.domain
 
 import config.FeatureSwitches
+import v1.models.domain.TaxYear.tysTaxYear
 
 /** Opaque representation of a tax year
   */
@@ -49,7 +50,7 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean = featureSwitches.isTaxYearSpecificApiEnabled && year >= 2024
+  def isTys(implicit featureSwitches: FeatureSwitches): Boolean = featureSwitches.isTaxYearSpecificApiEnabled && year >= tysTaxYear
 }
 
 object TaxYear {
@@ -67,4 +68,5 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
+  def isTys(taxYear: Option[TaxYear])(implicit featureSwitches: FeatureSwitches): Boolean = taxYear.exists(_.isTys)
 }

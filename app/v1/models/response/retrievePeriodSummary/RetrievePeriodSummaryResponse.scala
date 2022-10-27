@@ -19,7 +19,7 @@ package v1.models.response.retrievePeriodSummary
 import config.AppConfig
 import play.api.libs.json._
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
@@ -55,8 +55,8 @@ object RetrievePeriodSummaryResponse extends HateoasLinks {
       import data._
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId),
-        retrievePeriodSummary(appConfig, nino, businessId, periodId),
-        listPeriodSummaries(appConfig, nino, businessId, isSelf = false)
+        retrievePeriodSummary(appConfig, nino, businessId, periodId, taxYear),
+        listPeriodSummaries(appConfig, nino, businessId, taxYear, isSelf = false)
       )
     }
 
@@ -64,4 +64,4 @@ object RetrievePeriodSummaryResponse extends HateoasLinks {
 
 }
 
-case class RetrievePeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData
+case class RetrievePeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) extends HateoasData

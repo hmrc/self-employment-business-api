@@ -124,7 +124,7 @@ class ListPeriodSummariesControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId)))
+          .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), None))
           .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, None)(fakeRequest)
@@ -143,7 +143,7 @@ class ListPeriodSummariesControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
-          .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId)))
+          .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))
           .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, Some(taxYear))(fakeRequest)
@@ -204,10 +204,10 @@ class ListPeriodSummariesControllerSpec
 
         val input = {
           val errors = Seq(
-            NinoFormatError              -> BAD_REQUEST,
-            BusinessIdFormatError        -> BAD_REQUEST,
-            NotFoundError                -> NOT_FOUND,
-            InternalError                -> INTERNAL_SERVER_ERROR
+            NinoFormatError       -> BAD_REQUEST,
+            BusinessIdFormatError -> BAD_REQUEST,
+            NotFoundError         -> NOT_FOUND,
+            InternalError         -> INTERNAL_SERVER_ERROR
           )
           val tysSpecificErrors = Seq(
             TaxYearFormatError           -> BAD_REQUEST,

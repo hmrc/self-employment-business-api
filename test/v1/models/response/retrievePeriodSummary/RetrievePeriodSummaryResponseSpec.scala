@@ -17,9 +17,10 @@
 package v1.models.response.retrievePeriodSummary
 
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{Link, Method}
 
 class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
@@ -212,19 +213,37 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
   }
 
   "LinksFactory" should {
-    "produce the correct links" when {
+    val nino       = "AA111111A"
+    val businessId = "id"
+    val periodId   = "periodId"
+
+    "produce the correct links with TYS disabled" when {
       "called" in {
-        val nino                                   = "AA111111A"
-        val businessId                             = "id"
-        val periodId                               = "periodId"
-        val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId)
+        val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
+        )
+      }
+    }
+
+    "produce the correct links with TYS enabled and the tax year is TYS" when {
+      "called" in {
+        val data: RetrievePeriodSummaryHateoasData =
+          RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2023-24")))
+
+        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
+
+        RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = Method.GET, rel = "self"),
+          Link(href = s"/my/context/$nino/$businessId/period?taxYear=2023-24", method = Method.GET, rel = "list-self-employment-period-summaries")
         )
       }
     }

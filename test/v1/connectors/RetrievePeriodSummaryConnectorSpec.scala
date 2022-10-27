@@ -56,7 +56,6 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   "connector" must {
     "return a 200 status for a success scenario" in new DesTest with Test {
-
       val outcome = Right(ResponseWrapper(correlationId, response))
 
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
@@ -65,8 +64,18 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))) shouldBe outcome
     }
 
-    "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
+    "ignore tax year param if TYS feature switch is disabled" in new DesTest with Test {
+      val outcome = Right(ResponseWrapper(correlationId, response))
 
+      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        .returns(Future.successful(outcome))
+
+      val result =
+        await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
+      result shouldBe outcome
+    }
+
+    "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
       val taxYear = TaxYear.fromMtd(tysTaxYear).asTysDownstream
       val outcome = Right(ResponseWrapper(correlationId, response))
       val url     = s"$baseUrl/income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
