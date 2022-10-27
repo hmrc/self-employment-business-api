@@ -35,8 +35,8 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val businessId = "XAIS12345678910"
     val periodId   = "2019-01-01_2020-01-01"
 
-    val retrievePeriodSummaryUri: String
-    val listPeriodSummariesUri: String
+    val retrievePeriodSummaryHateoasUri: String
+    val listPeriodSummariesHateoasUri: String
 
     def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(s"""
          |{
@@ -89,12 +89,12 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |         "method": "PUT"
          |      },
          |      {
-         |         "href": "$retrievePeriodSummaryUri",
+         |         "href": "$retrievePeriodSummaryHateoasUri",
          |         "rel": "self",
          |         "method": "GET"
          |      },
          |      {
-         |         "href": "$listPeriodSummariesUri",
+         |         "href": "$listPeriodSummariesHateoasUri",
          |         "rel": "list-self-employment-period-summaries",
          |         "method": "GET"
          |      }
@@ -196,8 +196,8 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val fromDate          = "2019-01-01"
     val toDate            = "2020-01-01"
 
-    val retrievePeriodSummaryUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    val listPeriodSummariesUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
+    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
 
     def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
@@ -219,8 +219,8 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val taxYear           = "2023-24"
     lazy val tysTaxYear   = TaxYear.fromMtd(taxYear)
 
-    val retrievePeriodSummaryUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$taxYear"
-    val listPeriodSummariesUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$taxYear"
+    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$taxYear"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$taxYear"
 
     def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 

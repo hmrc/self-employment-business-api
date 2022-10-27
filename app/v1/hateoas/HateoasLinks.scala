@@ -25,7 +25,7 @@ import v1.models.hateoas.RelType._
 trait HateoasLinks {
 
   private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
-    implicit val featureSwitches = FeatureSwitches(appConfig.featureSwitches)
+    implicit val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
     maybeTaxYear match {
       case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"

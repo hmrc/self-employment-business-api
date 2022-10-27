@@ -141,8 +141,8 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
 
-    val retrievePeriodSummaryUri: String
-    val listPeriodSummariesUri: String
+    val retrievePeriodSummaryHateoasUri: String
+    val listPeriodSummariesHateoasUri: String
 
     def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
       s"""
@@ -154,7 +154,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
          |      "periodEndDate": "$toDate",
          |      "links": [
          |        {
-         |          "href": "$retrievePeriodSummaryUri",
+         |          "href": "$retrievePeriodSummaryHateoasUri",
          |          "method": "GET",
          |          "rel": "self"
          |        }
@@ -168,7 +168,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
          |      "rel": "create-self-employment-period-summary"
          |    },
          |    {
-         |      "href": "$listPeriodSummariesUri",
+         |      "href": "$listPeriodSummariesHateoasUri",
          |      "method": "GET",
          |      "rel": "self"
          |    }
@@ -210,8 +210,8 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val fromDate = "2019-01-01"
     val toDate   = "2020-01-01"
 
-    val retrievePeriodSummaryUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    val listPeriodSummariesUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
+    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
 
     def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
@@ -234,8 +234,8 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val taxYear         = "2024-25"
     lazy val tysTaxYear = TaxYear.fromMtd(taxYear)
 
-    val retrievePeriodSummaryUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$taxYear"
-    val listPeriodSummariesUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$taxYear"
+    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$taxYear"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$taxYear"
 
     def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
