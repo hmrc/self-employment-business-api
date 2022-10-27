@@ -37,11 +37,12 @@ trait HateoasLinks {
   private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.asMtd}"
 
-  private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String = withTaxYearParameter(
-    appConfig,
-    uri = s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period",
-    taxYear
-  )
+  private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String =
+    withTaxYearParameter(
+      appConfig,
+      uri = s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period",
+      taxYear
+    )
 
   private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) =
     withTaxYearParameter(
