@@ -68,4 +68,5 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
+  def isTys(taxYear: Option[TaxYear])(implicit featureSwitches: FeatureSwitches): Boolean = taxYear.exists(_.isTys)
 }

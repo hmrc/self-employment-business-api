@@ -16,9 +16,12 @@
 
 package v1.models.domain
 
+import config.FeatureSwitches
+import mocks.MockAppConfig
+import play.api.Configuration
 import support.UnitSpec
 
-class TaxYearSpec extends UnitSpec {
+class TaxYearSpec extends UnitSpec with MockAppConfig {
 
   "TaxYear" when {
 
@@ -61,6 +64,26 @@ class TaxYearSpec extends UnitSpec {
         taxYear should not be TaxYear.fromDownstream("2021")
       }
     }
+
+    "isTys" should {
+      "return false for None" in new TysTest {
+        TaxYear.isTys(None) shouldBe false
+      }
+
+      "return false for a tax year before 2023-24" in new TysTest {
+        TaxYear.isTys(Some(TaxYear.fromMtd("2022-23"))) shouldBe false
+      }
+
+      "return true for the 2023-24 tax year" in new TysTest {
+        TaxYear.isTys(Some(TaxYear.fromMtd("2023-24"))) shouldBe true
+      }
+    }
+  }
+
+  class TysTest {
+    MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
+
+    implicit val featureSwitches: FeatureSwitches = FeatureSwitches(mockAppConfig.featureSwitches)
   }
 
 }
