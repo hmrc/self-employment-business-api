@@ -16,7 +16,6 @@
 
 package v1.connectors
 
-import config.FeatureSwitches
 import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.Configuration
@@ -182,7 +181,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.tysIfsToken returns "TYS-IFS-token"
     MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
     MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedIfsHeaders)
-FeatureSwitches
+
     MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
   }
 
