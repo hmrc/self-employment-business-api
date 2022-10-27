@@ -58,12 +58,10 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.retrievePeriodSummary(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
-            hateoasFactory
-              .wrap(serviceResponse.responseData, RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
-              .asRight[ErrorWrapper]
-          )
         } yield {
+          val hateoasData = RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, parsedRequest.taxYear)
+          val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, hateoasData)
+
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")

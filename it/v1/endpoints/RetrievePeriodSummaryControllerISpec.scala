@@ -35,6 +35,9 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val businessId = "XAIS12345678910"
     val periodId   = "2019-01-01_2020-01-01"
 
+    val retrievePeriodSummaryUri: String
+    val listPeriodSummariesUri: String
+
     def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(s"""
          |{
          |  "periodDates":{
@@ -86,12 +89,12 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |         "method": "PUT"
          |      },
          |      {
-         |         "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |         "href": "$retrievePeriodSummaryUri",
          |         "rel": "self",
          |         "method": "GET"
          |      },
          |      {
-         |         "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |         "href": "$listPeriodSummariesUri",
          |         "rel": "list-self-employment-period-summaries",
          |         "method": "GET"
          |      }
@@ -193,6 +196,9 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val fromDate          = "2019-01-01"
     val toDate            = "2020-01-01"
 
+    val retrievePeriodSummaryUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    val listPeriodSummariesUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
+
     def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
@@ -207,12 +213,14 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysTest extends Test {
-    override val periodId      = "2023-04-01_2024-01-01"
-    val fromDate               = "2023-04-01"
-    val toDate                 = "2024-01-01"
-    val taxYear                = "2023-24"
-    lazy val tysTaxYear        = TaxYear.fromMtd(taxYear)
+    override val periodId = "2023-04-01_2024-01-01"
+    val fromDate          = "2023-04-01"
+    val toDate            = "2024-01-01"
+    val taxYear           = "2023-24"
+    lazy val tysTaxYear   = TaxYear.fromMtd(taxYear)
 
+    val retrievePeriodSummaryUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$taxYear"
+    val listPeriodSummariesUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$taxYear"
 
     def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 
@@ -224,6 +232,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123")
         )
     }
+
   }
 
   "calling the retrieve endpoint" should {
@@ -313,10 +322,10 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
                                    expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new TysTest {
 
-            override val nino: String               = requestNino
-            override val businessId: String         = requestBusinessId
-            override val periodId: String           = requestPeriodId
-            override val taxYear: String            = requestTaxYear
+            override val nino: String       = requestNino
+            override val businessId: String = requestBusinessId
+            override val periodId: String   = requestPeriodId
+            override val taxYear: String    = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()

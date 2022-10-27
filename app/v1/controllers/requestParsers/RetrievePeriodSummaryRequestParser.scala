@@ -24,8 +24,8 @@ import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, Re
 class RetrievePeriodSummaryRequestParser @Inject() (val validator: RetrievePeriodSummaryValidator)
     extends RequestParser[RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest] {
 
-  override protected def requestFor(data: RetrievePeriodSummaryRawData): RetrievePeriodSummaryRequest ={
-    val taxYear: Option[TaxYear] = if (data.taxYear.isEmpty) None else Some(TaxYear.fromMtd(data.taxYear.get))
+  override protected def requestFor(data: RetrievePeriodSummaryRawData): RetrievePeriodSummaryRequest = {
+    val taxYear = data.taxYear.map(TaxYear.fromMtd)
     RetrievePeriodSummaryRequest(Nino(data.nino), BusinessId(data.businessId), PeriodId(data.periodId), taxYear)
   }
 

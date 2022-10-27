@@ -16,7 +16,7 @@
 
 package v1.hateoas
 
-import config.AppConfig
+import config.{AppConfig, FeatureSwitches}
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
@@ -24,15 +24,31 @@ import v1.models.hateoas.RelType._
 
 trait HateoasLinks {
 
+  private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
+    implicit val featureSwitches = FeatureSwitches(appConfig.featureSwitches)
+
+    maybeTaxYear match {
+      case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"
+      case _                              => uri
+    }
+  }
+
   // Domain URIs
   private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
     s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/annual/${taxYear.asMtd}"
 
-  private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId) =
-    s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period"
+  private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String = withTaxYearParameter(
+    appConfig,
+    uri = s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period",
+    taxYear
+  )
 
-  private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String) =
-    s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period/$periodId"
+  private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) =
+    withTaxYearParameter(
+      appConfig,
+      uri = s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period/$periodId",
+      taxYear
+    )
 
   def retrieveAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
@@ -43,16 +59,17 @@ trait HateoasLinks {
   def deleteAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUBMISSION_REL)
 
-  def listPeriodSummaries(appConfig: AppConfig, nino: Nino, businessId: BusinessId, isSelf: Boolean): Link =
-    Link(href = periodSummaryUri(appConfig, nino, businessId), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
+  def listPeriodSummaries(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
+    Link(href = periodSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
+  }
 
   def createPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId): Link =
-    Link(href = periodSummaryUri(appConfig, nino, businessId), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
+    Link(href = periodSummaryUri(appConfig, nino, businessId, None), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
 
-  def retrievePeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String): Link =
-    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId), method = GET, rel = SELF)
+  def retrievePeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
+    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = GET, rel = SELF)
 
   def amendPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String): Link =
-    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
+    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, None), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
 
 }

@@ -24,7 +24,20 @@ import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrievePeriodSummaryService}
 import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, InternalError, InvalidTaxYearParameterError, MtdError, NinoFormatError, NotFoundError, PeriodIdFormatError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import v1.models.errors.{
+  BadRequestError,
+  BusinessIdFormatError,
+  ErrorWrapper,
+  InternalError,
+  InvalidTaxYearParameterError,
+  MtdError,
+  NinoFormatError,
+  NotFoundError,
+  PeriodIdFormatError,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError,
+  TaxYearFormatError
+}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.hateoas.Method.GET
 import v1.models.outcomes.ResponseWrapper
@@ -94,7 +107,7 @@ class RetrievePeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakeRequest)
@@ -111,7 +124,7 @@ class RetrievePeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
           .returns(HateoasWrapper(responseBody, Seq(testHateoasLink)))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakeRequest)

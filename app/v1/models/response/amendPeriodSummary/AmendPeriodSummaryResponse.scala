@@ -29,8 +29,8 @@ object AmendPeriodSummaryResponse extends HateoasLinks {
       import data._
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId),
-        retrievePeriodSummary(appConfig, nino, businessId, periodId),
-        listPeriodSummaries(appConfig, nino, businessId, isSelf = false)
+        retrievePeriodSummary(appConfig, nino, businessId, periodId, None),
+        listPeriodSummaries(appConfig, nino, businessId, None, isSelf = false)
       )
     }
 

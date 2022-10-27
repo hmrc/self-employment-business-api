@@ -17,9 +17,10 @@
 package v1.models.response.listPeriodSummaries
 
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.Link
 import v1.models.hateoas.Method._
 
@@ -88,27 +89,53 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
     }
   }
 
-  "LinksFactory" should {
-    val nino        = "AA111111A"
-    val businessId  = "id"
-    val periodId    = "periodId"
-    val hateoasData = ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId))
+  "LinksFactory" when {
+    val nino           = "AA111111A"
+    val businessId     = "id"
+    val periodId       = "periodId"
+    val hateoasData    = ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), None)
+    val hateoasDataTys = hateoasData.copy(taxYear = Some(TaxYear.fromMtd("2023-24")))
 
-    "return the correct top-level links" in {
-      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+    "TYS feature switch is disabled" should {
+      "return the correct top-level links" in {
+        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
-      ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
-        Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
-        Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self")
-      )
+        ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
+          Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
+          Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self")
+        )
+      }
+
+      "return the correct item-level links" in {
+        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
+
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "")) shouldBe Seq(
+          Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
+        )
+      }
     }
 
-    "return the correct item-level links" in {
-      MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+    "TYS feature switch is enabled and tax year is TYS" should {
+      "return the correct top-level links" in {
+        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
-      ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "")) shouldBe Seq(
-        Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
-      )
+        ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasDataTys) shouldBe Seq(
+          Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
+          Link(href = s"/test/context/$nino/$businessId/period?taxYear=2023-24", method = GET, rel = "self")
+        )
+      }
+
+      "return the correct item-level links" in {
+        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
+
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, PeriodDetails(periodId, "", "")) shouldBe Seq(
+          Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")
+        )
+      }
     }
   }
 
