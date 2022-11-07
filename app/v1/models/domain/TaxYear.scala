@@ -50,7 +50,7 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def isTys(implicit featureSwitches: FeatureSwitches): Boolean = featureSwitches.isTaxYearSpecificApiEnabled && year >= tysTaxYear
+  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean = featureSwitches.isTaxYearSpecificApiEnabled && year >= tysTaxYear
 }
 
 object TaxYear {
@@ -68,5 +68,5 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-  def isTys(taxYear: Option[TaxYear])(implicit featureSwitches: FeatureSwitches): Boolean = taxYear.exists(_.isTys)
+  def isTys(taxYear: Option[TaxYear])(implicit featureSwitches: FeatureSwitches): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
 }
