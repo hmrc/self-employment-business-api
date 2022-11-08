@@ -16,9 +16,6 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequest}
@@ -27,52 +24,55 @@ import scala.concurrent.Future
 
 class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val nino: String              = "AA123456A"
-  val taxYear: String           = "2018-19"
-  val downstreamTaxYear: String = "2019"
-  val businessId: String        = "XAIS12345678910"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
+  private val body = AmendAnnualSubmissionBody(None, None, None)
 
-  val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    taxYear = TaxYear.fromMtd(taxYear),
-    body = AmendAnnualSubmissionBody(None, None, None)
-  )
+  trait Test {
+    _: ConnectorTest =>
+    def taxYear: TaxYear
 
-  class Test extends MockHttpClient with MockAppConfig {
-
-    val connector: AmendAnnualSubmissionConnector = new AmendAnnualSubmissionConnector(
+    protected val connector: AmendAnnualSubmissionConnector = new AmendAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
+      nino = Nino(nino),
+      businessId = BusinessId(businessId),
+      taxYear = taxYear,
+      body = body
+    )
   }
 
   "AmendAnnualSubmissionConnector" when {
-    "amendAnnualSubmission" must {
-      "return a 200 status for a success scenario" in new Test {
+    "amendAnnualSubmission called" must {
+      "return a 200 status for a success scenario" in
+      new DesTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
+
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+        willPut(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}", body) returns Future.successful(outcome)
 
-        MockHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-            config = dummyHeaderCarrierConfig,
-            body = request.body,
-            requiredHeaders = requiredDesHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
-
-        await(connector.amendAnnualSubmission(request)) shouldBe outcome
+        val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
+        result shouldBe outcome
       }
     }
+  }
+
+  "AmendAnnualSubmissionConnector for a Tax Year Specific tax year" must {
+    "return a 200 status for a success scenario" in
+      new TysIfsTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+
+        val outcome = Right(ResponseWrapper(correlationId, ()))
+
+        willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future.successful(outcome)
+
+        val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
+        result shouldBe outcome
+      }
   }
 
 }

@@ -38,10 +38,11 @@ class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionCo
       logContext: EndpointLogContext,
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    connector.amendAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
+    connector.amendAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def desErrorMap: Map[String, MtdError] = Map(
+  private def downstreamErrorMap: Map[String, MtdError] = {
+    val errors = Map(
     "INVALID_NINO"                -> NinoFormatError,
     "INVALID_TAX_YEAR"            -> TaxYearFormatError,
     "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
@@ -56,6 +57,15 @@ class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionCo
     "SERVER_ERROR"                -> InternalError,
     "BAD_GATEWAY"                 -> InternalError,
     "SERVICE_UNAVAILABLE"         -> InternalError
-  )
+    )
+    val extraTysErrors = Map(
+    "INVALID_INCOME_SOURCE_ID"  -> BusinessIdFormatError,
+    "INVALID_CORRELATION_ID"    -> InternalError,
+    "INCOME_SOURCE_NOT_FOUND"   -> NotFoundError,
+    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+    )
+
+    errors ++ extraTysErrors
+  }
 
 }
