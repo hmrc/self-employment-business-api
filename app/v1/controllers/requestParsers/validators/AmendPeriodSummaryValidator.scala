@@ -17,18 +17,25 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.{MtdError}
+import v1.models.errors.MtdError
 import v1.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation)
+  private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
 
   private def parameterFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
     List(
       NinoValidation.validate(data.nino),
       BusinessIdValidation.validate(data.businessId),
-      PeriodIdValidation.validate(data.periodId)
+      PeriodIdValidation.validate(data.periodId),
+      data.taxYear.map(TaxYearValidation.validate).getOrElse(Nil)
+    )
+  }
+
+  private def parameterRuleValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
+    List(
+      data.taxYear.map(TaxYearTYSParameterValidation.validate).getOrElse(Nil)
     )
   }
 
