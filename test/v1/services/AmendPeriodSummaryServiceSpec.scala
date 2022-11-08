@@ -33,10 +33,11 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   implicit val correlationId: String = "X-123"
 
   private val requestData = AmendPeriodSummaryRequest(
-    nino = Nino(nino),
+    nino       = Nino(nino),
     businessId = BusinessId(businessId),
-    periodId = periodId,
-    body = AmendPeriodSummaryBody(None, None, None)
+    periodId   = periodId,
+    body       = AmendPeriodSummaryBody(None, None, None),
+    taxYear    = None
   )
 
   trait Test extends MockAmendPeriodSummaryConnector {
@@ -60,19 +61,19 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
     }
   }
 
-  "unsuccessful" should {
+  "service" should {
     "map errors according to spec" when {
-      def serviceError(desErrorCode: String, error: MtdError): Unit =
-        s"a $desErrorCode error is returned from the service" in new Test {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
 
           MockAmendPeriodSummaryConnector
             .amendPeriodSummary(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
           await(service.amendPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
+      val errors = Seq(
         "INVALID_NINO"                    -> NinoFormatError,
         "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
         "INVALID_DATE_FROM"               -> PeriodIdFormatError,
@@ -86,7 +87,18 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
         "SERVICE_UNAVAILABLE"             -> InternalError
       )
 
-      input.foreach(args => (serviceError _).tupled(args))
+      val extraTysErrors = Seq(
+        "INVALID_TAX_YEAR"                      -> TaxYearFormatError,
+        "TAX_YEAR_NOT_SUPPORTED"                -> RuleTaxYearNotSupportedError,
+        "INVALID_CORRELATION_ID"                -> InternalError,
+        "INVALID_INCOMESOURCE_ID"               -> BusinessIdFormatError,
+        "PERIOD_NOT_FOUND"                      -> NotFoundError,
+        "INCOME_SOURCE_NOT_FOUND"               -> NotFoundError,
+        "INCOME_SOURCE_DATA_NOT_FOUND"          -> NotFoundError,
+        "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 
