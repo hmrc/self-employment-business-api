@@ -16,8 +16,6 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
@@ -27,16 +25,17 @@ import scala.concurrent.Future
 
 class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveAnnualSubmissionFixture {
 
-  val nino: String              = "AA123456A"
-  val businessId: String        = "XAIS12345678910"
-  val taxYear: String           = "2019-20"
-  val downstreamTaxYear: String = "2020"
+  val nino: String       = "AA123456A"
+  val businessId: String = "XAIS12345678910"
 
-  val request: RetrieveAnnualSubmissionRequest = RetrieveAnnualSubmissionRequest(
+  def makeRequest(taxYear: String): RetrieveAnnualSubmissionRequest = RetrieveAnnualSubmissionRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = TaxYear.fromMtd(taxYear)
   )
+
+  val nonTysRequest = makeRequest("2019-20")
+  val tysRequest    = makeRequest("2023-24")
 
   val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
     adjustments = Some(adjustments),
@@ -44,33 +43,33 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
     nonFinancials = Some(nonFinancials)
   )
 
-  class Test extends MockHttpClient with MockAppConfig {
+  trait Test {
+    _: ConnectorTest =>
 
-    val connector: RetrieveAnnualSubmissionConnector = new RetrieveAnnualSubmissionConnector(
+    protected val connector: RetrieveAnnualSubmissionConnector = new RetrieveAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.ifsBaseUrl returns baseUrl
-    MockAppConfig.ifsToken returns "ifs-token"
-    MockAppConfig.ifsEnvironment returns "ifs-environment"
-    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
 
   "connector" must {
-    "send a request and return a body" in new Test {
+    "send a request and return a body" in new IfsTest with Test {
       val outcome = Right(ResponseWrapper(correlationId, response))
 
-      MockHttpClient
-        .get(
-          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-          config = dummyHeaderCarrierConfig,
-          requiredHeaders = requiredIfsHeaders,
-          excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-        )
+      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2020")
         .returns(Future.successful(outcome))
 
-      await(connector.retrieveAnnualSubmission(request)) shouldBe outcome
+      await(connector.retrieveAnnualSubmission(nonTysRequest)) shouldBe outcome
+    }
+
+    "send a request and return a body for a TYS tax year" in new TysIfsTest with Test {
+      val outcome = Right(ResponseWrapper(correlationId, response))
+
+      willGet(s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries")
+        .returns(Future.successful(outcome))
+
+      await(connector.retrieveAnnualSubmission(tysRequest)) shouldBe outcome
     }
   }
 

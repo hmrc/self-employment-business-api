@@ -30,12 +30,6 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
   val tysTaxYear: String = "2024-25"
   val taxYear: String    = "2022-23"
 
-  val request: ListPeriodSummariesRequest = ListPeriodSummariesRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    None
-  )
-
   val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
     Seq(
       PeriodDetails(

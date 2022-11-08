@@ -39,12 +39,12 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
-    connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
+    connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 
   }
 
-  private def desErrorMap =
-    Map(
+  private def downstreamErrorMap = {
+    val errors = Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
       "INVALID_TAX_YEAR"        -> TaxYearFormatError,
@@ -54,5 +54,17 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
       "SERVER_ERROR"            -> InternalError,
       "SERVICE_UNAVAILABLE"     -> InternalError
     )
+
+    val extraTysErrors = Map(
+      "INVALID_INCOMESOURCE_ID"       -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"        -> InternalError,
+      "INVALID_DELETED_RETURN_PERIOD" -> InternalError,
+      "SUBMISSION_DATA_NOT_FOUND"     -> NotFoundError,
+      "INCOME_DATA_SOURCE_NOT_FOUND"  -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"        -> RuleTaxYearNotSupportedError
+    )
+
+    errors ++ extraTysErrors
+  }
 
 }
