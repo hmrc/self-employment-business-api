@@ -29,7 +29,6 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
-  val taxYear: String                = "2017-18"
   implicit val correlationId: String = "X-123"
 
   private val requestBody = amendAnnualSubmissionBody()
@@ -37,7 +36,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
   private val requestData = AmendAnnualSubmissionRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    taxYear = TaxYear.fromMtd(taxYear),
+    taxYear = TaxYear.fromMtd("2023-24"),
     body = requestBody
   )
 
@@ -51,7 +50,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
   }
 
   "AmendAnnualSubmissionService" when {
-    "amendAnnualSubmission" must {
+    "amendAnnualSubmission called" must {
       "return correct result for a success" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
@@ -63,17 +62,17 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
       }
 
       "map errors according to spec" when {
-        def serviceError(desErrorCode: String, error: MtdError): Unit =
-          s"a $desErrorCode error is returned from the service" in new Test {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a $downstreamErrorCode error is returned from the service" in new Test {
 
             MockAmendAnnualSubmissionConnector
               .amendAnnualSubmission(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
             await(service.amendAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val input = Seq(
+        val errors = Seq(
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
@@ -90,7 +89,14 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
-        input.foreach(args => (serviceError _).tupled(args))
+        val extraTysErrors = Seq(
+          ("INVALID_INCOME_SOURCE_ID", BusinessIdFormatError),
+          ("INVALID_CORRELATION_ID", InternalError),
+          ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
+          ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+        )
+
+        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
       }
     }
   }

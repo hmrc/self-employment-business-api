@@ -102,7 +102,7 @@ class AmendAnnualSubmissionControllerSpec
           .wrap((), AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
           .returns(HateoasWrapper((), testHateoasLinks))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
+        val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePutRequest(requestJson))
 
         contentAsJson(result) shouldBe testHateoasLinksJson
         status(result) shouldBe OK
