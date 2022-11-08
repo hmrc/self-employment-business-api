@@ -16,6 +16,6 @@
 
 package v1.models.request.amendPeriodSummary
 
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 
-case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody)
+case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody, taxYear: Option[TaxYear])
