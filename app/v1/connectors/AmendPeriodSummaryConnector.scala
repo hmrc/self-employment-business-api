@@ -17,10 +17,10 @@
 package v1.connectors
 
 import config.AppConfig
-
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
+import v1.models.domain.TaxYear
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
 
 import javax.inject.{Inject, Singleton}
@@ -34,17 +34,24 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino       = request.nino.nino
+    val nino = request.nino.nino
     val businessId = request.businessId.value
-    val fromDate   = request.periodId.substring(0, 10)
-    val toDate     = request.periodId.substring(11, 21)
+    val fromDate = request.periodId.substring(0, 10)
+    val toDate = request.periodId.substring(11, 21)
+    val taxYear = request.taxYear
 
-    put(
-      body = request.body,
-      DesUri[Unit](
-        s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
-      )
-    )
+    val downstreamUri =
+      if (TaxYear.isTys(taxYear)) {
+        put(
+          body = request.body,
+          uri  = TaxYearSpecificIfsUri[Unit](
+            s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"))
+      } else {
+          put(
+            body = request.body,
+            uri  = DesUri[Unit](
+              s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"))
+        }
+        downstreamUri
   }
-
 }
