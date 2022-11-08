@@ -68,17 +68,17 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
 
   "unsuccessful" should {
     "map errors according to spec" when {
-      def serviceError(desErrorCode: String, error: MtdError): Unit =
-        s"a $desErrorCode error is returned from the service" in new Test {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
 
           MockRetrieveConnector
             .retrieveAnnualSubmission(requestData)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
           await(service.retrieveAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
+      val errors = Seq(
         "INVALID_NINO"            -> NinoFormatError,
         "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
         "INVALID_TAX_YEAR"        -> TaxYearFormatError,
@@ -89,7 +89,16 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
         "SERVICE_UNAVAILABLE"     -> InternalError
       )
 
-      input.foreach(args => (serviceError _).tupled(args))
+      val extraTysErrors = Seq(
+        "INVALID_INCOMESOURCE_ID"       -> BusinessIdFormatError,
+        "INVALID_DELETED_RETURN_PERIOD" -> InternalError,
+        "INVALID_CORRELATION_ID"        -> InternalError,
+        "INCOME_DATA_SOURCE_NOT_FOUND"  -> NotFoundError,
+        "SUBMISSION_DATA_NOT_FOUND"     -> NotFoundError,
+        "TAX_YEAR_NOT_SUPPORTED"        -> RuleTaxYearNotSupportedError
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

@@ -18,7 +18,7 @@ package v1.connectors
 
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.IfsUri
+import v1.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
@@ -35,14 +35,21 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
       correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     val nino       = request.nino.nino
-    val taxYear    = request.taxYear.asDownstream
     val businessId = request.businessId.value
+    val taxYear    = request.taxYear
 
-    get(
-      uri = IfsUri[RetrieveAnnualSubmissionResponse](
-        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$taxYear"
-      )
-    )
+    val downstreamUri =
+      if (taxYear.useTaxYearSpecificApi) {
+        TaxYearSpecificIfsUri[RetrieveAnnualSubmissionResponse](
+          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+        )
+      } else {
+        IfsUri[RetrieveAnnualSubmissionResponse](
+          s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}"
+        )
+      }
+
+    get(uri = downstreamUri)
   }
 
 }
