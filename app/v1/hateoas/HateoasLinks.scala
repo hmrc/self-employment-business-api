@@ -28,8 +28,8 @@ trait HateoasLinks {
     implicit val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
     maybeTaxYear match {
-      case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"
-      case _                              => uri
+      case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
+      case _                                              => uri
     }
   }
 
