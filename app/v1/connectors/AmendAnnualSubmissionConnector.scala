@@ -17,34 +17,39 @@
 package v1.connectors
 
 import config.AppConfig
-import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
-import javax.inject.{Inject, Singleton}
-import v1.connectors.DownstreamUri.DesUri
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendAnnualSubmissionConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendAnnualSubmission(request: AmendAnnualSubmissionRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[Unit]] = {
+                                                                   hc: HeaderCarrier,
+                                                                   ec: ExecutionContext,
+                                                                   correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino       = request.nino.nino
-    val taxYear    = request.taxYear.asDownstream
+    val nino = request.nino.nino
+    val taxYear = request.taxYear
     val businessId = request.businessId.value
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
+    val downstreamUri =
+      if (taxYear.useTaxYearSpecificApi) {
+        TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+      } else {
+        DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
+      }
+
     put(
-      body = request.body,
-      DesUri[Unit](
-        s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$taxYear"
-      )
+      uri = downstreamUri,
+      body = request.body
     )
   }
 

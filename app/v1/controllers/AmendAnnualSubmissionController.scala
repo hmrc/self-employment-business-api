@@ -83,12 +83,23 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case MtdErrorWithCode(BadRequestError.code) | MtdErrorWithCode(NinoFormatError.code) | MtdErrorWithCode(BusinessIdFormatError.code) |
-          MtdErrorWithCode(TaxYearFormatError.code) | MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) |
-          MtdErrorWithCode(RuleTaxYearNotSupportedError.code) | MtdErrorWithCode(RuleTaxYearRangeInvalidError.code) | MtdErrorWithCode(
-            RuleBuildingNameNumberError.code) | MtdErrorWithCode(RuleBothAllowancesSuppliedError.code) | MtdErrorWithCode(
-            RuleAllowanceNotSupportedError.code) | MtdErrorWithCode(StringFormatError.code) | MtdErrorWithCode(
-            Class4ExemptionReasonFormatError.code) | MtdErrorWithCode(DateFormatError.code) =>
+      case _
+             if errorWrapper.containsAnyOf(
+               BadRequestError,
+               NinoFormatError,
+               BusinessIdFormatError,
+               TaxYearFormatError,
+               ValueFormatError,
+               RuleIncorrectOrEmptyBodyError,
+               RuleTaxYearNotSupportedError,
+               RuleTaxYearRangeInvalidError,
+               RuleBuildingNameNumberError,
+               RuleBothAllowancesSuppliedError,
+               RuleAllowanceNotSupportedError,
+               StringFormatError,
+               Class4ExemptionReasonFormatError,
+               DateFormatError
+             ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))

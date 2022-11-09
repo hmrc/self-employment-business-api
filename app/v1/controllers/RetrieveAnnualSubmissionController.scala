@@ -57,14 +57,10 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.retrieveAnnualSubmission(parsedRequest))
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory
-              .wrap(
-                serviceResponse.responseData,
-                RetrieveAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear))
-              .asRight[ErrorWrapper]
-          )
         } yield {
+          val hateoasData    = RetrieveAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear)
+          val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, hateoasData)
+
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
@@ -85,8 +81,15 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NinoFormatError | BusinessIdFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError | RuleTaxYearRangeInvalidError |
-          BadRequestError =>
+      case _
+          if errorWrapper.containsAnyOf(
+            NinoFormatError,
+            BusinessIdFormatError,
+            TaxYearFormatError,
+            RuleTaxYearNotSupportedError,
+            RuleTaxYearRangeInvalidError,
+            BadRequestError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))
