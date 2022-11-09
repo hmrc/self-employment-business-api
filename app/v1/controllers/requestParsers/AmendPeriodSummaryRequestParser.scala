@@ -26,7 +26,7 @@ class AmendPeriodSummaryRequestParser @Inject() (val validator: AmendPeriodSumma
 
   override protected def requestFor(data: AmendPeriodSummaryRawData): AmendPeriodSummaryRequest = {
 
-    val taxYear: Option[TaxYear] = if (data.taxYear.isEmpty) None else Some(TaxYear.fromMtd(data.taxYear.get))
+    val taxYear: Option[TaxYear] = data.taxYear.map(TaxYear.fromMtd)
     AmendPeriodSummaryRequest(Nino(data.nino), BusinessId(data.businessId), data.periodId, data.body.as[AmendPeriodSummaryBody], taxYear)
   }
 
