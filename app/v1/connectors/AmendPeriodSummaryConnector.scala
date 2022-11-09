@@ -58,4 +58,5 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
       uri = downstreamUri
     )
   }
+
 }

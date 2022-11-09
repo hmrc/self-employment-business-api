@@ -16,7 +16,6 @@
 
 package v1.connectors
 
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodSummary._
@@ -30,14 +29,11 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val periodId: String   = "2020-01-01_2020-01-01"
 
   def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
-    nino       = Nino(nino),
+    nino = Nino(nino),
     businessId = BusinessId(businessId),
-    periodId   = periodId,
-    taxYear    = taxYear match {
-      case Some(taxYear) => Some(TaxYear.fromMtd(taxYear))
-      case _             => None
-    },
-    body        = AmendPeriodSummaryBody(
+    periodId = periodId,
+    taxYear = taxYear.map(TaxYear.fromMtd),
+    body = AmendPeriodSummaryBody(
       None,
       Some(
         PeriodAllowableExpenses(
@@ -65,14 +61,14 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val nonTysRequest = makeRequest(None)
   val tysRequest    = makeRequest(Some("2023-24"))
 
-
   trait Test {
     _: ConnectorTest =>
 
     protected val connector: AmendPeriodSummaryConnector = new AmendPeriodSummaryConnector(
-      http      = mockHttpClient,
+      http = mockHttpClient,
       appConfig = mockAppConfig
     )
+
   }
 
   "AmendPeriodSummaryConnector" when {
@@ -83,12 +79,8 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        val fromDate: String = tysRequest.periodId.substring(0, 10)
-        val toDate: String   = tysRequest.periodId.substring(11, 21)
-        val url              =
-          s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
-
-        override implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        val url =
+          s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
         willPut(url, tysRequest.body).returns(Future.successful(outcome))
 
@@ -99,12 +91,8 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        val fromDate: String = nonTysRequest.periodId.substring(0, 10)
-        val toDate: String   = nonTysRequest.periodId.substring(11, 21)
-        val url              =
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
-
-        override implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
+        val url =
+          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
         willPut(url, nonTysRequest.body).returns(Future.successful(outcome))
 

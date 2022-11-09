@@ -30,7 +30,7 @@ import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
-  val requestBodyJson: JsValue = amendPeriodSummaryBodyMtdJson
+  val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJson
   val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJson
 
   "Calling the Amend Period Summary endpoint" should {
@@ -190,8 +190,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
     val from               = "2019-01-01"
     val to                 = "2020-01-01"
 
-    val responseJson: JsValue = Json.parse(
-      s"""
+    val responseJson: JsValue = Json.parse(s"""
          |{
          |  "links": [
          |    {
@@ -219,7 +218,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
 
     def downstreamQueryParams: Map[String, String] = Map(
       "from" -> from,
-      "to" -> to
+      "to"   -> to
     )
 
     def request(): WSRequest = {
@@ -241,16 +240,17 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
 
   }
 
-    private trait TysIfsTest extends Test {
+  private trait TysIfsTest extends Test {
 
-      def mtdUri: String            = s"/$nino/$businessId/period/$periodId?taxYear=2023-24"
-      def downstreamTaxYear: String = "23-24"
-      def downstreamUri: String     = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
-    }
-
-    private trait NonTysTest extends Test {
-
-      def mtdUri: String        = s"/$nino/$businessId/period/$periodId"
-      def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-    }
+    def mtdUri: String            = s"/$nino/$businessId/period/$periodId?taxYear=2023-24"
+    def downstreamTaxYear: String = "23-24"
+    def downstreamUri: String     = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
   }
+
+  private trait NonTysTest extends Test {
+
+    def mtdUri: String        = s"/$nino/$businessId/period/$periodId"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+  }
+
+}

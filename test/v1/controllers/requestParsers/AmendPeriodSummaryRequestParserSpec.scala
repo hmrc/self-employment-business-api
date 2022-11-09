@@ -77,12 +77,57 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
     """.stripMargin
   )
 
+  val requestBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
+    periodIncome = Some(
+      PeriodIncome(
+        Some(200.00),
+        Some(200.00)
+      )),
+    periodAllowableExpenses = Some(
+      PeriodAllowableExpenses(
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00)
+      )),
+    periodDisallowableExpenses = Some(
+      PeriodDisallowableExpenses(
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00)
+      ))
+  )
+
   val inputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
-    nino       = nino,
+    nino = nino,
     businessId = businessId,
-    periodId   = periodId,
-    body       = requestBodyJson,
-    taxYear    = None
+    periodId = periodId,
+    body = requestBodyJson,
+    taxYear = None
   )
 
   val tysInputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
@@ -102,102 +147,12 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
       "valid request data is supplied" in new Test {
         MockAmendPeriodSummaryValidator.validate(inputData).returns(Nil)
 
-        val requestBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
-          Some(
-            PeriodIncome(
-              Some(200.00),
-              Some(200.00)
-            )),
-          Some(
-            PeriodAllowableExpenses(
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00)
-            )),
-          Some(
-            PeriodDisallowableExpenses(
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00)
-            ))
-        )
-
         parser.parseRequest(inputData) shouldBe
           Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None))
       }
 
       "valid TYS request data is supplied" in new Test {
         MockAmendPeriodSummaryValidator.validate(tysInputData).returns(Nil)
-
-        val requestBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
-          Some(
-            PeriodIncome(
-              Some(200.00),
-              Some(200.00)
-            )),
-          Some(
-            PeriodAllowableExpenses(
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00)
-            )),
-          Some(
-            PeriodDisallowableExpenses(
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00)
-            ))
-        )
 
         parser.parseRequest(tysInputData) shouldBe
           Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(tysTaxYear))))
