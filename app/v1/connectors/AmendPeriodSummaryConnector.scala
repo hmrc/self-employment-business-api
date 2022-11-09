@@ -17,6 +17,7 @@
 package v1.connectors
 
 import config.AppConfig
+import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
@@ -34,11 +35,13 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino = request.nino.nino
+    val nino       = request.nino.nino
     val businessId = request.businessId.value
-    val fromDate = request.periodId.substring(0, 10)
-    val toDate = request.periodId.substring(11, 21)
-    val taxYear = request.taxYear
+    val fromDate   = request.periodId.substring(0, 10)
+    val toDate     = request.periodId.substring(11, 21)
+    val taxYear    = request.taxYear
+
+    implicit val successCode: SuccessCode = SuccessCode(OK)
 
     val downstreamUri =
       if (TaxYear.isTys(taxYear)) {

@@ -46,7 +46,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           DownstreamStub
             .when(DownstreamStub.PUT, downstreamUri, downstreamQueryParams)
             .withRequestBody(downstreamRequestBodyJson)
-            .thenReturn(status = NO_CONTENT, JsObject.empty)
+            .thenReturn(status = OK, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
@@ -64,7 +64,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           DownstreamStub
             .when(DownstreamStub.PUT, downstreamUri, downstreamQueryParams)
             .withRequestBody(downstreamRequestBodyJson)
-            .thenReturn(status = NO_CONTENT, JsObject.empty)
+            .thenReturn(status = OK, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
