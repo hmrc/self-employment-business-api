@@ -213,9 +213,14 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
          |}
          |""".stripMargin)
 
-    def mtdUri: String = s"/$nino/$businessId/period/$periodId"
+    def mtdUri: String
     def downstreamUri: String
     def setupStubs(): StubMapping
+
+    def downstreamQueryParams: Map[String, String] = Map(
+      "from" -> from,
+      "to" -> to
+    )
 
     def request(): WSRequest = {
       setupStubs()
@@ -238,20 +243,14 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
 
     private trait TysIfsTest extends Test {
 
+      def mtdUri: String            = s"/$nino/$businessId/period/$periodId?taxYear=2023-24"
       def downstreamTaxYear: String = "23-24"
-      def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
-      def downstreamQueryParams: Map[String, String] = Map(
-        "from" -> from,
-        "to" -> to
-      )
+      def downstreamUri: String     = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
     }
 
     private trait NonTysTest extends Test {
-      
+
+      def mtdUri: String        = s"/$nino/$businessId/period/$periodId"
       def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-      def downstreamQueryParams: Map[String, String] = Map(
-        "from" -> from,
-        "to" -> to
-      )
     }
   }
