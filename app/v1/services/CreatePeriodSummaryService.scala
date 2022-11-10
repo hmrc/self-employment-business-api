@@ -41,7 +41,7 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]] = {
 
     val result = for {
-      responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(desErrorMap))
+      responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
     } yield responseWrapper.map { _ =>
       import request.body.periodDates._
       CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate")
@@ -50,18 +50,32 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
     result.value
   }
 
-  private def desErrorMap: Map[String, MtdError] = Map(
-    "INVALID_NINO"                    -> NinoFormatError,
-    "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
-    "INVALID_PERIOD"                  -> RuleEndDateBeforeStartDateError,
-    "OVERLAPS_IN_PERIOD"              -> RuleOverlappingPeriod,
-    "NOT_ALIGN_PERIOD"                -> RuleMisalignedPeriod,
-    "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
-    "NOT_CONTIGUOUS_PERIOD"           -> RuleNotContiguousPeriod,
-    "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-    "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
-    "SERVER_ERROR"                    -> InternalError,
-    "SERVICE_UNAVAILABLE"             -> InternalError
-  )
+  private def downstreamErrorMap: Map[String, MtdError] = {
+    val errors = Map(
+      "INVALID_NINO"                    -> NinoFormatError,
+      "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
+      "INVALID_PERIOD"                  -> RuleEndDateBeforeStartDateError,
+      "OVERLAPS_IN_PERIOD"              -> RuleOverlappingPeriod,
+      "NOT_ALIGN_PERIOD"                -> RuleMisalignedPeriod,
+      "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
+      "NOT_CONTIGUOUS_PERIOD"           -> RuleNotContiguousPeriod,
+      "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
+      "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
+      "SERVER_ERROR"                    -> InternalError,
+      "SERVICE_UNAVAILABLE"             -> InternalError
+    )
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR"                      -> TaxYearFormatError,
+      "TAX_YEAR_NOT_SUPPORTED"                -> RuleTaxYearNotSupportedError,
+      "INVALID_CORRELATION_ID"                -> InternalError,
+      "INVALID_INCOMESOURCE_ID"               -> BusinessIdFormatError,
+      "PERIOD_NOT_FOUND"                      -> NotFoundError,
+      "INCOME_SOURCE_NOT_FOUND"               -> NotFoundError,
+      "INCOME_SOURCE_DATA_NOT_FOUND"          -> NotFoundError,
+      "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError
+    )
+
+    errors ++ extraTysErrors
+  }
 
 }

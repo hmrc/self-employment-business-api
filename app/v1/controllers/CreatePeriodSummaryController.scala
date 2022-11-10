@@ -89,9 +89,22 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
       case MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) =>
         BadRequest(Json.toJson(errorWrapper))
 
-      case BadRequestError | NinoFormatError | BusinessIdFormatError | StartDateFormatError | EndDateFormatError | RuleBothExpensesSuppliedError |
-          RuleEndDateBeforeStartDateError | RuleOverlappingPeriod | RuleMisalignedPeriod | RuleNotContiguousPeriod |
-          RuleNotAllowedConsolidatedExpenses =>
+      case _
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            BusinessIdFormatError,
+            StartDateFormatError,
+            EndDateFormatError,
+            RuleBothExpensesSuppliedError,
+            RuleEndDateBeforeStartDateError,
+            RuleOverlappingPeriod,
+            RuleMisalignedPeriod,
+            RuleNotContiguousPeriod,
+            RuleNotAllowedConsolidatedExpenses,
+            RuleTaxYearNotSupportedError,
+            RuleDuplicateSubmissionError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))
