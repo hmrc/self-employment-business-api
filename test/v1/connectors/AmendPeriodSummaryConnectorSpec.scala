@@ -16,10 +16,7 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockHttpClient
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodSummary._
 
@@ -31,10 +28,11 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2020-01-01_2020-01-01"
 
-  val request: AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
+  def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     periodId = periodId,
+    taxYear = taxYear.map(TaxYear.fromMtd),
     body = AmendPeriodSummaryBody(
       None,
       Some(
@@ -60,41 +58,45 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
     )
   )
 
-  class Test extends MockHttpClient with MockAppConfig {
+  val nonTysRequest = makeRequest(None)
+  val tysRequest    = makeRequest(Some("2023-24"))
 
-    val connector: AmendPeriodSummaryConnector = new AmendPeriodSummaryConnector(
+  trait Test {
+    _: ConnectorTest =>
+
+    protected val connector: AmendPeriodSummaryConnector = new AmendPeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "AmendPeriodSummaryConnector" when {
+
     "amendPeriodSummary" must {
-      "return a 204 status for a success scenario" in new Test {
+
+      "return a 204 status for a success TYS scenario" in new TysIfsTest with Test {
+
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        val fromDate: String = request.periodId.substring(0, 10)
-        val toDate: String   = request.periodId.substring(11, 21)
+        val url =
+          s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
-        implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+        willPut(url, tysRequest.body).returns(Future.successful(outcome))
 
-        MockHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate",
-            config = dummyHeaderCarrierConfig,
-            body = request.body,
-            requiredHeaders = requiredDesHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
+        await(connector.amendPeriodSummary(tysRequest)) shouldBe outcome
+      }
 
-        await(connector.amendPeriodSummary(request)) shouldBe outcome
+      "return a 204 status for a success non-TYS scenario" in new DesTest with Test {
+
+        val outcome = Right(ResponseWrapper(correlationId, ()))
+
+        val url =
+          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
+
+        willPut(url, nonTysRequest.body).returns(Future.successful(outcome))
+
+        await(connector.amendPeriodSummary(nonTysRequest)) shouldBe outcome
       }
     }
   }

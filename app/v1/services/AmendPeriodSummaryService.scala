@@ -30,29 +30,44 @@ import v1.support.DownstreamResponseMappingSupport
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
+class AmendPeriodSummaryService @Inject()(connector: AmendPeriodSummaryConnector) extends DownstreamResponseMappingSupport
+  with Logging {
 
   def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+                                                             hc: HeaderCarrier,
+                                                             ec: ExecutionContext,
+                                                             logContext: EndpointLogContext,
+                                                             correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
+    connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def desErrorMap: Map[String, MtdError] = Map(
-    "INVALID_NINO"                    -> NinoFormatError,
-    "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
-    "INVALID_DATE_FROM"               -> PeriodIdFormatError,
-    "INVALID_DATE_TO"                 -> PeriodIdFormatError,
-    "INVALID_PAYLOAD"                 -> InternalError,
-    "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
-    "NOT_FOUND_PERIOD"                -> NotFoundError,
-    "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
-    "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-    "SERVER_ERROR"                    -> InternalError,
-    "SERVICE_UNAVAILABLE"             -> InternalError
-  )
+  private def downstreamErrorMap: Map[String, MtdError] = {
+    val errors = Map(
+      "INVALID_NINO"                    -> NinoFormatError,
+      "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
+      "INVALID_DATE_FROM"               -> PeriodIdFormatError,
+      "INVALID_DATE_TO"                 -> PeriodIdFormatError,
+      "INVALID_PAYLOAD"                 -> InternalError,
+      "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
+      "NOT_FOUND_PERIOD"                -> NotFoundError,
+      "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
+      "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
+      "SERVER_ERROR"                    -> InternalError,
+      "SERVICE_UNAVAILABLE"             -> InternalError
+    )
+    val extraTysErrors = Map(
+      "INVALID_TAX_YEAR"                      -> TaxYearFormatError,
+      "TAX_YEAR_NOT_SUPPORTED"                -> RuleTaxYearNotSupportedError,
+      "INVALID_CORRELATION_ID"                -> InternalError,
+      "INVALID_INCOMESOURCE_ID"               -> BusinessIdFormatError,
+      "PERIOD_NOT_FOUND"                      -> NotFoundError,
+      "INCOME_SOURCE_NOT_FOUND"               -> NotFoundError,
+      "INCOME_SOURCE_DATA_NOT_FOUND"          -> NotFoundError,
+      "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError
+    )
+
+    errors ++ extraTysErrors
+  }
 
 }

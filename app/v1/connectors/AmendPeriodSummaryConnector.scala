@@ -17,9 +17,9 @@
 package v1.connectors
 
 import config.AppConfig
-
+import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.DesUri
+import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
 
@@ -38,12 +38,24 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
     val businessId = request.businessId.value
     val fromDate   = request.periodId.substring(0, 10)
     val toDate     = request.periodId.substring(11, 21)
+    val taxYear    = request.taxYear
+
+    implicit val successCode: SuccessCode = SuccessCode(OK)
+
+    val downstreamUri =
+      taxYear match {
+        case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
+          TaxYearSpecificIfsUri[Unit](
+            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate")
+
+        case _ =>
+          DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate")
+
+      }
 
     put(
       body = request.body,
-      DesUri[Unit](
-        s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate"
-      )
+      uri = downstreamUri
     )
   }
 
