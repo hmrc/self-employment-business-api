@@ -43,11 +43,11 @@ class AmendPeriodSummaryControllerSpec
     with MockIdGenerator
     with AmendPeriodSummaryFixture {
 
-  private val nino = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val periodId = "2019-01-01_2020-01-01"
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val periodId      = "2019-01-01_2020-01-01"
   private val correlationId = "X-123"
-  private val taxYear = "2023-24"
+  private val taxYear       = "2023-24"
 
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
@@ -68,11 +68,11 @@ class AmendPeriodSummaryControllerSpec
   }
 
   private val requestBodyJson = amendPeriodSummaryBodyMtdJson
-  private val requestBody = amendPeriodSummaryBody
+  private val requestBody     = amendPeriodSummaryBody
 
-  private val rawData = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
-  private val tysRawData = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
-  private val requestData = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
+  private val rawData        = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
+  private val tysRawData     = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
+  private val requestData    = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
   private val tysRequestData = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
 
   "handleRequest" should {
@@ -87,13 +87,14 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakePostRequest(requestBodyJson))
         status(result) shouldBe OK
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
+
       "the TYS request received is valid" in new Test {
         MockAmendPeriodSummaryRequestParser
           .requestFor(tysRawData)
@@ -104,7 +105,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePostRequest(requestBodyJson))
@@ -187,4 +188,5 @@ class AmendPeriodSummaryControllerSpec
       }
     }
   }
+
 }

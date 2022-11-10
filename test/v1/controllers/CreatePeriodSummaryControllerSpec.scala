@@ -191,7 +191,7 @@ class CreatePeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse(periodId)))))
 
         MockHateoasFactory
-          .wrap(CreatePeriodSummaryResponse(periodId), CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap(CreatePeriodSummaryResponse(periodId), CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
