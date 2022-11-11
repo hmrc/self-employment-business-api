@@ -37,7 +37,7 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[Unit]] = {
 
-    connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
+    connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(desErrorMap ++ extraTysErrors)))
   }
 
   private val desErrorMap: Map[String, MtdError] =
@@ -57,5 +57,14 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       "BAD_GATEWAY"                 -> InternalError,
       "SERVICE_UNAVAILABLE"         -> InternalError
     )
+
+  val extraTysErrors: Map[String, MtdError] = Map(
+    "INVALID_CORRELATION_ID"       -> InternalError,
+    "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
+    "PERIOD_NOT_FOUND"             -> NotFoundError,
+    "INCOME_SOURCE_DATA_NOT_FOUND" -> NotFoundError,
+    "PERIOD_ALREADY_DELETED"       -> NotFoundError,
+    "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
+  )
 
 }
