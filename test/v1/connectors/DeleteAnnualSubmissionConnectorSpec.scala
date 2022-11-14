@@ -16,8 +16,10 @@
 
 package v1.connectors
 
+import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsObject
 import v1.models.domain.{BusinessId, Nino, TaxYear}
+import v1.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
@@ -25,55 +27,89 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val nino: String       = "AA123456A"
-  val businessId: String = "XAIS12345678910"
+  val nino: String         = "AA123456A"
+  val businessId: String   = "XAIS12345678910"
+
+  private val preTysTaxYear = TaxYear.fromMtd("2017-18")
+  private val tysTaxYear    = TaxYear.fromMtd("2023-24")
+
+  "deleteAnnualSubmissionConnector" when {
+    val outcome = Right(ResponseWrapper(correlationId, ()))
+
+    "deleteAnnualSubmission" must {
+      "send a request and return 204 no content" in new DesTest with Test {
+        def taxYear: TaxYear = preTysTaxYear
+
+        stubHttpResponse(outcome)
+
+        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+      }
+    }
+
+    "deleteAnnualSubmission is called with a TYS tax year" must {
+      "send a request and return 204 no content" in new TysIfsTest with Test {
+        def taxYear: TaxYear = tysTaxYear
+
+        stubTysHttpResponse(outcome)
+
+        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+      }
+    }
+
+    "response is an error" must {
+
+      val downstreamErrorResponse: DownstreamErrors =
+        DownstreamErrors.single(DownstreamErrorCode("SOME_ERROR"))
+      val outcome = Left(ResponseWrapper(correlationId, downstreamErrorResponse))
+
+      "return the error" in new DesTest with Test {
+        def taxYear: TaxYear = preTysTaxYear
+        stubHttpResponse(outcome)
+
+        val result: DownstreamOutcome[Unit] =
+          await(connector.deleteAnnualSubmission(request))
+        result shouldBe outcome
+      }
+
+      "return the error given a TYS tax year request" in new TysIfsTest with Test {
+        def taxYear: TaxYear = tysTaxYear
+        stubTysHttpResponse(outcome)
+
+        val result: DownstreamOutcome[Unit] =
+          await(connector.deleteAnnualSubmission(request))
+        result shouldBe outcome
+      }
+    }
+  }
 
   trait Test {
     _: ConnectorTest =>
     def taxYear: TaxYear
 
-    protected val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
+    val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    protected val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
+    val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
       nino = Nino(nino),
+      taxYear = taxYear,
       businessId = BusinessId(businessId),
-      taxYear = taxYear
     )
 
-  }
+    protected def stubHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
+      willPut(
+        url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
+        body = JsObject.empty
+      ).returns(Future.successful(outcome))
+    }
 
-  "deleteAnnualSubmission" should {
-    "return a 204 with no body" when {
-      "the downstream call is successful when not taxYearSpecific" in new DesTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2017-18")
-
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(
-          body = JsObject.empty,
-          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}") returns Future.successful(outcome)
-
-        val result = await(connector.deleteAnnualSubmission(request))
-
-        result shouldBe outcome
-
-      }
-
-      "the downstream call is successful for a TYS year" in new TysIfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
-
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        willDelete(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries") returns Future.successful(outcome)
-
-        val result = await(connector.deleteAnnualSubmission(request))
-
-        result shouldBe outcome
-      }
+    protected def stubTysHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
+      willDelete(
+        url = s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+      ).returns(Future.successful(outcome))
     }
   }
+
 
 }

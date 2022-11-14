@@ -39,8 +39,6 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[Unit]] = {
 
-    //connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
-
     val result =  EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
 
     result.value
