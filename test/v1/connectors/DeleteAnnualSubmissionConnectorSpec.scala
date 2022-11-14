@@ -16,10 +16,7 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
 import play.api.libs.json.JsObject
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
@@ -28,49 +25,53 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val taxYear: String           = "2017-18"
-  val downstreamTaxYear: String = "2018"
-  val nino: String              = "AA123456A"
-  val businessId: String        = "XAIS12345678910"
+  val nino: String       = "AA123456A"
+  val businessId: String = "XAIS12345678910"
 
-  val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    taxYear = TaxYear.fromMtd(taxYear)
-  )
+  trait Test {
+    _: ConnectorTest =>
+    def taxYear: TaxYear
 
-  class Test extends MockHttpClient with MockAppConfig {
-
-    val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
+    protected val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.ifsBaseUrl returns baseUrl
-    MockAppConfig.ifsToken returns "ifs-token"
-    MockAppConfig.ifsEnvironment returns "ifs-environment"
-    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
+    protected val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
+      nino = Nino(nino),
+      businessId = BusinessId(businessId),
+      taxYear = taxYear
+    )
+
   }
 
   "deleteAnnualSubmission" should {
     "return a 204 with no body" when {
-      "the downstream call is successful" in new Test {
+      "the downstream call is successful when not taxYearSpecific" in new DesTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2017-18")
+
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
+        willPut(
+          body = JsObject.empty,
+          url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}") returns Future.successful(outcome)
 
-        MockHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-            config = dummyHeaderCarrierConfig,
-            body = JsObject.empty,
-            requiredHeaders = requiredIfsHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
+        val result = await(connector.deleteAnnualSubmission(request))
 
-        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+        result shouldBe outcome
+
+      }
+
+      "the downstream call is successful for a TYS year" in new TysIfsTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+
+        val outcome = Right(ResponseWrapper(correlationId, ()))
+
+        willDelete(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries") returns Future.successful(outcome)
+
+        val result = await(connector.deleteAnnualSubmission(request))
+
+        result shouldBe outcome
       }
     }
   }
