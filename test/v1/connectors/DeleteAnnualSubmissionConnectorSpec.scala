@@ -16,11 +16,10 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
+import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsObject
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino, TaxYear}
+import v1.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
@@ -28,51 +27,89 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val taxYear: String           = "2017-18"
-  val downstreamTaxYear: String = "2018"
-  val nino: String              = "AA123456A"
-  val businessId: String        = "XAIS12345678910"
+  val nino: String         = "AA123456A"
+  val businessId: String   = "XAIS12345678910"
 
-  val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    taxYear = TaxYear.fromMtd(taxYear)
-  )
+  private val preTysTaxYear = TaxYear.fromMtd("2017-18")
+  private val tysTaxYear    = TaxYear.fromMtd("2023-24")
 
-  class Test extends MockHttpClient with MockAppConfig {
+  "deleteAnnualSubmissionConnector" when {
+    val outcome = Right(ResponseWrapper(correlationId, ()))
+
+    "deleteAnnualSubmission" must {
+      "send a request and return 204 no content" in new DesTest with Test {
+        def taxYear: TaxYear = preTysTaxYear
+
+        stubHttpResponse(outcome)
+
+        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+      }
+    }
+
+    "deleteAnnualSubmission is called with a TYS tax year" must {
+      "send a request and return 204 no content" in new TysIfsTest with Test {
+        def taxYear: TaxYear = tysTaxYear
+
+        stubTysHttpResponse(outcome)
+
+        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+      }
+    }
+
+    "response is an error" must {
+
+      val downstreamErrorResponse: DownstreamErrors =
+        DownstreamErrors.single(DownstreamErrorCode("SOME_ERROR"))
+      val outcome = Left(ResponseWrapper(correlationId, downstreamErrorResponse))
+
+      "return the error" in new DesTest with Test {
+        def taxYear: TaxYear = preTysTaxYear
+        stubHttpResponse(outcome)
+
+        val result: DownstreamOutcome[Unit] =
+          await(connector.deleteAnnualSubmission(request))
+        result shouldBe outcome
+      }
+
+      "return the error given a TYS tax year request" in new TysIfsTest with Test {
+        def taxYear: TaxYear = tysTaxYear
+        stubTysHttpResponse(outcome)
+
+        val result: DownstreamOutcome[Unit] =
+          await(connector.deleteAnnualSubmission(request))
+        result shouldBe outcome
+      }
+    }
+  }
+
+  trait Test {
+    _: ConnectorTest =>
+    def taxYear: TaxYear
 
     val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.ifsBaseUrl returns baseUrl
-    MockAppConfig.ifsToken returns "ifs-token"
-    MockAppConfig.ifsEnvironment returns "ifs-environment"
-    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-  }
+    val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
+      nino = Nino(nino),
+      taxYear = taxYear,
+      businessId = BusinessId(businessId),
+    )
 
-  "deleteAnnualSubmission" should {
-    "return a 204 with no body" when {
-      "the downstream call is successful" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+    protected def stubHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
+      willPut(
+        url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
+        body = JsObject.empty
+      ).returns(Future.successful(outcome))
+    }
 
-        implicit val hc: HeaderCarrier                   = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfsHeaders ++ Seq("Content-Type" -> "application/json")
-
-        MockHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear",
-            config = dummyHeaderCarrierConfig,
-            body = JsObject.empty,
-            requiredHeaders = requiredIfsHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
-
-        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
-      }
+    protected def stubTysHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
+      willDelete(
+        url = s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+      ).returns(Future.successful(outcome))
     }
   }
+
 
 }

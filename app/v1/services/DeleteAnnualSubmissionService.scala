@@ -16,8 +16,10 @@
 
 package v1.services
 
+import cats.data.EitherT
 import utils.Logging
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DeleteAnnualSubmissionConnector
@@ -37,25 +39,42 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[Unit]] = {
 
-    connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(desErrorMap)))
+    val result =  EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
+
+    result.value
   }
 
-  private val desErrorMap: Map[String, MtdError] =
-    Map(
-      "INVALID_NINO"                -> NinoFormatError,
-      "INVALID_TAX_YEAR"            -> TaxYearFormatError,
-      "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-      "INVALID_CORRELATIONID"       -> InternalError,
-      "INVALID_PAYLOAD"             -> InternalError,
-      "MISSING_EXEMPTION_REASON"    -> InternalError,
-      "MISSING_EXEMPTION_INDICATOR" -> InternalError,
-      "ALLOWANCE_NOT_SUPPORTED"     -> InternalError,
-      "NOT_FOUND"                   -> NotFoundError,
-      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-      "GONE"                        -> NotFoundError,
-      "SERVER_ERROR"                -> InternalError,
-      "BAD_GATEWAY"                 -> InternalError,
-      "SERVICE_UNAVAILABLE"         -> InternalError
+  private def downstreamErrorMap = {
+     val desErrorMap: Map[String, MtdError] =
+      Map(
+        "INVALID_NINO"                -> NinoFormatError,
+        "INVALID_TAX_YEAR"            -> TaxYearFormatError,
+        "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
+        "INVALID_CORRELATIONID"       -> InternalError,
+        "INVALID_PAYLOAD"             -> InternalError,
+        "MISSING_EXEMPTION_REASON"    -> InternalError,
+        "MISSING_EXEMPTION_INDICATOR" -> InternalError,
+        "ALLOWANCE_NOT_SUPPORTED"     -> InternalError,
+        "NOT_FOUND"                   -> NotFoundError,
+        "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+        "GONE"                        -> NotFoundError,
+        "SERVER_ERROR"                -> InternalError,
+        "BAD_GATEWAY"                 -> InternalError,
+        "SERVICE_UNAVAILABLE"         -> InternalError
+      )
+
+    val extraTysErrors: Map[String, MtdError] = Map(
+      "INVALID_CORRELATION_ID"       -> InternalError,
+      "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
+      "PERIOD_NOT_FOUND"             -> NotFoundError,
+      "INCOME_SOURCE_DATA_NOT_FOUND" -> NotFoundError,
+      "PERIOD_ALREADY_DELETED"       -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
+
+    desErrorMap ++ extraTysErrors
+  }
+
+
 
 }
