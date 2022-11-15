@@ -37,7 +37,7 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     val nino           = request.nino.nino
-    val incomeSourceId = request.businessId
+    val incomeSourceId = request.businessId.value
     val taxYear        = TaxYear.fromIso(request.body.periodDates.periodEndDate)
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
@@ -46,7 +46,7 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
       if (taxYear.useTaxYearSpecificApi) {
         TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$incomeSourceId/periodic-summaries")
       } else {
-        DesUri[Unit](s"income-tax/${taxYear.asMtd}/$nino/self-employments/$incomeSourceId/periodic-summaries")
+        DesUri[Unit](s"income-tax/nino/${nino}/self-employments/$incomeSourceId/periodic-summaries")
       }
 
     post(

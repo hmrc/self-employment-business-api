@@ -17,7 +17,7 @@
 package v1.models.domain
 
 import config.FeatureSwitches
-import v1.models.domain.TaxYear.{taxYearDayStart, taxYearMonthStart, tysTaxYear}
+import v1.models.domain.TaxYear.tysTaxYear
 
 import java.time.LocalDate
 

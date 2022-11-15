@@ -251,7 +251,7 @@ class CreatePeriodSummaryControllerSpec
           }
         }
 
-        val input = Seq(
+        val errors = Seq(
           (NinoFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
           (RuleOverlappingPeriod, BAD_REQUEST),
@@ -261,8 +261,12 @@ class CreatePeriodSummaryControllerSpec
           (NotFoundError, NOT_FOUND),
           (InternalError, INTERNAL_SERVER_ERROR)
         )
+        val extraTysErrors = Seq(
+          (RuleTaxYearNotSupportedError, BAD_REQUEST),
+          (ValueFormatError, BAD_REQUEST)
+        )
 
-        input.foreach(args => (serviceErrors _).tupled(args))
+        (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
       }
     }
   }
