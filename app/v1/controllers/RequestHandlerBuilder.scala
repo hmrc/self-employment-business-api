@@ -36,20 +36,20 @@ import scala.concurrent.{ ExecutionContext, Future }
 // - test generically(!) for various scenarios
 
 trait ParserOnlyBuilder[InputRaw <: RawData, Input] {
-  def withService[Output](service: BaseService[Input, Output]): StandardControllerBuilder[InputRaw, Input, Output]
+  def withService[Output](service: BaseService[Input, Output]): RequestHandlerBuilder[InputRaw, Input, Output]
 
   def withService[Output](serviceFunction: Input => RequestContext => Future[Either[ErrorWrapper, ResponseWrapper[Output]]])
-    : StandardControllerBuilder[InputRaw, Input, Output]
+    : RequestHandlerBuilder[InputRaw, Input, Output]
 }
 
-trait StandardControllerBuilder[InputRaw <: RawData, Input, Output] {
-  def withResultCreator(resultCreator: ResultCreator[InputRaw, Output]): StandardControllerBuilder[InputRaw, Input, Output]
-  def withErrorHandling(errorHandling: PartialFunction[ErrorWrapper, Result]): StandardControllerBuilder[InputRaw, Input, Output]
-  def createController(implicit ec: ExecutionContext): StandardController[InputRaw, Input, Output]
+trait RequestHandlerBuilder[InputRaw <: RawData, Input, Output] {
+  def withResultCreator(resultCreator: ResultCreator[InputRaw, Output]): RequestHandlerBuilder[InputRaw, Input, Output]
+  def withErrorHandling(errorHandling: PartialFunction[ErrorWrapper, Result]): RequestHandlerBuilder[InputRaw, Input, Output]
+  def createRequestHandler(implicit ec: ExecutionContext): RequestHandler[InputRaw, Input, Output]
 }
 
 @Singleton
-final class StandardControllerFactory @Inject()(idGenerator: IdGenerator, commonErrorHandling: CommonErrorHandling) {
+final class RequestHandlerFactory @Inject()(idGenerator: IdGenerator, commonErrorHandling: CommonErrorHandling) {
 
   def withParser[InputRaw <: RawData, Input](parser: RequestParser[InputRaw, Input]): ParserOnlyBuilder[InputRaw, Input] =
     ParserOnlyBuilderImpl(parser)
@@ -57,11 +57,11 @@ final class StandardControllerFactory @Inject()(idGenerator: IdGenerator, common
   private case class ParserOnlyBuilderImpl[InputRaw <: RawData, Input](parser: RequestParser[InputRaw, Input])
       extends ParserOnlyBuilder[InputRaw, Input] {
 
-    def withService[Output](service: BaseService[Input, Output]): StandardControllerBuilderImpl[InputRaw, Input, Output] =
-      StandardControllerBuilderImpl(parser, service)
+    def withService[Output](service: BaseService[Input, Output]): RequestHandlerBuilderImpl[InputRaw, Input, Output] =
+      RequestHandlerBuilderImpl(parser, service)
 
     def withService[Output](serviceFunction: Input => RequestContext => Future[Either[ErrorWrapper, ResponseWrapper[Output]]])
-      : StandardControllerBuilder[InputRaw, Input, Output] = {
+      : RequestHandlerBuilder[InputRaw, Input, Output] = {
       val service = new BaseService[Input, Output] {
         override def doService(request: Input)(implicit hc: HeaderCarrier,
                                                ec: ExecutionContext,
@@ -71,24 +71,24 @@ final class StandardControllerFactory @Inject()(idGenerator: IdGenerator, common
         }
       }
 
-      StandardControllerBuilderImpl(parser, service)
+      RequestHandlerBuilderImpl(parser, service)
     }
   }
 
-  private case class StandardControllerBuilderImpl[InputRaw <: RawData, Input, Output](
+  private case class RequestHandlerBuilderImpl[InputRaw <: RawData, Input, Output](
       parser: RequestParser[InputRaw, Input],
       service: BaseService[Input, Output],
       errorHandling: PartialFunction[ErrorWrapper, Result] = PartialFunction.empty,
       resultCreator: ResultCreator[InputRaw, Output] = ResultCreator.noContent[InputRaw, Output])
-      extends StandardControllerBuilder[InputRaw, Input, Output] {
+      extends RequestHandlerBuilder[InputRaw, Input, Output] {
 
-    def withResultCreator(resultCreator: ResultCreator[InputRaw, Output]): StandardControllerBuilder[InputRaw, Input, Output] =
+    def withResultCreator(resultCreator: ResultCreator[InputRaw, Output]): RequestHandlerBuilder[InputRaw, Input, Output] =
       copy(resultCreator = resultCreator)
 
-    def withErrorHandling(errorHandling: PartialFunction[ErrorWrapper, Result]): StandardControllerBuilder[InputRaw, Input, Output] =
+    def withErrorHandling(errorHandling: PartialFunction[ErrorWrapper, Result]): RequestHandlerBuilder[InputRaw, Input, Output] =
       copy(errorHandling = errorHandling)
 
-    def createController(implicit ec: ExecutionContext): StandardController[InputRaw, Input, Output] =
-      StandardController(parser, service, errorHandling, resultCreator, idGenerator, commonErrorHandling)
+    def createRequestHandler(implicit ec: ExecutionContext): RequestHandler[InputRaw, Input, Output] =
+      RequestHandler(parser, service, errorHandling, resultCreator, idGenerator, commonErrorHandling)
   }
 }

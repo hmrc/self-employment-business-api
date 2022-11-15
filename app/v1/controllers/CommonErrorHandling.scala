@@ -23,6 +23,10 @@ trait CommonErrorHandlingComponent {
   def commonErrorHandling: CommonErrorHandling
 }
 
+trait ApiCommonErrorHandlingComponent extends CommonErrorHandlingComponent {
+  override val commonErrorHandling: CommonErrorHandling = ApiCommonErrorHandling
+}
+
 /**
   * Defines default error handling that can be used across all endpoints
   */

@@ -37,7 +37,7 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
                                                        service: CreateSelfEmploymentPeriodicService,
                                                        hateoasFactory: HateoasFactory,
                                                        cc: ControllerComponents,
-                                                       controllerFactory: StandardControllerFactory)(implicit ec: ExecutionContext)
+                                                       requestHandlerFactory: RequestHandlerFactory)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -45,8 +45,8 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateSelfEmploymentPeriodController", endpointName = "createSelfEmploymentPeriodSummary")
 
-  private val controller =
-    controllerFactory
+  private val requestHandler =
+    requestHandlerFactory
       .withParser(parser)
       .withService(service)
       .withErrorHandling {
@@ -56,12 +56,12 @@ class CreateSelfEmploymentPeriodicController @Inject()(val authService: Enrolmen
           BadRequest(Json.toJson(errorWrapper))
       }
       .withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory))
-      .createController
+      .createRequestHandler
 
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       val rawData = CreateSelfEmploymentPeriodicRawData(nino, businessId, request.body)
 
-      controller.handleRequest(rawData)
+      requestHandler.handleRequest(rawData)
     }
 }

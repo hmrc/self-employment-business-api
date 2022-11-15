@@ -18,7 +18,9 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
+import play.api.libs.json.Json
 import play.api.mvc.Result
+import play.api.mvc.Results.InternalServerError
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ IdGenerator, Logging }
 import v1.controllers.requestParsers.RequestParser
@@ -29,7 +31,7 @@ import v1.services.{ BaseService, ServiceComponent }
 import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
 
-trait StandardController[InputRaw <: RawData, Input, Output] extends BaseController {
+trait RequestHandler[InputRaw <: RawData, Input, Output] {
   self: Logging with ServiceComponent[Input, Output] with ResultCreatorComponent[InputRaw, Output] with CommonErrorHandlingComponent =>
 
   val idGenerator: IdGenerator
@@ -37,6 +39,27 @@ trait StandardController[InputRaw <: RawData, Input, Output] extends BaseControl
   val parser: RequestParser[InputRaw, Input]
 
   implicit val ec: ExecutionContext
+
+  implicit class Response(result: Result) {
+
+    def withApiHeaders(correlationId: String, responseHeaders: (String, String)*): Result = {
+
+      val newHeaders: Seq[(String, String)] = responseHeaders ++ Seq(
+        "X-CorrelationId"        -> correlationId,
+        "X-Content-Type-Options" -> "nosniff",
+        "Content-Type"           -> "application/json"
+      )
+
+      result.copy(header = result.header.copy(headers = result.header.headers ++ newHeaders))
+    }
+  }
+
+  protected def unhandledError(errorWrapper: ErrorWrapper)(implicit endpointLogContext: EndpointLogContext): Result = {
+    logger.error(
+      s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
+        s"Unhandled error: $errorWrapper")
+    InternalServerError(Json.toJson(DownstreamError))
+  }
 
   def handleRequest(rawData: InputRaw)(implicit
                                        headerCarrier: HeaderCarrier,
@@ -82,7 +105,7 @@ trait StandardController[InputRaw <: RawData, Input, Output] extends BaseControl
     PartialFunction.empty
 }
 
-object StandardController {
+object RequestHandler {
 
   def apply[InputRaw <: RawData, Input, Output](
       parser0: RequestParser[InputRaw, Input],
@@ -90,8 +113,8 @@ object StandardController {
       errorHandling0: PartialFunction[ErrorWrapper, Result],
       resultsCreator0: ResultCreator[InputRaw, Output],
       idGenerator0: IdGenerator,
-      commonErrorHandling0: CommonErrorHandling)(implicit ec0: ExecutionContext): StandardController[InputRaw, Input, Output] =
-    new StandardController[InputRaw, Input, Output] with ResultCreatorComponent[InputRaw, Output] with ServiceComponent[Input, Output]
+      commonErrorHandling0: CommonErrorHandling)(implicit ec0: ExecutionContext): RequestHandler[InputRaw, Input, Output] =
+    new RequestHandler[InputRaw, Input, Output] with ResultCreatorComponent[InputRaw, Output] with ServiceComponent[Input, Output]
     with CommonErrorHandlingComponent with Logging {
 
       override def resultCreator: ResultCreator[InputRaw, Output] = resultsCreator0

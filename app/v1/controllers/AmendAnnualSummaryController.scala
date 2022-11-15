@@ -36,15 +36,15 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
                                              service: AmendAnnualSummaryService,
                                              hateoasFactory: HateoasFactory,
                                              cc: ControllerComponents,
-                                             controllerFactory: StandardControllerFactory)(implicit val ec: ExecutionContext)
+                                             requestHandlerFactory: RequestHandlerFactory)(implicit val ec: ExecutionContext)
     extends AuthorisedController(cc)
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendAnnualSummaryController", endpointName = "amendAnnualSummary")
 
-  private val controller =
-    controllerFactory
+  private val requestHandler =
+    requestHandlerFactory
       .withParser(parser)
       .withService { request: AmendAnnualSummaryRequest => implicit ctx: RequestContext =>
         service.amend(request)
@@ -53,12 +53,12 @@ class AmendAnnualSummaryController @Inject()(val authService: EnrolmentsAuthServ
         case errorWrapper @ WithCode(ValueFormatError.code) => BadRequest(Json.toJson(errorWrapper))
       }
       .withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory))
-      .createController
+      .createRequestHandler
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       val rawData = AmendAnnualSummaryRawData(nino, businessId, taxYear, request.body)
 
-      controller.handleRequest(rawData)
+      requestHandler.handleRequest(rawData)
     }
 }

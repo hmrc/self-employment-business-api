@@ -58,7 +58,7 @@ class CreateSelfEmploymentPeriodicControllerSpec
       service = mockCreateSelfEmploymentPeriodicService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
-      new StandardControllerFactory(mockIdGenerator, ApiCommonErrorHandling)
+      new RequestHandlerFactory(mockIdGenerator, ApiCommonErrorHandling)
     )
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))

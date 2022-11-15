@@ -33,7 +33,7 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
                                                      service: ListSelfEmploymentPeriodicService,
                                                      hateoasFactory: HateoasFactory,
                                                      cc: ControllerComponents,
-                                                     controllerFactory: StandardControllerFactory)(implicit ec: ExecutionContext)
+                                                     requestHandlerFactory: RequestHandlerFactory)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {
@@ -41,17 +41,17 @@ class ListSelfEmploymentPeriodicController @Inject()(val authService: Enrolments
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListSelfEmploymentPeriodicController", endpointName = "listSelfEmploymentPeriodicUpdate")
 
-  private val controller =
-    controllerFactory
+  private val requestHandler =
+    requestHandlerFactory
       .withParser(parser)
       .withService(service)
       .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory))
-      .createController
+      .createRequestHandler
 
   def handleRequest(nino: String, businessId: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       val rawData = ListSelfEmploymentPeriodicRawData(nino, businessId)
 
-      controller.handleRequest(rawData)
+      requestHandler.handleRequest(rawData)
     }
 }

@@ -21,10 +21,6 @@ import play.api.mvc.Results.{ BadRequest, InternalServerError, NotFound }
 import v1.models.errors.ErrorWrapper.WithCode
 import v1.models.errors._
 
-trait ApiCommonErrorHandlingComponent extends CommonErrorHandlingComponent {
-  override val commonErrorHandling: CommonErrorHandling = ApiCommonErrorHandling
-}
-
 object ApiCommonErrorHandling extends CommonErrorHandling {
   override def errorResultPF: PartialFunction[ErrorWrapper, Result] = {
     case errorWrapper @ (WithCode(BadRequestError.code) | WithCode(NinoFormatError.code) | WithCode(BusinessIdFormatError.code) | WithCode(
