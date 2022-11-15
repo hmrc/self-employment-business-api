@@ -263,7 +263,8 @@ class CreatePeriodSummaryControllerSpec
         )
         val extraTysErrors = Seq(
           (RuleDuplicateSubmissionError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST)
+          (RuleTaxYearNotSupportedError, BAD_REQUEST),
+          (TaxYearFormatError, BAD_REQUEST)
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))

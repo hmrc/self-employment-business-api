@@ -32,7 +32,10 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val periodId: String   = "2019-08-24_2019-08-24"
+    val periodId: String   = s"${periodStartDate}_$periodEndDate"
+
+    def periodStartDate: String
+    def periodEndDate: String
 
     def uri: String = s"/$nino/$businessId/period"
     def downstreamUri: String
@@ -52,8 +55,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       s"""
          |{
          |     "periodDates": {
-         |           "periodStartDate": "2019-08-24",
-         |           "periodEndDate": "2019-08-24"
+         |           "periodStartDate": "$periodStartDate",
+         |           "periodEndDate": "$periodEndDate"
          |     },
          |     "periodIncome": {
          |          "turnover": 1000.99,
@@ -99,7 +102,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     val responseBody: JsValue = Json.parse(s"""
                                               |{
-                                              |   "periodId":"2019-08-24_2019-08-24",
+                                              |   "periodId":"$periodId",
                                               |   "links":[
                                               |      {
                                               |         "href":"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
@@ -137,12 +140,16 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    override def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+    override def downstreamUri: String   = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+    override def periodStartDate: String = "2019-07-24"
+    override def periodEndDate: String   = "2019-08-24"
   }
 
   private trait TysIfsTest extends Test {
-    def downstreamTaxYear: String      = "23-24"
-    override def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+    def downstreamTaxYear: String        = "23-24"
+    override def downstreamUri: String   = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+    override def periodStartDate: String = "2023-07-24"
+    override def periodEndDate: String   = "2023-08-24"
   }
 
   "Calling the create endpoint" should {
@@ -498,135 +505,6 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/periodDates/periodStartDate"))))
       }
-
-//      s"a summary has already been submitted for the period specified" in new TysIfsTest {
-//        override val requestBodyJson: JsValue = Json.parse("""
-//                                                             | {
-//                                                             |     "periodDates": {
-//                                                             |           "periodStartDate": "2023-06-24",
-//                                                             |           "periodEndDate": "2023-08-24"
-//                                                             |     }
-//                                                             |}
-//                                                             |""".stripMargin)
-//
-//        override def setupStubs(): StubMapping = {
-//          AuthStub.authorised()
-//          MtdIdLookupStub.ninoFound(nino)
-//        }
-//
-//        val response: WSResponse = await(request().post(requestBodyJson))
-//        response.status shouldBe CONFLICT
-//        response.json shouldBe Json.toJson(RuleDuplicateSubmissionError)
-//      }
-//
-//      "both expenses and consolidated expenses are provided for a Tax Year Specific request" in new TysIfsTest {
-//        override val requestBodyJson: JsValue = Json.parse(
-//          s"""
-//             |{
-//             |     "periodDates": {
-//             |           "periodStartDate": "2019-08-24",
-//             |           "periodEndDate": "2019-08-24"
-//             |     },
-//             |     "periodIncome": {
-//             |          "turnover": 1000.99,
-//             |          "other": 1000.99
-//             |     },
-//             |     "periodAllowableExpenses": {
-//             |          "consolidatedExpenses": 1000.99,
-//             |          "costOfGoodsAllowable": 1000.99,
-//             |          "paymentsToSubcontractorsAllowable": 1000.99,
-//             |          "wagesAndStaffCostsAllowable": 1000.99,
-//             |          "carVanTravelExpensesAllowable": 1000.99,
-//             |          "premisesRunningCostsAllowable": -99999.99,
-//             |          "maintenanceCostsAllowable": -1000.99,
-//             |          "adminCostsAllowable": 1000.99,
-//             |          "businessEntertainmentCostsAllowable": 1000.99,
-//             |          "advertisingCostsAllowable": 1000.99,
-//             |          "interestOnBankOtherLoansAllowable": -1000.99,
-//             |          "financeChargesAllowable": -1000.99,
-//             |          "irrecoverableDebtsAllowable": -1000.99,
-//             |          "professionalFeesAllowable": -99999999999.99,
-//             |          "depreciationAllowable": -1000.99,
-//             |          "otherExpensesAllowable": 1000.99
-//             |      },
-//             |     "periodDisallowableExpenses": {
-//             |          "costOfGoodsDisallowable": 1000.99,
-//             |          "paymentsToSubcontractorsDisallowable": 1000.99,
-//             |          "wagesAndStaffCostsDisallowable": 1000.99,
-//             |          "carVanTravelExpensesDisallowable": 1000.99,
-//             |          "premisesRunningCostsDisallowable": -1000.99,
-//             |          "maintenanceCostsDisallowable": -999.99,
-//             |          "adminCostsDisallowable": 1000.99,
-//             |          "businessEntertainmentCostsDisallowable": 1000.99,
-//             |          "advertisingCostsDisallowable": 1000.99,
-//             |          "interestOnBankOtherLoansDisallowable": -1000.99,
-//             |          "financeChargesDisallowable": -9999.99,
-//             |          "irrecoverableDebtsDisallowable": -1000.99,
-//             |          "professionalFeesDisallowable": 10000.89,
-//             |          "depreciationDisallowable": -99999999999.99,
-//             |          "otherExpensesDisallowable": 1000.99
-//             |      }
-//             |}
-//             |""".stripMargin
-//        )
-//
-//        override def setupStubs(): StubMapping = {
-//          AuthStub.authorised()
-//          MtdIdLookupStub.ninoFound(nino)
-//        }
-//
-//        val response: WSResponse = await(request().post(requestBodyJson))
-//        response.status shouldBe UNPROCESSABLE_ENTITY
-//        response.json shouldBe Json.toJson(RuleBothExpensesSuppliedError)
-//      }
-//
-//      "an end date is provided which is before the provided start date in a Tax Year Specific request" in new TysIfsTest {
-//        override val requestBodyJson: JsValue = Json.parse(
-//          s"""
-//             |{
-//             |     "periodDates": {
-//             |           "periodStartDate": "2019-08-24",
-//             |           "periodEndDate": "2019-06-24"
-//             |     },
-//             |     "periodIncome": {
-//             |          "turnover": 1000.99,
-//             |          "other": 1000.99
-//             |     }
-//             |}
-//             |""".stripMargin
-//        )
-//
-//        override def setupStubs(): StubMapping = {
-//          AuthStub.authorised()
-//          MtdIdLookupStub.ninoFound(nino)
-//        }
-//
-//        val response: WSResponse = await(request().post(requestBodyJson))
-//        response.status shouldBe UNPROCESSABLE_ENTITY
-//        response.json shouldBe Json.toJson(RuleEndDateBeforeStartDateError)
-//      }
-//
-//      "a period date provided has gaps or is not contiguous" in new TysIfsTest {
-//        override val requestBodyJson: JsValue = Json.parse(
-//          s"""
-//             |{
-//             |     "periodDates": {
-//             |           "periodStartDate": "2019-08-24",
-//             |           "periodEndDate": "2023-06-24"
-//             |     }
-//             |}
-//             |""".stripMargin
-//        )
-//
-//        override def setupStubs(): StubMapping = {
-//          AuthStub.authorised()
-//          MtdIdLookupStub.ninoFound(nino)
-//        }
-//
-//        val response: WSResponse = await(request().post(requestBodyJson))
-//        response.status shouldBe UNPROCESSABLE_ENTITY
-//        response.json shouldBe Json.toJson(RuleNotContiguousPeriod)
-//      }
     }
 
     "downstream service error" when {
@@ -648,26 +526,29 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       val errors = Seq(
         (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
         (CONFLICT, "INVALID_PERIOD", BAD_REQUEST, RuleEndDateBeforeStartDateError),
         (CONFLICT, "OVERLAPS_IN_PERIOD", BAD_REQUEST, RuleOverlappingPeriod),
         (CONFLICT, "NOT_ALIGN_PERIOD", BAD_REQUEST, RuleMisalignedPeriod),
         (CONFLICT, "NOT_CONTIGUOUS_PERIOD", BAD_REQUEST, RuleNotContiguousPeriod),
         (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
+        (CONFLICT, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
         (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
       val extraTysErrors = Seq(
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-        (CONFLICT, "DUPLICATE_SUBMISSION", BAD_REQUEST, RuleDuplicateSubmissionError),
-        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
         (CONFLICT, "PERIOD_EXISTS", BAD_REQUEST, RuleDuplicateSubmissionError),
-        (UNPROCESSABLE_ENTITY, "OVERLAPS_IN_PERIOD", BAD_REQUEST, RuleOverlappingPeriod),
-        (UNPROCESSABLE_ENTITY, "NOT_ALIGN_PERIOD", BAD_REQUEST, RuleMisalignedPeriod),
-        (UNPROCESSABLE_ENTITY, "RULE_BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
-        (UNPROCESSABLE_ENTITY, "RULE_END_DATE_BEFORE_START_DATE", BAD_REQUEST, RuleEndDateBeforeStartDateError),
-        (UNPROCESSABLE_ENTITY, "PERIOD_HAS_GAPS", BAD_REQUEST, RuleNotContiguousPeriod)
+        (UNPROCESSABLE_ENTITY, "PERIOD_OVERLAP", BAD_REQUEST, RuleOverlappingPeriod),
+        (UNPROCESSABLE_ENTITY, "PERIOD_ALIGNMENT", BAD_REQUEST, RuleMisalignedPeriod),
+        (UNPROCESSABLE_ENTITY, "PERIOD_HAS_GAPS", BAD_REQUEST, RuleNotContiguousPeriod),
+        (UNPROCESSABLE_ENTITY, "END_BEFORE_START", BAD_REQUEST, RuleEndDateBeforeStartDateError),
+        (UNPROCESSABLE_ENTITY, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
       )
 
       (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))

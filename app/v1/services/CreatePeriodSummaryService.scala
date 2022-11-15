@@ -65,14 +65,16 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "SERVICE_UNAVAILABLE"             -> InternalError
     )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"                      -> TaxYearFormatError,
-      "TAX_YEAR_NOT_SUPPORTED"                -> RuleTaxYearNotSupportedError,
-      "INVALID_CORRELATION_ID"                -> InternalError,
-      "INVALID_INCOMESOURCE_ID"               -> BusinessIdFormatError,
-      "PERIOD_NOT_FOUND"                      -> NotFoundError,
-      "INCOME_SOURCE_NOT_FOUND"               -> NotFoundError,
-      "INCOME_SOURCE_DATA_NOT_FOUND"          -> NotFoundError,
-      "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError
+      "INVALID_TAX_YEAR"         -> TaxYearFormatError,
+      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+      "INVALID_CORRELATIONID"    -> InternalError,
+      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+      "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
+      "PERIOD_EXISTS"            -> RuleDuplicateSubmissionError,
+      "END_BEFORE_START"         -> RuleEndDateBeforeStartDateError,
+      "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
+      "PERIOD_OVERLAP"           -> RuleOverlappingPeriod,
+      "PERIOD_ALIGNMENT"         -> RuleMisalignedPeriod
     )
 
     errors ++ extraTysErrors

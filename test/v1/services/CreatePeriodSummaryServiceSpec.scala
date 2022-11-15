@@ -133,14 +133,16 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
         )
 
         val extraTysErrors = Seq(
-          "INVALID_TAX_YEAR"                      -> TaxYearFormatError,
-          "TAX_YEAR_NOT_SUPPORTED"                -> RuleTaxYearNotSupportedError,
-          "INVALID_CORRELATION_ID"                -> InternalError,
-          "INVALID_INCOMESOURCE_ID"               -> BusinessIdFormatError,
-          "PERIOD_NOT_FOUND"                      -> NotFoundError,
-          "INCOME_SOURCE_NOT_FOUND"               -> NotFoundError,
-          "INCOME_SOURCE_DATA_NOT_FOUND"          -> NotFoundError,
-          "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError
+          "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+          "INVALID_CORRELATIONID"    -> InternalError,
+          "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+          "PERIOD_EXISTS"            -> RuleDuplicateSubmissionError,
+          "PERIOD_OVERLAP"           -> RuleOverlappingPeriod,
+          "PERIOD_ALIGNMENT"         -> RuleMisalignedPeriod,
+          "END_BEFORE_START"         -> RuleEndDateBeforeStartDateError,
+          "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
+          "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
+          "INVALID_TAX_YEAR"         -> TaxYearFormatError
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
