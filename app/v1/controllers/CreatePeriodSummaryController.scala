@@ -93,6 +93,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
           if errorWrapper.containsAnyOf(
             BadRequestError,
             NinoFormatError,
+            ValueFormatError,
             BusinessIdFormatError,
             StartDateFormatError,
             EndDateFormatError,
@@ -102,8 +103,9 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
             RuleMisalignedPeriod,
             RuleNotContiguousPeriod,
             RuleNotAllowedConsolidatedExpenses,
-            RuleTaxYearNotSupportedError,
-            RuleDuplicateSubmissionError
+            RuleIncorrectOrEmptyBodyError,
+            RuleDuplicateSubmissionError,
+            RuleTaxYearNotSupportedError
           ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
