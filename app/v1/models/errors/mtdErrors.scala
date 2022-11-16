@@ -188,7 +188,7 @@ object RuleIncorrectOrEmptyBodyError
 object RuleDuplicateSubmissionError
     extends MtdError(
       code = "RULE_DUPLICATE_SUBMISSION",
-      message = "A summary has already been submitted for the period specified."
+      message = "A summary has already been submitted for the period specified"
     )
 
 object BVRError
