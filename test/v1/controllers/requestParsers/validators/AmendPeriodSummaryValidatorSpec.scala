@@ -27,6 +27,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
   private val validPeriodId   = "2019-01-01_2019-02-02"
+  private val validTaxYear    = Some("2023-24")
 
   private val requestBodyJson = Json.parse(
     """
@@ -78,8 +79,12 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied with expenses" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson)) shouldBe Nil
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, None)) shouldBe Nil
       }
+      "a valid TYS request is supplied with expenses" in {
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, validTaxYear)) shouldBe Nil
+      }
+
       "a valid request is supplied with consolidated expenses" in {
         validator.validate(
           AmendPeriodSummaryRawData(
@@ -98,7 +103,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |    }
                 |}
             |""".stripMargin
-            )
+            ),
+            None
           )) shouldBe Nil
       }
       "only periodIncome is supplied" in {
@@ -116,7 +122,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |    }
                 |}
             |""".stripMargin
-            )
+            ),
+            None
           )) shouldBe Nil
       }
       "only expenses is supplied" in {
@@ -164,39 +171,40 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |    }
                 |}
             |""".stripMargin
-            )
+            ),
+            None
           )) shouldBe Nil
       }
     }
     "return a path parameter error" when {
       "an invalid nino is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData("A12344A", validBusinessId, validPeriodId, requestBodyJson)) shouldBe List(NinoFormatError)
+        validator.validate(AmendPeriodSummaryRawData("A12344A", validBusinessId, validPeriodId, requestBodyJson, None)) shouldBe List(NinoFormatError)
       }
       "an invalid businessId is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, "Walrus", validPeriodId, requestBodyJson)) shouldBe List(BusinessIdFormatError)
+        validator.validate(AmendPeriodSummaryRawData(validNino, "Walrus", validPeriodId, requestBodyJson, None)) shouldBe List(BusinessIdFormatError)
       }
       "an invalid PeriodId is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, "2103/01", requestBodyJson)) shouldBe List(PeriodIdFormatError)
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, "2103/01", requestBodyJson, None)) shouldBe List(PeriodIdFormatError)
       }
     }
     "return RuleIncorrectOrEmptyBodyError" when {
       "an empty body is submitted" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""))) shouldBe List(
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""), None)) shouldBe List(
           RuleIncorrectOrEmptyBodyError)
       }
       "an empty income is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodIncome": {}}"""))) shouldBe List(
+          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodIncome": {}}"""), None)) shouldBe List(
           RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
       }
       "an empty allowable expenses is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodAllowableExpenses": {}}"""))) shouldBe List(
+          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodAllowableExpenses": {}}"""), None)) shouldBe List(
           RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
       }
       "an empty disallowable expenses is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodDisallowableExpenses": {}}"""))) shouldBe List(
+          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodDisallowableExpenses": {}}"""), None)) shouldBe List(
           RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
       }
     }
@@ -249,10 +257,33 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             |        "otherExpensesDisallowable": 1000.99
             |    }
             |}
-            |""".stripMargin)
+            |""".stripMargin),
+            None
           )) shouldBe List(RuleBothExpensesSuppliedError)
       }
     }
+
+    "return TaxYearFormatError error" when {
+      "an invalid tax year format is supplied" in {
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("202324"))) shouldBe
+          List(TaxYearFormatError)
+      }
+    }
+
+    "return InvalidTaxYearParameter" when {
+      "an invalid tax year is supplied" in {
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("2022-23"))) shouldBe
+          List(InvalidTaxYearParameterError)
+      }
+    }
+
+    "return RuleTaxYearRangeInvalidError error" when {
+      "an invalid tax year range is supplied" in {
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("2023-26"))) shouldBe
+          List(RuleTaxYearRangeInvalidError)
+      }
+    }
+
 
     "return ValueFormatError" when {
 
@@ -262,7 +293,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodIncome/turnover", JsNumber(123.123))
+            requestBodyJson.update("/periodIncome/turnover", JsNumber(123.123)),
+            None
           )
         ) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/turnover"))))
       }
@@ -272,7 +304,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodIncome/other", JsNumber(123.123))
+            requestBodyJson.update("/periodIncome/other", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/other"))))
       }
       "/periodAllowableExpenses/consolidatedExpenses is invalid" in {
@@ -293,7 +326,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |    }
                 |}
                 |""".stripMargin
-            )
+            ),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/consolidatedExpenses"))))
       }
       "/periodAllowableExpenses/costOfGoodsAllowable is invalid" in {
@@ -302,7 +336,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/costOfGoodsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/costOfGoodsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/costOfGoodsAllowable"))))
       }
 
@@ -312,7 +347,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/paymentsToSubcontractorsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/paymentsToSubcontractorsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/paymentsToSubcontractorsAllowable"))))
       }
       "/periodAllowableExpenses/wagesAndStaffCostsAllowable is invalid" in {
@@ -321,7 +357,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/wagesAndStaffCostsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/wagesAndStaffCostsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/wagesAndStaffCostsAllowable"))))
       }
       "/periodAllowableExpenses/carVanTravelExpensesAllowable is invalid" in {
@@ -330,7 +367,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/carVanTravelExpensesAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/carVanTravelExpensesAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/carVanTravelExpensesAllowable"))))
       }
 
@@ -340,7 +378,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/premisesRunningCostsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/premisesRunningCostsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/premisesRunningCostsAllowable"))))
       }
 
@@ -350,7 +389,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/maintenanceCostsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/maintenanceCostsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/maintenanceCostsAllowable"))))
       }
 
@@ -360,7 +400,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/adminCostsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/adminCostsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/adminCostsAllowable"))))
       }
 
@@ -370,7 +411,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/businessEntertainmentCostsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/businessEntertainmentCostsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/businessEntertainmentCostsAllowable"))))
       }
 
@@ -380,7 +422,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/advertisingCostsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/advertisingCostsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/advertisingCostsAllowable"))))
       }
 
@@ -390,7 +433,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/interestOnBankOtherLoansAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/interestOnBankOtherLoansAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/interestOnBankOtherLoansAllowable"))))
       }
 
@@ -400,7 +444,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/financeChargesAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/financeChargesAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/financeChargesAllowable"))))
       }
 
@@ -410,7 +455,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/irrecoverableDebtsAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/irrecoverableDebtsAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/irrecoverableDebtsAllowable"))))
       }
 
@@ -420,7 +466,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/professionalFeesAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/professionalFeesAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/professionalFeesAllowable"))))
       }
 
@@ -430,7 +477,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/depreciationAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/depreciationAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/depreciationAllowable"))))
       }
 
@@ -440,7 +488,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodAllowableExpenses/otherExpensesAllowable", JsNumber(123.123))
+            requestBodyJson.update("/periodAllowableExpenses/otherExpensesAllowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodAllowableExpenses/otherExpensesAllowable"))))
       }
 
@@ -450,7 +499,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/costOfGoodsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/costOfGoodsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/costOfGoodsDisallowable"))))
       }
 
@@ -460,7 +510,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"))))
       }
 
@@ -470,7 +521,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/wagesAndStaffCostsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/wagesAndStaffCostsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"))))
       }
 
@@ -480,7 +532,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/carVanTravelExpensesDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/carVanTravelExpensesDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/carVanTravelExpensesDisallowable"))))
       }
 
@@ -490,7 +543,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/premisesRunningCostsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/premisesRunningCostsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/premisesRunningCostsDisallowable"))))
       }
 
@@ -500,7 +554,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/maintenanceCostsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/maintenanceCostsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/maintenanceCostsDisallowable"))))
       }
 
@@ -510,7 +565,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/adminCostsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/adminCostsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/adminCostsDisallowable"))))
       }
 
@@ -520,7 +576,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/businessEntertainmentCostsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/businessEntertainmentCostsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/businessEntertainmentCostsDisallowable"))))
       }
 
@@ -530,7 +587,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/advertisingCostsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/advertisingCostsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/advertisingCostsDisallowable"))))
       }
 
@@ -540,7 +598,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable"))))
       }
 
@@ -550,7 +609,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/financeChargesDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/financeChargesDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/financeChargesDisallowable"))))
       }
 
@@ -560,7 +620,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/irrecoverableDebtsDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/irrecoverableDebtsDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/irrecoverableDebtsDisallowable"))))
       }
 
@@ -570,7 +631,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/professionalFeesDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/professionalFeesDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/professionalFeesDisallowable"))))
       }
 
@@ -580,7 +642,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/depreciationDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/depreciationDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/depreciationDisallowable"))))
       }
 
@@ -590,13 +653,14 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            requestBodyJson.update("/periodDisallowableExpenses/otherExpensesDisallowable", JsNumber(123.123))
+            requestBodyJson.update("/periodDisallowableExpenses/otherExpensesDisallowable", JsNumber(123.123)),
+            None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/otherExpensesDisallowable"))))
       }
     }
     "return multiple errors" when {
       "every path parameter format is invalid" in {
-        validator.validate(AmendPeriodSummaryRawData("AJAA12", "XASOE12", "201219", requestBodyJson)) shouldBe
+        validator.validate(AmendPeriodSummaryRawData("AJAA12", "XASOE12", "201219", requestBodyJson, None)) shouldBe
           List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError)
       }
       "every field in the body is invalid when expenses are supplied" in {
@@ -648,7 +712,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |    }
                 |}
                 |""".stripMargin
-            )
+            ),
+            None
           )) shouldBe List(
           ValueFormatError.copy(paths = Some(Seq(
             "/periodIncome/turnover",

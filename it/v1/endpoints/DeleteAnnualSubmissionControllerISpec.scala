@@ -19,7 +19,7 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
@@ -29,42 +29,39 @@ import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
+    def taxYear: String
+    def setupStubs(): StubMapping
 
-    val nino       = "AA123456A"
-    val businessId = "XAIS12345678910"
-    val taxYear    = "2021-22"
-    val desTaxYear = "2022"
+    def nino: String = "AA123456A"
+    def businessId   = "XAIS12345678910"
 
     def uri: String = s"/$nino/$businessId/annual/$taxYear"
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
-
-    def setupStubs(): StubMapping
 
     def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
+          (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
 
-    def errorBody(code: String): String =
-      s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "message"
-         |      }
-    """.stripMargin
-
   }
 
-  "Calling the deleteAnnualSubmission endpoint" should {
+  private trait NonTysTest extends Test {
+    override def taxYear: String = "2021-22"
+    def downstreamUri: String    = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2022"
+  }
 
-    "return a 204 status code" when {
 
-      "any valid request is made" in new Test {
+  private trait TysIfsTest extends Test {
+    override def taxYear: String = "2023-24"
+    def downstreamUri: String    = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
+  }
+
+  "calling the deleteAnnualSubmission endpoint" should {
+    "return a 204 status" when {
+      "any valid non-TYS request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -79,6 +76,24 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().delete())
         response.status shouldBe Status.NO_CONTENT
+        response.body shouldBe ""
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+
+      "any valid TYS request is made" in new TysIfsTest {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUri, Status.NO_CONTENT, JsObject.empty)
+
+        }
+
+        val response: WSResponse = await(request().delete())
+        response.status shouldBe Status.NO_CONTENT
+        response.body shouldBe ""
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
@@ -86,16 +101,13 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     "return error according to spec" when {
 
       "validation error" when {
-        def validationErrorTest(requestNino: String,
-                                requestBusinessId: String,
-                                requestTaxYear: String,
-                                expectedStatus: Int,
-                                expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+        def validationErrorTest(requestNino: String, requestBusinessId: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
 
-            override val nino: String       = requestNino
-            override val businessId: String = requestBusinessId
-            override val taxYear: String    = requestTaxYear
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
+
+            override def nino: String    = requestNino
+            override def taxYear: String = requestTaxYear
+            override def businessId: String = requestBusinessId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -111,19 +123,20 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("Walrus", "XAIS12345678910", "2019-20", Status.BAD_REQUEST, NinoFormatError),
+          ("Hippo", "XAIS12345678910", "2019-20", Status.BAD_REQUEST, NinoFormatError),
           ("AA123456A", "notABusinessId", "2019-20", Status.BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "203100", Status.BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2016-17", Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "XAIS12345678910", "2018-20", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
 
+
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -138,7 +151,15 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        def errorBody(code: String): String =
+          s"""
+             |      {
+             |        "code": "$code",
+             |        "reason": "downstream message"
+             |      }
+    """.stripMargin
+
+        val errors = Seq(
           (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
           (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE", Status.BAD_REQUEST, BusinessIdFormatError),
           (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
@@ -155,7 +176,16 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           (Status.SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", Status.INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        val extraTysErrors = Seq(
+          (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
+          (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
+          (Status.NOT_FOUND, "PERIOD_NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+          (Status.NOT_FOUND, "INCOME_SOURCE_DATA_NOT_FOUND", Status.NOT_FOUND, NotFoundError),
+          (Status.GONE, "PERIOD_ALREADY_DELETED", Status.NOT_FOUND, NotFoundError),
+          (Status.UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
+        )
+
+        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
   }

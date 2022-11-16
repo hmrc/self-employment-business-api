@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import play.api.libs.json.Json
 import support.UnitSpec
 import v1.mocks.validators.MockAmendPeriodSummaryValidator
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.request.amendPeriodSummary._
 
@@ -29,6 +29,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
   val businessId: String             = "XAIS12345678910"
   val periodId: String               = "2019-01-01_2019-02-02"
   implicit val correlationId: String = "X-123"
+  val tysTaxYear: String             = "2023-24"
 
   private val requestBodyJson = Json.parse(
     """
@@ -76,11 +77,65 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
     """.stripMargin
   )
 
+  val requestBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
+    periodIncome = Some(
+      PeriodIncome(
+        Some(200.00),
+        Some(200.00)
+      )),
+    periodAllowableExpenses = Some(
+      PeriodAllowableExpenses(
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00)
+      )),
+    periodDisallowableExpenses = Some(
+      PeriodDisallowableExpenses(
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00),
+        Some(200.00)
+      ))
+  )
+
   val inputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
-    body = requestBodyJson
+    body = requestBodyJson,
+    taxYear = None
+  )
+
+  val tysInputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
+    nino = nino,
+    businessId = businessId,
+    periodId = periodId,
+    body = requestBodyJson,
+    taxYear = Some(tysTaxYear)
   )
 
   trait Test extends MockAmendPeriodSummaryValidator {
@@ -92,53 +147,15 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
       "valid request data is supplied" in new Test {
         MockAmendPeriodSummaryValidator.validate(inputData).returns(Nil)
 
-        val requestBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
-          Some(
-            PeriodIncome(
-              Some(200.00),
-              Some(200.00)
-            )),
-          Some(
-            PeriodAllowableExpenses(
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00)
-            )),
-          Some(
-            PeriodDisallowableExpenses(
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00),
-              Some(200.00)
-            ))
-        )
-
         parser.parseRequest(inputData) shouldBe
-          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody))
+          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None))
+      }
+
+      "valid TYS request data is supplied" in new Test {
+        MockAmendPeriodSummaryValidator.validate(tysInputData).returns(Nil)
+
+        parser.parseRequest(tysInputData) shouldBe
+          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(tysTaxYear))))
       }
     }
 

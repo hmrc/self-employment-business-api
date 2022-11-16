@@ -33,76 +33,38 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
   val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJson
   val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJson
 
-  private trait Test {
-    val nino: String       = "AA123456A"
-    val businessId: String = "XAIS12345678910"
-    val periodId: String   = "2019-01-01_2020-01-01"
-    val from               = "2019-01-01"
-    val to                 = "2020-01-01"
-
-    val responseJson: JsValue = Json.parse(s"""
-         |{
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |      "rel": "amend-self-employment-period-summary",
-         |      "method": "PUT"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |      "rel": "self",
-         |      "method": "GET"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
-         |      "rel": "list-self-employment-period-summaries",
-         |      "method": "GET"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin)
-
-    def uri: String = s"/$nino/$businessId/period/$periodId"
-
-    def queryParams: Map[String, String] = Map("from" -> from, "to" -> to)
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
-    def errorBody(code: String): String =
-      s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "message"
-         |      }
-    """.stripMargin
-
-  }
-
-  "Calling the amend endpoint" should {
+  "Calling the Amend Period Summary endpoint" should {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new Test {
+      "any valid request is made for a non-tys tax year" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
           DownstreamStub
-            .when(method = DownstreamStub.PUT, uri = downstreamUri, queryParams = queryParams)
+            .when(DownstreamStub.PUT, downstreamUri, downstreamQueryParams)
             .withRequestBody(downstreamRequestBodyJson)
-            .thenReturn(status = NO_CONTENT, JsObject.empty)
+            .thenReturn(status = OK, JsObject.empty)
+        }
+
+        val response: WSResponse = await(request().put(requestBodyJson))
+        response.status shouldBe OK
+        response.json shouldBe responseJson
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+
+      "any valid request is made for a TYS tax year" in new TysIfsTest {
+
+        override def setupStubs(): StubMapping = {
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+
+          DownstreamStub
+            .when(DownstreamStub.PUT, downstreamUri, downstreamQueryParams)
+            .withRequestBody(downstreamRequestBodyJson)
+            .thenReturn(status = OK, JsObject.empty)
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
@@ -112,15 +74,18 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
       }
     }
 
-    "return error according to spec" when {
+    "return validation error according to spec" when {
+
       "validation error" when {
+
         def validationErrorTest(requestNino: String,
                                 requestBusinessId: String,
                                 requestPeriodId: String,
                                 requestBody: JsValue,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -171,13 +136,14 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
       }
 
       "downstream service error" when {
-        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+
+        def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamErrorCode error and status $downstreamStatus" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, queryParams, downstreamStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamErrorCode))
             }
 
             val response: WSResponse = await(request().put(requestBodyJson))
@@ -186,7 +152,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           }
         }
 
-        val input = Seq(
+        val errors = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_DATE_FROM", BAD_REQUEST, PeriodIdFormatError),
@@ -200,9 +166,91 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        val extraTysErrors = Seq(
+          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+          (NOT_FOUND, "PERIOD_NOT_FOUND", NOT_FOUND, NotFoundError),
+          (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
+          (NOT_FOUND, "INCOME_SOURCE_DATA_NOT_FOUND", NOT_FOUND, NotFoundError),
+          (UNPROCESSABLE_ENTITY, "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError)
+        )
+
+        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
+  }
+
+  private trait Test {
+
+    val nino: String       = "AA123456A"
+    val businessId: String = "XAIS12345678910"
+    val periodId: String   = "2019-01-01_2020-01-01"
+    val from               = "2019-01-01"
+    val to                 = "2020-01-01"
+
+    val responseJson: JsValue = Json.parse(s"""
+         |{
+         |  "links": [
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "rel": "amend-self-employment-period-summary",
+         |      "method": "PUT"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "rel": "self",
+         |      "method": "GET"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |      "rel": "list-self-employment-period-summaries",
+         |      "method": "GET"
+         |    }
+         |  ]
+         |}
+         |""".stripMargin)
+
+    def mtdUri: String
+    def downstreamUri: String
+    def setupStubs(): StubMapping
+
+    def downstreamQueryParams: Map[String, String] = Map(
+      "from" -> from,
+      "to"   -> to
+    )
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(mtdUri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+    def errorBody(code: String): String =
+      s"""
+         |      {
+         |        "code": "$code",
+         |        "reason": "message"
+         |      }
+    """.stripMargin
+
+  }
+
+  private trait TysIfsTest extends Test {
+
+    def mtdUri: String            = s"/$nino/$businessId/period/$periodId?taxYear=2023-24"
+    def downstreamTaxYear: String = "23-24"
+    def downstreamUri: String     = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+  }
+
+  private trait NonTysTest extends Test {
+
+    def mtdUri: String        = s"/$nino/$businessId/period/$periodId"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
   }
 
 }
