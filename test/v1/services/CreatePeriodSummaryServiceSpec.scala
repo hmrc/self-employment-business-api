@@ -108,17 +108,17 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
       }
 
       "map errors according to spec" when {
-        def serviceError(desErrorCode: String, error: MtdError): Unit =
-          s"a $desErrorCode error is returned from the service" in new Test {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a $downstreamErrorCode error is returned from the service" in new Test {
 
             MockCreatePeriodicConnector
               .createPeriodicSummary(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
             await(service.createPeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val input = Seq(
+        val errors = Seq(
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
           ("INVALID_PERIOD", RuleEndDateBeforeStartDateError),
@@ -132,7 +132,20 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
-        input.foreach(args => (serviceError _).tupled(args))
+        val extraTysErrors = Seq(
+          "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+          "INVALID_CORRELATIONID"    -> InternalError,
+          "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+          "PERIOD_EXISTS"            -> RuleDuplicateSubmissionError,
+          "PERIOD_OVERLAP"           -> RuleOverlappingPeriod,
+          "PERIOD_ALIGNMENT"         -> RuleMisalignedPeriod,
+          "END_BEFORE_START"         -> RuleEndDateBeforeStartDateError,
+          "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
+          "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
+          "INVALID_TAX_YEAR"         -> InternalError
+        )
+
+        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
       }
     }
   }

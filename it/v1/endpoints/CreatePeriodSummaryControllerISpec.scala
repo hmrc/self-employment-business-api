@@ -32,14 +32,31 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val periodId: String   = "2019-08-24_2019-08-24"
+    val periodId: String   = s"${periodStartDate}_$periodEndDate"
+
+    def periodStartDate: String
+    def periodEndDate: String
+
+    def uri: String = s"/$nino/$businessId/period"
+    def downstreamUri: String
+
+    def setupStubs(): StubMapping
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
 
     val requestBodyJson: JsValue = Json.parse(
       s"""
          |{
          |     "periodDates": {
-         |           "periodStartDate": "2019-08-24",
-         |           "periodEndDate": "2019-08-24"
+         |           "periodStartDate": "$periodStartDate",
+         |           "periodEndDate": "$periodEndDate"
          |     },
          |     "periodIncome": {
          |          "turnover": 1000.99,
@@ -84,48 +101,33 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     )
 
     val responseBody: JsValue = Json.parse(s"""
-         |{
-         |   "periodId":"2019-08-24_2019-08-24",
-         |   "links":[
-         |      {
-         |         "href":"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |         "method":"PUT",
-         |         "rel":"amend-self-employment-period-summary"
-         |      },
-         |      {
-         |         "href":"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-         |         "method":"GET",
-         |         "rel":"self"
-         |      },
-         |      {
-         |         "href":"/individuals/business/self-employment/$nino/$businessId/period",
-         |         "method":"GET",
-         |         "rel":"list-self-employment-period-summaries"
-         |      }
-         |   ]
-         |}
-         |""".stripMargin)
+                                              |{
+                                              |   "periodId":"$periodId",
+                                              |   "links":[
+                                              |      {
+                                              |         "href":"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+                                              |         "method":"PUT",
+                                              |         "rel":"amend-self-employment-period-summary"
+                                              |      },
+                                              |      {
+                                              |         "href":"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+                                              |         "method":"GET",
+                                              |         "rel":"self"
+                                              |      },
+                                              |      {
+                                              |         "href":"/individuals/business/self-employment/$nino/$businessId/period",
+                                              |         "method":"GET",
+                                              |         "rel":"list-self-employment-period-summaries"
+                                              |      }
+                                              |   ]
+                                              |}
+                                              |""".stripMargin)
 
     val desResponse: JsValue = Json.parse(s"""
-         |{
-         |  "transactionReference": "2017090920170909"
-         |}
-         |""".stripMargin)
-
-    def uri: String = s"/$nino/$businessId/period"
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
+                                             |{
+                                             |  "transactionReference": "2017090920170909"
+                                             |}
+                                             |""".stripMargin)
 
     def errorBody(code: String): String =
       s"""
@@ -137,10 +139,38 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   }
 
+  private trait NonTysTest extends Test {
+    override def downstreamUri: String   = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+    override def periodStartDate: String = "2019-07-24"
+    override def periodEndDate: String   = "2019-08-24"
+  }
+
+  private trait TysIfsTest extends Test {
+    def downstreamTaxYear: String        = "23-24"
+    override def downstreamUri: String   = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+    override def periodStartDate: String = "2023-07-24"
+    override def periodEndDate: String   = "2023-08-24"
+  }
+
   "Calling the create endpoint" should {
 
     "return a 200 status code" when {
-      "any valid request is made" in new Test {
+      "any valid request is made" in new NonTysTest {
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, OK, desResponse)
+        }
+
+        val response: WSResponse = await(request().post(requestBodyJson))
+        response.status shouldBe OK
+        response.json shouldBe responseBody
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
+
+      "any valid Tax Year Specific request is made" in new TysIfsTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -157,7 +187,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     }
 
     "return validation error according to spec" when {
-      "an invalid NINO is provided" in new Test {
+      "an invalid NINO is provided" in new NonTysTest {
         override val nino: String = "INVALID_NINO"
 
         override def setupStubs(): StubMapping = {
@@ -170,7 +200,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe Json.toJson(NinoFormatError)
       }
 
-      "an invalid business id is provided" in new Test {
+      "an invalid business id is provided" in new NonTysTest {
         override val businessId: String = "INVALID_BUSINESSID"
 
         override def setupStubs(): StubMapping = {
@@ -182,7 +212,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(BusinessIdFormatError)
       }
-      "an invalid Start date is provided" in new Test {
+      "an invalid Start date is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
              |{
@@ -207,7 +237,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(StartDateFormatError)
       }
-      "an invalid End date is provided" in new Test {
+      "an invalid End date is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
              |{
@@ -232,7 +262,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(EndDateFormatError)
       }
-      "an end date is provided which is before the provided start date" in new Test {
+      "an end date is provided which is before the provided start date" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
              |{
@@ -257,7 +287,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(RuleEndDateBeforeStartDateError)
       }
-      "a single invalid amount is provided" in new Test {
+      "a single invalid amount is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
              |{
@@ -317,7 +347,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/professionalFeesDisallowable"))))
       }
 
-      "multiple invalid amounts are provided" in new Test {
+      "multiple invalid amounts are provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
              |{
@@ -383,7 +413,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           ))))
       }
 
-      "both expenses and consolidated expenses are provided" in new Test {
+      "both expenses and consolidated expenses are provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
              |{
@@ -444,7 +474,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe Json.toJson(RuleBothExpensesSuppliedError)
       }
 
-      "an empty body is provided" in new Test {
+      "an empty body is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse("""{}""")
 
         override def setupStubs(): StubMapping = {
@@ -457,14 +487,14 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError)
       }
 
-      s"a body missing mandatory fields is provided" in new Test {
+      s"a body missing mandatory fields is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse("""
-            | {
-            |     "periodDates": {
-            |           "periodEndDate": "2019-08-24"
-            |     }
-            |}
-            |""".stripMargin)
+                                                             | {
+                                                             |     "periodDates": {
+                                                             |           "periodEndDate": "2019-08-24"
+                                                             |     }
+                                                             |}
+                                                             |""".stripMargin)
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
@@ -479,7 +509,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     "downstream service error" when {
       def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-        s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+        s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuthStub.authorised()
@@ -493,21 +523,35 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      val input = Seq(
+      val errors = Seq(
         (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
         (CONFLICT, "INVALID_PERIOD", BAD_REQUEST, RuleEndDateBeforeStartDateError),
         (CONFLICT, "OVERLAPS_IN_PERIOD", BAD_REQUEST, RuleOverlappingPeriod),
         (CONFLICT, "NOT_ALIGN_PERIOD", BAD_REQUEST, RuleMisalignedPeriod),
         (CONFLICT, "NOT_CONTIGUOUS_PERIOD", BAD_REQUEST, RuleNotContiguousPeriod),
         (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
+        (CONFLICT, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
         (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
+      val extraTysErrors = Seq(
+        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
+        (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+        (CONFLICT, "PERIOD_EXISTS", BAD_REQUEST, RuleDuplicateSubmissionError),
+        (UNPROCESSABLE_ENTITY, "PERIOD_OVERLAP", BAD_REQUEST, RuleOverlappingPeriod),
+        (UNPROCESSABLE_ENTITY, "PERIOD_ALIGNMENT", BAD_REQUEST, RuleMisalignedPeriod),
+        (UNPROCESSABLE_ENTITY, "PERIOD_HAS_GAPS", BAD_REQUEST, RuleNotContiguousPeriod),
+        (UNPROCESSABLE_ENTITY, "END_BEFORE_START", BAD_REQUEST, RuleEndDateBeforeStartDateError),
+        (UNPROCESSABLE_ENTITY, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
+      )
 
-      input.foreach(args => (serviceErrorTest _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
 

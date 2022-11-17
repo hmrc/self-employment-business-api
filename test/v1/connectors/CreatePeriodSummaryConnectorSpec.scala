@@ -16,9 +16,6 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockHttpClient
 import v1.models.domain.{BusinessId, Nino}
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
@@ -28,95 +25,98 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  val nino: String       = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-
-  val request: CreatePeriodSummaryRequest = CreatePeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    body = CreatePeriodSummaryBody(
-      PeriodDates("2019-08-24", "2019-08-24"),
-      Some(
-        PeriodIncome(
-          Some(1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodAllowableExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-99999.99),
-          Some(-1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodDisallowableExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-999.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-9999.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-99999999999.99),
-          Some(1000.99)
-        ))
-    )
-  )
-
-  val response: CreatePeriodSummaryResponse = CreatePeriodSummaryResponse("2017090920170909")
-
-  class Test extends MockHttpClient with MockAppConfig {
-
-    val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
-      http = mockHttpClient,
-      appConfig = mockAppConfig
-    )
-
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
-  }
-
   "CreateSEPeriodicConnector" when {
     "createPeriodicSummary" must {
-      "return a 200 status for a success scenario" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, response))
+      "return a 200 status for a success scenario" in new DesTest with Test {
+        def periodDates: PeriodDates = PeriodDates("2019-08-24", "2019-08-24")
+        val outcome                  = Right(ResponseWrapper(correlationId, response))
 
-        implicit val hc: HeaderCarrier                    = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+        val url =
+          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+        willPost(url, request.body).returns(Future.successful(outcome))
 
-        MockHttpClient
-          .post(
-            url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries",
-            config = dummyHeaderCarrierConfig,
-            body = request.body,
-            requiredHeaders = requiredDesHeadersPost,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
+        await(connector.createPeriodicSummary(request)) shouldBe outcome
+      }
+
+      "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
+        def periodDates: PeriodDates = PeriodDates("2023-04-05", "2024-04-05")
+        val outcome                  = Right(ResponseWrapper(correlationId, response))
+
+        val url =
+          s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries"
+        willPost(url, request.body).returns(Future.successful(outcome))
 
         await(connector.createPeriodicSummary(request)) shouldBe outcome
       }
     }
+  }
+
+  trait Test {
+    _: ConnectorTest =>
+
+    protected val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
+
+    val nino: String       = "AA123456A"
+    val businessId: String = "XAIS12345678910"
+    val downstreamTaxYear  = "2023-24"
+
+    def periodDates: PeriodDates
+
+    def response: CreatePeriodSummaryResponse = CreatePeriodSummaryResponse("2017090920170909")
+
+    def request: CreatePeriodSummaryRequest = CreatePeriodSummaryRequest(
+      nino = Nino(nino),
+      businessId = BusinessId(businessId),
+      body = CreatePeriodSummaryBody(
+        periodDates,
+        Some(
+          PeriodIncome(
+            Some(1000.99),
+            Some(1000.99)
+          )),
+        Some(
+          PeriodAllowableExpenses(
+            None,
+            Some(1000.99),
+            Some(1000.99),
+            Some(1000.99),
+            Some(1000.99),
+            Some(-99999.99),
+            Some(-1000.99),
+            Some(1000.99),
+            Some(1000.99),
+            Some(1000.99),
+            Some(-1000.99),
+            Some(-1000.99),
+            Some(-1000.99),
+            Some(-99999999999.99),
+            Some(-1000.99),
+            Some(1000.99)
+          )),
+        Some(
+          PeriodDisallowableExpenses(
+            None,
+            Some(1000.99),
+            Some(1000.99),
+            Some(1000.99),
+            Some(-1000.99),
+            Some(-999.99),
+            Some(1000.99),
+            Some(1000.99),
+            Some(1000.99),
+            Some(-1000.99),
+            Some(-9999.99),
+            Some(-1000.99),
+            Some(-99999999999.99),
+            Some(-99999999999.99),
+            Some(1000.99)
+          ))
+      )
+    )
+
   }
 
 }

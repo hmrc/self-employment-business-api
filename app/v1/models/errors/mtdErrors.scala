@@ -185,6 +185,12 @@ object RuleIncorrectOrEmptyBodyError
       message = "An empty or non-matching body was submitted"
     )
 
+object RuleDuplicateSubmissionError
+    extends MtdError(
+      code = "RULE_DUPLICATE_SUBMISSION",
+      message = "A summary has already been submitted for the period specified"
+    )
+
 object BVRError
     extends MtdError(
       code = "BUSINESS_ERROR",
@@ -198,10 +204,10 @@ object BadRequestError
     )
 
 object InvalidTaxYearParameterError
-  extends MtdError(
-    code = "INVALID_TAX_YEAR_PARAMETER",
-    message = "A tax year before 2023-24 was supplied"
-  )
+    extends MtdError(
+      code = "INVALID_TAX_YEAR_PARAMETER",
+      message = "A tax year before 2023-24 was supplied"
+    )
 
 // Standard Errors
 object NotFoundError
