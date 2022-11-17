@@ -539,7 +539,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       )
       val extraTysErrors = Seq(
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+        (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
         (CONFLICT, "PERIOD_EXISTS", BAD_REQUEST, RuleDuplicateSubmissionError),
         (UNPROCESSABLE_ENTITY, "PERIOD_OVERLAP", BAD_REQUEST, RuleOverlappingPeriod),

@@ -92,7 +92,6 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
       case _
           if errorWrapper.containsAnyOf(
             BadRequestError,
-            TaxYearFormatError,
             NinoFormatError,
             ValueFormatError,
             BusinessIdFormatError,

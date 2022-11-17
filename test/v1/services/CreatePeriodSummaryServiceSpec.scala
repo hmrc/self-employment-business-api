@@ -142,7 +142,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           "END_BEFORE_START"         -> RuleEndDateBeforeStartDateError,
           "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
           "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
-          "INVALID_TAX_YEAR"         -> TaxYearFormatError
+          "INVALID_TAX_YEAR"         -> InternalError
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
