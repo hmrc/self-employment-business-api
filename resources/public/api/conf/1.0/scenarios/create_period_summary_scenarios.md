@@ -28,6 +28,14 @@
             <td><p>Simulates the scenario where the cumulative turnover amount exceeds the consolidated expenses threshold.</p></td>
         </tr>
         <tr>
+            <td><p>DUPLICATE_SUBMISSION</p></td>
+            <td><p>Simulates the scenario where a summary has already been submitted for the specified period.</p></td>
+        </tr>
+        <tr>
+            <td><p>TAX_YEAR_NOT_SUPPORTED</p></td>
+            <td><p>Simulates the scenario where the tax year is not supported.</p></td>
+        </tr>
+        <tr>
             <td><p>NOT_FOUND</p></td>
             <td><p>Simulates the scenario where no data is found.</p></td>
         </tr>
