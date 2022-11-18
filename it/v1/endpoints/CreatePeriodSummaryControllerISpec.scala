@@ -36,6 +36,9 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def periodStartDate: String
     def periodEndDate: String
+    def amendPeriodSummaryHateoasUri: String
+    def retrievePeriodSummaryHateoasUri: String
+    def listPeriodSummariesHateoasUri: String
 
     def uri: String = s"/$nino/$businessId/period"
     def downstreamUri: String
@@ -100,34 +103,38 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |""".stripMargin
     )
 
-    val responseBody: JsValue = Json.parse(s"""
-                                              |{
-                                              |   "periodId":"$periodId",
-                                              |   "links":[
-                                              |      {
-                                              |         "href":"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-                                              |         "method":"PUT",
-                                              |         "rel":"amend-self-employment-period-summary"
-                                              |      },
-                                              |      {
-                                              |         "href":"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-                                              |         "method":"GET",
-                                              |         "rel":"self"
-                                              |      },
-                                              |      {
-                                              |         "href":"/individuals/business/self-employment/$nino/$businessId/period",
-                                              |         "method":"GET",
-                                              |         "rel":"list-self-employment-period-summaries"
-                                              |      }
-                                              |   ]
-                                              |}
-                                              |""".stripMargin)
+    val responseBody: JsValue = Json.parse(
+      s"""
+         |{
+         |   "periodId":"$periodId",
+         |   "links":[
+         |      {
+         |         "href":"$amendPeriodSummaryHateoasUri",
+         |         "method":"PUT",
+         |         "rel":"amend-self-employment-period-summary"
+         |      },
+         |      {
+         |         "href":"$retrievePeriodSummaryHateoasUri",
+         |         "method":"GET",
+         |         "rel":"self"
+         |      },
+         |      {
+         |         "href":"$listPeriodSummariesHateoasUri",
+         |         "method":"GET",
+         |         "rel":"list-self-employment-period-summaries"
+         |      }
+         |   ]
+         |}
+         |""".stripMargin
+    )
 
-    val desResponse: JsValue = Json.parse(s"""
-                                             |{
-                                             |  "transactionReference": "2017090920170909"
-                                             |}
-                                             |""".stripMargin)
+    val desResponse: JsValue = Json.parse(
+      s"""
+         |{
+         |  "transactionReference": "2017090920170909"
+         |}
+         |""".stripMargin
+    )
 
     def errorBody(code: String): String =
       s"""
@@ -143,13 +150,23 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     override def downstreamUri: String   = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
     override def periodStartDate: String = "2019-07-24"
     override def periodEndDate: String   = "2019-08-24"
+
+    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
   }
 
   private trait TysIfsTest extends Test {
+    def mtdTaxYear: String               = "2023-24"
     def downstreamTaxYear: String        = "23-24"
     override def downstreamUri: String   = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
     override def periodStartDate: String = "2023-07-24"
     override def periodEndDate: String   = "2023-08-24"
+
+    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+
   }
 
   "Calling the create endpoint" should {

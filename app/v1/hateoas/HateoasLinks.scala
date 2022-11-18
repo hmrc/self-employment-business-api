@@ -70,7 +70,7 @@ trait HateoasLinks {
   def retrievePeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
     Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = GET, rel = SELF)
 
-  def amendPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String): Link =
-    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, None), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
+  def amendPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
+    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
 
 }
