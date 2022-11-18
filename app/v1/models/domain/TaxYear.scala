@@ -19,6 +19,8 @@ package v1.models.domain
 import config.FeatureSwitches
 import v1.models.domain.TaxYear.tysTaxYear
 
+import java.time.LocalDate
+
 /** Opaque representation of a tax year
   */
 final case class TaxYear private (private val value: String) {
@@ -69,4 +71,27 @@ object TaxYear {
     new TaxYear(taxYear.toString)
 
   def isTys(taxYear: Option[TaxYear])(implicit featureSwitches: FeatureSwitches): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
+
+  /** UK tax year starts on 6 April.
+    */
+  private val taxYearMonthStart = 4
+  private val taxYearDayStart   = 6
+
+  /** @param date
+    *   the date in extended ISO-8601 format (e.g. 2020-04-05)
+    */
+  def fromIso(date: String): TaxYear = {
+    val date1 = LocalDate.parse(date)
+    val year = (
+      if (isPreviousTaxYear(date1)) date1.getYear else date1.getYear + 1
+    ).toString
+
+    new TaxYear(year)
+  }
+
+  private def isPreviousTaxYear(date: LocalDate): Boolean = {
+    val taxYearStartDate = LocalDate.of(date.getYear, taxYearMonthStart, taxYearDayStart)
+    date.isBefore(taxYearStartDate)
+  }
+
 }

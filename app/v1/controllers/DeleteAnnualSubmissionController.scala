@@ -75,8 +75,15 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case NinoFormatError | BusinessIdFormatError | BadRequestError | TaxYearFormatError | RuleTaxYearNotSupportedError |
-          RuleTaxYearRangeInvalidError =>
+      case _
+        if errorWrapper.containsAnyOf(
+          BadRequestError,
+          NinoFormatError,
+          BusinessIdFormatError,
+          TaxYearFormatError,
+          RuleTaxYearNotSupportedError,
+          RuleTaxYearRangeInvalidError
+        ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))
