@@ -18,15 +18,13 @@ package v1.connectors
 
 import config.AppConfig
 import play.api.http.Status.OK
-
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import v1.connectors.httpparsers.StandardDownstreamHttpParser._
-import v1.models.domain.TaxYear
 
 @Singleton
 class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
@@ -38,7 +36,7 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
 
     val nino           = request.nino.nino
     val incomeSourceId = request.businessId.value
-    val taxYear        = TaxYear.fromIso(request.body.periodDates.periodEndDate)
+    val taxYear        = request.taxYear
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
@@ -46,7 +44,7 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
       if (taxYear.useTaxYearSpecificApi) {
         TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$incomeSourceId/periodic-summaries")
       } else {
-        DesUri[Unit](s"income-tax/nino/${nino}/self-employments/$incomeSourceId/periodic-summaries")
+        DesUri[Unit](s"income-tax/nino/$nino/self-employments/$incomeSourceId/periodic-summaries")
       }
 
     post(

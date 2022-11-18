@@ -59,7 +59,13 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.createPeriodicSummary(parsedRequest))
         } yield {
-          val hateoasData = CreatePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, serviceResponse.responseData.periodId, None)
+          val hateoasData = CreatePeriodSummaryHateoasData(
+            parsedRequest.nino,
+            parsedRequest.businessId,
+            serviceResponse.responseData.periodId,
+            Some(parsedRequest.taxYear)
+          )
+
           val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, hateoasData)
 
           logger.info(
