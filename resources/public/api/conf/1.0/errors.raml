@@ -325,6 +325,17 @@ traits:
                 description: One or more of the supplied allowances is not supported for the supplied tax year.
                 value:
                   code: RULE_ALLOWANCE_NOT_SUPPORTED
+  ruleDuplicateSubmission:
+      responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                ruleDuplicateSubmission:
+                  description: A summary has already been submitted for the period specified.
+                  value:
+                    code: RULE_DUPLICATE_SUBMISSION
   formatStartDate:
     responses:
       400:
