@@ -4,9 +4,13 @@ uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
 traits:
-  nameOfParameter:
+  taxYearTys:
     queryParameters:
-      nameOfParameter:
-        description: "desc"
-        example: "example"
+      taxYear:
+        description: |
+            The tax year to which the data applies in the format YYYY-YY. The range must not be greater than a single year. For example, 2023-25 is not valid.
+
+            This is mandatory for tax years 2023-24 and onwards and must not be provided for earlier tax years.
+        type: string
+        example: 2023-24
         required: false
