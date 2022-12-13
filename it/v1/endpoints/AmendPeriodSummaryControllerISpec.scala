@@ -190,21 +190,25 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
     val from               = "2019-01-01"
     val to                 = "2020-01-01"
 
+    def amendPeriodSummaryHateoasUri: String
+    def retrievePeriodSummaryHateoasUri: String
+    def listPeriodSummariesHateoasUri: String
+
     val responseJson: JsValue = Json.parse(s"""
          |{
          |  "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "$amendPeriodSummaryHateoasUri",
          |      "rel": "amend-self-employment-period-summary",
          |      "method": "PUT"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "$retrievePeriodSummaryHateoasUri",
          |      "rel": "self",
          |      "method": "GET"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |      "href": "$listPeriodSummariesHateoasUri",
          |      "rel": "list-self-employment-period-summaries",
          |      "method": "GET"
          |    }
@@ -241,16 +245,24 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
   }
 
   private trait TysIfsTest extends Test {
+    def mtdTaxYear: String    = "2023-24"
+    def mtdUri: String        = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def tysTaxYear: String    = "23-24"
+    def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
-    def mtdUri: String            = s"/$nino/$businessId/period/$periodId?taxYear=2023-24"
-    def downstreamTaxYear: String = "23-24"
-    def downstreamUri: String     = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+
   }
 
   private trait NonTysTest extends Test {
-
     def mtdUri: String        = s"/$nino/$businessId/period/$periodId"
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+
+    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
   }
 
 }

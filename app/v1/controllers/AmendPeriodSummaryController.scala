@@ -49,7 +49,6 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
 
   def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-
       implicit val correlationId: String = idGenerator.getCorrelationId
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
@@ -59,11 +58,10 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.amendPeriodSummary(parsedRequest))
-          vendorResponse  <- EitherT.fromEither[Future](
-            hateoasFactory
-              .wrap(serviceResponse.responseData, AmendPeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId))
-              .asRight[ErrorWrapper])
         } yield {
+          val hateoasData    = AmendPeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, parsedRequest.taxYear)
+          val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, hateoasData)
+
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
@@ -86,20 +84,20 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case _
-        if errorWrapper.containsAnyOf(
-          BadRequestError,
-          NinoFormatError,
-          BusinessIdFormatError,
-          PeriodIdFormatError,
-          RuleBothExpensesSuppliedError,
-          RuleNotAllowedConsolidatedExpenses,
-          ValueFormatError,
-          RuleIncorrectOrEmptyBodyError,
-          RuleTaxYearNotSupportedError,
-          InvalidTaxYearParameterError,
-          TaxYearFormatError,
-          RuleTaxYearRangeInvalidError
-        ) =>
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            BusinessIdFormatError,
+            PeriodIdFormatError,
+            RuleBothExpensesSuppliedError,
+            RuleNotAllowedConsolidatedExpenses,
+            ValueFormatError,
+            RuleIncorrectOrEmptyBodyError,
+            RuleTaxYearNotSupportedError,
+            InvalidTaxYearParameterError,
+            TaxYearFormatError,
+            RuleTaxYearRangeInvalidError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
 
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

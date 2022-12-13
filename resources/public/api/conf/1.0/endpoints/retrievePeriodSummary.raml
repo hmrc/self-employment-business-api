@@ -11,6 +11,8 @@ is:
   - errors.invalidTaxYearParameter
   - errors.ruleTaxYearNotSupported
 displayName: Retrieve a Self-Employment Period Summary
+  - queryParameters.taxYearTys
+displayName: Retrieve a Self-Employment Period Summary [test only]
 description: "This endpoint enables you to retrieve a single self-employment period summary for a given identifier. A National Insurance number, business ID and period ID must be provided."
 (annotations.sandboxData): !include ../scenarios/retrieve_period_summary_scenarios.md
 (annotations.scope): "read:self-assessment"

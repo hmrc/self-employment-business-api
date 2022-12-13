@@ -17,6 +17,9 @@ is:
   - errors.clientOrAgentNotAuthorised
   - errors.matchingResourceNotFoundSE
 displayName: Create a Self-Employment Period Summary
+  - errors.ruleDuplicateSubmission
+  - errors.ruleTaxYearNotSupported
+displayName: Create a Self-Employment Period Summary [test only]
 description: This endpoint allows a developer to create a self-employment period summary for submission of periodic data. Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if you have no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero. A National Insurance number and business must be provided.
 (annotations.sandboxData): !include ../scenarios/create_period_summary_scenarios.md
 (annotations.scope): "write:self-assessment"

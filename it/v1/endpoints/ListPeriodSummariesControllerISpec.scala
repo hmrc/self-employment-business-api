@@ -77,7 +77,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
-            override val taxYear: String    = requestTaxYear
+            override val mtdTaxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -231,17 +231,17 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val periodId        = "2024-01-01_2024-01-02"
     val fromDate        = "2024-01-01"
     val toDate          = "2024-01-02"
-    val taxYear         = "2024-25"
-    lazy val tysTaxYear = TaxYear.fromMtd(taxYear)
+    val mtdTaxYear      = "2023-24"
+    lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
 
-    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$taxYear"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$taxYear"
+    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
     def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=$taxYear")
+      buildRequest(s"$uri?taxYear=$mtdTaxYear")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")

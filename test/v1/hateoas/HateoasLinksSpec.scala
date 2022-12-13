@@ -86,7 +86,6 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
     }
 
     "TYS feature switch is disabled" should {
-
       "not include tax year query parameter given a TYS tax year" in new TysDisabledTest {
         val link         = listPeriodSummaries(mockAppConfig, nino, businessId, Some(taxYear2024), true)
         val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
@@ -157,10 +156,35 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 
   "amendPeriodSummary" should {
     "generate the correct link" in new TysDisabledTest {
-      val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId)
+      val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId, None)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01"
 
       link shouldBe Link(expectedHref, PUT, "amend-self-employment-period-summary")
+    }
+
+    "TYS feature switch is disabled" should {
+      "not include tax year query parameter given a TYS tax year" in new TysDisabledTest {
+        val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId, Some(taxYear2024))
+        val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01"
+
+        link shouldBe Link(expectedHref, PUT, "amend-self-employment-period-summary")
+      }
+    }
+
+    "TYS feature switch is enabled" should {
+      "not include tax year query parameter given a non-TYS tax year" in new TysEnabledTest {
+        val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId, Some(taxYear2023))
+        val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01"
+
+        link shouldBe Link(expectedHref, PUT, "amend-self-employment-period-summary")
+      }
+
+      "include tax year query parameter given a TYS tax year" in new TysEnabledTest {
+        val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId, Some(taxYear2024))
+        val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01?taxYear=2023-24"
+
+        link shouldBe Link(expectedHref, PUT, "amend-self-employment-period-summary")
+      }
     }
   }
 

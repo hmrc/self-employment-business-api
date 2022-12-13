@@ -18,7 +18,7 @@ package v1.models.response.amendPeriodSummary
 
 import config.AppConfig
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.hateoas.{HateoasData, Link}
 
 object AmendPeriodSummaryResponse extends HateoasLinks {
@@ -28,9 +28,9 @@ object AmendPeriodSummaryResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: AmendPeriodSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
-        amendPeriodSummary(appConfig, nino, businessId, periodId),
-        retrievePeriodSummary(appConfig, nino, businessId, periodId, None),
-        listPeriodSummaries(appConfig, nino, businessId, None, isSelf = false)
+        amendPeriodSummary(appConfig, nino, businessId, periodId, taxYear),
+        retrievePeriodSummary(appConfig, nino, businessId, periodId, taxYear),
+        listPeriodSummaries(appConfig, nino, businessId, taxYear, isSelf = false)
       )
     }
 
@@ -38,4 +38,4 @@ object AmendPeriodSummaryResponse extends HateoasLinks {
 
 }
 
-case class AmendPeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String) extends HateoasData
+case class AmendPeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) extends HateoasData

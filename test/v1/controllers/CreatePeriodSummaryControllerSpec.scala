@@ -23,7 +23,7 @@ import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v1.mocks.services.{MockCreatePeriodSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.domain.{BusinessId, Nino}
+import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.errors._
 import v1.models.hateoas.HateoasWrapper
 import v1.models.outcomes.ResponseWrapper
@@ -191,7 +191,9 @@ class CreatePeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse(periodId)))))
 
         MockHateoasFactory
-          .wrap(CreatePeriodSummaryResponse(periodId), CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId))
+          .wrap(
+            CreatePeriodSummaryResponse(periodId),
+            CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
         val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
@@ -251,7 +253,7 @@ class CreatePeriodSummaryControllerSpec
           }
         }
 
-        val input = Seq(
+        val errors = Seq(
           (NinoFormatError, BAD_REQUEST),
           (BusinessIdFormatError, BAD_REQUEST),
           (RuleOverlappingPeriod, BAD_REQUEST),
@@ -261,8 +263,12 @@ class CreatePeriodSummaryControllerSpec
           (NotFoundError, NOT_FOUND),
           (InternalError, INTERNAL_SERVER_ERROR)
         )
+        val extraTysErrors = Seq(
+          (RuleDuplicateSubmissionError, BAD_REQUEST),
+          (RuleTaxYearNotSupportedError, BAD_REQUEST)
+        )
 
-        input.foreach(args => (serviceErrors _).tupled(args))
+        (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
       }
     }
   }

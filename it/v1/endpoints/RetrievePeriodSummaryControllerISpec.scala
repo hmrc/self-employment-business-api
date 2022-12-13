@@ -35,6 +35,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val businessId = "XAIS12345678910"
     val periodId   = "2019-01-01_2020-01-01"
 
+    val amendPeriodSummaryHateoasUri: String
     val retrievePeriodSummaryHateoasUri: String
     val listPeriodSummariesHateoasUri: String
 
@@ -84,7 +85,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |   },
          |   "links": [
          |      {
-         |         "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |         "href": "$amendPeriodSummaryHateoasUri",
          |         "rel": "amend-self-employment-period-summary",
          |         "method": "PUT"
          |      },
@@ -196,6 +197,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val fromDate          = "2019-01-01"
     val toDate            = "2020-01-01"
 
+    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
     val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
 
@@ -216,17 +218,18 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     override val periodId = "2023-04-01_2024-01-01"
     val fromDate          = "2023-04-01"
     val toDate            = "2024-01-01"
-    val taxYear           = "2023-24"
-    lazy val tysTaxYear   = TaxYear.fromMtd(taxYear)
+    val mtdTaxYear        = "2023-24"
+    lazy val tysTaxYear   = TaxYear.fromMtd(mtdTaxYear)
 
-    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$taxYear"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$taxYear"
+    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
     def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=$taxYear")
+      buildRequest(s"$uri?taxYear=$mtdTaxYear")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -325,7 +328,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val periodId: String   = requestPeriodId
-            override val taxYear: String    = requestTaxYear
+            override val mtdTaxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
