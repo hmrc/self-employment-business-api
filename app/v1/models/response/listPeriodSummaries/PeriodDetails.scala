@@ -19,14 +19,14 @@ package v1.models.response.listPeriodSummaries
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax._
 
-case class PeriodDetails(periodId: String, periodStartDate: String, periodEndDate: String, periodCreationDate: String)
+case class PeriodDetails(periodId: String, periodStartDate: String, periodEndDate: String, periodCreationDate: Option[String])
 
 object PeriodDetails {
 
   implicit val reads: Reads[PeriodDetails] = (
     (JsPath \ "from").read[String] and
       (JsPath \ "to").read[String] and
-      (JsPath \ "periodCreationDate").read[String]
+      (JsPath \ "periodCreationDate").readNullable[String]
   )((from, to, periodCreationDate) =>
     PeriodDetails(periodId = s"${from}_$to", periodStartDate = from, periodEndDate = to, periodCreationDate = periodCreationDate))
 

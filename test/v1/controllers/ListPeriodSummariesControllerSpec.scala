@@ -79,7 +79,7 @@ class ListPeriodSummariesControllerSpec
   private val testHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
   private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
-  private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to, creationDate)
+  private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to, Some(creationDate))
 
   private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
 
