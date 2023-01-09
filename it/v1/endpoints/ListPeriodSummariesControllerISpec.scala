@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,12 +39,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
         }
 
         val response: WSResponse = await(request().get())
         response.status shouldBe OK
-        response.json shouldBe responseBody(periodId, fromDate, toDate)
+        response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
@@ -55,12 +55,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
         }
 
         val response: WSResponse = await(request().get())
         response.status shouldBe OK
-        response.json shouldBe responseBody(periodId, fromDate, toDate)
+        response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }
@@ -144,7 +144,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val retrievePeriodSummaryHateoasUri: String
     val listPeriodSummariesHateoasUri: String
 
-    def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
+    def responseBody(periodId: String, fromDate: String, toDate: String, creationDate: String): JsValue = Json.parse(
       s"""
          |{
          |  "periods": [
@@ -152,6 +152,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
          |      "periodId": "$periodId",
          |      "periodStartDate": "$fromDate",
          |      "periodEndDate": "$toDate",
+         |      "periodCreationDate": "$creationDate",
          |      "links": [
          |        {
          |          "href": "$retrievePeriodSummaryHateoasUri",
@@ -177,14 +178,15 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(
+    def downstreamResponseBody(fromDate: String, toDate: String, creationDate: String): JsValue = Json.parse(
       s"""
          |{
          |  "periods": [
          |      {
          |          "transactionReference": "1111111111",
          |          "from": "$fromDate",
-         |          "to": "$toDate"
+         |          "to": "$toDate",
+         |          "periodCreationDate": "$creationDate"
          |      }
          |  ]
          |}
@@ -206,9 +208,10 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    val periodId = "2019-01-01_2020-01-01"
-    val fromDate = "2019-01-01"
-    val toDate   = "2020-01-01"
+    val periodId     = "2019-01-01_2020-01-01"
+    val fromDate     = "2019-01-01"
+    val toDate       = "2020-01-01"
+    val creationDate = "2020-01-03"
 
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
     val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
@@ -228,21 +231,21 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   private trait TysIfsTest extends Test {
 
-    val periodId        = "2024-01-01_2024-01-02"
-    val fromDate        = "2024-01-01"
-    val toDate          = "2024-01-02"
-    val mtdTaxYear      = "2023-24"
+    val periodId = "2024-01-01_2024-01-02"
+    val fromDate = "2024-01-01"
+    val toDate = "2024-01-02"
+    val creationDate = "2020-01-03"
+    val mtdTaxYear = "2023-24"
     lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
 
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+    val listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
     def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=$mtdTaxYear")
-        .withHttpHeaders(
+      buildRequest(s"$uri?taxYear=$mtdTaxYear").withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )

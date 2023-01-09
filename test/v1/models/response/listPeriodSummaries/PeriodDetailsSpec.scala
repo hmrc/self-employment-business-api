@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ import support.UnitSpec
 
 class PeriodDetailsSpec extends UnitSpec {
 
-  private val model = PeriodDetails(periodId = "2020-01-01_2020-02-02", periodStartDate = "2020-01-01", periodEndDate = "2020-02-02")
+  private val model =
+    PeriodDetails(periodId = "2020-01-01_2020-02-02", periodStartDate = "2020-01-01", periodEndDate = "2020-02-02", periodCreationDate = "2020-01-02")
 
   "reads" should {
 
@@ -32,7 +33,8 @@ class PeriodDetailsSpec extends UnitSpec {
           |{
           |   "transactionReference": "1111111111",
           |   "from": "2020-01-01",
-          |   "to": "2020-02-02"
+          |   "to": "2020-02-02",
+          |   "periodCreationDate": "2020-01-02"
           |}
           |""".stripMargin
         )
@@ -48,7 +50,8 @@ class PeriodDetailsSpec extends UnitSpec {
           |{
           |   "periodId": "2020-01-01_2020-02-02",
           |   "periodStartDate": "2020-01-01",
-          |   "periodEndDate": "2020-02-02"
+          |   "periodEndDate": "2020-02-02",
+          |   "periodCreationDate": "2020-01-02"
           |}
           |""".stripMargin
       )

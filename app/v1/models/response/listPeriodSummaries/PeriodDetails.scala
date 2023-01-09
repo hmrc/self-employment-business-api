@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,16 @@ package v1.models.response.listPeriodSummaries
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax._
 
-case class PeriodDetails(periodId: String, periodStartDate: String, periodEndDate: String)
+case class PeriodDetails(periodId: String, periodStartDate: String, periodEndDate: String, periodCreationDate: String)
 
 object PeriodDetails {
 
   implicit val reads: Reads[PeriodDetails] = (
     (JsPath \ "from").read[String] and
-      (JsPath \ "to").read[String]
-  )((from, to) => PeriodDetails(periodId = s"${from}_$to", periodStartDate = from, periodEndDate = to))
+      (JsPath \ "to").read[String] and
+      (JsPath \ "periodCreationDate").read[String]
+  )((from, to, periodCreationDate) =>
+    PeriodDetails(periodId = s"${from}_$to", periodStartDate = from, periodEndDate = to, periodCreationDate = periodCreationDate))
 
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
 }
