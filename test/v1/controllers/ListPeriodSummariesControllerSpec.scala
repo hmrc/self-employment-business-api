@@ -85,8 +85,7 @@ class ListPeriodSummariesControllerSpec
 
   private val hateoasResponse = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
 
-  private val responseBody = Json.parse(
-    s"""
+  private val responseBody = Json.parse(s"""
       |{
       |  "periods": [
       |    {
@@ -111,8 +110,7 @@ class ListPeriodSummariesControllerSpec
       |    }
       |  ]
       |}
-    """.stripMargin
-  )
+    """.stripMargin)
 
   "handleRequest" should {
     "return Ok" when {
