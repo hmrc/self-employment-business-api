@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ class ListPeriodSummariesControllerSpec
   private val businessId    = "XAIS12345678910"
   private val from          = "2019-01-01"
   private val to            = "2020-01-01"
+  private val creationDate  = "2020-01-02"
   private val periodId      = s"${from}_$to"
   private val correlationId = "X-123"
   private val taxYear       = "2024-25"
@@ -78,20 +79,20 @@ class ListPeriodSummariesControllerSpec
   private val testHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
   private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
-  private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to)
+  private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to, Some(creationDate))
 
   private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
 
   private val hateoasResponse = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
 
-  private val responseBody = Json.parse(
-    s"""
+  private val responseBody = Json.parse(s"""
       |{
       |  "periods": [
       |    {
       |      "periodId": "$periodId",
       |      "periodStartDate": "$from",
       |      "periodEndDate": "$to",
+      |      "periodCreationDate": "$creationDate",
       |      "links": [
       |        {
       |          "href": "test/href/$periodId",
@@ -109,8 +110,7 @@ class ListPeriodSummariesControllerSpec
       |    }
       |  ]
       |}
-    """.stripMargin
-  )
+    """.stripMargin)
 
   "handleRequest" should {
     "return Ok" when {

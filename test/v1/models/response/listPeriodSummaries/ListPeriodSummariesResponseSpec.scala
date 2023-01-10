@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
-        periodEndDate = "2020-01-01"
+        periodEndDate = "2020-01-01",
+        periodCreationDate = Some("2020-01-02")
       ),
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
-        periodEndDate = "2020-01-01"
+        periodEndDate = "2020-01-01",
+        periodCreationDate = Some("2020-01-02")
       )
     )
   )
@@ -51,12 +53,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
           |      {
           |           "transactionReference": "32131123131",
           |           "from": "2019-01-01",
-          |           "to": "2020-01-01"
+          |           "to": "2020-01-01",
+          |           "periodCreationDate": "2020-01-02"
           |      },
           |      {
           |           "transactionReference": "3123123123121",
           |           "from": "2019-01-01",
-          |           "to": "2020-01-01"
+          |           "to": "2020-01-01",
+          |           "periodCreationDate": "2020-01-02"
           |      }
           |   ]
           |}
@@ -75,12 +79,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
             |     {
             |         "periodId": "2019-01-01_2020-01-01",
             |         "periodStartDate": "2019-01-01",
-            |         "periodEndDate": "2020-01-01"
+            |         "periodEndDate": "2020-01-01",
+            |         "periodCreationDate": "2020-01-02"
             |     },
             |     {
             |         "periodId": "2019-01-01_2020-01-01",
             |         "periodStartDate": "2019-01-01",
-            |         "periodEndDate": "2020-01-01"
+            |         "periodEndDate": "2020-01-01",
+            |         "periodCreationDate": "2020-01-02"
             |     }
             |   ]
             |}
@@ -111,7 +117,10 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "")) shouldBe Seq(
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(
+          mockAppConfig,
+          hateoasData,
+          PeriodDetails(periodId, "", "", Some("2020-01-02"))) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
         )
       }
@@ -132,7 +141,10 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, PeriodDetails(periodId, "", "")) shouldBe Seq(
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(
+          mockAppConfig,
+          hateoasDataTys,
+          PeriodDetails(periodId, "", "", Some("2020-01-02"))) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")
         )
       }
