@@ -22,7 +22,11 @@ import support.UnitSpec
 class PeriodDetailsSpec extends UnitSpec {
 
   private val model =
-    PeriodDetails(periodId = "2020-01-01_2020-02-02", periodStartDate = "2020-01-01", periodEndDate = "2020-02-02", periodCreationDate = "2020-01-02")
+    PeriodDetails(
+      periodId = "2020-01-01_2020-02-02",
+      periodStartDate = "2020-01-01",
+      periodEndDate = "2020-02-02",
+      periodCreationDate = Some("2020-01-02"))
 
   "reads" should {
 

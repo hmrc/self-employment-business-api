@@ -36,7 +36,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
         "2020-01-01_2020-01-01",
         "2020-01-01",
         "2020-01-01",
-        "2020-01-02"
+        Some("2020-01-02")
       ))
   )
 

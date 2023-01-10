@@ -32,13 +32,13 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
         periodEndDate = "2020-01-01",
-        periodCreationDate = "2020-01-02"
+        periodCreationDate = Some("2020-01-02")
       ),
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
         periodEndDate = "2020-01-01",
-        periodCreationDate = "2020-01-02"
+        periodCreationDate = Some("2020-01-02")
       )
     )
   )
@@ -117,7 +117,10 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, PeriodDetails(periodId, "", "", "2020-01-02")) shouldBe Seq(
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(
+          mockAppConfig,
+          hateoasData,
+          PeriodDetails(periodId, "", "", Some("2020-01-02"))) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
         )
       }
@@ -138,7 +141,10 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, PeriodDetails(periodId, "", "", "2020-01-02")) shouldBe Seq(
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(
+          mockAppConfig,
+          hateoasDataTys,
+          PeriodDetails(periodId, "", "", Some("2020-01-02"))) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")
         )
       }
