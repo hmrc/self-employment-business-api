@@ -127,6 +127,8 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("BOTH_EXPENSES_SUPPLIED", RuleBothExpensesSuppliedError),
           ("NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
           ("NOT_ALLOWED_SIMPLIFIED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
+          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError),
+          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError),
           ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
           ("SERVER_ERROR", InternalError),
           ("SERVICE_UNAVAILABLE", InternalError)

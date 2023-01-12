@@ -260,6 +260,8 @@ class CreatePeriodSummaryControllerSpec
           (RuleMisalignedPeriod, BAD_REQUEST),
           (RuleNotContiguousPeriod, BAD_REQUEST),
           (RuleNotAllowedConsolidatedExpenses, BAD_REQUEST),
+          (RuleInvalidSubmissionPeriodError, BAD_REQUEST),
+          (RuleInvalidSubmissionEndDateError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (InternalError, INTERNAL_SERVER_ERROR)
         )

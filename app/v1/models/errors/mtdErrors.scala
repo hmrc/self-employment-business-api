@@ -107,6 +107,18 @@ object Class4ExemptionReasonFormatError
     )
 
 // Rule Errors
+object RuleInvalidSubmissionPeriodError
+  extends MtdError(
+    code = "RULE_INVALID_SUBMISSION_PERIOD",
+    message = "Self Employment submissions cannot be more than 10 days before the end of the Period"
+  )
+
+object RuleInvalidSubmissionEndDateError
+  extends MtdError(
+    code = "RULE_INVALID_SUBMISSION_END_DATE",
+    message = "The submitted end date must be the end of the quarter"
+  )
+
 object RuleTaxYearNotSupportedError
     extends MtdError(
       code = "RULE_TAX_YEAR_NOT_SUPPORTED",
