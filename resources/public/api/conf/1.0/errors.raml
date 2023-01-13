@@ -369,3 +369,25 @@ traits:
                 description: The End date is earlier than the Start date.
                 value:
                   code: RULE_END_DATE_BEFORE_START_DATE
+  ruleInvalidSubmissionPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleInvalidSubmissionPeriod:
+                description: Self Employment submissions cannot be more than 10 days before the end of the Period.
+                value:
+                  code: RULE_INVALID_SUBMISSION_PERIOD
+  ruleInvalidSubmissionEndDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleInvalidSubmissionEndDate:
+                description: The submitted end date must be the end of the quarter.
+                value:
+                  code: RULE_INVALID_SUBMISSION_END_DATE
