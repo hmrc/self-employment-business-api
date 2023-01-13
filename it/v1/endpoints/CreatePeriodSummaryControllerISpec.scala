@@ -550,6 +550,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (CONFLICT, "NOT_CONTIGUOUS_PERIOD", BAD_REQUEST, RuleNotContiguousPeriod),
         (CONFLICT, "NOT_ALLOWED_SIMPLIFIED_EXPENSES", BAD_REQUEST, RuleNotAllowedConsolidatedExpenses),
         (CONFLICT, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
+        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_PERIOD", BAD_REQUEST, RuleInvalidSubmissionPeriodError),
+        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError),
         (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
