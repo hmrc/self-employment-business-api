@@ -54,29 +54,30 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
       "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
+      "INVALID_PAYLOAD"                 -> InternalError,
       "INVALID_PERIOD"                  -> RuleEndDateBeforeStartDateError,
       "OVERLAPS_IN_PERIOD"              -> RuleOverlappingPeriod,
       "NOT_ALIGN_PERIOD"                -> RuleMisalignedPeriod,
       "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
       "NOT_CONTIGUOUS_PERIOD"           -> RuleNotContiguousPeriod,
       "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
-      "INVALID_SUBMISSION_PERIOD"       -> RuleInvalidSubmissionPeriodError,
-      "INVALID_SUBMISSION_END_DATE"     -> RuleInvalidSubmissionEndDateError,
       "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
       "SERVER_ERROR"                    -> InternalError,
       "SERVICE_UNAVAILABLE"             -> InternalError
     )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"         -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
-      "INVALID_CORRELATIONID"    -> InternalError,
-      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
-      "PERIOD_EXISTS"            -> RuleDuplicateSubmissionError,
-      "END_BEFORE_START"         -> RuleEndDateBeforeStartDateError,
-      "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
-      "PERIOD_OVERLAP"           -> RuleOverlappingPeriod,
-      "PERIOD_ALIGNMENT"         -> RuleMisalignedPeriod
+      "INVALID_TAX_YEAR"                -> InternalError,
+      "TAX_YEAR_NOT_SUPPORTED"          -> RuleTaxYearNotSupportedError,
+      "INVALID_CORRELATIONID"           -> InternalError,
+      "INVALID_INCOME_SOURCE_ID"        -> BusinessIdFormatError,
+      "INCOME_SOURCE_NOT_FOUND"         -> NotFoundError,
+      "PERIOD_EXISTS"                   -> RuleDuplicateSubmissionError,
+      "END_BEFORE_START"                -> RuleEndDateBeforeStartDateError,
+      "PERIOD_HAS_GAPS"                 -> RuleNotContiguousPeriod,
+      "PERIOD_OVERLAP"                  -> RuleOverlappingPeriod,
+      "PERIOD_ALIGNMENT"                -> RuleMisalignedPeriod,
+      "INVALID_SUBMISSION_PERIOD"       -> RuleInvalidSubmissionPeriodError,
+      "INVALID_SUBMISSION_END_DATE"     -> RuleInvalidSubmissionEndDateError,
     )
 
     errors ++ extraTysErrors

@@ -28,8 +28,8 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
+  val nino: String = "AA123456A"
+  val businessId: String = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   private val requestBody: CreatePeriodSummaryBody =
@@ -98,7 +98,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
     "createPeriodicSummary" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
+        val outcome = Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
 
         MockCreatePeriodicConnector
           .createPeriodicSummary(requestData)
@@ -121,30 +121,31 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
         val errors = Seq(
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
+          ("INVALID_PAYLOAD", InternalError),
           ("INVALID_PERIOD", RuleEndDateBeforeStartDateError),
           ("OVERLAPS_IN_PERIOD", RuleOverlappingPeriod),
           ("NOT_ALIGN_PERIOD", RuleMisalignedPeriod),
           ("BOTH_EXPENSES_SUPPLIED", RuleBothExpensesSuppliedError),
           ("NOT_CONTIGUOUS_PERIOD", RuleNotContiguousPeriod),
           ("NOT_ALLOWED_SIMPLIFIED_EXPENSES", RuleNotAllowedConsolidatedExpenses),
-          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError),
-          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError),
           ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
           ("SERVER_ERROR", InternalError),
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
         val extraTysErrors = Seq(
-          "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
-          "INVALID_CORRELATIONID"    -> InternalError,
-          "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-          "PERIOD_EXISTS"            -> RuleDuplicateSubmissionError,
-          "PERIOD_OVERLAP"           -> RuleOverlappingPeriod,
-          "PERIOD_ALIGNMENT"         -> RuleMisalignedPeriod,
-          "END_BEFORE_START"         -> RuleEndDateBeforeStartDateError,
-          "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
-          "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
-          "INVALID_TAX_YEAR"         -> InternalError
+          ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+          ("INVALID_CORRELATIONID", InternalError),
+          ("INVALID_INCOME_SOURCE_ID", BusinessIdFormatError),
+          ("PERIOD_EXISTS", RuleDuplicateSubmissionError),
+          ("PERIOD_OVERLAP", RuleOverlappingPeriod),
+          ("PERIOD_ALIGNMENT", RuleMisalignedPeriod),
+          ("END_BEFORE_START", RuleEndDateBeforeStartDateError),
+          ("PERIOD_HAS_GAPS", RuleNotContiguousPeriod),
+          ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
+          ("INVALID_TAX_YEAR", InternalError),
+          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError),
+          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError)
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
