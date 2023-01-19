@@ -128,7 +128,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |""".stripMargin
     )
 
-    val desResponse: JsValue = Json.parse(
+    val downstreamResponse: JsValue = Json.parse(
       s"""
          |{
          |  "transactionReference": "2017090920170909"
@@ -178,7 +178,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, OK, desResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -193,7 +193,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, CREATED, desResponse)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, CREATED, downstreamResponse)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
