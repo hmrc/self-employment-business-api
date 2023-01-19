@@ -17,7 +17,7 @@
 package v1.connectors
 
 import config.AppConfig
-import play.api.http.Status.OK
+import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import v1.connectors.httpparsers.StandardDownstreamHttpParser._
@@ -27,25 +27,25 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[Unit]] = {
+                                                                 hc: HeaderCarrier,
+                                                                 ec: ExecutionContext,
+                                                                 correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino           = request.nino.nino
+    val nino = request.nino.nino
     val incomeSourceId = request.businessId.value
-    val taxYear        = request.taxYear
+    val taxYear = request.taxYear
 
-    implicit val successCode: SuccessCode = SuccessCode(OK)
-
-    val downstreamUri =
+    val (downstreamUri, statusCode) =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$incomeSourceId/periodic-summaries")
+        (TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$incomeSourceId/periodic-summaries"), CREATED)
       } else {
-        DesUri[Unit](s"income-tax/nino/$nino/self-employments/$incomeSourceId/periodic-summaries")
+        (DesUri[Unit](s"income-tax/nino/$nino/self-employments/$incomeSourceId/periodic-summaries"), OK)
       }
+
+    implicit val successCode: SuccessCode = SuccessCode(statusCode)
 
     post(
       body = request.body,
