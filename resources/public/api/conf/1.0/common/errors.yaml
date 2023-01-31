@@ -1,0 +1,204 @@
+components:
+  examples:
+
+    # 400
+
+    formatNino:
+      description: |
+        The format of the supplied NINO field is not valid.
+      value:
+        code: FORMAT_NINO
+        message: The provided NINO is invalid
+
+    formatBusinessId:
+      description: |
+        The format of the supplied Business ID field is not valid.
+      value:
+        code: FORMAT_BUSINESS_ID
+        message: The provided Business ID is invalid
+
+    formatTaxYear:
+      description: The format of the supplied taxYear field is not valid.
+      value:
+        code: FORMAT_TAX_YEAR
+        message: The provided tax year is invalid
+
+    formatSource:
+      description: The format of the supplied Source field is not valid.
+      value:
+        code: FORMAT_SOURCE
+        message: The provided source is invalid
+
+    formatValue:
+      description: One or more values have been added with the incorrect format.
+      value:
+        code: FORMAT_VALUE
+        message: The field should be between 0 and 99999999999.99
+
+    ruleIncorrectOrEmptyBody:
+      description: An empty or non-matching body was submitted.
+      value:
+        code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+        message: An empty or non-matching body was submitted
+
+    ruleTaxYearNotSupported:
+      description: |
+        The specified tax year is not supported.
+        Either the tax year specified is before the minimum tax year value,
+        or it is after the maximum tax year value.
+      value:
+        code: RULE_TAX_YEAR_NOT_SUPPORTED
+        message: The tax year specified does not lie within the supported range
+
+    ruleTaxYearRangeInvalid:
+      description: Tax year range invalid. A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_INVALID
+        message: Tax year range invalid. A tax year range of one year is required
+
+    ruleTaxYearNotEnded:
+      description: The submission has been made before the Tax year it relates to has ended.
+      value:
+        code: RULE_TAX_YEAR_NOT_ENDED
+        message: Tax year not ended
+
+    ruleBildingNameNumber:
+      description: One of building name or number must be supplied.
+      value:
+        code: RULE_BUILDING_NAME_NUMBER
+        message: Postcode must be supplied along with at least one of name or number
+
+    formatString:
+      description: One or more strings have been added with the incorrect format.
+      value:
+        code: FORMAT_STRING
+        message: The supplied string format is not valid
+
+    ruleBothAllowancesSupplied:
+      description: Both allowances and trading allowance must not be present at the same time.
+      value:
+        code: RULE_BOTH_ALLOWANCES_SUPPLIED
+        message: Both allowances and trading allowances must not be present at the same time
+
+    ruleAllowanceNotSupported:
+      description: One or more of the supplied allowances is not supported for the supplied tax year.
+      value:
+        code: RULE_ALLOWANCE_NOT_SUPPORTED
+        message: One or more of the supplied allowances is not supported for the supplied tax year
+
+    formatDate:
+      description: The supplied date format is not valid.
+      value:
+        code: FORMAT_DATE
+        message: The supplied date format is not valid
+
+    formatClass4Exemption:
+      description: The format of the supplied Class 4 National Insurance exemption reason is not valid.
+      value:
+        code: FORMAT_CLASS_4_EXEMPTION_REASON
+        message: The format of the supplied Class 4 National Insurance exemption reason is not valid
+
+    formatStartDate:
+      description: The format of the supplied Start date field is not valid.
+      value:
+        code: FORMAT_START_DATE
+        message: The provided Start date is invalid
+
+    formatEndDate:
+      description: The format of the supplied End date field is not valid.
+      value:
+        code: FORMAT_END_DATE
+        message: The provided End date is invalid
+
+    ruleEndDateBeforeStartDate:
+      description: The End date is earlier than the Start date.
+      value:
+        code: RULE_END_DATE_BEFORE_START_DATE
+        message: The End date cannot be earlier than the Start date
+
+    ruleBothExpensesSupplied:
+      description: Both expenses and consolidatedExpenses can not be present at the same time.
+      value:
+        code: RULE_BOTH_EXPENSES_SUPPLIED
+        message: Both expenses and consolidatedExpenses can not be present at the same time
+
+    ruleOverlappingPeriod:
+      description: Period summary overlaps with any of the existing period summaries.
+      value:
+        code: RULE_OVERLAPPING_PERIOD
+        message: Period summary overlaps with any of the existing period summaries
+
+    ruleMisalignedPeriod:
+      description: Period summary is not within the accounting period.
+      value:
+        code: RULE_MISALIGNED_PERIOD
+        message: Period summary is not within the accounting period
+
+    ruleNotContiguousPeriod:
+      description: Period summaries are not contiguous.
+      value:
+        code: RULE_NOT_CONTIGUOUS_PERIOD
+        message: Period summaries are not contiguous
+
+    ruleNotAllowedConsolidatedExpenses:
+      description: Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold.
+      value:
+        code: RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES
+        message: Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold
+
+    ruleDuplicateSubmission:
+      description: A summary has already been submitted for the period specified.
+      value:
+        code: RULE_DUPLICATE_SUBMISSION
+        message: A summary has already been submitted for the period specified
+
+    ruleInvalidSubmissionPeriod:
+      description: Self Employment submissions cannot be more than 10 days before the end of the Period.
+      value:
+        code: RULE_INVALID_SUBMISSION_PERIOD
+        message: Self Employment submissions cannot be more than 10 days before the end of the Period
+
+    ruleInvalidSubmissionEndDate:
+      description: The submitted end date must be the end of the quarter.
+      value:
+        code: RULE_INVALID_SUBMISSION_END_DATE
+        message: The submitted end date must be the end of the quarter
+
+    invalidTaxYearParameter:
+      description: |
+        A tax year before 2023-24 was supplied.
+        A request with a tax year parameter is only valid for tax years 2023-24 or later.
+      value:
+        code: INVALID_TAX_YEAR_PARAMETER
+        message: A tax year before 2023-24 was supplied
+
+    formatPeriodId:
+      description: The format of the supplied Period ID field is not valid.
+      value:
+        code: FORMAT_PERIOD_ID
+        message: The provided Period ID is invalid
+
+    # 403
+
+    clientOrAgentNotAuthorised:
+      description: |
+        The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+      value:
+        code: CLIENT_OR_AGENT_NOT_AUTHORISED
+        message: The client or agent is not authorised
+
+    # 404
+
+    notFound:
+      description: |
+        The matching resource is not found.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
+        message: Matching resource not found
+
+    notFoundBusiness:
+      description: |
+        No business found for given NINO with given Business ID.
+      value:
+        code: NO_BUSINESS_FOUND
+        message: No business found for given NINO and Business ID

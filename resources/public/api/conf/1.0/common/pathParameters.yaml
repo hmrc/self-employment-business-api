@@ -1,0 +1,39 @@
+components:
+  parameters:
+    nino:
+      name: nino
+      in: path
+      description: |
+        National Insurance number, in the format `AA999999A`
+      schema:
+        type: string
+        example: TC663795B
+      required: true
+    businessId:
+      name: businessId
+      in: path
+      description: |
+        An identifier for the business, unique to the customer.<p>Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`
+      schema:
+        type: string
+        pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
+        example: XAIS12345678910
+      required: true
+    periodId:
+      name: periodId
+      in: path
+      description: |
+        An identifier for the update period, unique to the customer's self-employment business.
+      schema:
+        type: string
+        example: 2019-01-25_2020-01-25
+      required: true
+    taxYear:
+      name: periodId
+      in: path
+      description: |
+        The tax year to which the data applies in the format YYYY-YY. The start year and end year must not span two tax years. The minimum tax year is 2017-18. No gaps are allowed, for example, 2022-24 is not valid.'
+      schema:
+        type: string
+        example: 2022-23
+      required: true

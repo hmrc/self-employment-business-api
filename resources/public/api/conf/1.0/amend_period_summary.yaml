@@ -1,0 +1,133 @@
+summary: Amend a Self-Employment Period Summary
+description: |
+  This endpoint allows a developer to amend a self-employment period summary.
+  Submissions must include values for incomes, expenses and deductions, even if the values are zero.
+  The periodExpenses object may contain either a consolidatedExpenses element, or a mixture of the other expenses elements.
+  A National Insurance number, business ID and period ID must be provided.
+
+  ### Test data
+  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+  <table>
+      <thead>
+          <tr>
+              <th>Header Value (Gov-Test-Scenario)</th>
+              <th>Scenario</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td><p>N/A - DEFAULT</p></td>
+              <td><p>Simulates success response with full expenses.</p></td>
+          </tr>
+          <tr>
+              <td><p>NOT_ALLOWED_CONSOLIDATED_EXPENSES</p></td>
+              <td><p>Simulates the scenario where the cumulative turnover amount exceeds the consolidated expenses threshold.</p></td>
+          </tr>
+          <tr>
+              <td><p>NOT_FOUND</p></td>
+              <td><p>Simulates the scenario where no data is found.</p></td>
+          </tr>
+          <tr>
+              <td><p>TAX_YEAR_NOT_SUPPORTED</p></td>
+              <td><p>Simulates the scenario where the tax year is not supported.</p></td>
+          </tr>
+      </tbody>
+  </table>
+
+tags:
+  - Self-Employment Period Summary
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
+  - $ref: './common/pathParameters.yaml#/components/parameters/periodId'
+  - $ref: './common/queryParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - write:self-assessment
+
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/amend_period_summary_request.json'
+      examples:
+        example-1:
+          description: Amend Period Summary Consolidated Request
+          value:
+            $ref: './examples/amend_period_summary_consolidated_request.json'
+        example-1:
+          description: Amend Period Summary Non-Consolidated Request
+          value:
+            $ref: './examples/amend_period_summary_non_consolidated_request.json'
+
+responses:
+  "200":
+    description: Success
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/amend_period_summary_response.json'
+        examples:
+          example-response:
+            description: Example Response
+            value:
+              $ref: './examples/amend_period_summary_response.json'
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_TAX_YEAR:
+            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+          FORMAT_VALUE:
+            $ref: './common/errors.yaml#/components/examples/formatValue'
+          FORMAT_BUSINESS_ID:
+            $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+          FORMAT_PERIOD_ID:
+            $ref: './common/errors.yaml#/components/examples/formatPeriodId'
+          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_BOTH_EXPENSES_SUPPLIED:
+            $ref: './common/errors.yaml#/components/examples/ruleBothExpensesSupplied'
+          RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES:
+            $ref: './common/errors.yaml#/components/examples/ruleNotAllowedConsolidatedExpenses'
+          RULE_TAX_YEAR_RANGE_INVALID:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+          INVALID_TAX_YEAR_PARAMETER:
+            $ref: './common/errors.yaml#/components/examples/invalidTaxYearParameter'
+
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFoundEmployments'
