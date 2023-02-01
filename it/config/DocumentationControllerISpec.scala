@@ -16,6 +16,7 @@
 
 package config
 
+import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
@@ -89,8 +90,8 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
       val openAPI = Option(parserResult.get.getOpenAPI)
       openAPI.isEmpty shouldBe false
       openAPI.get.getOpenapi shouldBe "3.0.3"
-      openAPI.get.getInfo.getTitle shouldBe "Individual Losses (MTD)"
-      openAPI.get.getInfo.getVersion shouldBe "3.0"
+      openAPI.get.getInfo.getTitle shouldBe "Self Employment Business Details (MTD)"
+      openAPI.get.getInfo.getVersion shouldBe "1.0"
     }
   }
 }
