@@ -1,6 +1,6 @@
 components:
   parameters:
-    acceptJson:
+    acceptHeader:
       name: "Accept"
       in: header
       description: |
@@ -11,7 +11,17 @@ components:
           - "application/vnd.hmrc.1.0+json"
       required: true
 
-    authorization:
+    authorizationWriteScopeHeader:
+      name: "Authorization"
+      in: header
+      description: |
+        An OAuth 2.0 Bearer Token with the *write:self-assessment* scope.
+      schema:
+        type: string
+        example: Bearer bb7fed3fe10dd235a2ccda3d50fb
+      required: true
+
+    authorizationReadScopeHeader:
       name: "Authorization"
       in: header
       description: |
@@ -41,6 +51,7 @@ components:
       schema:
         type: string
         example: c75f40a6-a3df-4429-a697-471eeec46435
+      required: true
 
     testScenarioHeader:
       name: "Gov-Test-Scenario"

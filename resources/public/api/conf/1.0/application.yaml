@@ -49,10 +49,10 @@ components:
             read:self-assessment: Grant read access
 
 tags:
-  - name: Self Employment Business Annual Submission
-    description: Resources relating to an individual's Self Employment Business Annual Submission
-  - name: Self Employment Income & Expenses Period Summary
-    description: Resources relating to an individual's Self Employment Income & Expenses Period Summary
+  - name: Self-Employment Annual Submission
+    description: Resources relating to an individual's self-employment annual submission
+  - name: Self-Employment Period Summaries
+    description: Resources relating to an individual's self-employment period summaries
 
 paths:
   /individuals/business/self-employment/{nino}/{businessId}/annual/{taxYear}:

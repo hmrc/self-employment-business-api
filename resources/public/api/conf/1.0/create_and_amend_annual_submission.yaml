@@ -50,11 +50,11 @@ requestBody:
       schema:
         $ref: './schemas/create_and_amend_annual_submission_request.json'
       examples:
-        example-1:
+        example-with-trading-allowance-request:
           description: Example Request With Trading Income Allowance
           value:
             $ref: './examples/create_and_amend_with_trading_income_allowance.json'
-        example-1:
+        example-without-trading-allowance-request:
           description: Example Request Without Trading Income Allowance
           value:
             $ref: './examples/create_and_amend_without_trading_income_allowance.json'

@@ -35,7 +35,7 @@ description: |
   </table>
 
 tags:
-  - Self-Employment Period Summary
+  - Self-Employment Period Summaries
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -57,11 +57,11 @@ requestBody:
       schema:
         $ref: './schemas/amend_period_summary_request.json'
       examples:
-        example-1:
+        example-consolidated-request:
           description: Amend Period Summary Consolidated Request
           value:
             $ref: './examples/amend_period_summary_consolidated_request.json'
-        example-1:
+        example-non-consolidated-request:
           description: Amend Period Summary Non-Consolidated Request
           value:
             $ref: './examples/amend_period_summary_non_consolidated_request.json'

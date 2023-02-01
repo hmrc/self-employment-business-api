@@ -29,7 +29,7 @@ description: |
   </table>
 
 tags:
-  - Self-Employment Period Summary
+  - Self-Employment Period Summaries
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
