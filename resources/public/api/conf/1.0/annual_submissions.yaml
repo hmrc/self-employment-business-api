@@ -5,7 +5,6 @@ put:
     - User-Restricted:
         - write:self-assessment
 
-
 get:
   $ref: "./retrieve_annual_submission.yaml"
   summary: Retrieve a Self-Employment Annual Submission
@@ -13,7 +12,6 @@ get:
     - User-Restricted:
         - read:self-assessment
 
-  
 delete:
   $ref: "./delete_annual_submission.yaml"
   summary: Delete a Self-Employment Annual Submission

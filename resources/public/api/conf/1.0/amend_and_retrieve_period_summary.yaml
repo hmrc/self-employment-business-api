@@ -4,6 +4,8 @@ put:
   security:
     - User-Restricted:
         - write:self-assessment
+parameters:
+  - $ref: './common/queryParameters.yaml#/components/parameters/taxYear'
 
 get:
   $ref: "./retrieve_period_summary.yaml"

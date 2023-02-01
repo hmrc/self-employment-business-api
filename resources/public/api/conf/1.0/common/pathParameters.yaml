@@ -29,7 +29,7 @@ components:
         example: 2019-01-25_2020-01-25
       required: true
     taxYear:
-      name: periodId
+      name: taxYear
       in: path
       description: |
         The tax year to which the data applies in the format YYYY-YY. The start year and end year must not span two tax years. The minimum tax year is 2017-18. No gaps are allowed, for example, 2022-24 is not valid.'

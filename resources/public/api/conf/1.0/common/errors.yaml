@@ -56,12 +56,6 @@ components:
         code: RULE_TAX_YEAR_RANGE_INVALID
         message: Tax year range invalid. A tax year range of one year is required
 
-    ruleTaxYearNotEnded:
-      description: The submission has been made before the Tax year it relates to has ended.
-      value:
-        code: RULE_TAX_YEAR_NOT_ENDED
-        message: Tax year not ended
-
     ruleBildingNameNumber:
       description: One of building name or number must be supplied.
       value:
