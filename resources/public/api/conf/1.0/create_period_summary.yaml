@@ -113,8 +113,6 @@ responses:
         examples:
           FORMAT_NINO:
             $ref: './common/errors.yaml#/components/examples/formatNino'
-          FORMAT_TAX_YEAR:
-            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
           FORMAT_VALUE:
             $ref: './common/errors.yaml#/components/examples/formatValue'
           FORMAT_BUSINESS_ID:
