@@ -16,17 +16,19 @@
 
 package v1.controllers
 
+import api.controllers.ControllerBaseSpec
+import api.mocks.MockIdGenerator
+import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors._
+import api.models.hateoas.HateoasWrapper
+import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockIdGenerator
-import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
-import v1.mocks.services.{MockAmendPeriodSummaryService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.errors._
-import v1.models.hateoas.HateoasWrapper
-import v1.models.outcomes.ResponseWrapper
+import v1.mocks.services.MockAmendPeriodSummaryService
 import v1.models.request.amendPeriodSummary._
 import v1.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 

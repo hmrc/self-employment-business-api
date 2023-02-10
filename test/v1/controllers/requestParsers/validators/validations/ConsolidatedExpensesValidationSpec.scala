@@ -16,8 +16,8 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import api.models.errors.RuleBothExpensesSuppliedError
 import support.UnitSpec
-import v1.models.errors.RuleBothExpensesSuppliedError
 import v1.models.request.createPeriodSummary._
 
 class ConsolidatedExpensesValidationSpec extends UnitSpec {

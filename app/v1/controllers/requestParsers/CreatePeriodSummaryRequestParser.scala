@@ -16,10 +16,12 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
+import api.controllers.requestParsers.RequestParser
+import api.models.domain.{BusinessId, Nino}
 import v1.controllers.requestParsers.validators.CreatePeriodSummaryValidator
-import v1.models.domain.{BusinessId, Nino}
 import v1.models.request.createPeriodSummary.{CreatePeriodSummaryBody, CreatePeriodSummaryRawData, CreatePeriodSummaryRequest}
+
+import javax.inject.Inject
 
 class CreatePeriodSummaryRequestParser @Inject() (val validator: CreatePeriodSummaryValidator)
     extends RequestParser[CreatePeriodSummaryRawData, CreatePeriodSummaryRequest] {

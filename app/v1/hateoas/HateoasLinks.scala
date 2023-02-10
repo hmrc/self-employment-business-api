@@ -16,10 +16,10 @@
 
 package v1.hateoas
 
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.Link
+import api.models.hateoas.Method._
 import config.{AppConfig, FeatureSwitches}
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.hateoas.Link
-import v1.models.hateoas.Method._
 import v1.models.hateoas.RelType._
 
 trait HateoasLinks {

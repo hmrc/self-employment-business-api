@@ -16,12 +16,12 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.models.errors._
+import api.models.utils.JsonErrorValidators
 import fixtures.CreatePeriodSummaryFixture
-import play.api.libs.json.{JsValue, _}
+import play.api.libs.json._
 import support.UnitSpec
-import v1.models.errors._
 import v1.models.request.createPeriodSummary._
-import v1.models.utils.JsonErrorValidators
 
 class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummaryFixture with JsonErrorValidators {
 

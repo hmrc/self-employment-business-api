@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers
 
+import api.models.domain.{BusinessId, Nino}
+import api.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError}
 import fixtures.CreatePeriodSummaryFixture
 import support.UnitSpec
 import v1.mocks.validators.MockCreatePeriodSummaryValidator
-import v1.models.domain.{BusinessId, Nino}
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError}
 import v1.models.request.createPeriodSummary._
 
 class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSummaryFixture {

@@ -16,15 +16,15 @@
 
 package v1.services
 
+import api.controllers.EndpointLogContext
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.support.DownstreamResponseMappingSupport
 import cats.implicits._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.AmendAnnualSubmissionConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
-import v1.support.DownstreamResponseMappingSupport
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,26 +43,26 @@ class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionCo
 
   private def downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
-    "INVALID_NINO"                -> NinoFormatError,
-    "INVALID_TAX_YEAR"            -> TaxYearFormatError,
-    "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-    "INVALID_PAYLOAD"             -> InternalError,
-    "INVALID_CORRELATIONID"       -> InternalError,
-    "MISSING_EXEMPTION_REASON"    -> InternalError,
-    "MISSING_EXEMPTION_INDICATOR" -> InternalError,
-    "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
-    "NOT_FOUND"                   -> NotFoundError,
-    "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-    "GONE"                        -> InternalError,
-    "SERVER_ERROR"                -> InternalError,
-    "BAD_GATEWAY"                 -> InternalError,
-    "SERVICE_UNAVAILABLE"         -> InternalError
+      "INVALID_NINO"                -> NinoFormatError,
+      "INVALID_TAX_YEAR"            -> TaxYearFormatError,
+      "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
+      "INVALID_PAYLOAD"             -> InternalError,
+      "INVALID_CORRELATIONID"       -> InternalError,
+      "MISSING_EXEMPTION_REASON"    -> InternalError,
+      "MISSING_EXEMPTION_INDICATOR" -> InternalError,
+      "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
+      "NOT_FOUND"                   -> NotFoundError,
+      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+      "GONE"                        -> InternalError,
+      "SERVER_ERROR"                -> InternalError,
+      "BAD_GATEWAY"                 -> InternalError,
+      "SERVICE_UNAVAILABLE"         -> InternalError
     )
     val extraTysErrors = Map(
-    "INVALID_INCOME_SOURCE_ID"  -> BusinessIdFormatError,
-    "INVALID_CORRELATION_ID"    -> InternalError,
-    "INCOME_SOURCE_NOT_FOUND"   -> NotFoundError,
-    "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
+      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"   -> InternalError,
+      "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError
     )
 
     errors ++ extraTysErrors

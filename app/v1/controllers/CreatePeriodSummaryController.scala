@@ -16,18 +16,20 @@
 
 package v1.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.models.errors._
+import api.hateoas.HateoasFactory
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents, Result}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import v1.hateoas.HateoasFactory
-import v1.models.errors._
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
-import v1.services.{CreatePeriodSummaryService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.CreatePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

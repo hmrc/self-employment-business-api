@@ -16,10 +16,12 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
+import api.controllers.requestParsers.RequestParser
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v1.controllers.requestParsers.validators.ListPeriodSummariesValidator
-import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData, ListPeriodSummariesRequest}
+
+import javax.inject.Inject
 
 class ListPeriodSummariesRequestParser @Inject() (val validator: ListPeriodSummariesValidator)
     extends RequestParser[ListPeriodSummariesRawData, ListPeriodSummariesRequest] {

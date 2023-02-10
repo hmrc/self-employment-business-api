@@ -16,8 +16,8 @@
 
 package v1.models.request.amendSEAnnual
 
+import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
-import v1.models.domain.ex.MtdNicExemption
 
 trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
 

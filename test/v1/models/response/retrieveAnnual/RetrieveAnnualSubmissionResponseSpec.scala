@@ -16,11 +16,11 @@
 
 package v1.models.response.retrieveAnnual
 
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.hateoas.{Link, Method}
 
 class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with RetrieveAnnualSubmissionFixture {
 

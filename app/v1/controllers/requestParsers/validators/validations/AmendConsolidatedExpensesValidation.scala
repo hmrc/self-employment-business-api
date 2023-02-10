@@ -16,7 +16,8 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import v1.models.request.amendPeriodSummary._
 
 object AmendConsolidatedExpensesValidation {

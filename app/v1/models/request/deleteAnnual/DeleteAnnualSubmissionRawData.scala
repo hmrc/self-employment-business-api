@@ -16,6 +16,6 @@
 
 package v1.models.request.deleteAnnual
 
-import v1.models.request.RawData
+import api.models.request.RawData
 
 case class DeleteAnnualSubmissionRawData(nino: String, businessId: String, taxYear: String) extends RawData

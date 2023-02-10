@@ -16,18 +16,18 @@
 
 package v1.services
 
+import api.controllers.EndpointLogContext
+import api.models.errors._
+import api.services.ServiceOutcome
+import api.support.DownstreamResponseMappingSupport
 import cats.data.EitherT
 import utils.Logging
 import cats.implicits._
-
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DeleteAnnualSubmissionConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
-import v1.support.DownstreamResponseMappingSupport
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -39,13 +39,13 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       logContext: EndpointLogContext,
       correlationId: String): Future[ServiceOutcome[Unit]] = {
 
-    val result =  EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
+    val result = EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
 
     result.value
   }
 
   private def downstreamErrorMap = {
-     val desErrorMap: Map[String, MtdError] =
+    val desErrorMap: Map[String, MtdError] =
       Map(
         "INVALID_NINO"                -> NinoFormatError,
         "INVALID_TAX_YEAR"            -> TaxYearFormatError,
@@ -74,7 +74,5 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
 
     desErrorMap ++ extraTysErrors
   }
-
-
 
 }

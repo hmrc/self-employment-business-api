@@ -16,6 +16,8 @@
 
 package v1.endpoints
 
+import api.models.errors._
+import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -23,14 +25,12 @@ import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.models.errors._
+import stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
-import v1.models.utils.JsonErrorValidators
-import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with AmendAnnualSubmissionFixture with JsonErrorValidators {
 
-  val requestBodyJson: JsValue = amendAnnualSubmissionBodyMtdJson()
+  val requestBodyJson: JsValue           = amendAnnualSubmissionBodyMtdJson()
   val downstreamRequestBodyJson: JsValue = amendAnnualSubmissionBodyDownstreamJson()
 
   private trait Test {
@@ -40,11 +40,10 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
 
     def downstreamUri: String
 
-    val nino: String = "AA123456A"
+    val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
 
-    val responseBody: JsValue = Json.parse(
-      s"""
+    val responseBody: JsValue = Json.parse(s"""
          |{
          |  "links": [
          |    {
@@ -85,8 +84,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
          |      }
     """.stripMargin
 
-    val downstreamResponseBody: JsValue = Json.parse(
-      """{
+    val downstreamResponseBody: JsValue = Json.parse("""{
         |   "transactionReference": "ignored"
         |}""".stripMargin)
 
@@ -107,7 +105,6 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
 
     def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/annual-summaries"
   }
-
 
   "Calling the amend endpoint" should {
     "return a 200 status code" when {
@@ -172,9 +169,9 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
                               expectedBody: MtdError): Unit = {
         s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
-          override val nino: String = requestNino
+          override val nino: String       = requestNino
           override val businessId: String = requestBusinessId
-          override val taxYear: String = requestTaxYear
+          override val taxYear: String    = requestTaxYear
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -248,8 +245,9 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
           "XAIS12345678910",
           "2021-22",
           amendAnnualSubmissionBodyMtdJson(
-            allowances = Some(allowancesMtdJsonWith(
-              structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))))),
+            allowances = Some(
+              allowancesMtdJsonWith(
+                structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))))),
             adjustments = None,
             nonFinancials = None
           ),
@@ -316,4 +314,5 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
       (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
     }
   }
+
 }

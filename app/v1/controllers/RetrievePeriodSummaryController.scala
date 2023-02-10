@@ -16,17 +16,19 @@
 
 package v1.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.models.errors._
+import api.hateoas.HateoasFactory
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
-import v1.hateoas.HateoasFactory
-import v1.models.errors._
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
-import v1.services.{EnrolmentsAuthService, MtdIdLookupService, RetrievePeriodSummaryService}
+import v1.services.RetrievePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,7 +61,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
           serviceResponse <- EitherT(service.retrievePeriodSummary(parsedRequest))
         } yield {
-          val hateoasData = RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, parsedRequest.taxYear)
+          val hateoasData    = RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, parsedRequest.taxYear)
           val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, hateoasData)
 
           logger.info(
