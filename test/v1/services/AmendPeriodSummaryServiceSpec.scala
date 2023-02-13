@@ -16,11 +16,12 @@
 
 package v1.services
 
-import v1.controllers.EndpointLogContext
+import api.controllers.EndpointLogContext
+import api.models.domain.{BusinessId, Nino}
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v1.mocks.connectors.MockAmendPeriodSummaryConnector
-import v1.models.domain.{BusinessId, Nino}
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
 
 import scala.concurrent.Future
@@ -33,11 +34,11 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   implicit val correlationId: String = "X-123"
 
   private val requestData = AmendPeriodSummaryRequest(
-    nino       = Nino(nino),
+    nino = Nino(nino),
     businessId = BusinessId(businessId),
-    periodId   = periodId,
-    body       = AmendPeriodSummaryBody(None, None, None),
-    taxYear    = None
+    periodId = periodId,
+    body = AmendPeriodSummaryBody(None, None, None),
+    taxYear = None
   )
 
   trait Test extends MockAmendPeriodSummaryConnector {

@@ -16,10 +16,10 @@
 
 package v1.controllers.requestParsers
 
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.errors._
 import support.UnitSpec
 import v1.mocks.validators.MockRetrievePeriodSummaryValidator
-import v1.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import v1.models.errors._
 import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 
 class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {

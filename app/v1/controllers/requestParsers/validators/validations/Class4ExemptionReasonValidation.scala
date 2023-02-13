@@ -16,8 +16,9 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.ex.MtdNicExemption
-import v1.models.errors.{Class4ExemptionReasonFormatError, MtdError}
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
+import api.models.domain.ex.MtdNicExemption
+import api.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 
 import scala.util.{Failure, Success, Try}
 

@@ -16,13 +16,13 @@
 
 package v1.models.response.listPeriodSummaries
 
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.Link
+import api.models.hateoas.Method._
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.hateoas.Link
-import v1.models.hateoas.Method._
 
 class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 

@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers
 
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors._
 import play.api.libs.json.Json
 import support.UnitSpec
 import v1.mocks.validators.MockAmendPeriodSummaryValidator
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.errors._
 import v1.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryRequestParserSpec extends UnitSpec {

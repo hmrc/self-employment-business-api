@@ -16,11 +16,12 @@
 
 package v1.services
 
-import v1.controllers.EndpointLogContext
+import api.controllers.EndpointLogContext
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v1.mocks.connectors.MockAmendAnnualSubmissionConnector
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnualSubmissionRequest}
 
 import scala.concurrent.Future
@@ -93,7 +94,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
           ("INVALID_INCOME_SOURCE_ID", BusinessIdFormatError),
           ("INVALID_CORRELATION_ID", InternalError),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
-          ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
+          ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))

@@ -16,11 +16,11 @@
 
 package v1.models.response.amendSEAnnual
 
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.Link
+import api.models.hateoas.Method.{DELETE, GET, PUT}
 import mocks.MockAppConfig
 import support.UnitSpec
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{DELETE, GET, PUT}
 
 class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 

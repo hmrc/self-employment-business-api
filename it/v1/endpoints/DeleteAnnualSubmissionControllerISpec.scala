@@ -16,6 +16,7 @@
 
 package v1.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -23,8 +24,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
@@ -52,7 +52,6 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     override def taxYear: String = "2021-22"
     def downstreamUri: String    = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2022"
   }
-
 
   private trait TysIfsTest extends Test {
     override def taxYear: String = "2023-24"
@@ -101,12 +100,16 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     "return error according to spec" when {
 
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestBusinessId: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestTaxYear: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
 
           s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
-            override def nino: String    = requestNino
-            override def taxYear: String = requestTaxYear
+            override def nino: String       = requestNino
+            override def taxYear: String    = requestTaxYear
             override def businessId: String = requestBusinessId
 
             override def setupStubs(): StubMapping = {
@@ -129,7 +132,6 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS12345678910", "2016-17", Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "XAIS12345678910", "2018-20", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
-
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }

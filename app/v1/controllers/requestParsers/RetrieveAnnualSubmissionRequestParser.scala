@@ -16,10 +16,12 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
+import api.controllers.requestParsers.RequestParser
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v1.controllers.requestParsers.validators.RetrieveAnnualSubmissionValidator
-import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
+
+import javax.inject.Inject
 
 class RetrieveAnnualSubmissionRequestParser @Inject() (val validator: RetrieveAnnualSubmissionValidator)
     extends RequestParser[RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest] {

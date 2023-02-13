@@ -16,18 +16,20 @@
 
 package v1.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.hateoas.HateoasFactory
+import api.models.errors._
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendAnnualSubmissionRequestParser
-import v1.hateoas.HateoasFactory
-import v1.models.errors._
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
-import v1.services.{AmendAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.AmendAnnualSubmissionService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -84,22 +86,22 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case _
-             if errorWrapper.containsAnyOf(
-               BadRequestError,
-               NinoFormatError,
-               BusinessIdFormatError,
-               TaxYearFormatError,
-               ValueFormatError,
-               RuleIncorrectOrEmptyBodyError,
-               RuleTaxYearNotSupportedError,
-               RuleTaxYearRangeInvalidError,
-               RuleBuildingNameNumberError,
-               RuleBothAllowancesSuppliedError,
-               RuleAllowanceNotSupportedError,
-               StringFormatError,
-               Class4ExemptionReasonFormatError,
-               DateFormatError
-             ) =>
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            BusinessIdFormatError,
+            TaxYearFormatError,
+            ValueFormatError,
+            RuleIncorrectOrEmptyBodyError,
+            RuleTaxYearNotSupportedError,
+            RuleTaxYearRangeInvalidError,
+            RuleBuildingNameNumberError,
+            RuleBothAllowancesSuppliedError,
+            RuleAllowanceNotSupportedError,
+            StringFormatError,
+            Class4ExemptionReasonFormatError,
+            DateFormatError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))

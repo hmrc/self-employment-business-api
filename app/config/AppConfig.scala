@@ -16,10 +16,11 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
 import com.typesafe.config.Config
 import play.api.{ConfigLoader, Configuration}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 trait AppConfig {
 

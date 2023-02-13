@@ -16,11 +16,12 @@
 
 package v1.services
 
-import v1.controllers.EndpointLogContext
+import api.controllers.EndpointLogContext
+import api.models.domain.{BusinessId, Nino}
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v1.mocks.connectors.MockCreatePeriodSummaryConnector
-import v1.models.domain.{BusinessId, Nino}
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
@@ -28,8 +29,8 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String = "AA123456A"
-  val businessId: String = "XAIS12345678910"
+  val nino: String                   = "AA123456A"
+  val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
   private val requestBody: CreatePeriodSummaryBody =
@@ -98,7 +99,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
     "createPeriodicSummary" must {
       "return correct result for a success" in new Test {
         val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome = Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
+        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
 
         MockCreatePeriodicConnector
           .createPeriodicSummary(requestData)

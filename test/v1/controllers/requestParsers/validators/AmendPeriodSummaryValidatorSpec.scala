@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.models.errors._
+import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
-import v1.models.errors._
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
-import v1.models.utils.JsonErrorValidators
 
 class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 
@@ -199,13 +199,21 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "an empty allowable expenses is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodAllowableExpenses": {}}"""), None)) shouldBe List(
-          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
+          AmendPeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse("""{"periodAllowableExpenses": {}}"""),
+            None)) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
       }
       "an empty disallowable expenses is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodDisallowableExpenses": {}}"""), None)) shouldBe List(
-          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
+          AmendPeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse("""{"periodDisallowableExpenses": {}}"""),
+            None)) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
       }
     }
     "return RuleBothExpensesSuppliedError" when {
@@ -283,7 +291,6 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
           List(RuleTaxYearRangeInvalidError)
       }
     }
-
 
     "return ValueFormatError" when {
 

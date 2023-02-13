@@ -16,6 +16,6 @@
 
 package v1.models.request.retrieveAnnual
 
-import v1.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
 case class RetrieveAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

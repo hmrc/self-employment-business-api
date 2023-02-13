@@ -16,6 +16,8 @@
 
 package v1.endpoints
 
+import api.models.errors._
+import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -23,10 +25,8 @@ import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.models.errors._
+import stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryFixture
-import v1.models.utils.JsonErrorValidators
-import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 

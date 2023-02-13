@@ -16,8 +16,9 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.MtdError
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
+import api.models.errors.MtdError
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 
 class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData] {
@@ -38,9 +39,9 @@ class ListPeriodSummariesValidator extends Validator[ListPeriodSummariesRawData]
 
   private def parameterRuleValidation: ListPeriodSummariesRawData => List[List[MtdError]] = (data: ListPeriodSummariesRawData) => {
 
-      List(
-        data.taxYear.map(TaxYearTYSParameterValidation.validate).getOrElse(Nil)
-      )
-    }
+    List(
+      data.taxYear.map(TaxYearTYSParameterValidation.validate).getOrElse(Nil)
+    )
   }
 
+}

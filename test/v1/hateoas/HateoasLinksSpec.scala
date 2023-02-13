@@ -16,12 +16,12 @@
 
 package v1.hateoas
 
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.Link
+import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.hateoas.Link
-import v1.models.hateoas.Method.{DELETE, GET, POST, PUT}
 
 class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 

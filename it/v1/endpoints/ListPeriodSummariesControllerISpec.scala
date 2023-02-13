@@ -16,6 +16,8 @@
 
 package v1.endpoints
 
+import api.models.domain.TaxYear
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -23,9 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.models.domain.TaxYear
-import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
@@ -231,24 +231,24 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   private trait TysIfsTest extends Test {
 
-    val periodId = "2024-01-01_2024-01-02"
-    val fromDate = "2024-01-01"
-    val toDate = "2024-01-02"
-    val creationDate = "2020-01-03"
-    val mtdTaxYear = "2023-24"
+    val periodId        = "2024-01-01_2024-01-02"
+    val fromDate        = "2024-01-01"
+    val toDate          = "2024-01-02"
+    val creationDate    = "2020-01-03"
+    val mtdTaxYear      = "2023-24"
     lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
 
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
     def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
       buildRequest(s"$uri?taxYear=$mtdTaxYear").withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
+        (ACCEPT, "application/vnd.hmrc.1.0+json"),
+        (AUTHORIZATION, "Bearer 123")
+      )
     }
 
   }

@@ -16,15 +16,17 @@
 
 package v1.controllers
 
+import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.models.errors._
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.DeleteAnnualSubmissionRequestParser
-import v1.models.errors._
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
-import v1.services.{DeleteAnnualSubmissionService, EnrolmentsAuthService, MtdIdLookupService}
+import v1.services.DeleteAnnualSubmissionService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -76,14 +78,14 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
       case _
-        if errorWrapper.containsAnyOf(
-          BadRequestError,
-          NinoFormatError,
-          BusinessIdFormatError,
-          TaxYearFormatError,
-          RuleTaxYearNotSupportedError,
-          RuleTaxYearRangeInvalidError
-        ) =>
+          if errorWrapper.containsAnyOf(
+            BadRequestError,
+            NinoFormatError,
+            BusinessIdFormatError,
+            TaxYearFormatError,
+            RuleTaxYearNotSupportedError,
+            RuleTaxYearRangeInvalidError
+          ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))

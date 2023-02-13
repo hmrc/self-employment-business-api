@@ -16,7 +16,8 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, RuleBuildingNameNumberError}
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
+import api.models.errors.{MtdError, RuleBuildingNameNumberError}
 import v1.models.request.amendSEAnnual.Building
 
 object BuildingNameNumberValidation {

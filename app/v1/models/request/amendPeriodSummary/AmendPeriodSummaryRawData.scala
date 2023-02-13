@@ -16,7 +16,7 @@
 
 package v1.models.request.amendPeriodSummary
 
+import api.models.request.RawData
 import play.api.libs.json.JsValue
-import v1.models.request.RawData
 
 case class AmendPeriodSummaryRawData(nino: String, businessId: String, periodId: String, body: JsValue, taxYear: Option[String]) extends RawData

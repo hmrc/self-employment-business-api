@@ -16,10 +16,10 @@
 
 package v1.controllers.requestParsers
 
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import support.UnitSpec
 import v1.mocks.validators.MockDeleteAnnualSubmissionValidator
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
 
 class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {

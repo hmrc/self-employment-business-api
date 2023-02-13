@@ -16,8 +16,9 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
+import api.models.errors.Class4ExemptionReasonFormatError
 import support.UnitSpec
-import v1.models.errors.Class4ExemptionReasonFormatError
 
 class Class4ExemptionReasonValidationSpec extends UnitSpec {
 

@@ -16,6 +16,7 @@
 
 package definition
 
+import api.mocks.MockHttpClient
 import config.ConfidenceLevelConfig
 import definition.APIStatus.{ALPHA, BETA}
 import definition.Versions.VERSION_1
@@ -23,7 +24,6 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
-import v1.mocks.MockHttpClient
 
 class ApiDefinitionFactorySpec extends UnitSpec {
 
