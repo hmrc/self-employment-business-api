@@ -44,7 +44,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   object DefaultHandler extends Handler
   object V1Handler      extends Handler
   object V2Handler      extends Handler
-  object V3Handler      extends Handler
 
   private val defaultRouter = Router.from { case GET(p"") =>
     DefaultHandler
@@ -58,13 +57,9 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     V2Handler
   }
 
-  private val v3Router = Router.from { case GET(p"/v3") =>
-    V3Handler
-  }
-
   private val routingMap = new VersionRoutingMap {
-    override val defaultRouter: Router    = test.defaultRouter
-    override val map: Map[String, Router] = Map("1.0" -> v1Router, "2.0" -> v2Router, "3.0" -> v3Router)
+    override val defaultRouter: Router     = test.defaultRouter
+    override val map: Map[Version, Router] = Map(Version1 -> v1Router, Version2 -> v2Router)
   }
 
   class Test(implicit acceptHeader: Option[String]) {
