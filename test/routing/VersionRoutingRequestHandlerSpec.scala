@@ -18,7 +18,7 @@ package routing
 
 import akka.actor.ActorSystem
 import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 import mocks.MockAppConfig
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -62,16 +62,25 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     override val map: Map[Version, Router] = Map(Version1 -> v1Router, Version2 -> v2Router)
   }
 
-  class Test(implicit acceptHeader: Option[String]) {
+  private val confWithAllEnabled: Config = ConfigFactory.parseString("""
+                                                                       |version-2.enabled = true
+    """.stripMargin)
+
+//  private val confWithV2Disabled: Config = ConfigFactory.parseString("""
+//                                                                       |version-1.enabled = true
+//    """.stripMargin)
+
+//  private val confWithV1DisabledV2Enabled: Config = ConfigFactory.parseString("""
+//   version-2.enabled = true
+//    """.stripMargin)
+
+  class Test(implicit acceptHeader: Option[String], conf: Config) {
     val httpConfiguration: HttpConfiguration = HttpConfiguration("context")
     private val errorHandler                 = mock[HttpErrorHandler]
     private val filters                      = mock[HttpFilters]
     (filters.filters _).stubs().returns(Seq.empty)
 
-    MockAppConfig.featureSwitches.returns(Configuration(ConfigFactory.parseString("""
-                                                                           |version-1.enabled = true
-                                                                           |version-2.enabled = true
-                                                                         """.stripMargin)))
+    MockAppConfig.featureSwitches.returns(Configuration(conf))
 
     val requestHandler: VersionRoutingRequestHandler =
       new VersionRoutingRequestHandler(routingMap, errorHandler, httpConfiguration, mockAppConfig, filters, action)
@@ -108,6 +117,8 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   }
 
   private def handleWithDefaultRoutes()(implicit acceptHeader: Option[String]): Unit = {
+    implicit val useConf: Config = confWithAllEnabled
+
     "if the request ends with a trailing slash" when {
       "handler found" should {
         "use it" in new Test {
@@ -124,7 +135,10 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     }
   }
 
-  private def handleWithVersionRoutes(path: String, handler: Handler)(implicit acceptHeader: Option[String]): Unit = {
+  private def handleWithVersionRoutes(path: String, handler: Handler, conf: Config = confWithAllEnabled)(implicit
+      acceptHeader: Option[String]): Unit = {
+    implicit val useConf: Config = conf
+
     "if the request ends with a trailing slash" when {
       "handler found" should {
         "use it" in new Test {
@@ -144,6 +158,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
   "Routing requests to non default router with no version" should {
     implicit val acceptHeader: None.type = None
+    implicit val useConf: Config         = confWithAllEnabled
 
     "return 406" in new Test {
 
@@ -159,6 +174,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
   "Routing requests with unsupported version" should {
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.5.0+json")
+    implicit val useConf: Config            = confWithAllEnabled
 
     "return 404" in new Test {
       private val request = buildRequest("/v1")
@@ -174,6 +190,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
   "Routing requests for supported version but not enabled" when {
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.3.0+json")
+    implicit val useConf: Config            = confWithAllEnabled
 
     "the version has a route for the resource" must {
       "return 404 Not Found" in new Test {
