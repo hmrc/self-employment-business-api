@@ -66,18 +66,21 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
     documentHandler orElse apiHandler
   }
 
-  private def findRoute(request: RequestHeader, version: Version): Option[Handler] = {
+  private def findRoute(request: RequestHeader, version: Version, versionEnabled: Boolean = true): Option[Handler] = {
+    def getRouting(): Option[Handler] = versionRoutingMap
+      .versionRouter(version)
+      .flatMap(router => routeWith(router, request))
+
     val found =
-      if (featureSwitches.isVersionEnabled(version)) {
-        versionRoutingMap
-          .versionRouter(version)
-          .flatMap(router => routeWith(router, request))
-      } else {
-        Some(unsupportedVersionAction)
+      versionEnabled match {
+        case true if featureSwitches.isVersionEnabled(version) => getRouting()
+        case false if (getRouting().nonEmpty)                  => getRouting()
+        case false                                             => Some(resourceNotFoundAction)
+        case _                                                 => Some(unsupportedVersionAction)
       }
 
     found
-      .orElse(version.maybePrevious.flatMap(previousVersion => findRoute(request, previousVersion)))
+      .orElse(version.maybePrevious.flatMap(previousVersion => findRoute(request, previousVersion, false)))
   }
 
   private def routeWith(router: Router, request: RequestHeader): Option[Handler] =
