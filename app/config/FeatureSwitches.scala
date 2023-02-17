@@ -18,8 +18,6 @@ package config
 
 import play.api.Configuration
 
-import play.api.Configuration
-
 case class FeatureSwitches(featureSwitchConfig: Configuration) {
 
   private val versionRegex = """(\d)\.\d""".r
@@ -42,4 +40,5 @@ case class FeatureSwitches(featureSwitchConfig: Configuration) {
   val isTaxYearSpecificApiEnabled: Boolean = isEnabled("tys-api.enabled")
 
   private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
+
 }

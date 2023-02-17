@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.hateoas
+package api.controllers
 
-object RelType {
-  val SELF = "self"
+import api.models.errors.ErrorWrapper
+import play.api.libs.json.Json
+import play.api.mvc.Result
+import play.api.mvc.Results.Status
 
-  val AMEND_ANNUAL_SUBMISSION_REL  = "create-and-amend-self-employment-annual-submission"
-  val DELETE_ANNUAL_SUBMISSION_REL = "delete-self-employment-annual-submission"
+case class ErrorHandling(errorHandler: PartialFunction[ErrorWrapper, Result])
 
-  val CREATE_PERIOD_SUMMARY_REL = "create-self-employment-period-summary"
-  val AMEND_PERIOD_SUMMARY_REL  = "amend-self-employment-period-summary"
-  val LIST_PERIOD_SUMMARIES_REL = "list-self-employment-period-summaries"
+object ErrorHandling {
+
+  val Default: ErrorHandling = ErrorHandling { case errorWrapper: ErrorWrapper =>
+    Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
+  }
 
 }

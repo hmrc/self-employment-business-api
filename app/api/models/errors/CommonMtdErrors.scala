@@ -108,16 +108,16 @@ object Class4ExemptionReasonFormatError
 
 // Rule Errors
 object RuleInvalidSubmissionPeriodError
-  extends MtdError(
-    code = "RULE_INVALID_SUBMISSION_PERIOD",
-    message = "Self Employment submissions cannot be more than 10 days before the end of the Period"
-  )
+    extends MtdError(
+      code = "RULE_INVALID_SUBMISSION_PERIOD",
+      message = "Self Employment submissions cannot be more than 10 days before the end of the Period"
+    )
 
 object RuleInvalidSubmissionEndDateError
-  extends MtdError(
-    code = "RULE_INVALID_SUBMISSION_END_DATE",
-    message = "The submitted end date must be the end of the quarter"
-  )
+    extends MtdError(
+      code = "RULE_INVALID_SUBMISSION_END_DATE",
+      message = "The submitted end date must be the end of the quarter"
+    )
 
 object RuleTaxYearNotSupportedError
     extends MtdError(
@@ -241,7 +241,13 @@ object ServiceUnavailableError
     )
 
 // Authorisation Errors
-object UnauthorisedError
+object ClientNotAuthorisedError
+    extends MtdError(
+      code = "CLIENT_OR_AGENT_NOT_AUTHORISED",
+      message = "The client and/or agent is not authorised"
+    )
+
+object ClientNotAuthenticatedError
     extends MtdError(
       code = "CLIENT_OR_AGENT_NOT_AUTHORISED",
       message = "The client and/or agent is not authorised"

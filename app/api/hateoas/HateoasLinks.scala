@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.hateoas
+package api.hateoas
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.Link
-import api.models.hateoas.Method._
+import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import config.{AppConfig, FeatureSwitches}
-import v1.models.hateoas.RelType._
+import api.models.hateoas.RelType._
 
 trait HateoasLinks {
 
