@@ -16,12 +16,9 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext}
-import api.models.errors._
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.Json
+import api.controllers.RequestContextImplicits.toCorrelationId
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.DeleteAnnualSubmissionRequestParser
@@ -29,17 +26,17 @@ import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
 import v1.services.DeleteAnnualSubmissionService
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
                                                   val lookupService: MtdIdLookupService,
                                                   parser: DeleteAnnualSubmissionRequestParser,
                                                   service: DeleteAnnualSubmissionService,
+                                                  auditService: AuditService,
                                                   cc: ControllerComponents,
                                                   idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -47,49 +44,23 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(
-        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with correlationId : $correlationId")
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
+
       val rawData = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.deleteAnnualSubmission(parsedRequest))
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          NoContent.withApiHeaders(serviceResponse.correlationId)
+      val requestHandler = RequestHandler
+        .withParser(parser)
+        .withService(service.deleteAnnualSubmission)
+        .withNoContentResult()
+        .withAuditing(AuditHandler(
+          auditService,
+          auditType = "DeleteAnnualSubmission",
+          transactionName = "delete-annual-submission",
+          pathParams = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear)
+        ))
 
-        }
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+      requestHandler.handleRequest(rawData)
 
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-        result
-      }.merge
-    }
-
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            BusinessIdFormatError,
-            TaxYearFormatError,
-            RuleTaxYearNotSupportedError,
-            RuleTaxYearRangeInvalidError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case InternalError => InternalServerError(Json.toJson(errorWrapper))
-      case _             => unhandledError(errorWrapper)
     }
 
 }

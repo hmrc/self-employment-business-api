@@ -19,24 +19,24 @@ package v1.controllers
 import api.controllers.RequestContextImplicits.toCorrelationId
 import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import play.api.libs.json.{JsValue, Json}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendAnnualSubmissionRequestParser
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
-import v1.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
 import v1.services.AmendAnnualSubmissionService
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
                                                  val lookupService: MtdIdLookupService,
                                                  parser: AmendAnnualSubmissionRequestParser,
                                                  service: AmendAnnualSubmissionService,
+                                                 auditService: AuditService,
                                                  hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -55,14 +55,15 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.amendAnnualSubmission)
-        .withPlainJsonResult()
         .withAuditing(AuditHandler(
           auditService,
           auditType = "AmendAnnualSubmission",
           transactionName = "amend-annual-submission",
           pathParams = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
+          requestBody = Some(request.body),
           includeResponse = true
         ))
+        .withHateoasResult(hateoasFactory)(AmendAnnualSubmissionHateoasData(nino, businessId, taxYear))
 
       requestHandler.handleRequest(rawData)
     }

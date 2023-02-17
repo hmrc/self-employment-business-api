@@ -16,14 +16,12 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext}
-import api.models.errors._
+import api.controllers.RequestContextImplicits.toCorrelationId
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents, Result}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import play.api.libs.json.JsValue
+import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
@@ -32,7 +30,7 @@ import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksF
 import v1.services.CreatePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
@@ -40,10 +38,10 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                parser: CreatePeriodSummaryRequestParser,
                                                service: CreatePeriodSummaryService,
                                                hateoasFactory: HateoasFactory,
+                                               auditService: AuditService,
                                                cc: ControllerComponents,
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
-    with BaseController
     with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -51,73 +49,23 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
 
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
-      logger.info(
-        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with correlationId : $correlationId")
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
+
       val rawData = CreatePeriodSummaryRawData(nino, businessId, request.body)
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.createPeriodicSummary(parsedRequest))
-        } yield {
-          val hateoasData = CreatePeriodSummaryHateoasData(
-            parsedRequest.nino,
-            parsedRequest.businessId,
-            serviceResponse.responseData.periodId,
-            Some(parsedRequest.taxYear)
-          )
 
-          val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, hateoasData)
+      val requestHandler = RequestHandler
+        .withParser(parser)
+        .withService(service.createPeriodicSummary)
+        .withAuditing(AuditHandler(
+          auditService,
+          auditType = "CreatePeriodSummary",
+          transactionName = "create-period-summary",
+          pathParams = Map("nino" -> nino, "businessId" -> businessId),
+          includeResponse = true
+        ))
+        .withHateoasResult(hateoasFactory)(CreatePeriodSummaryHateoasData(nino, businessId, periodId, Some(taxYear)))
 
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
-
-          Ok(Json.toJson(vendorResponse))
-            .withApiHeaders(serviceResponse.correlationId)
-        }
-
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result: Result   = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-        result
-      }.merge
-    }
-
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            ValueFormatError,
-            BusinessIdFormatError,
-            StartDateFormatError,
-            EndDateFormatError,
-            RuleBothExpensesSuppliedError,
-            RuleEndDateBeforeStartDateError,
-            RuleOverlappingPeriod,
-            RuleMisalignedPeriod,
-            RuleNotContiguousPeriod,
-            RuleNotAllowedConsolidatedExpenses,
-            RuleIncorrectOrEmptyBodyError,
-            RuleDuplicateSubmissionError,
-            RuleTaxYearNotSupportedError,
-            RuleInvalidSubmissionPeriodError,
-            RuleInvalidSubmissionEndDateError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case InternalError => InternalServerError(Json.toJson(errorWrapper))
-      case _             => unhandledError(errorWrapper)
+      requestHandler.handleRequest(rawData)
     }
 
 }
