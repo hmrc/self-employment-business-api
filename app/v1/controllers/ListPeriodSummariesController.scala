@@ -16,12 +16,12 @@
 
 package v1.controllers
 
-import api.controllers.RequestContextImplicits.toCorrelationId
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import utils.IdGenerator
 import v1.controllers.requestParsers.ListPeriodSummariesRequestParser
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 import v1.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
@@ -36,11 +36,9 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
                                                parser: ListPeriodSummariesRequestParser,
                                                service: ListPeriodSummariesService,
                                                hateoasFactory: HateoasFactory,
-                                               auditService: AuditService,
                                                cc: ControllerComponents,
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "ListPeriodSummariesController", endpointName = "listSelfEmploymentPeriodSummaries")
@@ -51,17 +49,16 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
 
       val rawData = ListPeriodSummariesRawData(nino, businessId, taxYear)
 
+      val taxYearHateoas = taxYear match {
+        case Some(year) => Some(TaxYear.fromMtd(year))
+        case None       => None
+      }
+
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.listPeriodSummaries)
         .withPlainJsonResult()
-        .withAuditing(AuditHandler(
-          auditService,
-          auditType = "ListPeriodSummaries",
-          transactionName = "list-period-summaries",
-          pathParams = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
-          includeResponse = true
-        ))
+        .withHateoasResult(hateoasFactory)(ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYearHateoas))
 
       requestHandler.handleRequest(rawData)
     }

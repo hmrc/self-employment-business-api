@@ -16,28 +16,22 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
-import api.services.ServiceOutcome
-import api.support.DownstreamResponseMappingSupport
+import api.services.{BaseService, RetrieveAnnualSubmissionServiceOutcome}
 import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.RetrieveAnnualSubmissionConnector
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
-import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmissionConnector) extends DownstreamResponseMappingSupport with Logging {
+class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmissionConnector) extends BaseService {
 
   def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[RetrieveAnnualSubmissionServiceOutcome] = {
 
     connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

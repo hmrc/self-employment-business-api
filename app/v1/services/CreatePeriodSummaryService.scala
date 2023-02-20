@@ -16,14 +16,10 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.support.DownstreamResponseMappingSupport
+import api.services.{BaseService, CreatePeriodSummaryServiceOutcome}
 import cats.data.EitherT
-import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.CreatePeriodSummaryConnector
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
@@ -32,14 +28,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
+class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends BaseService {
 
-  def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]] = {
-
+  def createPeriodicSummary(
+      request: CreatePeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[CreatePeriodSummaryServiceOutcome] = {
     val result = for {
       responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
     } yield responseWrapper.map { _ =>

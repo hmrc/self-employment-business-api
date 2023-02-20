@@ -16,16 +16,17 @@
 
 package v1.controllers
 
-import api.controllers.RequestContextImplicits.toCorrelationId
 import api.controllers._
 import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import utils.IdGenerator
 import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import v1.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
+import v1.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
 import v1.services._
 
 import javax.inject._
@@ -37,11 +38,9 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
                                               parser: AmendPeriodSummaryRequestParser,
                                               service: AmendPeriodSummaryService,
                                               hateoasFactory: HateoasFactory,
-                                              auditService: AuditService,
                                               cc: ControllerComponents,
                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendPeriodSummaryController", endpointName = "amendSelfEmploymentPeriodSummary")
@@ -52,18 +51,15 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
 
       val rawData = AmendPeriodSummaryRawData(nino, businessId, periodId, request.body, taxYear)
 
+      val taxYearHateoas = taxYear match {
+        case Some(year) => Some(TaxYear.fromMtd(year))
+        case None       => None
+      }
+
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.amendPeriodSummary)
-        .withAuditing(AuditHandler(
-          auditService,
-          auditType = "AmendPeriodSummary",
-          transactionName = "amend-period-summary",
-          pathParams = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear),
-          requestBody = Some(request.body),
-          includeResponse = true
-        ))
-        .withHateoasResult(hateoasFactory)(AmendPeriodSummaryHateoasData(nino, businessId, periodId, taxYear))
+        .withHateoasResult(hateoasFactory)(AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYearHateoas))
 
       requestHandler.handleRequest(rawData)
     }

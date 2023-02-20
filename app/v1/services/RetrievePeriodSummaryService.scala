@@ -16,28 +16,21 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
-import api.services.ServiceOutcome
-import api.support.DownstreamResponseMappingSupport
+import api.services.{BaseService, RetrievePeriodSummaryServiceOutcome}
 import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.RetrievePeriodSummaryConnector
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
-import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
+class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends BaseService {
 
-  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+  def retrievePeriodSummary(
+      request: RetrievePeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[RetrievePeriodSummaryServiceOutcome] = {
 
     connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

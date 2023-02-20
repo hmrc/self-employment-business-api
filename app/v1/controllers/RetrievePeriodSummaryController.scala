@@ -16,12 +16,12 @@
 
 package v1.controllers
 
-import api.controllers.RequestContextImplicits.toCorrelationId
 import api.controllers._
 import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import utils.IdGenerator
 import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
@@ -36,11 +36,9 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
                                                  parser: RetrievePeriodSummaryRequestParser,
                                                  service: RetrievePeriodSummaryService,
                                                  hateoasFactory: HateoasFactory,
-                                                 auditService: AuditService,
                                                  cc: ControllerComponents,
                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrievePeriodSummaryController", endpointName = "retrieveSelfEmploymentPeriodicSummary")
@@ -51,17 +49,16 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
 
       val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, taxYear)
 
+      val taxYearHateoas = taxYear match {
+        case Some(year) => Some(TaxYear.fromMtd(year))
+        case None       => None
+      }
+
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.retrievePeriodSummary)
         .withPlainJsonResult()
-        .withAuditing(AuditHandler(
-          auditService = auditService,
-          auditType = "RetrievePeriodSummary",
-          transactionName = "retrieve-period-summary",
-          pathParams = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear),
-          includeResponse = true
-        ))
+        .withHateoasResult(hateoasFactory)(RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYearHateoas))
 
       requestHandler.handleRequest(rawData)
     }

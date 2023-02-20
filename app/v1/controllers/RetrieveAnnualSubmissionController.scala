@@ -16,14 +16,15 @@
 
 package v1.controllers
 
-import api.controllers.RequestContextImplicits.toCorrelationId
 import api.controllers._
 import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import utils.IdGenerator
 import v1.controllers.requestParsers.RetrieveAnnualSubmissionRequestParser
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRawData
+import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionHateoasData
 import v1.services.RetrieveAnnualSubmissionService
 
 import javax.inject.{Inject, Singleton}
@@ -35,11 +36,9 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
                                                     parser: RetrieveAnnualSubmissionRequestParser,
                                                     service: RetrieveAnnualSubmissionService,
                                                     hateoasFactory: HateoasFactory,
-                                                    auditService: AuditService,
                                                     cc: ControllerComponents,
                                                     idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = "retrieveSelfEmploymentAnnualSubmission")
@@ -54,13 +53,7 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
         .withParser(parser)
         .withService(service.retrieveAnnualSubmission)
         .withPlainJsonResult()
-        .withAuditing(AuditHandler(
-          auditService = auditService,
-          auditType = "RetrieveAnnualSubmission",
-          transactionName = "retrieve-annual-submission",
-          pathParams = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
-          includeResponse = true
-        ))
+        .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
 
       requestHandler.handleRequest(rawData)
     }

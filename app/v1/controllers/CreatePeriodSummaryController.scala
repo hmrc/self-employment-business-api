@@ -16,17 +16,16 @@
 
 package v1.controllers
 
-import api.controllers.RequestContextImplicits.toCorrelationId
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers._
 import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import utils.IdGenerator
 import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
 import v1.services.CreatePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
@@ -38,11 +37,9 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                parser: CreatePeriodSummaryRequestParser,
                                                service: CreatePeriodSummaryService,
                                                hateoasFactory: HateoasFactory,
-                                               auditService: AuditService,
                                                cc: ControllerComponents,
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateSelfEmploymentPeriodController", endpointName = "createSelfEmploymentPeriodSummary")
@@ -56,14 +53,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.createPeriodicSummary)
-        .withAuditing(AuditHandler(
-          auditService,
-          auditType = "CreatePeriodSummary",
-          transactionName = "create-period-summary",
-          pathParams = Map("nino" -> nino, "businessId" -> businessId),
-          includeResponse = true
-        ))
-        .withHateoasResult(hateoasFactory)(CreatePeriodSummaryHateoasData(nino, businessId, periodId, Some(taxYear)))
+        .withHateoasResult(hateoasFactory)(CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear))
 
       requestHandler.handleRequest(rawData)
     }

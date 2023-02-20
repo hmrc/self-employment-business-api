@@ -16,11 +16,10 @@
 
 package v1.controllers
 
-import api.controllers.RequestContextImplicits.toCorrelationId
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.{IdGenerator, Logging}
+import utils.IdGenerator
 import v1.controllers.requestParsers.DeleteAnnualSubmissionRequestParser
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
 import v1.services.DeleteAnnualSubmissionService
@@ -33,11 +32,9 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
                                                   val lookupService: MtdIdLookupService,
                                                   parser: DeleteAnnualSubmissionRequestParser,
                                                   service: DeleteAnnualSubmissionService,
-                                                  auditService: AuditService,
                                                   cc: ControllerComponents,
                                                   idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "DeleteAnnualSubmissionController", endpointName = "deleteSelfEmploymentAnnualSubmission")
@@ -52,12 +49,6 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
         .withParser(parser)
         .withService(service.deleteAnnualSubmission)
         .withNoContentResult()
-        .withAuditing(AuditHandler(
-          auditService,
-          auditType = "DeleteAnnualSubmission",
-          transactionName = "delete-annual-submission",
-          pathParams = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear)
-        ))
 
       requestHandler.handleRequest(rawData)
 
