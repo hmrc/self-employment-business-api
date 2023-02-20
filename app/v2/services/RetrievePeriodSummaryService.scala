@@ -44,7 +44,7 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
   }
 
   private def downstreamErrorMap: Map[String, MtdError] = {
-    val downstreamErrors = Map(
+    val errors = Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
       "INVALID_DATE_FROM"       -> PeriodIdFormatError,
@@ -62,7 +62,7 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
-    downstreamErrors ++ extraTysErrors
+    errors ++ extraTysErrors
   }
 
 }
