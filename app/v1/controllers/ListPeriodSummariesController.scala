@@ -49,16 +49,11 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
 
       val rawData = ListPeriodSummariesRawData(nino, businessId, taxYear)
 
-      val taxYearHateoas = taxYear match {
-        case Some(year) => Some(TaxYear.fromMtd(year))
-        case None       => None
-      }
-
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.listPeriodSummaries)
         .withPlainJsonResult()
-        .withHateoasResult(hateoasFactory)(ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYearHateoas))
+        .withHateoasResult(hateoasFactory)(ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYear.map(TaxYear.fromMtd)))
 
       requestHandler.handleRequest(rawData)
     }

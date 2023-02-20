@@ -49,16 +49,12 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
 
       val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, taxYear)
 
-      val taxYearHateoas = taxYear match {
-        case Some(year) => Some(TaxYear.fromMtd(year))
-        case None       => None
-      }
-
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.retrievePeriodSummary)
         .withPlainJsonResult()
-        .withHateoasResult(hateoasFactory)(RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYearHateoas))
+        .withHateoasResult(hateoasFactory)(
+          RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear.map(TaxYear.fromMtd)))
 
       requestHandler.handleRequest(rawData)
     }
