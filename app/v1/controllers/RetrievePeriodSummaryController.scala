@@ -52,7 +52,6 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.retrievePeriodSummary)
-        .withPlainJsonResult()
         .withHateoasResult(hateoasFactory)(
           RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear.map(TaxYear.fromMtd)))
 

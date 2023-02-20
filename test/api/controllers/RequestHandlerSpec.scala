@@ -27,6 +27,7 @@ import api.models.errors.{ErrorWrapper, NinoFormatError}
 import api.models.hateoas.{HateoasData, HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import api.models.request.RawData
+import api.services.ServiceOutcome
 import config.AppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}

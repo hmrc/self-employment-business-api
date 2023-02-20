@@ -25,6 +25,7 @@ import utils.IdGenerator
 import v1.controllers.requestParsers.ListPeriodSummariesRequestParser
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 import v1.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
+import v1.models.response.listPeriodSummaries.ListPeriodSummariesResponse.LinksFactory
 import v1.services.ListPeriodSummariesService
 
 import javax.inject.{Inject, Singleton}
@@ -52,7 +53,6 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.listPeriodSummaries)
-        .withPlainJsonResult()
         .withHateoasResult(hateoasFactory)(ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYear.map(TaxYear.fromMtd)))
 
       requestHandler.handleRequest(rawData)

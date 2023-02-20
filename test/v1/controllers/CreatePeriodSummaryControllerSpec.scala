@@ -64,7 +64,7 @@ class CreatePeriodSummaryControllerSpec
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
+    MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
 
   private val requestJson = Json.parse(

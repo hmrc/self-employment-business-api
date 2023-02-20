@@ -16,7 +16,7 @@
 
 package v1.models.response.listPeriodSummaries
 
-import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
@@ -31,7 +31,7 @@ object ListPeriodSummariesResponse extends HateoasLinks {
 
   implicit def writes[I: Writes]: OWrites[ListPeriodSummariesResponse[I]] = Json.writes
 
-  implicit object LinksFactory extends HateoasListLinksFactory[ListPeriodSummariesResponse, PeriodDetails, ListPeriodSummariesHateoasData] {
+  implicit object LinksFactory extends HateoasLinksFactory[ListPeriodSummariesResponse[PeriodDetails], ListPeriodSummariesHateoasData] {
 
     override def links(appConfig: AppConfig, data: ListPeriodSummariesHateoasData): Seq[Link] = {
       Seq(
@@ -40,7 +40,7 @@ object ListPeriodSummariesResponse extends HateoasLinks {
       )
     }
 
-    override def itemLinks(appConfig: AppConfig, data: ListPeriodSummariesHateoasData, item: PeriodDetails): Seq[Link] =
+    def itemLinks(appConfig: AppConfig, data: ListPeriodSummariesHateoasData, item: PeriodDetails): Seq[Link] =
       Seq(
         retrievePeriodSummary(appConfig, data.nino, data.businessId, item.periodId, data.taxYear)
       )

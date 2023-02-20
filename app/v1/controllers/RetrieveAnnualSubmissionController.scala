@@ -52,7 +52,6 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.retrieveAnnualSubmission)
-        .withPlainJsonResult()
         .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
 
       requestHandler.handleRequest(rawData)
