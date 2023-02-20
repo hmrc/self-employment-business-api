@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.endpoints
+package endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -22,7 +22,7 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
 
 class AuthISpec extends IntegrationBaseSpec {
@@ -83,7 +83,8 @@ class AuthISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.PUT, downstreamUri, OK, desResponseBody)
+          BaseDownstreamStub
+            .onSuccess(BaseDownstreamStub.PUT, downstreamUri, OK, desResponseBody)
         }
 
         val response: WSResponse = await(request().put(Json.parse(requestJson)))

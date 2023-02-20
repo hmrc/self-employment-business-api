@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.endpoints
+package v1andv2.endpoints
 
 import api.models.domain.TaxYear
 import api.models.errors._
@@ -24,46 +24,51 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
-import stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
+
+  val versions = Seq("1.0", "2.0")
 
   "calling the list period summaries endpoint" should {
 
     "return a 200 status code" when {
 
-      "any valid request is made" in new NonTysTest {
+      versions.foreach(testVersion =>
+        s"any valid request is made to version $testVersion" in new NonTysTest {
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
-        }
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            BaseDownstreamStub
+              .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
+          }
 
-        val response: WSResponse = await(request().get())
-        response.status shouldBe OK
-        response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
+          val response: WSResponse = await(request(testVersion).get())
+          response.status shouldBe OK
+          response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
+          response.header("Content-Type") shouldBe Some("application/json")
+        })
 
-      "any valid request is made for a TYS specific year" in new TysIfsTest {
+      versions.foreach(testVersion =>
+        s"any valid request is made for a TYS specific year for version $testVersion" in new TysIfsTest {
 
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
-        }
+          override def setupStubs(): StubMapping = {
+            AuditStub.audit()
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino)
+            BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
+          }
 
-        val response: WSResponse = await(request().get())
-        response.status shouldBe OK
-        response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
+          val response: WSResponse = await(request(testVersion).get())
+          response.status shouldBe OK
+          response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
+          response.header("X-CorrelationId").nonEmpty shouldBe true
+          response.header("Content-Type") shouldBe Some("application/json")
+        })
     }
     "return error according to spec" when {
 
@@ -72,8 +77,9 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
                                 requestBusinessId: String,
                                 requestTaxYear: String,
                                 expectedStatus: Int,
-                                expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
+                                expectedBody: MtdError,
+                                version: String): Unit = {
+          s"validation fails with ${expectedBody.code} error in version $version" in new TysIfsTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -85,7 +91,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(requestNino)
             }
 
-            val response: WSResponse = await(request().get())
+            val response: WSResponse = await(request(version).get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -98,22 +104,21 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )
-
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        versions.foreach(testVersion => input.foreach(args => (validationErrorTest(args._1, args._2, args._3, args._4, args._5, testVersion))))
       }
 
       "downstream service error" when {
-        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError, version: String): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus in version $version" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.GET, downstreamUri(), downstreamStatus, errorBody(downstreamCode))
+              BaseDownstreamStub.onError(BaseDownstreamStub.GET, downstreamUri(), downstreamStatus, errorBody(downstreamCode))
             }
 
-            val response: WSResponse = await(request().get())
+            val response: WSResponse = await(request(version).get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -131,7 +136,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        versions.foreach(testVersion => input.foreach(args => (serviceErrorTest(args._1, args._2, args._3, args._4, testVersion))))
       }
     }
   }
@@ -218,11 +223,11 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
-    def request(): WSRequest = {
+    def request(version: String): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (ACCEPT, s"application/vnd.hmrc.$version+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -243,10 +248,10 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
-    def request(): WSRequest = {
+    def request(version: String): WSRequest = {
       setupStubs()
       buildRequest(s"$uri?taxYear=$mtdTaxYear").withHttpHeaders(
-        (ACCEPT, "application/vnd.hmrc.1.0+json"),
+        (ACCEPT, s"application/vnd.hmrc.$version+json"),
         (AUTHORIZATION, "Bearer 123")
       )
     }

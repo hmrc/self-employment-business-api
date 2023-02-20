@@ -17,24 +17,13 @@
 package config
 
 import play.api.Configuration
-
 import play.api.Configuration
+import routing.Version
 
 case class FeatureSwitches(featureSwitchConfig: Configuration) {
 
-  private val versionRegex = """(\d)\.\d""".r
-
-  def isVersionEnabled(version: String): Boolean = {
-    val maybeVersion: Option[String] =
-      version match {
-        case versionRegex(v) => Some(v)
-        case _               => None
-      }
-
-    val enabled = for {
-      validVersion <- maybeVersion
-      enabled      <- featureSwitchConfig.getOptional[Boolean](s"version-$validVersion.enabled")
-    } yield enabled
+  def isVersionEnabled(version: Version): Boolean = {
+    val enabled = featureSwitchConfig.getOptional[Boolean](s"version-${version.configName}.enabled")
 
     enabled.getOrElse(false)
   }
