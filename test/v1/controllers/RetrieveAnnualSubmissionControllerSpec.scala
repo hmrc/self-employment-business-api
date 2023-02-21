@@ -105,6 +105,8 @@ class RetrieveAnnualSubmissionControllerSpec
           MockRetrieveAnnualSubmissionRequestParser
             .parse(rawData)
             .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+          runErrorTest(NinoFormatError)
         }
       }
     }
@@ -118,6 +120,8 @@ class RetrieveAnnualSubmissionControllerSpec
       MockRetrieveAnnualSubmissionService
         .retrieve(requestData)
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+      runErrorTest(RuleTaxYearNotSupportedError)
     }
   }
 

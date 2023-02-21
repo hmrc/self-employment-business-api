@@ -159,6 +159,8 @@ class AmendPeriodSummaryControllerSpec
             MockAmendPeriodSummaryRequestParser
               .requestFor(rawData)
               .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+            runErrorTest(NinoFormatError)
           }
         }
       }
@@ -173,6 +175,7 @@ class AmendPeriodSummaryControllerSpec
           .amendPeriodSummary(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
   }

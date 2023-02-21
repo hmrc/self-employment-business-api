@@ -146,6 +146,8 @@ class ListPeriodSummariesControllerSpec
           MockListPeriodSummariesRequestParser
             .parse(rawData)
             .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+          runErrorTest(NinoFormatError)
         }
       }
     }
@@ -159,6 +161,8 @@ class ListPeriodSummariesControllerSpec
       MockListPeriodSummariesService
         .listPeriodSummaries(requestData)
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+      runErrorTest(RuleTaxYearNotSupportedError)
     }
   }
 

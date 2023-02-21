@@ -79,6 +79,8 @@ class DeleteAnnualSubmissionControllerSpec
           MockDeleteAnnualSubmissionRequestParser
             .parse(rawData)
             .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+          runErrorTest(NinoFormatError)
         }
       }
     }
@@ -92,6 +94,8 @@ class DeleteAnnualSubmissionControllerSpec
       MockDeleteAnnualSubmissionService
         .deleteAnnualSubmission(requestData)
         .returns(Future.successful(Left(errors.ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+      runErrorTest(RuleTaxYearNotSupportedError)
     }
 
   }

@@ -129,6 +129,8 @@ class RetrievePeriodSummaryControllerSpec
           MockRetrievePeriodSummaryRequestParser
             .parse(rawData)
             .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+          runErrorTest(NinoFormatError)
         }
       }
     }
@@ -142,6 +144,8 @@ class RetrievePeriodSummaryControllerSpec
       MockRetrievePeriodSummaryService
         .retrieve(requestData)
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+      runErrorTest(RuleTaxYearNotSupportedError)
     }
   }
 

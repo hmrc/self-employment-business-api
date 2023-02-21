@@ -133,6 +133,8 @@ class AmendAnnualSubmissionControllerSpec
           MockAmendAnnualSummaryRequestParser
             .requestFor(rawData)
             .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+          runErrorTest(NinoFormatError)
         }
       }
     }
@@ -146,6 +148,7 @@ class AmendAnnualSubmissionControllerSpec
         .amendAnnualSubmission(requestData)
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
+      runErrorTest(RuleTaxYearNotSupportedError)
     }
   }
 

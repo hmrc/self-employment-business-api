@@ -176,18 +176,21 @@ class CreatePeriodSummaryControllerSpec
       |  "links": [
       |    {
       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      |      "rel": "amend-self-employment-period-summary",
-      |      "method": "PUT"
+      |      "method": "PUT",
+      |      "rel": "amend-self-employment-period-summary"
+      |      
       |    },
       |    {
       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      |      "rel": "self",
-      |      "method": "GET"
+      |      "method": "GET",
+      |      "rel": "self"
+      |      
       |    },
       |    {
       |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
-      |      "rel": "list-self-employment-period-summaries",
-      |      "method": "GET"
+      |      "method": "GET",
+      |      "rel": "list-self-employment-period-summaries"
+      |      
       |    }
       |  ]
       |}
@@ -229,6 +232,8 @@ class CreatePeriodSummaryControllerSpec
           MockCreatePeriodSummaryRequestParser
             .parseRequest(rawData)
             .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+          runErrorTest(NinoFormatError)
         }
       }
     }
@@ -242,6 +247,8 @@ class CreatePeriodSummaryControllerSpec
       MockCreatePeriodicService
         .createPeriodic(requestData)
         .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+      runErrorTest(RuleTaxYearNotSupportedError)
     }
   }
 
