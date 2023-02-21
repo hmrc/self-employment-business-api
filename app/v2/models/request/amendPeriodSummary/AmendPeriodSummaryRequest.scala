@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package v2.models.hateoas
+package v2.models.request.amendPeriodSummary
 
-object RelType {
-  val SELF = "self"
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
-  val AMEND_ANNUAL_SUBMISSION_REL  = "create-and-amend-self-employment-annual-submission"
-  val DELETE_ANNUAL_SUBMISSION_REL = "delete-self-employment-annual-submission"
-
-  val CREATE_PERIOD_SUMMARY_REL = "create-self-employment-period-summary"
-  val AMEND_PERIOD_SUMMARY_REL  = "amend-self-employment-period-summary"
-  val LIST_PERIOD_SUMMARIES_REL = "list-self-employment-period-summaries"
-
-}
+case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody, taxYear: Option[TaxYear])
