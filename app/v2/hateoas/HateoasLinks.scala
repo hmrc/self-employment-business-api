@@ -52,6 +52,9 @@ trait HateoasLinks {
     Link(href = periodSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
   }
 
+  def createPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId): Link =
+    Link(href = periodSummaryUri(appConfig, nino, businessId, None), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
+
   def retrievePeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
     Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = GET, rel = SELF)
 
