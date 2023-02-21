@@ -1,1 +1,2 @@
 #V2 endpoints
+GET        /:nino/:businessId/period/:periodId      v2.controllers.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
