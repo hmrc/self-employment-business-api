@@ -16,17 +16,16 @@
 
 package v1.controllers
 
-import api.controllers.ControllerBaseSpec
-import api.mocks.MockIdGenerator
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
+import api.models.hateoas
 import api.models.hateoas.HateoasWrapper
+import api.models.hateoas.Method.{GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v1.mocks.services.MockCreatePeriodSummaryService
 import v1.models.request.createPeriodSummary._
@@ -37,20 +36,30 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryRequestParser
-    with MockHateoasFactory
-    with MockIdGenerator {
+    with MockHateoasFactory {
 
-  private val nino          = "AA123456A"
-  private val businessId    = "XAIS12345678910"
-  private val periodId      = "2017-01-25_2017-01-25"
-  private val correlationId = "X-123"
+  private val businessId = "XAIS12345678910"
+  private val periodId   = "2017-01-25_2017-01-25"
+  private val taxYear    = "2023-24"
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+  private val testHateoasLinks = Seq(
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+      method = PUT,
+      rel = "amend-self-employment-period-summary"
+    ),
+    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+      method = GET,
+      rel = "list-self-employment-period-summaries"
+    )
+  )
+
+  trait Test extends ControllerTest {
 
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -62,9 +71,7 @@ class CreatePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.generateCorrelationId.returns(correlationId)
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
   }
 
   private val requestJson = Json.parse(
@@ -182,7 +189,7 @@ class CreatePeriodSummaryControllerSpec
   private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {
-    "return Ok" when {
+    "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
         MockCreatePeriodSummaryRequestParser
           .parseRequest(rawData)
@@ -198,82 +205,34 @@ class CreatePeriodSummaryControllerSpec
             CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
-        status(result) shouldBe OK
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseJson)
+        )
+
       }
     }
 
     "return the error as per spec" when {
       "parser errors occur" should {
-        def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-          s"a ${error.code} error is returned from the parser" in new Test {
+        "the parser validation fails" in new Test {
 
-            MockCreatePeriodSummaryRequestParser
-              .parseRequest(rawData)
-              .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-            val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(error)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
+          MockCreatePeriodSummaryRequestParser
+            .parseRequest(rawData)
+            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
         }
-
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (StartDateFormatError, BAD_REQUEST),
-          (EndDateFormatError, BAD_REQUEST),
-          (ValueFormatError.copy(paths = Some(Seq("/foreignTaxCreditRelief/amount"))), BAD_REQUEST),
-          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-          (RuleBothExpensesSuppliedError, BAD_REQUEST),
-          (RuleEndDateBeforeStartDateError, BAD_REQUEST)
-        )
-
-        input.foreach(args => (errorsFromParserTester _).tupled(args))
       }
+    }
 
-      "service errors occur" should {
-        def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $mtdError error is returned from the service" in new Test {
+    "the service returns an error" in new Test {
 
-            MockCreatePeriodSummaryRequestParser
-              .parseRequest(rawData)
-              .returns(Right(requestData))
+      MockCreatePeriodSummaryRequestParser
+        .parseRequest(rawData)
+        .returns(Right(requestData))
 
-            MockCreatePeriodicService
-              .createPeriodic(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
-
-            val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(mtdError)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val errors = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (RuleOverlappingPeriod, BAD_REQUEST),
-          (RuleMisalignedPeriod, BAD_REQUEST),
-          (RuleNotContiguousPeriod, BAD_REQUEST),
-          (RuleNotAllowedConsolidatedExpenses, BAD_REQUEST),
-          (RuleInvalidSubmissionPeriodError, BAD_REQUEST),
-          (RuleInvalidSubmissionEndDateError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
-        val extraTysErrors = Seq(
-          (RuleDuplicateSubmissionError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST)
-        )
-
-        (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
-      }
+      MockCreatePeriodicService
+        .createPeriodic(requestData)
+        .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
     }
   }
 

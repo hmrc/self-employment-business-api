@@ -49,6 +49,7 @@ class ControllerBaseSpec
   )
 
   def fakePostRequest[T](body: T): FakeRequest[T] = fakeRequest.withBody(body)
+  def fakePutRequest[T](body: T): FakeRequest[T]  = fakeRequest.withBody(body)
 }
 
 trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLookupService with MockIdGenerator { _: ControllerBaseSpec =>
