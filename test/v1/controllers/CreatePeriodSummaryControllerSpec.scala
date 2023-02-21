@@ -42,18 +42,17 @@ class CreatePeriodSummaryControllerSpec
     with MockHateoasFactory {
 
   private val businessId = "XAIS12345678910"
-  private val periodId   = "2017-01-25_2017-01-25"
-  private val taxYear    = "2023-24"
+  private val periodId   = "2017-01-25_2018-01-24"
 
   private val testHateoasLinks = Seq(
     hateoas.Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,
       rel = "amend-self-employment-period-summary"
     ),
-    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
     hateoas.Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+      href = s"/individuals/business/self-employment/$nino/$businessId/period",
       method = GET,
       rel = "list-self-employment-period-summaries"
     )
@@ -173,12 +172,22 @@ class CreatePeriodSummaryControllerSpec
   val responseJson: JsValue = Json.parse(
     s"""
       |{
-      |  "periodId": "2017-01-25_2018-01-24",
+      |  "periodId": "$periodId",
       |  "links": [
       |    {
       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      |      "method": "GET",
-      |      "rel": "self"
+      |      "rel": "amend-self-employment-period-summary",
+      |      "method": "PUT"
+      |    },
+      |    {
+      |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+      |      "rel": "self",
+      |      "method": "GET"
+      |    },
+      |    {
+      |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+      |      "rel": "list-self-employment-period-summaries",
+      |      "method": "GET"
       |    }
       |  ]
       |}

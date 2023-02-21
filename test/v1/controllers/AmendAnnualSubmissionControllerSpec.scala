@@ -82,9 +82,19 @@ class AmendAnnualSubmissionControllerSpec
        |{
        |  "links": [
        |    {
-       |      "href": "/someLink",
-       |      "method": "GET",
-       |      "rel": "some-rel"
+       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "rel": "create-and-amend-self-employment-annual-submission",
+       |      "method": "PUT"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "rel": "self",
+       |      "method": "GET"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "rel": "delete-self-employment-annual-submission",
+       |      "method": "DELETE"
        |    }
        |  ]
        |}
