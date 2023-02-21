@@ -21,7 +21,7 @@ import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas
-import api.models.hateoas.HateoasWrapper
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
@@ -42,19 +42,37 @@ class AmendPeriodSummaryControllerSpec
     with MockHateoasFactory
     with AmendPeriodSummaryFixture {
 
-  private val businessId = "XAIS12345678910"
-  private val periodId   = "2019-01-01_2020-01-01"
-  private val taxYear    = "2023-24"
+  private val businessId  = "XAIS12345678910"
+  private val periodId    = "2019-01-01_2020-01-01"
+  private val tysPeriodId = "2024-01-01_2025-01-01"
+  private val taxYear     = "2023-24"
 
   private val testHateoasLinks = Seq(
-    hateoas.Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+    Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,
       rel = "amend-self-employment-period-summary"
     ),
-    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
+    Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period",
+      method = GET,
+      rel = "list-self-employment-period-summaries"
+    )
+  )
+
+  private val testTysHateoasLink = Seq(
     hateoas.Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+      method = PUT,
+      rel = "amend-self-employment-period-summary"
+    ),
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+      method = GET,
+      rel = "self"),
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
       method = GET,
       rel = "list-self-employment-period-summaries"
     )
@@ -73,11 +91,25 @@ class AmendPeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] =
+      controller.handleRequest(nino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
+
+  }
+
+  trait TysTest extends ControllerTest {
+
+    val controller = new AmendPeriodSummaryController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockAmendPeriodSummaryRequestParser,
+      service = mockAmendPeriodSummaryService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] =
       controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
 
   private val requestBodyJson = amendPeriodSummaryBodyMtdJson
@@ -93,22 +125,31 @@ class AmendPeriodSummaryControllerSpec
        |{
        |    "links": [
        |    {
-       |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
-       |      "rel": "amend-self-employment-period-summary",
-       |      "method": "PUT"
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "method": "PUT",
+       |      "rel": "amend-self-employment-period-summary"
+       |     
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
-       |      "rel": "self",
-       |      "method": "GET"
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "method": "GET",
+       |      "rel": "self"
+       |      
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period",
-       |      "rel": "list-self-employment-period-summaries",
-       |      "method": "GET"
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+       |      "method": "GET",
+       |      "rel": "list-self-employment-period-summaries"
+       |      
        |    }
        |    ]
        |  }
+    """.stripMargin
+  )
+
+  val tysResponseJson: JsValue = Json.parse(
+    s"""
+       |{"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"list-self-employment-period-summaries"}]}
     """.stripMargin
   )
 
@@ -133,7 +174,8 @@ class AmendPeriodSummaryControllerSpec
         )
       }
 
-      "the TYS request received is valid" in new Test {
+      "the TYS request received is valid" in new TysTest {
+
         MockAmendPeriodSummaryRequestParser
           .requestFor(tysRawData)
           .returns(Right(tysRequestData))
@@ -144,11 +186,11 @@ class AmendPeriodSummaryControllerSpec
 
         MockHateoasFactory
           .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper((), testHateoasLinks))
+          .returns(HateoasWrapper((), testTysHateoasLink))
 
         runOkTest(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
+          maybeExpectedResponseBody = Some(tysResponseJson)
         )
       }
 

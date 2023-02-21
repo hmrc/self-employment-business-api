@@ -24,6 +24,7 @@ import api.models.hateoas
 import api.models.hateoas.HateoasWrapper
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.outcomes.ResponseWrapper
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.MockRetrievePeriodSummaryService
@@ -40,19 +41,37 @@ class RetrievePeriodSummaryControllerSpec
     with MockRetrievePeriodSummaryRequestParser
     with MockHateoasFactory {
 
-  private val businessId = "XAIS12345678910"
-  private val periodId   = "2019-01-01_2020-01-01"
-  private val taxYear    = "2023-24"
+  private val businessId  = "XAIS12345678910"
+  private val periodId    = "2019-01-01_2020-01-01"
+  private val tysPeriodId = "2024-01-01_2025-01-01"
+  private val taxYear     = "2023-24"
 
   private val testHateoasLink = Seq(
     hateoas.Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,
       rel = "amend-self-employment-period-summary"
     ),
-    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
     hateoas.Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+      method = GET,
+      rel = "list-self-employment-period-summaries"
+    )
+  )
+
+  private val testTysHateoasLink = Seq(
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+      method = PUT,
+      rel = "amend-self-employment-period-summary"
+    ),
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+      method = GET,
+      rel = "self"),
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
       method = GET,
       rel = "list-self-employment-period-summaries"
     )
@@ -70,7 +89,22 @@ class RetrievePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakeGetRequest)
+  }
+
+  trait TysTest extends ControllerTest {
+
+    val controller = new RetrievePeriodSummaryController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockRetrievePeriodSummaryRequestParser,
+      service = mockRetrievePeriodSummaryService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, tysPeriodId, Some(taxYear))(fakeGetRequest)
   }
 
   private val rawData        = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
@@ -87,6 +121,18 @@ class RetrievePeriodSummaryControllerSpec
     periodDisallowableExpenses = None
   )
 
+  val responseJson: JsValue = Json.parse(
+    s"""
+       |{"periodDates":{"periodStartDate":"2019-01-01","periodEndDate":"2020-01-01"},"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01","method":"GET","rel":"list-self-employment-period-summaries"}]}
+    """.stripMargin
+  )
+
+  val tysResponseJson: JsValue = Json.parse(
+    s"""
+       |{"periodDates":{"periodStartDate":"2019-01-01","periodEndDate":"2020-01-01"},"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01[?taxYear=2023-24]","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01[?taxYear=2023-24]","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01[?taxYear=2023-24]","method":"GET","rel":"list-self-employment-period-summaries"}]}
+    """.stripMargin
+  )
+
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
@@ -101,8 +147,13 @@ class RetrievePeriodSummaryControllerSpec
         MockHateoasFactory
           .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
           .returns(HateoasWrapper(responseBody, testHateoasLink))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseJson)
+        )
       }
-      "the TYS request received is valid" in new Test {
+      "the TYS request received is valid" in new TysTest {
         MockRetrievePeriodSummaryRequestParser
           .parse(tysRawData)
           .returns(Right(tysRequestData))
@@ -113,12 +164,12 @@ class RetrievePeriodSummaryControllerSpec
 
         MockHateoasFactory
           .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper(responseBody, testHateoasLink))
+          .returns(HateoasWrapper(responseBody, testTysHateoasLink))
 
-//        runOkTest(
-//          expectedStatus = OK,
-//          maybeExpectedResponseBody = Some(responseBody)
-//        )
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(tysResponseJson)
+        )
       }
     }
 

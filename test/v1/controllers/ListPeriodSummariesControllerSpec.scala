@@ -59,6 +59,21 @@ class ListPeriodSummariesControllerSpec
       idGenerator = mockIdGenerator
     )
 
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, None)(fakeGetRequest)
+  }
+
+  trait TysTest extends ControllerTest {
+
+    val controller = new ListPeriodSummariesController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockListPeriodSummariesRequestParser,
+      service = mockListPeriodSummariesService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, Some(taxYear))(fakeGetRequest)
   }
 
@@ -67,14 +82,17 @@ class ListPeriodSummariesControllerSpec
   private val requestData    = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
   private val requestTysData = requestData.copy(taxYear = Some(TaxYear.fromMtd(taxYear)))
 
-  private val testHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
-  private val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
+  private val testHateoasLink         = Link(href = "test/href", method = GET, rel = "self")
+  private val testInnerHateoasLink    = Link(href = s"test/href/$periodId", method = GET, rel = "self")
+  private val testTysHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
+  private val testTysInnerHateoasLink = Link(href = s"test/href/$periodId[?taxYear=$taxYear]", method = GET, rel = "self")
 
   private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to, Some(creationDate))
 
   private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
 
-  private val hateoasResponse = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+  private val hateoasResponse    = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+  private val tysHateoasResponse = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
 
   private val responseBody = Json.parse(s"""
       |{
@@ -124,7 +142,8 @@ class ListPeriodSummariesControllerSpec
         )
       }
 
-      "the Tys request received is valid" in new Test {
+      "the Tys request received is valid" in new TysTest {
+
         MockListPeriodSummariesRequestParser
           .parse(rawTysData)
           .returns(Right(requestTysData))
@@ -135,7 +154,12 @@ class ListPeriodSummariesControllerSpec
 
         MockHateoasFactory
           .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
+          .returns(HateoasWrapper(tysHateoasResponse, Seq(testTysHateoasLink)))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseBody)
+        )
       }
     }
 
