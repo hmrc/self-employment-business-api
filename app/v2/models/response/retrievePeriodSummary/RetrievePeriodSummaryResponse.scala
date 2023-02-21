@@ -21,7 +21,7 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.json._
-import v1.hateoas.HateoasLinks
+import v2.hateoas.HateoasLinks
 
 case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
                                          periodIncome: Option[PeriodIncome],
