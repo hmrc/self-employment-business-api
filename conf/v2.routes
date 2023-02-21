@@ -1,1 +1,2 @@
 #V2 endpoints
+PUT        /:nino/:businessId/period/:periodId      v2.controllers.AmendPeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
