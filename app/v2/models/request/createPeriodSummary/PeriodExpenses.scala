@@ -20,27 +20,27 @@ import play.api.libs.functional.syntax.unlift
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class PeriodAllowableExpenses(consolidatedExpenses: Option[BigDecimal],
-                                   costOfGoodsAllowable: Option[BigDecimal],
-                                   paymentsToSubcontractorsAllowable: Option[BigDecimal],
-                                   wagesAndStaffCostsAllowable: Option[BigDecimal],
-                                   carVanTravelExpensesAllowable: Option[BigDecimal],
-                                   premisesRunningCostsAllowable: Option[BigDecimal],
-                                   maintenanceCostsAllowable: Option[BigDecimal],
-                                   adminCostsAllowable: Option[BigDecimal],
-                                   businessEntertainmentCostsAllowable: Option[BigDecimal],
-                                   advertisingCostsAllowable: Option[BigDecimal],
-                                   interestOnBankOtherLoansAllowable: Option[BigDecimal],
-                                   financeChargesAllowable: Option[BigDecimal],
-                                   irrecoverableDebtsAllowable: Option[BigDecimal],
-                                   professionalFeesAllowable: Option[BigDecimal],
-                                   depreciationAllowable: Option[BigDecimal],
-                                   otherExpensesAllowable: Option[BigDecimal])
+case class PeriodExpenses(consolidatedExpenses: Option[BigDecimal],
+                                   costOfGoods: Option[BigDecimal],
+                                   paymentsToSubcontractors: Option[BigDecimal],
+                                   wagesAndStaffCosts: Option[BigDecimal],
+                                   carVanTravelExpenses: Option[BigDecimal],
+                                   premisesRunningCosts: Option[BigDecimal],
+                                   maintenanceCosts: Option[BigDecimal],
+                                   adminCosts: Option[BigDecimal],
+                                   businessEntertainmentCosts: Option[BigDecimal],
+                                   advertisingCosts: Option[BigDecimal],
+                                   interestOnBankOtherLoans: Option[BigDecimal],
+                                   financeCharges: Option[BigDecimal],
+                                   irrecoverableDebts: Option[BigDecimal],
+                                   professionalFees: Option[BigDecimal],
+                                   depreciation: Option[BigDecimal],
+                                   otherExpenses: Option[BigDecimal])
 
-object PeriodAllowableExpenses {
-  implicit val reads: Reads[PeriodAllowableExpenses] = Json.reads[PeriodAllowableExpenses]
+object PeriodExpenses {
+  implicit val reads: Reads[PeriodExpenses] = Json.reads[PeriodExpenses]
 
-  implicit val writes: OWrites[PeriodAllowableExpenses] = (
+  implicit val writes: OWrites[PeriodExpenses] = (
     (JsPath \ "simplifiedExpenses").writeNullable[BigDecimal] and
       (JsPath \ "costOfGoods" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "constructionIndustryScheme" \ "amount").writeNullable[BigDecimal] and
@@ -57,6 +57,6 @@ object PeriodAllowableExpenses {
       (JsPath \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "amount").writeNullable[BigDecimal]
-  )(unlift(PeriodAllowableExpenses.unapply))
+  )(unlift(PeriodExpenses.unapply))
 
 }

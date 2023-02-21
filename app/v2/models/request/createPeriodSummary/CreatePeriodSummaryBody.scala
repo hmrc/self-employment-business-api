@@ -21,7 +21,7 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class CreatePeriodSummaryBody(periodDates: PeriodDates,
                                    periodIncome: Option[PeriodIncome],
-                                   periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                                   periodExpenses: Option[PeriodExpenses],
                                    periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
 object CreatePeriodSummaryBody {
@@ -30,7 +30,7 @@ object CreatePeriodSummaryBody {
   implicit val writes: OWrites[CreatePeriodSummaryBody] = (
     JsPath.write[PeriodDates] and
       (JsPath \ "financials" \ "incomes").writeNullable[PeriodIncome] and
-      (JsPath \ "financials" \ "deductions").writeNullable[PeriodAllowableExpenses] and
+      (JsPath \ "financials" \ "deductions").writeNullable[PeriodExpenses] and
       (JsPath \ "financials" \ "deductions").writeNullable[PeriodDisallowableExpenses]
   )(unlift(CreatePeriodSummaryBody.unapply))
 

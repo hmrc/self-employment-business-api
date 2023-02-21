@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators
+package v2.controllers.requestParsers.validators
 
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
-import v1.fixtures.CreatePeriodSummaryFixture
+import v2.fixtures.CreatePeriodSummaryFixture
 import play.api.libs.json._
 import support.UnitSpec
-import v1.models.request.createPeriodSummary._
+import v2.models.request.createPeriodSummary._
 
 class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummaryFixture with JsonErrorValidators {
 
@@ -52,8 +52,8 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdDisallowableExpensesOnlyJson)) shouldBe Nil
       }
 
-      "a valid request with only allowable expenses is supplied" in {
-        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdAllowableExpensesOnlyJson)) shouldBe Nil
+      "a valid request with only expenses is supplied" in {
+        validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdExpensesOnlyJson)) shouldBe Nil
       }
 
       "return a path parameter error" when {
@@ -76,10 +76,10 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         ).foreach(path => testWith(requestMtdBodyJson.replaceWithEmptyObject(path), path))
 
         Seq(
-          "/periodAllowableExpenses",
-          "/periodAllowableExpenses/costOfGoodsAllowable",
-          "/periodAllowableExpenses/paymentsToSubcontractorsAllowable",
-          "/periodAllowableExpenses/wagesAndStaffCostsAllowable"
+          "/periodExpenses",
+          "/periodExpenses/costOfGoods",
+          "/periodExpenses/paymentsToSubcontractors",
+          "/periodExpenses/wagesAndStaffCosts"
         ).foreach(path => testWith(requestMtdBodyJson.replaceWithEmptyObject(path), path))
 
         Seq(
@@ -103,22 +103,22 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
             Seq(
               "/periodIncome/turnover",
               "/periodIncome/other",
-              "/periodAllowableExpenses/consolidatedExpenses",
-              "/periodAllowableExpenses/costOfGoodsAllowable",
-              "/periodAllowableExpenses/paymentsToSubcontractorsAllowable",
-              "/periodAllowableExpenses/wagesAndStaffCostsAllowable",
-              "/periodAllowableExpenses/carVanTravelExpensesAllowable",
-              "/periodAllowableExpenses/premisesRunningCostsAllowable",
-              "/periodAllowableExpenses/maintenanceCostsAllowable",
-              "/periodAllowableExpenses/adminCostsAllowable",
-              "/periodAllowableExpenses/businessEntertainmentCostsAllowable",
-              "/periodAllowableExpenses/advertisingCostsAllowable",
-              "/periodAllowableExpenses/interestOnBankOtherLoansAllowable",
-              "/periodAllowableExpenses/financeChargesAllowable",
-              "/periodAllowableExpenses/irrecoverableDebtsAllowable",
-              "/periodAllowableExpenses/professionalFeesAllowable",
-              "/periodAllowableExpenses/depreciationAllowable",
-              "/periodAllowableExpenses/otherExpensesAllowable",
+              "/periodExpenses/consolidatedExpenses",
+              "/periodExpenses/costOfGoods",
+              "/periodExpenses/paymentsToSubcontractors",
+              "/periodExpenses/wagesAndStaffCosts",
+              "/periodExpenses/carVanTravelExpenses",
+              "/periodExpenses/premisesRunningCosts",
+              "/periodExpenses/maintenanceCosts",
+              "/periodExpenses/adminCosts",
+              "/periodExpenses/businessEntertainmentCosts",
+              "/periodExpenses/advertisingCosts",
+              "/periodExpenses/interestOnBankOtherLoans",
+              "/periodExpenses/financeCharges",
+              "/periodExpenses/irrecoverableDebts",
+              "/periodExpenses/professionalFees",
+              "/periodExpenses/depreciation",
+              "/periodExpenses/otherExpenses",
               "/periodDisallowableExpenses/costOfGoodsDisallowable",
               "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
               "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
@@ -139,13 +139,13 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
 
           "consolidated expenses is invalid" when {
             Seq(
-              "/periodAllowableExpenses/consolidatedExpenses"
+              "/periodExpenses/consolidatedExpenses"
             ).foreach(path => testWith(requestMtdFullBodyJson.update(path, _), path))
           }
 
           "multiple fields are invalid" in {
             val path1 = "/periodIncome/turnover"
-            val path2 = "/periodAllowableExpenses/consolidatedExpenses"
+            val path2 = "/periodExpenses/consolidatedExpenses"
             val path3 = "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
 
             val json: JsValue = Json.parse(
@@ -157,7 +157,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                  |	  "periodIncome": {
                  |		"turnover": -1000
                  |	  },
-                 |	  "periodAllowableExpenses": {
+                 |	  "periodExpenses": {
                  |		"consolidatedExpenses": 123.123
                  |	  },
                  |    "periodDisallowableExpenses": {
@@ -214,7 +214,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         }
       }
 
-      "an empty PeriodAllowableExpenses object is supplied" in {
+      "an empty PeriodExpenses object is supplied" in {
         validator.validate(
           CreatePeriodSummaryRawData(
             validNino,
@@ -229,7 +229,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 |      "turnover": 1000.99,
                 |      "other": 1000.99
                 |    },
-                |    "periodAllowableExpenses": {},
+                |    "periodExpenses": {},
                 |    "periodDisallowableExpenses": {
                 |      "costOfGoodsDisallowable": 1000.99,
                 |      "paymentsToSubcontractorsDisallowable": 1000.99,
@@ -250,7 +250,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 |}
               """.stripMargin)
           )
-        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
+        ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodExpenses"))))
       }
 
       "an empty PeriodDisallowableExpenses object is supplied" in {
@@ -268,23 +268,23 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 |      "turnover": 1000.99,
                 |      "other": 1000.99
                 |    },
-                |    "periodAllowableExpenses": {
+                |    "periodExpenses": {
                 |      "consolidatedExpenses": 1000.99,
-                |      "costOfGoodsAllowable": 1000.99,
-                |      "paymentsToSubcontractorsAllowable": 1000.99,
-                |      "wagesAndStaffCostsAllowable": 1000.99,
-                |      "carVanTravelExpensesAllowable": 1000.99,
-                |      "premisesRunningCostsAllowable": -99999.99,
-                |      "maintenanceCostsAllowable": -1000.99,
-                |      "adminCostsAllowable": 1000.99,
-                |      "businessEntertainmentCostsAllowable": 1000.99,
-                |      "advertisingCostsAllowable": 1000.99,
-                |      "interestOnBankOtherLoansAllowable": -1000.99,
-                |      "financeChargesAllowable": -1000.99,
-                |      "irrecoverableDebtsAllowable": -1000.99,
-                |      "professionalFeesAllowable": -99999999999.99,
-                |      "depreciationAllowable": -1000.99,
-                |      "otherExpensesAllowable": 1000.99
+                |      "costOfGoods": 1000.99,
+                |      "paymentsToSubcontractors": 1000.99,
+                |      "wagesAndStaffCosts": 1000.99,
+                |      "carVanTravelExpenses": 1000.99,
+                |      "premisesRunningCosts": -99999.99,
+                |      "maintenanceCosts": -1000.99,
+                |      "adminCosts": 1000.99,
+                |      "businessEntertainmentCosts": 1000.99,
+                |      "advertisingCosts": 1000.99,
+                |      "interestOnBankOtherLoans": -1000.99,
+                |      "financeCharges": -1000.99,
+                |      "irrecoverableDebts": -1000.99,
+                |      "professionalFees": -99999999999.99,
+                |      "depreciation": -1000.99,
+                |      "otherExpenses": 1000.99
                 |    },
                 |    "periodDisallowableExpenses": {}
                 |}
@@ -387,12 +387,12 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
           )) shouldBe List(RuleBothExpensesSuppliedError)
       }
 
-      "allowable expenses and consolidatedExpenses are supplied" in {
+      "expenses and consolidatedExpenses are supplied" in {
         validator.validate(
           CreatePeriodSummaryRawData(
             validNino,
             validBusinessId,
-            mtdAllowableConsolidatedExpensesOnlyJson
+            mtdConsolidatedExpensesOnlyJson
           )) shouldBe List(RuleBothExpensesSuppliedError)
       }
     }

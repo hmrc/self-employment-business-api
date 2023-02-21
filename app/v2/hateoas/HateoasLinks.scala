@@ -16,4 +16,49 @@
 
 package v2.hateoas
 
-trait HateoasLinks {}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.Link
+import api.models.hateoas.Method._
+import config.{AppConfig, FeatureSwitches}
+import v2.models.hateoas.RelType._
+
+trait HateoasLinks {
+
+  private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
+    implicit val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
+
+    maybeTaxYear match {
+      case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
+      case _                                              => uri
+    }
+  }
+
+  // Domain URIs
+  private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String =
+    withTaxYearParameter(
+      appConfig,
+      uri = s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period",
+      taxYear
+    )
+
+  private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) =
+    withTaxYearParameter(
+      appConfig,
+      uri = s"/${appConfig.apiGatewayContext}/${nino.nino}/${businessId.value}/period/$periodId",
+      taxYear
+    )
+
+  def listPeriodSummaries(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
+    Link(href = periodSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
+  }
+
+  def createPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId): Link =
+    Link(href = periodSummaryUri(appConfig, nino, businessId, None), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
+
+  def retrievePeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
+    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = GET, rel = SELF)
+
+  def amendPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
+    Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
+
+}

@@ -45,7 +45,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     val body = data.body.as[CreatePeriodSummaryBody]
     List(
       ConsolidatedExpensesValidation.validate(
-        allowableExpenses = body.periodAllowableExpenses,
+        Expenses = body.periodExpenses,
         disallowableExpenses = body.periodDisallowableExpenses
       )
     )
@@ -59,7 +59,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         List(
           validateDates(body.periodDates.periodStartDate, body.periodDates.periodEndDate),
           body.periodIncome.map(validateIncome).getOrElse(NoValidationErrors),
-          body.periodAllowableExpenses.map(validateAllowableExpenses).getOrElse(NoValidationErrors),
+          body.periodExpenses.map(validateExpenses).getOrElse(NoValidationErrors),
           body.periodDisallowableExpenses.map(validateDisallowableExpenses).getOrElse(NoValidationErrors)
         )
       ))
@@ -98,71 +98,71 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     ).flatten
   }
 
-  private def validateAllowableExpenses(periodAllowableExpenses: PeriodAllowableExpenses): List[MtdError] =
+  private def validateExpenses(periodExpenses: PeriodExpenses): List[MtdError] =
     List(
       NumberValidation.validateOptional(
-        field = periodAllowableExpenses.consolidatedExpenses,
-        path = s"/periodAllowableExpenses/consolidatedExpenses"
+        field = periodExpenses.consolidatedExpenses,
+        path = s"/periodExpenses/consolidatedExpenses"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.costOfGoodsAllowable,
-        path = s"/periodAllowableExpenses/costOfGoodsAllowable"
+        field = periodExpenses.costOfGoods,
+        path = s"/periodExpenses/costOfGoods"
       ),
       NumberValidation.validateOptional(
-        field = periodAllowableExpenses.paymentsToSubcontractorsAllowable,
-        path = s"/periodAllowableExpenses/paymentsToSubcontractorsAllowable"
+        field = periodExpenses.paymentsToSubcontractors,
+        path = s"/periodExpenses/paymentsToSubcontractors"
       ),
       NumberValidation.validateOptional(
-        field = periodAllowableExpenses.wagesAndStaffCostsAllowable,
-        path = s"/periodAllowableExpenses/wagesAndStaffCostsAllowable"
+        field = periodExpenses.wagesAndStaffCosts,
+        path = s"/periodExpenses/wagesAndStaffCosts"
       ),
       NumberValidation.validateOptional(
-        field = periodAllowableExpenses.carVanTravelExpensesAllowable,
-        path = s"/periodAllowableExpenses/carVanTravelExpensesAllowable"
+        field = periodExpenses.carVanTravelExpenses,
+        path = s"/periodExpenses/carVanTravelExpenses"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.premisesRunningCostsAllowable,
-        path = s"/periodAllowableExpenses/premisesRunningCostsAllowable"
+        field = periodExpenses.premisesRunningCosts,
+        path = s"/periodExpenses/premisesRunningCosts"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.maintenanceCostsAllowable,
-        path = s"/periodAllowableExpenses/maintenanceCostsAllowable"
+        field = periodExpenses.maintenanceCosts,
+        path = s"/periodExpenses/maintenanceCosts"
       ),
       NumberValidation.validateOptional(
-        field = periodAllowableExpenses.adminCostsAllowable,
-        path = s"/periodAllowableExpenses/adminCostsAllowable"
+        field = periodExpenses.adminCosts,
+        path = s"/periodExpenses/adminCosts"
       ),
       NumberValidation.validateOptional(
-        field = periodAllowableExpenses.businessEntertainmentCostsAllowable,
-        path = s"/periodAllowableExpenses/businessEntertainmentCostsAllowable"
+        field = periodExpenses.businessEntertainmentCosts,
+        path = s"/periodExpenses/businessEntertainmentCosts"
       ),
       NumberValidation.validateOptional(
-        field = periodAllowableExpenses.advertisingCostsAllowable,
-        path = s"/periodAllowableExpenses/advertisingCostsAllowable"
+        field = periodExpenses.advertisingCosts,
+        path = s"/periodExpenses/advertisingCosts"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.interestOnBankOtherLoansAllowable,
-        path = s"/periodAllowableExpenses/interestOnBankOtherLoansAllowable"
+        field = periodExpenses.interestOnBankOtherLoans,
+        path = s"/periodExpenses/interestOnBankOtherLoans"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.financeChargesAllowable,
-        path = s"/periodAllowableExpenses/financeChargesAllowable"
+        field = periodExpenses.financeCharges,
+        path = s"/periodExpenses/financeCharges"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.irrecoverableDebtsAllowable,
-        path = s"/periodAllowableExpenses/irrecoverableDebtsAllowable"
+        field = periodExpenses.irrecoverableDebts,
+        path = s"/periodExpenses/irrecoverableDebts"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.professionalFeesAllowable,
-        path = s"/periodAllowableExpenses/professionalFeesAllowable"
+        field = periodExpenses.professionalFees,
+        path = s"/periodExpenses/professionalFees"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.depreciationAllowable,
-        path = s"/periodAllowableExpenses/depreciationAllowable"
+        field = periodExpenses.depreciation,
+        path = s"/periodExpenses/depreciation"
       ),
       NumberValidation.validateOptionalIncludeNegatives(
-        field = periodAllowableExpenses.otherExpensesAllowable,
-        path = s"/periodAllowableExpenses/otherExpensesAllowable"
+        field = periodExpenses.otherExpenses,
+        path = s"/periodExpenses/otherExpenses"
       )
     ).flatten
 
