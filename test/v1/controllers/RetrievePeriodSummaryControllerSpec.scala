@@ -78,6 +78,8 @@ class RetrievePeriodSummaryControllerSpec
   )
 
   trait Test extends ControllerTest {
+    val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
+    val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
     val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -93,6 +95,8 @@ class RetrievePeriodSummaryControllerSpec
   }
 
   trait TysTest extends ControllerTest {
+    val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
+    val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
     val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -106,11 +110,6 @@ class RetrievePeriodSummaryControllerSpec
 
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, tysPeriodId, Some(taxYear))(fakeGetRequest)
   }
-
-  private val rawData        = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
-  private val tysRawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
-  private val requestData    = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
-  private val tysRequestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
 //  private val testHateoasLink = Link(href = s"individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self")
 
@@ -129,7 +128,7 @@ class RetrievePeriodSummaryControllerSpec
 
   val tysResponseJson: JsValue = Json.parse(
     s"""
-       |{"periodDates":{"periodStartDate":"2019-01-01","periodEndDate":"2020-01-01"},"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01[?taxYear=2023-24]","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01[?taxYear=2023-24]","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01[?taxYear=2023-24]","method":"GET","rel":"list-self-employment-period-summaries"}]}
+       |{"periodDates":{"periodStartDate":"2024-01-01","periodEndDate":"2025-01-01"},"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"list-self-employment-period-summaries"}]}
     """.stripMargin
   )
 
@@ -155,11 +154,11 @@ class RetrievePeriodSummaryControllerSpec
       }
       "the TYS request received is valid" in new TysTest {
         MockRetrievePeriodSummaryRequestParser
-          .parse(tysRawData)
-          .returns(Right(tysRequestData))
+          .parse(rawData)
+          .returns(Right(requestData))
 
         MockRetrievePeriodSummaryService
-          .retrieve(tysRequestData)
+          .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory

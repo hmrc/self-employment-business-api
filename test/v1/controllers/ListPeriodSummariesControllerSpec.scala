@@ -85,7 +85,7 @@ class ListPeriodSummariesControllerSpec
   private val testHateoasLink         = Link(href = "test/href", method = GET, rel = "self")
   private val testInnerHateoasLink    = Link(href = s"test/href/$periodId", method = GET, rel = "self")
   private val testTysHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
-  private val testTysInnerHateoasLink = Link(href = s"test/href/$periodId[?taxYear=$taxYear]", method = GET, rel = "self")
+  private val testTysInnerHateoasLink = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
 
   private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to, Some(creationDate))
 
