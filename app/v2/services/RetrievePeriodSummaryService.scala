@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.services
+package v2.services
 
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.controllers.EndpointLogContext
@@ -24,8 +24,8 @@ import api.support.DownstreamResponseMappingSupport
 import cats.implicits._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.RetrievePeriodSummaryConnector
-import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v2.connectors.RetrievePeriodSummaryConnector
+import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +44,7 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
   }
 
   private def downstreamErrorMap: Map[String, MtdError] = {
-    val downstreamErrors = Map(
+    val errors = Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
       "INVALID_DATE_FROM"       -> PeriodIdFormatError,
@@ -62,7 +62,7 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
-    downstreamErrors ++ extraTysErrors
+    errors ++ extraTysErrors
   }
 
 }

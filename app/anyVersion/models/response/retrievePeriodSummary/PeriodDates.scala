@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.request.retrievePeriodSummary
+package anyVersion.models.response.retrievePeriodSummary
 
-import api.models.request.RawData
+import play.api.libs.json.{Json, OWrites}
 
-case class RetrievePeriodSummaryRawData(nino: String, businessId: String, periodId: String, taxYear: Option[String]) extends RawData
+case class PeriodDates(periodStartDate: String, periodEndDate: String)
+
+object PeriodDates {
+  implicit val writes: OWrites[PeriodDates] = Json.writes
+}

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package v1.controllers
+package v2.controllers
 
 import anyVersion.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.models.errors._
 import api.hateoas.HateoasFactory
+import api.models.errors._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
-import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
-import v1.services.RetrievePeriodSummaryService
+import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
+import v2.services.RetrievePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

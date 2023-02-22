@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrievePeriodSummary
+package anyVersion.models.request.retrievePeriodSummary
 
-import play.api.libs.json.{Json, OFormat}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 
-case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal]) {
-  def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty
-}
-
-object PeriodIncome {
-  implicit val format: OFormat[PeriodIncome] = Json.format
-}
+case class RetrievePeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear])

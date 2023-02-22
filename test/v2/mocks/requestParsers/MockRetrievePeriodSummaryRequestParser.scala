@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v2.mocks.requestParsers
 
 import anyVersion.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import anyVersion.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
