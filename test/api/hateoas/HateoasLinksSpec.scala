@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package v2.hateoas
+package api.hateoas
 
-import api.hateoas.HateoasLinks
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.Link
-import api.models.hateoas.Method.{GET, POST, PUT}
+import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
 import play.api.Configuration
 import support.UnitSpec
@@ -42,6 +41,74 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 
   class TysEnabledTest extends Test {
     MockAppConfig.featureSwitches returns Configuration("tys-api.enabled" -> true)
+  }
+
+  "retrieveAnnualSubmission" should {
+    "generate the correct link" in new Test {
+      val link         = retrieveAnnualSubmission(mockAppConfig, nino, businessId, taxYear2023)
+      val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2022-23"
+
+      link shouldBe Link(expectedHref, GET, "self")
+    }
+  }
+
+  "amendAnnualSubmission" should {
+    "generate the correct link" in new Test {
+      val link         = amendAnnualSubmission(mockAppConfig, nino, businessId, taxYear2023)
+      val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2022-23"
+
+      link shouldBe Link(expectedHref, PUT, "create-and-amend-self-employment-annual-submission")
+    }
+  }
+
+  "deleteAnnualSubmission" should {
+    "generate the correct link" in new Test {
+      val link         = deleteAnnualSubmission(mockAppConfig, nino, businessId, taxYear2023)
+      val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2022-23"
+
+      link shouldBe Link(expectedHref, DELETE, "delete-self-employment-annual-submission")
+    }
+  }
+
+  "listPeriodSummaries" when {
+    "generate the correct link with isSelf set to true" in new TysDisabledTest {
+      val link         = listPeriodSummaries(mockAppConfig, nino, businessId, None, true)
+      val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
+
+      link shouldBe Link(expectedHref, GET, "self")
+    }
+
+    "generate the correct link with isSelf set to false" in new TysDisabledTest {
+      val link         = listPeriodSummaries(mockAppConfig, nino, businessId, None, false)
+      val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
+
+      link shouldBe Link(expectedHref, GET, "list-self-employment-period-summaries")
+    }
+
+    "TYS feature switch is disabled" should {
+      "not include tax year query parameter given a TYS tax year" in new TysDisabledTest {
+        val link         = listPeriodSummaries(mockAppConfig, nino, businessId, Some(taxYear2024), true)
+        val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
+
+        link shouldBe Link(expectedHref, GET, "self")
+      }
+    }
+
+    "TYS feature switch is enabled" should {
+      "not include tax year query parameter given a non-TYS tax year" in new TysEnabledTest {
+        val link         = listPeriodSummaries(mockAppConfig, nino, businessId, Some(taxYear2023), true)
+        val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
+
+        link shouldBe Link(expectedHref, GET, "self")
+      }
+
+      "include tax year query parameter given a TYS tax year" in new TysEnabledTest {
+        val link         = listPeriodSummaries(mockAppConfig, nino, businessId, Some(taxYear2024), true)
+        val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period?taxYear=2023-24"
+
+        link shouldBe Link(expectedHref, GET, "self")
+      }
+    }
   }
 
   "createPeriodSummary" should {

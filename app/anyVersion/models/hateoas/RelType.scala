@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package anyVersion.models.hateoas
 
 object RelType {
   val SELF = "self"

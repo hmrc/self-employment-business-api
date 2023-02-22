@@ -20,7 +20,7 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
 import config.{AppConfig, FeatureSwitches}
-import api.models.hateoas.RelType._
+import anyVersion.models.hateoas.RelType._
 
 trait HateoasLinks {
 
