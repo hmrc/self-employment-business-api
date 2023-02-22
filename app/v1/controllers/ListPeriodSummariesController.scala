@@ -16,14 +16,14 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler, ResultCreator}
+import api.controllers._
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.requestParsers.ListPeriodSummariesRequestParser
-import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
+import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData}
 import v1.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
 import v1.services.ListPeriodSummariesService
 
@@ -49,12 +49,12 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
 
       val rawData = ListPeriodSummariesRawData(nino, businessId, taxYear)
 
-      val requestHandler = RequestHandler
-        .withParser(parser)
-        .withService(service.listPeriodSummaries)
-        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
-          ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYear.map(TaxYear.fromMtd))))
-
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.listPeriodSummaries)
+          .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
+            ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYear.map(TaxYear.fromMtd))))
       requestHandler.handleRequest(rawData)
     }
 

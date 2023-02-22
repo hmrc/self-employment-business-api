@@ -40,6 +40,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import collection.immutable.Seq
 
 class RequestHandlerSpec
     extends UnitSpec
@@ -63,6 +64,7 @@ class RequestHandlerSpec
   case object HData extends HateoasData
 
   implicit object HLinksFactory extends HateoasLinksFactory[Output.type, HData.type] {
+
     override def links(appConfig: AppConfig, data: HData.type): Seq[Link] = hateoaslinks
   }
 
