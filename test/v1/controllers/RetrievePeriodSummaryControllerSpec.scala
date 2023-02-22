@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import anyVersion.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
+import anyVersion.models.response.retrievePeriodSummary.PeriodDates
 import api.controllers.ControllerBaseSpec
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
@@ -30,7 +32,6 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.MockRetrievePeriodSummaryService
-import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 import v1.models.response.retrievePeriodSummary._
 
 import scala.concurrent.ExecutionContext.Implicits.global

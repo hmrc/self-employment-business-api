@@ -16,6 +16,8 @@
 
 package v1.controllers
 
+import anyVersion.models.request.amendPeriodSummary
+import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
 import api.hateoas.HateoasFactory
 import api.models.errors._
@@ -26,9 +28,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
-import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
-import v1.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
-import v1.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
+import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
 import v1.services.AmendPeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
@@ -55,7 +55,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = AmendPeriodSummaryRawData(nino, businessId, periodId, request.body, taxYear)
+      val rawData = amendPeriodSummary.AmendPeriodSummaryRawData(nino, businessId, periodId, request.body, taxYear)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))

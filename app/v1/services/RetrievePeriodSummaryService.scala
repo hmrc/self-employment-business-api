@@ -16,6 +16,7 @@
 
 package v1.services
 
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.controllers.EndpointLogContext
 import api.models.errors._
 import api.services.ServiceOutcome
@@ -24,7 +25,6 @@ import cats.implicits._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.RetrievePeriodSummaryConnector
-import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}

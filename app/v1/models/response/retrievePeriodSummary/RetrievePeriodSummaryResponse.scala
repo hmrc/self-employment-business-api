@@ -17,6 +17,7 @@
 package v1.models.response.retrievePeriodSummary
 
 import anyVersion.hateoas.HateoasLinks
+import anyVersion.models.response.retrievePeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import api.hateoas.HateoasLinksFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}

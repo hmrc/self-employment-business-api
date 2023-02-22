@@ -16,6 +16,8 @@
 
 package v1.controllers.requestParsers
 
+import anyVersion.models.request.amendPeriodSummary
+import anyVersion.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, PeriodDisallowableExpenses, PeriodIncome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import play.api.libs.json.Json
@@ -122,7 +124,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
       ))
   )
 
-  val inputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
+  val inputData: AmendPeriodSummaryRawData = amendPeriodSummary.AmendPeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
@@ -130,7 +132,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
     taxYear = None
   )
 
-  val tysInputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
+  val tysInputData: AmendPeriodSummaryRawData = amendPeriodSummary.AmendPeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
