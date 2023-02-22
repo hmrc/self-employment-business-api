@@ -23,7 +23,6 @@ import api.models.outcomes.ResponseWrapper
 import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockCreatePeriodSummaryConnector
-import v1.models.request.createPeriodSummary
 import v1.models.request.createPeriodSummary._
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
@@ -82,7 +81,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
         ))
     )
 
-  private val requestData = createPeriodSummary.CreatePeriodSummaryRequest(
+  private val requestData = CreatePeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     body = requestBody

@@ -30,7 +30,6 @@ import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v1.mocks.services.MockCreatePeriodSummaryService
-import v1.models.request.createPeriodSummary
 import v1.models.request.createPeriodSummary._
 import v1.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 
@@ -181,7 +180,7 @@ class CreatePeriodSummaryControllerSpec
   )
 
   private val rawData     = CreatePeriodSummaryRawData(nino, businessId, requestJson)
-  private val requestData = createPeriodSummary.CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
+  private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {
     "return Ok" when {
