@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrievePeriodSummary
+package v2.models.response.retrievePeriodSummary
 
 import anyVersion.models.response.retrievePeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import api.hateoas.HateoasLinksFactory
@@ -22,11 +22,11 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.json._
-import v1.hateoas.HateoasLinks
+import v2.hateoas.HateoasLinks
 
 case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
                                          periodIncome: Option[PeriodIncome],
-                                         periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                                         periodExpenses: Option[PeriodExpenses],
                                          periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
 object RetrievePeriodSummaryResponse extends HateoasLinks {
@@ -38,13 +38,13 @@ object RetrievePeriodSummaryResponse extends HateoasLinks {
     periodDates = PeriodDates(periodStartDate = periodStartDate, periodEndDate = periodEndDate)
 
     periodIncome               <- (JsPath \ "financials" \ "incomes").readNullable[PeriodIncome]
-    periodAllowableExpenses    <- (JsPath \ "financials").readNullable[PeriodAllowableExpenses]
+    periodExpenses             <- (JsPath \ "financials").readNullable[PeriodExpenses]
     periodDisallowableExpenses <- (JsPath \ "financials").readNullable[PeriodDisallowableExpenses]
   } yield {
     RetrievePeriodSummaryResponse(
       periodDates = periodDates,
       periodIncome = if (periodIncome.exists(_.isEmptyObject)) None else periodIncome,
-      periodAllowableExpenses = if (periodAllowableExpenses.exists(_.isEmptyObject)) None else periodAllowableExpenses,
+      periodExpenses = if (periodExpenses.exists(_.isEmptyObject)) None else periodExpenses,
       periodDisallowableExpenses = if (periodDisallowableExpenses.exists(_.isEmptyObject)) None else periodDisallowableExpenses
     )
   }

@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package v1.models.hateoas
+package anyVersion.models.response.retrievePeriodSummary
 
-object RelType {
-  val SELF = "self"
+import play.api.libs.json.{Json, OFormat}
 
-  val AMEND_ANNUAL_SUBMISSION_REL  = "create-and-amend-self-employment-annual-submission"
-  val DELETE_ANNUAL_SUBMISSION_REL = "delete-self-employment-annual-submission"
+case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal]) {
+  def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty
+}
 
-  val CREATE_PERIOD_SUMMARY_REL = "create-self-employment-period-summary"
-  val AMEND_PERIOD_SUMMARY_REL  = "amend-self-employment-period-summary"
-  val LIST_PERIOD_SUMMARIES_REL = "list-self-employment-period-summaries"
-
+object PeriodIncome {
+  implicit val format: OFormat[PeriodIncome] = Json.format
 }

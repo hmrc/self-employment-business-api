@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package anyVersion.controllers.requestParsers
 
+import anyVersion.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
+import anyVersion.models.request.retrievePeriodSummary
+import anyVersion.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import v1.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
-import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class RetrievePeriodSummaryRequestParser @Inject() (val validator: RetrievePerio
 
   override protected def requestFor(data: RetrievePeriodSummaryRawData): RetrievePeriodSummaryRequest = {
     val taxYear = data.taxYear.map(TaxYear.fromMtd)
-    RetrievePeriodSummaryRequest(Nino(data.nino), BusinessId(data.businessId), PeriodId(data.periodId), taxYear)
+    retrievePeriodSummary.RetrievePeriodSummaryRequest(Nino(data.nino), BusinessId(data.businessId), PeriodId(data.periodId), taxYear)
   }
 
 }

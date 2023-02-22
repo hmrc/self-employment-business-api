@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package v1.connectors
+package v2.connectors
 
+import anyVersion.models.request.retrievePeriodSummary
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import anyVersion.models.response.retrievePeriodSummary.PeriodDates
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import scala.concurrent.Future
 
@@ -34,7 +35,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
   val fromDate: String   = "2019-01-25"
   val toDate: String     = "2020-01-25"
 
-  val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+  val request: RetrievePeriodSummaryRequest =
+    retrievePeriodSummary.RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
@@ -52,13 +54,13 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     )
 
     protected def request(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear]): RetrievePeriodSummaryRequest =
-      RetrievePeriodSummaryRequest(nino, businessId, periodId, taxYear)
+      retrievePeriodSummary.RetrievePeriodSummaryRequest(nino, businessId, periodId, taxYear)
 
   }
 
   "connector" must {
     "return a 200 status for a success scenario" in new DesTest with Test {
-      val outcome = Right(ResponseWrapper(correlationId, response))
+      val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
         .returns(Future.successful(outcome))
@@ -67,7 +69,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     }
 
     "ignore tax year param if TYS feature switch is disabled" in new DesTest with Test {
-      val outcome = Right(ResponseWrapper(correlationId, response))
+      val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
         .returns(Future.successful(outcome))
@@ -78,9 +80,9 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     }
 
     "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
-      val taxYear = TaxYear.fromMtd(tysTaxYear).asTysDownstream
-      val outcome = Right(ResponseWrapper(correlationId, response))
-      val url     = s"$baseUrl/income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+      val taxYear: String                                                         = TaxYear.fromMtd(tysTaxYear).asTysDownstream
+      val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
+      val url = s"$baseUrl/income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
       willGet(url).returns(Future.successful(outcome))
 

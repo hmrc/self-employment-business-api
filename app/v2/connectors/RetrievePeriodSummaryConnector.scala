@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.connectors
+package v2.connectors
 
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -23,7 +23,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.models.domain.TaxYear
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,24 +36,20 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appCon
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
-    val fromDate = request.periodId.from
-    val toDate   = request.periodId.to
-    val taxYear  = request.taxYear
+    import request._
 
-    val nino       = request.nino.nino
-    val businessId = request.businessId.value
+    val fromDate = periodId.from
+    val toDate   = periodId.to
 
-    val downstreamUri =
-      if (TaxYear.isTys(taxYear)) {
-        get(
-          TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
-            s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"))
-      } else {
-        get(
-          DesUri[RetrievePeriodSummaryResponse](
-            s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"))
-      }
-    downstreamUri
+    val downstreamUri = if (TaxYear.isTys(taxYear)) {
+      TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
+        s"income-tax/${taxYear.get.asTysDownstream}/${nino.nino}/self-employments/${businessId.value}/periodic-summary-detail?from=$fromDate&to=$toDate")
+    } else {
+      DesUri[RetrievePeriodSummaryResponse](
+        s"income-tax/nino/${nino.nino}/self-employments/${businessId.value}/periodic-summary-detail?from=$fromDate&to=$toDate")
+    }
+
+    get(downstreamUri)
   }
 
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.retrievePeriodSummary
+package anyVersion.models.request.retrievePeriodSummary
 
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.request.RawData
 
-case class RetrievePeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear])
+case class RetrievePeriodSummaryRawData(nino: String, businessId: String, periodId: String, taxYear: Option[String]) extends RawData

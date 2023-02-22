@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrievePeriodSummary
+package anyVersion.models.response.retrievePeriodSummary
 
 import play.api.libs.json.{Json, OWrites}
 

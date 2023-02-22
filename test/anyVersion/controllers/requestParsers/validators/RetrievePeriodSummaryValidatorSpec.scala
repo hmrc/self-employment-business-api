@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators
+package anyVersion.controllers.requestParsers.validators
 
-import anyVersion.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.models.errors._
 import support.UnitSpec
