@@ -16,7 +16,8 @@
 
 package v1.models.response.retrieveAnnual
 
-import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import anyVersion.hateoas.HateoasLinks
+import api.hateoas.HateoasLinksFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig

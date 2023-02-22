@@ -16,7 +16,7 @@
 
 package v1.fixtures
 
-import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
+import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import play.api.libs.json.{JsValue, Json}
 import v1.models.request.createPeriodSummary._
 

@@ -16,9 +16,10 @@
 
 package v1.controllers.requestParsers
 
+import anyVersion.models.request.createPeriodSummary
+import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import api.models.domain.{BusinessId, Nino}
 import api.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, NinoFormatError}
-import api.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import support.UnitSpec
 import v1.fixtures.CreatePeriodSummaryFixture
 import v1.mocks.validators.MockCreatePeriodSummaryValidator
@@ -30,7 +31,7 @@ class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSum
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  val inputData: CreatePeriodSummaryRawData = CreatePeriodSummaryRawData(
+  val inputData: CreatePeriodSummaryRawData = createPeriodSummary.CreatePeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     body = requestMtdBodyJson

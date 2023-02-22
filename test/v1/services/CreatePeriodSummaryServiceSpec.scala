@@ -16,15 +16,15 @@
 
 package v1.services
 
+import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockCreatePeriodSummaryConnector
 import v1.models.request.createPeriodSummary._
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 

@@ -16,6 +16,7 @@
 
 package v1.mocks.services
 
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.EndpointLogContext
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
@@ -23,7 +24,6 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import v1.services.CreatePeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -16,8 +16,8 @@
 
 package v1.mocks.validators
 
+import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import api.models.errors.MtdError
-import api.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators._

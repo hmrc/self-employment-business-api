@@ -23,7 +23,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockRetrieveAnnualSubmissionConnector
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
-import v1.models.response.retrieveAnnual.{Adjustments, Allowances, NonFinancials, RetrieveAnnualSubmissionFixture, RetrieveAnnualSubmissionResponse}
+import v1.models.response.retrieveAnnual._
 
 import scala.concurrent.Future
 

@@ -16,6 +16,7 @@
 
 package v2.services
 
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.EndpointLogContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -26,7 +27,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v2.connectors.CreatePeriodSummaryConnector
-import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

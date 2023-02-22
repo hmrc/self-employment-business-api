@@ -16,6 +16,7 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import anyVersion.models.request.createPeriodSummary.PeriodDisallowableExpenses
 import api.models.errors.RuleBothExpensesSuppliedError
 import support.UnitSpec
 import v1.models.request.createPeriodSummary._

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.models.request.createPeriodSummary
+package anyVersion.models.request.createPeriodSummary
 
 import api.models.request.RawData
 import play.api.libs.json.JsValue
