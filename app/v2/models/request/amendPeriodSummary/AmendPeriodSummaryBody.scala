@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendPeriodSummary
+package v2.models.request.amendPeriodSummary
 
 import anyVersion.models.request.amendPeriodSummary.{PeriodDisallowableExpenses, PeriodIncome}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 case class AmendPeriodSummaryBody(periodIncome: Option[PeriodIncome],
-                                  periodAllowableExpenses: Option[PeriodAllowableExpenses],
+                                  periodExpenses: Option[PeriodExpenses],
                                   periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
 object AmendPeriodSummaryBody {
@@ -30,7 +30,7 @@ object AmendPeriodSummaryBody {
 
   implicit val writes: OWrites[AmendPeriodSummaryBody] = (
     (JsPath \ "incomes").writeNullable[PeriodIncome] and
-      (JsPath \ "deductions").writeNullable[PeriodAllowableExpenses] and
+      (JsPath \ "deductions").writeNullable[PeriodExpenses] and
       (JsPath \ "deductions").writeNullable[PeriodDisallowableExpenses]
   )(unlift(AmendPeriodSummaryBody.unapply))
 

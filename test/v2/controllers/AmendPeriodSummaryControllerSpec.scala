@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v1.controllers
+package v2.controllers
 
-import anyVersion.models.request.amendPeriodSummary
 import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import api.controllers.ControllerBaseSpec
@@ -30,9 +29,9 @@ import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
-import v1.mocks.services.MockAmendPeriodSummaryService
-import v1.models.request.amendPeriodSummary._
+import v2.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
+import v2.mocks.services.MockAmendPeriodSummaryService
+import v2.models.request.amendPeriodSummary._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -75,7 +74,7 @@ class AmendPeriodSummaryControllerSpec
   private val requestBody     = amendPeriodSummaryBody
 
   private val rawData        = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
-  private val tysRawData     = amendPeriodSummary.AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
+  private val tysRawData     = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
   private val requestData    = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
   private val tysRequestData = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
 

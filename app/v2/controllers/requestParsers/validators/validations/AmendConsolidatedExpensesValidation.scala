@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v2.controllers.requestParsers.validators.validations
 
 import anyVersion.models.request.amendPeriodSummary.PeriodDisallowableExpenses
 import api.controllers.requestParsers.validators.validations.NoValidationErrors
 import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
-import v1.models.request.amendPeriodSummary._
+import v2.models.request.amendPeriodSummary._
 
 object AmendConsolidatedExpensesValidation {
 
-  def validate(allowableExpenses: Option[PeriodAllowableExpenses], disallowableExpenses: Option[PeriodDisallowableExpenses]): List[MtdError] = {
-    allowableExpenses match {
+  def validate(expenses: Option[PeriodExpenses], disallowableExpenses: Option[PeriodDisallowableExpenses]): List[MtdError] = {
+    expenses match {
       case Some(_) =>
-        allowableExpenses.get.consolidatedExpenses match {
+        expenses.get.consolidatedExpenses match {
           case None => NoValidationErrors
           case Some(_) =>
-            (allowableExpenses, disallowableExpenses) match {
-              case (
-                    Some(PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)),
-                    None) =>
+            (expenses, disallowableExpenses) match {
+              case (Some(PeriodExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)), None) =>
                 NoValidationErrors
               case _ => List(RuleBothExpensesSuppliedError)
             }

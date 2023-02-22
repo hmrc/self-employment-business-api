@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v2.controllers.requestParsers.validators.validations
 
 import anyVersion.models.request.amendPeriodSummary.PeriodDisallowableExpenses
 import api.models.errors.RuleBothExpensesSuppliedError
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v1.models.request.amendPeriodSummary.PeriodAllowableExpenses
+import v2.models.request.amendPeriodSummary.PeriodExpenses
 
 class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
 
-  val allowableExpenses: Option[PeriodAllowableExpenses] = Some(
-    PeriodAllowableExpenses(
+  val expenses: Option[PeriodExpenses] = Some(
+    PeriodExpenses(
       None,
       Some(100.50),
       Some(100.50),
@@ -44,8 +44,8 @@ class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorVal
       Some(100.50)
     ))
 
-  val allowableExpensesConsolidated: Option[PeriodAllowableExpenses] = Some(
-    PeriodAllowableExpenses(
+  val expensesConsolidated: Option[PeriodExpenses] = Some(
+    PeriodExpenses(
       Some(100.50),
       None,
       None,
@@ -64,8 +64,8 @@ class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorVal
       None
     ))
 
-  val allowableExpensesBothSupplied: Option[PeriodAllowableExpenses] = Some(
-    PeriodAllowableExpenses(
+  val expensesBothSupplied: Option[PeriodExpenses] = Some(
+    PeriodExpenses(
       Some(100.50),
       Some(100.50),
       Some(100.50),
@@ -106,13 +106,13 @@ class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorVal
   "validate" should {
     "return no errors" when {
       "when expenses is only supplied" in {
-        AmendConsolidatedExpensesValidation.validate(allowableExpenses, None).isEmpty shouldBe true
+        AmendConsolidatedExpensesValidation.validate(expenses, None).isEmpty shouldBe true
       }
       "when expenses is only supplied with disallowable expenses" in {
-        AmendConsolidatedExpensesValidation.validate(allowableExpenses, disallowableExpenses).isEmpty shouldBe true
+        AmendConsolidatedExpensesValidation.validate(expenses, disallowableExpenses).isEmpty shouldBe true
       }
       "when consolidatedExpenses is only supplied" in {
-        AmendConsolidatedExpensesValidation.validate(allowableExpensesConsolidated, None).isEmpty shouldBe true
+        AmendConsolidatedExpensesValidation.validate(expensesConsolidated, None).isEmpty shouldBe true
       }
       "only disallowable expenses is supplied" in {
         AmendConsolidatedExpensesValidation.validate(None, disallowableExpenses).isEmpty shouldBe true
@@ -121,21 +121,21 @@ class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorVal
 
     "return an error" when {
       "when both expenses and consolidatedExpenses is supplied" in {
-        val validationResult = AmendConsolidatedExpensesValidation.validate(allowableExpensesBothSupplied, None)
+        val validationResult = AmendConsolidatedExpensesValidation.validate(expensesBothSupplied, None)
 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe RuleBothExpensesSuppliedError
       }
       "when both expenses and consolidatedExpenses is supplied with disallowable expenses" in {
-        val validationResult = AmendConsolidatedExpensesValidation.validate(allowableExpensesBothSupplied, disallowableExpenses)
+        val validationResult = AmendConsolidatedExpensesValidation.validate(expensesBothSupplied, disallowableExpenses)
 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe RuleBothExpensesSuppliedError
       }
       "when both disallowable expenses and consolidatedExpenses is supplied" in {
-        val validationResult = AmendConsolidatedExpensesValidation.validate(allowableExpensesConsolidated, disallowableExpenses)
+        val validationResult = AmendConsolidatedExpensesValidation.validate(expensesConsolidated, disallowableExpenses)
 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1

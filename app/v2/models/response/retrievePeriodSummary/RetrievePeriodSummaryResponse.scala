@@ -16,13 +16,13 @@
 
 package v2.models.response.retrievePeriodSummary
 
+import anyVersion.hateoas.HateoasLinks
 import anyVersion.models.response.retrievePeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import api.hateoas.HateoasLinksFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.json._
-import v2.hateoas.HateoasLinks
 
 case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
                                          periodIncome: Option[PeriodIncome],

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.response.amendPeriodSummary
+package anyVersion.models.response.amendPeriodSummary
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{Link, Method}

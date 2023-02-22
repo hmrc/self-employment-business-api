@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v1.models.response.amendPeriodSummary
+package anyVersion.models.response.amendPeriodSummary
 
+import anyVersion.hateoas.HateoasLinks
 import api.hateoas.HateoasLinksFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
-import v1.hateoas.HateoasLinks
 
 object AmendPeriodSummaryResponse extends HateoasLinks {
 

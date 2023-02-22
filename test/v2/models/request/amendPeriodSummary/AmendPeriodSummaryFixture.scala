@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendPeriodSummary
+package v2.models.request.amendPeriodSummary
 
 import anyVersion.models.request.amendPeriodSummary.{PeriodDisallowableExpenses, PeriodIncome}
 import play.api.libs.json.{JsValue, Json}
@@ -28,22 +28,22 @@ trait AmendPeriodSummaryFixture {
       |        "turnover": 1.12,
       |        "other": 2.12
       |    },
-      |    "periodAllowableExpenses": {
-      |        "costOfGoodsAllowable": 2.12,
-      |        "paymentsToSubcontractorsAllowable": 3.12,
-      |        "wagesAndStaffCostsAllowable": 4.12,
-      |        "carVanTravelExpensesAllowable": 5.12,
-      |        "premisesRunningCostsAllowable": 6.12,
-      |        "maintenanceCostsAllowable": 7.12,
-      |        "adminCostsAllowable": 8.12,
-      |        "businessEntertainmentCostsAllowable": 9.12,
-      |        "advertisingCostsAllowable": 10.12,
-      |        "interestOnBankOtherLoansAllowable": 11.12,
-      |        "financeChargesAllowable": 12.12,
-      |        "irrecoverableDebtsAllowable": 13.12,
-      |        "professionalFeesAllowable": 14.12,
-      |        "depreciationAllowable": 15.12,
-      |        "otherExpensesAllowable": 16.12
+      |    "periodExpenses": {
+      |        "costOfGoods": 2.12,
+      |        "paymentsToSubcontractors": 3.12,
+      |        "wagesAndStaffCosts": 4.12,
+      |        "carVanTravelExpenses": 5.12,
+      |        "premisesRunningCosts": 6.12,
+      |        "maintenanceCosts": 7.12,
+      |        "adminCosts": 8.12,
+      |        "businessEntertainmentCosts": 9.12,
+      |        "advertisingCosts": 10.12,
+      |        "interestOnBankOtherLoans": 11.12,
+      |        "financeCharges": 12.12,
+      |        "irrecoverableDebts": 13.12,
+      |        "professionalFees": 14.12,
+      |        "depreciation": 15.12,
+      |        "otherExpenses": 16.12
       |    },
       |    "periodDisallowableExpenses": {
       |        "costOfGoodsDisallowable": 102.12,
@@ -68,24 +68,24 @@ trait AmendPeriodSummaryFixture {
 
   val amendPeriodSummaryBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
     periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
-    periodAllowableExpenses = Some(
-      PeriodAllowableExpenses(
+    periodExpenses = Some(
+      PeriodExpenses(
         consolidatedExpenses = None,
-        costOfGoodsAllowable = Some(2.12),
-        paymentsToSubcontractorsAllowable = Some(3.12),
-        wagesAndStaffCostsAllowable = Some(4.12),
-        carVanTravelExpensesAllowable = Some(5.12),
-        premisesRunningCostsAllowable = Some(6.12),
-        maintenanceCostsAllowable = Some(7.12),
-        adminCostsAllowable = Some(8.12),
-        businessEntertainmentCostsAllowable = Some(9.12),
-        advertisingCostsAllowable = Some(10.12),
-        interestOnBankOtherLoansAllowable = Some(11.12),
-        financeChargesAllowable = Some(12.12),
-        irrecoverableDebtsAllowable = Some(13.12),
-        professionalFeesAllowable = Some(14.12),
-        depreciationAllowable = Some(15.12),
-        otherExpensesAllowable = Some(16.12)
+        costOfGoods = Some(2.12),
+        paymentsToSubcontractors = Some(3.12),
+        wagesAndStaffCosts = Some(4.12),
+        carVanTravelExpenses = Some(5.12),
+        premisesRunningCosts = Some(6.12),
+        maintenanceCosts = Some(7.12),
+        adminCosts = Some(8.12),
+        businessEntertainmentCosts = Some(9.12),
+        advertisingCosts = Some(10.12),
+        interestOnBankOtherLoans = Some(11.12),
+        financeCharges = Some(12.12),
+        irrecoverableDebts = Some(13.12),
+        professionalFees = Some(14.12),
+        depreciation = Some(15.12),
+        otherExpenses = Some(16.12)
       )),
     periodDisallowableExpenses = Some(
       PeriodDisallowableExpenses(
@@ -187,7 +187,7 @@ trait AmendPeriodSummaryFixture {
       |        "turnover": 1.12,
       |        "other": 2.12
       |    },
-      |    "periodAllowableExpenses": {
+      |    "periodExpenses": {
       |        "consolidatedExpenses": 1.12
       |    }
       |}
@@ -196,8 +196,8 @@ trait AmendPeriodSummaryFixture {
 
   val amendPeriodSummaryConsolidatedBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
     periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
-    periodAllowableExpenses = Some(
-      PeriodAllowableExpenses(
+    periodExpenses = Some(
+      PeriodExpenses(
         consolidatedExpenses = Some(1.12),
         None,
         None,

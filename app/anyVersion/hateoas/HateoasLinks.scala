@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.hateoas
+package anyVersion.hateoas
 
 import anyVersion.models.hateoas.RelType._
 import api.models.domain.{BusinessId, Nino, TaxYear}

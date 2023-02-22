@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers
+package v2.controllers.requestParsers
 
-import anyVersion.models.request.amendPeriodSummary
 import anyVersion.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, PeriodDisallowableExpenses, PeriodIncome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import play.api.libs.json.Json
 import support.UnitSpec
-import v1.mocks.validators.MockAmendPeriodSummaryValidator
-import v1.models.request.amendPeriodSummary._
+import v2.mocks.validators.MockAmendPeriodSummaryValidator
+import v2.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
 
@@ -40,23 +39,23 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
       |        "turnover": 200.00,
       |        "other": 200.00
       |    },
-      |    "periodAllowableExpenses": {
+      |    "periodExpenses": {
       |        "consolidatedExpenses": 200.00,
-      |        "costOfGoodsAllowable": 200.00,
-      |        "paymentsToSubcontractorsAllowable": 200.00,
-      |        "wagesAndStaffCostsAllowable": 200.00,
-      |        "carVanTravelExpensesAllowable": 200.00,
-      |        "premisesRunningCostsAllowable": 200.00,
-      |        "maintenanceCostsAllowable": 200.00,
-      |        "adminCostsAllowable": 200.00,
-      |        "businessEntertainmentCostsAllowable": 200.00,
-      |        "advertisingCostsAllowable": 200.00,
-      |        "interestOnBankOtherLoansAllowable": 200.00,
-      |        "financeChargesAllowable": 200.00,
-      |        "irrecoverableDebtsAllowable": 200.00,
-      |        "professionalFeesAllowable": 200.00,
-      |        "depreciationAllowable": 200.00,
-      |        "otherExpensesAllowable": 200.00
+      |        "costOfGoods": 200.00,
+      |        "paymentsToSubcontractors": 200.00,
+      |        "wagesAndStaffCosts": 200.00,
+      |        "carVanTravelExpenses": 200.00,
+      |        "premisesRunningCosts": 200.00,
+      |        "maintenanceCosts": 200.00,
+      |        "adminCosts": 200.00,
+      |        "businessEntertainmentCosts": 200.00,
+      |        "advertisingCosts": 200.00,
+      |        "interestOnBankOtherLoans": 200.00,
+      |        "financeCharges": 200.00,
+      |        "irrecoverableDebts": 200.00,
+      |        "professionalFees": 200.00,
+      |        "depreciation": 200.00,
+      |        "otherExpenses": 200.00
       |    },
       |    "periodDisallowableExpenses": {
       |        "costOfGoodsDisallowable": 200.00,
@@ -85,8 +84,8 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
         Some(200.00),
         Some(200.00)
       )),
-    periodAllowableExpenses = Some(
-      PeriodAllowableExpenses(
+    periodExpenses = Some(
+      PeriodExpenses(
         Some(200.00),
         Some(200.00),
         Some(200.00),
@@ -124,7 +123,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
       ))
   )
 
-  val inputData: AmendPeriodSummaryRawData = amendPeriodSummary.AmendPeriodSummaryRawData(
+  val inputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
@@ -132,7 +131,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
     taxYear = None
   )
 
-  val tysInputData: AmendPeriodSummaryRawData = amendPeriodSummary.AmendPeriodSummaryRawData(
+  val tysInputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,

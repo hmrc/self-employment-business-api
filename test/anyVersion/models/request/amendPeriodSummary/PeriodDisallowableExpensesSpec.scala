@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendPeriodSummary
+package anyVersion.models.request.amendPeriodSummary
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec

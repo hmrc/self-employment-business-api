@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v2.mocks.validators
 
 import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
-import api.models.errors.ErrorWrapper
-import org.scalamock.handlers.CallHandler
+import api.models.errors.MtdError
+import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
-import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
+import v2.controllers.requestParsers.validators.AmendPeriodSummaryValidator
 
-trait MockAmendPeriodSummaryRequestParser extends MockFactory {
+trait MockAmendPeriodSummaryValidator extends MockFactory {
 
-  val mockAmendPeriodSummaryRequestParser: AmendPeriodSummaryRequestParser = mock[AmendPeriodSummaryRequestParser]
+  val mockValidator: AmendPeriodSummaryValidator = mock[AmendPeriodSummaryValidator]
 
-  object MockAmendPeriodSummaryRequestParser {
+  object MockAmendPeriodSummaryValidator {
 
-    def requestFor(data: AmendPeriodSummaryRawData): CallHandler[Either[ErrorWrapper, AmendPeriodSummaryRequest]] = {
-      (mockAmendPeriodSummaryRequestParser.parseRequest(_: AmendPeriodSummaryRawData)(_: String)).expects(data, *)
+    def validate(data: AmendPeriodSummaryRawData): CallHandler1[AmendPeriodSummaryRawData, List[MtdError]] = {
+      (mockValidator
+        .validate(_: AmendPeriodSummaryRawData))
+        .expects(data)
     }
 
   }
