@@ -19,6 +19,8 @@ package v1.connectors
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino}
 import api.models.outcomes.ResponseWrapper
+import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
+import v1.models
 import v1.models.request.createPeriodSummary._
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
@@ -68,7 +70,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
     def response: CreatePeriodSummaryResponse = CreatePeriodSummaryResponse("2017090920170909")
 
-    def request: CreatePeriodSummaryRequest = CreatePeriodSummaryRequest(
+    def request: CreatePeriodSummaryRequest = models.request.createPeriodSummary.CreatePeriodSummaryRequest(
       nino = Nino(nino),
       businessId = BusinessId(businessId),
       body = CreatePeriodSummaryBody(

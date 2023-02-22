@@ -19,6 +19,8 @@ package v2.connectors
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino}
 import api.models.outcomes.ResponseWrapper
+import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 

@@ -18,8 +18,10 @@ package v2.controllers.requestParsers
 
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino}
+import api.models.request.createPeriodSummary.CreatePeriodSummaryRawData
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v2.controllers.requestParsers.validators.CreatePeriodSummaryValidator
-import v2.models.request.createPeriodSummary.{CreatePeriodSummaryBody, CreatePeriodSummaryRawData, CreatePeriodSummaryRequest}
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryBody
 
 import javax.inject.Inject
 

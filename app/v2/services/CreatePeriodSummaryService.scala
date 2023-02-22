@@ -24,8 +24,8 @@ import cats.data.EitherT
 import cats.implicits._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v2.connectors.CreatePeriodSummaryConnector
 import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v2.connectors.CreatePeriodSummaryConnector
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}

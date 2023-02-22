@@ -16,6 +16,7 @@
 
 package v2.hateoas
 
+import api.hateoas.HateoasLinks
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{GET, POST, PUT}

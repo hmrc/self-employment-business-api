@@ -16,6 +16,7 @@
 
 package v2.models.request.createPeriodSummary
 
+import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
 import play.api.libs.json.Json
 import support.UnitSpec
 
@@ -118,7 +119,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |          "turnover": 1000.99,
           |          "other": 1000.99
           |     },
-          |     "periodAllowableExpenses": {
+          |     "periodExpenses": {
           |          "costOfGoods": 1000.99,
           |          "paymentsToSubcontractors": 1000.99,
           |          "wagesAndStaffCosts": 1000.99,
@@ -165,7 +166,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |          "turnover": 1000.99,
           |          "other": 1000.99
           |     },
-          |     "periodAllowableExpenses": {
+          |     "periodExpenses": {
           |          "costOfGoods": 1000.99,
           |          "paymentsToSubcontractors": 1000.99,
           |          "wagesAndStaffCosts": 1000.99,

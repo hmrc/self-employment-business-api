@@ -17,8 +17,9 @@
 package v2.controllers
 
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.models.errors._
 import api.hateoas.HateoasFactory
+import api.models.errors._
+import api.models.request.createPeriodSummary._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
@@ -26,7 +27,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents, Result}
 import utils.{IdGenerator, Logging}
 import v2.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import v2.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
 import v2.services.CreatePeriodSummaryService

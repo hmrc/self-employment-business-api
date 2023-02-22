@@ -16,7 +16,6 @@
 
 package v1.models.request.createPeriodSummary
 
-import play.api.libs.functional.syntax.unlift
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 

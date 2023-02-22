@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.request.createPeriodSummary
+package api.models.request.createPeriodSummary
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal])
+case class PeriodDates(periodStartDate: String, periodEndDate: String)
 
-object PeriodIncome {
-  implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
+object PeriodDates {
+  implicit val reads: Reads[PeriodDates] = Json.reads[PeriodDates]
 
-  implicit val writes: OWrites[PeriodIncome] = Json.writes[PeriodIncome]
+  implicit val writes: OWrites[PeriodDates] = (
+    (JsPath \ "from").write[String] and
+      (JsPath \ "to").write[String]
+  )(unlift(PeriodDates.unapply))
+
 }

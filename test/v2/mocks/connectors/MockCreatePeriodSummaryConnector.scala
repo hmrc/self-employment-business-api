@@ -20,8 +20,8 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.CreatePeriodSummaryConnector
 import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v2.connectors.CreatePeriodSummaryConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 

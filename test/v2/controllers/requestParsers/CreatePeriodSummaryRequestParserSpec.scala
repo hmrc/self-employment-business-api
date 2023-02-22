@@ -21,7 +21,8 @@ import api.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, 
 import v2.fixtures.CreatePeriodSummaryFixture
 import support.UnitSpec
 import v2.mocks.validators.MockCreatePeriodSummaryValidator
-import v2.models.request.createPeriodSummary._
+import api.models.request.createPeriodSummary._
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSummaryFixture {
 

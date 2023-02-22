@@ -24,9 +24,11 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas.HateoasWrapper
 import api.models.outcomes.ResponseWrapper
+import api.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, PeriodDates, PeriodIncome}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v2.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v2.mocks.services.MockCreatePeriodSummaryService
 import v2.models.request.createPeriodSummary._

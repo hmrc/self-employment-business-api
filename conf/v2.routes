@@ -1,1 +1,2 @@
 #V2 endpoints
+POST       /:nino/:businessId/period                v2.controllers.CreatePeriodSummaryController.handleRequest(nino: String, businessId: String)

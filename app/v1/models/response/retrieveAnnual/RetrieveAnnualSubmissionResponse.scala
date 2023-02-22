@@ -16,13 +16,12 @@
 
 package v1.models.response.retrieveAnnual
 
-import api.hateoas.HateoasLinksFactory
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.hateoas.HateoasLinks
 
 case class RetrieveAnnualSubmissionResponse(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials])
 

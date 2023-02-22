@@ -17,10 +17,10 @@
 package v1.mocks.validators
 
 import api.models.errors.MtdError
+import api.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators._
-import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 
 trait MockCreatePeriodSummaryValidator extends MockFactory {
 

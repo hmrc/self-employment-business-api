@@ -16,12 +16,11 @@
 
 package v1.models.response.createPeriodSummary
 
-import api.hateoas.HateoasLinksFactory
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.json.{Json, OFormat}
-import v1.hateoas.HateoasLinks
 
 case class CreatePeriodSummaryResponse(periodId: String)
 

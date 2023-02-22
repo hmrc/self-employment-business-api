@@ -20,7 +20,8 @@ import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v2.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import v2.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, CreatePeriodSummaryRequest}
+import api.models.request.createPeriodSummary.CreatePeriodSummaryRawData
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 trait MockCreatePeriodSummaryRequestParser extends MockFactory {
 

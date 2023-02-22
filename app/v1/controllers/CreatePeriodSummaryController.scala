@@ -17,8 +17,9 @@
 package v1.controllers
 
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.models.errors._
 import api.hateoas.HateoasFactory
+import api.models.errors._
+import api.models.request.createPeriodSummary
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
@@ -26,7 +27,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents, Result}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
 import v1.services.CreatePeriodSummaryService
@@ -55,7 +55,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
-      val rawData = CreatePeriodSummaryRawData(nino, businessId, request.body)
+      val rawData = createPeriodSummary.CreatePeriodSummaryRawData(nino, businessId, request.body)
       val result =
         for {
           parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))

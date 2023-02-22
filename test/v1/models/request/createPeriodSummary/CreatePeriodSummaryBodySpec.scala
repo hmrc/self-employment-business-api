@@ -16,6 +16,7 @@
 
 package v1.models.request.createPeriodSummary
 
+import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
 import play.api.libs.json.Json
 import support.UnitSpec
 

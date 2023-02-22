@@ -20,7 +20,9 @@ import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.models.request.createPeriodSummary.{PeriodDates, PeriodIncome}
 import api.services.ServiceSpec
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v2.mocks.connectors.MockCreatePeriodSummaryConnector
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
