@@ -16,13 +16,13 @@
 
 package v1.models.response.listPeriodSummaries
 
+import anyVersion.hateoas.HateoasLinks
 import api.hateoas.HateoasListLinksFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads, Writes}
-import v1.hateoas.HateoasLinks
 
 case class ListPeriodSummariesResponse[I](periods: Seq[I])
 

@@ -16,10 +16,11 @@
 
 package v2.controllers.requestParsers.validators.validations
 
+import anyVersion.models.request.amendPeriodSummary.PeriodDisallowableExpenses
 import api.models.errors.RuleBothExpensesSuppliedError
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v2.models.request.amendPeriodSummary.{PeriodExpenses, PeriodDisallowableExpenses}
+import v2.models.request.amendPeriodSummary.PeriodExpenses
 
 class AmendConsolidatedExpensesValidationSpec extends UnitSpec with JsonErrorValidators {
 

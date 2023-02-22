@@ -16,6 +16,7 @@
 
 package v2.models.request.amendPeriodSummary
 
+import anyVersion.models.request.amendPeriodSummary.{PeriodDisallowableExpenses, PeriodIncome}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 

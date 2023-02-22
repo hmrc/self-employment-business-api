@@ -16,6 +16,9 @@
 
 package v1.controllers
 
+import anyVersion.models.request.amendPeriodSummary
+import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
+import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import api.controllers.ControllerBaseSpec
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
@@ -30,7 +33,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
 import v1.mocks.services.MockAmendPeriodSummaryService
 import v1.models.request.amendPeriodSummary._
-import v1.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -73,7 +75,7 @@ class AmendPeriodSummaryControllerSpec
   private val requestBody     = amendPeriodSummaryBody
 
   private val rawData        = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
-  private val tysRawData     = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
+  private val tysRawData     = amendPeriodSummary.AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
   private val requestData    = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
   private val tysRequestData = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
 

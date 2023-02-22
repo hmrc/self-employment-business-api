@@ -16,10 +16,11 @@
 
 package v2.controllers.requestParsers
 
+import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import v2.controllers.requestParsers.validators.AmendPeriodSummaryValidator
-import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRawData, AmendPeriodSummaryRequest}
+import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
 
 import javax.inject.Inject
 
