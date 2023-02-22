@@ -49,6 +49,13 @@ class ListPeriodSummariesControllerSpec
 
   trait Test extends ControllerTest {
 
+    val rawData     = ListPeriodSummariesRawData(nino, businessId, None)
+    val requestData = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
+
+    val testHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
+    val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
+    val hateoasResponse      = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
@@ -64,6 +71,12 @@ class ListPeriodSummariesControllerSpec
 
   trait TysTest extends ControllerTest {
 
+    val rawTysData           = ListPeriodSummariesRawData(nino, businessId, Some(taxYear))
+    val requestData          = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+    val testHateoasLink      = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
+    val testInnerHateoasLink = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
+    val hateoasResponse      = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
@@ -77,22 +90,9 @@ class ListPeriodSummariesControllerSpec
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, Some(taxYear))(fakeGetRequest)
   }
 
-  private val rawData        = ListPeriodSummariesRawData(nino, businessId, None)
-  private val rawTysData     = rawData.copy(taxYear = Some(taxYear))
-  private val requestData    = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
-  private val requestTysData = requestData.copy(taxYear = Some(TaxYear.fromMtd(taxYear)))
-
-  private val testHateoasLink         = Link(href = "test/href", method = GET, rel = "self")
-  private val testInnerHateoasLink    = Link(href = s"test/href/$periodId", method = GET, rel = "self")
-  private val testTysHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
-  private val testTysInnerHateoasLink = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
-
   private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to, Some(creationDate))
 
   private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
-
-  private val hateoasResponse    = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
-  private val tysHateoasResponse = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
 
   private val responseBody = Json.parse(s"""
       |{
@@ -121,6 +121,33 @@ class ListPeriodSummariesControllerSpec
       |}
     """.stripMargin)
 
+  private val responseBodyTys = Json.parse(s"""
+                                           |{
+                                           |  "periods": [
+                                           |    {
+                                           |      "periodId": "$periodId",
+                                           |      "periodStartDate": "$from",
+                                           |      "periodEndDate": "$to",
+                                           |      "periodCreationDate": "$creationDate",
+                                           |      "links": [
+                                           |        {
+                                           |          "href": "test/href/$periodId?taxYear=$taxYear",
+                                           |          "method": "GET",
+                                           |          "rel": "self"
+                                           |        }
+                                           |      ]
+                                           |    }
+                                           |  ],
+                                           |  "links": [
+                                           |    {
+                                           |      "href": "test/href?taxYear=$taxYear",
+                                           |      "method": "GET",
+                                           |      "rel": "self"
+                                           |    }
+                                           |  ]
+                                           |}
+    """.stripMargin)
+
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
@@ -146,19 +173,19 @@ class ListPeriodSummariesControllerSpec
 
         MockListPeriodSummariesRequestParser
           .parse(rawTysData)
-          .returns(Right(requestTysData))
+          .returns(Right(requestData))
 
         MockListPeriodSummariesService
-          .listPeriodSummaries(requestTysData)
+          .listPeriodSummaries(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         MockHateoasFactory
           .wrapList(response, ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper(tysHateoasResponse, Seq(testTysHateoasLink)))
+          .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
         runOkTest(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseBody)
+          maybeExpectedResponseBody = Some(responseBodyTys)
         )
       }
     }

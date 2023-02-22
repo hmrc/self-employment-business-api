@@ -20,6 +20,7 @@ import api.hateoas.{HateoasLinks, HateoasLinksFactory}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
+import collection.immutable.Seq
 
 object AmendPeriodSummaryResponse extends HateoasLinks {
 

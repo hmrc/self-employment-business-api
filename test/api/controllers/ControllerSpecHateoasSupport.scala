@@ -19,6 +19,7 @@ package api.controllers
 import api.models.hateoas.Link
 import api.models.hateoas.Method.GET
 import play.api.libs.json.{JsObject, Json}
+import collection.immutable.Seq
 
 trait ControllerSpecHateoasSupport {
 

@@ -20,9 +20,10 @@ import api.models.hateoas._
 import cats.Functor
 import cats.implicits._
 import config.AppConfig
-import scala.language.higherKinds
 
+import scala.language.higherKinds
 import javax.inject.Inject
+import scala.collection.immutable.Seq
 
 class HateoasFactory @Inject() (appConfig: AppConfig) {
 
@@ -43,12 +44,11 @@ class HateoasFactory @Inject() (appConfig: AppConfig) {
 
 }
 
-trait HateoasLinksFactory[Payload, Data] {
-  def links(appConfig: AppConfig, data: Data): Seq[Link]
+trait HateoasLinksFactory[A, D] {
+  def links(appConfig: AppConfig, data: D): Seq[Link]
 }
 
-trait HateoasListLinksFactory[Payload[_], Item, Data] {
-  def itemLinks(appConfig: AppConfig, data: Data, item: Item): Seq[Link]
-
-  def links(appConfig: AppConfig, data: Data): Seq[Link]
+trait HateoasListLinksFactory[A[_], I, D] {
+  def itemLinks(appConfig: AppConfig, data: D, item: I): Seq[Link]
+  def links(appConfig: AppConfig, data: D): Seq[Link]
 }
