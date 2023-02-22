@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package v2.controllers.requestParsers.validators
+package anyVersion.controllers.requestParsers.validators
 
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.models.errors._
 import support.UnitSpec
-import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 

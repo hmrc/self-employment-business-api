@@ -16,13 +16,13 @@
 
 package v2.connectors
 
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.models.domain.TaxYear
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}

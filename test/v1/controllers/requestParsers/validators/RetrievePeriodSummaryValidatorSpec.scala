@@ -16,9 +16,10 @@
 
 package v1.controllers.requestParsers.validators
 
+import anyVersion.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.models.errors._
 import support.UnitSpec
-import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 

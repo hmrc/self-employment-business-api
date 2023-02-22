@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v2.controllers.requestParsers.validators
+package anyVersion.controllers.requestParsers.validators
 
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.MtdError
-import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 class RetrievePeriodSummaryValidator extends Validator[RetrievePeriodSummaryRawData] {
 

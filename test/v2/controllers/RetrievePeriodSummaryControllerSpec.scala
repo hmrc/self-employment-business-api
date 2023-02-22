@@ -16,21 +16,23 @@
 
 package v2.controllers
 
+import anyVersion.models.request.retrievePeriodSummary
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
+import anyVersion.models.response.retrievePeriodSummary.PeriodDates
 import api.controllers.ControllerBaseSpec
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
-import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.GET
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v2.mocks.services.MockRetrievePeriodSummaryService
-import v2.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 import v2.models.response.retrievePeriodSummary._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -70,10 +72,12 @@ class RetrievePeriodSummaryControllerSpec
     MockIdGenerator.getCorrelationId.returns(correlationId)
   }
 
-  private val rawData        = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
-  private val tysRawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
-  private val requestData    = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
-  private val tysRequestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
+  private val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
+  private val tysRawData  = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
+  private val requestData = retrievePeriodSummary.RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+
+  private val tysRequestData =
+    retrievePeriodSummary.RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
   private val testHateoasLink = Link(href = s"individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self")
 

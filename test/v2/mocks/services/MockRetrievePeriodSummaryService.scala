@@ -16,13 +16,13 @@
 
 package v2.mocks.services
 
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.controllers.EndpointLogContext
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 import v2.services.RetrievePeriodSummaryService
 

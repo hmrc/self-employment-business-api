@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v2.mocks.validators
+package anyVersion.mocks.validators
 
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v2.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
-import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
+import anyVersion.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
 
 trait MockRetrievePeriodSummaryValidator extends MockFactory {
 

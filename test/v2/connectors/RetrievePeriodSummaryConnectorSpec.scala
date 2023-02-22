@@ -16,11 +16,13 @@
 
 package v2.connectors
 
+import anyVersion.models.request.retrievePeriodSummary
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import anyVersion.models.response.retrievePeriodSummary.PeriodDates
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
-import v2.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
+import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import scala.concurrent.Future
 
@@ -33,7 +35,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
   val fromDate: String   = "2019-01-25"
   val toDate: String     = "2020-01-25"
 
-  val request: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+  val request: RetrievePeriodSummaryRequest =
+    retrievePeriodSummary.RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
@@ -51,7 +54,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     )
 
     protected def request(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear]): RetrievePeriodSummaryRequest =
-      RetrievePeriodSummaryRequest(nino, businessId, periodId, taxYear)
+      retrievePeriodSummary.RetrievePeriodSummaryRequest(nino, businessId, periodId, taxYear)
 
   }
 
