@@ -187,7 +187,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
 
       val input = Seq(
         ("AA1123A", "XAIS12345678910", "2017-18", requestBodyJson, BAD_REQUEST, NinoFormatError),
-        ("AA123456A", "XAIS12345678910", "20223", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
+        ("AA123456A", "XAIS12345678910", "203100", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
         ("AA123456A", "XAIS12345678910", "2021-23", requestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
         ("AA123456A", "XAIS12345678910", "2016-17", requestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
         (

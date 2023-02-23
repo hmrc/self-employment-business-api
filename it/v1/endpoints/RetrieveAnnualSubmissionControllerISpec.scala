@@ -92,7 +92,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
         val input = Seq(
           ("AA123", "XAIS12345678910", "2021-22", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2021-22", BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2020", BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "203100", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2020-22", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2016-17", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )

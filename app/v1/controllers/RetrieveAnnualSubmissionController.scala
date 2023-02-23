@@ -18,7 +18,7 @@ package v1.controllers
 
 import api.controllers._
 import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
@@ -52,7 +52,7 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
       val requestHandler = RequestHandler
         .withParser(parser)
         .withService(service.retrieveAnnualSubmission)
-        .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
+        .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
 
       requestHandler.handleRequest(rawData)
     }

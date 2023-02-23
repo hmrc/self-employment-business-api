@@ -42,9 +42,9 @@ object RetrieveAnnualSubmissionResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
       import data._
       Seq(
-        amendAnnualSubmission(appConfig, nino, businessId, taxYear),
-        retrieveAnnualSubmission(appConfig, nino, businessId, taxYear),
-        deleteAnnualSubmission(appConfig, nino, businessId, taxYear)
+        amendAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
+        retrieveAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
+        deleteAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear))
       )
     }
 
@@ -52,4 +52,4 @@ object RetrieveAnnualSubmissionResponse extends HateoasLinks {
 
 }
 
-case class RetrieveAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends HateoasData
+case class RetrieveAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: String) extends HateoasData
