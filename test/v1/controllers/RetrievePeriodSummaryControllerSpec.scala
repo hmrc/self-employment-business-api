@@ -41,14 +41,20 @@ class RetrievePeriodSummaryControllerSpec
     with MockRetrievePeriodSummaryRequestParser
     with MockHateoasFactory {
 
-  private val businessId  = "XAIS12345678910"
-  private val periodId    = "2019-01-01_2020-01-01"
-  private val tysPeriodId = "2024-01-01_2025-01-01"
-  private val taxYear     = "2023-24"
+  private val businessId = "XAIS12345678910"
+  private val taxYear    = "2023-24"
 
   trait Test extends ControllerTest {
+    val periodId    = "2019-01-01_2020-01-01"
     val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
     val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+
+    val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+      periodDates = PeriodDates("2019-01-01", "2020-01-01"),
+      periodIncome = None,
+      periodAllowableExpenses = None,
+      periodDisallowableExpenses = None
+    )
 
     val testHateoasLink = Seq(
       hateoas.Link(
@@ -84,21 +90,26 @@ class RetrievePeriodSummaryControllerSpec
   }
 
   trait TysTest extends ControllerTest {
+    val periodId    = "2024-01-01_2025-01-01"
     val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
     val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
+    val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+      periodDates = PeriodDates("2024-01-01", "2025-01-01"),
+      periodIncome = None,
+      periodAllowableExpenses = None,
+      periodDisallowableExpenses = None
+    )
+
     val testHateoasLink = Seq(
       hateoas.Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
+      hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
       hateoas.Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
-        method = GET,
-        rel = "self"),
-      hateoas.Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = GET,
         rel = "list-self-employment-period-summaries"
       )
@@ -120,15 +131,8 @@ class RetrievePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, tysPeriodId, Some(taxYear))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakeGetRequest)
   }
-
-  val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
-    periodDates = PeriodDates("2019-01-01", "2020-01-01"),
-    periodIncome = None,
-    periodAllowableExpenses = None,
-    periodDisallowableExpenses = None
-  )
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
