@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package fixtures
+package v2.fixtures
 
+import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import play.api.libs.json.{JsValue, Json}
-import v1.models.request.createPeriodSummary._
+import v2.models.request.createPeriodSummary._
 
 trait CreatePeriodSummaryFixture {
 
@@ -32,22 +33,22 @@ trait CreatePeriodSummaryFixture {
       |      "turnover": 1000.99,
       |      "other": 1000.99
       |    },
-      |    "periodAllowableExpenses": {
-      |      "costOfGoodsAllowable": 1000.99,
-      |      "paymentsToSubcontractorsAllowable": 1000.99,
-      |      "wagesAndStaffCostsAllowable": 1000.99,
-      |      "carVanTravelExpensesAllowable": 1000.99,
-      |      "premisesRunningCostsAllowable": -99999.99,
-      |      "maintenanceCostsAllowable": -1000.99,
-      |      "adminCostsAllowable": 1000.99,
-      |      "businessEntertainmentCostsAllowable": 1000.99,
-      |      "advertisingCostsAllowable": 1000.99,
-      |      "interestOnBankOtherLoansAllowable": -1000.99,
-      |      "financeChargesAllowable": -1000.99,
-      |      "irrecoverableDebtsAllowable": -1000.99,
-      |      "professionalFeesAllowable": -99999999999.99,
-      |      "depreciationAllowable": -1000.99,
-      |      "otherExpensesAllowable": 1000.99
+      |    "periodExpenses": {
+      |      "costOfGoods": 1000.99,
+      |      "paymentsToSubcontractors": 1000.99,
+      |      "wagesAndStaffCosts": 1000.99,
+      |      "carVanTravelExpenses": 1000.99,
+      |      "premisesRunningCosts": -99999.99,
+      |      "maintenanceCosts": -1000.99,
+      |      "adminCosts": 1000.99,
+      |      "businessEntertainmentCosts": 1000.99,
+      |      "advertisingCosts": 1000.99,
+      |      "interestOnBankOtherLoans": -1000.99,
+      |      "financeCharges": -1000.99,
+      |      "irrecoverableDebts": -1000.99,
+      |      "professionalFees": -99999999999.99,
+      |      "depreciation": -1000.99,
+      |      "otherExpenses": 1000.99
       |    },
       |    "periodDisallowableExpenses": {
       |      "costOfGoodsDisallowable": 1000.99,
@@ -81,23 +82,23 @@ trait CreatePeriodSummaryFixture {
       |      "turnover": 1000.99,
       |      "other": 1000.99
       |    },
-      |    "periodAllowableExpenses": {
+      |    "periodExpenses": {
       |      "consolidatedExpenses": 1000.99,
-      |      "costOfGoodsAllowable": 1000.99,
-      |      "paymentsToSubcontractorsAllowable": 1000.99,
-      |      "wagesAndStaffCostsAllowable": 1000.99,
-      |      "carVanTravelExpensesAllowable": 1000.99,
-      |      "premisesRunningCostsAllowable": -99999.99,
-      |      "maintenanceCostsAllowable": -1000.99,
-      |      "adminCostsAllowable": 1000.99,
-      |      "businessEntertainmentCostsAllowable": 1000.99,
-      |      "advertisingCostsAllowable": 1000.99,
-      |      "interestOnBankOtherLoansAllowable": -1000.99,
-      |      "financeChargesAllowable": -1000.99,
-      |      "irrecoverableDebtsAllowable": -1000.99,
-      |      "professionalFeesAllowable": -99999999999.99,
-      |      "depreciationAllowable": -1000.99,
-      |      "otherExpensesAllowable": 1000.99
+      |      "costOfGoods": 1000.99,
+      |      "paymentsToSubcontractors": 1000.99,
+      |      "wagesAndStaffCosts": 1000.99,
+      |      "carVanTravelExpenses": 1000.99,
+      |      "premisesRunningCosts": -99999.99,
+      |      "maintenanceCosts": -1000.99,
+      |      "adminCosts": 1000.99,
+      |      "businessEntertainmentCosts": 1000.99,
+      |      "advertisingCosts": 1000.99,
+      |      "interestOnBankOtherLoans": -1000.99,
+      |      "financeCharges": -1000.99,
+      |      "irrecoverableDebts": -1000.99,
+      |      "professionalFees": -99999999999.99,
+      |      "depreciation": -1000.99,
+      |      "otherExpenses": 1000.99
       |    },
       |    "periodDisallowableExpenses": {
       |      "costOfGoodsDisallowable": 1000.99,
@@ -157,22 +158,22 @@ trait CreatePeriodSummaryFixture {
       |      "turnover": 1000.99,
       |      "other": 1000.99
       |    },
-      |    "periodAllowableExpenses": {
-      |      "costOfGoodsAllowable": 1000.99,
-      |      "paymentsToSubcontractorsAllowable": 1000.99,
-      |      "wagesAndStaffCostsAllowable": 1000.99,
-      |      "carVanTravelExpensesAllowable": 1000.99,
-      |      "premisesRunningCostsAllowable": -99999.99,
-      |      "maintenanceCostsAllowable": -1000.99,
-      |      "adminCostsAllowable": 1000.99,
-      |      "businessEntertainmentCostsAllowable": 1000.99,
-      |      "advertisingCostsAllowable": 1000.99,
-      |      "interestOnBankOtherLoansAllowable": -1000.99,
-      |      "financeChargesAllowable": -1000.99,
-      |      "irrecoverableDebtsAllowable": -1000.99,
-      |      "professionalFeesAllowable": -99999999999.99,
-      |      "depreciationAllowable": -1000.99,
-      |      "otherExpensesAllowable": 1000.99
+      |    "periodExpenses": {
+      |      "costOfGoods": 1000.99,
+      |      "paymentsToSubcontractors": 1000.99,
+      |      "wagesAndStaffCosts": 1000.99,
+      |      "carVanTravelExpenses": 1000.99,
+      |      "premisesRunningCosts": -99999.99,
+      |      "maintenanceCosts": -1000.99,
+      |      "adminCosts": 1000.99,
+      |      "businessEntertainmentCosts": 1000.99,
+      |      "advertisingCosts": 1000.99,
+      |      "interestOnBankOtherLoans": -1000.99,
+      |      "financeCharges": -1000.99,
+      |      "irrecoverableDebts": -1000.99,
+      |      "professionalFees": -99999999999.99,
+      |      "depreciation": -1000.99,
+      |      "otherExpenses": 1000.99
       |    },
       |    "periodDisallowableExpenses": {
       |      "costOfGoodsDisallowable": 1000.99,
@@ -195,7 +196,7 @@ trait CreatePeriodSummaryFixture {
     """.stripMargin
   )
 
-  val mtdAllowableConsolidatedExpensesOnlyJson: JsValue = Json.parse(
+  val mtdConsolidatedExpensesOnlyJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates": {
@@ -210,23 +211,23 @@ trait CreatePeriodSummaryFixture {
       |     "periodStartDate": "2019-08-24",
       |     "periodEndDate": "2019-08-24"
       |    },
-      |    "periodAllowableExpenses": {
+      |    "periodExpenses": {
       |      "consolidatedExpenses": 1000.99,
-      |      "costOfGoodsAllowable": 1000.99,
-      |      "paymentsToSubcontractorsAllowable": 1000.99,
-      |      "wagesAndStaffCostsAllowable": 1000.99,
-      |      "carVanTravelExpensesAllowable": 1000.99,
-      |      "premisesRunningCostsAllowable": -99999.99,
-      |      "maintenanceCostsAllowable": -1000.99,
-      |      "adminCostsAllowable": 1000.99,
-      |      "businessEntertainmentCostsAllowable": 1000.99,
-      |      "advertisingCostsAllowable": 1000.99,
-      |      "interestOnBankOtherLoansAllowable": -1000.99,
-      |      "financeChargesAllowable": -1000.99,
-      |      "irrecoverableDebtsAllowable": -1000.99,
-      |      "professionalFeesAllowable": -99999999999.99,
-      |      "depreciationAllowable": -1000.99,
-      |      "otherExpensesAllowable": 1000.99
+      |      "costOfGoods": 1000.99,
+      |      "paymentsToSubcontractors": 1000.99,
+      |      "wagesAndStaffCosts": 1000.99,
+      |      "carVanTravelExpenses": 1000.99,
+      |      "premisesRunningCosts": -99999.99,
+      |      "maintenanceCosts": -1000.99,
+      |      "adminCosts": 1000.99,
+      |      "businessEntertainmentCosts": 1000.99,
+      |      "advertisingCosts": 1000.99,
+      |      "interestOnBankOtherLoans": -1000.99,
+      |      "financeCharges": -1000.99,
+      |      "irrecoverableDebts": -1000.99,
+      |      "professionalFees": -99999999999.99,
+      |      "depreciation": -1000.99,
+      |      "otherExpenses": 1000.99
       |    }
       |}
     """.stripMargin
@@ -247,7 +248,7 @@ trait CreatePeriodSummaryFixture {
       |     "periodStartDate": "2019-08-24",
       |     "periodEndDate": "2019-08-24"
       |    },
-      |    "periodAllowableExpenses": {
+      |    "periodExpenses": {
       |      "consolidatedExpenses": 1000.99
       |    },
       |    "periodDisallowableExpenses": {
@@ -271,7 +272,7 @@ trait CreatePeriodSummaryFixture {
     """.stripMargin
   )
 
-  val mtdAllowableExpensesOnlyJson: JsValue = Json.parse(
+  val mtdExpensesOnlyJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates": {
@@ -286,22 +287,22 @@ trait CreatePeriodSummaryFixture {
       |     "periodStartDate": "2019-08-24",
       |     "periodEndDate": "2019-08-24"
       |    },
-      |    "periodAllowableExpenses": {
-      |      "costOfGoodsAllowable": 1000.99,
-      |      "paymentsToSubcontractorsAllowable": 1000.99,
-      |      "wagesAndStaffCostsAllowable": 1000.99,
-      |      "carVanTravelExpensesAllowable": 1000.99,
-      |      "premisesRunningCostsAllowable": -99999.99,
-      |      "maintenanceCostsAllowable": -1000.99,
-      |      "adminCostsAllowable": 1000.99,
-      |      "businessEntertainmentCostsAllowable": 1000.99,
-      |      "advertisingCostsAllowable": 1000.99,
-      |      "interestOnBankOtherLoansAllowable": -1000.99,
-      |      "financeChargesAllowable": -1000.99,
-      |      "irrecoverableDebtsAllowable": -1000.99,
-      |      "professionalFeesAllowable": -99999999999.99,
-      |      "depreciationAllowable": -1000.99,
-      |      "otherExpensesAllowable": 1000.99
+      |    "periodExpenses": {
+      |      "costOfGoods": 1000.99,
+      |      "paymentsToSubcontractors": 1000.99,
+      |      "wagesAndStaffCosts": 1000.99,
+      |      "carVanTravelExpenses": 1000.99,
+      |      "premisesRunningCosts": -99999.99,
+      |      "maintenanceCosts": -1000.99,
+      |      "adminCosts": 1000.99,
+      |      "businessEntertainmentCosts": 1000.99,
+      |      "advertisingCosts": 1000.99,
+      |      "interestOnBankOtherLoans": -1000.99,
+      |      "financeCharges": -1000.99,
+      |      "irrecoverableDebts": -1000.99,
+      |      "professionalFees": -99999999999.99,
+      |      "depreciation": -1000.99,
+      |      "otherExpenses": 1000.99
       |    }
       |}
     """.stripMargin
@@ -354,7 +355,7 @@ trait CreatePeriodSummaryFixture {
       |      "turnover": 1000.99,
       |      "other": 1000.09
       |    },
-      |    "periodAllowableExpenses": {
+      |    "periodExpenses": {
       |      "consolidatedExpenses": 999999999.99
       |    }
       |}
@@ -466,23 +467,23 @@ trait CreatePeriodSummaryFixture {
     other = Some(1000.99)
   )
 
-  val periodAllowableExpensesModel: PeriodAllowableExpenses = PeriodAllowableExpenses(
+  val periodExpensesModel: PeriodExpenses = PeriodExpenses(
     consolidatedExpenses = None,
-    costOfGoodsAllowable = Some(1000.99),
-    paymentsToSubcontractorsAllowable = Some(1000.99),
-    wagesAndStaffCostsAllowable = Some(1000.99),
-    carVanTravelExpensesAllowable = Some(1000.99),
-    premisesRunningCostsAllowable = Some(-99999.99),
-    maintenanceCostsAllowable = Some(-1000.99),
-    adminCostsAllowable = Some(1000.99),
-    businessEntertainmentCostsAllowable = Some(1000.99),
-    advertisingCostsAllowable = Some(1000.99),
-    interestOnBankOtherLoansAllowable = Some(-1000.99),
-    financeChargesAllowable = Some(-1000.99),
-    irrecoverableDebtsAllowable = Some(-1000.99),
-    professionalFeesAllowable = Some(-99999999999.99),
-    depreciationAllowable = Some(-1000.99),
-    otherExpensesAllowable = Some(1000.99)
+    costOfGoods = Some(1000.99),
+    paymentsToSubcontractors = Some(1000.99),
+    wagesAndStaffCosts = Some(1000.99),
+    carVanTravelExpenses = Some(1000.99),
+    premisesRunningCosts = Some(-99999.99),
+    maintenanceCosts = Some(-1000.99),
+    adminCosts = Some(1000.99),
+    businessEntertainmentCosts = Some(1000.99),
+    advertisingCosts = Some(1000.99),
+    interestOnBankOtherLoans = Some(-1000.99),
+    financeCharges = Some(-1000.99),
+    irrecoverableDebts = Some(-1000.99),
+    professionalFees = Some(-99999999999.99),
+    depreciation = Some(-1000.99),
+    otherExpenses = Some(1000.99)
   )
 
   val periodDisallowableExpensesModel: PeriodDisallowableExpenses = PeriodDisallowableExpenses(
@@ -506,7 +507,7 @@ trait CreatePeriodSummaryFixture {
   val fullMTDResponseModel: CreatePeriodSummaryBody = CreatePeriodSummaryBody(
     periodDates = periodDatesMTDModel,
     periodIncome = Some(periodIncomeMTDModel),
-    periodAllowableExpenses = Some(periodAllowableExpensesModel),
+    periodExpenses = Some(periodExpensesModel),
     periodDisallowableExpenses = Some(periodDisallowableExpensesModel)
   )
 

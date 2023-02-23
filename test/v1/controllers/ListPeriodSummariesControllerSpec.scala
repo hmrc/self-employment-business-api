@@ -18,11 +18,11 @@ package v1.controllers
 
 import api.controllers.ControllerBaseSpec
 import api.mocks.MockIdGenerator
-import api.models.hateoas.Method.GET
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
+import api.models.hateoas.Method.GET
 import api.models.hateoas._
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json

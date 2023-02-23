@@ -16,9 +16,11 @@
 
 package v1.controllers
 
+import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
-import api.models.errors._
 import api.hateoas.HateoasFactory
+import api.models.errors._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import cats.data.EitherT
 import cats.implicits._
@@ -26,9 +28,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, ControllerComponents, Result}
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
 import v1.services.CreatePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}

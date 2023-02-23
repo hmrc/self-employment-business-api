@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.response.createPeriodSummary
+package anyVersion.models.response.createPeriodSummary
 
 import anyVersion.hateoas.HateoasLinks
 import api.hateoas.HateoasLinksFactory

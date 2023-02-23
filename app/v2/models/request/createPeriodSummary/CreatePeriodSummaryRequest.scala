@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package v1.models.request.createPeriodSummary
+package v2.models.request.createPeriodSummary
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal])
-
-object PeriodIncome {
-  implicit val reads: Reads[PeriodIncome] = Json.reads[PeriodIncome]
-
-  implicit val writes: OWrites[PeriodIncome] = Json.writes[PeriodIncome]
+case class CreatePeriodSummaryRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody) {
+  val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
 }
