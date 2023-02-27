@@ -16,7 +16,15 @@
 
 package v1.controllers
 
+<<<<<<< HEAD
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+=======
+import anyVersion.models.request.createPeriodSummary
+import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
+import api.controllers.ControllerBaseSpec
+import api.mocks.MockIdGenerator
+>>>>>>> main
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
@@ -29,7 +37,6 @@ import play.api.mvc.Result
 import v1.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v1.mocks.services.MockCreatePeriodSummaryService
 import v1.models.request.createPeriodSummary._
-import v1.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -197,7 +204,7 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val rawData     = CreatePeriodSummaryRawData(nino, businessId, requestJson)
+  private val rawData     = createPeriodSummary.CreatePeriodSummaryRawData(nino, businessId, requestJson)
   private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {

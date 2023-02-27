@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import api.models.errors.{BusinessIdFormatError, InvalidTaxYearParameterError, NinoFormatError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import api.models.errors._
 import support.UnitSpec
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 

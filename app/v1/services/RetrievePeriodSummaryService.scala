@@ -17,11 +17,11 @@
 package v1.services
 
 import api.controllers.RequestContext
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.models.errors._
 import api.services.{BaseService, RetrievePeriodSummaryServiceOutcome}
 import cats.implicits._
 import v1.connectors.RetrievePeriodSummaryConnector
-import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

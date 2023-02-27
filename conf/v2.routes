@@ -1,0 +1,6 @@
+#V2 endpoints
+
+POST       /:nino/:businessId/period                v2.controllers.CreatePeriodSummaryController.handleRequest(nino: String, businessId: String)
+PUT        /:nino/:businessId/period/:periodId      v2.controllers.AmendPeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
+GET        /:nino/:businessId/period/:periodId      v2.controllers.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
+

@@ -17,12 +17,12 @@
 package v1.services
 
 import api.controllers.RequestContext
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.models.errors._
 import api.services.{BaseService, CreatePeriodSummaryServiceOutcome}
 import cats.data.EitherT
 import v1.connectors.CreatePeriodSummaryConnector
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

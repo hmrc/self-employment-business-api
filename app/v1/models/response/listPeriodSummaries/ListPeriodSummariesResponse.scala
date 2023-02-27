@@ -16,7 +16,8 @@
 
 package v1.models.response.listPeriodSummaries
 
-import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import anyVersion.hateoas.HateoasLinks
+import api.hateoas.HateoasListLinksFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import cats.Functor

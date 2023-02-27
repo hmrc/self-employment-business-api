@@ -16,6 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
+import anyVersion.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, PeriodDisallowableExpenses, PeriodIncome}
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}

@@ -17,12 +17,11 @@
 package utils
 
 import api.models.errors._
-import definition.Versions
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -30,8 +29,8 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 
-import javax.inject._
-import scala.concurrent._
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
@@ -46,7 +45,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
 
     logger.warn(
       message = s"[ErrorHandler][onClientError] error in version " +
-        s"${Versions.getFromRequest(request).getOrElse("<unspecified>")}, " +
+        s"${versionIfSpecified(request)}, " +
         s"for (${request.method}) [${request.uri}] with status: " +
         s"$statusCode and message: $message")
     statusCode match {
@@ -84,7 +83,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
 
     logger.warn(
       message = s"[ErrorHandler][onServerError] Internal server error in version " +
-        s"${Versions.getFromRequest(request).getOrElse("<unspecified>")}, " +
+        s"${versionIfSpecified(request)}, " +
         s"for (${request.method}) [${request.uri}] -> ",
       ex
     )
@@ -113,4 +112,5 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
     Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
   }
 
+  private def versionIfSpecified(request: RequestHeader): String = routing.Versions.getFromRequest(request).map(_.name).getOrElse("<unspecified>")
 }

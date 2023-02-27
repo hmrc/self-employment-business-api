@@ -16,19 +16,30 @@
 
 package v1.controllers
 
+<<<<<<< HEAD
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+=======
+import anyVersion.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
+import anyVersion.models.response.retrievePeriodSummary.PeriodDates
+import api.controllers.ControllerBaseSpec
+import api.mocks.MockIdGenerator
+>>>>>>> main
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
+<<<<<<< HEAD
 import api.models.hateoas
 import api.models.hateoas.HateoasWrapper
 import api.models.hateoas.Method.{GET, PUT}
+=======
+import api.models.hateoas.Method.GET
+import api.models.hateoas.{HateoasWrapper, Link}
+>>>>>>> main
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v1.mocks.services.MockRetrievePeriodSummaryService
-import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 import v1.models.response.retrievePeriodSummary._
 
 import scala.concurrent.ExecutionContext.Implicits.global
