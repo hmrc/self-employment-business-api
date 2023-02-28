@@ -45,7 +45,7 @@ class AmendAnnualSubmissionControllerSpec
   private val businessId = "XAIS12345678910"
   private val taxYear    = "2019-20"
 
-  private val testHateoasLinks = Seq(
+  val testHateoasLinks = Seq(
     hateoas.Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
       method = PUT,

@@ -16,15 +16,10 @@
 
 package v1.controllers
 
-<<<<<<< HEAD
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-=======
 import anyVersion.models.request.createPeriodSummary
 import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import anyVersion.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
-import api.controllers.ControllerBaseSpec
-import api.mocks.MockIdGenerator
->>>>>>> main
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
@@ -51,7 +46,7 @@ class CreatePeriodSummaryControllerSpec
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2018-01-24"
 
-  private val testHateoasLinks = Seq(
+  val testHateoasLinks = Seq(
     hateoas.Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,

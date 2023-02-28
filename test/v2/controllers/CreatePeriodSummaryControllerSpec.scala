@@ -25,7 +25,8 @@ import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.HateoasWrapper
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.Method.GET
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -51,6 +52,9 @@ class CreatePeriodSummaryControllerSpec
   private val periodId      = "2017-01-25_2017-01-25"
   private val correlationId = "X-123"
 
+  val testHateoasLinks: Seq[Link] =
+    Seq(Link(href = "/some/link", method = GET, rel = "someRel"))
+
   trait Test {
     val hc: HeaderCarrier = HeaderCarrier()
 
@@ -66,7 +70,7 @@ class CreatePeriodSummaryControllerSpec
 
     MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
+    MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
 
   private val requestJson = Json.parse(

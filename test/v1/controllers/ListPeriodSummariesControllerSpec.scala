@@ -16,12 +16,7 @@
 
 package v1.controllers
 
-<<<<<<< HEAD
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-=======
-import api.controllers.ControllerBaseSpec
-import api.mocks.MockIdGenerator
->>>>>>> main
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._

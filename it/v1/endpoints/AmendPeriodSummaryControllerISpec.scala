@@ -143,16 +143,8 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-<<<<<<< HEAD
-              DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamCode))
-=======
-              BaseDownstreamStub.onError(
-                BaseDownstreamStub.PUT,
-                downstreamUri,
-                downstreamQueryParams,
-                downstreamStatus,
-                errorBody(downstreamErrorCode))
->>>>>>> main
+
+              BaseDownstreamStub.onError(BaseDownstreamStub.PUT, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().put(requestBodyJson))

@@ -25,7 +25,7 @@ import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
 
 class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with AmendAnnualSubmissionFixture with JsonErrorValidators {
@@ -113,8 +113,8 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub
-            .when(method = DownstreamStub.PUT, uri = downstreamUri)
+          BaseDownstreamStub
+            .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
             .withRequestBody(downstreamRequestBodyJson)
             .thenReturn(status = OK, downstreamResponseBody)
         }
@@ -132,8 +132,8 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
       override def setupStubs(): StubMapping = {
         AuthStub.authorised()
         MtdIdLookupStub.ninoFound(nino)
-        DownstreamStub
-          .when(method = DownstreamStub.PUT, uri = downstreamUri)
+        BaseDownstreamStub
+          .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
           .withRequestBody(downstreamRequestBodyJson)
           .thenReturn(status = OK, downstreamResponseBody)
       }
@@ -277,7 +277,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+            BaseDownstreamStub.onError(BaseDownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().put(requestBodyJson))

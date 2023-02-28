@@ -16,21 +16,16 @@
 
 package v1.controllers
 
-<<<<<<< HEAD
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-=======
 import anyVersion.models.request.amendPeriodSummary
 import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
-import api.controllers.ControllerBaseSpec
-import api.mocks.MockIdGenerator
->>>>>>> main
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas
-import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.{GET, PUT}
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -54,7 +49,7 @@ class AmendPeriodSummaryControllerSpec
   private val tysPeriodId = "2024-01-01_2025-01-01"
   private val taxYear     = "2023-24"
 
-  private val testHateoasLinks = Seq(
+  val testHateoasLinks = Seq(
     Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,

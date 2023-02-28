@@ -16,12 +16,8 @@
 
 package v1.mocks.services
 
-<<<<<<< HEAD
 import api.controllers.RequestContext
-=======
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
-import api.controllers.EndpointLogContext
->>>>>>> main
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
