@@ -48,8 +48,8 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
         s"${versionIfSpecified(request)}, " +
         s"for (${request.method}) [${request.uri}] with status: " +
         s"$statusCode and message: $message")
-    statusCode match {
 
+    statusCode match {
       case BAD_REQUEST =>
         auditConnector.sendEvent(dataEvent("ServerValidationError", "Request bad format exception", request))
         Future.successful(BadRequest(Json.toJson(BadRequestError)))

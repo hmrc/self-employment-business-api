@@ -35,7 +35,7 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
     connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap = {
+  private def downstreamErrorMap: Map[String, MtdError] = {
     val errors: Map[String, MtdError] =
       Map(
         "INVALID_NINO"                -> NinoFormatError,

@@ -43,8 +43,8 @@ class CreatePeriodSummaryControllerSpec
     with MockCreatePeriodSummaryRequestParser
     with MockHateoasFactory {
 
-  private val businessId = "XAIS12345678910"
-  private val periodId   = "2017-01-25_2018-01-24"
+  private val businessId: String = "XAIS12345678910"
+  private val periodId: String   = "2017-01-25_2018-01-24"
 
   val testHateoasLinks = Seq(
     hateoas.Link(
@@ -59,21 +59,6 @@ class CreatePeriodSummaryControllerSpec
       rel = "list-self-employment-period-summaries"
     )
   )
-
-  trait Test extends ControllerTest {
-
-    val controller = new CreatePeriodSummaryController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockCreatePeriodicRequestParser,
-      service = mockCreatePeriodicService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
-  }
 
   private val requestJson = Json.parse(
     """
@@ -223,35 +208,47 @@ class CreatePeriodSummaryControllerSpec
           expectedStatus = OK,
           maybeExpectedResponseBody = Some(responseJson)
         )
-
       }
     }
 
     "return the error as per spec" when {
-      "parser errors occur" should {
-        "the parser validation fails" in new Test {
+      "the parser validation fails" in new Test {
 
-          MockCreatePeriodSummaryRequestParser
-            .parseRequest(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        MockCreatePeriodSummaryRequestParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
 
-          runErrorTest(NinoFormatError)
-        }
+        runErrorTest(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+
+        MockCreatePeriodSummaryRequestParser
+          .parseRequest(rawData)
+          .returns(Right(requestData))
+
+        MockCreatePeriodicService
+          .createPeriodic(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
+  }
 
-    "the service returns an error" in new Test {
+  trait Test extends ControllerTest {
 
-      MockCreatePeriodSummaryRequestParser
-        .parseRequest(rawData)
-        .returns(Right(requestData))
+    val controller = new CreatePeriodSummaryController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockCreatePeriodicRequestParser,
+      service = mockCreatePeriodicService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
 
-      MockCreatePeriodicService
-        .createPeriodic(requestData)
-        .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-      runErrorTest(RuleTaxYearNotSupportedError)
-    }
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
   }
 
 }

@@ -20,8 +20,8 @@ import api.models.hateoas._
 import cats._
 import cats.implicits._
 import config.AppConfig
-
 import scala.language.higherKinds
+
 import javax.inject.Inject
 
 class HateoasFactory @Inject() (appConfig: AppConfig) {
@@ -47,7 +47,6 @@ trait HateoasLinksFactory[A, D] {
   def links(appConfig: AppConfig, data: D): Seq[Link]
 }
 
-trait HateoasListLinksFactory[A[_], I, D] {
+trait HateoasListLinksFactory[A[_], I, D] extends HateoasLinksFactory[A[_], D] {
   def itemLinks(appConfig: AppConfig, data: D, item: I): Seq[Link]
-  def links(appConfig: AppConfig, data: D): Seq[Link]
 }

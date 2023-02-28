@@ -41,8 +41,8 @@ class RetrieveAnnualSubmissionControllerSpec
     with MockHateoasFactory
     with RetrieveAnnualSubmissionFixture {
 
-  private val businessId = "XAIS12345678910"
-  private val taxYear    = "2020-21"
+  private val businessId: String = "XAIS12345678910"
+  private val taxYear: String    = "2020-21"
 
   val testHateoasLinks = Seq(
     hateoas.Link(
@@ -55,21 +55,6 @@ class RetrieveAnnualSubmissionControllerSpec
       method = DELETE,
       rel = "delete-self-employment-annual-submission")
   )
-
-  trait Test extends ControllerTest {
-
-    val controller = new RetrieveAnnualSubmissionController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockRetrieveAnnualSubmissionRequestParser,
-      service = mockRetrieveAnnualSubmissionService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeGetRequest)
-  }
 
   private val rawData     = RetrieveAnnualSubmissionRawData(nino, businessId, taxYear)
   private val requestData = RetrieveAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
@@ -99,30 +84,43 @@ class RetrieveAnnualSubmissionControllerSpec
     }
 
     "return the error as per spec" when {
-      "parser errors occur" should {
-        "the parser validation fails" in new Test {
+      "the parser validation fails" in new Test {
 
-          MockRetrieveAnnualSubmissionRequestParser
-            .parse(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        MockRetrieveAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
 
-          runErrorTest(NinoFormatError)
-        }
+        runErrorTest(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+
+        MockRetrieveAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockRetrieveAnnualSubmissionService
+          .retrieve(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
+  }
 
-    "the service returns an error" in new Test {
+  trait Test extends ControllerTest {
 
-      MockRetrieveAnnualSubmissionRequestParser
-        .parse(rawData)
-        .returns(Right(requestData))
+    val controller = new RetrieveAnnualSubmissionController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockRetrieveAnnualSubmissionRequestParser,
+      service = mockRetrieveAnnualSubmissionService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
 
-      MockRetrieveAnnualSubmissionService
-        .retrieve(requestData)
-        .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-      runErrorTest(RuleTaxYearNotSupportedError)
-    }
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeGetRequest)
   }
 
 }

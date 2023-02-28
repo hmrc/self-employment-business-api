@@ -44,10 +44,10 @@ class AmendPeriodSummaryControllerSpec
     with MockHateoasFactory
     with AmendPeriodSummaryFixture {
 
-  private val businessId  = "XAIS12345678910"
-  private val periodId    = "2019-01-01_2020-01-01"
-  private val tysPeriodId = "2024-01-01_2025-01-01"
-  private val taxYear     = "2023-24"
+  private val businessId: String  = "XAIS12345678910"
+  private val periodId: String    = "2019-01-01_2020-01-01"
+  private val tysPeriodId: String = "2024-01-01_2025-01-01"
+  private val taxYear: String     = "2023-24"
 
   val testHateoasLinks = Seq(
     Link(
@@ -79,40 +79,6 @@ class AmendPeriodSummaryControllerSpec
       rel = "list-self-employment-period-summaries"
     )
   )
-
-  trait Test extends ControllerTest {
-
-    val controller = new AmendPeriodSummaryController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockAmendPeriodSummaryRequestParser,
-      service = mockAmendPeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    protected def callController(): Future[Result] =
-      controller.handleRequest(nino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
-
-  }
-
-  trait TysTest extends ControllerTest {
-
-    val controller = new AmendPeriodSummaryController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockAmendPeriodSummaryRequestParser,
-      service = mockAmendPeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    protected def callController(): Future[Result] =
-      controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
-
-  }
 
   private val requestBodyJson = amendPeriodSummaryBodyMtdJson
   private val requestBody     = amendPeriodSummaryBody
@@ -175,38 +141,36 @@ class AmendPeriodSummaryControllerSpec
           maybeExpectedResponseBody = Some(responseJson)
         )
       }
+    }
 
-      "the TYS request received is valid" in new TysTest {
+    "the TYS request received is valid" in new TysTest {
+
+      MockAmendPeriodSummaryRequestParser
+        .requestFor(tysRawData)
+        .returns(Right(tysRequestData))
+
+      MockAmendPeriodSummaryService
+        .amendPeriodSummary(tysRequestData)
+        .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+      MockHateoasFactory
+        .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
+        .returns(HateoasWrapper((), testTysHateoasLink))
+
+      runOkTest(
+        expectedStatus = OK,
+        maybeExpectedResponseBody = Some(tysResponseJson)
+      )
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
 
         MockAmendPeriodSummaryRequestParser
-          .requestFor(tysRawData)
-          .returns(Right(tysRequestData))
+          .requestFor(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
 
-        MockAmendPeriodSummaryService
-          .amendPeriodSummary(tysRequestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper((), testTysHateoasLink))
-
-        runOkTest(
-          expectedStatus = OK,
-          maybeExpectedResponseBody = Some(tysResponseJson)
-        )
-      }
-
-      "return the error as per spec" when {
-        "parser errors occur" should {
-          "the parser validation fails" in new Test {
-
-            MockAmendPeriodSummaryRequestParser
-              .requestFor(rawData)
-              .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
-
-            runErrorTest(NinoFormatError)
-          }
-        }
+        runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
@@ -222,6 +186,40 @@ class AmendPeriodSummaryControllerSpec
         runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
+  }
+
+  trait Test extends ControllerTest {
+
+    val controller = new AmendPeriodSummaryController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockAmendPeriodSummaryRequestParser,
+      service = mockAmendPeriodSummaryService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] =
+      controller.handleRequest(nino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
+
+  }
+
+  trait TysTest extends ControllerTest {
+
+    val controller = new AmendPeriodSummaryController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockAmendPeriodSummaryRequestParser,
+      service = mockAmendPeriodSummaryService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] =
+      controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
+
   }
 
 }

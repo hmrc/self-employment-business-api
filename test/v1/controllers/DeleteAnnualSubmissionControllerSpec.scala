@@ -35,22 +35,8 @@ class DeleteAnnualSubmissionControllerSpec
     with MockDeleteAnnualSubmissionService
     with MockDeleteAnnualSubmissionRequestParser {
 
-  private val taxYear    = "2019-20"
-  private val businessId = "XAIS12345678910"
-
-  trait Test extends ControllerTest {
-
-    val controller = new DeleteAnnualSubmissionController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockDeleteAnnualSubmissionRequestParser,
-      service = mockDeleteAnnualSubmissionService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
-  }
+  private val taxYear: String    = "2019-20"
+  private val businessId: String = "XAIS12345678910"
 
   private val rawData     = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
   private val requestData = DeleteAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
@@ -73,31 +59,42 @@ class DeleteAnnualSubmissionControllerSpec
     }
 
     "return the error as per spec" when {
-      "parser errors occur" should {
-        "the parser validation fails" in new Test {
+      "the parser validation fails" in new Test {
 
-          MockDeleteAnnualSubmissionRequestParser
-            .parse(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        MockDeleteAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
 
-          runErrorTest(NinoFormatError)
-        }
+        runErrorTest(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+
+        MockDeleteAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockDeleteAnnualSubmissionService
+          .deleteAnnualSubmission(requestData)
+          .returns(Future.successful(Left(errors.ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
+  }
 
-    "the service returns an error" in new Test {
+  trait Test extends ControllerTest {
 
-      MockDeleteAnnualSubmissionRequestParser
-        .parse(rawData)
-        .returns(Right(requestData))
+    val controller = new DeleteAnnualSubmissionController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockDeleteAnnualSubmissionRequestParser,
+      service = mockDeleteAnnualSubmissionService,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
 
-      MockDeleteAnnualSubmissionService
-        .deleteAnnualSubmission(requestData)
-        .returns(Future.successful(Left(errors.ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-      runErrorTest(RuleTaxYearNotSupportedError)
-    }
-
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
   }
 
 }

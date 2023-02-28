@@ -42,8 +42,73 @@ class RetrievePeriodSummaryControllerSpec
     with MockRetrievePeriodSummaryRequestParser
     with MockHateoasFactory {
 
-  private val businessId = "XAIS12345678910"
-  private val taxYear    = "2023-24"
+  private val businessId: String = "XAIS12345678910"
+  private val taxYear: String    = "2023-24"
+
+  "handleRequest" should {
+    "return a successful response with status 200 (OK)" when {
+      "the request received is valid" in new Test {
+        MockRetrievePeriodSummaryRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockRetrievePeriodSummaryService
+          .retrieve(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
+
+        MockHateoasFactory
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
+          .returns(HateoasWrapper(responseBody, testHateoasLink))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseJson)
+        )
+      }
+      "the TYS request received is valid" in new TysTest {
+        MockRetrievePeriodSummaryRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockRetrievePeriodSummaryService
+          .retrieve(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
+
+        MockHateoasFactory
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
+          .returns(HateoasWrapper(responseBody, testHateoasLink))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseJson)
+        )
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+
+        MockRetrievePeriodSummaryRequestParser
+          .parse(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+        runErrorTest(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+
+        MockRetrievePeriodSummaryRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockRetrievePeriodSummaryService
+          .retrieve(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTest(RuleTaxYearNotSupportedError)
+      }
+    }
+  }
 
   trait Test extends ControllerTest {
     val periodId    = "2019-01-01_2020-01-01"
@@ -133,73 +198,6 @@ class RetrievePeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakeGetRequest)
-  }
-
-  "handleRequest" should {
-    "return a successful response with status 200 (OK)" when {
-      "the request received is valid" in new Test {
-        MockRetrievePeriodSummaryRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockRetrievePeriodSummaryService
-          .retrieve(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
-
-        MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
-          .returns(HateoasWrapper(responseBody, testHateoasLink))
-
-        runOkTest(
-          expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
-        )
-      }
-      "the TYS request received is valid" in new TysTest {
-        MockRetrievePeriodSummaryRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockRetrievePeriodSummaryService
-          .retrieve(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
-
-        MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper(responseBody, testHateoasLink))
-
-        runOkTest(
-          expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
-        )
-      }
-    }
-
-    "return the error as per spec" when {
-      "parser errors occur" should {
-        "the parser validation fails" in new Test {
-
-          MockRetrievePeriodSummaryRequestParser
-            .parse(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
-
-          runErrorTest(NinoFormatError)
-        }
-      }
-    }
-
-    "the service returns an error" in new Test {
-
-      MockRetrievePeriodSummaryRequestParser
-        .parse(rawData)
-        .returns(Right(requestData))
-
-      MockRetrievePeriodSummaryService
-        .retrieve(requestData)
-        .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-      runErrorTest(RuleTaxYearNotSupportedError)
-    }
   }
 
 }

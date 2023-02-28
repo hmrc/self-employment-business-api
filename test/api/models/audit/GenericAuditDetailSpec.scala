@@ -39,7 +39,7 @@ class GenericAuditDetailSpec extends UnitSpec {
       response = Right(Some(body))
     )
 
-  val deductionsAuditDetailModelSuccess: GenericAuditDetail =
+  val auditDetailModelSuccess: GenericAuditDetail =
     GenericAuditDetail(
       userType = userType,
       agentReferenceNumber = agentReferenceNumber,
@@ -56,12 +56,12 @@ class GenericAuditDetailSpec extends UnitSpec {
       response = Left(auditErrors)
     )
 
-  val deductionsAuditDetailModelError: GenericAuditDetail =
-    deductionsAuditDetailModelSuccess.copy(
+  val auditDetailModelError: GenericAuditDetail =
+    auditDetailModelSuccess.copy(
       auditResponse = auditResponseModelWithErrors
     )
 
-  val deductionsAuditDetailJsonSuccess: JsValue = Json.parse(
+  val auditDetailJsonSuccess: JsValue = Json.parse(
     s"""
        |{
        |   "userType" : "$userType",
@@ -93,7 +93,7 @@ class GenericAuditDetailSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val deductionsAuditDetailJsonError: JsValue = Json.parse(
+  val auditDetailJsonError: JsValue = Json.parse(
     s"""
        |{
        |   "userType" : "$userType",
@@ -109,13 +109,13 @@ class GenericAuditDetailSpec extends UnitSpec {
   "GenericAuditDetail" when {
     "written to JSON (success)" should {
       "produce the expected JsObject" in {
-        Json.toJson(deductionsAuditDetailModelSuccess) shouldBe deductionsAuditDetailJsonSuccess
+        Json.toJson(auditDetailModelSuccess) shouldBe auditDetailJsonSuccess
       }
     }
 
     "written to JSON (error)" should {
       "produce the expected JsObject" in {
-        Json.toJson(deductionsAuditDetailModelError) shouldBe deductionsAuditDetailJsonError
+        Json.toJson(auditDetailModelError) shouldBe auditDetailJsonError
       }
     }
   }
