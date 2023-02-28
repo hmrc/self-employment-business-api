@@ -161,29 +161,29 @@ class AmendPeriodSummaryControllerSpec
           maybeExpectedResponseBody = Some(tysResponseJson)
         )
       }
+    }
 
-      "return the error as per spec" when {
-        "the parser validation fails" in new Test {
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
 
-          MockAmendPeriodSummaryRequestParser
-            .requestFor(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        MockAmendPeriodSummaryRequestParser
+          .requestFor(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
 
-          runErrorTest(NinoFormatError)
-        }
+        runErrorTest(NinoFormatError)
+      }
 
-        "the service returns an error" in new Test {
+      "the service returns an error" in new Test {
 
-          MockAmendPeriodSummaryRequestParser
-            .requestFor(rawData)
-            .returns(Right(requestData))
+        MockAmendPeriodSummaryRequestParser
+          .requestFor(rawData)
+          .returns(Right(requestData))
 
-          MockAmendPeriodSummaryService
-            .amendPeriodSummary(requestData)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+        MockAmendPeriodSummaryService
+          .amendPeriodSummary(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
-          runErrorTest(RuleTaxYearNotSupportedError)
-        }
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
   }
