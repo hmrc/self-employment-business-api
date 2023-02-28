@@ -174,12 +174,14 @@ class ListPeriodSummariesControllerSpec
 
   trait Test extends ControllerTest {
 
-    val rawData     = ListPeriodSummariesRawData(nino, businessId, None)
-    val requestData = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
+    val rawData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, None)
+    val requestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
 
-    val testHateoasLink      = Link(href = "test/href", method = GET, rel = "self")
-    val testInnerHateoasLink = Link(href = s"test/href/$periodId", method = GET, rel = "self")
-    val hateoasResponse      = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+    val testHateoasLink: Link      = Link(href = "test/href", method = GET, rel = "self")
+    val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
+
+    val hateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
+      Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -196,11 +198,13 @@ class ListPeriodSummariesControllerSpec
 
   trait TysTest extends ControllerTest {
 
-    val rawTysData              = ListPeriodSummariesRawData(nino, businessId, Some(taxYear))
-    val tysRequestData          = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
-    val testTysHateoasLink      = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
-    val testTysInnerHateoasLink = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
-    val tysHateoasResponse      = ListPeriodSummariesResponse(Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
+    val rawTysData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, Some(taxYear))
+    val tysRequestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+    val testTysHateoasLink: Link                   = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
+    val testTysInnerHateoasLink: Link              = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
+
+    val tysHateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
+      Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,

@@ -49,7 +49,7 @@ class AmendPeriodSummaryControllerSpec
   private val tysPeriodId: String = "2024-01-01_2025-01-01"
   private val taxYear: String     = "2023-24"
 
-  val testHateoasLinks = Seq(
+  val testHateoasLinks: Seq[Link] = Seq(
     Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,
@@ -141,49 +141,49 @@ class AmendPeriodSummaryControllerSpec
           maybeExpectedResponseBody = Some(responseJson)
         )
       }
-    }
 
-    "the TYS request received is valid" in new TysTest {
-
-      MockAmendPeriodSummaryRequestParser
-        .requestFor(tysRawData)
-        .returns(Right(tysRequestData))
-
-      MockAmendPeriodSummaryService
-        .amendPeriodSummary(tysRequestData)
-        .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-      MockHateoasFactory
-        .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
-        .returns(HateoasWrapper((), testTysHateoasLink))
-
-      runOkTest(
-        expectedStatus = OK,
-        maybeExpectedResponseBody = Some(tysResponseJson)
-      )
-    }
-
-    "return the error as per spec" when {
-      "the parser validation fails" in new Test {
+      "the TYS request received is valid" in new TysTest {
 
         MockAmendPeriodSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
-
-        runErrorTest(NinoFormatError)
-      }
-
-      "the service returns an error" in new Test {
-
-        MockAmendPeriodSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Right(requestData))
+          .requestFor(tysRawData)
+          .returns(Right(tysRequestData))
 
         MockAmendPeriodSummaryService
-          .amendPeriodSummary(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+          .amendPeriodSummary(tysRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        runErrorTest(RuleTaxYearNotSupportedError)
+        MockHateoasFactory
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
+          .returns(HateoasWrapper((), testTysHateoasLink))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(tysResponseJson)
+        )
+      }
+
+      "return the error as per spec" when {
+        "the parser validation fails" in new Test {
+
+          MockAmendPeriodSummaryRequestParser
+            .requestFor(rawData)
+            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+          runErrorTest(NinoFormatError)
+        }
+
+        "the service returns an error" in new Test {
+
+          MockAmendPeriodSummaryRequestParser
+            .requestFor(rawData)
+            .returns(Right(requestData))
+
+          MockAmendPeriodSummaryService
+            .amendPeriodSummary(requestData)
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+          runErrorTest(RuleTaxYearNotSupportedError)
+        }
       }
     }
   }

@@ -24,7 +24,7 @@ import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas
-import api.models.hateoas.HateoasWrapper
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
@@ -46,7 +46,7 @@ class CreatePeriodSummaryControllerSpec
   private val businessId: String = "XAIS12345678910"
   private val periodId: String   = "2017-01-25_2018-01-24"
 
-  val testHateoasLinks = Seq(
+  val testHateoasLinks: Seq[Link] = Seq(
     hateoas.Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,

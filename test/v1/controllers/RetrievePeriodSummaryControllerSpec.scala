@@ -23,7 +23,7 @@ import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import api.models.hateoas
-import api.models.hateoas.HateoasWrapper
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
@@ -111,9 +111,9 @@ class RetrievePeriodSummaryControllerSpec
   }
 
   trait Test extends ControllerTest {
-    val periodId    = "2019-01-01_2020-01-01"
-    val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
-    val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+    val periodId: String                          = "2019-01-01_2020-01-01"
+    val rawData: RetrievePeriodSummaryRawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
+    val requestData: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
     val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
       periodDates = PeriodDates("2019-01-01", "2020-01-01"),
@@ -122,7 +122,7 @@ class RetrievePeriodSummaryControllerSpec
       periodDisallowableExpenses = None
     )
 
-    val testHateoasLink = Seq(
+    val testHateoasLink: Seq[Link] = Seq(
       hateoas.Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
         method = PUT,
@@ -156,9 +156,11 @@ class RetrievePeriodSummaryControllerSpec
   }
 
   trait TysTest extends ControllerTest {
-    val periodId    = "2024-01-01_2025-01-01"
-    val rawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
-    val requestData = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
+    val periodId: String                      = "2024-01-01_2025-01-01"
+    val rawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
+
+    val requestData: RetrievePeriodSummaryRequest =
+      RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
     val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
       periodDates = PeriodDates("2024-01-01", "2025-01-01"),
@@ -167,7 +169,7 @@ class RetrievePeriodSummaryControllerSpec
       periodDisallowableExpenses = None
     )
 
-    val testHateoasLink = Seq(
+    val testHateoasLink: Seq[Link] = Seq(
       hateoas.Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = PUT,

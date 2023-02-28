@@ -21,7 +21,7 @@ import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.hateoas
-import api.models.hateoas.HateoasWrapper
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.{DELETE, GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
@@ -45,7 +45,7 @@ class AmendAnnualSubmissionControllerSpec
   private val businessId: String = "XAIS12345678910"
   private val taxYear: String    = "2019-20"
 
-  val testHateoasLinks = Seq(
+  val testHateoasLinks: Seq[Link] = Seq(
     hateoas.Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
       method = PUT,
