@@ -16,9 +16,9 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import anyVersion.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 import anyVersion.models.response.retrievePeriodSummary.PeriodDates
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._

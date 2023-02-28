@@ -17,7 +17,7 @@
 package api.services
 
 import api.models.auth.UserDetails
-import api.models.errors.{InternalError, ClientNotAuthorisedError}
+import api.models.errors.{ClientNotAuthorisedError, InternalError}
 import api.models.outcomes.AuthOutcome
 import config.AppConfig
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}

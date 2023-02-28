@@ -16,9 +16,9 @@
 
 package api
 
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
