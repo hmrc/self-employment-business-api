@@ -35,7 +35,7 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
     connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private def errorMap = {
+  private def errorMap: Map[String, MtdError] = {
     val errors =
       Map(
         "INVALID_NINO"            -> NinoFormatError,

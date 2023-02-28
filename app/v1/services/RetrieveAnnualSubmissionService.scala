@@ -37,7 +37,7 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
 
   }
 
-  private def downstreamErrorMap = {
+  private def downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
