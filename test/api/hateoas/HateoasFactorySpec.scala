@@ -22,7 +22,6 @@ import cats.Functor
 import config.AppConfig
 import mocks.MockAppConfig
 import support.UnitSpec
-
 import scala.collection.immutable.Seq
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {

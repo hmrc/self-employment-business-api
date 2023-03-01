@@ -17,7 +17,6 @@
 package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.{MtdError, PeriodIdFormatError}
-
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 

@@ -21,8 +21,8 @@ import cats._
 import cats.implicits._
 import config.AppConfig
 
-import javax.inject.Inject
 import scala.language.higherKinds
+import javax.inject.Inject
 
 class HateoasFactory @Inject() (appConfig: AppConfig) {
 
