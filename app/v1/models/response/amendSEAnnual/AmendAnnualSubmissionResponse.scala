@@ -21,6 +21,7 @@ import api.hateoas.HateoasLinksFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
+import collection.immutable.Seq
 
 object AmendAnnualSubmissionResponse extends HateoasLinks {
 
@@ -29,9 +30,9 @@ object AmendAnnualSubmissionResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: AmendAnnualSubmissionHateoasData): Seq[Link] = {
       import data._
       Seq(
-        amendAnnualSubmission(appConfig, nino, businessId, taxYear),
-        retrieveAnnualSubmission(appConfig, nino, businessId, taxYear),
-        deleteAnnualSubmission(appConfig, nino, businessId, taxYear)
+        amendAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
+        retrieveAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
+        deleteAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear))
       )
     }
 
@@ -39,4 +40,4 @@ object AmendAnnualSubmissionResponse extends HateoasLinks {
 
 }
 
-case class AmendAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends HateoasData
+case class AmendAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: String) extends HateoasData

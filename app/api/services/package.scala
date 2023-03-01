@@ -16,11 +16,29 @@
 
 package api
 
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
+import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
+import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
+import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 package object services {
 
   type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
+
+  type AmendAnnualSubmissionServiceOutcome = ServiceOutcome[Unit]
+
+  type AmendPeriodSummaryServiceOutcome = ServiceOutcome[Unit]
+
+  type CreatePeriodSummaryServiceOutcome = ServiceOutcome[CreatePeriodSummaryResponse]
+
+  type DeleteAnnualSubmissionServiceOutcome = ServiceOutcome[Unit]
+
+  type ListPeriodSummariesServiceOutcome = ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]
+
+  type RetrieveAnnualSubmissionServiceOutcome = ServiceOutcome[RetrieveAnnualSubmissionResponse]
+
+  type RetrievePeriodSummaryServiceOutcome = ServiceOutcome[RetrievePeriodSummaryResponse]
 
 }

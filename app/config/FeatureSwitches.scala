@@ -17,7 +17,6 @@
 package config
 
 import play.api.Configuration
-import play.api.Configuration
 import routing.Version
 
 case class FeatureSwitches(featureSwitchConfig: Configuration) {

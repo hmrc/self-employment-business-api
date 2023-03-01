@@ -16,9 +16,10 @@
 
 package api.controllers.requestParsers.validators
 
-import api.models.errors.{MtdError, NinoFormatError, NotFoundError}
+import api.models.errors.MtdError
 import api.models.request.RawData
 import org.scalamock.scalatest.MockFactory
+import play.api.http.Status.BAD_REQUEST
 import support.UnitSpec
 
 class ValidatorSpec extends UnitSpec with MockFactory {
@@ -58,7 +59,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         // Set up the mock validations
         val levelOneValidationOne = new MockFunctionObject("Level: 1    Validation 1")
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
-        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR")
+        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR", BAD_REQUEST)
 
         def levelOneValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
@@ -86,7 +87,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
         val levelTwoValidationOne = new MockFunctionObject("Level: 2    Validation 1")
         val levelTwoValidationTwo = new MockFunctionObject("Level: 2    Validation 2")
-        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR ON LEVEL 2")
+        val mockError: MtdError   = MtdError("MOCK", "SOME ERROR ON LEVEL 2", BAD_REQUEST)
 
         def levelOneValidations: TestRawData => List[List[MtdError]] = (_: TestRawData) => {
           List(
@@ -114,39 +115,6 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         levelTwoValidationOne.called shouldBe 1
         levelTwoValidationTwo.called shouldBe 1
       }
-    }
-  }
-
-  "flattenErrors" should {
-    "combine errors of the same type" in {
-      val errors: List[List[MtdError]] = List(
-        List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one")))),
-        List(NinoFormatError.copy(paths = Some(Seq("two"))))
-      )
-
-      val flatErrors: List[MtdError] = List(
-        NotFoundError,
-        NinoFormatError.copy(paths = Some(Seq("one", "two")))
-      )
-
-      Validator.flattenErrors(errors) shouldBe flatErrors
-    }
-
-    "return the input for a list of unique errors" in {
-      val errors: List[List[MtdError]] = List(
-        List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one"))))
-      )
-
-      Validator.flattenErrors(errors) shouldBe errors.flatten
-    }
-
-    "handle empty lists correctly" in {
-      val emptyErrorList: List[List[MtdError]]   = List.empty[List[MtdError]]
-      val listOfEmptyLists: List[List[MtdError]] = List(List.empty[MtdError])
-      Validator.flattenErrors(emptyErrorList) shouldBe List.empty[MtdError]
-      Validator.flattenErrors(listOfEmptyLists) shouldBe List.empty[MtdError]
     }
   }
 

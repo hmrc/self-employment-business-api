@@ -19,7 +19,7 @@ package api.models.errors
 import play.api.libs.json.{Json, Reads}
 
 case class DownstreamErrorCode(code: String) {
-  def toMtd: MtdError = MtdError(code = code, message = "")
+  def toMtd(httpStatus: Int): MtdError = MtdError(code = code, message = "", httpStatus = httpStatus)
 }
 
 object DownstreamErrorCode {

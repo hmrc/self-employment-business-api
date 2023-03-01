@@ -16,17 +16,16 @@
 
 package v1.controllers
 
-import api.controllers.ControllerBaseSpec
-import api.mocks.MockIdGenerator
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.HateoasWrapper
+import api.models.hateoas
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.Method.{DELETE, GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockAmendAnnualSubmissionRequestParser
 import v1.mocks.services.MockAmendAnnualSubmissionService
 import v1.models.request.amendSEAnnual._
@@ -37,21 +36,105 @@ import scala.concurrent.Future
 
 class AmendAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockAmendAnnualSubmissionService
     with MockAmendAnnualSubmissionRequestParser
     with MockHateoasFactory
-    with MockIdGenerator
     with AmendAnnualSubmissionFixture {
 
-  private val nino          = "AA123456A"
-  private val businessId    = "XAIS12345678910"
-  private val taxYear       = "2019-20"
-  private val correlationId = "X-123"
+  private val businessId: String = "XAIS12345678910"
+  private val taxYear: String    = "2019-20"
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+  val testHateoasLinks: Seq[Link] = Seq(
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      method = PUT,
+      rel = "create-and-amend-self-employment-annual-submission"),
+    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      method = DELETE,
+      rel = "delete-self-employment-annual-submission")
+  )
+
+  private val requestJson = amendAnnualSubmissionBodyMtdJson(None, None, None)
+
+  private val requestBody = AmendAnnualSubmissionBody(None, None, None)
+
+  val responseJson: JsValue = Json.parse(
+    s"""
+       |{
+       |  "links": [
+       |    {
+       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "rel": "create-and-amend-self-employment-annual-submission",
+       |      "method": "PUT"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "rel": "self",
+       |      "method": "GET"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "rel": "delete-self-employment-annual-submission",
+       |      "method": "DELETE"
+       |    }
+       |  ]
+       |}
+    """.stripMargin
+  )
+
+  private val rawData     = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
+  private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
+
+  "handleRequest" should {
+    "return a successful response with status 200 (OK)" when {
+      "the request received is valid" in new Test {
+        MockAmendAnnualSummaryRequestParser
+          .requestFor(rawData)
+          .returns(Right(requestData))
+
+        MockAmendAnnualSubmissionService
+          .amendAnnualSubmission(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        MockHateoasFactory
+          .wrap((), AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+          .returns(HateoasWrapper((), testHateoasLinks))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseJson)
+        )
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+
+        MockAmendAnnualSummaryRequestParser
+          .requestFor(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+        runErrorTest(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+        MockAmendAnnualSummaryRequestParser
+          .requestFor(rawData)
+          .returns(Right(requestData))
+
+        MockAmendAnnualSubmissionService
+          .amendAnnualSubmission(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTest(RuleTaxYearNotSupportedError)
+      }
+    }
+  }
+
+  trait Test extends ControllerTest {
 
     val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
@@ -63,125 +146,8 @@ class AmendAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePutRequest(requestJson))
 
-  private val requestJson = amendAnnualSubmissionBodyMtdJson(None, None, None)
-
-  private val requestBody = AmendAnnualSubmissionBody(None, None, None)
-
-  val responseJson: JsValue = Json.parse(
-    s"""
-       |{
-       |  "links": [
-       |    {
-       |      "href": "/someLink",
-       |      "method": "GET",
-       |      "rel": "some-rel"
-       |    }
-       |  ]
-       |}
-    """.stripMargin
-  )
-
-  private val rawData     = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
-  private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
-
-  "handleRequest" should {
-    "return Ok" when {
-      "the request received is valid" in new Test {
-        MockAmendAnnualSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Right(requestData))
-
-        MockAmendAnnualSubmissionService
-          .amendAnnualSubmission(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        MockHateoasFactory
-          .wrap((), AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
-          .returns(HateoasWrapper((), testHateoasLinks))
-
-        val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePutRequest(requestJson))
-
-        contentAsJson(result) shouldBe testHateoasLinksJson
-        status(result) shouldBe OK
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-      }
-    }
-
-    "return the error as per spec" when {
-      "parser errors occur" should {
-        def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-          s"a ${error.code} error is returned from the parser" in new Test {
-
-            MockAmendAnnualSummaryRequestParser
-              .requestFor(rawData)
-              .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(error)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        def withPath(mtdError: MtdError): MtdError = mtdError.copy(paths = Some(Seq("/some/path")))
-
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST),
-          (withPath(ValueFormatError), BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (withPath(RuleBuildingNameNumberError), BAD_REQUEST),
-          (withPath(StringFormatError), BAD_REQUEST),
-          (RuleBothAllowancesSuppliedError, BAD_REQUEST),
-          (withPath(RuleIncorrectOrEmptyBodyError), BAD_REQUEST),
-          (withPath(DateFormatError), BAD_REQUEST),
-          (withPath(Class4ExemptionReasonFormatError), BAD_REQUEST)
-        )
-
-        input.foreach(args => (errorsFromParserTester _).tupled(args))
-      }
-
-      "service errors occur" should {
-        def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $mtdError error is returned from the service" in new Test {
-
-            MockAmendAnnualSummaryRequestParser
-              .requestFor(rawData)
-              .returns(Right(requestData))
-
-            MockAmendAnnualSubmissionService
-              .amendAnnualSubmission(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
-
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePostRequest(requestJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(mtdError)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val input = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
-
-        input.foreach(args => (serviceErrors _).tupled(args))
-      }
-    }
   }
 
 }

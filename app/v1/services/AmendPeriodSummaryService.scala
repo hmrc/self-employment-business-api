@@ -16,13 +16,10 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.support.DownstreamResponseMappingSupport
+import api.services.{AmendPeriodSummaryServiceOutcome, BaseService}
 import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.AmendPeriodSummaryConnector
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
 
@@ -30,13 +27,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
+class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends BaseService {
 
-  def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendPeriodSummary(
+      request: AmendPeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendPeriodSummaryServiceOutcome] = {
 
     connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }

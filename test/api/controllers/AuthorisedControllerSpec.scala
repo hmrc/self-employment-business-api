@@ -16,8 +16,8 @@
 
 package api.controllers
 
-import api.models.errors._
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.errors._
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
@@ -116,14 +116,14 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockMtdIdLookupService
         .lookup(nino)
-        .returns(Future.successful(Left(UnauthorisedError)))
+        .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
       private val result = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
   }
 
-  "the an error occurs retrieving the MDT ID" should {
+  "the an error occurs retrieving the MTD ID" should {
     "return a 500" in new Test {
 
       MockMtdIdLookupService
@@ -144,7 +144,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockEnrolmentsAuthService
         .authorised(predicate)
-        .returns(Future.successful(Left(UnauthorisedError)))
+        .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
       private val result = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
@@ -160,7 +160,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockEnrolmentsAuthService
         .authorised(predicate)
-        .returns(Future.successful(Left(UnauthorisedError)))
+        .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
       private val result = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
