@@ -51,7 +51,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
 
   def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")

@@ -23,28 +23,30 @@ import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads, Writes}
+import scala.collection.immutable
 
 case class ListPeriodSummariesResponse[I](periods: Seq[I])
 
 object ListPeriodSummariesResponse extends HateoasLinks {
 
-  implicit val reads: Reads[ListPeriodSummariesResponse[PeriodDetails]] = Json.reads
+  implicit def reads: Reads[ListPeriodSummariesResponse[PeriodDetails]] = Json.reads[ListPeriodSummariesResponse[PeriodDetails]]
 
-  implicit def writes[I: Writes]: OWrites[ListPeriodSummariesResponse[I]] = Json.writes
+  implicit def writes[I: Writes]: OWrites[ListPeriodSummariesResponse[I]] = Json.writes[ListPeriodSummariesResponse[I]]
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListPeriodSummariesResponse, PeriodDetails, ListPeriodSummariesHateoasData] {
 
-    override def links(appConfig: AppConfig, data: ListPeriodSummariesHateoasData): Seq[Link] = {
-      Seq(
+    override def itemLinks(appConfig: AppConfig, data: ListPeriodSummariesHateoasData, item: PeriodDetails): immutable.Seq[Link] =
+      immutable.Seq(
+        retrievePeriodSummary(appConfig, data.nino, data.businessId, item.periodId, data.taxYear)
+      )
+
+    override def links(appConfig: AppConfig, data: ListPeriodSummariesHateoasData): immutable.Seq[Link] = {
+
+      immutable.Seq(
         createPeriodSummary(appConfig, data.nino, data.businessId),
         listPeriodSummaries(appConfig, data.nino, data.businessId, data.taxYear, isSelf = true)
       )
     }
-
-    override def itemLinks(appConfig: AppConfig, data: ListPeriodSummariesHateoasData, item: PeriodDetails): Seq[Link] =
-      Seq(
-        retrievePeriodSummary(appConfig, data.nino, data.businessId, item.periodId, data.taxYear)
-      )
 
   }
 

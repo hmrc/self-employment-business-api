@@ -48,8 +48,8 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
         s"${versionIfSpecified(request)}, " +
         s"for (${request.method}) [${request.uri}] with status: " +
         s"$statusCode and message: $message")
-    statusCode match {
 
+    statusCode match {
       case BAD_REQUEST =>
         auditConnector.sendEvent(dataEvent("ServerValidationError", "Request bad format exception", request))
         Future.successful(BadRequest(Json.toJson(BadRequestError)))
@@ -60,9 +60,9 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
 
       case _ =>
         val errorCode = statusCode match {
-          case UNAUTHORIZED           => UnauthorisedError
+          case UNAUTHORIZED           => ClientNotAuthorisedError
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
-          case _                      => MtdError("INVALID_REQUEST", message)
+          case _                      => MtdError("INVALID_REQUEST", message, BAD_REQUEST)
         }
 
         auditConnector.sendEvent(
@@ -88,16 +88,16 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
       ex
     )
 
-    val (status, errorCode, eventType) = ex match {
-      case _: NotFoundException      => (NOT_FOUND, NotFoundError, "ResourceNotFound")
-      case _: AuthorisationException => (UNAUTHORIZED, UnauthorisedError, "ClientError")
-      case _: JsValidationException  => (BAD_REQUEST, BadRequestError, "ServerValidationError")
-      case e: HttpException          => (e.responseCode, BadRequestError, "ServerValidationError")
+    val (errorCode: MtdError, eventType) = ex match {
+      case _: NotFoundException      => (NotFoundError, "ResourceNotFound")
+      case _: AuthorisationException => (ClientNotAuthenticatedError, "ClientError")
+      case _: JsValidationException  => (BadRequestError, "ServerValidationError")
+      case e: HttpException          => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
-        (e.reportAs, BadRequestError, "ServerValidationError")
+        (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
-        (e.reportAs, InternalError, "ServerInternalError")
-      case _ => (INTERNAL_SERVER_ERROR, InternalError, "ServerInternalError")
+        (InternalError, "ServerInternalError")
+      case _ => (InternalError, "ServerInternalError")
     }
 
     auditConnector.sendEvent(
@@ -109,7 +109,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
       )
     )
 
-    Future.successful(Status(status)(Json.toJson(errorCode)))
+    Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
   }
 
   private def versionIfSpecified(request: RequestHeader): String = routing.Versions.getFromRequest(request).map(_.name).getOrElse("<unspecified>")

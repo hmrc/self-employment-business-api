@@ -16,7 +16,7 @@
 
 package v1.models.response.retrieveAnnual
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino}
 import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
@@ -73,7 +73,7 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
         val data: RetrieveAnnualSubmissionHateoasData = RetrieveAnnualSubmissionHateoasData(
           Nino(nino),
           BusinessId(businessId),
-          TaxYear.fromMtd(taxYear)
+          taxYear
         )
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()

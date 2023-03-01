@@ -16,12 +16,11 @@
 
 package v1.mocks.services
 
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 import v1.services.DeleteAnnualSubmissionService
 
@@ -37,13 +36,11 @@ trait MockDeleteAnnualSubmissionService extends MockFactory {
       (
         mockDeleteAnnualSubmissionService
           .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequest)(
-            _: HeaderCarrier,
-            _: ExecutionContext,
-            _: EndpointLogContext,
-            _: String
+            _: RequestContext,
+            _: ExecutionContext
           )
         )
-        .expects(requestData, *, *, *, *)
+        .expects(requestData, *, *)
     }
 
   }

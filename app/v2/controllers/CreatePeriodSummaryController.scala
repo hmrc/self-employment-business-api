@@ -51,7 +51,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
 
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val correlationId: String = idGenerator.getCorrelationId
+      implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with correlationId : $correlationId")
@@ -91,7 +91,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
 
   private def errorResult(errorWrapper: ErrorWrapper) =
     errorWrapper.error match {
-      case MtdErrorWithCode(ValueFormatError.code) | MtdErrorWithCode(RuleIncorrectOrEmptyBodyError.code) =>
+      case ValueFormatError | RuleIncorrectOrEmptyBodyError =>
         BadRequest(Json.toJson(errorWrapper))
 
       case _

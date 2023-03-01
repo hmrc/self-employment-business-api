@@ -16,16 +16,12 @@
 
 package v1.controllers
 
-import api.controllers.ControllerBaseSpec
-import api.mocks.MockIdGenerator
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockDeleteAnnualSubmissionRequestParser
 import v1.mocks.services.MockDeleteAnnualSubmissionService
 import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
@@ -35,34 +31,12 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockDeleteAnnualSubmissionService
-    with MockDeleteAnnualSubmissionRequestParser
-    with MockHateoasFactory
-    with MockIdGenerator {
+    with MockDeleteAnnualSubmissionRequestParser {
 
-  private val nino          = "AA123456A"
-  private val taxYear       = "2019-20"
-  private val businessId    = "XAIS12345678910"
-  private val correlationId = "X-123"
-
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    val controller = new DeleteAnnualSubmissionController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockDeleteAnnualSubmissionRequestParser,
-      service = mockDeleteAnnualSubmissionService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
+  private val taxYear: String    = "2019-20"
+  private val businessId: String = "XAIS12345678910"
 
   private val rawData     = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
   private val requestData = DeleteAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
@@ -78,73 +52,49 @@ class DeleteAnnualSubmissionControllerSpec
           .deleteAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
-
-        status(result) shouldBe NO_CONTENT
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
+        runOkTest(
+          expectedStatus = NO_CONTENT
+        )
       }
     }
 
     "return the error as per spec" when {
-      "parser errors occur" should {
-        def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-          s"a ${error.code} error is returned from the parser" in new Test {
+      "the parser validation fails" in new Test {
 
-            MockDeleteAnnualSubmissionRequestParser
-              .parse(rawData)
-              .returns(Left(ErrorWrapper(correlationId, error, None)))
+        MockDeleteAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(error)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST)
-        )
-
-        input.foreach(args => (errorsFromParserTester _).tupled(args))
+        runErrorTest(NinoFormatError)
       }
 
-      "service errors occur" should {
-        def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $mtdError error is returned from the service" in new Test {
+      "the service returns an error" in new Test {
 
-            MockDeleteAnnualSubmissionRequestParser
-              .parse(rawData)
-              .returns(Right(requestData))
+        MockDeleteAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
 
-            MockDeleteAnnualSubmissionService
-              .deleteAnnualSubmission(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
+        MockDeleteAnnualSubmissionService
+          .deleteAnnualSubmission(requestData)
+          .returns(Future.successful(Left(errors.ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(mtdError)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val input = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
-
-        input.foreach(args => (serviceErrors _).tupled(args))
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
+  }
+
+  trait Test extends ControllerTest {
+
+    val controller = new DeleteAnnualSubmissionController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockDeleteAnnualSubmissionRequestParser,
+      service = mockDeleteAnnualSubmissionService,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
   }
 
 }

@@ -16,7 +16,7 @@
 
 package v1.models.response.amendSEAnnual
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino}
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, PUT}
 import mocks.MockAppConfig
@@ -34,7 +34,7 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
       AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory.links(
         mockAppConfig,
-        AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))) shouldBe
+        AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear)) shouldBe
         Seq(
           Link(s"/my/context/$nino/$businessId/annual/$taxYear", PUT, "create-and-amend-self-employment-annual-submission"),
           Link(s"/my/context/$nino/$businessId/annual/$taxYear", GET, "self"),
