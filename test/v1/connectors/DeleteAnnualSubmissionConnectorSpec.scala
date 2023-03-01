@@ -16,19 +16,20 @@
 
 package v1.connectors
 
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsObject
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.errors.{DownstreamErrorCode, DownstreamErrors}
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.Future
 
 class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val nino: String         = "AA123456A"
-  val businessId: String   = "XAIS12345678910"
+  val nino: String       = "AA123456A"
+  val businessId: String = "XAIS12345678910"
 
   private val preTysTaxYear = TaxYear.fromMtd("2017-18")
   private val tysTaxYear    = TaxYear.fromMtd("2023-24")
@@ -94,7 +95,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
     val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
       nino = Nino(nino),
       taxYear = taxYear,
-      businessId = BusinessId(businessId),
+      businessId = BusinessId(businessId)
     )
 
     protected def stubHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
@@ -109,7 +110,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
         url = s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
       ).returns(Future.successful(outcome))
     }
-  }
 
+  }
 
 }

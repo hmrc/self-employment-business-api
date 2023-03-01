@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers.validators
 
+import anyVersion.models.request.amendPeriodSummary
+import api.models.errors._
+import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
-import v1.models.errors._
-import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
-import v1.models.utils.JsonErrorValidators
 
 class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 
@@ -79,15 +79,17 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied with expenses" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, None)) shouldBe Nil
+        validator.validate(
+          amendPeriodSummary.AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, None)) shouldBe Nil
       }
       "a valid TYS request is supplied with expenses" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, validTaxYear)) shouldBe Nil
+        validator.validate(
+          amendPeriodSummary.AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, validTaxYear)) shouldBe Nil
       }
 
       "a valid request is supplied with consolidated expenses" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -109,7 +111,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "only periodIncome is supplied" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -128,7 +130,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "only expenses is supplied" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -178,40 +180,54 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
     }
     "return a path parameter error" when {
       "an invalid nino is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData("A12344A", validBusinessId, validPeriodId, requestBodyJson, None)) shouldBe List(NinoFormatError)
+        validator.validate(
+          amendPeriodSummary.AmendPeriodSummaryRawData("A12344A", validBusinessId, validPeriodId, requestBodyJson, None)) shouldBe List(
+          NinoFormatError)
       }
       "an invalid businessId is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, "Walrus", validPeriodId, requestBodyJson, None)) shouldBe List(BusinessIdFormatError)
+        validator.validate(amendPeriodSummary.AmendPeriodSummaryRawData(validNino, "Walrus", validPeriodId, requestBodyJson, None)) shouldBe List(
+          BusinessIdFormatError)
       }
       "an invalid PeriodId is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, "2103/01", requestBodyJson, None)) shouldBe List(PeriodIdFormatError)
+        validator.validate(amendPeriodSummary.AmendPeriodSummaryRawData(validNino, validBusinessId, "2103/01", requestBodyJson, None)) shouldBe List(
+          PeriodIdFormatError)
       }
     }
     "return RuleIncorrectOrEmptyBodyError" when {
       "an empty body is submitted" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""), None)) shouldBe List(
+        validator.validate(
+          amendPeriodSummary.AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{}"""), None)) shouldBe List(
           RuleIncorrectOrEmptyBodyError)
       }
       "an empty income is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodIncome": {}}"""), None)) shouldBe List(
+          amendPeriodSummary
+            .AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodIncome": {}}"""), None)) shouldBe List(
           RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
       }
       "an empty allowable expenses is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodAllowableExpenses": {}}"""), None)) shouldBe List(
-          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
+          amendPeriodSummary.AmendPeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse("""{"periodAllowableExpenses": {}}"""),
+            None)) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses"))))
       }
       "an empty disallowable expenses is submitted" in {
         validator.validate(
-          AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, Json.parse("""{"periodDisallowableExpenses": {}}"""), None)) shouldBe List(
-          RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
+          amendPeriodSummary.AmendPeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            Json.parse("""{"periodDisallowableExpenses": {}}"""),
+            None)) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
       }
     }
     "return RuleBothExpensesSuppliedError" when {
       "Both expenses and consolidatedExpenses are supplied" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -265,31 +281,33 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
     "return TaxYearFormatError error" when {
       "an invalid tax year format is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("202324"))) shouldBe
+        validator.validate(
+          amendPeriodSummary.AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("202324"))) shouldBe
           List(TaxYearFormatError)
       }
     }
 
     "return InvalidTaxYearParameter" when {
       "an invalid tax year is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("2022-23"))) shouldBe
+        validator.validate(
+          amendPeriodSummary.AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("2022-23"))) shouldBe
           List(InvalidTaxYearParameterError)
       }
     }
 
     "return RuleTaxYearRangeInvalidError error" when {
       "an invalid tax year range is supplied" in {
-        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("2023-26"))) shouldBe
+        validator.validate(
+          amendPeriodSummary.AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, Some("2023-26"))) shouldBe
           List(RuleTaxYearRangeInvalidError)
       }
     }
-
 
     "return ValueFormatError" when {
 
       "/periodIncome/turnover is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -300,7 +318,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "/periodIncome/other is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -310,7 +328,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "/periodAllowableExpenses/consolidatedExpenses is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -332,7 +350,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "/periodAllowableExpenses/costOfGoodsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -343,7 +361,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/paymentsToSubcontractorsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -353,7 +371,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "/periodAllowableExpenses/wagesAndStaffCostsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -363,7 +381,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       }
       "/periodAllowableExpenses/carVanTravelExpensesAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -374,7 +392,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/premisesRunningCostsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -385,7 +403,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/maintenanceCostsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -396,7 +414,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/adminCostsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -407,7 +425,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/businessEntertainmentCostsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -418,7 +436,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/advertisingCostsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -429,7 +447,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/interestOnBankOtherLoansAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -440,7 +458,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/financeChargesAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -451,7 +469,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/irrecoverableDebtsAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -462,7 +480,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/professionalFeesAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -473,7 +491,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/depreciationAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -484,7 +502,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodAllowableExpenses/otherExpensesAllowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -495,7 +513,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/costOfGoodsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -506,7 +524,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -517,7 +535,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -528,7 +546,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/carVanTravelExpensesDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -539,7 +557,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/premisesRunningCostsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -550,7 +568,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/maintenanceCostsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -561,7 +579,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/adminCostsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -572,7 +590,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -583,7 +601,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/advertisingCostsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -594,7 +612,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -605,7 +623,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/financeChargesDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -616,7 +634,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/irrecoverableDebtsDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -627,7 +645,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/professionalFeesDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -638,7 +656,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/depreciationDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -649,7 +667,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
 
       "/periodDisallowableExpenses/otherExpensesDisallowable is invalid" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,
@@ -660,12 +678,12 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
     }
     "return multiple errors" when {
       "every path parameter format is invalid" in {
-        validator.validate(AmendPeriodSummaryRawData("AJAA12", "XASOE12", "201219", requestBodyJson, None)) shouldBe
+        validator.validate(amendPeriodSummary.AmendPeriodSummaryRawData("AJAA12", "XASOE12", "201219", requestBodyJson, None)) shouldBe
           List(NinoFormatError, BusinessIdFormatError, PeriodIdFormatError)
       }
       "every field in the body is invalid when expenses are supplied" in {
         validator.validate(
-          AmendPeriodSummaryRawData(
+          amendPeriodSummary.AmendPeriodSummaryRawData(
             validNino,
             validBusinessId,
             validPeriodId,

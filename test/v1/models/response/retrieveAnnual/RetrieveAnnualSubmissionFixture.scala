@@ -16,8 +16,8 @@
 
 package v1.models.response.retrieveAnnual
 
+import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsObject, JsValue, Json}
-import v1.models.domain.ex.MtdNicExemption
 
 trait RetrieveAnnualSubmissionFixture {
 

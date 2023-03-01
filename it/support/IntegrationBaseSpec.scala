@@ -60,8 +60,8 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
   }
 
   override def beforeEach(): Unit = {
-    resetWireMock()
     super.beforeEach()
+    resetWireMock()
   }
 
   def buildRequest(path: String): WSRequest = client.url(s"http://localhost:$port$path").withFollowRedirects(false)

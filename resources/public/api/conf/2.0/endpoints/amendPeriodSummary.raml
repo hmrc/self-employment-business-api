@@ -1,0 +1,50 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - headers.contentTypeJson
+  - errors.formatNino
+  - errors.formatBusinessId
+  - errors.formatPeriodId
+  - errors.formatValue
+  - errors.incorrectOrEmptyBody
+  - errors.ruleBothExpensesSupplied
+  - errors.ruleNotAllowedConsolidatedExpenses
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
+  - errors.formatTaxYear
+  - errors.ruleTaxYearRangeInvalid
+  - errors.ruleTaxYearNotSupported
+  - errors.invalidTaxYearParameter
+  - queryParameters.taxYearTys
+displayName: Amend a Self-Employment Period Summary
+description: |
+  This endpoint allows a developer to amend a self-employment period summary.
+  Submissions must include values for incomes, expenses and deductions, even if the values are zero.
+  The periodExpenses object may contain either a consolidatedExpenses element, or a mixture of the other expenses elements.
+  A National Insurance number, business ID and period ID must be provided.
+(annotations.sandboxData): !include ../scenarios/amend_period_summary_scenarios.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+  application/json:
+    type: !include ../schemas/amend_period_summary_request.json
+    examples:
+      example-1:
+        description: Amend Period Summary Consolidated Request
+        value: !include ../examples/amend_period_summary_consolidated_request.json
+      example-2:
+        description: Amend Period Summary Non-Consolidated Request
+        value: !include ../examples/amend_period_summary_non_consolidated_request.json
+responses:
+  200:
+    body:
+      application/json:
+        type: !include ../schemas/amend_period_summary_response.json
+        examples:
+          example:
+            description: Example Response
+            value: !include ../examples/amend_period_summary_response.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

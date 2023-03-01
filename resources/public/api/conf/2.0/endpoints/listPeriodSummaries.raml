@@ -1,0 +1,41 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatBusinessId
+  - errors.clientOrAgentNotAuthorised
+  - errors.matchingResourceNotFound
+  - errors.formatTaxYear
+  - errors.ruleTaxYearRangeInvalid
+  - errors.invalidTaxYearParameter
+  - errors.ruleTaxYearNotSupported
+displayName: List Self-Employment Period Summaries
+description: This endpoint enables you to retrieve a list of all self-employment update period summaries. A National Insurance number and business ID must be provided.
+(annotations.sandboxData): !include ../scenarios/list_period_summaries_scenarios.md
+(annotations.scope): "read:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+queryParameters:
+  taxYear:
+    description: |
+      [test only] The tax year to which the data applies in the format YYYY-YY.
+      The start year and end year must not span two tax years. The parameter value must be at least 2023-24.
+      No gaps are allowed, for example, 2023-25 is not valid.
+
+      If no tax year parameter is supplied, all data up until 2022-23 will be returned.
+      For 2023-24 and onwards, data must be requested individually by tax year.
+    type: string
+    example: 2023-24
+    required: false
+responses:
+  200:
+    body:
+      application/json:
+        type: !include ../schemas/list_period_summaries_response.json
+        examples:
+          example-1:
+            description: Example Response
+            value: !include ../examples/list_period_summaries_response.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

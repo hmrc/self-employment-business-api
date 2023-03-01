@@ -16,8 +16,11 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.MtdError
+import anyVersion.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, PeriodDisallowableExpenses, PeriodIncome}
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
+import api.models.errors.MtdError
+import v1.controllers.requestParsers.validators.validations.AmendConsolidatedExpensesValidation
 import v1.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {

@@ -16,10 +16,12 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
+import api.controllers.requestParsers.RequestParser
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v1.controllers.requestParsers.validators.DeleteAnnualSubmissionValidator
-import v1.models.domain.{BusinessId, Nino, TaxYear}
 import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
+
+import javax.inject.Inject
 
 class DeleteAnnualSubmissionRequestParser @Inject() (val validator: DeleteAnnualSubmissionValidator)
     extends RequestParser[DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest] {

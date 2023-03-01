@@ -16,12 +16,14 @@
 
 package v1.models.response.retrieveAnnual
 
+import anyVersion.hateoas.HateoasLinks
+import api.hateoas.HateoasLinksFactory
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.hateoas.{HateoasData, Link}
+import collection.immutable.Seq
 
 case class RetrieveAnnualSubmissionResponse(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials])
 
@@ -41,9 +43,9 @@ object RetrieveAnnualSubmissionResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
       import data._
       Seq(
-        amendAnnualSubmission(appConfig, nino, businessId, taxYear),
-        retrieveAnnualSubmission(appConfig, nino, businessId, taxYear),
-        deleteAnnualSubmission(appConfig, nino, businessId, taxYear)
+        amendAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
+        retrieveAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
+        deleteAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear))
       )
     }
 
@@ -51,4 +53,4 @@ object RetrieveAnnualSubmissionResponse extends HateoasLinks {
 
 }
 
-case class RetrieveAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends HateoasData
+case class RetrieveAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: String) extends HateoasData

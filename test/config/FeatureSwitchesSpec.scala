@@ -17,9 +17,12 @@
 package config
 
 import play.api.Configuration
+import routing.{Version, Version1, Version2}
 import support.UnitSpec
 
 class FeatureSwitchesSpec extends UnitSpec {
+
+  val anyVersion: Version = Version2
 
   "a feature switch" should {
     "be true" when {
@@ -58,28 +61,14 @@ class FeatureSwitchesSpec extends UnitSpec {
     val featureSwitches = FeatureSwitches(configuration)
 
     "return false" when {
-      "the version is blank" in {
-        featureSwitches.isVersionEnabled("") shouldBe false
-      }
-
-      "the version is an invalid format" in {
-        featureSwitches.isVersionEnabled("ABCDE-1") shouldBe false
-        featureSwitches.isVersionEnabled("1.") shouldBe false
-        featureSwitches.isVersionEnabled("1.ABC") shouldBe false
-      }
-
-      "the version isn't in the config" in {
-        featureSwitches.isVersionEnabled("3.0") shouldBe false
-      }
-
-      "the version is disabled in the config" in {
-        featureSwitches.isVersionEnabled("2.0") shouldBe false
+      "the version is not enabled in the config" in {
+        featureSwitches.isVersionEnabled(anyVersion) shouldBe false
       }
     }
 
     "return true" when {
       "the version is enabled in the config" in {
-        featureSwitches.isVersionEnabled("1.0") shouldBe true
+        featureSwitches.isVersionEnabled(Version1) shouldBe true
       }
     }
   }

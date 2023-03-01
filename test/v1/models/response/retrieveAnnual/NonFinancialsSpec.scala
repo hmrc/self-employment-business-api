@@ -16,9 +16,9 @@
 
 package v1.models.response.retrieveAnnual
 
+import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.domain.ex.MtdNicExemption
 
 class NonFinancialsSpec extends UnitSpec with RetrieveAnnualSubmissionFixture {
 

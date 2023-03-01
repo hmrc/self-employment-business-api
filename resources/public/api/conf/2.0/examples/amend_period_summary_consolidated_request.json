@@ -1,0 +1,9 @@
+{
+  "periodIncome": {
+    "turnover": 1000.99,
+    "other": 1000.99
+  },
+  "periodExpenses": {
+    "consolidatedExpenses": 1000.99
+  }
+}

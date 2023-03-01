@@ -16,17 +16,17 @@
 
 package v1.controllers
 
-import play.api.libs.json.{JsObject, Json}
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.mocks.hateoas.MockHateoasFactory
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors._
+import api.models.hateoas
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.hateoas.Method.{DELETE, GET, PUT}
+import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockIdGenerator
-import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockRetrieveAnnualSubmissionRequestParser
-import v1.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService, MockRetrieveAnnualSubmissionService}
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.errors._
-import v1.models.hateoas.HateoasWrapper
-import v1.models.outcomes.ResponseWrapper
+import v1.mocks.services.MockRetrieveAnnualSubmissionService
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
 import v1.models.response.retrieveAnnual._
 
@@ -35,22 +35,80 @@ import scala.concurrent.Future
 
 class RetrieveAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockRetrieveAnnualSubmissionService
     with MockRetrieveAnnualSubmissionRequestParser
     with MockHateoasFactory
-    with MockAuditService
-    with MockIdGenerator
     with RetrieveAnnualSubmissionFixture {
 
-  private val nino          = "AA123456A"
-  private val businessId    = "XAIS12345678910"
-  private val taxYear       = "2020-21"
-  private val correlationId = "X-123"
+  private val businessId: String = "XAIS12345678910"
+  private val taxYear: String    = "2020-21"
 
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
+  val testHateoasLinks: Seq[Link] = Seq(
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      method = PUT,
+      rel = "create-and-amend-self-employment-annual-submission"),
+    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+    hateoas.Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      method = DELETE,
+      rel = "delete-self-employment-annual-submission")
+  )
+
+  private val rawData     = RetrieveAnnualSubmissionRawData(nino, businessId, taxYear)
+  private val requestData = RetrieveAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+
+  private val responseBody: RetrieveAnnualSubmissionResponse = retrieveResponseModel
+
+  "handleRequest" should {
+    "return a successful response with status 200 (OK)" when {
+      "the request received is valid" in new Test {
+        MockRetrieveAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockRetrieveAnnualSubmissionService
+          .retrieve(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
+
+        MockHateoasFactory
+          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+          .returns(HateoasWrapper(responseBody, testHateoasLinks))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear))
+        )
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+
+        MockRetrieveAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+
+        runErrorTest(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+
+        MockRetrieveAnnualSubmissionRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockRetrieveAnnualSubmissionService
+          .retrieve(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTest(RuleTaxYearNotSupportedError)
+      }
+    }
+  }
+
+  trait Test extends ControllerTest {
 
     val controller = new RetrieveAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
@@ -62,99 +120,7 @@ class RetrieveAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.getCorrelationId.returns(correlationId)
-  }
-
-  private val rawData     = RetrieveAnnualSubmissionRawData(nino, businessId, taxYear)
-  private val requestData = RetrieveAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
-
-  private val responseBody: RetrieveAnnualSubmissionResponse = retrieveResponseModel
-
-  "handleRequest" should {
-    "return Ok" when {
-      "the request received is valid" in new Test {
-        MockRetrieveAnnualSubmissionRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockRetrieveAnnualSubmissionService
-          .retrieve(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
-
-        MockHateoasFactory
-          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
-          .returns(HateoasWrapper(responseBody, testHateoasLinks))
-
-        val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
-
-        contentAsJson(result) shouldBe Json.toJson(responseBody).as[JsObject] ++ testHateoasLinksJson
-        status(result) shouldBe OK
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-      }
-    }
-
-    "return an error as per spec" when {
-      "parser errors occur" should {
-        def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-          s"a ${error.code} error is returned from the parser" in new Test {
-
-            MockRetrieveAnnualSubmissionRequestParser
-              .parse(rawData)
-              .returns(Left(ErrorWrapper(correlationId, error, None)))
-
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(error)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST)
-        )
-
-        input.foreach(args => (errorsFromParserTester _).tupled(args))
-      }
-
-      "service errors occur" should {
-        def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $mtdError error is returned from the service" in new Test {
-
-            MockRetrieveAnnualSubmissionRequestParser
-              .parse(rawData)
-              .returns(Right(requestData))
-
-            MockRetrieveAnnualSubmissionService
-              .retrieve(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
-
-            val result: Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(mtdError)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val input = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
-
-        input.foreach(args => (serviceErrors _).tupled(args))
-      }
-    }
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeGetRequest)
   }
 
 }

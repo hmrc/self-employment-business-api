@@ -16,9 +16,9 @@
 
 package v1.models.request.amendSEAnnual
 
+import api.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
-import v1.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
 
 case class NonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
 
