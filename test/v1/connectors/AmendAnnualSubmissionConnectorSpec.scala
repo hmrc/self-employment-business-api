@@ -16,17 +16,18 @@
 
 package v1.connectors
 
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.outcomes.ResponseWrapper
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequest}
 
 import scala.concurrent.Future
 
 class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
-  private val body = AmendAnnualSubmissionBody(None, None, None)
+  private val body       = AmendAnnualSubmissionBody(None, None, None)
 
   trait Test {
     _: ConnectorTest =>
@@ -43,21 +44,23 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
       taxYear = taxYear,
       body = body
     )
+
   }
 
   "AmendAnnualSubmissionConnector" when {
     "amendAnnualSubmission called" must {
       "return a 200 status for a success scenario" in
-      new DesTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
+        new DesTest with Test {
+          def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+          val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        willPut(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}", body) returns Future.successful(outcome)
+          willPut(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}", body) returns Future
+            .successful(outcome)
 
-        val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
-        result shouldBe outcome
-      }
+          val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
+          result shouldBe outcome
+        }
     }
   }
 
@@ -68,7 +71,8 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future.successful(outcome)
+        willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
+          .successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
         result shouldBe outcome

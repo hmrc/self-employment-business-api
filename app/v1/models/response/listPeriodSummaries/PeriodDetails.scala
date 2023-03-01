@@ -16,8 +16,8 @@
 
 package v1.models.response.listPeriodSummaries
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class PeriodDetails(periodId: String, periodStartDate: String, periodEndDate: String, periodCreationDate: Option[String])
 

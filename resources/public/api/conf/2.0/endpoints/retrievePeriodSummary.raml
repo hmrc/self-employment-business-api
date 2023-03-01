@@ -1,0 +1,43 @@
+is:
+  - headers.acceptJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatBusinessId
+  - errors.formatPeriodId
+  - errors.clientOrAgentNotAuthorised
+  - errors.matchingResourceNotFound
+  - errors.formatTaxYear
+  - errors.ruleTaxYearRangeInvalid
+  - errors.invalidTaxYearParameter
+  - errors.ruleTaxYearNotSupported
+  - queryParameters.taxYearTys
+displayName: Retrieve a Self-Employment Period Summary
+description: "This endpoint enables you to retrieve a single self-employment period summary for a given identifier. A National Insurance number, business ID and period ID must be provided."
+(annotations.sandboxData): !include ../scenarios/retrieve_period_summary_scenarios.md
+(annotations.scope): "read:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "read:self-assessment" ] } ]
+queryParameters:
+  taxYear:
+    description: |
+      [test only] The tax year to which the data applies in the format YYYY-YY.
+      The start year and end year must not span two tax years. The parameter value must be at least 2023-24.
+      No gaps are allowed, for example, 2023-25 is not valid.
+    type: string
+    example: 2023-24
+    required: false
+responses:
+  200:
+    headers:
+      X-CorrelationId:
+        example: a1e8057e-fbbc-47a8-a8b4-78d9f015c253
+        description: Unique ID for operation tracking <br> String, 36 characters.
+    body:
+      application/json:
+        type: !include ../schemas/retrieve_period_summary_response.json
+        examples:
+          example-1:
+            description: Non-Consolidated Response
+            value: !include ../examples/retrieve_period_summary_non_consolidated_response.json
+          example-2:
+            description: Consolidated Response
+            value: !include ../examples/retrieve_period_summary_consolidated_response.json

@@ -16,10 +16,12 @@
 
 package v1.connectors
 
-import v1.models.domain.{BusinessId, Nino}
-import v1.models.outcomes.ResponseWrapper
+import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
+import api.connectors.ConnectorSpec
+import api.models.domain.{BusinessId, Nino}
+import api.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 

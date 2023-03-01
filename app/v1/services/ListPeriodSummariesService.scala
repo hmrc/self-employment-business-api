@@ -16,32 +16,26 @@
 
 package v1.services
 
+import api.controllers.RequestContext
+import api.models.errors._
+import api.services.{BaseService, ListPeriodSummariesServiceOutcome}
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.ListPeriodSummariesConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
-import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
-import v1.support.DownstreamResponseMappingSupport
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends DownstreamResponseMappingSupport with Logging {
+class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends BaseService {
 
-  def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
+  def listPeriodSummaries(
+      request: ListPeriodSummariesRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListPeriodSummariesServiceOutcome] = {
 
     connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
-  private def errorMap = {
+  private def errorMap: Map[String, MtdError] = {
     val errors =
       Map(
         "INVALID_NINO"            -> NinoFormatError,
@@ -51,10 +45,10 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
         "SERVICE_UNAVAILABLE"     -> InternalError
       )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"            -> TaxYearFormatError,
-      "INVALID_INCOMESOURCE_ID"     -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID"      -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError
+      "INVALID_TAX_YEAR"        -> TaxYearFormatError,
+      "INVALID_INCOMESOURCE_ID" -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"  -> InternalError,
+      "TAX_YEAR_NOT_SUPPORTED"  -> RuleTaxYearNotSupportedError
     )
     errors ++ extraTysErrors
   }

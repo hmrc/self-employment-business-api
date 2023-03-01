@@ -16,30 +16,22 @@
 
 package v1.services
 
+import api.controllers.RequestContext
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
+import api.models.errors._
+import api.services.{BaseService, CreatePeriodSummaryServiceOutcome}
 import cats.data.EitherT
-import cats.implicits._
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.CreatePeriodSummaryConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
-import v1.support.DownstreamResponseMappingSupport
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
+class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends BaseService {
 
-  def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]] = {
-
+  def createPeriodicSummary(
+      request: CreatePeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[CreatePeriodSummaryServiceOutcome] = {
     val result = for {
       responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
     } yield responseWrapper.map { _ =>
@@ -66,18 +58,18 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "SERVICE_UNAVAILABLE"             -> InternalError
     )
     val extraTysErrors = Map(
-      "INVALID_TAX_YEAR"                -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED"          -> RuleTaxYearNotSupportedError,
-      "INVALID_CORRELATIONID"           -> InternalError,
-      "INVALID_INCOME_SOURCE_ID"        -> BusinessIdFormatError,
-      "INCOME_SOURCE_NOT_FOUND"         -> NotFoundError,
-      "PERIOD_EXISTS"                   -> RuleDuplicateSubmissionError,
-      "END_BEFORE_START"                -> RuleEndDateBeforeStartDateError,
-      "PERIOD_HAS_GAPS"                 -> RuleNotContiguousPeriod,
-      "PERIOD_OVERLAP"                  -> RuleOverlappingPeriod,
-      "PERIOD_ALIGNMENT"                -> RuleMisalignedPeriod,
-      "INVALID_SUBMISSION_PERIOD"       -> RuleInvalidSubmissionPeriodError,
-      "INVALID_SUBMISSION_END_DATE"     -> RuleInvalidSubmissionEndDateError,
+      "INVALID_TAX_YEAR"            -> InternalError,
+      "TAX_YEAR_NOT_SUPPORTED"      -> RuleTaxYearNotSupportedError,
+      "INVALID_CORRELATIONID"       -> InternalError,
+      "INVALID_INCOME_SOURCE_ID"    -> BusinessIdFormatError,
+      "INCOME_SOURCE_NOT_FOUND"     -> NotFoundError,
+      "PERIOD_EXISTS"               -> RuleDuplicateSubmissionError,
+      "END_BEFORE_START"            -> RuleEndDateBeforeStartDateError,
+      "PERIOD_HAS_GAPS"             -> RuleNotContiguousPeriod,
+      "PERIOD_OVERLAP"              -> RuleOverlappingPeriod,
+      "PERIOD_ALIGNMENT"            -> RuleMisalignedPeriod,
+      "INVALID_SUBMISSION_PERIOD"   -> RuleInvalidSubmissionPeriodError,
+      "INVALID_SUBMISSION_END_DATE" -> RuleInvalidSubmissionEndDateError
     )
 
     errors ++ extraTysErrors

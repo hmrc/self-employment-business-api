@@ -16,15 +16,15 @@
 
 package v1.endpoints
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
-import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
@@ -178,9 +178,9 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, OK, downstreamResponse)
+          BaseDownstreamStub
+            .onSuccess(BaseDownstreamStub.POST, downstreamUri, OK, downstreamResponse)
         }
-
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe OK
         response.json shouldBe responseBody
@@ -193,7 +193,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, CREATED, downstreamResponse)
+          BaseDownstreamStub.onSuccess(BaseDownstreamStub.POST, downstreamUri, CREATED, downstreamResponse)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -531,7 +531,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           override def setupStubs(): StubMapping = {
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            DownstreamStub.onError(DownstreamStub.POST, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+            BaseDownstreamStub.onError(BaseDownstreamStub.POST, downstreamUri, downstreamStatus, errorBody(downstreamCode))
           }
 
           val response: WSResponse = await(request().post(requestBodyJson))
@@ -567,7 +567,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
         (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_PERIOD", BAD_REQUEST, RuleInvalidSubmissionPeriodError),
-        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError),
+        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError)
       )
 
       (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))

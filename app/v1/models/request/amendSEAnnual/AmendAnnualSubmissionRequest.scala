@@ -16,6 +16,6 @@
 
 package v1.models.request.amendSEAnnual
 
-import v1.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
 case class AmendAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear, body: AmendAnnualSubmissionBody)

@@ -16,8 +16,8 @@
 
 package v1.controllers.requestParsers.validators.validations
 
+import api.models.errors.RuleBothAllowancesSuppliedError
 import support.UnitSpec
-import v1.models.errors.RuleBothAllowancesSuppliedError
 import v1.models.request.amendSEAnnual.{Allowances, Building, StructuredBuildingAllowance}
 
 class BothAllowancesValidationSpec extends UnitSpec {

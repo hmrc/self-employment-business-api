@@ -16,13 +16,12 @@
 
 package v1.mocks.services
 
+import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.controllers.EndpointLogContext
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 import v1.services.RetrievePeriodSummaryService
 
@@ -39,13 +38,11 @@ trait MockRetrievePeriodSummaryService extends MockFactory {
       (
         mockRetrievePeriodSummaryService
           .retrievePeriodSummary(_: RetrievePeriodSummaryRequest)(
-            _: HeaderCarrier,
-            _: ExecutionContext,
-            _: EndpointLogContext,
-            _: String
+            _: RequestContext,
+            _: ExecutionContext
           )
         )
-        .expects(requestData, *, *, *, *)
+        .expects(requestData, *, *)
     }
 
   }

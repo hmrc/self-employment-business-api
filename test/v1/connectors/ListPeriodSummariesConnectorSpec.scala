@@ -16,8 +16,9 @@
 
 package v1.connectors
 
-import v1.models.domain.{BusinessId, Nino, TaxYear}
-import v1.models.outcomes.ResponseWrapper
+import api.connectors.ConnectorSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 

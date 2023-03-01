@@ -1,0 +1,69 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package v2.models.response.retrievePeriodSummary
+
+import anyVersion.hateoas.HateoasLinks
+import anyVersion.models.response.retrievePeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import api.hateoas.HateoasLinksFactory
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.hateoas.{HateoasData, Link}
+import config.AppConfig
+import play.api.libs.json._
+
+case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
+                                         periodIncome: Option[PeriodIncome],
+                                         periodExpenses: Option[PeriodExpenses],
+                                         periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+
+object RetrievePeriodSummaryResponse extends HateoasLinks {
+
+  implicit val reads: Reads[RetrievePeriodSummaryResponse] = for {
+    periodStartDate <- (JsPath \ "from").read[String]
+    periodEndDate   <- (JsPath \ "to").read[String]
+
+    periodDates = PeriodDates(periodStartDate = periodStartDate, periodEndDate = periodEndDate)
+
+    periodIncome               <- (JsPath \ "financials" \ "incomes").readNullable[PeriodIncome]
+    periodExpenses             <- (JsPath \ "financials").readNullable[PeriodExpenses]
+    periodDisallowableExpenses <- (JsPath \ "financials").readNullable[PeriodDisallowableExpenses]
+  } yield {
+    RetrievePeriodSummaryResponse(
+      periodDates = periodDates,
+      periodIncome = if (periodIncome.exists(_.isEmptyObject)) None else periodIncome,
+      periodExpenses = if (periodExpenses.exists(_.isEmptyObject)) None else periodExpenses,
+      periodDisallowableExpenses = if (periodDisallowableExpenses.exists(_.isEmptyObject)) None else periodDisallowableExpenses
+    )
+  }
+
+  implicit val writes: OWrites[RetrievePeriodSummaryResponse] = Json.writes[RetrievePeriodSummaryResponse]
+
+  implicit object RetrieveAnnualSubmissionLinksFactory extends HateoasLinksFactory[RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
+
+    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
+      import data._
+      Seq(
+        amendPeriodSummary(appConfig, nino, businessId, periodId, taxYear),
+        retrievePeriodSummary(appConfig, nino, businessId, periodId, taxYear),
+        listPeriodSummaries(appConfig, nino, businessId, taxYear, isSelf = false)
+      )
+    }
+
+  }
+
+}
+
+case class RetrievePeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) extends HateoasData

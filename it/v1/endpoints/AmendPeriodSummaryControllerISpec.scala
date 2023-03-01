@@ -16,17 +16,17 @@
 
 package v1.endpoints
 
+import api.models.errors._
+import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import stubs.{AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
-import v1.models.errors._
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryFixture
-import v1.models.utils.JsonErrorValidators
-import v1.stubs.{AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
@@ -43,8 +43,8 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
-          DownstreamStub
-            .when(DownstreamStub.PUT, downstreamUri, downstreamQueryParams)
+          BaseDownstreamStub
+            .when(BaseDownstreamStub.PUT, downstreamUri, downstreamQueryParams)
             .withRequestBody(downstreamRequestBodyJson)
             .thenReturn(status = OK, JsObject.empty)
         }
@@ -61,8 +61,8 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
-          DownstreamStub
-            .when(DownstreamStub.PUT, downstreamUri, downstreamQueryParams)
+          BaseDownstreamStub
+            .when(BaseDownstreamStub.PUT, downstreamUri, downstreamQueryParams)
             .withRequestBody(downstreamRequestBodyJson)
             .thenReturn(status = OK, JsObject.empty)
         }
@@ -137,13 +137,14 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
 
       "downstream service error" when {
 
-        def serviceErrorTest(downstreamStatus: Int, downstreamErrorCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamErrorCode error and status $downstreamStatus" in new NonTysTest {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.PUT, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamErrorCode))
+
+              BaseDownstreamStub.onError(BaseDownstreamStub.PUT, downstreamUri, downstreamQueryParams, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().put(requestBodyJson))

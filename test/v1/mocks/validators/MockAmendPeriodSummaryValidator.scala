@@ -16,11 +16,11 @@
 
 package v1.mocks.validators
 
+import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
+import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.AmendPeriodSummaryValidator
-import v1.models.errors.MtdError
-import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 
 trait MockAmendPeriodSummaryValidator extends MockFactory {
 

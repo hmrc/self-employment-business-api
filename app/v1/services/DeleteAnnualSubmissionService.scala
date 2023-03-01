@@ -16,36 +16,27 @@
 
 package v1.services
 
-import cats.data.EitherT
-import utils.Logging
+import api.controllers.RequestContext
+import api.models.errors._
+import api.services.{BaseService, DeleteAnnualSubmissionServiceOutcome}
 import cats.implicits._
+import v1.connectors.DeleteAnnualSubmissionConnector
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.DeleteAnnualSubmissionConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
-import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
-import v1.support.DownstreamResponseMappingSupport
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmissionConnector) extends DownstreamResponseMappingSupport with Logging {
+class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmissionConnector) extends BaseService {
 
-  def deleteAnnualSubmission(request: DeleteAnnualSubmissionRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[ServiceOutcome[Unit]] = {
+  def deleteAnnualSubmission(
+      request: DeleteAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[DeleteAnnualSubmissionServiceOutcome] = {
 
-    val result =  EitherT(connector.deleteAnnualSubmission(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
-
-    result.value
+    connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap = {
-     val desErrorMap: Map[String, MtdError] =
+  private def downstreamErrorMap: Map[String, MtdError] = {
+    val errors: Map[String, MtdError] =
       Map(
         "INVALID_NINO"                -> NinoFormatError,
         "INVALID_TAX_YEAR"            -> TaxYearFormatError,
@@ -72,9 +63,7 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
 
-    desErrorMap ++ extraTysErrors
+    errors ++ extraTysErrors
   }
-
-
 
 }

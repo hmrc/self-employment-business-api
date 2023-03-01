@@ -16,14 +16,13 @@
 
 package v1.mocks.services
 
+import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.controllers.EndpointLogContext
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
-import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import v1.services.CreatePeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,8 +36,8 @@ trait MockCreatePeriodSummaryService extends MockFactory {
     def createPeriodic(
         requestData: CreatePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]]] = {
       (mockCreatePeriodicService
-        .createPeriodicSummary(_: CreatePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
-        .expects(requestData, *, *, *, *)
+        .createPeriodicSummary(_: CreatePeriodSummaryRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
 
   }

@@ -16,8 +16,10 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.errors.{MtdError, RuleBothExpensesSuppliedError}
-import v1.models.request.createPeriodSummary.{PeriodAllowableExpenses, PeriodDisallowableExpenses}
+import anyVersion.models.request.createPeriodSummary.PeriodDisallowableExpenses
+import api.controllers.requestParsers.validators.validations.NoValidationErrors
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import v1.models.request.createPeriodSummary.PeriodAllowableExpenses
 
 object ConsolidatedExpensesValidation {
 

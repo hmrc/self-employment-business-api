@@ -1,0 +1,73 @@
+#%RAML 1.0
+---
+title: Self-Employment Business (MTD)
+description: List, create, retrieve and amend Income & Expenditure Period Summaries and retrieve, amend and delete Annual Submissions.
+version: 2.0
+
+protocols: [ HTTPS ]
+baseUri: https://api.service.hmrc.gov.uk/
+
+documentation:
+  - title: Overview
+    content: !include docs/overview.md
+  - title: Send fraud prevention data
+    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/fraud-prevention.md
+  - title: Versioning
+    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
+  - title: Errors
+    content: !include docs/errorsWithPaths.md
+  - title: Changelog
+    content: !include docs/changelog.md
+  - title: Support
+    content: !include docs/support.md
+  - title: Testing
+    content: !include docs/testing.md
+
+mediaType: application/json
+
+uses:
+  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
+  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+  errors: errors.raml
+  queryParameters: queryParameters.raml
+  headers: headers.raml
+
+'/individuals/business/self-employment':
+  /{nino}:
+    uriParameters:
+      nino:
+        description: National Insurance number, in the format AA999999A.
+        type: string
+        example: TC663795B
+    /{businessId}:
+      uriParameters:
+        businessId:
+          description: 'An identifier for the business, unique to the customer. Must conform to the regular expression `^X[A-Z0-9]{1}IS[0-9]{11}$`.'
+          type: string
+          example: XAIS12345678910
+          pattern: ^X[A-Z0-9]{1}IS[0-9]{11}$
+      /annual/{taxYear}:
+        (annotations.group):
+          name: Self-Employment Annual Submission
+          description: Resources relating to an individual's self-employment annual submission.
+        uriParameters:
+          taxYear:
+            description: 'The tax year to which the data applies in the format YYYY-YY. The start year and end year must not span two tax years. The minimum tax year is 2017-18. No gaps are allowed, for example, 2022-24 is not valid.'
+            example: "2022-23"
+        put: !include endpoints/createAndAmendAnnualSubmission.raml
+        get: !include endpoints/retrieveAnnualSubmission.raml
+        delete: !include endpoints/deleteAnnualSubmission.raml
+      /period:
+        (annotations.group):
+          name: Self-Employment Period Summaries
+          description: Resources relating to an individual's self-employment period summaries.
+        post: !include endpoints/createPeriodSummary.raml
+        get: !include endpoints/listPeriodSummaries.raml
+        /{periodId}:
+          uriParameters:
+            periodId:
+              description: "An identifier for the update period, unique to the customer's self-employment business."
+              example: "2019-01-25_2020-01-25"
+          put: !include endpoints/amendPeriodSummary.raml
+          get: !include endpoints/retrievePeriodSummary.raml

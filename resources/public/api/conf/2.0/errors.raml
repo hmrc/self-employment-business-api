@@ -1,0 +1,393 @@
+#%RAML 1.0 Library
+
+uses:
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+
+traits:
+  notFound:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The matching resource is not found.
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  matchingResourceNotFound:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            example:
+              description: The supplied income source could not be found.
+              value:
+                code: MATCHING_RESOURCE_NOT_FOUND
+  matchingResourceNotFoundSE:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              matchingResourceNotFoundSE:
+                description: Matching resource not found.
+                value:
+                  code: MATCHING_RESOURCE_NOT_FOUND
+  clientOrAgentNotAuthorised:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              clientOrAgentNotAuthorised:
+                description: 'The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
+                value:
+                  code: CLIENT_OR_AGENT_NOT_AUTHORISED
+  formatNino:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatNino:
+                description: The format of the supplied NINO field is not valid.
+                value:
+                  code: FORMAT_NINO
+  formatTaxYear:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatTaxYear:
+                description: The format of the supplied tax year field is not valid.
+                value:
+                  code: FORMAT_TAX_YEAR
+  incorrectOrEmptyBody:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              incorrectOrEmptyBody:
+                description: An empty or non-matching body was submitted.
+                value:
+                  code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+  ruleTaxYearNotSupported:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              rule_TaxYearNotSupported:
+                description: |
+                    The specified tax year is not supported. Either the tax year specified is before the minimum tax year value,
+                    or it is after the maximum tax year value.
+                value:
+                  code: RULE_TAX_YEAR_NOT_SUPPORTED
+  invalidTaxYearParameter:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              invalidTaxYearParameter:
+                description: |
+                    A tax year before 2023-24 was supplied.
+                    A request with a tax year parameter is only valid for tax years 2023-24 or later.
+                value:
+                  code: INVALID_TAX_YEAR_PARAMETER
+  ruleTaxYearRangeInvalid:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleTaxYearRangeInvalid:
+                description: Tax year range invalid. A tax year range of one year is required.
+                value:
+                  code: RULE_TAX_YEAR_RANGE_INVALID
+  formatBusinessId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatBusinessId:
+                description: The format of the supplied Business ID field is not valid.
+                value:
+                  code: FORMAT_BUSINESS_ID
+  formatPeriodId:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatPeriodId:
+                description: The format of the supplied Period ID field is not valid.
+                value:
+                  code: FORMAT_PERIOD_ID
+  formatFromDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatFromDate:
+                description: The format of the supplied From date field is not valid.
+                value:
+                  code: FORMAT_FROM_DATE
+  formatToDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatToDate:
+                description: The format of the supplied To date field is not valid.
+                value:
+                  code: FORMAT_TO_DATE
+  formatValue:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatValue:
+                description: The format of one or more monetary fields is not valid.
+                value:
+                  code: FORMAT_VALUE
+  formatValueSE:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatValueSE:
+                description: One or more values have been added with the incorrect format.
+                value:
+                  code: FORMAT_VALUE
+  formatString:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatString:
+                description: One or more strings have been added with the incorrect format.
+                value:
+                  code: FORMAT_STRING
+  formatDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatDate:
+                description: The supplied date format is not valid.
+                value:
+                  code: FORMAT_DATE
+  formatClass4Exemption:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatClass4Exemption:
+                description: The format of the supplied Class 4 National Insurance exemption reason is not valid.
+                value:
+                  code: FORMAT_CLASS_4_EXEMPTION_REASON
+  ruleBothExpensesSupplied:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleBothExpensesSupplied:
+                description: Both expenses and consolidatedExpenses can not be present at the same time.
+                value:
+                  code: RULE_BOTH_EXPENSES_SUPPLIED
+  ruleToDateBeforeFromDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleToDateBeforeFromDate:
+                description: The To date is earlier than the From date.
+                value:
+                  code: RULE_TO_DATE_BEFORE_FROM_DATE
+  ruleOverlappingPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleOverlappingPeriod:
+                description: Period summary overlaps with any of the existing period summaries.
+                value:
+                  code: RULE_OVERLAPPING_PERIOD
+  ruleMisalignedPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleMisalignedPeriod:
+                description: Period summary is not within the accounting period.
+                value:
+                  code: RULE_MISALIGNED_PERIOD
+  ruleNotContiguousPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNotContiguousPeriod:
+                description: Period summaries are not contiguous.
+                value:
+                  code: RULE_NOT_CONTIGUOUS_PERIOD
+  ruleNotAllowedConsolidatedExpenses:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleNotAllowedConsolidatedExpenses:
+                description: Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold.
+                value:
+                  code: RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES
+  ruleExemptionCode:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleExemptionCode:
+                description: Exemption code must be supplied if is exempt indicator is set to true. Exemption code must not be supplied if exempt indicator is set to false.
+                value:
+                  code: RULE_EXEMPTION_CODE
+  ruleBildingNameNumber:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleBildingNameNumber:
+                description: One of building name or number must be supplied.
+                value:
+                  code: RULE_BUILDING_NAME_NUMBER
+  ruleBothAllowancesSupplied:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleBothAllowancesSupplied:
+                description: Both allowances and trading allowance must not be present at the same time.
+                value:
+                  code: RULE_BOTH_ALLOWANCES_SUPPLIED
+  ruleAllowanceNotSupported:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleAllowanceNotSupported:
+                description: One or more of the supplied allowances is not supported for the supplied tax year.
+                value:
+                  code: RULE_ALLOWANCE_NOT_SUPPORTED
+  ruleDuplicateSubmission:
+      responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                ruleDuplicateSubmission:
+                  description: A summary has already been submitted for the period specified.
+                  value:
+                    code: RULE_DUPLICATE_SUBMISSION
+  formatStartDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatStartDate:
+                description: The format of the supplied Start date field is not valid.
+                value:
+                  code: FORMAT_START_DATE
+  formatEndDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatEndDate:
+                description: The format of the supplied End date field is not valid.
+                value:
+                  code: FORMAT_END_DATE
+  ruleEndDateBeforeStartDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleEndDateBeforeStartDate:
+                description: The End date is earlier than the Start date.
+                value:
+                  code: RULE_END_DATE_BEFORE_START_DATE
+  ruleInvalidSubmissionPeriod:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleInvalidSubmissionPeriod:
+                description: Self Employment submissions cannot be more than 10 days before the end of the Period.
+                value:
+                  code: RULE_INVALID_SUBMISSION_PERIOD
+  ruleInvalidSubmissionEndDate:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleInvalidSubmissionEndDate:
+                description: The submitted end date must be the end of the quarter.
+                value:
+                  code: RULE_INVALID_SUBMISSION_END_DATE

@@ -16,27 +16,28 @@
 
 package v1.connectors
 
+import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
-import v1.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
-                                                                 hc: HeaderCarrier,
-                                                                 ec: ExecutionContext,
-                                                                 correlationId: String): Future[DownstreamOutcome[Unit]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino = request.nino.nino
+    val nino           = request.nino.nino
     val incomeSourceId = request.businessId.value
-    val taxYear = request.taxYear
+    val taxYear        = request.taxYear
 
     val (downstreamUri, statusCode) =
       if (taxYear.useTaxYearSpecificApi) {
