@@ -27,13 +27,17 @@ sbt test
 sbt it:test
 ```
 
-## To view the RAML
+## To view the OAS
 
 To view documentation locally ensure the Self-Employment Business API is running, and run api-documentation-frontend:
-`./run_local_with_dependencies.sh`
+```
+./run_local_with_dependencies.sh
+```
 
-Then go to http://localhost:9680/api-documentation/docs/api/preview and use this port and version:
-`http://localhost:7801/api/conf/1.0/application.raml`
+Then go to http://localhost:9680/api-documentation/docs/openapi/preview and use this port and version:
+```
+http://localhost:7801/api/conf/1.0/application.yaml
+```
 
 ## Changelog
 
