@@ -76,30 +76,22 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     }
   }
 
-  "a RAML documentation request" must {
+  "an OAS documentation request" must {
     Seq(Version1, Version2).foreach { version =>
       s"return the documentation for $version" in {
-        val response: WSResponse = await(buildRequest(s"/api/conf/$version/application.raml").get())
+        val response: WSResponse = await(buildRequest(s"/api/conf/$version/application.yaml").get())
         response.status shouldBe Status.OK
-        response.body[String] should startWith(s"#%RAML 1.0")
+
+        val contents = response.body[String]
+        val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+        parserResult.isSuccess shouldBe true
+
+        val openAPI = Option(parserResult.get.getOpenAPI)
+        openAPI.isEmpty shouldBe false
+        openAPI.get.getOpenapi shouldBe "3.0.3"
+        openAPI.get.getInfo.getTitle shouldBe "Self Employment Business Details (MTD)"
+        openAPI.get.getInfo.getVersion shouldBe version.toString
       }
-    }
-  }
-
-  "an OAS documentation request" must {
-    "return the documentation that passes OAS V1 parser" in {
-      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.yaml").get())
-      response.status shouldBe Status.OK
-
-      val contents     = response.body[String]
-      val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
-      parserResult.isSuccess shouldBe true
-
-      val openAPI = Option(parserResult.get.getOpenAPI)
-      openAPI.isEmpty shouldBe false
-      openAPI.get.getOpenapi shouldBe "3.0.3"
-      openAPI.get.getInfo.getTitle shouldBe "Self Employment Business Details (MTD)"
-      openAPI.get.getInfo.getVersion shouldBe "1.0"
     }
   }
 
