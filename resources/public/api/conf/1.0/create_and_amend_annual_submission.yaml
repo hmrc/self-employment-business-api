@@ -1,6 +1,6 @@
 summary: Create and Amend Self-Employment Annual Submission
 description: |
-  This end point allows a developer to create or amend a self-employment annual summary for a tax year.
+  This endpoint allows a developer to create or amend a self-employment annual summary for a tax year.
   A National Insurance number, Business ID and tax year must be provided.
 
   ### Test data
