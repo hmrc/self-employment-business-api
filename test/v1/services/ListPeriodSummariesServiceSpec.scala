@@ -39,8 +39,8 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
       PeriodDetails(
         "2020-01-01_2020-01-01",
         "2020-01-01",
-        "2020-01-01",
-        Some("2020-01-01")
+        "2020-01-01"
+//        Some("2020-01-01")
       ))
   )
 

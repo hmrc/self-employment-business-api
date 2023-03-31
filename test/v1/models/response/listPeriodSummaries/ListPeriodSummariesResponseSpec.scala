@@ -31,14 +31,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
-        periodEndDate = "2020-01-01",
-        periodCreationDate = Some("2020-01-02")
+        periodEndDate = "2020-01-01"
+//        periodCreationDate = Some("2020-01-02")
       ),
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
-        periodEndDate = "2020-01-01",
-        periodCreationDate = Some("2020-01-02")
+        periodEndDate = "2020-01-01"
+//        periodCreationDate = Some("2020-01-02")
       )
     )
   )
@@ -79,14 +79,12 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
             |     {
             |         "periodId": "2019-01-01_2020-01-01",
             |         "periodStartDate": "2019-01-01",
-            |         "periodEndDate": "2020-01-01",
-            |         "periodCreationDate": "2020-01-02"
+            |         "periodEndDate": "2020-01-01"
             |     },
             |     {
             |         "periodId": "2019-01-01_2020-01-01",
             |         "periodStartDate": "2019-01-01",
-            |         "periodEndDate": "2020-01-01",
-            |         "periodCreationDate": "2020-01-02"
+            |         "periodEndDate": "2020-01-01"
             |     }
             |   ]
             |}
@@ -117,10 +115,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(
-          mockAppConfig,
-          hateoasData,
-          PeriodDetails(periodId, "", "", Some("2020-01-02"))) shouldBe Seq(
+        val periodDetails = PeriodDetails(
+          periodId,
+          "",
+          ""
+//          Some("2020-01-02")
+        )
+
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, periodDetails) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
         )
       }
@@ -141,10 +143,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(
-          mockAppConfig,
-          hateoasDataTys,
-          PeriodDetails(periodId, "", "", Some("2020-01-02"))) shouldBe Seq(
+        val periodDetails = PeriodDetails(
+          periodId,
+          "",
+          ""
+//          Some("2020-01-02")
+        )
+
+        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, periodDetails) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")
         )
       }

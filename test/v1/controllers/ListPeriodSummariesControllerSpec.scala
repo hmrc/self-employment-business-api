@@ -40,14 +40,19 @@ class ListPeriodSummariesControllerSpec
     with MockListPeriodSummariesRequestParser
     with MockHateoasFactory {
 
-  private val businessId: String   = "XAIS12345678910"
-  private val from: String         = "2019-01-01"
-  private val to: String           = "2020-01-01"
-  private val creationDate: String = "2020-01-02"
-  private val periodId: String     = s"${from}_$to"
-  private val taxYear: String      = "2024-25"
+  private val businessId: String = "XAIS12345678910"
+  private val from: String       = "2019-01-01"
+  private val to: String         = "2020-01-01"
+//  private val creationDate: String = "2020-01-02"
+  private val periodId: String = s"${from}_$to"
+  private val taxYear: String  = "2024-25"
 
-  private val periodDetails: PeriodDetails = PeriodDetails(periodId, from, to, Some(creationDate))
+  private val periodDetails: PeriodDetails = PeriodDetails(
+    periodId,
+    from,
+    to
+//    Some(creationDate)
+  )
 
   private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
 
@@ -58,7 +63,6 @@ class ListPeriodSummariesControllerSpec
       |      "periodId": "$periodId",
       |      "periodStartDate": "$from",
       |      "periodEndDate": "$to",
-      |      "periodCreationDate": "$creationDate",
       |      "links": [
       |        {
       |          "href": "test/href/$periodId",
@@ -85,7 +89,6 @@ class ListPeriodSummariesControllerSpec
                                            |      "periodId": "$periodId",
                                            |      "periodStartDate": "$from",
                                            |      "periodEndDate": "$to",
-                                           |      "periodCreationDate": "$creationDate",
                                            |      "links": [
                                            |        {
                                            |          "href": "test/href/$periodId?taxYear=$taxYear",

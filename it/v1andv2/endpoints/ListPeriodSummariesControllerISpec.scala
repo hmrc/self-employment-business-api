@@ -43,12 +43,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
             BaseDownstreamStub
-              .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
+              .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
           }
 
           val response: WSResponse = await(request(testVersion).get())
           response.status shouldBe OK
-          response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
+          response.json shouldBe responseBody(periodId, fromDate, toDate)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
         })
@@ -60,12 +60,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
             AuditStub.audit()
             AuthStub.authorised()
             MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate, creationDate))
+            BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
           }
 
           val response: WSResponse = await(request(testVersion).get())
           response.status shouldBe OK
-          response.json shouldBe responseBody(periodId, fromDate, toDate, creationDate)
+          response.json shouldBe responseBody(periodId, fromDate, toDate)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
         })
@@ -149,7 +149,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val retrievePeriodSummaryHateoasUri: String
     val listPeriodSummariesHateoasUri: String
 
-    def responseBody(periodId: String, fromDate: String, toDate: String, creationDate: String): JsValue = Json.parse(
+    def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
       s"""
          |{
          |  "periods": [
@@ -157,7 +157,6 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
          |      "periodId": "$periodId",
          |      "periodStartDate": "$fromDate",
          |      "periodEndDate": "$toDate",
-         |      "periodCreationDate": "$creationDate",
          |      "links": [
          |        {
          |          "href": "$retrievePeriodSummaryHateoasUri",
@@ -183,15 +182,14 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def downstreamResponseBody(fromDate: String, toDate: String, creationDate: String): JsValue = Json.parse(
+    def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(
       s"""
          |{
          |  "periods": [
          |      {
          |          "transactionReference": "1111111111",
          |          "from": "$fromDate",
-         |          "to": "$toDate",
-         |          "periodCreationDate": "$creationDate"
+         |          "to": "$toDate"
          |      }
          |  ]
          |}
