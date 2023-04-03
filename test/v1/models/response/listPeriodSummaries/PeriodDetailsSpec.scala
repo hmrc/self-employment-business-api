@@ -25,8 +25,9 @@ class PeriodDetailsSpec extends UnitSpec {
     PeriodDetails(
       periodId = "2020-01-01_2020-02-02",
       periodStartDate = "2020-01-01",
-      periodEndDate = "2020-02-02",
-      periodCreationDate = Some("2020-01-02"))
+      periodEndDate = "2020-02-02"
+//      periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
+    )
 
   "reads" should {
 
@@ -37,8 +38,7 @@ class PeriodDetailsSpec extends UnitSpec {
           |{
           |   "transactionReference": "1111111111",
           |   "from": "2020-01-01",
-          |   "to": "2020-02-02",
-          |   "periodCreationDate": "2020-01-02"
+          |   "to": "2020-02-02"
           |}
           |""".stripMargin
         )
@@ -54,8 +54,7 @@ class PeriodDetailsSpec extends UnitSpec {
           |{
           |   "periodId": "2020-01-01_2020-02-02",
           |   "periodStartDate": "2020-01-01",
-          |   "periodEndDate": "2020-02-02",
-          |   "periodCreationDate": "2020-01-02"
+          |   "periodEndDate": "2020-02-02"
           |}
           |""".stripMargin
       )
