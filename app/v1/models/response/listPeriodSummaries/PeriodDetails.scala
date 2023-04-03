@@ -19,18 +19,11 @@ package v1.models.response.listPeriodSummaries
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-/*
-  Note that the field periodCreationDate is not returned by the downstream until Release 10 (R10). This code
-  should be reimplemented as part of the following ticket:
-
-  https://jira.tools.tax.service.gov.uk/browse/MTDSA-15576
- */
-
 case class PeriodDetails(
     periodId: String,
     periodStartDate: String,
     periodEndDate: String
-//    periodCreationDate: Option[String]
+//    periodCreationDate: Option[String] // To be reinstated, see MTDSA-15595
 )
 
 object PeriodDetails {
@@ -38,13 +31,13 @@ object PeriodDetails {
   implicit val reads: Reads[PeriodDetails] = (
     (JsPath \ "from").read[String] and
       (JsPath \ "to").read[String]
-//      (JsPath \ "periodCreationDate").readNullable[String]
+//      (JsPath \ "periodCreationDate").readNullable[String] // To be reinstated, see MTDSA-15595
   )((from, to) =>
     PeriodDetails(
       periodId = s"${from}_$to",
       periodStartDate = from,
       periodEndDate = to
-//      periodCreationDate = periodCreationDate
+//      periodCreationDate = periodCreationDate // To be reinstated, see MTDSA-15595
     ))
 
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]

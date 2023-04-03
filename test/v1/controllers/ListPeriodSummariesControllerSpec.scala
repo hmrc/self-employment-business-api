@@ -43,7 +43,7 @@ class ListPeriodSummariesControllerSpec
   private val businessId: String = "XAIS12345678910"
   private val from: String       = "2019-01-01"
   private val to: String         = "2020-01-01"
-//  private val creationDate: String = "2020-01-02"
+//  private val creationDate: String = "2020-01-02" // To be reinstated, see MTDSA-15595
   private val periodId: String = s"${from}_$to"
   private val taxYear: String  = "2024-25"
 
@@ -51,7 +51,7 @@ class ListPeriodSummariesControllerSpec
     periodId,
     from,
     to
-//    Some(creationDate)
+//    Some(creationDate) // To be reinstated, see MTDSA-15595
   )
 
   private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))

@@ -26,7 +26,7 @@ class PeriodDetailsSpec extends UnitSpec {
       periodId = "2020-01-01_2020-02-02",
       periodStartDate = "2020-01-01",
       periodEndDate = "2020-02-02"
-//      periodCreationDate = Some("2020-01-02")
+//      periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
     )
 
   "reads" should {
