@@ -145,9 +145,9 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("END_BEFORE_START", RuleEndDateBeforeStartDateError),
           ("PERIOD_HAS_GAPS", RuleNotContiguousPeriod),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
-          ("INVALID_TAX_YEAR", InternalError),
-          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError),
-          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError)
+          ("INVALID_TAX_YEAR", InternalError)
+//          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
+//          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))

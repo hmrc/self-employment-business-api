@@ -44,14 +44,6 @@ description: |
               <p>This scenario only occurs for data related to tax years from 2023-24 onwards. </p></td>
           </tr>
           <tr>
-              <td><p>INVALID_SUBMISSION_PERIOD</p></td>
-              <td><p>Simulates the scenario where the property income and expenses submissions cannot be more than 10 days before the end of the Period.</p></td>
-          </tr>
-          <tr>
-              <td><p>INVALID_SUBMISSION_END_DATE</p></td>
-              <td><p>Simulates the scenario where the submitted end date must be the end of the quarter.</p></td>
-          </tr>
-          <tr>
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
