@@ -4,7 +4,7 @@ components:
       in: query
       name: taxYear
       description: |
-        [test only] The tax year to which the data applies in the format YYYY-YY. The range must not be greater than a single year. For example, 2023-25 is not valid.
+        The tax year to which the data applies in the format YYYY-YY. The range must not be greater than a single year. For example, 2023-25 is not valid.
           This is mandatory for tax years 2023-24 and onwards and must not be provided for earlier tax years.
       schema:
         type: string
