@@ -108,6 +108,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleBothAllowancesSupplied'
           RULE_ALLOWANCE_NOT_SUPPORTED:
             $ref: './common/errors.yaml#/components/examples/ruleAllowanceNotSupported'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
 
   "403":

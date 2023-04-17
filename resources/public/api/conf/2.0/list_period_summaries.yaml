@@ -78,6 +78,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
           INVALID_TAX_YEAR_PARAMETER:
             $ref: './common/errors.yaml#/components/examples/invalidTaxYearParameter'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
   "403":
     description: Forbidden
