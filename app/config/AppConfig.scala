@@ -20,6 +20,7 @@ import com.typesafe.config.Config
 import play.api.{ConfigLoader, Configuration}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import routing.Version
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 import javax.inject.{Inject, Singleton}
 
@@ -90,9 +91,9 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   // API Config
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
-  def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
-  def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
-  def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
+  def apiStatus(version: Version): String          = config.getString(s"api.${version.name}.status")
+  def featureSwitches: Configuration               = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
+  def endpointsEnabled(version: Version): Boolean  = config.getBoolean(s"api.$version.endpoints.enabled")
 }
 
 trait FixedConfig {
@@ -100,13 +101,14 @@ trait FixedConfig {
   val minimumTaxYear = 2018
 }
 
-case class ConfidenceLevelConfig(definitionEnabled: Boolean, authValidationEnabled: Boolean)
+case class ConfidenceLevelConfig(confidenceLevel: ConfidenceLevel, definitionEnabled: Boolean, authValidationEnabled: Boolean)
 
 object ConfidenceLevelConfig {
 
   implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config = rootConfig.getConfig(path)
     ConfidenceLevelConfig(
+      confidenceLevel = ConfidenceLevel.fromInt(config.getInt("confidence-level")).getOrElse(ConfidenceLevel.L200),
       definitionEnabled = config.getBoolean("definition.enabled"),
       authValidationEnabled = config.getBoolean("auth-validation.enabled")
     )
