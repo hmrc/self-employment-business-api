@@ -24,10 +24,17 @@ import utils.Logging
 trait DownstreamResponseMappingSupport {
   self: Logging =>
 
-  final def mapDownstreamErrors[D](errorCodeMap: PartialFunction[String, MtdError])(responseWrapper: ResponseWrapper[DownstreamError])(implicit
-      logContext: EndpointLogContext): ErrorWrapper = {
+  final def mapDownstreamErrors[D](errorCodeMap: PartialFunction[String, MtdError])(responseWrapper: ResponseWrapper[DownstreamError])(
+    implicit logContext: EndpointLogContext): ErrorWrapper = {
 
-    lazy val defaultErrorCodeMapping: String => MtdError = { code =>
+    lazy val defaultErrorCodeMapping: String => MtdError = {
+
+      case "UNMATCHED_STUB_ERROR" => {
+        logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No matching stub was found")
+        RuleIncorrectGovTestScenarioError
+      }
+
+      case code =>
       logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No mapping found for error code $code")
       InternalError
     }
