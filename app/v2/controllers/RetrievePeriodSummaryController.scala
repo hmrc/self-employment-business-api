@@ -94,7 +94,8 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
             TaxYearFormatError,
             RuleTaxYearNotSupportedError,
             RuleTaxYearRangeInvalidError,
-            InvalidTaxYearParameterError
+            InvalidTaxYearParameterError,
+            RuleIncorrectGovTestScenarioError
           ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

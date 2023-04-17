@@ -98,7 +98,8 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
             RuleTaxYearNotSupportedError,
             InvalidTaxYearParameterError,
             TaxYearFormatError,
-            RuleTaxYearRangeInvalidError
+            RuleTaxYearRangeInvalidError,
+            RuleIncorrectGovTestScenarioError
           ) =>
         BadRequest(Json.toJson(errorWrapper))
 
