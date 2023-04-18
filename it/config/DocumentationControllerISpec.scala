@@ -18,30 +18,34 @@ package config
 
 import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{Json, JsValue}
 import play.api.libs.ws.WSResponse
 import routing.{Version1, Version2}
 import support.IntegrationBaseSpec
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
+  val config: AppConfig                = app.injector.instanceOf[AppConfig]
+  val confidenceLevel: ConfidenceLevel = config.confidenceLevelConfig.confidenceLevel
+
   val apiDefinitionJson: JsValue = Json.parse(
-    """
+    s"""
     |{
     |   "scopes":[
     |      {
     |         "key":"read:self-assessment",
     |         "name":"View your Self Assessment information",
     |         "description":"Allow read access to self assessment data",
-    |         "confidenceLevel": 200
+    |         "confidenceLevel": $confidenceLevel
     |      },
     |      {
     |         "key":"write:self-assessment",
     |         "name":"Change your Self Assessment information",
     |         "description":"Allow write access to self assessment data",
-    |         "confidenceLevel": 200
+    |         "confidenceLevel": $confidenceLevel
     |      }
     |   ],
     |   "api":{
@@ -82,7 +86,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(buildRequest(s"/api/conf/$version/application.yaml").get())
         response.status shouldBe Status.OK
 
-        val contents = response.body[String]
+        val contents     = response.body[String]
         val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
         parserResult.isSuccess shouldBe true
 
