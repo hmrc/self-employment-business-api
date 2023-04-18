@@ -112,7 +112,8 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
             RuleDuplicateSubmissionError,
             RuleTaxYearNotSupportedError,
             RuleInvalidSubmissionPeriodError,
-            RuleInvalidSubmissionEndDateError
+            RuleInvalidSubmissionEndDateError,
+            RuleIncorrectGovTestScenarioError
           ) =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

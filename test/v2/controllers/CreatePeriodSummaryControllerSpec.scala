@@ -235,7 +235,8 @@ class CreatePeriodSummaryControllerSpec
           (ValueFormatError.copy(paths = Some(Seq("/foreignTaxCreditRelief/amount"))), BAD_REQUEST),
           (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
           (RuleBothExpensesSuppliedError, BAD_REQUEST),
-          (RuleEndDateBeforeStartDateError, BAD_REQUEST)
+          (RuleEndDateBeforeStartDateError, BAD_REQUEST),
+          (RuleIncorrectGovTestScenarioError, BAD_REQUEST)
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))

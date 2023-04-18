@@ -34,6 +34,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
     case "ERR1" => NinoFormatError
     case "ERR2" => TaxYearFormatError
     case "DS"   => InternalError
+    case "UNMATCHED_STUB_ERROR" => RuleIncorrectGovTestScenarioError
   }
 
   case class TestClass(field: Option[String])
@@ -56,6 +57,13 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
           mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("UNKNOWN")))) shouldBe
             ErrorWrapper(correlationId, InternalError)
         }
+      }
+    }
+
+    "downstream returns UNMATCHED_STUB_ERROR" must {
+      "return an RuleIncorrectGovTestScenario error" in {
+        mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("UNMATCHED_STUB_ERROR")))) shouldBe
+          ErrorWrapper(correlationId, RuleIncorrectGovTestScenarioError)
       }
     }
 

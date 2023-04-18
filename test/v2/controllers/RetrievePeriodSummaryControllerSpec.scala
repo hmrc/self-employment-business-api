@@ -187,7 +187,8 @@ class RetrievePeriodSummaryControllerSpec
             (BusinessIdFormatError, BAD_REQUEST),
             (PeriodIdFormatError, BAD_REQUEST),
             (NotFoundError, NOT_FOUND),
-            (InternalError, INTERNAL_SERVER_ERROR)
+            (InternalError, INTERNAL_SERVER_ERROR),
+            (RuleIncorrectGovTestScenarioError, BAD_REQUEST)
           )
           val extraTysErrors = Seq(
             (TaxYearFormatError, BAD_REQUEST),

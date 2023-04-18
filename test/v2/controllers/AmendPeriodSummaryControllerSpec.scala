@@ -145,7 +145,8 @@ class AmendPeriodSummaryControllerSpec
             (PeriodIdFormatError, BAD_REQUEST),
             (ValueFormatError.copy(paths = Some(Seq("/incomes/turnover"))), BAD_REQUEST),
             (RuleBothExpensesSuppliedError, BAD_REQUEST),
-            (RuleIncorrectOrEmptyBodyError, BAD_REQUEST)
+            (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
+            (RuleIncorrectGovTestScenarioError, BAD_REQUEST)
           )
 
           input.foreach(args => (errorsFromParserTester _).tupled(args))
