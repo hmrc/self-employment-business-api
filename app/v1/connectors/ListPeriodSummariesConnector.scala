@@ -35,23 +35,18 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
-    val nino       = request.nino.nino
-    val businessId = request.businessId.value
-    val taxYear    = request.taxYear
+    import request._
+
     val downstreamUri =
       taxYear match {
         case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
           TaxYearSpecificIfsUri[ListPeriodSummariesResponse[PeriodDetails]](
-            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
-
+            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/periodic-summaries")
         case _ =>
-          DesUri[ListPeriodSummariesResponse[PeriodDetails]](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-
+          DesUri[ListPeriodSummariesResponse[PeriodDetails]](s"income-tax/nino/$nino/self-employments/${businessId.value}/periodic-summaries")
       }
 
-    get(
-      uri = downstreamUri
-    )
+    get(downstreamUri)
   }
 
 }

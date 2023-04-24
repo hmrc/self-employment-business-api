@@ -35,23 +35,17 @@ class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCon
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino       = request.nino.nino
-    val taxYear    = request.taxYear
-    val businessId = request.businessId.value
-
+    import request._
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+        TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/annual-summaries")
       } else {
-        DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
+        DesUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/annual-summaries/${taxYear.asDownstream}")
       }
 
-    put(
-      uri = downstreamUri,
-      body = request.body
-    )
+    put(body, downstreamUri)
   }
 
 }
