@@ -35,11 +35,10 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino       = request.nino.nino
-    val businessId = request.businessId.value
-    val fromDate   = request.periodId.substring(0, 10)
-    val toDate     = request.periodId.substring(11, 21)
-    val taxYear    = request.taxYear
+    import request._
+
+    val fromDate = periodId.substring(0, 10)
+    val toDate   = periodId.substring(11, 21)
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
@@ -47,15 +46,12 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
       taxYear match {
         case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
           TaxYearSpecificIfsUri[Unit](
-            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate")
+            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/periodic-summaries?from=$fromDate&to=$toDate")
         case _ =>
-          DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate")
+          DesUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/periodic-summaries?from=$fromDate&to=$toDate")
       }
 
-    put(
-      body = request.body,
-      uri = downstreamUri
-    )
+    put(body, downstreamUri)
   }
 
 }

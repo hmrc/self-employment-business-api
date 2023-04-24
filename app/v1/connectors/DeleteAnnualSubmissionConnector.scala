@@ -35,20 +35,12 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCo
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino       = request.nino.nino
-    val businessId = request.businessId.value
-
-    import request.taxYear
+    import request._
 
     if (taxYear.useTaxYearSpecificApi) {
-      delete(
-        uri = TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
-      )
+      delete(TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/annual-summaries"))
     } else {
-      put(
-        body = JsObject.empty,
-        uri = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
-      )
+      put(JsObject.empty, DesUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/annual-summaries/${taxYear.asDownstream}"))
     }
   }
 

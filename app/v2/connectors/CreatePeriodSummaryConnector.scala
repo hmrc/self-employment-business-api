@@ -35,23 +35,18 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    val nino           = request.nino.nino
-    val incomeSourceId = request.businessId.value
-    val taxYear        = request.taxYear
+    import request._
 
     val (downstreamUri, statusCode) =
       if (taxYear.useTaxYearSpecificApi) {
-        (TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$incomeSourceId/periodic-summaries"), CREATED)
+        (TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/periodic-summaries"), CREATED)
       } else {
-        (DesUri[Unit](s"income-tax/nino/$nino/self-employments/$incomeSourceId/periodic-summaries"), OK)
+        (DesUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/periodic-summaries"), OK)
       }
 
     implicit val successCode: SuccessCode = SuccessCode(statusCode)
 
-    post(
-      body = request.body,
-      uri = downstreamUri
-    )
+    post(body, downstreamUri)
   }
 
 }
