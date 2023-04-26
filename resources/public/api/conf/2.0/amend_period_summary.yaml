@@ -31,10 +31,6 @@ description: |
               <td><p>TAX_YEAR_NOT_SUPPORTED</p></td>
               <td><p>Simulates the scenario where the tax year is not supported.</p></td>
           </tr>
-          <tr>
-              <td><p>STATEFUL</p></td>
-              <td><p>Simulates a stateful success response.</p></td>
-          </tr>
       </tbody>
   </table>
 
