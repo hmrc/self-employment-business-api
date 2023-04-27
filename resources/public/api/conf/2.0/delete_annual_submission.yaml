@@ -5,6 +5,12 @@ description: |
   
   ### Test data
   <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+  
+  <ul>
+  <li>The <b>STATEFUL_DELETE</b> gov-test scenario is used for Delete a Self-Employment Annual Submission (non-tax year specific) and uses a <b>PUT HTTP</b> method.</li>
+  <li>The <b>STATEFUL</b> gov-test-scenario is used for Delete a Self-Employment Annual Submission (tax year specific) and uses the standard <b>DELETE</b> HTTP method.</li>
+  </ul>
+  
   <table>
       <thead>
           <tr>
@@ -24,6 +30,10 @@ description: |
           <tr>
               <td><p>STATEFUL_DELETE</p></td>
               <td><p>Performs a stateful delete.</p></td>
+          </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Simulates a stateful success response.</p></td>
           </tr>
       </tbody>
   </table>
