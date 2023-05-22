@@ -24,6 +24,7 @@ import v1.models.request.amendSEAnnual._
 
 import scala.annotation.nowarn
 
+
 class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, enumValidation, bodyFormatValidation, bodyFieldValidation)
@@ -208,7 +209,7 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
   }
 
   override def validate(data: AmendAnnualSubmissionRawData): List[MtdError] = {
-    run(validationSet, data).distinct
+    run(validationSet, data).distinct.sorted
   }
 
 }
