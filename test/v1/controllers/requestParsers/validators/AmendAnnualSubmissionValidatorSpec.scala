@@ -1108,8 +1108,8 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
     "return multiple errors" when {
       "every path parameter format is invalid" in {
         validator.validate(AmendAnnualSubmissionRawData("AJAA12", "XASOE12", "201219", requestBodyJson)) shouldBe List(
-          BusinessIdFormatError,
           NinoFormatError,
+          BusinessIdFormatError,
           TaxYearFormatError)
       }
       "every field in the body is invalid" in {
