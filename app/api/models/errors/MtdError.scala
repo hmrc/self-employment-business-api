@@ -31,8 +31,6 @@ object MtdError {
       (JsPath \ "paths").writeNullable[Seq[String]]
   )(unlift(MtdError.unapply))
 
-  implicit val ordering: Ordering[MtdError] = Ordering.by(_.code)
-
   // excludes httpStatus
   def unapply(e: MtdError): Option[(String, String, Option[Seq[String]])] = Some((e.code, e.message, e.paths))
 

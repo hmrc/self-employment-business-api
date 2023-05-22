@@ -1182,15 +1182,15 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             Seq(
               "/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate",
               "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))),
+          ValueFormatError
+            .forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99")
+            .copy(paths = Some(Seq("/adjustments/basisAdjustment", "/adjustments/averagingAdjustment"))),
           StringFormatError.copy(paths = Some(Seq(
             "/allowances/structuredBuildingAllowance/0/building/name",
             "/allowances/structuredBuildingAllowance/0/building/postcode",
             "/allowances/enhancedStructuredBuildingAllowance/0/building/number",
             "/allowances/enhancedStructuredBuildingAllowance/0/building/postcode"
           ))),
-          ValueFormatError
-            .forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99")
-            .copy(paths = Some(Seq("/adjustments/basisAdjustment", "/adjustments/averagingAdjustment"))),
           ValueFormatError.copy(paths = Some(Seq(
             "/adjustments/includedNonTaxableProfits",
             "/adjustments/overlapReliefUsed",

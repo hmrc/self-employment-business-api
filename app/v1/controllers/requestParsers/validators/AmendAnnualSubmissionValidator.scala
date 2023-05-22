@@ -209,7 +209,7 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
   }
 
   override def validate(data: AmendAnnualSubmissionRawData): List[MtdError] = {
-    run(validationSet, data).distinct.sorted
+    run(validationSet, data).distinct
   }
 
 }
