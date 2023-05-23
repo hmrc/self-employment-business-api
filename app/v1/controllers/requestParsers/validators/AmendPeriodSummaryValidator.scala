@@ -23,6 +23,8 @@ import api.models.errors.MtdError
 import v1.controllers.requestParsers.validators.validations.AmendConsolidatedExpensesValidation
 import v1.models.request.amendPeriodSummary._
 
+import scala.annotation.nowarn
+
 class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
@@ -41,7 +43,7 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
       data.taxYear.map(TaxYearTYSParameterValidation.validate).getOrElse(Nil)
     )
   }
-
+  @nowarn("cat=lint-byname-implicit")
   private def bodyFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = { data =>
     JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodSummaryBody](data.body) match {
       case Nil          => NoValidationErrors

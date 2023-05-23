@@ -23,6 +23,8 @@ import shapeless.HNil
 import support.UnitSpec
 import utils.EmptinessChecker
 
+import scala.annotation.nowarn
+
 class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 
   case class TestDataObject(field1: String, field2: String, oneOf1: Option[String] = None, oneOf2: Option[String] = None)
@@ -32,6 +34,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
   implicit val testDataWrapperFormat: OFormat[TestDataWrapper] = Json.format[TestDataWrapper]
 
   // at least one of oneOf1 and oneOf2 must be included:
+  @nowarn("cat=lint-byname-implicit")
   implicit val emptinessChecker: EmptinessChecker[TestDataObject] = EmptinessChecker.use { o =>
     "oneOf1" -> o.oneOf1 :: "oneOf2" -> o.oneOf2 :: HNil
   }
@@ -115,6 +118,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 
     "detect empty arrays" in {
       val json             = Json.parse("""{ "arrayField": [] }""")
+      @nowarn("cat=lint-byname-implicit")
       val validationResult = JsonFormatValidation.validateAndCheckNonEmpty[TestDataWrapper](json)
 
       validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/arrayField"))))

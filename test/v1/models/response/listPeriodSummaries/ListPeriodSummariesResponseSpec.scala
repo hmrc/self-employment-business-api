@@ -102,7 +102,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
     "TYS feature switch is disabled" should {
       "return the correct top-level links" in {
-        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
@@ -112,7 +112,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       }
 
       "return the correct item-level links" in {
-        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(
@@ -130,7 +130,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
     "TYS feature switch is enabled and tax year is TYS" should {
       "return the correct top-level links" in {
-        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasDataTys) shouldBe Seq(
@@ -140,7 +140,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       }
 
       "return the correct item-level links" in {
-        MockAppConfig.apiGatewayContext returns "test/context" anyNumberOfTimes ()
+        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
         MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(

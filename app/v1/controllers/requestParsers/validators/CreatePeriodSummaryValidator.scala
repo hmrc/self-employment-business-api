@@ -23,6 +23,8 @@ import api.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
 import v1.controllers.requestParsers.validators.validations.ConsolidatedExpensesValidation
 import v1.models.request.createPeriodSummary._
 
+import scala.annotation.nowarn
+
 class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData] {
 
   private val validationSet =
@@ -34,7 +36,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       BusinessIdValidation.validate(data.businessId)
     )
   }
-
+  @nowarn("cat=lint-byname-implicit")
   private def bodyFormatValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = { data =>
     JsonFormatValidation.validateAndCheckNonEmpty[CreatePeriodSummaryBody](data.body) match {
       case Nil          => NoValidationErrors

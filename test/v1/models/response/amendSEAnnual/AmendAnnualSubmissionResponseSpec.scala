@@ -30,7 +30,7 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
       val businessId = "XAIS12345678910"
       val taxYear    = "2019-20"
 
-      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes
+      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory.links(
         mockAppConfig,

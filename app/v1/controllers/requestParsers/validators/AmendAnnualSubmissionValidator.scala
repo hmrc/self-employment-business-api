@@ -22,6 +22,9 @@ import api.models.errors._
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.request.amendSEAnnual._
 
+import scala.annotation.nowarn
+
+
 class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, enumValidation, bodyFormatValidation, bodyFieldValidation)
@@ -40,6 +43,7 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
     )
   }
 
+  @nowarn("cat=lint-byname-implicit")
   private def bodyFormatValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = { data =>
     JsonFormatValidation.validateAndCheckNonEmpty[AmendAnnualSubmissionBody](data.body) match {
       case Nil          => NoValidationErrors

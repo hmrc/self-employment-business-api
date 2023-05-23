@@ -19,6 +19,9 @@ package utils
 import support.UnitSpec
 import utils.EmptyPathsResult.{CompletelyEmpty, EmptyPaths, NoEmptyPaths}
 
+import scala.annotation.nowarn
+
+@nowarn("cat=lint-byname-implicit")
 class EmptinessCheckerSpec extends UnitSpec {
 
   sealed trait SomeEnum
