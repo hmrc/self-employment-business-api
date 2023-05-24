@@ -47,6 +47,10 @@ description: |
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data is found.</p></td>
           </tr>
+            <tr>
+              <td><p>BOTH_EXPENSES_SUPPLIED</p></td>
+              <td><p>Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.</p></td>
+          </tr>
       </tbody>
   </table>
 
