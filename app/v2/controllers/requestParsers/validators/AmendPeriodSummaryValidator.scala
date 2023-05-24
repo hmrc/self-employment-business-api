@@ -20,14 +20,13 @@ import anyVersion.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, 
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.MtdError
-import v2.controllers.requestParsers.validators.validations.AmendConsolidatedExpensesValidation
 import v2.models.request.amendPeriodSummary._
 
 import scala.annotation.nowarn
 
 class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
 
-  private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
+  private val validations = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
 
   private def parameterFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
     List(
@@ -43,6 +42,7 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
       data.taxYear.map(TaxYearTYSParameterValidation.validate).getOrElse(Nil)
     )
   }
+
   @nowarn("cat=lint-byname-implicit")
   private def bodyFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = { data =>
     JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodSummaryBody](data.body) match {
@@ -58,7 +58,6 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         List(
           body.periodIncome.map(validatePeriodIncome).getOrElse(Nil),
           body.periodExpenses.map(validateExpenses).getOrElse(Nil),
-          validateConsolidatedExpenses(body.periodExpenses, body.periodDisallowableExpenses),
           body.periodDisallowableExpenses.map(validateDisallowableExpenses).getOrElse(Nil)
         ).flatten
       )
@@ -212,13 +211,8 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
     )
   }
 
-  private def validateConsolidatedExpenses(expenses: Option[PeriodExpenses],
-                                           disallowableExpenses: Option[PeriodDisallowableExpenses]): List[List[MtdError]] = {
-    List(AmendConsolidatedExpensesValidation.validate(expenses, disallowableExpenses))
-  }
-
   override def validate(data: AmendPeriodSummaryRawData): List[MtdError] = {
-    run(validationSet, data).distinct
+    run(validations, data).distinct
   }
 
 }

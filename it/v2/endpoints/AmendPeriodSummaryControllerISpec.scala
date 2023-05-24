@@ -118,14 +118,6 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
             "AA123456A",
             "XAIS12345678910",
             "2019-01-01_2020-01-01",
-            requestBodyJson.update("/periodExpenses/consolidatedExpenses", JsNumber(1.23)),
-            BAD_REQUEST,
-            RuleBothExpensesSuppliedError
-          ),
-          (
-            "AA123456A",
-            "XAIS12345678910",
-            "2019-01-01_2020-01-01",
             requestBodyJson.replaceWithEmptyObject("/periodExpenses"),
             BAD_REQUEST,
             RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodExpenses")))

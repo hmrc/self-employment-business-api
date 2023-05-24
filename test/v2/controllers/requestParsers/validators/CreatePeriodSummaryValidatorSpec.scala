@@ -370,35 +370,6 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
       }
     }
 
-    "return RuleBothExpensesSuppliedError" when {
-      "all expenses and consolidatedExpenses are supplied" in {
-        validator.validate(
-          createPeriodSummary.CreatePeriodSummaryRawData(
-            validNino,
-            validBusinessId,
-            requestMtdFullBodyJson
-          )) shouldBe List(RuleBothExpensesSuppliedError)
-      }
-
-      "disallowable expenses and consolidatedExpenses are supplied" in {
-        validator.validate(
-          createPeriodSummary.CreatePeriodSummaryRawData(
-            validNino,
-            validBusinessId,
-            mtdDisallowableConsolidatedExpensesOnlyJson
-          )) shouldBe List(RuleBothExpensesSuppliedError)
-      }
-
-      "expenses and consolidatedExpenses are supplied" in {
-        validator.validate(
-          createPeriodSummary.CreatePeriodSummaryRawData(
-            validNino,
-            validBusinessId,
-            mtdConsolidatedExpensesOnlyJson
-          )) shouldBe List(RuleBothExpensesSuppliedError)
-      }
-    }
-
     "return all errors" when {
       "all path parameters are invalid" in {
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData("walrus", "beans", requestMtdBodyJson)) shouldBe

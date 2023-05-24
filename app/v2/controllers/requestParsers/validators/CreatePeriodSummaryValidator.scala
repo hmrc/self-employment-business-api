@@ -20,15 +20,14 @@ import anyVersion.models.request.createPeriodSummary.{CreatePeriodSummaryRawData
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
-import v2.controllers.requestParsers.validators.validations.ConsolidatedExpensesValidation
 import v2.models.request.createPeriodSummary._
 
 import scala.annotation.nowarn
 
 class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData] {
 
-  private val validationSet =
-    List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation, dateRuleValidation, consolidatedExpensesRuleValidation)
+  private val validations =
+    List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation, dateRuleValidation)
 
   private def parameterFormatValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
     List(
@@ -36,22 +35,13 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       BusinessIdValidation.validate(data.businessId)
     )
   }
+
   @nowarn("cat=lint-byname-implicit")
   private def bodyFormatValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = { data =>
     JsonFormatValidation.validateAndCheckNonEmpty[CreatePeriodSummaryBody](data.body) match {
       case Nil          => NoValidationErrors
       case schemaErrors => List(schemaErrors)
     }
-  }
-
-  private def consolidatedExpensesRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
-    val body = data.body.as[CreatePeriodSummaryBody]
-    List(
-      ConsolidatedExpensesValidation.validate(
-        Expenses = body.periodExpenses,
-        disallowableExpenses = body.periodDisallowableExpenses
-      )
-    )
   }
 
   private def bodyFieldValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = { data =>
@@ -234,6 +224,6 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     ).flatten
   }
 
-  override def validate(data: CreatePeriodSummaryRawData): List[MtdError] = run(validationSet, data)
+  override def validate(data: CreatePeriodSummaryRawData): List[MtdError] = run(validations, data)
 
 }
