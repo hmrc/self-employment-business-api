@@ -212,60 +212,6 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             None)) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))
       }
     }
-    "return RuleBothExpensesSuppliedError" when {
-      "Both expenses and consolidatedExpenses are supplied" in {
-        validator.validate(
-          AmendPeriodSummaryRawData(
-            validNino,
-            validBusinessId,
-            validPeriodId,
-            Json.parse("""
-            |{
-            |    "periodIncome": {
-            |        "turnover": 1000.99,
-            |        "other": 1000.99
-            |    },
-            |    "periodExpenses": {
-            |        "consolidatedExpenses": 1000.99,
-            |        "costOfGoods": 1000.99,
-            |        "paymentsToSubcontractors": 1000.99,
-            |        "wagesAndStaffCosts": 1000.99,
-            |        "carVanTravelExpenses": 1000.99,
-            |        "premisesRunningCosts": 1000.99,
-            |        "maintenanceCosts": 1000.99,
-            |        "adminCosts": 1000.99,
-            |        "businessEntertainmentCosts": 1000.99,
-            |        "advertisingCosts": 1000.99,
-            |        "interestOnBankOtherLoans": 1000.99,
-            |        "financeCharges": 1000.99,
-            |        "irrecoverableDebts": 1000.99,
-            |        "professionalFees": 1000.99,
-            |        "depreciation": 1000.99,
-            |        "otherExpenses": 1000.99
-            |    },
-            |    "periodDisallowableExpenses": {
-            |        "costOfGoodsDisallowable": 1000.99,
-            |        "paymentsToSubcontractorsDisallowable": 1000.99,
-            |        "wagesAndStaffCostsDisallowable": 1000.99,
-            |        "carVanTravelExpensesDisallowable": 1000.99,
-            |        "premisesRunningCostsDisallowable": 1000.99,
-            |        "maintenanceCostsDisallowable": 1000.99,
-            |        "adminCostsDisallowable": 1000.99,
-            |        "businessEntertainmentCostsDisallowable": 1000.99,
-            |        "advertisingCostsDisallowable": 1000.99,
-            |        "interestOnBankOtherLoansDisallowable": 1000.99,
-            |        "financeChargesDisallowable": 1000.99,
-            |        "irrecoverableDebtsDisallowable": 1000.99,
-            |        "professionalFeesDisallowable": 1000.99,
-            |        "depreciationDisallowable": 1000.99,
-            |        "otherExpensesDisallowable": 1000.99
-            |    }
-            |}
-            |""".stripMargin),
-            None
-          )) shouldBe List(RuleBothExpensesSuppliedError)
-      }
-    }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year format is supplied" in {

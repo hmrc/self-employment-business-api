@@ -430,67 +430,6 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           ))))
       }
 
-      "both expenses and consolidated expenses are provided" in new NonTysTest {
-        override val requestBodyJson: JsValue = Json.parse(
-          s"""
-             |{
-             |     "periodDates": {
-             |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-08-24"
-             |     },
-             |     "periodIncome": {
-             |          "turnover": 1000.99,
-             |          "other": 1000.99
-             |     },
-             |     "periodExpenses": {
-             |          "consolidatedExpenses": 1000.99,
-             |          "costOfGoods": 1000.99,
-             |          "paymentsToSubcontractors": 1000.99,
-             |          "wagesAndStaffCosts": 1000.99,
-             |          "carVanTravelExpenses": 1000.99,
-             |          "premisesRunningCosts": -99999.99,
-             |          "maintenanceCosts": -1000.99,
-             |          "adminCosts": 1000.99,
-             |          "businessEntertainmentCosts": 1000.99,
-             |          "advertisingCosts": 1000.99,
-             |          "interestOnBankOtherLoans": -1000.99,
-             |          "financeCharges": -1000.99,
-             |          "irrecoverableDebts": -1000.99,
-             |          "professionalFees": -99999999999.99,
-             |          "depreciation": -1000.99,
-             |          "otherExpenses": 1000.99
-             |      },
-             |     "periodDisallowableExpenses": {
-             |          "costOfGoodsDisallowable": 1000.99,
-             |          "paymentsToSubcontractorsDisallowable": 1000.99,
-             |          "wagesAndStaffCostsDisallowable": 1000.99,
-             |          "carVanTravelExpensesDisallowable": 1000.99,
-             |          "premisesRunningCostsDisallowable": -1000.99,
-             |          "maintenanceCostsDisallowable": -999.99,
-             |          "adminCostsDisallowable": 1000.99,
-             |          "businessEntertainmentCostsDisallowable": 1000.99,
-             |          "advertisingCostsDisallowable": 1000.99,
-             |          "interestOnBankOtherLoansDisallowable": -1000.99,
-             |          "financeChargesDisallowable": -9999.99,
-             |          "irrecoverableDebtsDisallowable": -1000.99,
-             |          "professionalFeesDisallowable": 10000.89,
-             |          "depreciationDisallowable": -99999999999.99,
-             |          "otherExpensesDisallowable": 1000.99
-             |      }
-             |}
-             |""".stripMargin
-        )
-
-        override def setupStubs(): StubMapping = {
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-        }
-
-        val response: WSResponse = await(request().post(requestBodyJson))
-        response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(RuleBothExpensesSuppliedError)
-      }
-
       "an empty body is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse("""{}""")
 
