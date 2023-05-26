@@ -19,9 +19,10 @@ package v1.services
 import api.controllers.RequestContext
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.models.errors._
-import api.services.{BaseService, RetrievePeriodSummaryServiceOutcome}
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.RetrievePeriodSummaryConnector
+import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,8 +30,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends BaseService {
 
-  def retrievePeriodSummary(
-      request: RetrievePeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[RetrievePeriodSummaryServiceOutcome] = {
+  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
     connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

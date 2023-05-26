@@ -18,10 +18,11 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, ListPeriodSummariesServiceOutcome}
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.ListPeriodSummariesConnector
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,8 +30,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends BaseService {
 
-  def listPeriodSummaries(
-      request: ListPeriodSummariesRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ListPeriodSummariesServiceOutcome] = {
+  def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
     connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }

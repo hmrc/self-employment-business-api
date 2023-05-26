@@ -18,8 +18,7 @@ package v1.mocks.services
 
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.controllers.RequestContext
-import api.models.errors.ErrorWrapper
-import api.models.outcomes.ResponseWrapper
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
@@ -33,8 +32,7 @@ trait MockRetrievePeriodSummaryService extends MockFactory {
 
   object MockRetrievePeriodSummaryService {
 
-    def retrieve(
-        requestData: RetrievePeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrievePeriodSummaryResponse]]]] = {
+    def retrieve(requestData: RetrievePeriodSummaryRequest): CallHandler[Future[ServiceOutcome[RetrievePeriodSummaryResponse]]] = {
       (
         mockRetrievePeriodSummaryService
           .retrievePeriodSummary(_: RetrievePeriodSummaryRequest)(

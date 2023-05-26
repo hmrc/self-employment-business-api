@@ -18,10 +18,11 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, RetrieveAnnualSubmissionServiceOutcome}
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.RetrieveAnnualSubmissionConnector
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
+import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,7 +32,7 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
 
   def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
       ctx: RequestContext,
-      ec: ExecutionContext): Future[RetrieveAnnualSubmissionServiceOutcome] = {
+      ec: ExecutionContext): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 
