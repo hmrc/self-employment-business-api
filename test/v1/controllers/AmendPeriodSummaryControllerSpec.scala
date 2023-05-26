@@ -22,7 +22,6 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
@@ -48,7 +47,7 @@ class AmendPeriodSummaryControllerSpec
   private val tysPeriodId: String = "2024-01-01_2025-01-01"
   private val taxYear: String     = "2023-24"
 
-  val testHateoasLinks: Seq[Link] = Seq(
+  private val testHateoasLinks: Seq[Link] = Seq(
     Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,
@@ -63,16 +62,13 @@ class AmendPeriodSummaryControllerSpec
   )
 
   private val testTysHateoasLink = Seq(
-    hateoas.Link(
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
       method = PUT,
       rel = "amend-self-employment-period-summary"
     ),
-    hateoas.Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
-      method = GET,
-      rel = "self"),
-    hateoas.Link(
+    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
       method = GET,
       rel = "list-self-employment-period-summaries"
@@ -87,7 +83,7 @@ class AmendPeriodSummaryControllerSpec
   private val requestData    = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
   private val tysRequestData = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
 
-  val responseJson: JsValue = Json.parse(
+  private val responseJson: JsValue = Json.parse(
     s"""
        |{
        |    "links": [
@@ -114,9 +110,27 @@ class AmendPeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  val tysResponseJson: JsValue = Json.parse(
+  private val tysResponseJson: JsValue = Json.parse(
     s"""
-       |{"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"list-self-employment-period-summaries"}]}
+       |{
+       |  "links": [
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+       |      "method": "PUT",
+       |      "rel": "amend-self-employment-period-summary"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+       |      "method": "GET",
+       |      "rel": "self"
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+       |      "method": "GET",
+       |      "rel": "list-self-employment-period-summaries"
+       |    }
+       |  ]
+       |}
     """.stripMargin
   )
 

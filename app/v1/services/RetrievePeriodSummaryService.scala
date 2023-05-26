@@ -38,7 +38,7 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
 
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+  private val downstreamErrorMap: Map[String, MtdError] = {
     val downstreamErrors = Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,

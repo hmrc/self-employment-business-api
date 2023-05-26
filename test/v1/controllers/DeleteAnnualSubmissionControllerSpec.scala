@@ -83,7 +83,7 @@ class DeleteAnnualSubmissionControllerSpec
     }
   }
 
-  trait Test extends ControllerTest {
+  private trait Test extends ControllerTest {
 
     val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,

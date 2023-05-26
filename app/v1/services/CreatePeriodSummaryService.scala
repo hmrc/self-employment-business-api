@@ -41,11 +41,11 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
     }
 
     connector
-      .createPeriodicSummary(request)
+      .createPeriodSummary(request)
       .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+  private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
       "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,

@@ -23,7 +23,6 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
@@ -46,14 +45,14 @@ class CreatePeriodSummaryControllerSpec
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2017-01-25"
 
-  val testHateoasLinks: Seq[Link] = Seq(
-    hateoas.Link(
+  private val testHateoasLinks: Seq[Link] = Seq(
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,
       rel = "amend-self-employment-period-summary"
     ),
-    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-    hateoas.Link(
+    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period",
       method = GET,
       rel = "list-self-employment-period-summaries"
@@ -236,7 +235,7 @@ class CreatePeriodSummaryControllerSpec
     }
   }
 
-  trait Test extends ControllerTest {
+  private trait Test extends ControllerTest {
 
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
