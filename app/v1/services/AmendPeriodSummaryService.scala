@@ -35,7 +35,7 @@ class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnecto
     connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+  private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
       "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,

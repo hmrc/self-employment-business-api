@@ -16,7 +16,6 @@
 
 package v1.controllers
 
-import anyVersion.models.request.amendPeriodSummary
 import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -84,7 +83,7 @@ class AmendPeriodSummaryControllerSpec
   private val requestBody     = amendPeriodSummaryBody
 
   private val rawData        = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
-  private val tysRawData     = amendPeriodSummary.AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
+  private val tysRawData     = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
   private val requestData    = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
   private val tysRequestData = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
 
@@ -123,7 +122,7 @@ class AmendPeriodSummaryControllerSpec
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
-      "the request received is valid" in new Test {
+      "the request received is valid" in new PreTysTest {
         MockAmendPeriodSummaryRequestParser
           .requestFor(rawData)
           .returns(Right(requestData))
@@ -164,7 +163,7 @@ class AmendPeriodSummaryControllerSpec
     }
 
     "return the error as per spec" when {
-      "the parser validation fails" in new Test {
+      "the parser validation fails" in new PreTysTest {
 
         MockAmendPeriodSummaryRequestParser
           .requestFor(rawData)
@@ -173,7 +172,7 @@ class AmendPeriodSummaryControllerSpec
         runErrorTest(NinoFormatError)
       }
 
-      "the service returns an error" in new Test {
+      "the service returns an error" in new PreTysTest {
 
         MockAmendPeriodSummaryRequestParser
           .requestFor(rawData)
@@ -188,7 +187,7 @@ class AmendPeriodSummaryControllerSpec
     }
   }
 
-  trait Test extends ControllerTest {
+  private trait Test extends ControllerTest {
 
     val controller = new AmendPeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -199,23 +198,17 @@ class AmendPeriodSummaryControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+  }
+
+  private trait PreTysTest extends Test {
 
     protected def callController(): Future[Result] =
       controller.handleRequest(nino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
 
   }
 
-  trait TysTest extends ControllerTest {
-
-    val controller = new AmendPeriodSummaryController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockAmendPeriodSummaryRequestParser,
-      service = mockAmendPeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
+  private trait TysTest extends Test {
 
     protected def callController(): Future[Result] =
       controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
