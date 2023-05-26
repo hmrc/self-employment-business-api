@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends BaseService {
 
-  def createPeriodicSummary(
+  def createPeriodSummary(
       request: CreatePeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[CreatePeriodSummaryServiceOutcome] = {
     val result = for {
       responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))

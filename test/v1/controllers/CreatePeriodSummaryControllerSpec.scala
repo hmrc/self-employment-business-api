@@ -44,7 +44,7 @@ class CreatePeriodSummaryControllerSpec
     with MockHateoasFactory {
 
   private val businessId: String = "XAIS12345678910"
-  private val periodId: String   = "2017-01-25_2018-01-24"
+  private val periodId: String   = "2017-01-25_2018-01-25"
 
   val testHateoasLinks: Seq[Link] = Seq(
     hateoas.Link(
