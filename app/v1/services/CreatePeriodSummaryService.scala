@@ -16,11 +16,12 @@
 
 package v1.services
 
-import api.controllers.RequestContext
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
+import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, CreatePeriodSummaryServiceOutcome}
-import cats.data.EitherT
+import api.models.outcomes.ResponseWrapper
+import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.toBifunctorOps
 import v1.connectors.CreatePeriodSummaryConnector
 import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
@@ -30,19 +31,21 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends BaseService {
 
-  def createPeriodicSummary(
-      request: CreatePeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[CreatePeriodSummaryServiceOutcome] = {
-    val result = for {
-      responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
-    } yield responseWrapper.map { _ =>
+  def createPeriodSummary(request: CreatePeriodSummaryRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
+
+    def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
       import request.body.periodDates._
-      CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate")
+      wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
     }
 
-    result.value
+    connector
+      .createPeriodSummary(request)
+      .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+  private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
       "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,

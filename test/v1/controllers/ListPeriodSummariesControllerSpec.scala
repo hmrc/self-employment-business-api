@@ -175,7 +175,7 @@ class ListPeriodSummariesControllerSpec
     }
   }
 
-  trait Test extends ControllerTest {
+  private trait Test extends ControllerTest {
 
     val rawData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, None)
     val requestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
@@ -199,7 +199,7 @@ class ListPeriodSummariesControllerSpec
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, None)(fakeGetRequest)
   }
 
-  trait TysTest extends ControllerTest {
+  private trait TysTest extends ControllerTest {
 
     val rawTysData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, Some(taxYear))
     val tysRequestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))

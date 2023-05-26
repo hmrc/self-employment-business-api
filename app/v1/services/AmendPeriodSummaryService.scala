@@ -18,7 +18,7 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{AmendPeriodSummaryServiceOutcome, BaseService}
+import api.services.{ServiceOutcome, BaseService}
 import cats.implicits._
 import v1.connectors.AmendPeriodSummaryConnector
 import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
@@ -29,13 +29,12 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends BaseService {
 
-  def amendPeriodSummary(
-      request: AmendPeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendPeriodSummaryServiceOutcome] = {
+  def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+  private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
       "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,

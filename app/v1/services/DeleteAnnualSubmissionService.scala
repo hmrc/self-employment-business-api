@@ -18,7 +18,7 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{BaseService, DeleteAnnualSubmissionServiceOutcome}
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.DeleteAnnualSubmissionConnector
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
@@ -30,12 +30,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmissionConnector) extends BaseService {
 
   def deleteAnnualSubmission(
-      request: DeleteAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[DeleteAnnualSubmissionServiceOutcome] = {
+      request: DeleteAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+  private val downstreamErrorMap: Map[String, MtdError] = {
     val errors: Map[String, MtdError] =
       Map(
         "INVALID_NINO"                -> NinoFormatError,

@@ -99,14 +99,15 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
   "CreateSEPeriodic" when {
     "createPeriodicSummary" must {
       "return correct result for a success" in new Test {
-        val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
+        val connectorOutcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] =
+          Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
 
         MockCreatePeriodicConnector
           .createPeriodicSummary(requestData)
           .returns(Future.successful(connectorOutcome))
 
-        await(service.createPeriodicSummary(requestData)) shouldBe outcome
+        await(service.createPeriodSummary(requestData)) shouldBe outcome
       }
 
       "map errors according to spec" when {
@@ -117,7 +118,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
               .createPeriodicSummary(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-            await(service.createPeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.createPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val errors = Seq(
@@ -145,7 +146,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("END_BEFORE_START", RuleEndDateBeforeStartDateError),
           ("PERIOD_HAS_GAPS", RuleNotContiguousPeriod),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
-          ("INVALID_TAX_YEAR", InternalError),
+          ("INVALID_TAX_YEAR", InternalError)
 //          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
 //          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
         )

@@ -17,8 +17,7 @@
 package v1.mocks.services
 
 import api.controllers.RequestContext
-import api.models.errors.ErrorWrapper
-import api.models.outcomes.ResponseWrapper
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
@@ -33,8 +32,7 @@ trait MockRetrieveAnnualSubmissionService extends MockFactory {
 
   object MockRetrieveAnnualSubmissionService {
 
-    def retrieve(requestData: RetrieveAnnualSubmissionRequest)
-        : CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[RetrieveAnnualSubmissionResponse]]]] = {
+    def retrieve(requestData: RetrieveAnnualSubmissionRequest): CallHandler[Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]]] = {
       (
         mockRetrieveAnnualSubmissionService
           .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequest)(

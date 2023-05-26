@@ -17,8 +17,7 @@
 package v1.mocks.services
 
 import api.controllers.RequestContext
-import api.models.errors.ErrorWrapper
-import api.models.outcomes.ResponseWrapper
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
@@ -33,8 +32,8 @@ trait MockListPeriodSummariesService extends MockFactory {
 
   object MockListPeriodSummariesService {
 
-    def listPeriodSummaries(requestData: ListPeriodSummariesRequest)
-        : CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]]]] = {
+    def listPeriodSummaries(
+        requestData: ListPeriodSummariesRequest): CallHandler[Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]]] = {
       (mockListPeriodSummariesService
         .listPeriodSummaries(_: ListPeriodSummariesRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

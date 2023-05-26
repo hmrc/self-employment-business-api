@@ -99,14 +99,15 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
   "CreateSEPeriodic" when {
     "createPeriodicSummary" must {
       "return correct result for a success" in new Test {
-        val connectorOutcome = Right(ResponseWrapper(correlationId, ()))
-        val outcome          = Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
+        val connectorOutcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] =
+          Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
 
         MockCreatePeriodicConnector
           .createPeriodicSummary(requestData)
           .returns(Future.successful(connectorOutcome))
 
-        await(service.createPeriodicSummary(requestData)) shouldBe outcome
+        await(service.createPeriodSummary(requestData)) shouldBe outcome
       }
 
       "map errors according to spec" when {
@@ -117,7 +118,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
               .createPeriodicSummary(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-            await(service.createPeriodicSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.createPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val errors = Seq(

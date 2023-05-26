@@ -18,21 +18,18 @@ package v2.controllers
 
 import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
-import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.models.errors._
+import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, ControllerComponents, Result}
-import utils.{IdGenerator, Logging}
+import play.api.libs.json.JsValue
+import play.api.mvc.{Action, ControllerComponents}
+import utils.IdGenerator
 import v2.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
 import v2.services.CreatePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
@@ -42,83 +39,24 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with BaseController
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateSelfEmploymentPeriodController", endpointName = "createSelfEmploymentPeriodSummary")
 
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val correlationId: String = idGenerator.generateCorrelationId
-      logger.info(
-        message = s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with correlationId : $correlationId")
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
+
       val rawData = CreatePeriodSummaryRawData(nino, businessId, request.body)
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](parser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.createPeriodicSummary(parsedRequest))
-        } yield {
-          val hateoasData = CreatePeriodSummaryHateoasData(
-            parsedRequest.nino,
-            parsedRequest.businessId,
-            serviceResponse.responseData.periodId,
-            Some(parsedRequest.taxYear)
-          )
 
-          val vendorResponse = hateoasFactory.wrap(serviceResponse.responseData, hateoasData)
+      val requestHandler = RequestHandler
+        .withParser(parser)
+        .withService(service.createPeriodSummary)
+        .withHateoasResultFrom(hateoasFactory)((parsedRequest, response) =>
+          CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), response.periodId, Some(parsedRequest.taxYear)))
 
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
-
-          Ok(Json.toJson(vendorResponse))
-            .withApiHeaders(serviceResponse.correlationId)
-        }
-
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result: Result   = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-        result
-      }.merge
-    }
-
-  private def errorResult(errorWrapper: ErrorWrapper) =
-    errorWrapper.error match {
-      case ValueFormatError | RuleIncorrectOrEmptyBodyError =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case _
-          if errorWrapper.containsAnyOf(
-            BadRequestError,
-            NinoFormatError,
-            ValueFormatError,
-            BusinessIdFormatError,
-            StartDateFormatError,
-            EndDateFormatError,
-            RuleBothExpensesSuppliedError,
-            RuleEndDateBeforeStartDateError,
-            RuleOverlappingPeriod,
-            RuleMisalignedPeriod,
-            RuleNotContiguousPeriod,
-            RuleNotAllowedConsolidatedExpenses,
-            RuleIncorrectOrEmptyBodyError,
-            RuleDuplicateSubmissionError,
-            RuleTaxYearNotSupportedError,
-            RuleInvalidSubmissionPeriodError,
-            RuleInvalidSubmissionEndDateError,
-            RuleIncorrectGovTestScenarioError
-          ) =>
-        BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case InternalError => InternalServerError(Json.toJson(errorWrapper))
-      case _             => unhandledError(errorWrapper)
+      requestHandler.handleRequest(rawData)
     }
 
 }

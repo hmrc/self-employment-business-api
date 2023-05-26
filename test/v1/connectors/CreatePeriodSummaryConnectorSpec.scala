@@ -30,25 +30,25 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
   "CreateSEPeriodicConnector" when {
     "createPeriodicSummary" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
-        def periodDates: PeriodDates = PeriodDates("2019-08-24", "2019-08-24")
-        val outcome                  = Right(ResponseWrapper(correlationId, response))
+        def periodDates: PeriodDates                                              = PeriodDates("2019-08-24", "2019-08-24")
+        val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
         val url =
           s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
         willPost(url, request.body).returns(Future.successful(outcome))
 
-        await(connector.createPeriodicSummary(request)) shouldBe outcome
+        await(connector.createPeriodSummary(request)) shouldBe outcome
       }
 
       "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
-        def periodDates: PeriodDates = PeriodDates("2023-04-05", "2024-04-05")
-        val outcome                  = Right(ResponseWrapper(correlationId, response))
+        def periodDates: PeriodDates                                              = PeriodDates("2023-04-05", "2024-04-05")
+        val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
         val url =
           s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries"
         willPost(url, request.body).returns(Future.successful(outcome))
 
-        await(connector.createPeriodicSummary(request)) shouldBe outcome
+        await(connector.createPeriodSummary(request)) shouldBe outcome
       }
     }
   }

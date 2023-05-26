@@ -19,18 +19,15 @@ package v2.controllers
 import anyVersion.models.request.createPeriodSummary
 import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import anyVersion.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
-import api.controllers.ControllerBaseSpec
-import api.mocks.MockIdGenerator
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.Method.GET
+import api.models.hateoas.Method.{GET, PUT}
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 import v2.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v2.mocks.services.MockCreatePeriodSummaryService
 import v2.models.request.createPeriodSummary._
@@ -40,38 +37,27 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryControllerSpec
     extends ControllerBaseSpec
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
+    with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryRequestParser
-    with MockHateoasFactory
-    with MockIdGenerator {
+    with MockHateoasFactory {
 
-  private val nino          = "AA123456A"
-  private val businessId    = "XAIS12345678910"
-  private val periodId      = "2017-01-25_2017-01-25"
-  private val correlationId = "X-123"
+  private val businessId = "XAIS12345678910"
+  private val periodId   = "2017-01-25_2017-01-25"
 
-  val testHateoasLinks: Seq[Link] =
-    Seq(Link(href = "/some/link", method = GET, rel = "someRel"))
-
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    val controller = new CreatePeriodSummaryController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockCreatePeriodicRequestParser,
-      service = mockCreatePeriodicService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
+  private val testHateoasLinks: Seq[Link] = Seq(
+    Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+      method = PUT,
+      rel = "amend-self-employment-period-summary"
+    ),
+    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
+    Link(
+      href = s"/individuals/business/self-employment/$nino/$businessId/period",
+      method = GET,
+      rel = "list-self-employment-period-summaries"
     )
-
-    MockMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.generateCorrelationId.returns(correlationId)
-  }
+  )
 
   private val requestJson = Json.parse(
     """
@@ -84,22 +70,22 @@ class CreatePeriodSummaryControllerSpec
       |          "turnover": 1000.99,
       |          "other": 1000.99
       |     },
-      |     "periodExpenses": {
-      |          "costOfGoods": 1000.99,
-      |          "paymentsToSubcontractors": 1000.99,
-      |          "wagesAndStaffCosts": 1000.99,
-      |          "carVanTravelExpenses": 1000.99,
-      |          "premisesRunningCosts": -99999.99,
-      |          "maintenanceCosts": -1000.99,
-      |          "adminCosts": 1000.99,
-      |          "businessEntertainmentCosts": 1000.99,
-      |          "advertisingCosts": 1000.99,
-      |          "interestOnBankOtherLoans": -1000.99,
-      |          "financeCharges": -1000.99,
-      |          "irrecoverableDebts": -1000.99,
-      |          "professionalFees": -99999999999.99,
-      |          "depreciation": -1000.99,
-      |          "otherExpenses": 1000.99
+      |     "periodAllowableExpenses": {
+      |          "costOfGoodsAllowable": 1000.99,
+      |          "paymentsToSubcontractorsAllowable": 1000.99,
+      |          "wagesAndStaffCostsAllowable": 1000.99,
+      |          "carVanTravelExpensesAllowable": 1000.99,
+      |          "premisesRunningCostsAllowable": -99999.99,
+      |          "maintenanceCostsAllowable": -1000.99,
+      |          "adminCostsAllowable": 1000.99,
+      |          "businessEntertainmentCostsAllowable": 1000.99,
+      |          "advertisingCostsAllowable": 1000.99,
+      |          "interestOnBankOtherLoansAllowable": -1000.99,
+      |          "financeChargesAllowable": -1000.99,
+      |          "irrecoverableDebtsAllowable": -1000.99,
+      |          "professionalFeesAllowable": -99999999999.99,
+      |          "depreciationAllowable": -1000.99,
+      |          "otherExpensesAllowable": 1000.99
       |      },
       |     "periodDisallowableExpenses": {
       |          "costOfGoodsDisallowable": 1000.99,
@@ -171,16 +157,29 @@ class CreatePeriodSummaryControllerSpec
 
   val responseJson: JsValue = Json.parse(
     s"""
-      |{
-      |  "periodId": "2017-01-25_2018-01-24",
-      |  "links": [
-      |    {
-      |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      |      "method": "GET",
-      |      "rel": "self"
-      |    }
-      |  ]
-      |}
+       |{
+       |  "periodId": "$periodId",
+       |  "links": [
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "method": "PUT",
+       |      "rel": "amend-self-employment-period-summary"
+       |      
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "method": "GET",
+       |      "rel": "self"
+       |      
+       |    },
+       |    {
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+       |      "method": "GET",
+       |      "rel": "list-self-employment-period-summaries"
+       |      
+       |    }
+       |  ]
+       |}
     """.stripMargin
   )
 
@@ -188,7 +187,7 @@ class CreatePeriodSummaryControllerSpec
   private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {
-    "return Ok" when {
+    "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
         MockCreatePeriodSummaryRequestParser
           .parseRequest(rawData)
@@ -204,84 +203,51 @@ class CreatePeriodSummaryControllerSpec
             CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
-        val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
-        status(result) shouldBe OK
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseJson)
+        )
       }
     }
 
     "return the error as per spec" when {
-      "parser errors occur" should {
-        def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-          s"a ${error.code} error is returned from the parser" in new Test {
+      "the parser validation fails" in new Test {
+        MockCreatePeriodSummaryRequestParser
+          .parseRequest(rawData)
+          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
 
-            MockCreatePeriodSummaryRequestParser
-              .parseRequest(rawData)
-              .returns(Left(ErrorWrapper(correlationId, error, None)))
+        runErrorTest(NinoFormatError)
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(error)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (StartDateFormatError, BAD_REQUEST),
-          (EndDateFormatError, BAD_REQUEST),
-          (ValueFormatError.copy(paths = Some(Seq("/foreignTaxCreditRelief/amount"))), BAD_REQUEST),
-          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-          (RuleBothExpensesSuppliedError, BAD_REQUEST),
-          (RuleEndDateBeforeStartDateError, BAD_REQUEST),
-          (RuleIncorrectGovTestScenarioError, BAD_REQUEST)
-        )
-
-        input.foreach(args => (errorsFromParserTester _).tupled(args))
       }
 
-      "service errors occur" should {
-        def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $mtdError error is returned from the service" in new Test {
+      "the service returns an error" in new Test {
 
-            MockCreatePeriodSummaryRequestParser
-              .parseRequest(rawData)
-              .returns(Right(requestData))
+        MockCreatePeriodSummaryRequestParser
+          .parseRequest(rawData)
+          .returns(Right(requestData))
 
-            MockCreatePeriodicService
-              .createPeriodic(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
+        MockCreatePeriodicService
+          .createPeriodic(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
-            val result: Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(mtdError)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-          }
-        }
-
-        val errors = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (BusinessIdFormatError, BAD_REQUEST),
-          (RuleOverlappingPeriod, BAD_REQUEST),
-          (RuleMisalignedPeriod, BAD_REQUEST),
-          (RuleNotContiguousPeriod, BAD_REQUEST),
-          (RuleNotAllowedConsolidatedExpenses, BAD_REQUEST),
-          (RuleInvalidSubmissionPeriodError, BAD_REQUEST),
-          (RuleInvalidSubmissionEndDateError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
-        val extraTysErrors = Seq(
-          (RuleDuplicateSubmissionError, BAD_REQUEST),
-          (RuleTaxYearNotSupportedError, BAD_REQUEST)
-        )
-
-        (errors ++ extraTysErrors).foreach(args => (serviceErrors _).tupled(args))
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
+  }
+
+  private trait Test extends ControllerTest {
+
+    val controller = new CreatePeriodSummaryController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      parser = mockCreatePeriodicRequestParser,
+      service = mockCreatePeriodicService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
   }
 
 }

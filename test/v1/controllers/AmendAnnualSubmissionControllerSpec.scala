@@ -20,9 +20,8 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas
-import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.{DELETE, GET, PUT}
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -45,13 +44,13 @@ class AmendAnnualSubmissionControllerSpec
   private val businessId: String = "XAIS12345678910"
   private val taxYear: String    = "2019-20"
 
-  val testHateoasLinks: Seq[Link] = Seq(
-    hateoas.Link(
+  private val testHateoasLinks: Seq[Link] = Seq(
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
       method = PUT,
       rel = "create-and-amend-self-employment-annual-submission"),
-    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
-    hateoas.Link(
+    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
       method = DELETE,
       rel = "delete-self-employment-annual-submission")
@@ -61,22 +60,22 @@ class AmendAnnualSubmissionControllerSpec
 
   private val requestBody = AmendAnnualSubmissionBody(None, None, None)
 
-  val responseJson: JsValue = Json.parse(
+  private val responseJson: JsValue = Json.parse(
     s"""
        |{
        |  "links": [
        |    {
-       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
        |      "rel": "create-and-amend-self-employment-annual-submission",
        |      "method": "PUT"
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
        |      "rel": "self",
        |      "method": "GET"
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2019-20",
+       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
        |      "rel": "delete-self-employment-annual-submission",
        |      "method": "DELETE"
        |    }
@@ -134,7 +133,7 @@ class AmendAnnualSubmissionControllerSpec
     }
   }
 
-  trait Test extends ControllerTest {
+  private trait Test extends ControllerTest {
 
     val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,

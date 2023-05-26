@@ -16,12 +16,10 @@
 
 package v2.mocks.services
 
-import api.controllers.EndpointLogContext
-import api.models.errors.ErrorWrapper
-import api.models.outcomes.ResponseWrapper
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 import v2.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
 import v2.services.AmendPeriodSummaryService
 
@@ -33,10 +31,10 @@ trait MockAmendPeriodSummaryService extends MockFactory {
 
   object MockAmendPeriodSummaryService {
 
-    def amendPeriodSummary(requestData: AmendPeriodSummaryRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def amendPeriodSummary(requestData: AmendPeriodSummaryRequest): CallHandler[Future[ServiceOutcome[Unit]]] = {
       (mockAmendPeriodSummaryService
-        .amendPeriodSummary(_: AmendPeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
-        .expects(requestData, *, *, *, *)
+        .amendPeriodSummary(_: AmendPeriodSummaryRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
 
   }

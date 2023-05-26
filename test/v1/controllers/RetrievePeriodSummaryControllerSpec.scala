@@ -22,9 +22,8 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
-import api.models.hateoas
-import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.hateoas.Method.{GET, PUT}
+import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -42,8 +41,9 @@ class RetrievePeriodSummaryControllerSpec
     with MockRetrievePeriodSummaryRequestParser
     with MockHateoasFactory {
 
-  private val businessId: String = "XAIS12345678910"
-  private val taxYear: String    = "2023-24"
+  private val businessId: String  = "XAIS12345678910"
+  private val taxYear: String     = "2023-24"
+  private val tysPeriodId: String = "2024-01-01_2025-01-01"
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -110,7 +110,7 @@ class RetrievePeriodSummaryControllerSpec
     }
   }
 
-  trait Test extends ControllerTest {
+  private trait Test extends ControllerTest {
     val periodId: String                          = "2019-01-01_2020-01-01"
     val rawData: RetrievePeriodSummaryRawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
     val requestData: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
@@ -123,13 +123,13 @@ class RetrievePeriodSummaryControllerSpec
     )
 
     val testHateoasLink: Seq[Link] = Seq(
-      hateoas.Link(
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
-      hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-      hateoas.Link(
+      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
         method = GET,
         rel = "list-self-employment-period-summaries"
@@ -138,7 +138,29 @@ class RetrievePeriodSummaryControllerSpec
 
     val responseJson: JsValue = Json.parse(
       s"""
-         |{"periodDates":{"periodStartDate":"2019-01-01","periodEndDate":"2020-01-01"},"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01","method":"GET","rel":"list-self-employment-period-summaries"}]}
+         |{
+         |  "periodDates": {
+         |    "periodStartDate": "2019-01-01",
+         |    "periodEndDate": "2020-01-01"
+         |  },
+         |  "links": [
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "method": "PUT",
+         |      "rel": "amend-self-employment-period-summary"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "method": "GET",
+         |      "rel": "list-self-employment-period-summaries"
+         |    }
+         |  ]
+         |}
       """.stripMargin
     )
 
@@ -155,7 +177,7 @@ class RetrievePeriodSummaryControllerSpec
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakeGetRequest)
   }
 
-  trait TysTest extends ControllerTest {
+  private trait TysTest extends ControllerTest {
     val periodId: String                      = "2024-01-01_2025-01-01"
     val rawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
 
@@ -170,13 +192,13 @@ class RetrievePeriodSummaryControllerSpec
     )
 
     val testHateoasLink: Seq[Link] = Seq(
-      hateoas.Link(
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
-      hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
-      hateoas.Link(
+      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = GET,
         rel = "list-self-employment-period-summaries"
@@ -185,7 +207,29 @@ class RetrievePeriodSummaryControllerSpec
 
     val responseJson: JsValue = Json.parse(
       s"""
-         |{"periodDates":{"periodStartDate":"2024-01-01","periodEndDate":"2025-01-01"},"links":[{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"PUT","rel":"amend-self-employment-period-summary"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"self"},{"href":"/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2024-01-01_2025-01-01[?taxYear=2023-24]","method":"GET","rel":"list-self-employment-period-summaries"}]}
+         |{
+         |  "periodDates": {
+         |    "periodStartDate": "2024-01-01",
+         |    "periodEndDate": "2025-01-01"
+         |  },
+         |  "links": [
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+         |      "method": "PUT",
+         |      "rel": "amend-self-employment-period-summary"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+         |      "method": "GET",
+         |      "rel": "self"
+         |    },
+         |    {
+         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$tysPeriodId[?taxYear=$taxYear]",
+         |      "method": "GET",
+         |      "rel": "list-self-employment-period-summaries"
+         |    }
+         |  ]
+         |}
       """.stripMargin
     )
 

@@ -17,40 +17,35 @@
 package v2.services
 
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
-import api.controllers.EndpointLogContext
+import api.controllers.RequestContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.support.DownstreamResponseMappingSupport
-import cats.data.EitherT
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
-import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v2.connectors.CreatePeriodSummaryConnector
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends DownstreamResponseMappingSupport with Logging {
+class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends BaseService {
 
-  def createPeriodicSummary(request: CreatePeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      logContext: EndpointLogContext,
-      correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[CreatePeriodSummaryResponse]]] = {
+  def createPeriodSummary(request: CreatePeriodSummaryRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
 
-    val result = for {
-      responseWrapper <- EitherT(connector.createPeriodicSummary(request)).leftMap(mapDownstreamErrors(downstreamErrorMap))
-    } yield responseWrapper.map { _ =>
+    def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
       import request.body.periodDates._
-      CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate")
+      wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
     }
 
-    result.value
+    connector
+      .createPeriodSummary(request)
+      .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = {
+  private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
       "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,

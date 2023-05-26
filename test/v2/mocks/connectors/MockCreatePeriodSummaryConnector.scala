@@ -33,7 +33,7 @@ trait MockCreatePeriodSummaryConnector extends MockFactory {
 
     def createPeriodicSummary(requestData: CreatePeriodSummaryRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockCreatePeriodicConnector
-        .createPeriodicSummary(_: CreatePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .createPeriodSummary(_: CreatePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 
