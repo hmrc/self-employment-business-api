@@ -4,13 +4,7 @@ description: |
   A National Insurance number, Business ID and tax year must be provided.
   
   ### Test data
-  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
-  
-  <ul>
-  <li>The <b>STATEFUL_DELETE</b> gov-test scenario is used for Delete a Self-Employment Annual Submission (non-tax year specific) and uses a <b>PUT</b> HTTP method.</li>
-  <li>The <b>STATEFUL</b> gov-test-scenario is used for Delete a Self-Employment Annual Submission (tax year specific) and uses the standard <b>DELETE</b> HTTP method.</li>
-  </ul>
-  
+  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>  
   <table>
       <thead>
           <tr>
@@ -30,10 +24,6 @@ description: |
           <tr>
               <td><p>STATEFUL_DELETE</p></td>
               <td><p>Performs a stateful delete.</p></td>
-          </tr>
-          <tr>
-              <td><p>STATEFUL</p></td>
-              <td><p>Simulates a stateful success response.</p></td>
           </tr>
       </tbody>
   </table>
@@ -59,7 +49,7 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: {}
+    content: { }
 
   "400":
     description: Bad request
