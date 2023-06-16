@@ -4,7 +4,7 @@ description: |
   A National Insurance number, Business ID and tax year must be provided.
   
   ### Test data
-  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>  
   <table>
       <thead>
           <tr>
@@ -20,6 +20,10 @@ description: |
           <tr>
               <td><p>NOT_FOUND</p></td>
               <td><p>Simulates the scenario where no data found.</p></td>
+          </tr>
+          <tr>
+              <td><p>STATEFUL_DELETE</p></td>
+              <td><p>Performs a stateful delete.</p></td>
           </tr>
       </tbody>
   </table>
@@ -45,7 +49,7 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: {}
+    content: { }
 
   "400":
     description: Bad request
