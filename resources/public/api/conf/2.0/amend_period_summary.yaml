@@ -31,12 +31,13 @@ description: |
               <td><p>TAX_YEAR_NOT_SUPPORTED</p></td>
               <td><p>Simulates the scenario where the tax year is not supported.</p></td>
           </tr>
-            <tr>
+          <tr>
               <td><p>BOTH_EXPENSES_SUPPLIED</p></td>
               <td><p>Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.</p></td>
+          </tr>
           <tr>
               <td><p>STATEFUL</p></td>
-              <td><p>Simulates a stateful success response.</p></td>
+              <td><p>Performs a stateful update.</p></td>
           </tr>
       </tbody>
   </table>
