@@ -27,7 +27,7 @@ description: |
           </tr>
           <tr>
               <td><p>STATEFUL</p></td>
-              <td><p>Performs a stateful retrieve.</p></td>
+              <td><p>Performs a stateful list.</p></td>
           </tr>
       </tbody>
   </table>
