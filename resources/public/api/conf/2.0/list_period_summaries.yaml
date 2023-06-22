@@ -1,7 +1,7 @@
 summary: List Self-Employment Period Summaries
 description: |
-  This endpoint enables you to retrieve a list of all self-employment update period summaries.
-  A National Insurance number and business ID must be provided.
+  This endpoint enables you to retrieve a list of all self-employment update period summaries.  A National Insurance 
+  number and business ID must be provided. For listing summaries from 2023-24 onwards a tax year must be provided.
   
   ### Test data
   <p>Scenario simulations using Gov-Test-Scenario headers are only available in the sandbox environment.</p>
@@ -31,7 +31,6 @@ description: |
                 <ul>
                     <li>periodStartDate</li>
                     <li>periodEndDate</li>
-                    <li>periodCreationDate</li>
                 </ul>
               </p></td>
           </tr>
