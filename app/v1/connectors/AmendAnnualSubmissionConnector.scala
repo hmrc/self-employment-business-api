@@ -16,7 +16,7 @@
 
 package v1.connectors
 
-import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
@@ -42,7 +42,7 @@ class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCon
       if (taxYear.useTaxYearSpecificApi) {
         TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/annual-summaries")
       } else {
-        DesUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/annual-summaries/${taxYear.asDownstream}")
+        IfsUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/annual-summaries/${taxYear.asDownstream}")
       }
 
     put(body, downstreamUri)
