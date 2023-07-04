@@ -20,7 +20,6 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.Link
 import api.models.hateoas.Method._
 import mocks.MockAppConfig
-import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
 
@@ -103,7 +102,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
     "TYS feature switch is disabled" should {
       "return the correct top-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
@@ -113,7 +111,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
       "return the correct item-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(
           periodId,
@@ -131,7 +128,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
     "TYS feature switch is enabled and tax year is TYS" should {
       "return the correct top-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasDataTys) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
@@ -141,7 +137,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
       "return the correct item-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(
           periodId,

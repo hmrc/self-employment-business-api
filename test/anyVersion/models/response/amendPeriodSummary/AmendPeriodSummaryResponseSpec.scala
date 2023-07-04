@@ -19,7 +19,6 @@ package anyVersion.models.response.amendPeriodSummary
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
-import play.api.Configuration
 import support.UnitSpec
 
 class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
@@ -33,7 +32,6 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val data: AmendPeriodSummaryHateoasData = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
@@ -52,7 +50,6 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val data: AmendPeriodSummaryHateoasData = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(taxYear))
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(
