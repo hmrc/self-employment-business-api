@@ -17,58 +17,25 @@
 package config
 
 import play.api.Configuration
-import routing.{Version, Version1, Version2}
 import support.UnitSpec
 
 class FeatureSwitchesSpec extends UnitSpec {
 
-  val anyVersion: Version = Version2
+  private val configuration = Configuration(
+    "feature-switch.enabled" -> true
+  )
 
-  "a feature switch" should {
-    "be true" when {
+  private val featureSwitches = FeatureSwitches(configuration)
 
-      "absent from the config" in {
-        val configuration   = Configuration.empty
-        val featureSwitches = FeatureSwitches(configuration)
-
-        featureSwitches.isTaxYearSpecificApiEnabled shouldBe true
-      }
-
-      "enabled" in {
-        val configuration   = Configuration("tys-api.enabled" -> true)
-        val featureSwitches = FeatureSwitches(configuration)
-
-        featureSwitches.isTaxYearSpecificApiEnabled shouldBe true
-
-      }
-    }
-
-    "be false" when {
-      "disabled" in {
-        val configuration   = Configuration("tys-api.enabled" -> false)
-        val featureSwitches = FeatureSwitches(configuration)
-
-        featureSwitches.isTaxYearSpecificApiEnabled shouldBe false
-      }
-    }
-  }
-
-  "isVersionEnabled()" should {
-    val configuration = Configuration(
-      "version-1.enabled" -> true,
-      "version-2.enabled" -> false
-    )
-    val featureSwitches = FeatureSwitches(configuration)
-
-    "return false" when {
-      "the version is not enabled in the config" in {
-        featureSwitches.isVersionEnabled(anyVersion) shouldBe false
-      }
-    }
-
+  "FeatureSwitches" should {
     "return true" when {
-      "the version is enabled in the config" in {
-        featureSwitches.isVersionEnabled(Version1) shouldBe true
+      "the feature switch is set to true" in {
+        featureSwitches.featureSwitchConfig.getOptional[Boolean]("feature-switch.enabled") shouldBe Some(true)
+      }
+    }
+    "return false" when {
+      "the feature switch is not present in the config" in {
+        featureSwitches.featureSwitchConfig.getOptional[Boolean]("invalid") shouldBe None
       }
     }
   }

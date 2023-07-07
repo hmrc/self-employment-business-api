@@ -19,7 +19,6 @@ package v2.models.response.retrievePeriodSummary
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
-import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
@@ -222,7 +221,6 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
@@ -238,7 +236,6 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
           RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2023-24")))
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(

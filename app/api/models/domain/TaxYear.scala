@@ -17,7 +17,6 @@
 package api.models.domain
 
 import api.models.domain.TaxYear.tysTaxYear
-import config.FeatureSwitches
 
 import java.time.LocalDate
 
@@ -52,7 +51,7 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean = featureSwitches.isTaxYearSpecificApiEnabled && year >= tysTaxYear
+  def useTaxYearSpecificApi: Boolean = year >= tysTaxYear
 }
 
 object TaxYear {
@@ -70,7 +69,7 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-  def isTys(taxYear: Option[TaxYear])(implicit featureSwitches: FeatureSwitches): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
+  def isTys(taxYear: Option[TaxYear]): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
 
   /** UK tax year starts on 6 April.
     */
