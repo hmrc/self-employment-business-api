@@ -17,17 +17,9 @@
 package config
 
 import play.api.Configuration
-import routing.Version
 
-case class FeatureSwitches(featureSwitchConfig: Configuration) {
+case class FeatureSwitches(featureSwitchConfig: Configuration)
 
-  def isVersionEnabled(version: Version): Boolean = {
-    val enabled = featureSwitchConfig.getOptional[Boolean](s"version-${version.configName}.enabled")
-
-    enabled.getOrElse(false)
-  }
-
-  val isTaxYearSpecificApiEnabled: Boolean = isEnabled("tys-api.enabled")
-
-  private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
+object FeatureSwitches {
+  def apply()(implicit appConfig: AppConfig): FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 }

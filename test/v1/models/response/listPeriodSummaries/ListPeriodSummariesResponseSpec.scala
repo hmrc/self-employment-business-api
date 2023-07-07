@@ -20,7 +20,6 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.Link
 import api.models.hateoas.Method._
 import mocks.MockAppConfig
-import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
 
@@ -32,13 +31,13 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
         periodEndDate = "2020-01-01"
-//        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
+        //        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
       ),
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
         periodEndDate = "2020-01-01"
-//        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
+        //        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
       )
     )
   )
@@ -48,22 +47,22 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       Json
         .parse(
           """
-          |{
-          |   "periods": [
-          |      {
-          |           "transactionReference": "32131123131",
-          |           "from": "2019-01-01",
-          |           "to": "2020-01-01",
-          |           "periodCreationDate": "2020-01-02"
-          |      },
-          |      {
-          |           "transactionReference": "3123123123121",
-          |           "from": "2019-01-01",
-          |           "to": "2020-01-01",
-          |           "periodCreationDate": "2020-01-02"
-          |      }
-          |   ]
-          |}
+            |{
+            |   "periods": [
+            |      {
+            |           "transactionReference": "32131123131",
+            |           "from": "2019-01-01",
+            |           "to": "2020-01-01",
+            |           "periodCreationDate": "2020-01-02"
+            |      },
+            |      {
+            |           "transactionReference": "3123123123121",
+            |           "from": "2019-01-01",
+            |           "to": "2020-01-01",
+            |           "periodCreationDate": "2020-01-02"
+            |      }
+            |   ]
+            |}
     """.stripMargin
         )
         .as[ListPeriodSummariesResponse[PeriodDetails]] shouldBe model
@@ -74,20 +73,20 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
     "write to mtd json" in {
       Json.toJson(model) shouldBe Json.parse(
         """
-            |{
-            |   "periods": [
-            |     {
-            |         "periodId": "2019-01-01_2020-01-01",
-            |         "periodStartDate": "2019-01-01",
-            |         "periodEndDate": "2020-01-01"
-            |     },
-            |     {
-            |         "periodId": "2019-01-01_2020-01-01",
-            |         "periodStartDate": "2019-01-01",
-            |         "periodEndDate": "2020-01-01"
-            |     }
-            |   ]
-            |}
+          |{
+          |   "periods": [
+          |     {
+          |         "periodId": "2019-01-01_2020-01-01",
+          |         "periodStartDate": "2019-01-01",
+          |         "periodEndDate": "2020-01-01"
+          |     },
+          |     {
+          |         "periodId": "2019-01-01_2020-01-01",
+          |         "periodStartDate": "2019-01-01",
+          |         "periodEndDate": "2020-01-01"
+          |     }
+          |   ]
+          |}
     """.stripMargin
       )
     }
@@ -103,7 +102,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
     "TYS feature switch is disabled" should {
       "return the correct top-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
@@ -113,13 +111,12 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
       "return the correct item-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> false)).anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(
           periodId,
           "",
           ""
-//          Some("2020-01-02") // To be reinstated, see MTDSA-15595
+          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
         )
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, periodDetails) shouldBe Seq(
@@ -131,7 +128,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
     "TYS feature switch is enabled and tax year is TYS" should {
       "return the correct top-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasDataTys) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
@@ -141,13 +137,12 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
       "return the correct item-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-        MockAppConfig.featureSwitches.returns(Configuration("tys-api.enabled" -> true)).anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(
           periodId,
           "",
           ""
-//          Some("2020-01-02") // To be reinstated, see MTDSA-15595
+          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
         )
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, periodDetails) shouldBe Seq(

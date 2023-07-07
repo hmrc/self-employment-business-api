@@ -20,13 +20,11 @@ import anyVersion.models.hateoas.RelType._
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.Link
 import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
-import config.{AppConfig, FeatureSwitches}
+import config.AppConfig
 
 trait HateoasLinks {
 
-  private def withTaxYearParameter(appConfig: AppConfig, uri: String, maybeTaxYear: Option[TaxYear]): String = {
-    implicit val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
-
+  private def withTaxYearParameter(uri: String, maybeTaxYear: Option[TaxYear]): String = {
     maybeTaxYear match {
       case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
       case _                                              => uri
@@ -39,14 +37,12 @@ trait HateoasLinks {
 
   private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String =
     withTaxYearParameter(
-      appConfig,
       uri = s"/${appConfig.apiGatewayContext}/$nino/${businessId.value}/period",
       taxYear
     )
 
   private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) =
     withTaxYearParameter(
-      appConfig,
       uri = s"/${appConfig.apiGatewayContext}/$nino/${businessId.value}/period/$periodId",
       taxYear
     )
