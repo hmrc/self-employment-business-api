@@ -18,9 +18,9 @@ package config
 
 import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
-import routing.{Version1, Version2}
+import routing.{Version1, Version2, Version3}
 import support.IntegrationBaseSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -65,6 +65,11 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     |           "version":"2.0",
     |           "status":"BETA",
     |           "endpointsEnabled":true
+    |         },
+    |         {
+    |           "version":"3.0",
+    |           "status":"BETA",
+    |           "endpointsEnabled":true
     |         }
     |      ]
     |   }
@@ -81,9 +86,9 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-    Seq(Version1, Version2).foreach { version =>
+    Seq(Version1, Version2, Version3).foreach { version =>
       s"return the documentation for $version" in {
-        val response: WSResponse = await(buildRequest(s"/api/conf/$version/application.yaml").get())
+        val response: WSResponse = await(buildRequest(s"/api/conf/${version.name}/application.yaml").get())
         response.status shouldBe Status.OK
 
         val contents     = response.body[String]
