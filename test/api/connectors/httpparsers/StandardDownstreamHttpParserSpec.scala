@@ -44,9 +44,30 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   val data                            = "someData"
   val downstreamExpectedJson: JsValue = Json.obj("data" -> data)
-
-  private val downstreamModel    = SomeModel(data)
-  private val downstreamResponse = ResponseWrapper(correlationId, downstreamModel)
+  val singleErrorJson: JsValue = Json.parse(
+    """
+      |{
+      |   "code": "CODE",
+      |   "reason": "MESSAGE"
+      |}
+    """.stripMargin
+  )
+  val multipleErrorsJson: JsValue = Json.parse(
+    """
+      |{
+      |   "failures": [
+      |       {
+      |           "code": "CODE 1",
+      |           "reason": "MESSAGE 1"
+      |       },
+      |       {
+      |           "code": "CODE 2",
+      |           "reason": "MESSAGE 2"
+      |       }
+      |   ]
+      |}
+    """.stripMargin
+  )
 
   "The generic HTTP parser" when {
     "no status code is specified" must {
@@ -113,33 +134,6 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       }
     }
   }
-
-  val singleErrorJson: JsValue = Json.parse(
-    """
-      |{
-      |   "code": "CODE",
-      |   "reason": "MESSAGE"
-      |}
-    """.stripMargin
-  )
-
-  val multipleErrorsJson: JsValue = Json.parse(
-    """
-      |{
-      |   "failures": [
-      |       {
-      |           "code": "CODE 1",
-      |           "reason": "MESSAGE 1"
-      |       },
-      |       {
-      |           "code": "CODE 2",
-      |           "reason": "MESSAGE 2"
-      |       }
-      |   ]
-      |}
-    """.stripMargin
-  )
-
   val malformedErrorJson: JsValue = Json.parse(
     """
       |{
@@ -148,6 +142,8 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       |}
     """.stripMargin
   )
+  private val downstreamModel    = SomeModel(data)
+  private val downstreamResponse = ResponseWrapper(correlationId, downstreamModel)
 
   private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
     Seq(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, UNPROCESSABLE_ENTITY).foreach(responseCode =>

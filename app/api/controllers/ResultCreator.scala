@@ -24,7 +24,6 @@ import play.api.http.{HttpEntity, Status}
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{ResponseHeader, Result, Results}
 
-
 case class ResultWrapper(httpStatus: Int, body: Option[JsValue]) {
 
   def asResult: Result = {

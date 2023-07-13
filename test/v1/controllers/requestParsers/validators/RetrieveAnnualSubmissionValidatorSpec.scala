@@ -22,11 +22,10 @@ import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRawData
 
 class RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
 
+  val validator = new RetrieveAnnualSubmissionValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validTaxYear    = "2017-18"
-
-  val validator = new RetrieveAnnualSubmissionValidator()
 
   "running a validation" should {
     "return no errors" when {

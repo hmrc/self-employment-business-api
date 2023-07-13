@@ -24,10 +24,13 @@ import v1.models.request.amendSEAnnual._
 
 import scala.annotation.nowarn
 
-
 class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, enumValidation, bodyFormatValidation, bodyFieldValidation)
+
+  override def validate(data: AmendAnnualSubmissionRawData): List[MtdError] = {
+    run(validationSet, data).distinct
+  }
 
   private def parameterFormatValidation: AmendAnnualSubmissionRawData => List[List[MtdError]] = (data: AmendAnnualSubmissionRawData) => {
     List(
@@ -206,10 +209,6 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
 
   private def validateTradingIncomeAllowance(allowances: Allowances): List[MtdError] = {
     BothAllowancesValidation.validate(allowances)
-  }
-
-  override def validate(data: AmendAnnualSubmissionRawData): List[MtdError] = {
-    run(validationSet, data).distinct
   }
 
 }

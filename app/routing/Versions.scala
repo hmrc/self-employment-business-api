@@ -59,10 +59,10 @@ case object Version1 extends Version {
 }
 
 case object Version2 extends Version {
-  val name                                    = "2.0"
-  val configName                              = "2"
   override val maybePrevious: Option[Version] = Some(Version1)
   override val regexMatch: Option[String]     = Some("^.*collection/tax-code/?$")
+  val name                                    = "2.0"
+  val configName                              = "2"
 }
 
 object Versions {

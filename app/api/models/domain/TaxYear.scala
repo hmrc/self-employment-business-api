@@ -56,12 +56,16 @@ final case class TaxYear private (private val value: String) {
 
 object TaxYear {
 
+  val tysTaxYear: Int = 2024
+  /** UK tax year starts on 6 April.
+    */
+  private val taxYearMonthStart = 4
+  private val taxYearDayStart   = 6
+
   /** @param taxYear
     *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear = new TaxYear(taxYear.take(2) + taxYear.drop(5))
-
-  val tysTaxYear: Int = 2024
 
   def fromDownstream(taxYear: String): TaxYear =
     new TaxYear(taxYear)
@@ -70,11 +74,6 @@ object TaxYear {
     new TaxYear(taxYear.toString)
 
   def isTys(taxYear: Option[TaxYear]): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
-
-  /** UK tax year starts on 6 April.
-    */
-  private val taxYearMonthStart = 4
-  private val taxYearDayStart   = 6
 
   /** @param date
     *   the date in extended ISO-8601 format (e.g. 2020-04-05)

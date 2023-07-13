@@ -22,7 +22,6 @@ import cats.Functor
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 
-
 trait MockHateoasFactory extends MockFactory {
 
   val mockHateoasFactory: HateoasFactory = mock[HateoasFactory]

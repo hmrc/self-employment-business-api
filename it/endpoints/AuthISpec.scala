@@ -42,6 +42,9 @@ class AuthISpec extends IntegrationBaseSpec {
          |    }
          |}
         """.stripMargin
+    val desResponseBody: JsValue = Json.parse("""{
+        |   "transactionReference": "2017090920170909"
+        |}""".stripMargin)
 
     def setupStubs(): StubMapping
 
@@ -55,10 +58,6 @@ class AuthISpec extends IntegrationBaseSpec {
     }
 
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$desTaxYear"
-
-    val desResponseBody: JsValue = Json.parse("""{
-        |   "transactionReference": "2017090920170909"
-        |}""".stripMargin)
 
   }
 

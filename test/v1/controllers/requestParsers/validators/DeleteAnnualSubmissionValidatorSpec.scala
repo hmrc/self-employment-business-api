@@ -22,11 +22,10 @@ import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
 
 class DeleteAnnualSubmissionValidatorSpec extends UnitSpec {
 
+  val validator = new DeleteAnnualSubmissionValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validTaxYear    = "2017-18"
-
-  val validator = new DeleteAnnualSubmissionValidator()
 
   "running a validation" should {
     "return no errors" when {

@@ -24,6 +24,14 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
 
   case class Foo(foo1: String, foo2: String)
 
+  case class Bar(p1: String, foo: Option[Foo])
+
+  case class MatchClass(id: String, name: NameClass)
+
+  case class NameClass(fullName: String, firstName: String, lastName: String)
+
+  case class NestedDataClass(data: String, matchClass: Option[MatchClass])
+
   object Foo {
 
     implicit val reads: Reads[Foo] =
@@ -31,8 +39,6 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
         (__ \ "foo2").read[String])(Foo.apply _)
 
   }
-
-  case class Bar(p1: String, foo: Option[Foo])
 
   object Bar extends JsonUtils {
 
@@ -42,19 +48,13 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
 
   }
 
-  case class MatchClass(id: String, name: NameClass)
-
   object MatchClass {
     implicit val formats: OFormat[MatchClass] = Json.format[MatchClass]
   }
 
-  case class NameClass(fullName: String, firstName: String, lastName: String)
-
   object NameClass {
     implicit val formats: OFormat[NameClass] = Json.format[NameClass]
   }
-
-  case class NestedDataClass(data: String, matchClass: Option[MatchClass])
 
   "emptyIfNotPresent" when {
     "required path not present" must {

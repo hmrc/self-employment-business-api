@@ -29,6 +29,10 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
 
+  override def validate(data: AmendPeriodSummaryRawData): List[MtdError] = {
+    run(validationSet, data).distinct
+  }
+
   private def parameterFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
     List(
       NinoValidation.validate(data.nino),
@@ -43,6 +47,7 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
       data.taxYear.map(TaxYearTYSParameterValidation.validate).getOrElse(Nil)
     )
   }
+
   @nowarn("cat=lint-byname-implicit")
   private def bodyFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = { data =>
     JsonFormatValidation.validateAndCheckNonEmpty[AmendPeriodSummaryBody](data.body) match {
@@ -215,10 +220,6 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
   private def validateConsolidatedExpenses(allowableExpenses: Option[PeriodAllowableExpenses],
                                            disallowableExpenses: Option[PeriodDisallowableExpenses]): List[List[MtdError]] = {
     List(AmendConsolidatedExpensesValidation.validate(allowableExpenses, disallowableExpenses))
-  }
-
-  override def validate(data: AmendPeriodSummaryRawData): List[MtdError] = {
-    run(validationSet, data).distinct
   }
 
 }

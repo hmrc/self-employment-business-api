@@ -190,11 +190,6 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
     val periodId: String   = "2019-01-01_2020-01-01"
     val from               = "2019-01-01"
     val to                 = "2020-01-01"
-
-    def amendPeriodSummaryHateoasUri: String
-    def retrievePeriodSummaryHateoasUri: String
-    def listPeriodSummariesHateoasUri: String
-
     val responseJson: JsValue = Json.parse(s"""
          |{
          |  "links": [
@@ -216,6 +211,12 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
          |  ]
          |}
          |""".stripMargin)
+
+    def amendPeriodSummaryHateoasUri: String
+
+    def retrievePeriodSummaryHateoasUri: String
+
+    def listPeriodSummariesHateoasUri: String
 
     def mtdUri: String
     def downstreamUri: String
@@ -246,12 +247,16 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
   }
 
   private trait TysIfsTest extends Test {
-    def mtdTaxYear: String    = "2023-24"
     def mtdUri: String        = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    def tysTaxYear: String    = "23-24"
+
     def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
+    def tysTaxYear: String    = "23-24"
+
     def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+
+    def mtdTaxYear: String    = "2023-24"
+
     def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 

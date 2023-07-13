@@ -28,6 +28,10 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
 
   private val validations = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
 
+  override def validate(data: AmendPeriodSummaryRawData): List[MtdError] = {
+    run(validations, data).distinct
+  }
+
   private def parameterFormatValidation: AmendPeriodSummaryRawData => List[List[MtdError]] = (data: AmendPeriodSummaryRawData) => {
     List(
       NinoValidation.validate(data.nino),
@@ -209,10 +213,6 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         path = s"/periodDisallowableExpenses/otherExpensesDisallowable"
       )
     )
-  }
-
-  override def validate(data: AmendPeriodSummaryRawData): List[MtdError] = {
-    run(validations, data).distinct
   }
 
 }

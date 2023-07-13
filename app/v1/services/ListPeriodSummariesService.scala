@@ -30,13 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends BaseService {
 
-  def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
-
-    connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
-  }
-
   private val errorMap: Map[String, MtdError] = {
     val errors =
       Map(
@@ -53,6 +46,13 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
       "TAX_YEAR_NOT_SUPPORTED"  -> RuleTaxYearNotSupportedError
     )
     errors ++ extraTysErrors
+  }
+
+  def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
+
+    connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
 }
