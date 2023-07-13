@@ -20,8 +20,6 @@ import api.models.hateoas.Link
 import api.models.hateoas.Method.GET
 import play.api.libs.json.{JsObject, Json}
 
-import scala.collection.immutable.Seq
-
 trait ControllerSpecHateoasSupport {
 
   val hateoaslinks: Seq[Link] = Seq(Link(href = "/foo/bar", method = GET, rel = "test-relationship"))

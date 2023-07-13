@@ -29,12 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmissionConnector) extends BaseService {
 
-  def deleteAnnualSubmission(
-      request: DeleteAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
-
-    connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
-  }
-
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors: Map[String, MtdError] =
       Map(
@@ -64,6 +58,12 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
     )
 
     errors ++ extraTysErrors
+  }
+
+  def deleteAnnualSubmission(
+      request: DeleteAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+
+    connector.deleteAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
 }

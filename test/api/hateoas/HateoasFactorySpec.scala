@@ -23,19 +23,18 @@ import config.AppConfig
 import mocks.MockAppConfig
 import support.UnitSpec
 
-import scala.collection.immutable.Seq
-
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
   val hateoasFactory = new HateoasFactory(mockAppConfig)
+  val response: Response = Response("X")
 
   case class Response(foo: String)
+
   case class ListResponse[A](items: Seq[A])
 
   case class Data1(id: String) extends HateoasData
-  case class Data2(id: String) extends HateoasData
 
-  val response: Response = Response("X")
+  case class Data2(id: String) extends HateoasData
 
   class Test {
     MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()

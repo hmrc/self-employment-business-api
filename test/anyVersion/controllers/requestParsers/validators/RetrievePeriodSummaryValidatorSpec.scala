@@ -22,12 +22,11 @@ import support.UnitSpec
 
 class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
+  val validator = new RetrievePeriodSummaryValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validPeriodId   = "2017-01-25_2017-02-31"
   private val validTaxYear    = Some("2023-24")
-
-  val validator = new RetrievePeriodSummaryValidator()
 
   "running a validation" should {
     "return no errors" when {

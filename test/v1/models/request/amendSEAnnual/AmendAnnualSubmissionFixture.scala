@@ -59,6 +59,47 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |  "goodsAndServicesOwnUse": 9.12
        |}
        |""".stripMargin)
+  val allowances: Allowances = allowancesWith()
+  val allowancesMtdJson: JsValue = allowancesMtdJsonWith()
+  val allowancesDownstreamJson: JsValue = allowancesDownstreamJsonWith()
+  val allowancesTradingIncomeAllowance: Allowances = Allowances(
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    tradingIncomeAllowance = Some(10.12),
+    None,
+    None,
+    None,
+    None
+  )
+  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(s"""{
+       |  "tradingIncomeAllowance": 10.12
+       |}
+       |""".stripMargin)
+  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(s"""{
+       |  "tradingIncomeAllowance": 10.12
+       |}
+       |""".stripMargin)
+  val nonFinancials: NonFinancials =
+    NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
+  val nonFinancialsMtdJson: JsValue = Json.parse(s"""
+       |{
+       |    "businessDetailsChangedRecently": true,
+       |    "class4NicsExemptionReason": "non-resident"
+       |  }
+       |""".stripMargin)
+  val nonFinancialsDownstreamJson: JsValue = Json.parse(s"""
+       |{
+       |  "businessDetailsChangedRecently": true,
+       |  "exemptFromPayingClass4Nics": true,
+       |  "class4NicsExemptionReason": "001"
+       |}
+       |""".stripMargin)
 
   def allowancesWith(structuredBuildingAllowances: Seq[StructuredBuildingAllowance] = Seq(structuredBuildingAllowance),
                      enhancedStructuredBuildingAllowances: Seq[StructuredBuildingAllowance] = Seq(structuredBuildingAllowance)): Allowances =
@@ -78,8 +119,6 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
       enhancedStructuredBuildingAllowance = Some(enhancedStructuredBuildingAllowances)
     )
 
-  val allowances: Allowances = allowancesWith()
-
   def allowancesMtdJsonWith(structuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceMtdJson),
                             enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceMtdJson)): JsValue = Json.parse(s"""{
        |  "annualInvestmentAllowance": 1.12,
@@ -97,8 +136,6 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |}
        |""".stripMargin)
 
-  val allowancesMtdJson: JsValue = allowancesMtdJsonWith()
-
   def allowancesDownstreamJsonWith(structuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceDownstreamJson),
                                    enhancedStructuredBuildingAllowances: Seq[JsValue] = Seq(structuredBuildingAllowanceDownstreamJson)): JsValue =
     Json.parse(s"""{
@@ -114,52 +151,6 @@ trait AmendAnnualSubmissionFixture extends StructuredBuildingAllowanceFixture {
        |  "zeroEmissionsCarAllowance": 11.12,
        |  "structuredBuildingAllowance": ${JsArray(structuredBuildingAllowances)},
        |  "enhancedStructuredBuildingAllowance": ${JsArray(enhancedStructuredBuildingAllowances)}
-       |}
-       |""".stripMargin)
-
-  val allowancesDownstreamJson: JsValue = allowancesDownstreamJsonWith()
-
-  val allowancesTradingIncomeAllowance: Allowances = Allowances(
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    tradingIncomeAllowance = Some(10.12),
-    None,
-    None,
-    None,
-    None
-  )
-
-  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(s"""{
-       |  "tradingIncomeAllowance": 10.12
-       |}
-       |""".stripMargin)
-
-  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(s"""{
-       |  "tradingIncomeAllowance": 10.12
-       |}
-       |""".stripMargin)
-
-  val nonFinancials: NonFinancials =
-    NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
-
-  val nonFinancialsMtdJson: JsValue = Json.parse(s"""
-       |{
-       |    "businessDetailsChangedRecently": true,
-       |    "class4NicsExemptionReason": "non-resident"
-       |  }
-       |""".stripMargin)
-
-  val nonFinancialsDownstreamJson: JsValue = Json.parse(s"""
-       |{
-       |  "businessDetailsChangedRecently": true,
-       |  "exemptFromPayingClass4Nics": true,
-       |  "class4NicsExemptionReason": "001"
        |}
        |""".stripMargin)
 

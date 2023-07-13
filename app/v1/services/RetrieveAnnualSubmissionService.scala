@@ -30,14 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmissionConnector) extends BaseService {
 
-  def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
-
-    connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
-
-  }
-
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"            -> NinoFormatError,
@@ -60,6 +52,14 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
     )
 
     errors ++ extraTysErrors
+  }
+
+  def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
+
+    connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+
   }
 
 }

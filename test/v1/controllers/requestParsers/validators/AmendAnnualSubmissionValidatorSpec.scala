@@ -23,10 +23,10 @@ import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
 
 class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
 
+  val validator = new AmendAnnualSubmissionValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
   private val validTaxYear    = "2021-22"
-
   private val requestBodyJson = Json.parse(
     """
       |{
@@ -86,8 +86,6 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
       |}
       |""".stripMargin
   )
-
-  val validator = new AmendAnnualSubmissionValidator()
 
   "running a validation" should {
     "return no errors" when {

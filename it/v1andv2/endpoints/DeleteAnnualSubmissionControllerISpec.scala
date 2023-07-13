@@ -34,11 +34,6 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     def taxYear: String
     def setupStubs(): StubMapping
 
-    def nino: String = "AA123456A"
-    def businessId   = "XAIS12345678910"
-
-    def uri: String = s"/$nino/$businessId/annual/$taxYear"
-
     def request(version: String): WSRequest = {
       setupStubs()
       buildRequest(uri)
@@ -47,6 +42,12 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123")
         )
     }
+
+    def uri: String = s"/$nino/$businessId/annual/$taxYear"
+
+    def nino: String = "AA123456A"
+
+    def businessId   = "XAIS12345678910"
 
   }
 

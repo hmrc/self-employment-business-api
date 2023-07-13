@@ -23,7 +23,6 @@ import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import collection.immutable.Seq
 
 case class RetrieveAnnualSubmissionResponse(adjustments: Option[Adjustments], allowances: Option[Allowances], nonFinancials: Option[NonFinancials])
 

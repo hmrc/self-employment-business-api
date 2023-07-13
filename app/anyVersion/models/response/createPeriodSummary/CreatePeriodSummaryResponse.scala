@@ -22,7 +22,6 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
 import play.api.libs.json.{Json, OFormat}
-import collection.immutable.Seq
 
 case class CreatePeriodSummaryResponse(periodId: String)
 

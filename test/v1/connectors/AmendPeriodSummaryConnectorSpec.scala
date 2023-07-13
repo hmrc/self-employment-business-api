@@ -28,6 +28,8 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2020-01-01_2020-01-01"
+  val nonTysRequest = makeRequest(None)
+  val tysRequest    = makeRequest(Some("2023-24"))
 
   def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
     nino = Nino(nino),
@@ -58,9 +60,6 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
       None
     )
   )
-
-  val nonTysRequest = makeRequest(None)
-  val tysRequest    = makeRequest(Some("2023-24"))
 
   trait Test {
     _: ConnectorTest =>
