@@ -17,7 +17,7 @@
 package api.connectors
 
 import api.mocks.MockHttpClient
-import mocks.{MockAppConfig, MockFeatureSwitches}
+import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames with MockFeatureSwitches {
+trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
   lazy val baseUrl                   = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
