@@ -23,6 +23,10 @@ description: |
           </tr>
           <tr>
               <td><p>STATEFUL_DELETE</p></td>
+              <td><p>Performs a stateful delete. <br></br>This Gov-Test-Scenario will be deprecated and no longer available on 05 September 2023. It will be replaced by the STATEFUL Gov-Test-Scenario.</p></td>
+          </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
               <td><p>Performs a stateful delete.</p></td>
           </tr>
       </tbody>
