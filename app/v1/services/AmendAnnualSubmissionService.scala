@@ -18,7 +18,7 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{ServiceOutcome, BaseService}
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.AmendAnnualSubmissionConnector
 import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
@@ -28,12 +28,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionConnector) extends BaseService {
-
-  def amendAnnualSubmission(
-      request: AmendAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
-
-    connector.amendAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
-  }
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
@@ -60,6 +54,12 @@ class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionCo
     )
 
     errors ++ extraTysErrors
+  }
+
+  def amendAnnualSubmission(
+      request: AmendAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+
+    connector.amendAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
 }

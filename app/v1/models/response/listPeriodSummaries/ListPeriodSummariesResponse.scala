@@ -23,6 +23,7 @@ import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads, Writes}
+
 import scala.collection.immutable
 
 case class ListPeriodSummariesResponse[I](periods: Seq[I])

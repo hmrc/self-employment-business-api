@@ -29,6 +29,8 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
   private val validations =
     List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation, dateRuleValidation)
 
+  override def validate(data: CreatePeriodSummaryRawData): List[MtdError] = run(validations, data)
+
   private def parameterFormatValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
     List(
       NinoValidation.validate(data.nino),
@@ -56,13 +58,6 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
           body.periodDisallowableExpenses.map(validateDisallowableExpenses).getOrElse(NoValidationErrors)
         )
       ))
-  }
-
-  private def dateRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
-    val body = data.body.as[CreatePeriodSummaryBody].periodDates
-    List(
-      DateValidation.validateEndDateBeforeStartDate(body.periodStartDate, body.periodEndDate)
-    )
   }
 
   private def validateDates(periodStartDate: String, periodEndDate: String): List[MtdError] = {
@@ -224,6 +219,11 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     ).flatten
   }
 
-  override def validate(data: CreatePeriodSummaryRawData): List[MtdError] = run(validations, data)
+  private def dateRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
+    val body = data.body.as[CreatePeriodSummaryBody].periodDates
+    List(
+      DateValidation.validateEndDateBeforeStartDate(body.periodStartDate, body.periodEndDate)
+    )
+  }
 
 }

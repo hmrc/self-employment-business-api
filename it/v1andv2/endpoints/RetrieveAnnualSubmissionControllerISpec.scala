@@ -156,8 +156,6 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
 
     def setupStubs(): StubMapping
 
-    def uri: String = s"/$nino/$businessId/annual/$taxYear"
-
     def request(version: String): WSRequest = {
       setupStubs()
       buildRequest(uri)
@@ -166,6 +164,8 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
           (AUTHORIZATION, "Bearer 123")
         )
     }
+
+    def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
     def errorBody(code: String): String =
       s"""

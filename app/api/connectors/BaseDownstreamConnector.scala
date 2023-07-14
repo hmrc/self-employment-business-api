@@ -132,5 +132,4 @@ trait BaseDownstreamConnector extends Logging {
     }
 
   private def intentHeader(intent: String): (String, String) = "intent" -> intent
-
 }

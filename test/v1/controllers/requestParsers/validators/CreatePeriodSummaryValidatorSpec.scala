@@ -25,10 +25,9 @@ import v1.fixtures.CreatePeriodSummaryFixture
 
 class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummaryFixture with JsonErrorValidators {
 
+  val validator = new CreatePeriodSummaryValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-
-  val validator = new CreatePeriodSummaryValidator()
 
   "running a validation" should {
     "return no errors" when {

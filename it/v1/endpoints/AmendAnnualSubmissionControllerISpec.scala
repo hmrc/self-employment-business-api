@@ -34,15 +34,8 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
   val downstreamRequestBodyJson: JsValue = amendAnnualSubmissionBodyDownstreamJson()
 
   private trait Test {
-    def taxYear: String
-
-    def downstreamTaxYear: String
-
-    def downstreamUri: String
-
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-
     val responseBody: JsValue = Json.parse(s"""
          |{
          |  "links": [
@@ -64,6 +57,15 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
          |  ]
          |}
          |""".stripMargin)
+    val downstreamResponseBody: JsValue = Json.parse("""{
+        |   "transactionReference": "ignored"
+        |}""".stripMargin)
+
+    def taxYear: String
+
+    def downstreamTaxYear: String
+
+    def downstreamUri: String
 
     def setupStubs(): StubMapping
 
@@ -84,26 +86,22 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
          |      }
     """.stripMargin
 
-    val downstreamResponseBody: JsValue = Json.parse("""{
-        |   "transactionReference": "ignored"
-        |}""".stripMargin)
-
   }
 
   private trait NonTysTest extends Test {
     def taxYear: String = "2020-21"
 
-    def downstreamTaxYear: String = "2021"
-
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear"
+
+    def downstreamTaxYear: String = "2021"
   }
 
   private trait TysIfsTest extends Test {
     def taxYear: String = "2023-24"
 
-    def downstreamTaxYear: String = "23-24"
-
     def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/annual-summaries"
+
+    def downstreamTaxYear: String = "23-24"
   }
 
   "Calling the amend endpoint" should {

@@ -117,7 +117,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
     }
 
     "detect empty arrays" in {
-      val json             = Json.parse("""{ "arrayField": [] }""")
+      val json = Json.parse("""{ "arrayField": [] }""")
       @nowarn("cat=lint-byname-implicit")
       val validationResult = JsonFormatValidation.validateAndCheckNonEmpty[TestDataWrapper](json)
 

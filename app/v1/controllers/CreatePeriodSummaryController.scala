@@ -16,13 +16,12 @@
 
 package v1.controllers
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino}
 import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse.LinksFactory
-import api.controllers.{AuthorisedController, EndpointLogContext}
+import api.controllers._
+import api.hateoas.HateoasFactory
+import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}

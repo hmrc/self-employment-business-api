@@ -111,7 +111,6 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeature
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
-
     val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
       nino = Nino(nino),
       taxYear = taxYear,

@@ -24,8 +24,8 @@ import utils.Logging
 trait DownstreamResponseMappingSupport {
   self: Logging =>
 
-  final def mapDownstreamErrors[D](errorCodeMap: PartialFunction[String, MtdError])(responseWrapper: ResponseWrapper[DownstreamError])(
-    implicit logContext: EndpointLogContext): ErrorWrapper = {
+  final def mapDownstreamErrors[D](errorCodeMap: PartialFunction[String, MtdError])(responseWrapper: ResponseWrapper[DownstreamError])(implicit
+      logContext: EndpointLogContext): ErrorWrapper = {
 
     lazy val defaultErrorCodeMapping: String => MtdError = {
 
@@ -35,8 +35,8 @@ trait DownstreamResponseMappingSupport {
       }
 
       case code =>
-      logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No mapping found for error code $code")
-      InternalError
+        logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No mapping found for error code $code")
+        InternalError
     }
 
     responseWrapper match {

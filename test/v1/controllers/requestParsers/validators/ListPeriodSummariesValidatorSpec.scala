@@ -22,11 +22,10 @@ import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
 
 class ListPeriodSummariesValidatorSpec extends UnitSpec {
 
+  val validator = new ListPeriodSummariesValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val taxYear         = Some("2024-25")
-
-  val validator = new ListPeriodSummariesValidator()
 
   "running a validation" should {
     "return no errors" when {

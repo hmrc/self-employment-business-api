@@ -16,8 +16,8 @@
 
 package v1.services
 
-import api.controllers.RequestContext
 import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
@@ -29,14 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends BaseService {
-
-  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
-
-    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
-
-  }
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val downstreamErrors = Map(
@@ -58,6 +50,14 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
     downstreamErrors ++ extraTysErrors
+  }
+
+  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+
+    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+
   }
 
 }
