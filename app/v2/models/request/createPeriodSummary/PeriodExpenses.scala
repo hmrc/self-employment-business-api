@@ -16,26 +16,25 @@
 
 package v2.models.request.createPeriodSummary
 
-import play.api.libs.functional.syntax.unlift
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class PeriodExpenses(consolidatedExpenses: Option[BigDecimal],
-                                   costOfGoods: Option[BigDecimal],
-                                   paymentsToSubcontractors: Option[BigDecimal],
-                                   wagesAndStaffCosts: Option[BigDecimal],
-                                   carVanTravelExpenses: Option[BigDecimal],
-                                   premisesRunningCosts: Option[BigDecimal],
-                                   maintenanceCosts: Option[BigDecimal],
-                                   adminCosts: Option[BigDecimal],
-                                   businessEntertainmentCosts: Option[BigDecimal],
-                                   advertisingCosts: Option[BigDecimal],
-                                   interestOnBankOtherLoans: Option[BigDecimal],
-                                   financeCharges: Option[BigDecimal],
-                                   irrecoverableDebts: Option[BigDecimal],
-                                   professionalFees: Option[BigDecimal],
-                                   depreciation: Option[BigDecimal],
-                                   otherExpenses: Option[BigDecimal])
+                          costOfGoods: Option[BigDecimal],
+                          paymentsToSubcontractors: Option[BigDecimal],
+                          wagesAndStaffCosts: Option[BigDecimal],
+                          carVanTravelExpenses: Option[BigDecimal],
+                          premisesRunningCosts: Option[BigDecimal],
+                          maintenanceCosts: Option[BigDecimal],
+                          adminCosts: Option[BigDecimal],
+                          businessEntertainmentCosts: Option[BigDecimal],
+                          advertisingCosts: Option[BigDecimal],
+                          interestOnBankOtherLoans: Option[BigDecimal],
+                          financeCharges: Option[BigDecimal],
+                          irrecoverableDebts: Option[BigDecimal],
+                          professionalFees: Option[BigDecimal],
+                          depreciation: Option[BigDecimal],
+                          otherExpenses: Option[BigDecimal])
 
 object PeriodExpenses {
   implicit val reads: Reads[PeriodExpenses] = Json.reads[PeriodExpenses]

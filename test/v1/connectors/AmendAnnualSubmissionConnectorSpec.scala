@@ -31,26 +31,25 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
   trait Test {
     _: ConnectorTest =>
-    def taxYear: TaxYear
-
-    protected val connector: AmendAnnualSubmissionConnector = new AmendAnnualSubmissionConnector(
-      http = mockHttpClient,
-      appConfig = mockAppConfig
-    )
-
     val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
       nino = Nino(nino),
       businessId = BusinessId(businessId),
       taxYear = taxYear,
       body = body
     )
+    protected val connector: AmendAnnualSubmissionConnector = new AmendAnnualSubmissionConnector(
+      http = mockHttpClient,
+      appConfig = mockAppConfig
+    )
+
+    def taxYear: TaxYear
 
   }
 
   "AmendAnnualSubmissionConnector" when {
     "amendAnnualSubmission called" must {
       "return a 200 status for a success scenario" in
-        new DesTest with Test {
+        new IfsTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
           val outcome = Right(ResponseWrapper(correlationId, ()))

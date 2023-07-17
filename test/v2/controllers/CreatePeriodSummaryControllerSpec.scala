@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreatePeriodSummaryControllerSpec
-    extends ControllerBaseSpec
+  extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryRequestParser
@@ -164,19 +164,19 @@ class CreatePeriodSummaryControllerSpec
        |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
        |      "method": "PUT",
        |      "rel": "amend-self-employment-period-summary"
-       |      
+       |
        |    },
        |    {
        |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
        |      "method": "GET",
        |      "rel": "self"
-       |      
+       |
        |    },
        |    {
        |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
        |      "method": "GET",
        |      "rel": "list-self-employment-period-summaries"
-       |      
+       |
        |    }
        |  ]
        |}

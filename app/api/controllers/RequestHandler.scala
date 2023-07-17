@@ -63,9 +63,6 @@ object RequestHandler {
     def handleRequest(rawData: InputRaw)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] =
       Delegate.handleRequest(rawData)
 
-    def withResultCreator(resultCreator: ResultCreator[InputRaw, Input, Output]): RequestHandlerBuilder[InputRaw, Input, Output] =
-      copy(resultCreator = resultCreator)
-
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[InputRaw, Input, Output] =
       copy(errorHandling = errorHandling)
 
@@ -98,6 +95,9 @@ object RequestHandler {
         linksFactory: HateoasLinksFactory[Output, HData],
         writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[InputRaw, Input, Output] =
       withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
+
+    def withResultCreator(resultCreator: ResultCreator[InputRaw, Input, Output]): RequestHandlerBuilder[InputRaw, Input, Output] =
+      copy(resultCreator = resultCreator)
 
     /** Shorthand for
       * {{{

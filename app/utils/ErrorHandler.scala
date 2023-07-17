@@ -24,10 +24,10 @@ import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

@@ -31,20 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends BaseService {
 
-  def createPeriodSummary(request: CreatePeriodSummaryRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
-
-    def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
-      import request.body.periodDates._
-      wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
-    }
-
-    connector
-      .createPeriodSummary(request)
-      .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
-  }
-
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
@@ -76,6 +62,20 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
     )
 
     errors ++ extraTysErrors
+  }
+
+  def createPeriodSummary(request: CreatePeriodSummaryRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
+
+    def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
+      import request.body.periodDates._
+      wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
+    }
+
+    connector
+      .createPeriodSummary(request)
+      .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
 }

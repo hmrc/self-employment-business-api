@@ -30,14 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends BaseService {
 
-  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
-
-    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
-
-  }
-
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"            -> NinoFormatError,
@@ -58,6 +50,14 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
     errors ++ extraTysErrors
+  }
+
+  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+
+    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+
   }
 
 }

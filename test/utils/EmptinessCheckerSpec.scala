@@ -26,14 +26,8 @@ class EmptinessCheckerSpec extends UnitSpec {
 
   sealed trait SomeEnum
 
-  object SomeEnum {
-    case object E1 extends SomeEnum
-    case object E2 extends SomeEnum
-
-    implicit val ckr: EmptinessChecker[SomeEnum] = EmptinessChecker.primitive
-  }
-
   case class Baz(a: Option[Int] = None, e: Option[SomeEnum] = None)
+
   case class Bar(baz: Option[Baz] = None, arr: Option[List[Bar]] = None)
 
   case class Foo(bar: Option[Bar] = None,
@@ -41,6 +35,13 @@ class EmptinessCheckerSpec extends UnitSpec {
                  arr2: Option[List[Bar]] = None,
                  arr3: Option[List[Bar]] = None,
                  bar2: Option[Bar] = None)
+
+  object SomeEnum {
+    case object E1 extends SomeEnum
+    case object E2 extends SomeEnum
+
+    implicit val ckr: EmptinessChecker[SomeEnum] = EmptinessChecker.primitive
+  }
 
   "EmptinessChecker" when {
     "empty object" must {

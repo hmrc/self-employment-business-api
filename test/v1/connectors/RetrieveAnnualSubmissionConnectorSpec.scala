@@ -28,20 +28,18 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
+  val nonTysRequest = makeRequest("2019-20")
+  val tysRequest    = makeRequest("2023-24")
+  val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
+    adjustments = Some(adjustments),
+    allowances = Some(allowances),
+    nonFinancials = Some(nonFinancials)
+  )
 
   def makeRequest(taxYear: String): RetrieveAnnualSubmissionRequest = RetrieveAnnualSubmissionRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = TaxYear.fromMtd(taxYear)
-  )
-
-  val nonTysRequest = makeRequest("2019-20")
-  val tysRequest    = makeRequest("2023-24")
-
-  val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
-    adjustments = Some(adjustments),
-    allowances = Some(allowances),
-    nonFinancials = Some(nonFinancials)
   )
 
   trait Test {

@@ -17,7 +17,6 @@
 package api.models.domain
 
 import api.models.domain.TaxYear.tysTaxYear
-import config.FeatureSwitches
 
 import java.time.LocalDate
 
@@ -52,17 +51,21 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def useTaxYearSpecificApi(implicit featureSwitches: FeatureSwitches): Boolean = featureSwitches.isTaxYearSpecificApiEnabled && year >= tysTaxYear
+  def useTaxYearSpecificApi: Boolean = year >= tysTaxYear
 }
 
 object TaxYear {
+
+  val tysTaxYear: Int = 2024
+  /** UK tax year starts on 6 April.
+    */
+  private val taxYearMonthStart = 4
+  private val taxYearDayStart   = 6
 
   /** @param taxYear
     *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear = new TaxYear(taxYear.take(2) + taxYear.drop(5))
-
-  val tysTaxYear: Int = 2024
 
   def fromDownstream(taxYear: String): TaxYear =
     new TaxYear(taxYear)
@@ -70,12 +73,7 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-  def isTys(taxYear: Option[TaxYear])(implicit featureSwitches: FeatureSwitches): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
-
-  /** UK tax year starts on 6 April.
-    */
-  private val taxYearMonthStart = 4
-  private val taxYearDayStart   = 6
+  def isTys(taxYear: Option[TaxYear]): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
 
   /** @param date
     *   the date in extended ISO-8601 format (e.g. 2020-04-05)

@@ -1,30 +1,30 @@
 {
-  "periodDates":{
-    "periodStartDate":"2019-08-24",
-    "periodEndDate":"2019-08-24"
+  "periodDates": {
+    "periodStartDate": "2019-08-24",
+    "periodEndDate": "2019-08-24"
   },
-  "periodIncome":{
-    "turnover":200.00,
-    "other":200.00
+  "periodIncome": {
+    "turnover": 200.00,
+    "other": 200.00
   },
-  "periodAllowableExpenses":{
-    "consolidatedExpenses":200.00
+  "periodAllowableExpenses": {
+    "consolidatedExpenses": 200.00
   },
-  "links":[
+  "links": [
     {
-      "href":"/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
-      "rel":"amend-self-employment-period-summary",
-      "method":"PUT"
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "amend-self-employment-period-summary",
+      "method": "PUT"
     },
     {
-      "href":"/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
-      "rel":"self",
-      "method":"GET"
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "self",
+      "method": "GET"
     },
     {
-      "href":"/individuals/business/self-employment/TC663795B/XAIS12345678910/period",
-      "rel":"list-self-employment-period-summaries",
-      "method":"GET"
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period",
+      "rel": "list-self-employment-period-summaries",
+      "method": "GET"
     }
   ]
 }

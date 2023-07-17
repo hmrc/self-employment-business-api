@@ -128,10 +128,10 @@ object EmptinessChecker {
   implicit val hnilInstance: ObjEmptinessChecker[HNil] = instanceObj(_ => Structure.Obj(Nil))
 
   implicit def hlistInstance[K <: Symbol, H, T <: HList](implicit
-      witness: Witness.Aux[K],
-      hInstance: Lazy[EmptinessChecker[H]],
-      tInstance: ObjEmptinessChecker[T]
-  ): ObjEmptinessChecker[FieldType[K, H] :: T] =
+                                                         witness: Witness.Aux[K],
+                                                         hInstance: Lazy[EmptinessChecker[H]],
+                                                         tInstance: ObjEmptinessChecker[T]
+                                                        ): ObjEmptinessChecker[FieldType[K, H] :: T] =
     instanceObj { case h :: t =>
       val hField  = witness.value.name -> hInstance.value.structureOf(h)
       val tFields = tInstance.structureOf(t).fields
@@ -139,9 +139,9 @@ object EmptinessChecker {
     }
 
   implicit def simpleHlistInstance[H, T <: HList](implicit
-      hInstance: Lazy[EmptinessChecker[H]],
-      tInstance: ObjEmptinessChecker[T]
-  ): ObjEmptinessChecker[(String, H) :: T] =
+                                                  hInstance: Lazy[EmptinessChecker[H]],
+                                                  tInstance: ObjEmptinessChecker[T]
+                                                 ): ObjEmptinessChecker[(String, H) :: T] =
     instanceObj { case h :: t =>
       val hField  = h._1 -> hInstance.value.structureOf(h._2)
       val tFields = tInstance.structureOf(t).fields
@@ -149,9 +149,9 @@ object EmptinessChecker {
     }
 
   implicit def genericInstance[A, R](implicit
-      gen: LabelledGeneric.Aux[A, R],
-      enc: Lazy[EmptinessChecker[R]]
-  ): EmptinessChecker[A] =
+                                     gen: LabelledGeneric.Aux[A, R],
+                                     enc: Lazy[EmptinessChecker[R]]
+                                    ): EmptinessChecker[A] =
     instance(a => enc.value.structureOf(gen.to(a)))
 
 }

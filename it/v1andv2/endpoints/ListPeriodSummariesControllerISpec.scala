@@ -234,13 +234,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   private trait TysIfsTest extends Test {
 
+    lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
     val periodId        = "2024-01-01_2024-01-02"
     val fromDate        = "2024-01-01"
     val toDate          = "2024-01-02"
     val creationDate    = "2020-01-03"
     val mtdTaxYear      = "2023-24"
-    lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
-
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
