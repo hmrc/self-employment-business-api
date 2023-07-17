@@ -1,0 +1,167 @@
+summary: Create a Self-Employment Period Summary
+description: |
+  This endpoint allows a developer to create a self-employment period summary for submission of periodic data. Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if you have no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero.
+  A National Insurance number and business must be provided.
+
+  ### Test data
+  <p>Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.</p>
+  <table>
+      <thead>
+          <tr>
+              <th>Header Value (Gov-Test-Scenario)</th>
+              <th>Scenario</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td><p>N/A - DEFAULT</p></td>
+              <td><p>Simulates success response.</p></td>
+          </tr>
+          <tr>
+              <td><p>OVERLAPPING_PERIOD</p></td>
+              <td><p>Simulates the scenario where the period summary overlaps with an existing period summary.</p></td>
+          </tr>
+          <tr>
+              <td><p>MISALIGNED_PERIOD</p></td>
+              <td><p>Simulates the scenario where the period summary isn't within the accounting period.</p></td>
+          </tr>
+          <tr>
+              <td><p>NOT_CONTIGUOUS_PERIOD</p></td>
+              <td><p>Simulates the scenario where the period summaries are not contiguous.</p></td>
+          </tr>
+          <tr>
+              <td><p>NOT_ALLOWED_CONSOLIDATED_EXPENSES</p></td>
+              <td><p>Simulates the scenario where the cumulative turnover amount exceeds the consolidated expenses threshold.</p></td>
+          </tr>
+          <tr>
+              <td><p>DUPLICATE_SUBMISSION</p></td>
+              <td><p>Simulates the scenario where a summary has already been submitted for the specified period.</p>
+              <p>This scenario only occurs for data related to tax years from 2023-24 onwards. </p></td>
+          </tr>
+          <tr>
+              <td><p>TAX_YEAR_NOT_SUPPORTED</p></td>
+              <td><p>Simulates the scenario where the tax year is not supported. </p>
+              <p>This scenario only occurs for data related to tax years from 2023-24 onwards. </p></td>
+          </tr>
+          <tr>
+              <td><p>NOT_FOUND</p></td>
+              <td><p>Simulates the scenario where no data is found.</p></td>
+          </tr>
+          <tr>
+              <td><p>BOTH_EXPENSES_SUPPLIED</p></td>
+              <td><p>Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.</p></td>
+          </tr>
+          <tr>
+              <td><p>STATEFUL</p></td>
+              <td><p>Performs a stateful create.</p></td>
+          </tr>
+      </tbody>
+  </table>
+
+tags:
+  - Self-Employment Period Summaries
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - write:self-assessment
+
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: './schemas/create_period_summary_request.json'
+      examples:
+        example-without-consolidated-request:
+          description: Create Period Summary Request
+          value:
+            $ref: './examples/create_period_summary_request.json'
+        example-with-consolidated-request:
+          description: Create Period Summary With Consolidated Request
+          value:
+            $ref: './examples/create_period_summary_consolidated_request.json'
+
+responses:
+  "200":
+    description: Success
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/create_period_summary_response.json'
+        examples:
+          example-response:
+            description: Create Period Summary Response
+            value:
+              $ref: './examples/create_period_summary_response.json'
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_VALUE:
+            $ref: './common/errors.yaml#/components/examples/formatValue'
+          FORMAT_BUSINESS_ID:
+            $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+          FORMAT_START_DATE:
+            $ref: './common/errors.yaml#/components/examples/formatStartDate'
+          FORMAT_END_DATE:
+            $ref: './common/errors.yaml#/components/examples/formatEndDate'
+          RULE_END_DATE_BEFORE_START_DATE:
+            $ref: './common/errors.yaml#/components/examples/ruleEndDateBeforeStartDate'
+          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_OVERLAPPING_PERIOD:
+            $ref: './common/errors.yaml#/components/examples/ruleOverlappingPeriod'
+          RULE_BOTH_EXPENSES_SUPPLIED:
+            $ref: './common/errors.yaml#/components/examples/ruleBothExpensesSupplied'
+          RULE_MISALIGNED_PERIOD:
+            $ref: './common/errors.yaml#/components/examples/ruleMisalignedPeriod'
+          RULE_NOT_CONTIGUOUS_PERIOD:
+            $ref: './common/errors.yaml#/components/examples/ruleNotContiguousPeriod'
+          RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES:
+            $ref: './common/errors.yaml#/components/examples/ruleNotAllowedConsolidatedExpenses'
+          RULE_DUPLICATE_SUBMISSION:
+            $ref: './common/errors.yaml#/components/examples/ruleDuplicateSubmission'
+          RULE_INVALID_SUBMISSION_PERIOD:
+            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionPeriod'
+          RULE_INVALID_SUBMISSION_END_DATE:
+            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFoundEmployments'

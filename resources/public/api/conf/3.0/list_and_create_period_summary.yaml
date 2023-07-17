@@ -1,0 +1,15 @@
+post:
+  $ref: "./create_period_summary.yaml"
+  summary: Create a Self-Employment Period Summary
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+get:
+  $ref: "./list_period_summaries.yaml"
+  summary: List Self-Employment Period Summaries
+  security:
+    - User-Restricted:
+        - read:self-assessment
+  parameters:
+    - $ref: './common/queryParameters.yaml#/components/parameters/taxYear'
