@@ -16,10 +16,10 @@
 
 package v1.controllers
 
-import api.controllers._
 import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
-import api.controllers.{AuthorisedController, EndpointLogContext}
+import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
+import api.controllers._
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -27,7 +27,6 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.requestParsers.AmendPeriodSummaryRequestParser
-import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
 import v1.services.AmendPeriodSummaryService
 
 import javax.inject._

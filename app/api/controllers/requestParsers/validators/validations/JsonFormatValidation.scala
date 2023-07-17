@@ -38,6 +38,25 @@ object JsonFormatValidation {
     }
   }
 
+  private def handleErrors(errors: Seq[(JsPath, Seq[JsonValidationError])]): List[MtdError] = {
+    val failures = errors.map {
+      case (path: JsPath, Seq(JsonValidationError(Seq("error.path.missing"))))                              => MissingMandatoryField(path)
+      case (path: JsPath, Seq(JsonValidationError(Seq(error: String)))) if error.contains("error.expected") => WrongFieldType(path)
+      case (path: JsPath, _)                                                                                => OtherFailure(path)
+    }
+
+    val logString = failures
+      .groupBy(_.getClass)
+      .values
+      .map(failure => s"${failure.head.failureReason}: " + s"${failure.map(_.fromJsPath)}")
+      .toString()
+      .dropRight(1)
+      .drop(5)
+
+    logger.warn(s"[JsonFormatValidation][validate] - Request body failed validation with errors - $logString")
+    List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(failures.map(_.fromJsPath).sorted)))
+  }
+
   def validateAndCheckNonEmpty[A: OFormat: EmptinessChecker](data: JsValue): List[MtdError] =
     validateOrRead[A](data) match {
       case Left(schemaErrors) => schemaErrors
@@ -62,25 +81,6 @@ object JsonFormatValidation {
         }
       }
     }
-  }
-
-  private def handleErrors(errors: Seq[(JsPath, Seq[JsonValidationError])]): List[MtdError] = {
-    val failures = errors.map {
-      case (path: JsPath, Seq(JsonValidationError(Seq("error.path.missing"))))                              => MissingMandatoryField(path)
-      case (path: JsPath, Seq(JsonValidationError(Seq(error: String)))) if error.contains("error.expected") => WrongFieldType(path)
-      case (path: JsPath, _)                                                                                => OtherFailure(path)
-    }
-
-    val logString = failures
-      .groupBy(_.getClass)
-      .values
-      .map(failure => s"${failure.head.failureReason}: " + s"${failure.map(_.fromJsPath)}")
-      .toString()
-      .dropRight(1)
-      .drop(5)
-
-    logger.warn(s"[JsonFormatValidation][validate] - Request body failed validation with errors - $logString")
-    List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(failures.map(_.fromJsPath).sorted)))
   }
 
   private class JsonFormatValidationFailure(path: JsPath, failure: String) {

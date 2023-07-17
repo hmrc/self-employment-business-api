@@ -19,4 +19,3 @@ package anyVersion.models.request.retrievePeriodSummary
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 
 case class RetrievePeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear])
-

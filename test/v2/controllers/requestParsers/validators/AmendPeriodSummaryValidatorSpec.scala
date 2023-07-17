@@ -24,11 +24,11 @@ import support.UnitSpec
 
 class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 
+  val validator = new AmendPeriodSummaryValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
   private val validPeriodId   = "2019-01-01_2019-02-02"
   private val validTaxYear    = Some("2023-24")
-
   private val requestBodyJson = Json.parse(
     """
       |{
@@ -73,8 +73,6 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       |}
       |""".stripMargin
   )
-
-  val validator = new AmendPeriodSummaryValidator()
 
   "running a validation" should {
     "return no errors" when {

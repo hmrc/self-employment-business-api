@@ -85,18 +85,17 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
   trait Test {
     _: ConnectorTest =>
-    def taxYear: TaxYear
-
     val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
-
     val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
       nino = Nino(nino),
       taxYear = taxYear,
       businessId = BusinessId(businessId)
     )
+
+    def taxYear: TaxYear
 
     protected def stubHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
       willPut(

@@ -33,27 +33,6 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
     val periodId: String   = s"${periodStartDate}_$periodEndDate"
-
-    def periodStartDate: String
-    def periodEndDate: String
-    def amendPeriodSummaryHateoasUri: String
-    def retrievePeriodSummaryHateoasUri: String
-    def listPeriodSummariesHateoasUri: String
-
-    def uri: String = s"/$nino/$businessId/period"
-    def downstreamUri: String
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
     val requestBodyJson: JsValue = Json.parse(
       s"""
          |{
@@ -102,7 +81,6 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin
     )
-
     val responseBody: JsValue = Json.parse(
       s"""
          |{
@@ -127,7 +105,6 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin
     )
-
     val downstreamResponse: JsValue = Json.parse(
       s"""
          |{
@@ -135,6 +112,31 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin
     )
+
+    def periodStartDate: String
+
+    def periodEndDate: String
+
+    def amendPeriodSummaryHateoasUri: String
+
+    def retrievePeriodSummaryHateoasUri: String
+
+    def listPeriodSummariesHateoasUri: String
+
+    def downstreamUri: String
+
+    def setupStubs(): StubMapping
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+    def uri: String = s"/$nino/$businessId/period"
 
     def errorBody(code: String): String =
       s"""
@@ -157,15 +159,21 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysIfsTest extends Test {
-    def mtdTaxYear: String               = "2023-24"
-    def downstreamTaxYear: String        = "23-24"
     override def downstreamUri: String   = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+
+    def downstreamTaxYear: String        = "23-24"
+
     override def periodStartDate: String = "2023-07-24"
+
     override def periodEndDate: String   = "2023-08-24"
 
     def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+
     def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+
     def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+
+    def mtdTaxYear: String               = "2023-24"
 
   }
 
@@ -565,7 +573,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "END_BEFORE_START", BAD_REQUEST, RuleEndDateBeforeStartDateError),
         (UNPROCESSABLE_ENTITY, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
+        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
 //        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_PERIOD", BAD_REQUEST, RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
 //        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
       )

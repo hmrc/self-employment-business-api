@@ -51,6 +51,7 @@ sealed trait Version {
   val name: String
   val configName: String
   val maybePrevious: Option[Version] = None
+  val regexMatch: Option[String]     = None
   override def toString: String      = name
 }
 

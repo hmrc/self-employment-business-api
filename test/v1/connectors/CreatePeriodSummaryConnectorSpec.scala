@@ -56,14 +56,13 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
   trait Test {
     _: ConnectorTest =>
 
+    val nino: String       = "AA123456A"
+    val businessId: String = "XAIS12345678910"
+    val downstreamTaxYear  = "2023-24"
     protected val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
-
-    val nino: String       = "AA123456A"
-    val businessId: String = "XAIS12345678910"
-    val downstreamTaxYear  = "2023-24"
 
     def periodDates: PeriodDates
 

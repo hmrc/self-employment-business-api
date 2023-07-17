@@ -71,6 +71,39 @@ trait BaseDownstreamConnector extends Logging {
     doGet(getBackendHeaders(uri, hc, correlationId))
   }
 
+  private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String =
+    s"${configFor(uri).baseUrl}/${uri.value}"
+
+  private def configFor[Resp](uri: DownstreamUri[Resp]) =
+    uri match {
+      case DesUri(_)                => appConfig.desDownstreamConfig
+      case IfsUri(_)                => appConfig.ifsDownstreamConfig
+      case TaxYearSpecificIfsUri(_) => appConfig.taxYearSpecificIfsDownstreamConfig
+    }
+
+  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp],
+                                      hc: HeaderCarrier,
+                                      correlationId: String,
+                                      additionalHeaders: (String, String)*): HeaderCarrier = {
+    val downstreamConfig = configFor(uri)
+
+    val passThroughHeaders = hc
+      .headers(downstreamConfig.environmentHeaders.getOrElse(Seq.empty))
+      .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
+
+    HeaderCarrier(
+      extraHeaders = hc.extraHeaders ++
+        // Contract headers
+        Seq(
+          "Authorization" -> s"Bearer ${downstreamConfig.token}",
+          "Environment"   -> downstreamConfig.env,
+          "CorrelationId" -> correlationId
+        ) ++
+        additionalHeaders ++
+        passThroughHeaders
+    )
+  }
+
   def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(implicit
       ec: ExecutionContext,
       hc: HeaderCarrier,
@@ -96,38 +129,5 @@ trait BaseDownstreamConnector extends Logging {
 
     doDelete(getBackendHeaders(uri, hc, correlationId))
   }
-
-  private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String =
-    s"${configFor(uri).baseUrl}/${uri.value}"
-
-  private def getBackendHeaders[Resp](uri: DownstreamUri[Resp],
-                                      hc: HeaderCarrier,
-                                      correlationId: String,
-                                      additionalHeaders: (String, String)*): HeaderCarrier = {
-    val downstreamConfig = configFor(uri)
-
-    val passThroughHeaders = hc
-      .headers(downstreamConfig.environmentHeaders.getOrElse(Seq.empty))
-      .filterNot(hdr => additionalHeaders.exists(_._1.equalsIgnoreCase(hdr._1)))
-
-    HeaderCarrier(
-      extraHeaders = hc.extraHeaders ++
-        // Contract headers
-        Seq(
-          "Authorization" -> s"Bearer ${downstreamConfig.token}",
-          "Environment"   -> downstreamConfig.env,
-          "CorrelationId" -> correlationId
-        ) ++
-        additionalHeaders ++
-        passThroughHeaders
-    )
-  }
-
-  private def configFor[Resp](uri: DownstreamUri[Resp]) =
-    uri match {
-      case DesUri(_)                => appConfig.desDownstreamConfig
-      case IfsUri(_)                => appConfig.ifsDownstreamConfig
-      case TaxYearSpecificIfsUri(_) => appConfig.taxYearSpecificIfsDownstreamConfig
-    }
 
 }

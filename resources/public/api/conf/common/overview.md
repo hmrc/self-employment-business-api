@@ -1,4 +1,5 @@
 This API allows developers to:
+
 - create or amend a self-employment annual summary for a tax year
 - retrieve a self-employment annual submission for a tax year
 - delete the self-employment annual submission for a tax year

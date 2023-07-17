@@ -45,7 +45,7 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content: {}
+    content: { }
 
   "400":
     description: Bad request
