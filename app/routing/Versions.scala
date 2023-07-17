@@ -51,7 +51,6 @@ sealed trait Version {
   val name: String
   val configName: String
   val maybePrevious: Option[Version] = None
-  val regexMatch: Option[String]     = None
   override def toString: String      = name
 }
 
@@ -64,14 +63,12 @@ case object Version2 extends Version {
   val name                                    = "2.0"
   val configName                              = "2"
   override val maybePrevious: Option[Version] = Some(Version1)
-  override val regexMatch: Option[String]     = Some("^.*collection/tax-code/?$")
 }
 
 case object Version3 extends Version {
   val name                                    = "3.0"
   val configName                              = "3"
   override val maybePrevious: Option[Version] = Some(Version2)
-  override val regexMatch: Option[String]     = Some("^.*collection/tax-code/?$")
 }
 
 object Versions {
