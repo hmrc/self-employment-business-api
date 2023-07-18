@@ -148,7 +148,7 @@ responses:
           RULE_INVALID_SUBMISSION_END_DATE:
             $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
           RULE_BUSINESS_INCOME_RESTRICTION:
-            $ref: './common/errors.yaml#/components/examples/ruleBusinessIncomeRestriciton'
+            $ref: './common/errors.yaml#/components/examples/ruleBusinessIncomePeriodRestriction'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
