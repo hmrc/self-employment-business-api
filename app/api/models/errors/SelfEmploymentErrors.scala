@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package v2.models.request.amendPeriodSummary
+package api.models.errors
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import play.api.http.Status._
 
-case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody, taxYear: Option[TaxYear])
+object RuleBusinessIncomePeriodRestriction
+  extends MtdError(
+    "RULE_BUSINESS_INCOME_PERIOD_RESTRICTION",
+    "For customers with ITSA status 'Annual' or a latent business income source, submission period has to be 6 April to 5 April",
+    BAD_REQUEST)

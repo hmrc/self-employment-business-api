@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.services
+package v3.services
 
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.RequestContext
@@ -22,8 +22,8 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import v2.connectors.CreatePeriodSummaryConnector
-import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v3.connectors.CreatePeriodSummaryConnector
+import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,6 +57,7 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
       "PERIOD_OVERLAP"           -> RuleOverlappingPeriod,
       "PERIOD_ALIGNMENT"         -> RuleMisalignedPeriod,
+      "BUSINESS_INCOME_PERIOD_RESTRICTION" -> RuleBusinessIncomePeriodRestriction
 //      "INVALID_SUBMISSION_PERIOD"   -> RuleInvalidSubmissionPeriodError, // To be reinstated, see MTDSA-15595
 //      "INVALID_SUBMISSION_END_DATE" -> RuleInvalidSubmissionEndDateError // To be reinstated, see MTDSA-15595
     )
