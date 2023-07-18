@@ -16,7 +16,7 @@
 
 package v3.connectors
 
-import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.request.createPeriodSummary.PeriodDates
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino}
@@ -27,8 +27,8 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  "CreateSEPeriodicConnector" when {
-    "createPeriodicSummary" must {
+  "CreatePeriodSummaryConnectorSpec" when {
+    "createPeriodSummary" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
         def periodDates: PeriodDates                                              = PeriodDates("2019-08-24", "2019-08-24")
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
@@ -74,48 +74,9 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
       businessId = BusinessId(businessId),
       body = CreatePeriodSummaryBody(
         periodDates,
-        Some(
-          PeriodIncome(
-            Some(1000.99),
-            Some(1000.99)
-          )),
-        Some(
-          PeriodExpenses(
-            None,
-            Some(1000.99),
-            Some(1000.99),
-            Some(1000.99),
-            Some(1000.99),
-            Some(-99999.99),
-            Some(-1000.99),
-            Some(1000.99),
-            Some(1000.99),
-            Some(1000.99),
-            Some(-1000.99),
-            Some(-1000.99),
-            Some(-1000.99),
-            Some(-99999999999.99),
-            Some(-1000.99),
-            Some(1000.99)
-          )),
-        Some(
-          PeriodDisallowableExpenses(
-            None,
-            Some(1000.99),
-            Some(1000.99),
-            Some(1000.99),
-            Some(-1000.99),
-            Some(-999.99),
-            Some(1000.99),
-            Some(1000.99),
-            Some(1000.99),
-            Some(-1000.99),
-            Some(-9999.99),
-            Some(-1000.99),
-            Some(-99999999999.99),
-            Some(-99999999999.99),
-            Some(1000.99)
-          ))
+        None,
+        None,
+        None
       )
     )
 

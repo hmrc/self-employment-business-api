@@ -42,7 +42,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "CreateSelfEmploymentPeriodController", endpointName = "createSelfEmploymentPeriodSummary")
+    EndpointLogContext(controllerName = "CreatePeriodSummaryController", endpointName = "createSelfEmploymentPeriodSummary")
 
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>

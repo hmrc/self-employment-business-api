@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreatePeriodSummaryControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryRequestParser

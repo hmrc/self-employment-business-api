@@ -16,7 +16,7 @@
 
 package v3.services
 
-import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.request.createPeriodSummary.PeriodDates
 import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino}
@@ -37,48 +37,9 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
   private val requestBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(
       PeriodDates("2019-08-24", "2019-08-24"),
-      Some(
-        PeriodIncome(
-          Some(1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-99999.99),
-          Some(-1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodDisallowableExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-999.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-9999.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-99999999999.99),
-          Some(1000.99)
-        ))
+      None,
+      None,
+      None
     )
 
   private val requestData = CreatePeriodSummaryRequest(
@@ -96,8 +57,8 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   }
 
-  "CreateSEPeriodic" when {
-    "createPeriodicSummary" must {
+  "CreatePeriodSummaryServiceSpec" when {
+    "createPeriodSummary" must {
       "return correct result for a success" in new Test {
         val connectorOutcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] =
