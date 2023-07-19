@@ -6,11 +6,13 @@ description: |
   ### Test data  
   Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario)     | Scenario                                             |
-  |--------------------------------------|------------------------------------------------------|
-  | DELETE                               | Simulates success response.                          |
-  | NOT_FOUND                            | Simulates the scenario where no data found.          |
-  | STATEFUL_DELETE                      | Performs a stateful delete.                          |
+  | Header Value (Gov-Test-Scenario)     | Scenario                                                                                                                                                                           |
+  |--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | DELETE                               | Simulates success response.                                                                                                                                                        |
+  | NOT_FOUND                            | Simulates the scenario where no data found.                                                                                                                                        |
+  | STATEFUL_DELETE                      | Performs a stateful delete. <br><br>This Gov-Test-Scenario will be deprecated and no longer available on 05 September 2023. It will be replaced by the STATEFUL Gov-Test-Scenario. |
+  | STATEFUL                             | Performs a stateful delete.                                                                                                                                                        |
+
 
 tags:
   - Self-Employment Annual Submission
