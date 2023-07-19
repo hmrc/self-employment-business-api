@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package v2.models.request.amendPeriodSummary
+package v3.models.request.createPeriodSummary
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody, taxYear: Option[TaxYear])
+case class CreatePeriodSummaryRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody) {
+  val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
+}

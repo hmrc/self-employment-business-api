@@ -51,6 +51,10 @@ description: |
               <td><p>BOTH_EXPENSES_SUPPLIED</p></td>
               <td><p>Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.</p></td>
           </tr>
+            <tr>
+              <td><p>BUSINESS_INCOME_PERIOD_RESTRICTION</p></td>
+              <td><p>Simulates the scenario where the customer has ITSA status 'Annual' or a latent business income source and the submission period is between 6 April to 5 April.</p></td>
+          </tr>
           <tr>
               <td><p>STATEFUL</p></td>
               <td><p>Performs a stateful create.</p></td>
@@ -143,6 +147,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionPeriod'
           RULE_INVALID_SUBMISSION_END_DATE:
             $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
+          RULE_BUSINESS_INCOME_RESTRICTION:
+            $ref: './common/errors.yaml#/components/examples/ruleBusinessIncomePeriodRestriction'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
