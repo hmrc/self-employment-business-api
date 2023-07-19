@@ -4,33 +4,14 @@ description: |
   A National Insurance number, Business ID and tax year must be provided.
   
   ### Test data
-  <p>Scenario simulations using Gov-Test-Scenario headers are only available in the sandbox environment.</p>
-  <table>
-      <thead>
-          <tr>
-              <th>Header Value (Gov-Test-Scenario)</th>
-              <th>Scenario</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td><p>N/A - DEFAULT</p></td>
-              <td><p>Simulate success response.</p></td>
-          </tr>
-          <tr>
-              <td><p>TRADING_ALLOWANCE</p></td>
-              <td><p>Simulates success response with trading allowance instead.</p></td>
-          </tr>
-          <tr>
-              <td><p>NOT_FOUND</p></td>
-              <td><p>Simulates the scenario where no data is found.</p></td>
-          </tr>
-          <tr>
-              <td><p>STATEFUL</p></td>
-              <td><p>Performs a stateful retrieve.</p></td>
-          </tr>
-      </tbody>
-  </table>
+  Scenario simulations using Gov-Test-Scenario headers are only available in the sandbox environment.
+  
+  | Header Value (Gov-Test-Scenario)     | Scenario                                                      |
+  |--------------------------------------|---------------------------------------------------------------|
+  | N/A - DEFAULT                        | Simulate success response.                                    |
+  | TRADING_ALLOWANCE                    | Simulates success response with trading allowance instead.    |
+  | NOT_FOUND                            | Simulates the scenario where no data is found.                |
+  | STATEFUL                             | Performs a stateful retrieve.                                 |
 
 tags:
   - Self-Employment Annual Submission
