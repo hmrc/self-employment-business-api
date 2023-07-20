@@ -17,7 +17,6 @@
 package v3.controllers
 
 import anyVersion.models.request.createPeriodSummary
-import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
 import anyVersion.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
@@ -28,6 +27,7 @@ import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import v3.fixtures.CreatePeriodSummaryFixture
 import v3.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v3.mocks.services.MockCreatePeriodSummaryService
 import v3.models.request.createPeriodSummary._
@@ -40,7 +40,8 @@ class CreatePeriodSummaryControllerSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryRequestParser
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with CreatePeriodSummaryFixture {
 
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2017-01-25"
@@ -58,102 +59,6 @@ class CreatePeriodSummaryControllerSpec
       rel = "list-self-employment-period-summaries"
     )
   )
-
-  private val requestJson = Json.parse(
-    """
-      |{
-      |     "periodDates": {
-      |           "periodStartDate": "2019-08-24",
-      |           "periodEndDate": "2019-08-24"
-      |     },
-      |     "periodIncome": {
-      |          "turnover": 1000.99,
-      |          "other": 1000.99
-      |     },
-      |     "periodAllowableExpenses": {
-      |          "costOfGoodsAllowable": 1000.99,
-      |          "paymentsToSubcontractorsAllowable": 1000.99,
-      |          "wagesAndStaffCostsAllowable": 1000.99,
-      |          "carVanTravelExpensesAllowable": 1000.99,
-      |          "premisesRunningCostsAllowable": -99999.99,
-      |          "maintenanceCostsAllowable": -1000.99,
-      |          "adminCostsAllowable": 1000.99,
-      |          "businessEntertainmentCostsAllowable": 1000.99,
-      |          "advertisingCostsAllowable": 1000.99,
-      |          "interestOnBankOtherLoansAllowable": -1000.99,
-      |          "financeChargesAllowable": -1000.99,
-      |          "irrecoverableDebtsAllowable": -1000.99,
-      |          "professionalFeesAllowable": -99999999999.99,
-      |          "depreciationAllowable": -1000.99,
-      |          "otherExpensesAllowable": 1000.99
-      |      },
-      |     "periodDisallowableExpenses": {
-      |          "costOfGoodsDisallowable": 1000.99,
-      |          "paymentsToSubcontractorsDisallowable": 1000.99,
-      |          "wagesAndStaffCostsDisallowable": 1000.99,
-      |          "carVanTravelExpensesDisallowable": 1000.99,
-      |          "premisesRunningCostsDisallowable": -1000.99,
-      |          "maintenanceCostsDisallowable": -999.99,
-      |          "adminCostsDisallowable": 1000.99,
-      |          "businessEntertainmentCostsDisallowable": 1000.99,
-      |          "advertisingCostsDisallowable": 1000.99,
-      |          "interestOnBankOtherLoansDisallowable": -1000.99,
-      |          "financeChargesDisallowable": -9999.99,
-      |          "irrecoverableDebtsDisallowable": -1000.99,
-      |          "professionalFeesDisallowable": -99999999999.99,
-      |          "depreciationDisallowable": -99999999999.99,
-      |          "otherExpensesDisallowable": 1000.99
-      |      }
-      |}
-    """.stripMargin
-  )
-
-  private val requestBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
-      PeriodDates("2019-08-24", "2019-08-24"),
-      Some(
-        PeriodIncome(
-          Some(1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodExpenses(
-          None,
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-99999.99),
-          Some(-1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-1000.99),
-          Some(1000.99)
-        )),
-      Some(
-        PeriodDisallowableExpenses(
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-999.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(1000.99),
-          Some(-1000.99),
-          Some(-9999.99),
-          Some(-1000.99),
-          Some(-99999999999.99),
-          Some(-99999999999.99),
-          Some(1000.99)
-        ))
-    )
 
   val responseJson: JsValue = Json.parse(
     s"""
@@ -183,8 +88,8 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val rawData     = createPeriodSummary.CreatePeriodSummaryRawData(nino, businessId, requestJson)
-  private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
+  private val rawData     = createPeriodSummary.CreatePeriodSummaryRawData(nino, businessId, requestMtdBodyJson)
+  private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), fullMTDRequestModel)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -247,7 +152,7 @@ class CreatePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestMtdBodyJson))
   }
 
 }

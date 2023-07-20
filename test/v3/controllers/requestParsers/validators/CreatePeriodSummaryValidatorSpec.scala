@@ -104,6 +104,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
             Seq(
               "/periodIncome/turnover",
               "/periodIncome/other",
+              "/periodIncome/taxTakenOffTradingIncome",
               "/periodExpenses/consolidatedExpenses",
               "/periodExpenses/costOfGoods",
               "/periodExpenses/paymentsToSubcontractors",

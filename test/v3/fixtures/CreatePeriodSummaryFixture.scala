@@ -16,7 +16,7 @@
 
 package v3.fixtures
 
-import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses}
 import play.api.libs.json.{JsValue, Json}
 import v3.models.request.createPeriodSummary._
 
@@ -31,7 +31,8 @@ trait CreatePeriodSummaryFixture {
       |    },
       |    "periodIncome": {
       |      "turnover": 1000.99,
-      |      "other": 1000.99
+      |      "other": 2000.99,
+      |      "taxTakenOffTradingIncome": 3000.99
       |    },
       |    "periodExpenses": {
       |      "costOfGoods": 1000.99,
@@ -156,7 +157,8 @@ trait CreatePeriodSummaryFixture {
       |    },
       |    "periodIncome": {
       |      "turnover": 1000.99,
-      |      "other": 1000.99
+      |      "other": 2000.99,
+      |      "taxTakenOffTradingIncome": 3000.99
       |    },
       |    "periodExpenses": {
       |      "costOfGoods": 1000.99,
@@ -293,69 +295,70 @@ trait CreatePeriodSummaryFixture {
       |   "to": "2019-08-24",
       |   "financials": {
       |      "incomes": {
-      |         "turnover": 200.00,
-      |         "other": 200.00
+      |         "turnover": 1000.99,
+      |         "other": 2000.99,
+      |         "taxTakenOffTradingIncome": 3000.99
       |      },
       |      "deductions": {
       |         "costOfGoods": {
-      |            "amount": -200.00,
-      |            "disallowableAmount": -200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |         },
       |         "constructionIndustryScheme": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |         },
       |         "staffCosts": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |         },
       |         "travelCosts": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |         },
       |         "premisesRunningCosts": {
-      |            "amount": -200.00,
-      |            "disallowableAmount": -200.00
+      |            "amount": -99999.99,
+      |            "disallowableAmount": -1000.99
       |         },
       |         "maintenanceCosts": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": -1000.99,
+      |            "disallowableAmount": -999.99
       |         },
       |         "adminCosts": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |         },
       |        "businessEntertainmentCosts": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |        },
       |         "advertisingCosts": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |         },
       |         "interest": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": -1000.99,
+      |            "disallowableAmount": -1000.99
       |         },
       |         "financialCharges": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": -1000.99,
+      |            "disallowableAmount": -9999.99
       |         },
       |         "badDebt": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": -1000.99,
+      |            "disallowableAmount": 1000.99
       |         },
       |         "professionalFees": {
-      |            "amount": -200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": -99999999999.99,
+      |            "disallowableAmount": 9999999999.99
       |         },
       |         "depreciation": {
-      |            "amount": -200.00,
-      |            "disallowableAmount": -200.00
+      |            "amount": -1000.99,
+      |            "disallowableAmount": -99999999999.99
       |         },
       |         "other": {
-      |            "amount": 200.00,
-      |            "disallowableAmount": 200.00
+      |            "amount": 1000.99,
+      |            "disallowableAmount": 1000.99
       |         }
       |      }
       |   }
@@ -388,7 +391,8 @@ trait CreatePeriodSummaryFixture {
 
   val periodIncomeMTDModel: PeriodIncome = PeriodIncome(
     turnover = Some(1000.99),
-    other = Some(1000.99)
+    other = Some(2000.99),
+    taxTakenOffTradingIncome = Some(3000.99)
   )
 
   val periodExpensesModel: PeriodExpenses = PeriodExpenses(
@@ -428,7 +432,7 @@ trait CreatePeriodSummaryFixture {
     otherExpensesDisallowable = Some(1000.99)
   )
 
-  val fullMTDResponseModel: CreatePeriodSummaryBody = CreatePeriodSummaryBody(
+  val fullMTDRequestModel: CreatePeriodSummaryBody = CreatePeriodSummaryBody(
     periodDates = periodDatesMTDModel,
     periodIncome = Some(periodIncomeMTDModel),
     periodExpenses = Some(periodExpensesModel),

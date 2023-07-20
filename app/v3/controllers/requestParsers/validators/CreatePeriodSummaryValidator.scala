@@ -16,7 +16,7 @@
 
 package v3.controllers.requestParsers.validators
 
-import anyVersion.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, PeriodDisallowableExpenses}
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
@@ -82,6 +82,10 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       NumberValidation.validateOptional(
         field = periodIncome.other,
         path = s"/periodIncome/other"
+      ),
+      NumberValidation.validateOptional(
+        field = periodIncome.taxTakenOffTradingIncome,
+        path = s"/periodIncome/taxTakenOffTradingIncome"
       )
     ).flatten
   }
