@@ -4,7 +4,7 @@ description: |
   A National Insurance number and business ID must be provided.
   
   ### Test data
-  Scenario simulations using Gov-Test-Scenario headers are only available in the sandbox environment.
+  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
   | Header Value (Gov-Test-Scenario)     | Scenario                                                    |
   |--------------------------------------|-------------------------------------------------------------|
