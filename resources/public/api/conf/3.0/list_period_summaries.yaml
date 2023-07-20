@@ -4,33 +4,14 @@ description: |
   A National Insurance number and business ID must be provided.
   
   ### Test data
-  <p>Scenario simulations using Gov-Test-Scenario headers are only available in the sandbox environment.</p>
-  <table>
-      <thead>
-          <tr>
-              <th>Header Value (Gov-Test-Scenario)</th>
-              <th>Scenario</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td><p>N/A - DEFAULT</p></td>
-              <td><p>Simulates success response.</p></td>
-          </tr>
-          <tr>
-              <td><p>NOT_FOUND</p></td>
-              <td><p>Simulates the scenario where no data is found.</p></td>
-          </tr>
-          <tr>
-              <td><p>TAX_YEAR_NOT_SUPPORTED</p></td>
-              <td><p>Simulates the scenario where the tax year is not supported.</p></td>
-          </tr>
-          <tr>
-              <td><p>STATEFUL</p></td>
-              <td><p>Performs a stateful list.</p></td>
-          </tr>
-      </tbody>
-  </table>
+  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+  
+  | Header Value (Gov-Test-Scenario)     | Scenario                                                                                                   |
+  |--------------------------------------|------------------------------------------------------------------------------------------------------------|
+  | N/A - DEFAULT                        | Simulates success response.                                                                                 |
+  | NOT_FOUND                            | Simulates the scenario where no data is found.                                                               |
+  | TAX_YEAR_NOT_SUPPORTED               | Simulates the scenario where the tax year is not supported.                                                 |
+  | STATEFUL                             | Performs a stateful list.                                                                                    |
 
 tags:
   - Self-Employment Period Summaries
