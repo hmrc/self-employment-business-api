@@ -16,7 +16,7 @@
 
 package v3.models.request.createPeriodSummary
 
-import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
+import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 

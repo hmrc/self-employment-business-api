@@ -46,7 +46,7 @@ class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSum
       "valid request data is supplied" in new Test {
         MockCreatePeriodSummaryValidator.validate(inputData).returns(Nil)
         parser.parseRequest(inputData) shouldBe
-          Right(CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), fullMTDResponseModel))
+          Right(CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), fullMTDRequestModel))
       }
     }
 
