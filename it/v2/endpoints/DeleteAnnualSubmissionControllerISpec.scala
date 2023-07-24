@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1andv2.endpoints
+package v2.endpoints
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -28,17 +28,15 @@ import support.IntegrationBaseSpec
 
 class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
-  val versions = Seq("1.0", "2.0")
-
   private trait Test {
     def taxYear: String
     def setupStubs(): StubMapping
 
-    def request(version: String): WSRequest = {
+    def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.$version+json"),
+          (ACCEPT, s"application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -61,10 +59,9 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     def downstreamUri: String    = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
   }
 
-  "calling the deleteAnnualSubmission endpoint" should {
+  "calling the V2 deleteAnnualSubmission endpoint" should {
     "return a 204 status" when {
-      versions.foreach(testVersion =>
-        s"any valid non-TYS request is made in version $testVersion" in new NonTysTest {
+        s"any valid non-TYS request is made" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -76,14 +73,13 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
               .thenReturn(status = Status.NO_CONTENT)
           }
 
-          val response: WSResponse = await(request(testVersion).delete())
+          val response: WSResponse = await(request().delete())
           response.status shouldBe Status.NO_CONTENT
           response.body shouldBe ""
           response.header("X-CorrelationId").nonEmpty shouldBe true
-        })
+        }
 
-      versions.foreach(testVersion =>
-        s"any valid TYS request is made in version $testVersion" in new TysIfsTest {
+        s"any valid TYS request is made" in new TysIfsTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -94,11 +90,11 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
           }
 
-          val response: WSResponse = await(request(testVersion).delete())
+          val response: WSResponse = await(request().delete())
           response.status shouldBe Status.NO_CONTENT
           response.body shouldBe ""
           response.header("X-CorrelationId").nonEmpty shouldBe true
-        })
+        }
     }
 
     "return error according to spec" when {
@@ -108,10 +104,9 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
                                 requestBusinessId: String,
                                 requestTaxYear: String,
                                 expectedStatus: Int,
-                                expectedBody: MtdError,
-                                version: String): Unit = {
+                                expectedBody: MtdError): Unit = {
 
-          s"validation fails with ${expectedBody.code} error in version $version" in new NonTysTest {
+          s"validation fails with ${expectedBody.code} error in" in new NonTysTest {
 
             override def nino: String       = requestNino
             override def taxYear: String    = requestTaxYear
@@ -123,7 +118,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request(version).delete())
+            val response: WSResponse = await(request().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -138,13 +133,13 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS12345678910", "2018-20", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
 
-        versions.foreach(version => input.foreach(args => (validationErrorTest(args._1, args._2, args._3, args._4, args._5, version))))
+        input.foreach(args => validationErrorTest(args._1, args._2, args._3, args._4, args._5))
       }
     }
 
     "downstream service error" when {
-      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError, version: String): Unit = {
-        s"downstream returns an $downstreamCode error and status $downstreamStatus in version $version" in new NonTysTest {
+      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -153,7 +148,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
             BaseDownstreamStub.onError(BaseDownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
           }
 
-          val response: WSResponse = await(request(version).delete())
+          val response: WSResponse = await(request().delete())
           response.status shouldBe expectedStatus
           response.json shouldBe Json.toJson(expectedBody)
         }
@@ -193,7 +188,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         (Status.UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", Status.BAD_REQUEST, RuleTaxYearNotSupportedError)
       )
 
-      versions.foreach(version => (errors ++ extraTysErrors).foreach(args => (serviceErrorTest(args._1, args._2, args._3, args._4, version))))
+      (errors ++ extraTysErrors).foreach(args => serviceErrorTest(args._1, args._2, args._3, args._4))
     }
   }
 

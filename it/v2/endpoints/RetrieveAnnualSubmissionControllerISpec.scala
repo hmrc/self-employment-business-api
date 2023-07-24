@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1andv2.endpoints
+package v2.endpoints
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -29,13 +29,10 @@ import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionFixture
 
 class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with RetrieveAnnualSubmissionFixture {
 
-  val versions = Seq("1.0", "2.0")
-
-  "calling the retrieve endpoint" should {
+  "calling the V2 retrieve endpoint" should {
 
     "return a 200 status code" when {
-      versions.foreach(version =>
-        s"any valid request is made in $version" in new NonTysTest {
+        s"any valid request is made" in new NonTysTest {
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
             AuthStub.authorised()
@@ -43,15 +40,14 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
             BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
           }
 
-          val response: WSResponse = await(request(version).get())
+          val response: WSResponse = await(request().get())
           response.status shouldBe OK
           response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
-        })
+        }
 
-      versions.foreach(version =>
-        s"any valid request is made with a TYS tax year in version $version" in new TysIfsTest {
+        s"any valid request is made with a TYS tax year" in new TysIfsTest {
           override def setupStubs(): StubMapping = {
 
             AuditStub.audit()
@@ -60,12 +56,12 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
             BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
           }
 
-          val response: WSResponse = await(request(version).get())
+          val response: WSResponse = await(request().get())
           response.status shouldBe OK
           response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
-        })
+        }
     }
 
     "return error according to spec" when {
@@ -74,9 +70,8 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
                                 requestBusinessId: String,
                                 requestTaxYear: String,
                                 expectedStatus: Int,
-                                expectedBody: MtdError,
-                                version: String): Unit = {
-          s"validation fails with ${expectedBody.code} error in version $version" in new NonTysTest {
+                                expectedBody: MtdError): Unit = {
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -88,7 +83,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
               MtdIdLookupStub.ninoFound(requestNino)
             }
 
-            val response: WSResponse = await(request(version).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -102,12 +97,12 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
           ("AA123456A", "XAIS12345678910", "2016-17", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
 
-        versions.foreach(version => input.foreach(args => (validationErrorTest(args._1, args._2, args._3, args._4, args._5, version))))
+        input.foreach(args => validationErrorTest(args._1, args._2, args._3, args._4, args._5))
       }
 
       "downstream service error" when {
-        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError, version: String): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus in version $version" in new NonTysTest {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -116,7 +111,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
               BaseDownstreamStub.onError(BaseDownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
-            val response: WSResponse = await(request(version).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -141,7 +136,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
           (NOT_FOUND, "INCOME_DATA_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
-        versions.foreach(version => (errors ++ extraTysErrors).foreach(args => serviceErrorTest(args._1, args._2, args._3, args._4, version)))
+        (errors ++ extraTysErrors).foreach(args => serviceErrorTest(args._1, args._2, args._3, args._4))
       }
     }
   }
@@ -156,11 +151,11 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with R
 
     def setupStubs(): StubMapping
 
-    def request(version: String): WSRequest = {
+    def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.$version+json"),
+          (ACCEPT, s"application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }

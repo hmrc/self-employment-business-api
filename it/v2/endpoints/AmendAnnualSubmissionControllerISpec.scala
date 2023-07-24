@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.endpoints
+package v2.endpoints
 
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
@@ -73,7 +73,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
       setupStubs()
       buildRequest(s"/$nino/$businessId/annual/$taxYear")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -104,7 +104,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
     def downstreamTaxYear: String = "23-24"
   }
 
-  "Calling the V1 amend endpoint" should {
+  "Calling the V2 amend endpoint" should {
     "return a 200 status code" when {
       "any valid request is made" in new NonTysTest {
 
