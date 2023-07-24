@@ -19,49 +19,59 @@ package v2.controllers.requestParsers.validators
 import anyVersion.models.request.createPeriodSummary
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
+import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json._
 import support.UnitSpec
 import v2.fixtures.CreatePeriodSummaryFixture
 
 class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummaryFixture with JsonErrorValidators {
 
-  val validator = new CreatePeriodSummaryValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
 
+  trait Test extends MockAppConfig {
+    val validator = new CreatePeriodSummaryValidator(mockAppConfig)
+    MockAppConfig.featureSwitches returns Configuration.empty
+//    MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> true)).anyNumberOfTimes()
+
+  }
+
   "running a validation" should {
     "return no errors" when {
-      "a valid expenses request is supplied" in {
+      "a valid expenses request is supplied" in new Test {
+//        MockAppConfig.featureSwitches returns Configuration.empty
+
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, requestMtdBodyJson)) shouldBe Nil
       }
 
-      "a valid consolidated expenses request is supplied" in {
+      "a valid consolidated expenses request is supplied" in new Test {
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, requestConsolidatedMtdJson)) shouldBe Nil
       }
 
-      "the minimum fields are supplied" in {
+      "the minimum fields are supplied" in new Test {
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, mtdMimimumFieldsJson)) shouldBe Nil
       }
 
-      "only incomes are supplied" in {
+      "only incomes are supplied" in new Test {
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, mtdIncomeOnlyJson)) shouldBe Nil
       }
 
-      "a valid request with only disallowable expenses is supplied" in {
+      "a valid request with only disallowable expenses is supplied" in new Test {
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, mtdDisallowableExpensesOnlyJson)) shouldBe Nil
       }
 
-      "a valid request with only expenses is supplied" in {
+      "a valid request with only expenses is supplied" in new Test {
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, mtdExpensesOnlyJson)) shouldBe Nil
       }
 
       "return a path parameter error" when {
-        "an invalid nino is supplied" in {
+        "an invalid nino is supplied" in new Test {
           validator.validate(createPeriodSummary.CreatePeriodSummaryRawData("walrus", validBusinessId, requestMtdBodyJson)) shouldBe List(
             NinoFormatError)
         }
 
-        "an invalid businessId is supplied" in {
+        "an invalid businessId is supplied" in new Test {
           validator.validate(createPeriodSummary.CreatePeriodSummaryRawData(validNino, "beans", requestMtdBodyJson)) shouldBe List(
             BusinessIdFormatError)
         }
@@ -90,7 +100,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         ).foreach(path => testWith(requestMtdBodyJson.replaceWithEmptyObject(path), path))
 
         def testWith(body: JsValue, expectedPath: String): Unit =
-          s"for $expectedPath" in {
+          s"for $expectedPath" in new Test {
             validator.validate(
               createPeriodSummary.CreatePeriodSummaryRawData(
                 validNino,
@@ -144,7 +154,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
             ).foreach(path => testWith(requestMtdFullBodyJson.update(path, _), path))
           }
 
-          "multiple fields are invalid" in {
+          "multiple fields are invalid" in new Test {
             val path1 = "/periodIncome/turnover"
             val path2 = "/periodExpenses/consolidatedExpenses"
             val path3 = "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
@@ -178,25 +188,21 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
           }
 
           def testWith(body: JsNumber => JsValue, expectedPath: String): Unit = s"for $expectedPath" when {
-            def doTest(value: JsNumber) =
+            "value is out of range" in new Test {
               validator.validate(
-                createPeriodSummary.CreatePeriodSummaryRawData(
-                  validNino,
-                  validBusinessId,
-                  body(value)
-                )) shouldBe List(ValueFormatError.forPathAndRange(expectedPath, "0", "99999999999.99"))
-
-            "value is out of range" in doTest(JsNumber(99999999999.99 + 0.01))
+                createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, body(JsNumber(99999999999.99 + 0.01)))
+              ) shouldBe List(ValueFormatError.forPathAndRange(expectedPath, "0", "99999999999.99"))
+            }
           }
         }
 
-        "an empty body is submitted" in {
+        "an empty body is submitted" in new Test {
           validator.validate(
             createPeriodSummary.CreatePeriodSummaryRawData(validNino, validBusinessId, Json.parse("""{}"""))
           ) shouldBe List(RuleIncorrectOrEmptyBodyError)
         }
 
-        "an empty PeriodIncome object is supplied" in {
+        "an empty PeriodIncome object is supplied" in new Test {
           validator.validate(
             createPeriodSummary.CreatePeriodSummaryRawData(
               validNino,
@@ -215,7 +221,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         }
       }
 
-      "an empty PeriodExpenses object is supplied" in {
+      "an empty PeriodExpenses object is supplied" in new Test {
         validator.validate(
           createPeriodSummary.CreatePeriodSummaryRawData(
             validNino,
@@ -254,7 +260,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodExpenses"))))
       }
 
-      "an empty PeriodDisallowableExpenses object is supplied" in {
+      "an empty PeriodDisallowableExpenses object is supplied" in new Test {
         validator.validate(
           createPeriodSummary.CreatePeriodSummaryRawData(
             validNino,
@@ -296,7 +302,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
     }
 
     "return date errors" when {
-      "an invalid periodStartDate is supplied" in {
+      "an invalid periodStartDate is supplied" in new Test {
         validator.validate(
           createPeriodSummary.CreatePeriodSummaryRawData(
             validNino,
@@ -314,7 +320,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
           )) shouldBe List(StartDateFormatError)
       }
 
-      "an invalid periodEndDate is supplied" in {
+      "an invalid periodEndDate is supplied" in new Test {
         validator.validate(
           createPeriodSummary.CreatePeriodSummaryRawData(
             validNino,
@@ -332,7 +338,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
           )) shouldBe List(EndDateFormatError)
       }
 
-      "periodStartDate is after periodEndDate" in {
+      "periodStartDate is after periodEndDate" in new Test {
         validator.validate(
           createPeriodSummary.CreatePeriodSummaryRawData(
             validNino,
@@ -350,7 +356,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
           )) shouldBe List(RuleEndDateBeforeStartDateError)
       }
 
-      "both dates are invalid" in {
+      "both dates are invalid" in new Test {
         validator.validate(
           createPeriodSummary.CreatePeriodSummaryRawData(
             validNino,
@@ -370,7 +376,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
     }
 
     "return all errors" when {
-      "all path parameters are invalid" in {
+      "all path parameters are invalid" in new Test {
         validator.validate(createPeriodSummary.CreatePeriodSummaryRawData("walrus", "beans", requestMtdBodyJson)) shouldBe
           List(NinoFormatError, BusinessIdFormatError)
       }

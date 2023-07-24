@@ -17,8 +17,10 @@
 package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.ValueFormatError
+import config.FeatureSwitches
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import play.api.Configuration
 import support.UnitSpec
 
 class NumberValidationSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks {
@@ -119,6 +121,53 @@ class NumberValidationSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks 
         validationResult.isEmpty shouldBe false
         validationResult.length shouldBe 1
         validationResult.head shouldBe ValueFormatError.copy(paths = Some(Seq("/vctSubscription/1/amountInvested")))
+      }
+    }
+  }
+
+  "validateOptionalWithFeatureFlag" should {
+    def configuration(enable: Boolean): Configuration = Configuration("allowNegativeExpenses.enabled" -> enable)
+
+    "return the validation result using validationOptionalIncludeNegatives" when {
+      "the feature switch is enabled" in {
+        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(true))
+
+        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(negativeNumber, path, 0, 100)
+        validationResult shouldBe NumberValidation.validateOptionalIncludeNegatives(negativeNumber, path)
+      }
+    }
+
+    "return the validation result using validateOptional" when {
+      "the feature switch is disabled" in {
+        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(false))
+
+        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(negativeNumber, path, 0, 100)
+        validationResult shouldBe NumberValidation.validateOptional(negativeNumber, path, 0, 100)
+      }
+    }
+
+    "return no errors" when {
+      "the feature switch is enabled and a valid number is supplied" in {
+        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(true))
+
+        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(validNumber, path)
+        validationResult.isEmpty shouldBe true
+      }
+
+      "the feature switch is disabled and a valid number is supplied" in {
+        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(false))
+
+        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(validNumber, path)
+        validationResult.isEmpty shouldBe true
+      }
+    }
+
+    "return an error" when {
+      "the feature switch is disabled and a negative number is supplied" in {
+        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(false))
+
+        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(negativeNumber, path)
+        validationResult shouldBe List(ValueFormatError.forPathAndRange(path, "0", "99999999999.99"))
       }
     }
   }

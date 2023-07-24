@@ -20,11 +20,15 @@ import anyVersion.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, 
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.MtdError
+import config.{AppConfig, FeatureSwitches}
 import v2.models.request.amendPeriodSummary._
 
+import javax.inject.Inject
 import scala.annotation.nowarn
 
-class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
+class AmendPeriodSummaryValidator @Inject() (appConfig: AppConfig) extends Validator[AmendPeriodSummaryRawData] {
+
+  implicit private val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   private val validations = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidation, bodyFieldValidation)
 
@@ -83,7 +87,7 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
 
   private def validateExpenses(expenses: PeriodExpenses): List[List[MtdError]] = {
     List(
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.consolidatedExpenses,
         path = s"/periodExpenses/consolidatedExpenses"
       ),
@@ -91,15 +95,15 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         field = expenses.costOfGoods,
         path = s"/periodExpenses/costOfGoods"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.paymentsToSubcontractors,
         path = s"/periodExpenses/paymentsToSubcontractors"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.wagesAndStaffCosts,
         path = s"/periodExpenses/wagesAndStaffCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.carVanTravelExpenses,
         path = s"/periodExpenses/carVanTravelExpenses"
       ),
@@ -111,15 +115,15 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         field = expenses.maintenanceCosts,
         path = s"/periodExpenses/maintenanceCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.adminCosts,
         path = s"/periodExpenses/adminCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.businessEntertainmentCosts,
         path = s"/periodExpenses/businessEntertainmentCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.advertisingCosts,
         path = s"/periodExpenses/advertisingCosts"
       ),
@@ -143,7 +147,7 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         field = expenses.depreciation,
         path = s"/periodExpenses/depreciation"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.otherExpenses,
         path = s"/periodExpenses/otherExpenses"
       )
@@ -156,15 +160,15 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         field = expenses.costOfGoodsDisallowable,
         path = s"/periodDisallowableExpenses/costOfGoodsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.paymentsToSubcontractorsDisallowable,
         path = s"/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.wagesAndStaffCostsDisallowable,
         path = s"/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.carVanTravelExpensesDisallowable,
         path = s"/periodDisallowableExpenses/carVanTravelExpensesDisallowable"
       ),
@@ -176,15 +180,15 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         field = expenses.maintenanceCostsDisallowable,
         path = s"/periodDisallowableExpenses/maintenanceCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.adminCostsDisallowable,
         path = s"/periodDisallowableExpenses/adminCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.businessEntertainmentCostsDisallowable,
         path = s"/periodDisallowableExpenses/businessEntertainmentCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.advertisingCostsDisallowable,
         path = s"/periodDisallowableExpenses/advertisingCostsDisallowable"
       ),
@@ -200,7 +204,7 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         field = expenses.irrecoverableDebtsDisallowable,
         path = s"/periodDisallowableExpenses/irrecoverableDebtsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.professionalFeesDisallowable,
         path = s"/periodDisallowableExpenses/professionalFeesDisallowable"
       ),
@@ -208,7 +212,7 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
         field = expenses.depreciationDisallowable,
         path = s"/periodDisallowableExpenses/depreciationDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = expenses.otherExpensesDisallowable,
         path = s"/periodDisallowableExpenses/otherExpensesDisallowable"
       )

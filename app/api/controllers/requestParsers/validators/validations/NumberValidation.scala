@@ -17,6 +17,7 @@
 package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.{MtdError, ValueFormatError}
+import config.FeatureSwitches
 
 object NumberValidation {
 
@@ -53,5 +54,9 @@ object NumberValidation {
       )
     }
   }
+
+  def validateOptionalWithFeatureFlag(field: Option[BigDecimal], path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99)(implicit
+      featureSwitches: FeatureSwitches): List[MtdError] =
+    if (featureSwitches.isAllowNegativeExpensesEnabled) validateOptionalIncludeNegatives(field, path) else validateOptional(field, path, min, max)
 
 }

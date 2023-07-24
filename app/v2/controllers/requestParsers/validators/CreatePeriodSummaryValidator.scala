@@ -20,11 +20,15 @@ import anyVersion.models.request.createPeriodSummary.{CreatePeriodSummaryRawData
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
+import config.{AppConfig, FeatureSwitches}
 import v2.models.request.createPeriodSummary._
 
+import javax.inject.Inject
 import scala.annotation.nowarn
 
-class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData] {
+class CreatePeriodSummaryValidator @Inject() (appConfig: AppConfig) extends Validator[CreatePeriodSummaryRawData] {
+
+  implicit private val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   private val validations =
     List(parameterFormatValidation, bodyFormatValidation, bodyFieldValidation, dateRuleValidation)
@@ -88,7 +92,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
 
   private def validateExpenses(periodExpenses: PeriodExpenses): List[MtdError] =
     List(
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodExpenses.consolidatedExpenses,
         path = s"/periodExpenses/consolidatedExpenses"
       ),
@@ -96,15 +100,15 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodExpenses.costOfGoods,
         path = s"/periodExpenses/costOfGoods"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodExpenses.paymentsToSubcontractors,
         path = s"/periodExpenses/paymentsToSubcontractors"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodExpenses.wagesAndStaffCosts,
         path = s"/periodExpenses/wagesAndStaffCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodExpenses.carVanTravelExpenses,
         path = s"/periodExpenses/carVanTravelExpenses"
       ),
@@ -116,15 +120,15 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodExpenses.maintenanceCosts,
         path = s"/periodExpenses/maintenanceCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodExpenses.adminCosts,
         path = s"/periodExpenses/adminCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodExpenses.businessEntertainmentCosts,
         path = s"/periodExpenses/businessEntertainmentCosts"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodExpenses.advertisingCosts,
         path = s"/periodExpenses/advertisingCosts"
       ),
@@ -160,15 +164,15 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodDisallowableExpenses.costOfGoodsDisallowable,
         path = s"/periodDisallowableExpenses/costOfGoodsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.paymentsToSubcontractorsDisallowable,
         path = s"/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.wagesAndStaffCostsDisallowable,
         path = s"/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.carVanTravelExpensesDisallowable,
         path = s"/periodDisallowableExpenses/carVanTravelExpensesDisallowable"
       ),
@@ -180,15 +184,15 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodDisallowableExpenses.maintenanceCostsDisallowable,
         path = s"/periodDisallowableExpenses/maintenanceCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.adminCostsDisallowable,
         path = s"/periodDisallowableExpenses/adminCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.businessEntertainmentCostsDisallowable,
         path = s"/periodDisallowableExpenses/businessEntertainmentCostsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.advertisingCostsDisallowable,
         path = s"/periodDisallowableExpenses/advertisingCostsDisallowable"
       ),
@@ -204,7 +208,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodDisallowableExpenses.irrecoverableDebtsDisallowable,
         path = s"/periodDisallowableExpenses/irrecoverableDebtsDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.professionalFeesDisallowable,
         path = s"/periodDisallowableExpenses/professionalFeesDisallowable"
       ),
@@ -212,7 +216,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodDisallowableExpenses.depreciationDisallowable,
         path = s"/periodDisallowableExpenses/depreciationDisallowable"
       ),
-      NumberValidation.validateOptional(
+      NumberValidation.validateOptionalWithFeatureFlag(
         field = periodDisallowableExpenses.otherExpensesDisallowable,
         path = s"/periodDisallowableExpenses/otherExpensesDisallowable"
       )
