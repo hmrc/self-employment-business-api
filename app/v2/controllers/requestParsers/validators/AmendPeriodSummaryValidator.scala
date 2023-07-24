@@ -60,9 +60,9 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
     List(
       Validator.flattenErrors(
         List(
-          body.periodIncome.map(validatePeriodIncome).getOrElse(Nil),
-          body.periodExpenses.map(e => validateExpenses(e, data.includeNegatives)).getOrElse(Nil),
-          body.periodDisallowableExpenses.map(e => validateDisallowableExpenses(e, data.includeNegatives)).getOrElse(Nil)
+          body.periodIncome.map(validatePeriodIncome).getOrElse(NoValidationErrors),
+          body.periodExpenses.map(e => validateExpenses(e, data.includeNegatives)).getOrElse(NoValidationErrors),
+          body.periodDisallowableExpenses.map(e => validateDisallowableExpenses(e, data.includeNegatives)).getOrElse(NoValidationErrors)
         ).flatten
       )
     )

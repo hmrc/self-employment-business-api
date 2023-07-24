@@ -54,8 +54,8 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         List(
           validateDates(body.periodDates.periodStartDate, body.periodDates.periodEndDate),
           body.periodIncome.map(validateIncome).getOrElse(NoValidationErrors),
-          body.periodExpenses.map(validateExpenses).getOrElse(NoValidationErrors),
-          body.periodDisallowableExpenses.map(validateDisallowableExpenses).getOrElse(NoValidationErrors)
+          body.periodExpenses.map(e => validateExpenses(e, data.includeNegatives)).getOrElse(NoValidationErrors),
+          body.periodDisallowableExpenses.map(e => validateDisallowableExpenses(e, data.includeNegatives)).getOrElse(NoValidationErrors)
         )
       ))
   }
@@ -86,11 +86,12 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
     ).flatten
   }
 
-  private def validateExpenses(periodExpenses: PeriodExpenses): List[MtdError] =
+  private def validateExpenses(periodExpenses: PeriodExpenses, includeNegatives: Boolean): List[MtdError] =
     List(
       NumberValidation.validateOptional(
         field = periodExpenses.consolidatedExpenses,
-        path = s"/periodExpenses/consolidatedExpenses"
+        path = s"/periodExpenses/consolidatedExpenses",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.costOfGoods,
@@ -99,15 +100,18 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.paymentsToSubcontractors,
-        path = s"/periodExpenses/paymentsToSubcontractors"
+        path = s"/periodExpenses/paymentsToSubcontractors",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.wagesAndStaffCosts,
-        path = s"/periodExpenses/wagesAndStaffCosts"
+        path = s"/periodExpenses/wagesAndStaffCosts",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.carVanTravelExpenses,
-        path = s"/periodExpenses/carVanTravelExpenses"
+        path = s"/periodExpenses/carVanTravelExpenses",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.premisesRunningCosts,
@@ -121,15 +125,18 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.adminCosts,
-        path = s"/periodExpenses/adminCosts"
+        path = s"/periodExpenses/adminCosts",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.businessEntertainmentCosts,
-        path = s"/periodExpenses/businessEntertainmentCosts"
+        path = s"/periodExpenses/businessEntertainmentCosts",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.advertisingCosts,
-        path = s"/periodExpenses/advertisingCosts"
+        path = s"/periodExpenses/advertisingCosts",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodExpenses.interestOnBankOtherLoans,
@@ -163,7 +170,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       )
     ).flatten
 
-  private def validateDisallowableExpenses(periodDisallowableExpenses: PeriodDisallowableExpenses): List[MtdError] = {
+  private def validateDisallowableExpenses(periodDisallowableExpenses: PeriodDisallowableExpenses, includeNegatives: Boolean): List[MtdError] = {
     List(
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.costOfGoodsDisallowable,
@@ -172,15 +179,18 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.paymentsToSubcontractorsDisallowable,
-        path = s"/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
+        path = s"/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.wagesAndStaffCostsDisallowable,
-        path = s"/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"
+        path = s"/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.carVanTravelExpensesDisallowable,
-        path = s"/periodDisallowableExpenses/carVanTravelExpensesDisallowable"
+        path = s"/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.premisesRunningCostsDisallowable,
@@ -194,15 +204,18 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.adminCostsDisallowable,
-        path = s"/periodDisallowableExpenses/adminCostsDisallowable"
+        path = s"/periodDisallowableExpenses/adminCostsDisallowable",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.businessEntertainmentCostsDisallowable,
-        path = s"/periodDisallowableExpenses/businessEntertainmentCostsDisallowable"
+        path = s"/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.advertisingCostsDisallowable,
-        path = s"/periodDisallowableExpenses/advertisingCostsDisallowable"
+        path = s"/periodDisallowableExpenses/advertisingCostsDisallowable",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.interestOnBankOtherLoansDisallowable,
@@ -221,7 +234,8 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.professionalFeesDisallowable,
-        path = s"/periodDisallowableExpenses/professionalFeesDisallowable"
+        path = s"/periodDisallowableExpenses/professionalFeesDisallowable",
+        includeNegatives = includeNegatives
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.depreciationDisallowable,
@@ -230,7 +244,8 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.otherExpensesDisallowable,
-        path = s"/periodDisallowableExpenses/otherExpensesDisallowable"
+        path = s"/periodDisallowableExpenses/otherExpensesDisallowable",
+        includeNegatives = includeNegatives
       )
     ).flatten
   }

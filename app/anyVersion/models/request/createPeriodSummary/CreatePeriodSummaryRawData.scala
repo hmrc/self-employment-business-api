@@ -19,4 +19,4 @@ package anyVersion.models.request.createPeriodSummary
 import api.models.request.RawData
 import play.api.libs.json.JsValue
 
-case class CreatePeriodSummaryRawData(nino: String, businessId: String, body: JsValue) extends RawData
+case class CreatePeriodSummaryRawData(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean = false) extends RawData
