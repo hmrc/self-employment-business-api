@@ -25,6 +25,8 @@ import api.models.errors._
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
@@ -40,6 +42,7 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryRequestParser
     with MockHateoasFactory
+    with MockAppConfig
     with AmendPeriodSummaryFixture {
 
   "handleRequest" should {
@@ -107,6 +110,7 @@ class AmendPeriodSummaryControllerSpec
   }
 
   private trait Test extends ControllerTest {
+    MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId: String = "XAIS12345678910"
     val periodId: String
@@ -126,6 +130,7 @@ class AmendPeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       parser = mockAmendPeriodSummaryRequestParser,
       service = mockAmendPeriodSummaryService,
+      appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

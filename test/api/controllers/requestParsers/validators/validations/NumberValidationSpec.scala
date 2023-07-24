@@ -88,26 +88,26 @@ class NumberValidationSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks 
       }
     }
 
-    "includeNegative is set to true" must {
+    "includeNegatives is set to true" must {
       "return no errors" when {
         "a valid number is supplied" in {
-          val validationResult = NumberValidation.validateOptional(validNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          val validationResult = NumberValidation.validateOptional(validNumber, "/vctSubscription/1/amountInvested", includeNegatives = true)
           validationResult.isEmpty shouldBe true
         }
         "no number is supplied" in {
-          val validationResult = NumberValidation.validateOptional(None, "/vctSubscription/1/amountInvested", includeNegative = true)
+          val validationResult = NumberValidation.validateOptional(None, "/vctSubscription/1/amountInvested", includeNegatives = true)
           validationResult.isEmpty shouldBe true
         }
         "the lowest allowed number (0) is supplied" in {
-          val validationResult = NumberValidation.validateOptional(lowestAllowedNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          val validationResult = NumberValidation.validateOptional(lowestAllowedNumber, "/vctSubscription/1/amountInvested", includeNegatives = true)
           validationResult.isEmpty shouldBe true
         }
         "the highest allowed number (99999999999.99) is supplied" in {
-          val validationResult = NumberValidation.validateOptional(highestAllowedNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          val validationResult = NumberValidation.validateOptional(highestAllowedNumber, "/vctSubscription/1/amountInvested", includeNegatives = true)
           validationResult.isEmpty shouldBe true
         }
         "a negative number is supplied" in {
-          val validationResult = NumberValidation.validateOptional(negativeNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          val validationResult = NumberValidation.validateOptional(negativeNumber, "/vctSubscription/1/amountInvested", includeNegatives = true)
           validationResult.isEmpty shouldBe true
         }
       }
@@ -115,7 +115,7 @@ class NumberValidationSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks 
       "return an error" when {
         "a number with too many decimal places is supplied" in {
           val validationResult =
-            NumberValidation.validateOptional(numberWithTooManyDecimalPlaces, "/vctSubscription/1/amountInvested", includeNegative = true)
+            NumberValidation.validateOptional(numberWithTooManyDecimalPlaces, "/vctSubscription/1/amountInvested", includeNegatives = true)
           validationResult.isEmpty shouldBe false
           validationResult.length shouldBe 1
           validationResult.head shouldBe ValueFormatError.copy(paths = Some(Seq("/vctSubscription/1/amountInvested")))

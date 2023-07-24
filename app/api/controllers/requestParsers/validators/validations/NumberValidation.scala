@@ -56,15 +56,15 @@ object NumberValidation {
                        path: String,
                        min: BigDecimal = 0,
                        max: BigDecimal = 99999999999.99,
-                       includeNegative: Boolean = false): List[MtdError] =
-    if (includeNegative) validateOptionalIncludeNegatives(field, path) else validateOptional(field, path, min, max)
+                       includeNegatives: Boolean = false): List[MtdError] =
+    if (includeNegatives) validateOptionalIncludeNegatives(field, path) else validateOptional(field, path, min, max)
 
   def validate(field: BigDecimal,
                path: String,
                min: BigDecimal = 0,
                max: BigDecimal = 99999999999.99,
-               includeNegative: Boolean = false): List[MtdError] = {
-    if (includeNegative) validateIncludeNegatives(field, path) else validate(field, path, min, max)
+               includeNegatives: Boolean = false): List[MtdError] = {
+    if (includeNegatives) validateIncludeNegatives(field, path) else validate(field, path, min, max)
   }
 
 }
