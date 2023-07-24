@@ -31,23 +31,20 @@ class FeatureSwitchesSpec extends UnitSpec {
       }
 
       "enabled" in {
-        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> true, "allowNegativeExpenses.enabled" -> true)
+        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> true)
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isPassDeleteIntentEnabled shouldBe true
-        featureSwitches.isAllowNegativeExpensesEnabled shouldBe true
 
       }
     }
 
     "be false" when {
       "disabled" in {
-        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> false, "allowNegativeExpenses.enabled" -> false)
+        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> false)
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isPassDeleteIntentEnabled shouldBe false
-        featureSwitches.isAllowNegativeExpensesEnabled shouldBe false
-
       }
     }
   }

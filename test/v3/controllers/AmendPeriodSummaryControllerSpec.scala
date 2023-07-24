@@ -27,6 +27,7 @@ import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import v3.fixtures.AmendPeriodSummaryFixture
 import v3.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
 import v3.mocks.services.MockAmendPeriodSummaryService
 import v3.models.request.amendPeriodSummary._
