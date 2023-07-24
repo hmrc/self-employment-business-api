@@ -39,6 +39,11 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, requestConsolidatedMtdJson)) shouldBe Nil
       }
 
+      "a valid expenses request is supplied with negative expenses and includeNegatives is true" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(validNino, validBusinessId, requestMtdBodyWithNegativesJson, includeNegatives = true)) shouldBe Nil
+      }
+
       "the minimum fields are supplied" in {
         validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdMimimumFieldsJson)) shouldBe Nil
       }
@@ -102,7 +107,6 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
             Seq(
               "/periodIncome/turnover",
               "/periodIncome/other",
-              "/periodIncome/taxTakenOffTradingIncome",
               "/periodExpenses/consolidatedExpenses",
               "/periodExpenses/costOfGoods",
               "/periodExpenses/paymentsToSubcontractors",
@@ -176,6 +180,26 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
               ValueFormatError.copy(paths = Some(Seq(path1, path2, path3)), message = "The value must be between 0 and 99999999999.99"))
           }
 
+          "negative field in periodExpenses and periodDisallowableExpenses are provided and includeNegatives is false" in {
+            validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, requestMtdBodyWithNegativesJson)) shouldBe List(
+              ValueFormatError.copy(paths = Some(Seq(
+                "/periodExpenses/paymentsToSubcontractors",
+                "/periodExpenses/wagesAndStaffCosts",
+                "/periodExpenses/carVanTravelExpenses",
+                "/periodExpenses/adminCosts",
+                "/periodExpenses/businessEntertainmentCosts",
+                "/periodExpenses/advertisingCosts",
+                "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
+                "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
+                "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
+                "/periodDisallowableExpenses/adminCostsDisallowable",
+                "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
+                "/periodDisallowableExpenses/advertisingCostsDisallowable",
+                "/periodDisallowableExpenses/professionalFeesDisallowable",
+                "/periodDisallowableExpenses/otherExpensesDisallowable"
+              ))))
+          }
+
           def testWith(body: JsNumber => JsValue, expectedPath: String): Unit = s"for $expectedPath" when {
             def doTest(value: JsNumber) =
               validator.validate(
@@ -201,13 +225,13 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
               validNino,
               validBusinessId,
               Json.parse("""
-                  |{
-                  |   "periodDates": {
-                  |     "periodStartDate": "2019-08-24",
-                  |     "periodEndDate": "2019-08-24"
-                  |    },
-                  |    "periodIncome": {}
-                  |}
+                           |{
+                           |   "periodDates": {
+                           |     "periodStartDate": "2019-08-24",
+                           |     "periodEndDate": "2019-08-24"
+                           |    },
+                           |    "periodIncome": {}
+                           |}
                        """.stripMargin)
             )
           ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodIncome"))))
@@ -220,34 +244,34 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
             validNino,
             validBusinessId,
             Json.parse("""
-                |{
-                |   "periodDates": {
-                |     "periodStartDate": "2019-08-24",
-                |     "periodEndDate": "2019-08-24"
-                |    },
-                |    "periodIncome": {
-                |      "turnover": 1000.99,
-                |      "other": 1000.99
-                |    },
-                |    "periodExpenses": {},
-                |    "periodDisallowableExpenses": {
-                |      "costOfGoodsDisallowable": 1000.99,
-                |      "paymentsToSubcontractorsDisallowable": 1000.99,
-                |      "wagesAndStaffCostsDisallowable": 1000.99,
-                |      "carVanTravelExpensesDisallowable": 1000.99,
-                |      "premisesRunningCostsDisallowable": -1000.99,
-                |      "maintenanceCostsDisallowable": -999.99,
-                |      "adminCostsDisallowable": 1000.99,
-                |      "businessEntertainmentCostsDisallowable": 1000.99,
-                |      "advertisingCostsDisallowable": 1000.99,
-                |      "interestOnBankOtherLoansDisallowable": -1000.99,
-                |      "financeChargesDisallowable": -9999.99,
-                |      "irrecoverableDebtsDisallowable": 1000.99,
-                |      "professionalFeesDisallowable": 9999999999.99,
-                |      "depreciationDisallowable": -99999999999.99,
-                |      "otherExpensesDisallowable": 1000.99
-                |     }
-                |}
+                         |{
+                         |   "periodDates": {
+                         |     "periodStartDate": "2019-08-24",
+                         |     "periodEndDate": "2019-08-24"
+                         |    },
+                         |    "periodIncome": {
+                         |      "turnover": 1000.99,
+                         |      "other": 1000.99
+                         |    },
+                         |    "periodExpenses": {},
+                         |    "periodDisallowableExpenses": {
+                         |      "costOfGoodsDisallowable": 1000.99,
+                         |      "paymentsToSubcontractorsDisallowable": 1000.99,
+                         |      "wagesAndStaffCostsDisallowable": 1000.99,
+                         |      "carVanTravelExpensesDisallowable": 1000.99,
+                         |      "premisesRunningCostsDisallowable": -1000.99,
+                         |      "maintenanceCostsDisallowable": -999.99,
+                         |      "adminCostsDisallowable": 1000.99,
+                         |      "businessEntertainmentCostsDisallowable": 1000.99,
+                         |      "advertisingCostsDisallowable": 1000.99,
+                         |      "interestOnBankOtherLoansDisallowable": -1000.99,
+                         |      "financeChargesDisallowable": -9999.99,
+                         |      "irrecoverableDebtsDisallowable": 1000.99,
+                         |      "professionalFeesDisallowable": 9999999999.99,
+                         |      "depreciationDisallowable": -99999999999.99,
+                         |      "otherExpensesDisallowable": 1000.99
+                         |     }
+                         |}
               """.stripMargin)
           )
         ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodExpenses"))))
@@ -259,35 +283,35 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
             validNino,
             validBusinessId,
             Json.parse("""
-                |{
-                |   "periodDates": {
-                |     "periodStartDate": "2019-08-24",
-                |     "periodEndDate": "2019-08-24"
-                |    },
-                |    "periodIncome": {
-                |      "turnover": 1000.99,
-                |      "other": 1000.99
-                |    },
-                |    "periodExpenses": {
-                |      "consolidatedExpenses": 1000.99,
-                |      "costOfGoods": 1000.99,
-                |      "paymentsToSubcontractors": 1000.99,
-                |      "wagesAndStaffCosts": 1000.99,
-                |      "carVanTravelExpenses": 1000.99,
-                |      "premisesRunningCosts": -99999.99,
-                |      "maintenanceCosts": -1000.99,
-                |      "adminCosts": 1000.99,
-                |      "businessEntertainmentCosts": 1000.99,
-                |      "advertisingCosts": 1000.99,
-                |      "interestOnBankOtherLoans": -1000.99,
-                |      "financeCharges": -1000.99,
-                |      "irrecoverableDebts": -1000.99,
-                |      "professionalFees": -99999999999.99,
-                |      "depreciation": -1000.99,
-                |      "otherExpenses": 1000.99
-                |    },
-                |    "periodDisallowableExpenses": {}
-                |}
+                         |{
+                         |   "periodDates": {
+                         |     "periodStartDate": "2019-08-24",
+                         |     "periodEndDate": "2019-08-24"
+                         |    },
+                         |    "periodIncome": {
+                         |      "turnover": 1000.99,
+                         |      "other": 1000.99
+                         |    },
+                         |    "periodExpenses": {
+                         |      "consolidatedExpenses": 1000.99,
+                         |      "costOfGoods": 1000.99,
+                         |      "paymentsToSubcontractors": 1000.99,
+                         |      "wagesAndStaffCosts": 1000.99,
+                         |      "carVanTravelExpenses": 1000.99,
+                         |      "premisesRunningCosts": -99999.99,
+                         |      "maintenanceCosts": -1000.99,
+                         |      "adminCosts": 1000.99,
+                         |      "businessEntertainmentCosts": 1000.99,
+                         |      "advertisingCosts": 1000.99,
+                         |      "interestOnBankOtherLoans": -1000.99,
+                         |      "financeCharges": -1000.99,
+                         |      "irrecoverableDebts": -1000.99,
+                         |      "professionalFees": -99999999999.99,
+                         |      "depreciation": -1000.99,
+                         |      "otherExpenses": 1000.99
+                         |    },
+                         |    "periodDisallowableExpenses": {}
+                         |}
               """.stripMargin)
           )
         ) shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodDisallowableExpenses"))))

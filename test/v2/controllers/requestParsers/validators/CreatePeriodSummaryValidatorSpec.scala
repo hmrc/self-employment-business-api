@@ -39,6 +39,11 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
         validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, requestConsolidatedMtdJson)) shouldBe Nil
       }
 
+      "a valid expenses request is supplied with negative expenses and includeNegatives is true" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(validNino, validBusinessId, requestMtdBodyWithNegativesJson, includeNegatives = true)) shouldBe Nil
+      }
+
       "the minimum fields are supplied" in {
         validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, mtdMimimumFieldsJson)) shouldBe Nil
       }
@@ -173,6 +178,26 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 json
               )) shouldBe List(
               ValueFormatError.copy(paths = Some(Seq(path1, path2, path3)), message = "The value must be between 0 and 99999999999.99"))
+          }
+
+          "negative field in periodExpenses and periodDisallowableExpenses are provided and includeNegatives is false" in {
+            validator.validate(CreatePeriodSummaryRawData(validNino, validBusinessId, requestMtdBodyWithNegativesJson)) shouldBe List(
+              ValueFormatError.copy(paths = Some(Seq(
+                "/periodExpenses/paymentsToSubcontractors",
+                "/periodExpenses/wagesAndStaffCosts",
+                "/periodExpenses/carVanTravelExpenses",
+                "/periodExpenses/adminCosts",
+                "/periodExpenses/businessEntertainmentCosts",
+                "/periodExpenses/advertisingCosts",
+                "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
+                "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
+                "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
+                "/periodDisallowableExpenses/adminCostsDisallowable",
+                "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
+                "/periodDisallowableExpenses/advertisingCostsDisallowable",
+                "/periodDisallowableExpenses/professionalFeesDisallowable",
+                "/periodDisallowableExpenses/otherExpensesDisallowable"
+              ))))
           }
 
           def testWith(body: JsNumber => JsValue, expectedPath: String): Unit = s"for $expectedPath" when {

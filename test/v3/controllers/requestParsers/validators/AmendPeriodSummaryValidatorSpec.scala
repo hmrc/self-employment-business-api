@@ -75,10 +75,65 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       |""".stripMargin
   )
 
+  private val requestBodyWithNegativesJson = Json.parse(
+    """
+      |{
+      |    "periodIncome": {
+      |        "turnover": 1000.99,
+      |        "other": 1000.99
+      |    },
+      |    "periodExpenses": {
+      |        "costOfGoods": -1000.99,
+      |        "paymentsToSubcontractors": -1000.99,
+      |        "wagesAndStaffCosts": -1000.99,
+      |        "carVanTravelExpenses": -1000.99,
+      |        "premisesRunningCosts": -1000.99,
+      |        "maintenanceCosts": -1000.99,
+      |        "adminCosts": -1000.99,
+      |        "businessEntertainmentCosts": -1000.99,
+      |        "advertisingCosts": -1000.99,
+      |        "interestOnBankOtherLoans": -1000.99,
+      |        "financeCharges": -1000.99,
+      |        "irrecoverableDebts": -1000.99,
+      |        "professionalFees": -1000.99,
+      |        "depreciation": -1000.99,
+      |        "otherExpenses": -1000.99
+      |    },
+      |    "periodDisallowableExpenses": {
+      |        "costOfGoodsDisallowable": -1000.99,
+      |        "paymentsToSubcontractorsDisallowable": -1000.99,
+      |        "wagesAndStaffCostsDisallowable": -1000.99,
+      |        "carVanTravelExpensesDisallowable": -1000.99,
+      |        "premisesRunningCostsDisallowable": -1000.99,
+      |        "maintenanceCostsDisallowable": -1000.99,
+      |        "adminCostsDisallowable": -1000.99,
+      |        "businessEntertainmentCostsDisallowable": -1000.99,
+      |        "advertisingCostsDisallowable": -1000.99,
+      |        "interestOnBankOtherLoansDisallowable": -1000.99,
+      |        "financeChargesDisallowable": -1000.99,
+      |        "irrecoverableDebtsDisallowable": -1000.99,
+      |        "professionalFeesDisallowable": -1000.99,
+      |        "depreciationDisallowable": -1000.99,
+      |        "otherExpensesDisallowable": -1000.99
+      |    }
+      |}
+      |""".stripMargin
+  )
+
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied with expenses" in {
         validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, None)) shouldBe Nil
+      }
+      "a valid request is supplied with negative expenses and includeNegatives is true" in {
+        validator.validate(
+          AmendPeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyWithNegativesJson,
+            None,
+            includeNegatives = true)) shouldBe Nil
       }
       "a valid TYS request is supplied with expenses" in {
         validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyJson, validTaxYear)) shouldBe Nil
@@ -101,7 +156,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |        "consolidatedExpenses": 1000.99
                 |    }
                 |}
-            |""".stripMargin
+                |""".stripMargin
             ),
             None
           )) shouldBe Nil
@@ -120,7 +175,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |        "other": 1000.99
                 |    }
                 |}
-            |""".stripMargin
+                |""".stripMargin
             ),
             None
           )) shouldBe Nil
@@ -169,7 +224,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |        "otherExpensesDisallowable": 1000.99
                 |    }
                 |}
-            |""".stripMargin
+                |""".stripMargin
             ),
             None
           )) shouldBe Nil
@@ -256,6 +311,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/other"))))
       }
+
       "/periodExpenses/consolidatedExpenses is invalid" in {
         validator.validate(
           AmendPeriodSummaryRawData(
@@ -604,6 +660,27 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             requestBodyJson.update("/periodDisallowableExpenses/otherExpensesDisallowable", JsNumber(123.123)),
             None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/otherExpensesDisallowable"))))
+      }
+
+      "negative field in periodExpenses and periodDisallowableExpenses are provided and includeNegatives is false" in {
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, validPeriodId, requestBodyWithNegativesJson, None)) shouldBe List(
+          ValueFormatError.copy(paths = Some(Seq(
+            "/periodExpenses/paymentsToSubcontractors",
+            "/periodExpenses/wagesAndStaffCosts",
+            "/periodExpenses/carVanTravelExpenses",
+            "/periodExpenses/adminCosts",
+            "/periodExpenses/businessEntertainmentCosts",
+            "/periodExpenses/advertisingCosts",
+            "/periodExpenses/otherExpenses",
+            "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
+            "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
+            "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
+            "/periodDisallowableExpenses/adminCostsDisallowable",
+            "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
+            "/periodDisallowableExpenses/advertisingCostsDisallowable",
+            "/periodDisallowableExpenses/professionalFeesDisallowable",
+            "/periodDisallowableExpenses/otherExpensesDisallowable"
+          ))))
       }
     }
     "return multiple errors" when {
