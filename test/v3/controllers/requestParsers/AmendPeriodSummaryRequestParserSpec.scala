@@ -16,7 +16,6 @@
 
 package v3.controllers.requestParsers
 
-import anyVersion.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, PeriodDisallowableExpenses, PeriodIncome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import play.api.libs.json.Json

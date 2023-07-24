@@ -16,12 +16,11 @@
 
 package v1.connectors
 
-import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino}
 import api.models.outcomes.ResponseWrapper
 import v1.models.request.createPeriodSummary._
+import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 
@@ -59,6 +58,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
     val downstreamTaxYear  = "2023-24"
+
     protected val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig

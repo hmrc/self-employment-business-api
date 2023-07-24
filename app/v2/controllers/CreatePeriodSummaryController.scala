@@ -16,8 +16,6 @@
 
 package v2.controllers
 
-import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino}
@@ -27,6 +25,8 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
 import v2.controllers.requestParsers.CreatePeriodSummaryRequestParser
+import v2.models.request.createPeriodSummary.CreatePeriodSummaryRawData
+import v2.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v2.services.CreatePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}

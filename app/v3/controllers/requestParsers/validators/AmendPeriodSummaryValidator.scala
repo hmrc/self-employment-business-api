@@ -16,7 +16,6 @@
 
 package v3.controllers.requestParsers.validators
 
-import anyVersion.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, PeriodDisallowableExpenses, PeriodIncome}
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
 import api.models.errors.MtdError

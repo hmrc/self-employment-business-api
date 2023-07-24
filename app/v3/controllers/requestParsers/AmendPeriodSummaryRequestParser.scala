@@ -16,15 +16,14 @@
 
 package v3.controllers.requestParsers
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import v3.controllers.requestParsers.validators.AmendPeriodSummaryValidator
-import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
+import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRawData, AmendPeriodSummaryRequest}
 
 import javax.inject.Inject
 
-class AmendPeriodSummaryRequestParser @Inject()(val validator: AmendPeriodSummaryValidator)
+class AmendPeriodSummaryRequestParser @Inject() (val validator: AmendPeriodSummaryValidator)
     extends RequestParser[AmendPeriodSummaryRawData, AmendPeriodSummaryRequest] {
 
   override protected def requestFor(data: AmendPeriodSummaryRawData): AmendPeriodSummaryRequest = {

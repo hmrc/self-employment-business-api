@@ -16,11 +16,11 @@
 
 package v2.controllers.requestParsers.validators
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
+import v2.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 
 class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 

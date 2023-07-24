@@ -16,8 +16,6 @@
 
 package v3.controllers
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
-import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
@@ -32,6 +30,7 @@ import play.api.mvc.Result
 import v3.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
 import v3.mocks.services.MockAmendPeriodSummaryService
 import v3.models.request.amendPeriodSummary._
+import v3.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

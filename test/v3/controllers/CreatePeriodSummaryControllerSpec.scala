@@ -16,8 +16,6 @@
 
 package v3.controllers
 
-import anyVersion.models.request.createPeriodSummary
-import anyVersion.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
@@ -33,6 +31,7 @@ import v3.fixtures.CreatePeriodSummaryFixture
 import v3.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v3.mocks.services.MockCreatePeriodSummaryService
 import v3.models.request.createPeriodSummary._
+import v3.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -91,7 +90,7 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val rawData     = createPeriodSummary.CreatePeriodSummaryRawData(nino, businessId, requestMtdBodyJson)
+  private val rawData     = CreatePeriodSummaryRawData(nino, businessId, requestMtdBodyJson)
   private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), fullMTDRequestModel)
 
   "handleRequest" should {

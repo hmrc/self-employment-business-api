@@ -16,12 +16,11 @@
 
 package v3.mocks.requestParsers
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.controllers.requestParsers.AmendPeriodSummaryRequestParser
-import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
+import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, AmendPeriodSummaryRequest}
 
 trait MockAmendPeriodSummaryRequestParser extends MockFactory {
 

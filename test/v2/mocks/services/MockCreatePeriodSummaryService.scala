@@ -16,12 +16,12 @@
 
 package v2.mocks.services
 
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import v2.services.CreatePeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}

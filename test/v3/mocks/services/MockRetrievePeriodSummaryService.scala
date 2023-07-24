@@ -16,11 +16,11 @@
 
 package v3.mocks.services
 
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 import v3.services.RetrievePeriodSummaryService
 

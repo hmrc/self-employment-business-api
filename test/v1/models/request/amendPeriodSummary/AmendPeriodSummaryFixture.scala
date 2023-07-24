@@ -16,7 +16,6 @@
 
 package v1.models.request.amendPeriodSummary
 
-import anyVersion.models.request.amendPeriodSummary.{PeriodDisallowableExpenses, PeriodIncome}
 import play.api.libs.json.{JsValue, Json}
 
 trait AmendPeriodSummaryFixture {
