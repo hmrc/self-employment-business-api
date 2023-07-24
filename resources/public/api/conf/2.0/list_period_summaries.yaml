@@ -6,14 +6,13 @@ description: |
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                                                 |
-  | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | N/A - DEFAULT                    | Simulates success response.                                                                                                                              |
-  | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                           |
-  | TAX_YEAR_NOT_SUPPORTED           | Simulates the scenario where the tax year is not supported.                                                                                              |
-  | STATEFUL                         | Performs a stateful list.                                                                                                                                |
-  | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request: <br/> &bull; periodStartDate  <br/> &bull; periodEndDate |
-
+  | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                                       |
+  | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+  | N/A - DEFAULT                    | Simulates success response.                                                                                                                    |
+  | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                 |
+  | TAX_YEAR_NOT_SUPPORTED           | Simulates the scenario where the tax year is not supported.                                                                                    |
+  | STATEFUL                         | Performs a stateful list.                                                                                                                      |
+  | DYNAMIC                          | The following response values will change to correspond to the values submitted in the request: <br/> • periodStartDate  <br/> • periodEndDate |
 
 tags:
   - Self-Employment Period Summaries
