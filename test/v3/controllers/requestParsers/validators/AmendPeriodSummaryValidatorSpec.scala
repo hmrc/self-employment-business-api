@@ -21,58 +21,16 @@ import api.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
+import v3.fixtures.AmendPeriodSummaryFixture
 
-class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
+class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
-  val validator = new AmendPeriodSummaryValidator()
+  val validator               = new AmendPeriodSummaryValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
   private val validPeriodId   = "2019-01-01_2019-02-02"
   private val validTaxYear    = Some("2023-24")
-  private val requestBodyJson = Json.parse(
-    """
-      |{
-      |    "periodIncome": {
-      |        "turnover": 1000.99,
-      |        "other": 1000.99
-      |    },
-      |    "periodExpenses": {
-      |        "costOfGoods": 1000.99,
-      |        "paymentsToSubcontractors": 1000.99,
-      |        "wagesAndStaffCosts": 1000.99,
-      |        "carVanTravelExpenses": 1000.99,
-      |        "premisesRunningCosts": 1000.99,
-      |        "maintenanceCosts": 1000.99,
-      |        "adminCosts": 1000.99,
-      |        "businessEntertainmentCosts": 1000.99,
-      |        "advertisingCosts": 1000.99,
-      |        "interestOnBankOtherLoans": 1000.99,
-      |        "financeCharges": 1000.99,
-      |        "irrecoverableDebts": 1000.99,
-      |        "professionalFees": 1000.99,
-      |        "depreciation": 1000.99,
-      |        "otherExpenses": 1000.99
-      |    },
-      |    "periodDisallowableExpenses": {
-      |        "costOfGoodsDisallowable": 1000.99,
-      |        "paymentsToSubcontractorsDisallowable": 1000.99,
-      |        "wagesAndStaffCostsDisallowable": 1000.99,
-      |        "carVanTravelExpensesDisallowable": 1000.99,
-      |        "premisesRunningCostsDisallowable": 1000.99,
-      |        "maintenanceCostsDisallowable": 1000.99,
-      |        "adminCostsDisallowable": 1000.99,
-      |        "businessEntertainmentCostsDisallowable": 1000.99,
-      |        "advertisingCostsDisallowable": 1000.99,
-      |        "interestOnBankOtherLoansDisallowable": 1000.99,
-      |        "financeChargesDisallowable": 1000.99,
-      |        "irrecoverableDebtsDisallowable": 1000.99,
-      |        "professionalFeesDisallowable": 1000.99,
-      |        "depreciationDisallowable": 1000.99,
-      |        "otherExpensesDisallowable": 1000.99
-      |    }
-      |}
-      |""".stripMargin
-  )
+  private val requestBodyJson = amendPeriodSummaryBodyMtdJson
 
   "running a validation" should {
     "return no errors" when {
@@ -89,19 +47,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             validNino,
             validBusinessId,
             validPeriodId,
-            Json.parse(
-              """
-                |{
-                |    "periodIncome": {
-                |        "turnover": 1000.99,
-                |        "other": 1000.99
-                |    },
-                |    "periodExpenses": {
-                |        "consolidatedExpenses": 1000.99
-                |    }
-                |}
-            |""".stripMargin
-            ),
+            amendPeriodSummaryConsolidatedBodyMtdJson,
             None
           )) shouldBe Nil
       }
@@ -254,6 +200,16 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
             requestBodyJson.update("/periodIncome/other", JsNumber(123.123)),
             None
           )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/other"))))
+      }
+      "/periodIncome/taxTakenOffTradingIncome is invalid" in {
+        validator.validate(
+          AmendPeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            validPeriodId,
+            requestBodyJson.update("/periodIncome/taxTakenOffTradingIncome", JsNumber(123.123)),
+            None
+          )) shouldBe List(ValueFormatError.copy(paths = Some(Seq("/periodIncome/taxTakenOffTradingIncome"))))
       }
       "/periodExpenses/consolidatedExpenses is invalid" in {
         validator.validate(
@@ -621,7 +577,8 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |{
                 |    "periodIncome": {
                 |        "turnover": -1000.999,
-                |        "other": -1000.999
+                |        "other": -1000.999,
+                |        "taxTakenOffTradingIncome": -1000.999
                 |    },
                 |    "periodExpenses": {
                 |        "costOfGoods": -1000.999,
@@ -665,6 +622,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
           ValueFormatError.copy(paths = Some(Seq(
             "/periodIncome/turnover",
             "/periodIncome/other",
+            "/periodIncome/taxTakenOffTradingIncome",
             "/periodExpenses/costOfGoods",
             "/periodExpenses/paymentsToSubcontractors",
             "/periodExpenses/wagesAndStaffCosts",

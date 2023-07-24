@@ -18,6 +18,7 @@ package v3.models.request.amendPeriodSummary
 
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
+import v3.fixtures.AmendPeriodSummaryFixture
 
 class AmendPeriodSummaryBodySpec extends UnitSpec with AmendPeriodSummaryFixture {
 

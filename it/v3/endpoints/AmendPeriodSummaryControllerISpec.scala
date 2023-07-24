@@ -26,7 +26,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import stubs.{AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
-import v3.models.request.amendPeriodSummary.AmendPeriodSummaryFixture
+import v3.fixtures.AmendPeriodSummaryFixture
 
 class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
