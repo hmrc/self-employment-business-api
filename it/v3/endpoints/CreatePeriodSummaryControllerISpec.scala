@@ -63,7 +63,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |     },
          |     "periodIncome": {
          |          "turnover": 1000.99,
-         |          "other": 1000.99
+         |          "other": 2000.99,
+         |          "taxTakenOffTradingIncome": 3000.99
          |     },
          |     "periodExpenses": {
          |          "costOfGoods": 1000.99,
@@ -239,7 +240,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
-             |          "other": 1000.99
+             |          "other": 2000.99,
+             |          "taxTakenOffTradingIncome": 3000.99
              |     }
              |}
              |""".stripMargin
@@ -504,7 +506,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "END_BEFORE_START", BAD_REQUEST, RuleEndDateBeforeStartDateError),
         (UNPROCESSABLE_ENTITY, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)
+        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
+        (UNPROCESSABLE_ENTITY, "BUSINESS_INCOME_PERIOD_RESTRICTION", BAD_REQUEST, RuleBusinessIncomePeriodRestriction)
 //        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_PERIOD", BAD_REQUEST, RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
 //        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
       )

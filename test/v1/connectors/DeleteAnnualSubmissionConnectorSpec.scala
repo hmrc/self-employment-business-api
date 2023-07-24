@@ -20,13 +20,14 @@ import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import api.models.outcomes.ResponseWrapper
+import mocks.MockFeatureSwitches
 import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsObject
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
 
 import scala.concurrent.Future
 
-class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
+class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -37,13 +38,30 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
   "deleteAnnualSubmissionConnector" when {
     val outcome = Right(ResponseWrapper(correlationId, ()))
 
-    "deleteAnnualSubmission" must {
-      "send a request and return 204 no content" in new DesTest with Test {
-        def taxYear: TaxYear = preTysTaxYear
+    "deleteAnnualSubmission is called with a valid request and a non-TYS tax year" when {
+      "`isPassDeleteIntentEnabled` feature switch is on" must {
+        "send a request and return 204 no content" in new DesTest with Test {
+          override lazy val requiredHeaders: scala.Seq[(String, String)] = requiredDesHeaders :+ ("intent" -> "DELETE")
 
-        stubHttpResponse(outcome)
+          def taxYear: TaxYear = preTysTaxYear
 
-        await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+          stubHttpResponse(outcome)
+          MockFeatureSwitches.isPassDeleteIntentEnabled.returns(true)
+
+          await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+        }
+      }
+      "`isPassDeleteIntentEnabled` feature switch is off" must {
+        "send a request and return 204 no content" in new DesTest with Test {
+          override lazy val excludedHeaders: scala.Seq[(String, String)] = super.excludedHeaders :+ ("intent" -> "DELETE")
+
+          def taxYear: TaxYear = preTysTaxYear
+
+          stubHttpResponse(outcome)
+          MockFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
+
+          await(connector.deleteAnnualSubmission(request)) shouldBe outcome
+        }
       }
     }
 
@@ -52,20 +70,21 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = tysTaxYear
 
         stubTysHttpResponse(outcome)
+        MockFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
 
         await(connector.deleteAnnualSubmission(request)) shouldBe outcome
       }
     }
 
     "response is an error" must {
+      val downstreamErrorResponse: DownstreamErrors = DownstreamErrors.single(DownstreamErrorCode("SOME_ERROR"))
 
-      val downstreamErrorResponse: DownstreamErrors =
-        DownstreamErrors.single(DownstreamErrorCode("SOME_ERROR"))
       val outcome = Left(ResponseWrapper(correlationId, downstreamErrorResponse))
 
       "return the error" in new DesTest with Test {
         def taxYear: TaxYear = preTysTaxYear
         stubHttpResponse(outcome)
+        MockFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
 
         val result: DownstreamOutcome[Unit] =
           await(connector.deleteAnnualSubmission(request))
@@ -75,6 +94,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
       "return the error given a TYS tax year request" in new TysIfsTest with Test {
         def taxYear: TaxYear = tysTaxYear
         stubTysHttpResponse(outcome)
+        MockFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
 
         val result: DownstreamOutcome[Unit] =
           await(connector.deleteAnnualSubmission(request))
@@ -83,8 +103,10 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test {
-    _: ConnectorTest =>
+  trait Test { _: ConnectorTest =>
+
+    def taxYear: TaxYear
+
     val connector: DeleteAnnualSubmissionConnector = new DeleteAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -94,8 +116,6 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec {
       taxYear = taxYear,
       businessId = BusinessId(businessId)
     )
-
-    def taxYear: TaxYear
 
     protected def stubHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
       willPut(

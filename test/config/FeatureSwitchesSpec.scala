@@ -21,21 +21,33 @@ import support.UnitSpec
 
 class FeatureSwitchesSpec extends UnitSpec {
 
-  private val configuration = Configuration(
-    "feature-switch.enabled" -> true
-  )
+  "a feature switch" should {
+    "be true" when {
+      "absent from the config" in {
+        val configuration   = Configuration.empty
+        val featureSwitches = FeatureSwitches(configuration)
 
-  private val featureSwitches = FeatureSwitches(configuration)
+        featureSwitches.isPassDeleteIntentEnabled shouldBe true
+      }
 
-  "FeatureSwitches" should {
-    "return true" when {
-      "the feature switch is set to true" in {
-        featureSwitches.featureSwitchConfig.getOptional[Boolean]("feature-switch.enabled") shouldBe Some(true)
+      "enabled" in {
+        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> true, "allowNegativeExpenses.enabled" -> true)
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isPassDeleteIntentEnabled shouldBe true
+        featureSwitches.isAllowNegativeExpensesEnabled shouldBe true
+
       }
     }
-    "return false" when {
-      "the feature switch is not present in the config" in {
-        featureSwitches.featureSwitchConfig.getOptional[Boolean]("invalid") shouldBe None
+
+    "be false" when {
+      "disabled" in {
+        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> false, "allowNegativeExpenses.enabled" -> false)
+        val featureSwitches = FeatureSwitches(configuration)
+
+        featureSwitches.isPassDeleteIntentEnabled shouldBe false
+        featureSwitches.isAllowNegativeExpensesEnabled shouldBe false
+
       }
     }
   }
