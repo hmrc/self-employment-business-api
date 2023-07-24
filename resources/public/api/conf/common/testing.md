@@ -25,3 +25,8 @@ The following groups are stateful in the sandbox:
 
 - Self-Employment Annual Submission V2.0
 - Self-Employement Period Summaries V2.0
+
+### Dynamic
+Some endpoints support DYNAMIC gov test scenarios. The response is dynamic based on the request parameters:
+
+- List Self-Employment Period Summaries V2.0
