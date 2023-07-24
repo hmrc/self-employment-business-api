@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1andv2.endpoints
+package v2.endpoints
 
 import api.models.domain.TaxYear
 import api.models.errors._
@@ -29,14 +29,11 @@ import support.IntegrationBaseSpec
 
 class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
-  val versions = Seq("1.0", "2.0")
-
-  "calling the list period summaries endpoint" should {
+  "calling the V2 list period summaries endpoint" should {
 
     "return a 200 status code" when {
 
-      versions.foreach(testVersion =>
-        s"any valid request is made to version $testVersion" in new NonTysTest {
+        s"any valid request is made" in new NonTysTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -46,15 +43,14 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
               .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
           }
 
-          val response: WSResponse = await(request(testVersion).get())
+          val response: WSResponse = await(request().get())
           response.status shouldBe OK
           response.json shouldBe responseBody(periodId, fromDate, toDate)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
-        })
+        }
 
-      versions.foreach(testVersion =>
-        s"any valid request is made for a TYS specific year for version $testVersion" in new TysIfsTest {
+        s"any valid request is made for a TYS specific year" in new TysIfsTest {
 
           override def setupStubs(): StubMapping = {
             AuditStub.audit()
@@ -63,12 +59,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
             BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
           }
 
-          val response: WSResponse = await(request(testVersion).get())
+          val response: WSResponse = await(request().get())
           response.status shouldBe OK
           response.json shouldBe responseBody(periodId, fromDate, toDate)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
-        })
+        }
     }
     "return error according to spec" when {
 
@@ -77,9 +73,8 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
                                 requestBusinessId: String,
                                 requestTaxYear: String,
                                 expectedStatus: Int,
-                                expectedBody: MtdError,
-                                version: String): Unit = {
-          s"validation fails with ${expectedBody.code} error in version $version" in new TysIfsTest {
+                                expectedBody: MtdError): Unit = {
+          s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -91,7 +86,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(requestNino)
             }
 
-            val response: WSResponse = await(request(version).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -104,12 +99,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )
-        versions.foreach(testVersion => input.foreach(args => (validationErrorTest(args._1, args._2, args._3, args._4, args._5, testVersion))))
+        input.foreach(args => validationErrorTest(args._1, args._2, args._3, args._4, args._5))
       }
 
       "downstream service error" when {
-        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError, version: String): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus in version $version" in new NonTysTest {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -118,7 +113,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
               BaseDownstreamStub.onError(BaseDownstreamStub.GET, downstreamUri(), downstreamStatus, errorBody(downstreamCode))
             }
 
-            val response: WSResponse = await(request(version).get())
+            val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -136,7 +131,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        versions.foreach(testVersion => input.foreach(args => (serviceErrorTest(args._1, args._2, args._3, args._4, testVersion))))
+        input.foreach(args => serviceErrorTest(args._1, args._2, args._3, args._4))
       }
     }
   }
@@ -221,11 +216,11 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
-    def request(version: String): WSRequest = {
+    def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.$version+json"),
+          (ACCEPT, s"application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -245,10 +240,10 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
-    def request(version: String): WSRequest = {
+    def request(): WSRequest = {
       setupStubs()
       buildRequest(s"$uri?taxYear=$mtdTaxYear").withHttpHeaders(
-        (ACCEPT, s"application/vnd.hmrc.$version+json"),
+        (ACCEPT, s"application/vnd.hmrc.2.0+json"),
         (AUTHORIZATION, "Bearer 123")
       )
     }

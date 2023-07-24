@@ -240,7 +240,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "calling the retrieve endpoint" should {
+  "calling the V3 retrieve endpoint" should {
 
     "return a 200 status code" when {
 

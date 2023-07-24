@@ -33,7 +33,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
   val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJson
   val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJson
 
-  "Calling the Amend Period Summary endpoint" should {
+  "Calling the V3 Amend Period Summary endpoint" should {
 
     "return a 200 status code" when {
 
