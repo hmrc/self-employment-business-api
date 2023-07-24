@@ -17,10 +17,8 @@
 package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.ValueFormatError
-import config.FeatureSwitches
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import play.api.Configuration
 import support.UnitSpec
 
 class NumberValidationSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks {
@@ -89,85 +87,39 @@ class NumberValidationSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks 
         NumberValidation.validate(100000000000.00, path) shouldBe List(error)
       }
     }
-  }
 
-  "validateIncludeNegatives" should {
-    "return no errors" when {
-      "a valid number is supplied" in {
-        val validationResult = NumberValidation.validateOptionalIncludeNegatives(validNumber, "/vctSubscription/1/amountInvested")
-        validationResult.isEmpty shouldBe true
-      }
-      "no number is supplied" in {
-        val validationResult = NumberValidation.validateOptionalIncludeNegatives(None, "/vctSubscription/1/amountInvested")
-        validationResult.isEmpty shouldBe true
-      }
-      "the lowest allowed number (0) is supplied" in {
-        val validationResult = NumberValidation.validateOptionalIncludeNegatives(lowestAllowedNumber, "/vctSubscription/1/amountInvested")
-        validationResult.isEmpty shouldBe true
-      }
-      "the highest allowed number (99999999999.99) is supplied" in {
-        val validationResult = NumberValidation.validateOptionalIncludeNegatives(highestAllowedNumber, "/vctSubscription/1/amountInvested")
-        validationResult.isEmpty shouldBe true
-      }
-      "a negative number is supplied" in {
-        val validationResult = NumberValidation.validateOptionalIncludeNegatives(negativeNumber, "/vctSubscription/1/amountInvested")
-        validationResult.isEmpty shouldBe true
-      }
-    }
-
-    "return an error" when {
-      "a number with too many decimal places is supplied" in {
-        val validationResult = NumberValidation.validateOptionalIncludeNegatives(numberWithTooManyDecimalPlaces, "/vctSubscription/1/amountInvested")
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe ValueFormatError.copy(paths = Some(Seq("/vctSubscription/1/amountInvested")))
-      }
-    }
-  }
-
-  "validateOptionalWithFeatureFlag" should {
-    def configuration(enable: Boolean): Configuration = Configuration("allowNegativeExpenses.enabled" -> enable)
-
-    "return the validation result using validationOptionalIncludeNegatives" when {
-      "the feature switch is enabled" in {
-        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(true))
-
-        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(negativeNumber, path, 0, 100)
-        validationResult shouldBe NumberValidation.validateOptionalIncludeNegatives(negativeNumber, path)
-      }
-    }
-
-    "return the validation result using validateOptional" when {
-      "the feature switch is disabled" in {
-        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(false))
-
-        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(negativeNumber, path, 0, 100)
-        validationResult shouldBe NumberValidation.validateOptional(negativeNumber, path, 0, 100)
-      }
-    }
-
-    "return no errors" when {
-      "the feature switch is enabled and a valid number is supplied" in {
-        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(true))
-
-        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(validNumber, path)
-        validationResult.isEmpty shouldBe true
+    "includeNegative is set to true" must {
+      "return no errors" when {
+        "a valid number is supplied" in {
+          val validationResult = NumberValidation.validateOptional(validNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          validationResult.isEmpty shouldBe true
+        }
+        "no number is supplied" in {
+          val validationResult = NumberValidation.validateOptional(None, "/vctSubscription/1/amountInvested", includeNegative = true)
+          validationResult.isEmpty shouldBe true
+        }
+        "the lowest allowed number (0) is supplied" in {
+          val validationResult = NumberValidation.validateOptional(lowestAllowedNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          validationResult.isEmpty shouldBe true
+        }
+        "the highest allowed number (99999999999.99) is supplied" in {
+          val validationResult = NumberValidation.validateOptional(highestAllowedNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          validationResult.isEmpty shouldBe true
+        }
+        "a negative number is supplied" in {
+          val validationResult = NumberValidation.validateOptional(negativeNumber, "/vctSubscription/1/amountInvested", includeNegative = true)
+          validationResult.isEmpty shouldBe true
+        }
       }
 
-      "the feature switch is disabled and a valid number is supplied" in {
-        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(false))
-
-        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(validNumber, path)
-        validationResult.isEmpty shouldBe true
-      }
-    }
-
-    "return an error" when {
-      "the feature switch is disabled and a negative number is supplied" in {
-        implicit val featureSwitches: FeatureSwitches = FeatureSwitches(configuration(false))
-
-        val validationResult = NumberValidation.validateOptionalWithFeatureFlag(negativeNumber, path)
-        validationResult shouldBe List(ValueFormatError.forPathAndRange(path, "0", "99999999999.99"))
+      "return an error" when {
+        "a number with too many decimal places is supplied" in {
+          val validationResult =
+            NumberValidation.validateOptional(numberWithTooManyDecimalPlaces, "/vctSubscription/1/amountInvested", includeNegative = true)
+          validationResult.isEmpty shouldBe false
+          validationResult.length shouldBe 1
+          validationResult.head shouldBe ValueFormatError.copy(paths = Some(Seq("/vctSubscription/1/amountInvested")))
+        }
       }
     }
   }

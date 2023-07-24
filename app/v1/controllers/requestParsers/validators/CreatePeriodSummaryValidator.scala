@@ -103,9 +103,10 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodAllowableExpenses.consolidatedExpenses,
         path = s"/periodAllowableExpenses/consolidatedExpenses"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.costOfGoodsAllowable,
-        path = s"/periodAllowableExpenses/costOfGoodsAllowable"
+        path = s"/periodAllowableExpenses/costOfGoodsAllowable",
+        includeNegative = true
       ),
       NumberValidation.validateOptional(
         field = periodAllowableExpenses.paymentsToSubcontractorsAllowable,
@@ -119,13 +120,15 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodAllowableExpenses.carVanTravelExpensesAllowable,
         path = s"/periodAllowableExpenses/carVanTravelExpensesAllowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.premisesRunningCostsAllowable,
-        path = s"/periodAllowableExpenses/premisesRunningCostsAllowable"
+        path = s"/periodAllowableExpenses/premisesRunningCostsAllowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.maintenanceCostsAllowable,
-        path = s"/periodAllowableExpenses/maintenanceCostsAllowable"
+        path = s"/periodAllowableExpenses/maintenanceCostsAllowable",
+        includeNegative = true
       ),
       NumberValidation.validateOptional(
         field = periodAllowableExpenses.adminCostsAllowable,
@@ -139,37 +142,44 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodAllowableExpenses.advertisingCostsAllowable,
         path = s"/periodAllowableExpenses/advertisingCostsAllowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.interestOnBankOtherLoansAllowable,
-        path = s"/periodAllowableExpenses/interestOnBankOtherLoansAllowable"
+        path = s"/periodAllowableExpenses/interestOnBankOtherLoansAllowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.financeChargesAllowable,
-        path = s"/periodAllowableExpenses/financeChargesAllowable"
+        path = s"/periodAllowableExpenses/financeChargesAllowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.irrecoverableDebtsAllowable,
-        path = s"/periodAllowableExpenses/irrecoverableDebtsAllowable"
+        path = s"/periodAllowableExpenses/irrecoverableDebtsAllowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.professionalFeesAllowable,
-        path = s"/periodAllowableExpenses/professionalFeesAllowable"
+        path = s"/periodAllowableExpenses/professionalFeesAllowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.depreciationAllowable,
-        path = s"/periodAllowableExpenses/depreciationAllowable"
+        path = s"/periodAllowableExpenses/depreciationAllowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodAllowableExpenses.otherExpensesAllowable,
-        path = s"/periodAllowableExpenses/otherExpensesAllowable"
+        path = s"/periodAllowableExpenses/otherExpensesAllowable",
+        includeNegative = true
       )
     ).flatten
 
   private def validateDisallowableExpenses(periodDisallowableExpenses: PeriodDisallowableExpenses): List[MtdError] = {
     List(
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodDisallowableExpenses.costOfGoodsDisallowable,
-        path = s"/periodDisallowableExpenses/costOfGoodsDisallowable"
+        path = s"/periodDisallowableExpenses/costOfGoodsDisallowable",
+        includeNegative = true
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.paymentsToSubcontractorsDisallowable,
@@ -183,13 +193,15 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodDisallowableExpenses.carVanTravelExpensesDisallowable,
         path = s"/periodDisallowableExpenses/carVanTravelExpensesDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodDisallowableExpenses.premisesRunningCostsDisallowable,
-        path = s"/periodDisallowableExpenses/premisesRunningCostsDisallowable"
+        path = s"/periodDisallowableExpenses/premisesRunningCostsDisallowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodDisallowableExpenses.maintenanceCostsDisallowable,
-        path = s"/periodDisallowableExpenses/maintenanceCostsDisallowable"
+        path = s"/periodDisallowableExpenses/maintenanceCostsDisallowable",
+        includeNegative = true
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.adminCostsDisallowable,
@@ -203,25 +215,29 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
         field = periodDisallowableExpenses.advertisingCostsDisallowable,
         path = s"/periodDisallowableExpenses/advertisingCostsDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodDisallowableExpenses.interestOnBankOtherLoansDisallowable,
-        path = s"/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable"
+        path = s"/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodDisallowableExpenses.financeChargesDisallowable,
-        path = s"/periodDisallowableExpenses/financeChargesDisallowable"
+        path = s"/periodDisallowableExpenses/financeChargesDisallowable",
+        includeNegative = true
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodDisallowableExpenses.irrecoverableDebtsDisallowable,
-        path = s"/periodDisallowableExpenses/irrecoverableDebtsDisallowable"
+        path = s"/periodDisallowableExpenses/irrecoverableDebtsDisallowable",
+        includeNegative = true
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.professionalFeesDisallowable,
         path = s"/periodDisallowableExpenses/professionalFeesDisallowable"
       ),
-      NumberValidation.validateOptionalIncludeNegatives(
+      NumberValidation.validateOptional(
         field = periodDisallowableExpenses.depreciationDisallowable,
-        path = s"/periodDisallowableExpenses/depreciationDisallowable"
+        path = s"/periodDisallowableExpenses/depreciationDisallowable",
+        includeNegative = true
       ),
       NumberValidation.validateOptional(
         field = periodDisallowableExpenses.otherExpensesDisallowable,

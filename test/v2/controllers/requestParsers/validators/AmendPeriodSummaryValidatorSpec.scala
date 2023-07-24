@@ -19,13 +19,12 @@ package v2.controllers.requestParsers.validators
 import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
-import mocks.MockAppConfig
 import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
 
-class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 
-  val validator               = new AmendPeriodSummaryValidator(mockAppConfig)
+  val validator               = new AmendPeriodSummaryValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
   private val validPeriodId   = "2019-01-01_2019-02-02"

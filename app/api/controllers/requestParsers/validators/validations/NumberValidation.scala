@@ -17,35 +17,32 @@
 package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.{MtdError, ValueFormatError}
-import config.FeatureSwitches
 
 object NumberValidation {
 
-  def validateOptional(field: Option[BigDecimal], path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): List[MtdError] = {
+  private def validateOptional(field: Option[BigDecimal], path: String, min: BigDecimal, max: BigDecimal): List[MtdError] = {
     field match {
       case None        => NoValidationErrors
       case Some(value) => validate(value, path, min, max)
     }
   }
 
-  def validate(field: BigDecimal, path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99): List[MtdError] = {
+  private def validate(field: BigDecimal, path: String, min: BigDecimal, max: BigDecimal): List[MtdError] = {
     if (field >= min && field <= max && field.scale <= 2) {
       Nil
     } else {
-      List(
-        ValueFormatError.forPathAndRange(path, min.toString, max.toString)
-      )
+      List(ValueFormatError.forPathAndRange(path, min.toString, max.toString))
     }
   }
 
-  def validateOptionalIncludeNegatives(field: Option[BigDecimal], path: String): List[MtdError] = {
+  private def validateOptionalIncludeNegatives(field: Option[BigDecimal], path: String): List[MtdError] = {
     field match {
       case None        => NoValidationErrors
       case Some(value) => validateIncludeNegatives(value, path)
     }
   }
 
-  def validateIncludeNegatives(field: BigDecimal, path: String): List[MtdError] = {
+  private def validateIncludeNegatives(field: BigDecimal, path: String): List[MtdError] = {
     if (field > -100000000000.00 && field < 100000000000.00 && field.scale <= 2) {
       Nil
     } else {
@@ -55,8 +52,19 @@ object NumberValidation {
     }
   }
 
-  def validateOptionalWithFeatureFlag(field: Option[BigDecimal], path: String, min: BigDecimal = 0, max: BigDecimal = 99999999999.99)(implicit
-      featureSwitches: FeatureSwitches): List[MtdError] =
-    if (featureSwitches.isAllowNegativeExpensesEnabled) validateOptionalIncludeNegatives(field, path) else validateOptional(field, path, min, max)
+  def validateOptional(field: Option[BigDecimal],
+                       path: String,
+                       min: BigDecimal = 0,
+                       max: BigDecimal = 99999999999.99,
+                       includeNegative: Boolean = false): List[MtdError] =
+    if (includeNegative) validateOptionalIncludeNegatives(field, path) else validateOptional(field, path, min, max)
+
+  def validate(field: BigDecimal,
+               path: String,
+               min: BigDecimal = 0,
+               max: BigDecimal = 99999999999.99,
+               includeNegative: Boolean = false): List[MtdError] = {
+    if (includeNegative) validateIncludeNegatives(field, path) else validate(field, path, min, max)
+  }
 
 }
