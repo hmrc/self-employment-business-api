@@ -39,12 +39,20 @@ responses:
     content:
       application/json:
         schema:
+          {{#if (enabled "allowNegativeExpenses")}}
+          $ref: './schemas/retrieve_period_summary_response_with_negatives.json'
+          {{else}}
           $ref: './schemas/retrieve_period_summary_response.json'
+          {{/if}}
         examples:
           example-non-consolidated-response:
             description: Example Non-Consolidated Response
             value:
+              {{#if (enabled "allowNegativeExpenses")}}
+              $ref: './examples/retrieve_period_summary_non_consolidated_response_with_negatives.json'
+              {{else}}
               $ref: './examples/retrieve_period_summary_non_consolidated_response.json'
+              {{/if}}
           example-consolidated-response:
             description: Example Consolidated Response
             value:
