@@ -348,7 +348,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |          "interestOnBankOtherLoansDisallowable": -1000.99,
              |          "financeChargesDisallowable": -9999.99,
              |          "irrecoverableDebtsDisallowable": -1000.99,
-             |          "professionalFeesDisallowable": -99999999999.99,
+             |          "professionalFeesDisallowable": -1000000000000.99,
              |          "depreciationDisallowable": -99999999999.99,
              |          "otherExpensesDisallowable": 1000.99
              |      }
@@ -408,7 +408,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |          "interestOnBankOtherLoansDisallowable": -1000.99,
              |          "financeChargesDisallowable": -9999.99,
              |          "irrecoverableDebtsDisallowable": -1000.99,
-             |          "professionalFeesDisallowable": -99999999999.99,
+             |          "professionalFeesDisallowable": -1000000000000.99,
              |          "depreciationDisallowable": -99999999999.99,
              |          "otherExpensesDisallowable": 1000.99
              |      }

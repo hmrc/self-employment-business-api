@@ -33,6 +33,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
     val periodId: String   = s"${periodStartDate}_$periodEndDate"
+
     val requestBodyJson: JsValue = Json.parse(
       s"""
          |{
@@ -81,6 +82,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin
     )
+
     val responseBody: JsValue = Json.parse(
       s"""
          |{
@@ -105,6 +107,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin
     )
+
     val downstreamResponse: JsValue = Json.parse(
       s"""
          |{
@@ -159,17 +162,17 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysIfsTest extends Test {
-    override def downstreamUri: String   = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+    override def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
-    def downstreamTaxYear: String        = "23-24"
+    def downstreamTaxYear: String = "23-24"
 
     override def periodStartDate: String = "2023-07-24"
 
-    override def periodEndDate: String   = "2023-08-24"
+    override def periodEndDate: String = "2023-08-24"
 
-    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
-    def mtdTaxYear: String               = "2023-24"
+    def mtdTaxYear: String = "2023-24"
 
     def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
@@ -353,7 +356,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |          "interestOnBankOtherLoansDisallowable": -1000.99,
              |          "financeChargesDisallowable": -9999.99,
              |          "irrecoverableDebtsDisallowable": -1000.99,
-             |          "professionalFeesDisallowable": -99999999999.99,
+             |          "professionalFeesDisallowable": -1000000000000.99,
              |          "depreciationDisallowable": -99999999999.99,
              |          "otherExpensesDisallowable": 1000.99
              |      }
@@ -413,7 +416,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |          "interestOnBankOtherLoansDisallowable": -1000.99,
              |          "financeChargesDisallowable": -9999.99,
              |          "irrecoverableDebtsDisallowable": -1000.99,
-             |          "professionalFeesDisallowable": -99999999999.99,
+             |          "professionalFeesDisallowable": -1000000000000.99,
              |          "depreciationDisallowable": -99999999999.99,
              |          "otherExpensesDisallowable": 1000.99
              |      }
