@@ -5,7 +5,8 @@
   },
   "periodIncome": {
     "turnover": 1000.99,
-    "other": 1000.09
+    "other": 1000.09,
+    "taxTakenOffTradingIncome": 1000.99
   },
   "periodExpenses": {
     "costOfGoods": 1000.99,
