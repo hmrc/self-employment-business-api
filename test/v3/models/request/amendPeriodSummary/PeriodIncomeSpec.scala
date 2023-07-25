@@ -24,8 +24,9 @@ class PeriodIncomeSpec extends UnitSpec {
   val mtdJson: JsValue = Json.parse(
     """
       |{
-      |  "turnover":  500.25,
-      |  "other": 500.25
+      |  "turnover":  100.25,
+      |  "other": 200.25,
+      |  "taxTakenOffTradingIncome": 300.25
       |}
     """.stripMargin
   )
@@ -33,15 +34,17 @@ class PeriodIncomeSpec extends UnitSpec {
   val desJson: JsValue = Json.parse(
     """
       |{
-      |   "turnover": 500.25,
-      |   "other": 500.25
+      |   "turnover": 100.25,
+      |   "other": 200.25,
+      |   "taxTakenOffTradingIncome": 300.25
       |}
     """.stripMargin
   )
 
   val model: PeriodIncome = PeriodIncome(
-    Some(500.25),
-    Some(500.25)
+    turnover = Some(100.25),
+    other = Some(200.25),
+    taxTakenOffTradingIncome = Some(300.25)
   )
 
   "reads" should {

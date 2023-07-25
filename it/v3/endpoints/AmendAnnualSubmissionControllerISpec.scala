@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1andv2.endpoints
+package v3.endpoints
 
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
@@ -30,14 +30,14 @@ import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
 
 class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with AmendAnnualSubmissionFixture with JsonErrorValidators {
 
-  val requestBodyJson: JsValue           = amendAnnualSubmissionBodyMtdJson()
+  val requestBodyJson: JsValue = amendAnnualSubmissionBodyMtdJson()
   val downstreamRequestBodyJson: JsValue = amendAnnualSubmissionBodyDownstreamJson()
-  val versions: Seq[String]              = Seq("1.0", "2.0")
 
   private trait Test {
-    val nino: String       = "AA123456A"
+    val nino: String = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val responseBody: JsValue = Json.parse(s"""
+    val responseBody: JsValue = Json.parse(
+      s"""
          |{
          |  "links": [
          |    {
@@ -58,11 +58,11 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
          |  ]
          |}
          |""".stripMargin)
-    val downstreamResponseBody: JsValue = Json.parse("""{
+    val downstreamResponseBody: JsValue = Json.parse(
+      """{
         |   "transactionReference": "ignored"
         |}""".stripMargin)
 
-    // val version: String
     def taxYear: String
 
     def downstreamTaxYear: String
@@ -71,14 +71,11 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
 
     def setupStubs(): StubMapping
 
-    def request(version: String): WSRequest = {
-      AuditStub.audit()
-      AuthStub.authorised()
-      MtdIdLookupStub.ninoFound(nino)
+    def request(): WSRequest = {
       setupStubs()
       buildRequest(s"/$nino/$businessId/annual/$taxYear")
         .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.$version+json"),
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
@@ -109,79 +106,71 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
     def downstreamTaxYear: String = "23-24"
   }
 
-  "Calling the amend endpoint" should {
+  "Calling the V3 amend endpoint" should {
     "return a 200 status code" when {
-      versions.foreach(testVersion =>
-        s"any valid request is made to version $testVersion" in new NonTysTest {
-          override def setupStubs(): StubMapping = {
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub
-              .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
-              .withRequestBody(downstreamRequestBodyJson)
-              .thenReturn(status = OK, downstreamResponseBody)
-          }
+      "any valid request is made" in new NonTysTest {
 
-          val testRequest          = request(testVersion)
-          val response: WSResponse = await(testRequest.put(requestBodyJson))
-          response.status shouldBe OK
-          response.json shouldBe responseBody
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-          response.header("Content-Type") shouldBe Some("application/json")
-        })
-    }
-  }
+        override def setupStubs(): StubMapping = {
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          BaseDownstreamStub
+            .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
+            .withRequestBody(downstreamRequestBodyJson)
+            .thenReturn(status = OK, downstreamResponseBody)
+        }
 
-  versions.foreach(testVersion =>
-    s"a valid request for $testVersion is made for a Tax Year Specific tax year" in new TysIfsTest {
-
-      override def setupStubs(): StubMapping = {
-        AuthStub.authorised()
-        MtdIdLookupStub.ninoFound(nino)
-        BaseDownstreamStub
-          .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
-          .withRequestBody(downstreamRequestBodyJson)
-          .thenReturn(status = OK, downstreamResponseBody)
+        val response: WSResponse = await(request().put(requestBodyJson))
+        response.status shouldBe OK
+        response.json shouldBe responseBody
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      val response: WSResponse = await(request(testVersion).put(requestBodyJson))
-      response.status shouldBe OK
-      response.json shouldBe responseBody
-      response.header("X-CorrelationId").nonEmpty shouldBe true
-      response.header("Content-Type") shouldBe Some("application/json")
-    })
+      "a valid request is made for a Tax Year Specific tax year" in new TysIfsTest {
 
-  "return bad request error" when {
-    versions.foreach(testVersion =>
-      s"badly formed json body to version $testVersion" in new NonTysTest {
+        override def setupStubs(): StubMapping = {
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          BaseDownstreamStub
+            .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
+            .withRequestBody(downstreamRequestBodyJson)
+            .thenReturn(status = OK, downstreamResponseBody)
+        }
 
+        val response: WSResponse = await(request().put(requestBodyJson))
+        response.status shouldBe OK
+        response.json shouldBe responseBody
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+    }
+
+    "return bad request error" when {
+      "badly formed json body" in new NonTysTest {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
         }
 
-        val response: WSResponse = await(
-          request(testVersion)
-            .addHttpHeaders(("Content-Type", "application/json"))
-            .put("{ badJson }"))
+        val response: WSResponse = await(request().addHttpHeaders(("Content-Type", "application/json")).put("{ badJson }"))
         response.json shouldBe Json.toJson(BadRequestError)
         response.status shouldBe BAD_REQUEST
-      })
-  }
+      }
+    }
 
-  "return error according to spec" when {
-    versions.foreach(testVersion =>
-      s"validation error for version $testVersion" when {
+    "return error according to spec" when {
+      "validation error" when {
         def validationErrorTest(requestNino: String,
                                 requestBusinessId: String,
                                 requestTaxYear: String,
                                 requestBody: JsValue,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code}  in version $testVersion" in new NonTysTest {
-            override val nino: String       = requestNino
+          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
+
+            override val nino: String = requestNino
             override val businessId: String = requestBusinessId
-            override val taxYear: String    = requestTaxYear
+            override val taxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -189,7 +178,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request(testVersion).put(requestBody))
+            val response: WSResponse = await(request().put(requestBody))
             response.json shouldBe Json.toJson(expectedBody)
             response.status shouldBe expectedStatus
           }
@@ -197,7 +186,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
 
         val input = Seq(
           ("AA1123A", "XAIS12345678910", "2017-18", requestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "XAIS12345678910", "20223", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "203100", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2021-23", requestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2016-17", requestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
           (
@@ -255,8 +244,9 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
             "XAIS12345678910",
             "2021-22",
             amendAnnualSubmissionBodyMtdJson(
-              allowances = Some(allowancesMtdJsonWith(
-                structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))))),
+              allowances = Some(
+                allowancesMtdJsonWith(
+                  structuredBuildingAllowances = Seq(structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))))),
               adjustments = None,
               nonFinancials = None
             ),
@@ -274,56 +264,54 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
             BAD_REQUEST,
             Class4ExemptionReasonFormatError)
         )
+
         input.foreach(args => (validationErrorTest _).tupled(args))
-      })
-
-    "downstream service error" when {
-
-      def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedError: MtdError, testVersion: String): Unit = {
-        s"downstream returns an $downstreamCode error and status $downstreamStatus in version $testVersion" in new NonTysTest {
-          //  val version = testVersion
-
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub.onError(BaseDownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
-          }
-
-          val response: WSResponse = await(request(testVersion).put(requestBodyJson))
-          response.status shouldBe expectedStatus
-          response.json shouldBe Json.toJson(expectedError)
-          response.header("Content-Type") shouldBe Some("application/json")
-        }
       }
 
-      val errors = Seq(
-        (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-        (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
-        (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-        (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-        (FORBIDDEN, "MISSING_EXEMPTION_REASON", INTERNAL_SERVER_ERROR, InternalError),
-        (FORBIDDEN, "MISSING_EXEMPTION_INDICATOR", INTERNAL_SERVER_ERROR, InternalError),
-        (FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", BAD_REQUEST, RuleAllowanceNotSupportedError),
-        (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-        (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
-        (GONE, "GONE", INTERNAL_SERVER_ERROR, InternalError),
-        (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, InternalError),
-        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-      )
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedError: MtdError): Unit = {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
 
-      val extraTysErrors = Seq(
-        (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
-        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
-        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
-      )
+            override def setupStubs(): StubMapping = {
+              AuditStub.audit()
+              AuthStub.authorised()
+              MtdIdLookupStub.ninoFound(nino)
+              BaseDownstreamStub.onError(BaseDownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+            }
 
-      val allErrors = (errors ++ extraTysErrors)
-      versions.foreach(testVersion => allErrors.foreach(args => (serviceErrorTest(args._1, args._2, args._3, args._4, testVersion))))
+            val response: WSResponse = await(request().put(requestBodyJson))
+            response.status shouldBe expectedStatus
+            response.json shouldBe Json.toJson(expectedError)
+            response.header("Content-Type") shouldBe Some("application/json")
+          }
+        }
+
+        val errors = Seq(
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+          (FORBIDDEN, "MISSING_EXEMPTION_REASON", INTERNAL_SERVER_ERROR, InternalError),
+          (FORBIDDEN, "MISSING_EXEMPTION_INDICATOR", INTERNAL_SERVER_ERROR, InternalError),
+          (FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", BAD_REQUEST, RuleAllowanceNotSupportedError),
+          (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
+          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
+          (GONE, "GONE", INTERNAL_SERVER_ERROR, InternalError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
+        )
+
+        val extraTysErrors = Seq(
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
+          (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
+          (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+        )
+
+        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+      }
     }
   }
-
 }

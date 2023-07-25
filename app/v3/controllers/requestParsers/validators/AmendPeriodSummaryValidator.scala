@@ -76,6 +76,10 @@ class AmendPeriodSummaryValidator extends Validator[AmendPeriodSummaryRawData] {
       NumberValidation.validateOptional(
         field = income.other,
         path = s"/periodIncome/other"
+      ),
+      NumberValidation.validateOptional(
+        field = income.taxTakenOffTradingIncome,
+        path = s"/periodIncome/taxTakenOffTradingIncome"
       )
     )
   }

@@ -177,7 +177,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the create endpoint" should {
+  "Calling the V1 create endpoint" should {
 
     "return a 200 status code" when {
       "any valid request is made" in new NonTysTest {

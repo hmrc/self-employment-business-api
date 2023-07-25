@@ -18,7 +18,7 @@ package v3.models.request.amendPeriodSummary
 
 import play.api.libs.json.{Json, OWrites, Reads}
 
-case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal])
+case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal], taxTakenOffTradingIncome: Option[BigDecimal])
 
 object PeriodIncome {
 

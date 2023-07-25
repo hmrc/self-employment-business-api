@@ -27,6 +27,7 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import v3.fixtures.AmendPeriodSummaryFixture
 import v3.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
 import v3.mocks.services.MockAmendPeriodSummaryService
 import v3.models.request.amendPeriodSummary._

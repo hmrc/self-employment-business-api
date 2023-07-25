@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package v3.models.request.amendPeriodSummary
+package v3.fixtures
 
 import play.api.libs.json.{JsValue, Json}
+import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
 trait AmendPeriodSummaryFixture {
 
@@ -25,7 +26,8 @@ trait AmendPeriodSummaryFixture {
       |{
       |    "periodIncome": {
       |        "turnover": 1.12,
-      |        "other": 2.12
+      |        "other": 2.12,
+      |        "taxTakenOffTradingIncome": 3.12
       |    },
       |    "periodExpenses": {
       |        "costOfGoods": 2.12,
@@ -66,7 +68,7 @@ trait AmendPeriodSummaryFixture {
   )
 
   val amendPeriodSummaryBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
-    periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
+    periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
     periodExpenses = Some(
       PeriodExpenses(
         consolidatedExpenses = None,
@@ -111,7 +113,8 @@ trait AmendPeriodSummaryFixture {
       |{
       |    "incomes": {
       |        "turnover": 1.12,
-      |        "other": 2.12
+      |        "other": 2.12,
+      |        "taxTakenOffTradingIncome": 3.12
       |    },
       |    "deductions": {
       |        "costOfGoods": {
@@ -184,7 +187,8 @@ trait AmendPeriodSummaryFixture {
       |{
       |    "periodIncome": {
       |        "turnover": 1.12,
-      |        "other": 2.12
+      |        "other": 2.12,
+      |        "taxTakenOffTradingIncome": 3.12
       |    },
       |    "periodExpenses": {
       |        "consolidatedExpenses": 1.12
@@ -194,7 +198,7 @@ trait AmendPeriodSummaryFixture {
   )
 
   val amendPeriodSummaryConsolidatedBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
-    periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
+    periodIncome = Some(PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
     periodExpenses = Some(
       PeriodExpenses(
         consolidatedExpenses = Some(1.12),
@@ -222,7 +226,8 @@ trait AmendPeriodSummaryFixture {
       |{
       |    "incomes": {
       |        "turnover": 1.12,
-      |        "other": 2.12
+      |        "other": 2.12,
+      |        "taxTakenOffTradingIncome": 3.12
       |    },
       |    "deductions": {
       |        "simplifiedExpenses": 1.12
