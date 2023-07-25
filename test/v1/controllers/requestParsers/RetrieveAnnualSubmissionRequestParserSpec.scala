@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package config.controllers.requestparsers
+package v1.controllers.requestParsers
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
-import v1.controllers.requestParsers.RetrieveAnnualSubmissionRequestParser
 import v1.mocks.validators.MockRetrieveAnnualSubmissionValidator
 import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
 
