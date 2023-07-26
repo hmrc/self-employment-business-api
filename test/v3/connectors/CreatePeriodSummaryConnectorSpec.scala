@@ -16,12 +16,11 @@
 
 package v3.connectors
 
-import anyVersion.models.request.createPeriodSummary.PeriodDates
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino}
 import api.models.outcomes.ResponseWrapper
 import v3.models.request.createPeriodSummary._
+import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 

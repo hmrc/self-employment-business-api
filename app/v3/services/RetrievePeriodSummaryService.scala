@@ -16,12 +16,12 @@
 
 package v3.services
 
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.connectors.RetrievePeriodSummaryConnector
+import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}

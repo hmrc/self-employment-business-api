@@ -16,12 +16,12 @@
 
 package v2.mocks.connectors
 
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.RetrievePeriodSummaryConnector
+import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}

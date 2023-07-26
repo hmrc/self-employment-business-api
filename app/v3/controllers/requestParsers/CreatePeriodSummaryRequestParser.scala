@@ -16,11 +16,10 @@
 
 package v3.controllers.requestParsers
 
-import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino}
 import v3.controllers.requestParsers.validators.CreatePeriodSummaryValidator
-import v3.models.request.createPeriodSummary.{CreatePeriodSummaryBody, CreatePeriodSummaryRequest}
+import v3.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, CreatePeriodSummaryBody, CreatePeriodSummaryRequest}
 
 import javax.inject.Inject
 

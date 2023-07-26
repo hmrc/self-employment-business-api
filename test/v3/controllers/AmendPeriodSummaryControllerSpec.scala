@@ -16,8 +16,6 @@
 
 package v3.controllers
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
-import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
@@ -25,12 +23,15 @@ import api.models.errors._
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.fixtures.AmendPeriodSummaryFixture
 import v3.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
 import v3.mocks.services.MockAmendPeriodSummaryService
 import v3.models.request.amendPeriodSummary._
+import v3.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -41,6 +42,7 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryRequestParser
     with MockHateoasFactory
+    with MockAppConfig
     with AmendPeriodSummaryFixture {
 
   "handleRequest" should {
@@ -108,6 +110,7 @@ class AmendPeriodSummaryControllerSpec
   }
 
   private trait Test extends ControllerTest {
+    MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId: String = "XAIS12345678910"
     val periodId: String
@@ -127,6 +130,7 @@ class AmendPeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       parser = mockAmendPeriodSummaryRequestParser,
       service = mockAmendPeriodSummaryService,
+      appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

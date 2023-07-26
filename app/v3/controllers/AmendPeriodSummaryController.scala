@@ -16,30 +16,32 @@
 
 package v3.controllers
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
-import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
-import anyVersion.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
 import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
 import v3.controllers.requestParsers.AmendPeriodSummaryRequestParser
+import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
+import v3.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
+import v3.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
 import v3.services.AmendPeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AmendPeriodSummaryController @Inject()(val authService: EnrolmentsAuthService,
-                                             val lookupService: MtdIdLookupService,
-                                             parser: AmendPeriodSummaryRequestParser,
-                                             service: AmendPeriodSummaryService,
-                                             hateoasFactory: HateoasFactory,
-                                             cc: ControllerComponents,
-                                             idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
+                                              val lookupService: MtdIdLookupService,
+                                              parser: AmendPeriodSummaryRequestParser,
+                                              service: AmendPeriodSummaryService,
+                                              appConfig: AppConfig,
+                                              hateoasFactory: HateoasFactory,
+                                              cc: ControllerComponents,
+                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -49,7 +51,8 @@ class AmendPeriodSummaryController @Inject()(val authService: EnrolmentsAuthServ
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = AmendPeriodSummaryRawData(nino, businessId, periodId, request.body, taxYear)
+      val includeNegatives = FeatureSwitches(appConfig.featureSwitches).isAllowNegativeExpensesEnabled
+      val rawData          = AmendPeriodSummaryRawData(nino, businessId, periodId, request.body, taxYear, includeNegatives)
 
       val requestHandler = RequestHandler
         .withParser(parser)

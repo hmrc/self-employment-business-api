@@ -16,13 +16,11 @@
 
 package v3.models.request.createPeriodSummary
 
-import anyVersion.models.request.createPeriodSummary.{PeriodDates}
 import play.api.libs.json.Json
 import support.UnitSpec
 import v3.fixtures.CreatePeriodSummaryFixture
 
 class CreatePeriodSummaryBodySpec extends UnitSpec with CreatePeriodSummaryFixture {
-
 
   val someOptionalFieldsMtdBody: CreatePeriodSummaryBody =
     CreatePeriodSummaryBody(

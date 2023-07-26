@@ -16,11 +16,11 @@
 
 package v1.mocks.requestParsers
 
-import anyVersion.controllers.requestParsers.RetrievePeriodSummaryRequestParser
-import anyVersion.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
+import v1.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
 
 trait MockRetrievePeriodSummaryRequestParser extends MockFactory {
 

@@ -16,8 +16,7 @@
 
 package v3.controllers
 
-import anyVersion.controllers.requestParsers.RetrievePeriodSummaryRequestParser
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
+import v3.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
 import api.hateoas.HateoasFactory
 import api.models.errors._
@@ -27,6 +26,7 @@ import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
+import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
 import v3.services.RetrievePeriodSummaryService
 
@@ -34,13 +34,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryController @Inject()(val authService: EnrolmentsAuthService,
-                                                val lookupService: MtdIdLookupService,
-                                                parser: RetrievePeriodSummaryRequestParser,
-                                                service: RetrievePeriodSummaryService,
-                                                hateoasFactory: HateoasFactory,
-                                                cc: ControllerComponents,
-                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
+                                                 val lookupService: MtdIdLookupService,
+                                                 parser: RetrievePeriodSummaryRequestParser,
+                                                 service: RetrievePeriodSummaryService,
+                                                 hateoasFactory: HateoasFactory,
+                                                 cc: ControllerComponents,
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc)
     with BaseController
     with Logging {

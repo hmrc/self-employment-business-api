@@ -16,7 +16,6 @@
 
 package v3.models.request.amendPeriodSummary
 
-import anyVersion.models.request.amendPeriodSummary.PeriodDisallowableExpenses
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 

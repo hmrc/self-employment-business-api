@@ -16,15 +16,14 @@
 
 package v3.services
 
-import anyVersion.models.request.retrievePeriodSummary
-import anyVersion.models.response.retrievePeriodSummary.PeriodDates
 import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.mocks.connectors.MockRetrievePeriodSummaryConnector
-import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v3.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 
@@ -43,7 +42,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
     None
   )
 
-  private val requestData = retrievePeriodSummary.RetrievePeriodSummaryRequest(
+  private val requestData = RetrievePeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     periodId = PeriodId(periodId),

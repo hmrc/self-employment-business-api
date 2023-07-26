@@ -16,16 +16,17 @@
 
 package v3.controllers
 
-import anyVersion.models.request.createPeriodSummary.CreatePeriodSummaryRawData
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
 import v3.controllers.requestParsers.CreatePeriodSummaryRequestParser
+import v3.models.request.createPeriodSummary.CreatePeriodSummaryRawData
+import v3.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v3.services.CreatePeriodSummaryService
 
 import javax.inject.{Inject, Singleton}
@@ -36,6 +37,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                val lookupService: MtdIdLookupService,
                                                parser: CreatePeriodSummaryRequestParser,
                                                service: CreatePeriodSummaryService,
+                                               appConfig: AppConfig,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -48,7 +50,8 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = CreatePeriodSummaryRawData(nino, businessId, request.body)
+      val includeNegatives = FeatureSwitches(appConfig.featureSwitches).isAllowNegativeExpensesEnabled
+      val rawData          = CreatePeriodSummaryRawData(nino, businessId, request.body, includeNegatives)
 
       val requestHandler = RequestHandler
         .withParser(parser)

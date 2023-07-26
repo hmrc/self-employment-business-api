@@ -16,12 +16,12 @@
 
 package v3.controllers.requestParsers.validators
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, Json}
 import support.UnitSpec
 import v3.fixtures.AmendPeriodSummaryFixture
+import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 
 class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
@@ -65,7 +65,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |        "other": 1000.99
                 |    }
                 |}
-            |""".stripMargin
+                |""".stripMargin
             ),
             None
           )) shouldBe Nil
@@ -114,7 +114,7 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
                 |        "otherExpensesDisallowable": 1000.99
                 |    }
                 |}
-            |""".stripMargin
+                |""".stripMargin
             ),
             None
           )) shouldBe Nil
