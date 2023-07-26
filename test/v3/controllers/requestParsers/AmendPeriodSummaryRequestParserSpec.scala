@@ -16,7 +16,6 @@
 
 package v3.controllers.requestParsers
 
-import anyVersion.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec

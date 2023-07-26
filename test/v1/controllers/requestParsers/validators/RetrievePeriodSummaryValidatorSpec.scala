@@ -16,14 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
-import anyVersion.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.models.errors._
 import support.UnitSpec
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 
 class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
-  val validator = new RetrievePeriodSummaryValidator()
+  val validator               = new RetrievePeriodSummaryValidator()
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
   private val validPeriodId   = "2017-01-25_2017-02-31"

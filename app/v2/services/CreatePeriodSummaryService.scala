@@ -16,7 +16,6 @@
 
 package v2.services
 
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.RequestContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -24,6 +23,7 @@ import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v2.connectors.CreatePeriodSummaryConnector
 import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

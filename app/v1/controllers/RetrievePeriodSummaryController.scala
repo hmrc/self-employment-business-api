@@ -16,14 +16,14 @@
 
 package v1.controllers
 
-import anyVersion.controllers.requestParsers.RetrievePeriodSummaryRequestParser
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import api.controllers._
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
+import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
 import v1.services.RetrievePeriodSummaryService
 

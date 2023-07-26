@@ -16,15 +16,14 @@
 
 package v1.services
 
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
-import anyVersion.models.response.retrievePeriodSummary.PeriodDates
 import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockRetrievePeriodSummaryConnector
-import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v1.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 

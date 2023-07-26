@@ -16,9 +16,6 @@
 
 package v2.controllers
 
-import anyVersion.models.request.createPeriodSummary
-import anyVersion.models.request.createPeriodSummary.{PeriodDates, PeriodDisallowableExpenses, PeriodIncome}
-import anyVersion.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
@@ -26,20 +23,24 @@ import api.models.errors._
 import api.models.hateoas.Method.{GET, PUT}
 import api.models.hateoas.{HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v2.mocks.services.MockCreatePeriodSummaryService
 import v2.models.request.createPeriodSummary._
+import v2.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreatePeriodSummaryControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryRequestParser
+    with MockAppConfig
     with MockHateoasFactory {
 
   private val businessId = "XAIS12345678910"
@@ -183,7 +184,7 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val rawData     = createPeriodSummary.CreatePeriodSummaryRawData(nino, businessId, requestJson)
+  private val rawData     = CreatePeriodSummaryRawData(nino, businessId, requestJson)
   private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {
@@ -236,12 +237,14 @@ class CreatePeriodSummaryControllerSpec
   }
 
   private trait Test extends ControllerTest {
+    MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       parser = mockCreatePeriodicRequestParser,
       service = mockCreatePeriodicService,
+      appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

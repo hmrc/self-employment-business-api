@@ -16,9 +16,8 @@
 
 package v3.fixtures
 
-import anyVersion.models.request.amendPeriodSummary.PeriodDisallowableExpenses
 import play.api.libs.json.{JsValue, Json}
-import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, PeriodExpenses, PeriodIncome}
+import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
 trait AmendPeriodSummaryFixture {
 

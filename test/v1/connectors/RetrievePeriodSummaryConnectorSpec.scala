@@ -16,12 +16,11 @@
 
 package v1.connectors
 
-import anyVersion.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
-import anyVersion.models.response.retrievePeriodSummary.PeriodDates
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v1.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 

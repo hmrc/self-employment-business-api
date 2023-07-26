@@ -16,8 +16,6 @@
 
 package v3.services
 
-import anyVersion.models.request.createPeriodSummary.PeriodDates
-import anyVersion.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
@@ -25,6 +23,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v3.mocks.connectors.MockCreatePeriodSummaryConnector
 import v3.models.request.createPeriodSummary._
+import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 
