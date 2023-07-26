@@ -17,7 +17,7 @@
 package config
 
 import io.swagger.v3.parser.OpenAPIV3Parser
-import play.api.http.Status
+import play.api.http.Status.OK
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import routing.{Version1, Version2, Version3}
@@ -80,7 +80,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   "GET /api/definition" should {
     "return a 200 with the correct response body" in {
       val response: WSResponse = await(buildRequest("/api/definition").get())
-      response.status shouldBe Status.OK
+      response.status shouldBe OK
       Json.parse(response.body) shouldBe apiDefinitionJson
     }
   }
@@ -88,20 +88,26 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   "an OAS documentation request" must {
     Seq(Version1, Version2, Version3).foreach { version =>
       s"return the documentation for $version" in {
-        val response: WSResponse = await(buildRequest(s"/api/conf/${version.name}/application.yaml").get())
-        response.status shouldBe Status.OK
+        val response = get(s"/api/conf/${version.name}/application.yaml")
 
-        val contents     = response.body[String]
-        val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+        val body         = response.body[String]
+        val parserResult = Try(new OpenAPIV3Parser().readContents(body))
         parserResult.isSuccess shouldBe true
 
-        val openAPI = Option(parserResult.get.getOpenAPI)
-        openAPI.isEmpty shouldBe false
-        openAPI.get.getOpenapi shouldBe "3.0.3"
-        openAPI.get.getInfo.getTitle shouldBe "Self Employment Business Details (MTD)"
-        openAPI.get.getInfo.getVersion shouldBe version.toString
+        val openAPI = Option(parserResult.get.getOpenAPI).getOrElse(fail("openAPI wasn't defined"))
+        openAPI.getOpenapi shouldBe "3.0.3"
+        withClue(s"If v${version.name} endpoints are enabled in application.conf, remove the [test only] from this test: ") {
+          openAPI.getInfo.getTitle shouldBe "Self Employment Business Details (MTD)"
+        }
+        openAPI.getInfo.getVersion shouldBe version.toString
       }
     }
+  }
+
+  private def get(path: String): WSResponse = {
+    val response: WSResponse = await(buildRequest(path).get())
+    response.status shouldBe OK
+    response
   }
 
 }
