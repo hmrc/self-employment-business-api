@@ -103,7 +103,8 @@ object RuleBothAllowancesSuppliedError
 object RuleAllowanceNotSupportedError
     extends MtdError(
       code = "RULE_ALLOWANCE_NOT_SUPPORTED",
-      message = "One or more of the supplied allowances is not supported for the supplied tax year",
+      message =
+        "One or more of supplied allowances (electricChargePointAllowance, zeroEmissionsCarAllowance, structuredBuildingAllowance, enhancedStructuredBuildingAllowance) is not supported for the supplied tax year",
       BAD_REQUEST)
 
 object RuleBuildingNameNumberError
