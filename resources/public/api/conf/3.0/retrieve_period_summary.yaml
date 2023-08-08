@@ -13,7 +13,7 @@ description: |
   | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                                                        |
   | TAX_YEAR_NOT_SUPPORTED               | Simulates the scenario where the tax year is not supported.                                                                                           |
   | STATEFUL                             | Performs a stateful retrieve.                                                                                                                         |
-  | DYNAMIC                              | The following response values will change to correspond to the values submitted in the request: <br><br> &bull; periodStartDate &bull; periodEndDate  |
+  | DYNAMIC                              | The following response values will change to correspond to the values submitted in the request: <br/> • periodStartDate <br/> • periodEndDate  |
 
 
 tags:
