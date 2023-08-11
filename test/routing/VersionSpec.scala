@@ -25,7 +25,7 @@ class VersionSpec extends UnitSpec {
   "Versions" when {
     "retrieved from a request header" must {
       "return an error if the version is unsupported" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.4.0+json"))) shouldBe Left(VersionNotFound)
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.5.0+json"))) shouldBe Left(VersionNotFound)
       }
 
       "return an error if the Accept header value is invalid" in {

@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create a Self-Employment Period Summary",
+  "description": "Create a Self-Employment Period Summary Request",
+  "type": "object",
+  "properties": {
+    "periodDates": {
+      "$ref": "periodSummary/period_dates.json"
+    },
+    "periodIncome": {
+      "$ref": "periodSummary/period_income.json"
+    },
+    "periodExpenses": {
+      "$ref": "periodSummary/period_expenses_with_negatives.json"
+    },
+    "periodDisallowableExpenses": {
+      "$ref": "periodSummary/period_disallowable_expenses_with_negatives.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "periodDates"
+  ]
+}

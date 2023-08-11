@@ -28,6 +28,7 @@ object Version {
       case Version1 => Json.toJson(Version1.name)
       case Version2 => Json.toJson(Version2.name)
       case Version3 => Json.toJson(Version3.name)
+      case Version4 => Json.toJson(Version4.name)
     }
 
   }
@@ -39,6 +40,7 @@ object Version {
         case Version1.name => JsSuccess(Version1)
         case Version2.name => JsSuccess(Version2)
         case Version3.name => JsSuccess(Version3)
+        case Version4.name => JsSuccess(Version4)
         case _             => JsError("Unrecognised version")
       }
 
@@ -71,12 +73,19 @@ case object Version3 extends Version {
   override val maybePrevious: Option[Version] = Some(Version2)
 }
 
+case object Version4 extends Version {
+  val name                                    = "4.0"
+  val configName                              = "4"
+  override val maybePrevious: Option[Version] = Some(Version3)
+}
+
 object Versions {
 
   private val versionsByName: Map[String, Version] = Map(
     Version1.name -> Version1,
     Version2.name -> Version2,
-    Version3.name -> Version3
+    Version3.name -> Version3,
+    Version4.name -> Version4
   )
 
   private val versionRegex = """application/vnd.hmrc.(\d.\d)\+json""".r
