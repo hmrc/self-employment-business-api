@@ -20,6 +20,9 @@ import play.api.libs.json.{Json, OFormat}
 
 case class PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal], taxTakenOffTradingIncome: Option[BigDecimal]) {
   def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty && taxTakenOffTradingIncome.isEmpty
+
+  def withoutTaxTakenOffTradingIncome: PeriodIncome =
+    copy(taxTakenOffTradingIncome = None)
 }
 
 object PeriodIncome {

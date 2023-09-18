@@ -21,9 +21,11 @@ import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import mocks.MockAppConfig
+import play.api.Configuration
 import v3.mocks.connectors.MockRetrievePeriodSummaryConnector
 import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
-import v3.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
+import v3.models.response.retrievePeriodSummary.{PeriodDates, PeriodIncome, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 
@@ -35,13 +37,6 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   val tysTaxYear: String             = "23-24"
   implicit val correlationId: String = "X-123"
 
-  val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
-    PeriodDates("2019-01-25", "2020-01-25"),
-    None,
-    None,
-    None
-  )
-
   private val requestData = RetrievePeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
@@ -49,28 +44,69 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
     taxYear = None
   )
 
-  trait Test extends MockRetrievePeriodSummaryConnector {
+  val periodIncomeWithCl290: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+
+  val periodIncomeWithoutCl290: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+
+  val responseWithoutCl290: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+    PeriodDates("2019-01-25", "2020-01-25"),
+    Some(periodIncomeWithoutCl290),
+    None,
+    None
+  )
+
+  val responseWithCl290: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+    PeriodDates("2019-01-25", "2020-01-25"),
+    Some(periodIncomeWithCl290),
+    None,
+    None
+  )
+
+  trait Test extends MockRetrievePeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new RetrievePeriodSummaryService(
-      connector = mockRetrievePeriodSummaryConnector
+      connector = mockRetrievePeriodSummaryConnector,
+      appConfig = mockAppConfig
     )
 
   }
 
-  "service" should {
-    "service call successful" when {
-      "return mapped result" in new Test {
+  "RetrievePeriodSummaryService" should {
+    "return a valid response without cl290 field taxTakenOffTradingIncome" when {
+      "downstream response includes taxTakenOffTradingIncome and cl290.enabled = false" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithCl290))))
 
-        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
+
+        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithoutCl290))
+      }
+
+      "downstream response does not include taxTakenOffTradingIncome and cl290.enabled = false" in new Test {
+        MockRetrievePeriodSummaryConnector
+          .retrievePeriodSummary(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithoutCl290))))
+
+        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
+
+        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithoutCl290))
       }
     }
-  }
 
-  "unsuccessful" should {
+    "return a valid response with cl290 field taxTakenOffTradingIncome" when {
+      "downstream response includes taxTakenOffTradingIncome and cl290.enabled = true" in new Test {
+        MockRetrievePeriodSummaryConnector
+          .retrievePeriodSummary(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithCl290))))
+
+        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true))
+
+        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithCl290))
+      }
+    }
+
     "map errors according to spec" when {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {

@@ -25,7 +25,11 @@ import play.api.libs.json._
 case class RetrievePeriodSummaryResponse(periodDates: PeriodDates,
                                          periodIncome: Option[PeriodIncome],
                                          periodExpenses: Option[PeriodExpenses],
-                                         periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+                                         periodDisallowableExpenses: Option[PeriodDisallowableExpenses]) {
+
+  def withoutTaxTakenOffTradingIncome: RetrievePeriodSummaryResponse =
+    copy(periodIncome = periodIncome.map(_.withoutTaxTakenOffTradingIncome))
+}
 
 object RetrievePeriodSummaryResponse extends HateoasLinks {
 
