@@ -21,6 +21,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import config.{AppConfig, FeatureSwitches}
 import v3.connectors.CreatePeriodSummaryConnector
 import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequest
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
@@ -29,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector) extends BaseService {
+class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector, appConfig: AppConfig) extends BaseService {
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
@@ -75,8 +76,11 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
     }
 
     connector
-      .createPeriodSummary(request)
+      .createPeriodSummary(updateRequestCl290(request))
       .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
+
+  private def updateRequestCl290(request: CreatePeriodSummaryRequest): CreatePeriodSummaryRequest =
+    if (FeatureSwitches(appConfig.featureSwitches).isCl290Enabled) request else request.withoutTaxTakenOffTradingIncome
 
 }
