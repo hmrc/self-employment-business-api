@@ -21,8 +21,10 @@ import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import mocks.MockAppConfig
+import play.api.Configuration
 import v3.mocks.connectors.MockAmendPeriodSummaryConnector
-import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
+import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest, PeriodIncome}
 
 import scala.concurrent.Future
 
@@ -33,45 +35,72 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   val periodId: String               = "2019-01-25_2020-01-25"
   implicit val correlationId: String = "X-123"
 
-  private val requestData = AmendPeriodSummaryRequest(
+  val periodIncomeWithCl290Enabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+
+  val periodIncomeWithCl290Disabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+
+  private val requestDataWithCl290Enabled = AmendPeriodSummaryRequest(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     periodId = periodId,
-    body = AmendPeriodSummaryBody(None, None, None),
+    body = AmendPeriodSummaryBody(Some(periodIncomeWithCl290Enabled), None, None),
     taxYear = None
   )
 
-  trait Test extends MockAmendPeriodSummaryConnector {
+  private val requestDataWithCl290Disabled = AmendPeriodSummaryRequest(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    periodId = periodId,
+    body = AmendPeriodSummaryBody(Some(periodIncomeWithCl290Disabled), None, None),
+    taxYear = None
+  )
+
+  trait Test extends MockAmendPeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendPeriodSummaryService(
-      connector = mockAmendPeriodSummaryConnector
+      connector = mockAmendPeriodSummaryConnector,
+      appConfig = mockAppConfig
     )
 
   }
 
-  "service" should {
-    "service call successful" when {
-      "return mapped result" in new Test {
-        MockAmendPeriodSummaryConnector
-          .amendPeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        await(service.amendPeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
-      }
-    }
+  trait Cl290Enabled extends Test {
+    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
   }
 
-  "service" should {
+  trait Cl290Disabled extends Test {
+    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
+  }
+
+  "AmendPeriodSummaryService" should {
+    "return a valid response" when {
+      "a valid request is supplied with cl290 feature switch enabled" in new Cl290Enabled {
+        MockAmendPeriodSummaryConnector
+          .amendPeriodSummary(requestDataWithCl290Enabled)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        await(service.amendPeriodSummary(requestDataWithCl290Enabled)) shouldBe Right(ResponseWrapper(correlationId, ()))
+      }
+
+      "a valid request is supplied with cl290 feature switch disabled" in new Cl290Disabled {
+        MockAmendPeriodSummaryConnector
+          .amendPeriodSummary(requestDataWithCl290Disabled)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        await(service.amendPeriodSummary(requestDataWithCl290Disabled)) shouldBe Right(ResponseWrapper(correlationId, ()))
+      }
+    }
+
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-        s"a $downstreamErrorCode error is returned from the service" in new Test {
+        s"a $downstreamErrorCode error is returned from the service" in new Cl290Disabled {
 
           MockAmendPeriodSummaryConnector
-            .amendPeriodSummary(requestData)
+            .amendPeriodSummary(requestDataWithCl290Disabled)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          await(service.amendPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.amendPeriodSummary(requestDataWithCl290Disabled)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
       val errors = Seq(

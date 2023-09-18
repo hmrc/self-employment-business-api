@@ -28,10 +28,17 @@ import stubs.{AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
 import v3.fixtures.AmendPeriodSummaryFixture
 
-class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
+class AmendPeriodSummaryControllerCl290EnabledISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
-  val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJsonWithCl290Disabled
-  val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJsonWithCl290Disabled
+  val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJson
+  val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJson
+
+  // Enable cl290 feature switch for the test
+  override def servicesConfig: Map[String, String] = {
+    super.servicesConfig ++ Map(
+      "feature-switch.cl290.enabled" -> "true"
+    )
+  }
 
   "Calling the V3 Amend Period Summary endpoint" should {
 
@@ -192,26 +199,26 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
     def listPeriodSummariesHateoasUri: String
 
     val responseJson: JsValue = Json.parse(s"""
-         |{
-         |  "links": [
-         |    {
-         |      "href": "$amendPeriodSummaryHateoasUri",
-         |      "rel": "amend-self-employment-period-summary",
-         |      "method": "PUT"
-         |    },
-         |    {
-         |      "href": "$retrievePeriodSummaryHateoasUri",
-         |      "rel": "self",
-         |      "method": "GET"
-         |    },
-         |    {
-         |      "href": "$listPeriodSummariesHateoasUri",
-         |      "rel": "list-self-employment-period-summaries",
-         |      "method": "GET"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin)
+                                              |{
+                                              |  "links": [
+                                              |    {
+                                              |      "href": "$amendPeriodSummaryHateoasUri",
+                                              |      "rel": "amend-self-employment-period-summary",
+                                              |      "method": "PUT"
+                                              |    },
+                                              |    {
+                                              |      "href": "$retrievePeriodSummaryHateoasUri",
+                                              |      "rel": "self",
+                                              |      "method": "GET"
+                                              |    },
+                                              |    {
+                                              |      "href": "$listPeriodSummariesHateoasUri",
+                                              |      "rel": "list-self-employment-period-summaries",
+                                              |      "method": "GET"
+                                              |    }
+                                              |  ]
+                                              |}
+                                              |""".stripMargin)
 
     def mtdUri: String
     def downstreamUri: String

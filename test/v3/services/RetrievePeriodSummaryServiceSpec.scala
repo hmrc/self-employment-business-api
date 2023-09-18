@@ -44,20 +44,20 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
     taxYear = None
   )
 
-  val periodIncomeWithCl290: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  val periodIncomeWithCl290Enabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
-  val periodIncomeWithoutCl290: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+  val periodIncomeWithCl290Disabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
 
-  val responseWithoutCl290: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+  val responseWithCl290Disabled: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
-    Some(periodIncomeWithoutCl290),
+    Some(periodIncomeWithCl290Disabled),
     None,
     None
   )
 
-  val responseWithCl290: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+  val responseWithCl290Enabled: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
-    Some(periodIncomeWithCl290),
+    Some(periodIncomeWithCl290Enabled),
     None,
     None
   )
@@ -77,21 +77,21 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
       "downstream response includes taxTakenOffTradingIncome and cl290.enabled = false" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithCl290))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithCl290Enabled))))
 
         MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
 
-        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithoutCl290))
+        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithCl290Disabled))
       }
 
       "downstream response does not include taxTakenOffTradingIncome and cl290.enabled = false" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithoutCl290))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithCl290Disabled))))
 
         MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
 
-        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithoutCl290))
+        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithCl290Disabled))
       }
     }
 
@@ -99,11 +99,11 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
       "downstream response includes taxTakenOffTradingIncome and cl290.enabled = true" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithCl290))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseWithCl290Enabled))))
 
         MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true))
 
-        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithCl290))
+        await(service.retrievePeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, responseWithCl290Enabled))
       }
     }
 

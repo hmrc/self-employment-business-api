@@ -21,7 +21,12 @@ import play.api.libs.json._
 
 case class AmendPeriodSummaryBody(periodIncome: Option[PeriodIncome],
                                   periodExpenses: Option[PeriodExpenses],
-                                  periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+                                  periodDisallowableExpenses: Option[PeriodDisallowableExpenses]) {
+
+  def withoutTaxTakenOffTradingIncome: AmendPeriodSummaryBody =
+    copy(periodIncome = periodIncome.map(_.withoutTaxTakenOffTradingIncome))
+
+}
 
 object AmendPeriodSummaryBody {
 
