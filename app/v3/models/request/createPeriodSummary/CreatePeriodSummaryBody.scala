@@ -22,7 +22,12 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 case class CreatePeriodSummaryBody(periodDates: PeriodDates,
                                    periodIncome: Option[PeriodIncome],
                                    periodExpenses: Option[PeriodExpenses],
-                                   periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+                                   periodDisallowableExpenses: Option[PeriodDisallowableExpenses]) {
+
+  def withoutTaxTakenOffTradingIncome: CreatePeriodSummaryBody =
+    copy(periodIncome = periodIncome.map(_.withoutTaxTakenOffTradingIncome))
+
+}
 
 object CreatePeriodSummaryBody {
   implicit val reads: Reads[CreatePeriodSummaryBody] = Json.reads[CreatePeriodSummaryBody]

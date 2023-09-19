@@ -30,8 +30,7 @@ import v3.fixtures.AmendPeriodSummaryFixture
 
 class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
-  val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJson
-  val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJson
+  val requestBodyJson: JsValue = amendPeriodSummaryBodyMtdJson
 
   "Calling the V3 Amend Period Summary endpoint" should {
 
@@ -45,7 +44,6 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
 
           BaseDownstreamStub
             .when(BaseDownstreamStub.PUT, downstreamUri, downstreamQueryParams)
-            .withRequestBody(downstreamRequestBodyJson)
             .thenReturn(status = OK, JsObject.empty)
         }
 
@@ -63,7 +61,6 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
 
           BaseDownstreamStub
             .when(BaseDownstreamStub.PUT, downstreamUri, downstreamQueryParams)
-            .withRequestBody(downstreamRequestBodyJson)
             .thenReturn(status = OK, JsObject.empty)
         }
 

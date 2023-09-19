@@ -47,8 +47,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
                   |   },
                   |   "periodIncome":{
                   |      "turnover":3100.00,
-                  |      "other":3200.00,
-                  |      "taxTakenOffTradingIncome": 3000.99
+                  |      "other":3200.00
                   |   },
                   |   "periodExpenses":{
                   |      "costOfGoods":-900.00,

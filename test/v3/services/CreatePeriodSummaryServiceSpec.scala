@@ -21,6 +21,8 @@ import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
+import mocks.MockAppConfig
+import play.api.Configuration
 import v3.mocks.connectors.MockCreatePeriodSummaryConnector
 import v3.models.request.createPeriodSummary._
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
@@ -29,56 +31,81 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
+  private val nino                           = Nino("AA123456A")
+  private val businessId                     = BusinessId("XAIS12345678910")
+  private implicit val correlationId: String = "X-123"
 
-  private val requestBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
-      PeriodDates("2019-08-24", "2019-08-24"),
-      None,
-      None,
-      None
-    )
+  private val periodIncomeWithCl290Enabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
-  private val requestData = CreatePeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    body = requestBody
+  private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+
+  private val parsedRequestBody = CreatePeriodSummaryBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
+
+  private val requestDataWithCl290Enabled = CreatePeriodSummaryRequest(
+    nino = nino,
+    businessId = businessId,
+    body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Enabled))
   )
 
-  trait Test extends MockCreatePeriodSummaryConnector {
+  private val requestDataWithCl290Disabled = CreatePeriodSummaryRequest(
+    nino = nino,
+    businessId = businessId,
+    body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Disabled))
+  )
+
+  trait Test extends MockCreatePeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new CreatePeriodSummaryService(
-      connector = mockCreatePeriodicConnector
+      connector = mockCreatePeriodicConnector,
+      appConfig = mockAppConfig
     )
 
   }
 
-  "CreatePeriodSummaryServiceSpec" when {
-    "createPeriodSummary" must {
-      "return correct result for a success" in new Test {
+  trait Cl290Enabled extends Test {
+    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+  }
+
+  trait Cl290Disabled extends Test {
+    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
+  }
+
+  "CreatePeriodSummaryServiceSpec" should {
+    "return a valid response" when {
+      "a valid request is supplied with cl290 feature switch enabled" in new Cl290Enabled {
         val connectorOutcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] =
           Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
 
         MockCreatePeriodicConnector
-          .createPeriodicSummary(requestData)
+          .createPeriodicSummary(requestDataWithCl290Enabled)
           .returns(Future.successful(connectorOutcome))
 
-        await(service.createPeriodSummary(requestData)) shouldBe outcome
+        await(service.createPeriodSummary(requestDataWithCl290Enabled)) shouldBe outcome
+      }
+
+      "a valid request is supplied with cl290 feature switch disabled" in new Cl290Disabled {
+        val connectorOutcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] =
+          Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
+
+        MockCreatePeriodicConnector
+          .createPeriodicSummary(requestDataWithCl290Disabled)
+          .returns(Future.successful(connectorOutcome))
+
+        await(service.createPeriodSummary(requestDataWithCl290Disabled)) shouldBe outcome
       }
 
       "map errors according to spec" when {
         def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-          s"a $downstreamErrorCode error is returned from the service" in new Test {
+          s"a $downstreamErrorCode error is returned from the service" in new Cl290Disabled {
 
             MockCreatePeriodicConnector
-              .createPeriodicSummary(requestData)
+              .createPeriodicSummary(requestDataWithCl290Disabled)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-            await(service.createPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.createPeriodSummary(requestDataWithCl290Disabled)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val errors = Seq(

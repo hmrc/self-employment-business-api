@@ -25,6 +25,7 @@ import javax.inject.{Inject, Singleton}
 trait FeatureSwitches {
   def isPassDeleteIntentEnabled: Boolean
   def isAllowNegativeExpensesEnabled: Boolean
+  def isCl290Enabled: Boolean
   def isEnabled(key: String): Boolean
 }
 
@@ -36,6 +37,7 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
 
   val isPassDeleteIntentEnabled: Boolean      = isConfigTrue("passDeleteIntentHeader.enabled")
   val isAllowNegativeExpensesEnabled: Boolean = isConfigTrue("allowNegativeExpenses.enabled")
+  val isCl290Enabled: Boolean                 = isConfigTrue("cl290.enabled")
 
   def isEnabled(key: String): Boolean = isConfigTrue(key + ".enabled")
 

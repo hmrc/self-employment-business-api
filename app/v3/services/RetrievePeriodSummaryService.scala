@@ -19,7 +19,9 @@ package v3.services
 import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
+import cats.data.EitherT
 import cats.implicits._
+import config.{AppConfig, FeatureSwitches}
 import v3.connectors.RetrievePeriodSummaryConnector
 import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
 import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
@@ -28,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector) extends BaseService {
+class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector, appConfig: AppConfig) extends BaseService {
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
@@ -56,8 +58,14 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       ctx: RequestContext,
       ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
-    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+    EitherT(connector.retrievePeriodSummary(request))
+      .map(_.map(updateResponseCl290))
+      .leftMap(mapDownstreamErrors(downstreamErrorMap))
+      .value
 
   }
+
+  private def updateResponseCl290(response: RetrievePeriodSummaryResponse): RetrievePeriodSummaryResponse =
+    if (FeatureSwitches(appConfig.featureSwitches).isCl290Enabled) response else response.withoutTaxTakenOffTradingIncome
 
 }

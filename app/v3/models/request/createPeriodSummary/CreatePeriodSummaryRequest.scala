@@ -20,4 +20,8 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 
 case class CreatePeriodSummaryRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody) {
   val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
+
+  def withoutTaxTakenOffTradingIncome: CreatePeriodSummaryRequest =
+    copy(body = body.withoutTaxTakenOffTradingIncome)
+
 }
