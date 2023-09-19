@@ -31,24 +31,26 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
+  private val nino                           = Nino("AA123456A")
+  private val businessId                     = BusinessId("XAIS12345678910")
+  private implicit val correlationId: String = "X-123"
 
-  val periodIncomeWithCl290Enabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val periodIncomeWithCl290Enabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
-  val periodIncomeWithCl290Disabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+  private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+
+  private val parsedRequestBody = CreatePeriodSummaryBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
 
   private val requestDataWithCl290Enabled = CreatePeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    body = CreatePeriodSummaryBody(PeriodDates("2019-08-24", "2019-08-24"), Some(periodIncomeWithCl290Enabled), None, None)
+    nino = nino,
+    businessId = businessId,
+    body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Enabled))
   )
 
   private val requestDataWithCl290Disabled = CreatePeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    body = CreatePeriodSummaryBody(PeriodDates("2019-08-24", "2019-08-24"), Some(periodIncomeWithCl290Disabled), None, None)
+    nino = nino,
+    businessId = businessId,
+    body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Disabled))
   )
 
   trait Test extends MockCreatePeriodSummaryConnector with MockAppConfig {

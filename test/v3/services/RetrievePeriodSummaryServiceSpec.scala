@@ -31,31 +31,30 @@ import scala.concurrent.Future
 
 class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val periodId: String               = "2019-01-25_2020-01-25"
-  val tysTaxYear: String             = "23-24"
-  implicit val correlationId: String = "X-123"
+  private val nino                           = Nino("AA123456A")
+  private val businessId                     = BusinessId("XAIS12345678910")
+  private val periodId                       = PeriodId("2019-01-25_2020-01-25")
+  private implicit val correlationId: String = "X-123"
 
   private val requestData = RetrievePeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    periodId = PeriodId(periodId),
+    nino = nino,
+    businessId = businessId,
+    periodId = periodId,
     taxYear = None
   )
 
-  val periodIncomeWithCl290Enabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val periodIncomeWithCl290Enabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
-  val periodIncomeWithCl290Disabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+  private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
 
-  val responseWithCl290Disabled: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+  private val responseWithCl290Disabled = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
     Some(periodIncomeWithCl290Disabled),
     None,
     None
   )
 
-  val responseWithCl290Enabled: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
+  private val responseWithCl290Enabled = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),
     Some(periodIncomeWithCl290Enabled),
     None,

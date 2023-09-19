@@ -30,26 +30,26 @@ import scala.concurrent.Future
 
 class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val periodId: String               = "2019-01-25_2020-01-25"
-  implicit val correlationId: String = "X-123"
+  private val nino                           = Nino("AA123456A")
+  private val businessId                     = BusinessId("XAIS12345678910")
+  private val periodId                       = "2019-01-25_2020-01-25"
+  private implicit val correlationId: String = "X-123"
 
-  val periodIncomeWithCl290Enabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val periodIncomeWithCl290Enabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
-  val periodIncomeWithCl290Disabled: PeriodIncome = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+  private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
 
   private val requestDataWithCl290Enabled = AmendPeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
+    nino = nino,
+    businessId = businessId,
     periodId = periodId,
     body = AmendPeriodSummaryBody(Some(periodIncomeWithCl290Enabled), None, None),
     taxYear = None
   )
 
   private val requestDataWithCl290Disabled = AmendPeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
+    nino = nino,
+    businessId = businessId,
     periodId = periodId,
     body = AmendPeriodSummaryBody(Some(periodIncomeWithCl290Disabled), None, None),
     taxYear = None
