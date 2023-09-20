@@ -2,7 +2,9 @@
   "periodIncome": {
     "turnover": 1000.99,
     "other": 1000.99,
-    "taxTakenOffTradingIncome": 1000.99
+    {{#if (enabled "cl290")}}
+    "taxTakenOffTradingIncome": 1000.99,
+    {{/if}}
   },
   "periodExpenses": {
     "consolidatedExpenses": 1000.99
