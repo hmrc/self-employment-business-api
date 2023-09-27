@@ -5,7 +5,7 @@
   "properties": {
     "consolidatedExpenses": {
       "type": "number",
-      "description": "The sum of all expenses for the specified period. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+      "description": "The sum of all expenses for the specified period. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "10000.00"
     },
     "costOfGoods": {
@@ -15,17 +15,17 @@
     },
     "paymentsToSubcontractors": {
       "type": "number",
-      "description": "Payments to construction industry subcontractors. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+      "description": "Payments to construction industry subcontractors. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "10000.00"
     },
     "wagesAndStaffCosts": {
       "type": "number",
-      "description": "Wages, salaries and other staff costs. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+      "description": "Wages, salaries and other staff costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "10000.00"
     },
     "carVanTravelExpenses": {
       "type": "number",
-      "description": "Car, van and travel expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+      "description": "Car, van and travel expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "10000.89"
     },
     "premisesRunningCosts": {
@@ -40,17 +40,17 @@
     },
     "adminCosts": {
       "type": "number",
-      "description": "Phone, fax, stationery and other office costs. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+      "description": "Phone, fax, stationery and other office costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "10000.89"
     },
     "businessEntertainmentCosts": {
       "type": "number",
-      "description": "Business entertainment costs. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+      "description": "Business entertainment costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "10000.89"
     },
     "advertisingCosts": {
       "type": "number",
-      "description": "Advertising costs. Expenses associated with the running of the business. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+      "description": "Advertising costs. Expenses associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "example": "10000.89"
     },
     "interestOnBankOtherLoans": {

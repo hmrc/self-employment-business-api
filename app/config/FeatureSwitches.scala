@@ -27,6 +27,7 @@ trait FeatureSwitches {
   def isAllowNegativeExpensesEnabled: Boolean
   def isCl290Enabled: Boolean
   def isEnabled(key: String): Boolean
+  def isReleasedInProduction(feature: String): Boolean
 }
 
 @Singleton
@@ -40,6 +41,7 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
   val isCl290Enabled: Boolean                 = isConfigTrue("cl290.enabled")
 
   def isEnabled(key: String): Boolean = isConfigTrue(key + ".enabled")
+  def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
 
   private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 }

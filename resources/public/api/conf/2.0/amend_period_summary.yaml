@@ -38,11 +38,7 @@ requestBody:
   content:
     application/json:
       schema:
-        {{#if (enabled "allowNegativeExpenses")}}
-        $ref: './schemas/amend_period_summary_request_with_negatives.json'
-        {{else}}
         $ref: './schemas/amend_period_summary_request.json'
-        {{/if}}
       examples:
         example-consolidated-request:
           description: Amend Period Summary Consolidated Request
