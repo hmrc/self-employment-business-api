@@ -47,11 +47,7 @@ requestBody:
         example-non-consolidated-request:
           description: Amend Period Summary Non-Consolidated Request
           value:
-            {{#if (enabled "allowNegativeExpenses")}}
-            $ref: './examples/amend_period_summary_non_consolidated_request_with_negatives.json'
-            {{else}}
             $ref: './examples/amend_period_summary_non_consolidated_request.json'
-            {{/if}}
 
 responses:
   "200":
