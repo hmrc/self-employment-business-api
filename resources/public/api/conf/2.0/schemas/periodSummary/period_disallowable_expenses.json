@@ -11,7 +11,7 @@
     "paymentsToSubcontractorsDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Payments to subcontractors - Construction Industry Scheme (CIS). Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Payments to subcontractors - Construction Industry Scheme (CIS). Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Payments to subcontractors - Construction Industry Scheme (CIS). Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
@@ -20,7 +20,7 @@
     "wagesAndStaffCostsDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Wages, salaries and other staff costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Wages, salaries and other staff costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Wages, salaries and other staff costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
@@ -29,7 +29,7 @@
     "carVanTravelExpensesDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Car, van and travel expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Car, van and travel expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Car, van and travel expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
@@ -48,7 +48,7 @@
     "adminCostsDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Phone, fax, stationery and other office costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Phone, fax, stationery and other office costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Phone, fax, stationery and other office costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
@@ -57,7 +57,7 @@
     "businessEntertainmentCostsDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Business entertainment costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Business entertainment costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Business entertainment costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
@@ -66,7 +66,7 @@
     "advertisingCostsDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Advertising costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Advertising costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Advertising costs. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
@@ -90,7 +90,7 @@
     "professionalFeesDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Legal and other professional fees. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Legal and other professional fees. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Legal and other professional fees. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
@@ -104,7 +104,7 @@
     "otherExpensesDisallowable": {
       "type": "number",
       {{#if (enabled 'allowNegativeExpenses')}}
-      "description": "Other business expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "{{#unless (releasedInProduction 'allowNegativeExpenses')}}[Test only] {{/unless}}Other business expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
       {{else}}
       "description": "Other business expenses. Any expense or partial expense that cannot be claimed for tax purposes. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       {{/if}}
