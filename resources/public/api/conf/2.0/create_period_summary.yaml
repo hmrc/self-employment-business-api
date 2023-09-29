@@ -38,20 +38,12 @@ requestBody:
   content:
     application/json:
       schema:
-        {{#if (enabled "allowNegativeExpenses")}}
-        $ref: './schemas/create_period_summary_request_with_negatives.json'
-        {{else}}
         $ref: './schemas/create_period_summary_request.json'
-        {{/if}}
       examples:
         example-without-consolidated-request:
           description: Create Period Summary Request
           value:
-            {{#if (enabled "allowNegativeExpenses")}}
-            $ref: './examples/create_period_summary_request_with_negatives.json'
-            {{else}}
             $ref: './examples/create_period_summary_request.json'
-            {{/if}}
         example-with-consolidated-request:
           description: Create Period Summary With Consolidated Request
           value:
