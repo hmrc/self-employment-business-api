@@ -54,7 +54,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
         status(response) shouldBe OK
 
         private val result = contentAsString(response)
-        result should include("""  title: "Self Employment Business Details (MTD) [test only]"""")
+        result should include("""  title: "Self Employment Business (MTD) [test only]"""")
 
         withClue("Only the title should have [test only] appended:") {
           numberOfTestOnlyOccurrences(result) shouldBe 1
@@ -79,7 +79,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
         private val result = contentAsString(response)
 
-        result should include("""  title: Self Employment Business Details (MTD)""")
+        result should include("""  title: Self Employment Business (MTD)""")
         numberOfTestOnlyOccurrences(result) shouldBe 0
 
         result should startWith("""openapi: "3.0.3"
