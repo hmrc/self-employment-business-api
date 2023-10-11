@@ -32,13 +32,17 @@ class PeriodIdValidationSpec extends UnitSpec {
       }
 
       "a period id where the start date is the latest allowed" in {
-        PeriodIdValidation.validate("2000-01-01-2099-12-31") shouldBe empty
+        PeriodIdValidation.validate("2000-01-01_2099-12-31") shouldBe empty
       }
     }
 
     "return an error" when {
       "an empty periodId is supplied" in {
         PeriodIdValidation.validate("") shouldBe Seq(PeriodIdFormatError)
+      }
+
+      "an otherwise valid periodId with the incorrect separator is supplied" in {
+        PeriodIdValidation.validate("2017-01-25X2017-02-25") shouldBe Seq(PeriodIdFormatError)
       }
 
       "an invalid period id is supplied" in {
