@@ -20,20 +20,22 @@ import api.models.errors.{MtdError, PeriodIdFormatError}
 
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
+import DateValidation.isWithinAllowedRange
 
 object PeriodIdValidation {
+
+  private val errs = List(PeriodIdFormatError)
 
   def validate(periodId: String): List[MtdError] = {
     if (periodId.length == 21) {
       Try {
-        LocalDate.parse(periodId.substring(0, 10), dateFormat)
-        LocalDate.parse(periodId.substring(11, 21), dateFormat)
+        (LocalDate.parse(periodId.substring(0, 10), dateFormat), LocalDate.parse(periodId.substring(11, 21), dateFormat))
       } match {
-        case Success(_) => Nil
-        case Failure(_) => List(PeriodIdFormatError)
+        case Success((date1, date2)) => if (isWithinAllowedRange(date1) && isWithinAllowedRange(date2)) Nil else errs
+        case Failure(_)              => errs
       }
     } else {
-      List(PeriodIdFormatError)
+      errs
     }
   }
 

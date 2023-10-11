@@ -24,39 +24,49 @@ class PeriodIdValidationSpec extends UnitSpec {
   "validate" should {
     "return no errors" when {
       "a valid period id is supplied" in {
+        PeriodIdValidation.validate("2017-01-25_2017-02-25") shouldBe empty
+      }
 
-        val validPeriodId    = "2017-01-25_2017-02-25"
-        val validationResult = PeriodIdValidation.validate(validPeriodId)
-        validationResult.isEmpty shouldBe true
+      "a period id where the start date is the earliest allowed" in {
+        PeriodIdValidation.validate("1900-01-01_2000-01-01") shouldBe empty
+      }
+
+      "a period id where the start date is the latest allowed" in {
+        PeriodIdValidation.validate("2000-01-01-2099-12-31") shouldBe empty
       }
     }
 
     "return an error" when {
-      "an invalid period id is supplied" in {
-
-        val invalidPeriodId  = "201839127"
-        val validationResult = PeriodIdValidation.validate(invalidPeriodId)
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe PeriodIdFormatError
+      "an empty periodId is supplied" in {
+        PeriodIdValidation.validate("") shouldBe Seq(PeriodIdFormatError)
       }
 
-      "an invalid period id with length of 21 is supplied" in {
+      "an invalid period id is supplied" in {
+        PeriodIdValidation.validate("201839127") shouldBe Seq(PeriodIdFormatError)
+      }
 
-        val invalidPeriodId  = "201839127125364718273"
-        val validationResult = PeriodIdValidation.validate(invalidPeriodId)
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe PeriodIdFormatError
+      "a period id where only the start date has valid format is supplied" in {
+        PeriodIdValidation.validate("2017-01-25_XXX") shouldBe Seq(PeriodIdFormatError)
+      }
+
+      "a period id where only the end date has valid format is supplied" in {
+        PeriodIdValidation.validate("XXX_2017-01-25") shouldBe Seq(PeriodIdFormatError)
+      }
+
+      "an invalid period id (but with the correct length) is supplied" in {
+        PeriodIdValidation.validate("201839127125364718273") shouldBe Seq(PeriodIdFormatError)
       }
 
       "a period id is supplied that is too long" in {
+        PeriodIdValidation.validate("2017-01-25_2017-02-2512") shouldBe Seq(PeriodIdFormatError)
+      }
 
-        val invalidPeriodId  = "2017-01-25_2017-02-2512"
-        val validationResult = PeriodIdValidation.validate(invalidPeriodId)
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe PeriodIdFormatError
+      "a period id where the start date is earlier than allowed" in {
+        PeriodIdValidation.validate("1899-12-31_2000-01-01") shouldBe Seq(PeriodIdFormatError)
+      }
+
+      "a period id where the start date is later than allowed" in {
+        PeriodIdValidation.validate("2000-01-01-2100-01-01") shouldBe Seq(PeriodIdFormatError)
       }
     }
 
