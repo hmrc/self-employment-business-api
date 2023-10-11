@@ -182,7 +182,7 @@ class AmendAnnualSubmissionValidator extends Validator[AmendAnnualSubmissionRawD
       ),
       DateValidation.validateOptional(
         field = structuredBuildingAllowance.firstYear.map(_.qualifyingDate),
-        path = s"/allowances/$typeOfBuildingAllowance/$index/firstYear/qualifyingDate"
+        error = DateFormatError.copy(paths = Some(Seq(s"/allowances/$typeOfBuildingAllowance/$index/firstYear/qualifyingDate")))
       ),
       NumberValidation.validateOptional(
         field = structuredBuildingAllowance.firstYear.map(_.qualifyingAmountExpenditure),

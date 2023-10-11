@@ -130,6 +130,9 @@ class AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators 
       "an invalid PeriodId is supplied" in {
         validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, "2103/01", requestBodyJson, None)) shouldBe List(PeriodIdFormatError)
       }
+      "a PeriodId containing an out of range date is supplied" in {
+        validator.validate(AmendPeriodSummaryRawData(validNino, validBusinessId, "0010-01-01_2019-02-02", requestBodyJson, None)) shouldBe List(PeriodIdFormatError)
+      }
     }
     "return RuleIncorrectOrEmptyBodyError" when {
       "an empty body is submitted" in {

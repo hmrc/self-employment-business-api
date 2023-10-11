@@ -732,6 +732,35 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             )
           )) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate"))))
       }
+      "/allowances/structuredBuildingAllowance/firstYear/qualifyingDate is out of range" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
+                |{
+                |  "allowances": {
+                |    "structuredBuildingAllowance": [
+                |      {
+                |        "amount": 1.23,
+                |        "firstYear": {
+                |          "qualifyingDate": "0010-01-01",
+                |          "qualifyingAmountExpenditure": 1.23
+                |        },
+                |        "building": {
+                |          "name": "Plaza 2",
+                |          "postcode": "TF3 4NT"
+                |        }
+                |      }
+                |    ]
+                |  }
+                |}
+                |""".stripMargin
+            )
+          )) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate"))))
+      }
       "/allowances/structuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure is invalid" in {
         validator.validate(
           AmendAnnualSubmissionRawData(
@@ -892,6 +921,37 @@ class AmendAnnualSubmissionValidatorSpec extends UnitSpec {
             )
           )) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))))
       }
+
+      "/allowances/enhancedStructuredBuildingAllowance/firstYear/qualifyingDate is out of range" in {
+        validator.validate(
+          AmendAnnualSubmissionRawData(
+            validNino,
+            validBusinessId,
+            validTaxYear,
+            Json.parse(
+              """
+                |{
+                |  "allowances": {
+                |    "enhancedStructuredBuildingAllowance": [
+                |      {
+                |        "amount": 1.23,
+                |        "firstYear": {
+                |          "qualifyingDate": "0010-01-01",
+                |          "qualifyingAmountExpenditure": 1.23
+                |        },
+                |        "building": {
+                |          "name": "Plaza 2",
+                |          "postcode": "TF3 4NT"
+                |        }
+                |      }
+                |    ]
+                |  }
+                |}
+                |""".stripMargin
+            )
+          )) shouldBe List(DateFormatError.copy(paths = Some(Seq("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))))
+      }
+
       "/allowances/enhancedStructuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure is invalid" in {
         validator.validate(
           AmendAnnualSubmissionRawData(

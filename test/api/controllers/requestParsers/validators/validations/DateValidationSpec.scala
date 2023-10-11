@@ -16,47 +16,30 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{DateFormatError, RuleEndDateBeforeStartDateError, ToDateFormatError}
+import api.models.errors.{MtdError, RuleEndDateBeforeStartDateError, ToDateFormatError}
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
 
 class DateValidationSpec extends UnitSpec with JsonErrorValidators {
 
+    val path = "/testObject/testField"
+    val error: MtdError = ToDateFormatError.copy(paths = Some(Seq(path)))
+
   "validate" should {
+
     "return no errors" when {
       "a valid date is supplied" in {
-        val date           = "2020-03-20"
-        val validateResult = DateValidation.validate(date, ToDateFormatError)
-
-        validateResult.isEmpty shouldBe true
+        DateValidation.validate("2020-03-20", error) shouldBe empty
       }
-      "a valid date is supplied with paths" in {
-        val date             = "2020-03-20"
-        val paths            = "/testObject/testField"
-        val validationResult = DateValidation.validateWithPaths(date, paths)
 
-        validationResult.isEmpty shouldBe true
-      }
       "no date is supplied" in {
-        val validationResult = DateValidation.validateOptional(None, "")
-
-        validationResult.isEmpty shouldBe true
+        DateValidation.validateOptional(None, error) shouldBe empty
       }
     }
+
     "return an error" when {
       "an invalid date is supplied" in {
-        val validationResult = DateValidation.validate("930-213", ToDateFormatError)
-
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe ToDateFormatError
-      }
-      "an invalid date is supplied with paths" in {
-        val validationResult = DateValidation.validateWithPaths("930-213", "/testObject/testField")
-
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe DateFormatError.copy(paths = Some(Seq("/testObject/testField")))
+        DateValidation.validate("930-213", error) shouldBe Seq(error)
       }
     }
   }
@@ -64,18 +47,17 @@ class DateValidationSpec extends UnitSpec with JsonErrorValidators {
   "validateEndDateBeforeStartDate" should {
     "return no errors" when {
       "the from date is before to date" in {
-        val validationResult = DateValidation.validateEndDateBeforeStartDate("2019-01-01", "2020-01-01")
+        DateValidation.validateEndDateBeforeStartDate("2019-01-01", "2020-01-01") shouldBe empty
+      }
 
-        validationResult.isEmpty shouldBe true
+      "the from date is the same as the to date" in {
+        DateValidation.validateEndDateBeforeStartDate("2019-01-01", "2019-01-01") shouldBe empty
       }
     }
+
     "return an error" when {
       "the to date is before from date" in {
-        val validationResult = DateValidation.validateEndDateBeforeStartDate("2020-01-01", "2019-01-01")
-
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe RuleEndDateBeforeStartDateError
+        DateValidation.validateEndDateBeforeStartDate("2020-01-01", "2019-01-01") shouldBe Seq(RuleEndDateBeforeStartDateError)
       }
     }
   }
