@@ -16,36 +16,28 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{DateFormatError, MtdError, RuleEndDateBeforeStartDateError}
+import api.models.errors.{MtdError, RuleEndDateBeforeStartDateError}
 
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
 object DateValidation {
 
-  def validate(field: String, error: MtdError): List[MtdError] = {
-    Try {
-      LocalDate.parse(field, dateFormat)
-    } match {
-      case Success(_) => Nil
-      case Failure(_) => List(error)
-    }
-  }
+  private val minYear = 1900
+  private val maxYear = 2100
 
-  def validateOptional(field: Option[String], path: String): List[MtdError] = {
-    field match {
-      case None        => NoValidationErrors
-      case Some(value) => validateWithPaths(value, path)
+  def validate(field: String, error: => MtdError): List[MtdError] =
+    Try(LocalDate.parse(field, dateFormat)) match {
+      case Success(date) => if (!isWithinAllowedRange(date)) List(error) else Nil
+      case Failure(_)    => List(error)
     }
-  }
 
-  def validateWithPaths(field: String, path: String): List[MtdError] = {
-    Try {
-      LocalDate.parse(field, dateFormat)
-    } match {
-      case Success(_) => Nil
-      case Failure(_) => List(DateFormatError.copy(paths = Some(Seq(path))))
-    }
+  def validateOptional(field: Option[String], error: => MtdError): List[MtdError] =
+    field.map(validate(_, error)).getOrElse(Nil)
+
+  def isWithinAllowedRange(date: LocalDate): Boolean = {
+    val year = date.getYear
+    minYear <= year && year < maxYear
   }
 
   def validateEndDateBeforeStartDate(startDate: String, endDate: String): List[MtdError] = {

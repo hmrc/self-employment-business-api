@@ -58,6 +58,11 @@ class RetrievePeriodSummaryValidatorSpec extends UnitSpec {
         validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, "2647667456", None)) shouldBe
           List(PeriodIdFormatError)
       }
+
+      "an out of range period id is supplied" in {
+        validator.validate(RetrievePeriodSummaryRawData(validNino, validBusinessId, "0010-01-01_2017-02-31", None)) shouldBe
+          List(PeriodIdFormatError)
+      }
     }
 
     "return TaxYearFormatError error" when {

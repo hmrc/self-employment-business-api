@@ -336,6 +336,23 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
             )
           )) shouldBe List(StartDateFormatError)
       }
+      "an out of range periodStartDate is supplied" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "0010-01-01",
+                |     "periodEndDate": "2019-08-24"
+                |    }
+                |}
+              """.stripMargin
+            )
+          )) shouldBe List(StartDateFormatError)
+      }
 
       "an invalid periodEndDate is supplied" in {
         validator.validate(
@@ -348,6 +365,24 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 |   "periodDates": {
                 |     "periodStartDate": "2019-08-24",
                 |     "periodEndDate": "30"
+                |    }
+                |}
+              """.stripMargin
+            )
+          )) shouldBe List(EndDateFormatError)
+      }
+
+      "an out of range periodEndDate is supplied" in {
+        validator.validate(
+          CreatePeriodSummaryRawData(
+            validNino,
+            validBusinessId,
+            Json.parse(
+              """
+                |{
+                |   "periodDates": {
+                |     "periodStartDate": "2019-08-24",
+                |     "periodEndDate": "0010-01-01"
                 |    }
                 |}
               """.stripMargin
