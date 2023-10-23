@@ -169,7 +169,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
       NumberValidation.validateOptional(
         field = periodExpenses.otherExpenses,
         path = s"/periodExpenses/otherExpenses",
-        includeNegatives = true
+        includeNegatives = includeNegatives
       )
     ).flatten
 
