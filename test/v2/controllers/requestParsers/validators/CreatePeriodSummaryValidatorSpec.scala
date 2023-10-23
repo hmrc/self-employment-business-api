@@ -189,6 +189,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 "/periodExpenses/adminCosts",
                 "/periodExpenses/businessEntertainmentCosts",
                 "/periodExpenses/advertisingCosts",
+                "/periodExpenses/otherExpenses",
                 "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
                 "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
                 "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
