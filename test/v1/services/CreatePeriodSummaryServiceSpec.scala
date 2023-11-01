@@ -124,7 +124,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
           ("INVALID_PAYLOAD", InternalError),
-          ("INVALID_PERIOD", RuleEndDateBeforeStartDateError),
+          ("INVALID_PERIOD", RuleEndBeforeStartDateError),
           ("OVERLAPS_IN_PERIOD", RuleOverlappingPeriod),
           ("NOT_ALIGN_PERIOD", RuleMisalignedPeriod),
           ("BOTH_EXPENSES_SUPPLIED", RuleBothExpensesSuppliedError),
@@ -142,7 +142,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("PERIOD_EXISTS", RuleDuplicateSubmissionError),
           ("PERIOD_OVERLAP", RuleOverlappingPeriod),
           ("PERIOD_ALIGNMENT", RuleMisalignedPeriod),
-          ("END_BEFORE_START", RuleEndDateBeforeStartDateError),
+          ("END_BEFORE_START", RuleEndBeforeStartDateError),
           ("PERIOD_HAS_GAPS", RuleNotContiguousPeriod),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
           ("INVALID_TAX_YEAR", InternalError)

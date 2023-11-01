@@ -16,8 +16,7 @@
 
 package api.hateoas
 
-import api.models.hateoas.Method.GET
-import api.models.hateoas.{HateoasData, HateoasWrapper, Link}
+import api.hateoas.Method.GET
 import cats.Functor
 import config.AppConfig
 import mocks.MockAppConfig
@@ -25,7 +24,7 @@ import support.UnitSpec
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
-  val hateoasFactory = new HateoasFactory(mockAppConfig)
+  val hateoasFactory     = new HateoasFactory(mockAppConfig)
   val response: Response = Response("X")
 
   case class Response(foo: String)

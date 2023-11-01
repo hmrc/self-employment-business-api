@@ -16,12 +16,13 @@
 
 package v3.models.response.retrievePeriodSummary
 
+import api.hateoas.{Link, Method}
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
 import v3.fixtures.RetrievePeriodSummaryFixture
+
 class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with RetrievePeriodSummaryFixture {
 
   "round trip" should {

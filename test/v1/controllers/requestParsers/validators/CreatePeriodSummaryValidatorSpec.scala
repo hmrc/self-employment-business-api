@@ -381,7 +381,7 @@ class CreatePeriodSummaryValidatorSpec extends UnitSpec with CreatePeriodSummary
                 |}
               """.stripMargin
             )
-          )) shouldBe List(RuleEndDateBeforeStartDateError)
+          )) shouldBe List(RuleEndBeforeStartDateError)
       }
 
       "both dates are invalid" in {

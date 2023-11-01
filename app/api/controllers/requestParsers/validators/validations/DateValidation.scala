@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{MtdError, RuleEndDateBeforeStartDateError}
+import api.models.errors.{MtdError, RuleEndBeforeStartDateError}
 
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
@@ -44,7 +44,7 @@ object DateValidation {
     val convertedFromDate = LocalDate.parse(startDate, dateFormat)
     val convertedToDate   = LocalDate.parse(endDate, dateFormat)
 
-    if (convertedToDate.isBefore(convertedFromDate)) List(RuleEndDateBeforeStartDateError) else Nil
+    if (convertedToDate.isBefore(convertedFromDate)) List(RuleEndBeforeStartDateError) else Nil
   }
 
 }

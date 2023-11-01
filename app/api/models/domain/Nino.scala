@@ -20,12 +20,13 @@ case class Nino(nino: String) {
   require(Nino.isValid(nino), s"$nino is not a valid nino.")
 
   private val LengthWithoutSuffix: Int = 8
-  def value: String                    = nino
-  val name                             = "nino"
-  def formatted: String                = value.grouped(2).mkString(" ")
-  def withoutSuffix: String            = value.take(LengthWithoutSuffix)
+  val value: String                    = nino
 
-  override def toString: String = nino
+  override def toString: String = value
+  val name                      = "nino"
+  def formatted: String         = value.grouped(2).mkString(" ")
+  def withoutSuffix: String     = value.take(LengthWithoutSuffix)
+
 }
 
 object Nino extends (String => Nino) {

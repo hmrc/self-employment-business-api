@@ -19,6 +19,8 @@ package api.models.domain
 import mocks.MockAppConfig
 import support.UnitSpec
 
+import java.time.{LocalDate, ZoneId}
+
 class TaxYearSpec extends UnitSpec with MockAppConfig {
 
   "TaxYear" when {
@@ -100,6 +102,21 @@ class TaxYearSpec extends UnitSpec with MockAppConfig {
 
         test(input)
       }
+    }
+  }
+
+  "TaxYear.currentTaxYear()" should {
+    "return the current tax year" in {
+      val today = LocalDate.now(ZoneId.of("UTC"))
+      val year  = today.getYear
+
+      val expectedYear = {
+        val taxYearStartDate = LocalDate.of(year, 4, 6)
+        if (today.isBefore(taxYearStartDate)) year else year + 1
+      }
+
+      val result = TaxYear.currentTaxYear()
+      result.year shouldBe expectedYear
     }
   }
 

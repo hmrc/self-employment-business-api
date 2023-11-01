@@ -16,10 +16,9 @@
 
 package api.hateoas
 
+import api.hateoas.Method.{DELETE, GET, POST, PUT}
+import api.hateoas.RelType._
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
-import api.models.hateoas.RelType._
 import config.AppConfig
 
 trait HateoasLinks {
@@ -35,7 +34,7 @@ trait HateoasLinks {
 
   // Domain URIs
   private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
-    s"/${appConfig.apiGatewayContext}/$nino/${businessId.value}/annual/${taxYear.asMtd}"
+    s"/${appConfig.apiGatewayContext}/$nino/$businessId/annual/${taxYear.asMtd}"
 
   def listPeriodSummaries(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
     Link(href = periodSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
@@ -43,7 +42,7 @@ trait HateoasLinks {
 
   private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String =
     withTaxYearParameter(
-      uri = s"/${appConfig.apiGatewayContext}/$nino/${businessId.value}/period",
+      uri = s"/${appConfig.apiGatewayContext}/$nino/$businessId/period",
       taxYear
     )
 
@@ -65,7 +64,7 @@ trait HateoasLinks {
 
   private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) =
     withTaxYearParameter(
-      uri = s"/${appConfig.apiGatewayContext}/$nino/${businessId.value}/period/$periodId",
+      uri = s"/${appConfig.apiGatewayContext}/$nino/$businessId/period/$periodId",
       taxYear
     )
 

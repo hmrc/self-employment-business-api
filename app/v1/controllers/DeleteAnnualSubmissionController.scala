@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
@@ -45,7 +45,7 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
 
       val rawData = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
 
-      val requestHandler = RequestHandler
+      val requestHandler = RequestHandlerOld
         .withParser(parser)
         .withService(service.deleteAnnualSubmission)
         .withNoContentResult()

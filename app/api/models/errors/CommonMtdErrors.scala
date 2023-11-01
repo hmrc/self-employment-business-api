@@ -34,6 +34,14 @@ object ValueFormatError extends MtdError(code = "FORMAT_VALUE", message = "The v
 
 }
 
+object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The provided calculation ID is invalid", BAD_REQUEST)
+
+object CountryCodeFormatError extends MtdError("FORMAT_COUNTRY_CODE", "The provided Country code is invalid", BAD_REQUEST)
+
+object IdFormatError extends MtdError(code = "FORMAT_ID", message = "The ID format is invalid", BAD_REQUEST)
+
+object TransactionIdFormatError extends MtdError(code = "FORMAT_TRANSACTION_ID", message = "The transaction ID format is invalid", BAD_REQUEST)
+
 object FromDateFormatError extends MtdError(code = "FORMAT_FROM_DATE", message = "The provided From date is invalid", BAD_REQUEST)
 
 object ToDateFormatError extends MtdError(code = "FORMAT_TO_DATE", message = "The provided To date is invalid", BAD_REQUEST)
@@ -68,6 +76,8 @@ object RuleTaxYearNotSupportedError
 object RuleTaxYearRangeInvalidError
     extends MtdError(code = "RULE_TAX_YEAR_RANGE_INVALID", message = "Tax year range invalid. A tax year range of one year is required", BAD_REQUEST)
 
+object RuleTaxYearNotEndedError extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The specified tax year has not yet ended", BAD_REQUEST)
+
 object RuleOverlappingPeriod
     extends MtdError(code = "RULE_OVERLAPPING_PERIOD", message = "Period summary overlaps with any of the existing period summaries", BAD_REQUEST)
 
@@ -85,7 +95,7 @@ object RuleNotAllowedConsolidatedExpenses
 object RuleToDateBeforeFromDateError
     extends MtdError(code = "RULE_TO_DATE_BEFORE_FROM_DATE", message = "The To date cannot be earlier than the From date", BAD_REQUEST)
 
-object RuleEndDateBeforeStartDateError
+object RuleEndBeforeStartDateError
     extends MtdError(code = "RULE_END_DATE_BEFORE_START_DATE", message = "The End date cannot be earlier than the Start date", BAD_REQUEST)
 
 object RuleBothExpensesSuppliedError
@@ -115,6 +125,8 @@ object RuleIncorrectOrEmptyBodyError
 
 object RuleDuplicateSubmissionError
     extends MtdError(code = "RULE_DUPLICATE_SUBMISSION", message = "A summary has already been submitted for the period specified", BAD_REQUEST)
+
+object RuleCountryCodeError extends MtdError("RULE_COUNTRY_CODE", "The country code is not a valid ISO 3166-1 alpha-3 country code", BAD_REQUEST)
 
 object BVRError extends MtdError(code = "BUSINESS_ERROR", message = "Business validation error", BAD_REQUEST)
 

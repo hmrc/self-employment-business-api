@@ -41,11 +41,11 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCo
     val intent = if (featureSwitches.isPassDeleteIntentEnabled) Some("DELETE") else None
 
     if (taxYear.useTaxYearSpecificApi) {
-      delete(TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/annual-summaries"))
+      delete(TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"))
     } else {
       put(
         JsObject.empty,
-        DesUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/annual-summaries/${taxYear.asDownstream}"),
+        DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}"),
         intent
       )
     }

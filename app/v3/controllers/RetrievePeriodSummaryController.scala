@@ -16,7 +16,6 @@
 
 package v3.controllers
 
-import v3.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import api.controllers.{AuthorisedController, BaseController, EndpointLogContext}
 import api.hateoas.HateoasFactory
 import api.models.errors._
@@ -26,6 +25,7 @@ import cats.implicits._
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.{IdGenerator, Logging}
+import v3.controllers.requestParsers.RetrievePeriodSummaryRequestParser
 import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
 import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
 import v3.services.RetrievePeriodSummaryService

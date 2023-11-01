@@ -16,8 +16,8 @@
 
 package v1.models.response.retrieveAnnual
 
+import api.hateoas.{Link, Method}
 import api.models.domain.{BusinessId, Nino}
-import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec

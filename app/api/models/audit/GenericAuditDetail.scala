@@ -16,14 +16,16 @@
 
 package api.models.audit
 
+import api.controllers.{AuditHandler, RequestContext}
 import api.models.auth.UserDetails
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsValue, OWrites}
+import routing.Version
 
 case class GenericAuditDetail(userType: String,
                               agentReferenceNumber: Option[String],
-                              pathParams: Map[String, String],
-                              queryParams: Option[Map[String, Option[String]]],
+                              versionNumber: String,
+                              params: Map[String, String],
                               requestBody: Option[JsValue],
                               `X-CorrelationId`: String,
                               auditResponse: AuditResponse)
@@ -33,16 +35,32 @@ object GenericAuditDetail {
   implicit val writes: OWrites[GenericAuditDetail] = (
     (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and
+      (JsPath \ "versionNumber").write[String] and
       JsPath.write[Map[String, String]] and
-      JsPath.writeNullable[Map[String, Option[String]]] and
       (JsPath \ "request").writeNullable[JsValue] and
       (JsPath \ "X-CorrelationId").write[String] and
       (JsPath \ "response").write[AuditResponse]
-  )(unlift(GenericAuditDetail.unapply))
+    )(unlift(GenericAuditDetail.unapply))
+
+  def auditDetailCreator(apiVersion: Version, params: Map[String, String]): AuditHandler.AuditDetailCreator[GenericAuditDetail] =
+    new AuditHandler.AuditDetailCreator[GenericAuditDetail] {
+
+      def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit
+                                                                                                                  ctx: RequestContext): GenericAuditDetail =
+        GenericAuditDetail(
+          userDetails = userDetails,
+          apiVersion = apiVersion.name,
+          params = params,
+          requestBody = requestBody,
+          `X-CorrelationId` = ctx.correlationId,
+          auditResponse = auditResponse
+        )
+
+    }
 
   def apply(userDetails: UserDetails,
-            pathParams: Map[String, String],
-            queryParams: Option[Map[String, Option[String]]],
+            apiVersion: String,
+            params: Map[String, String],
             requestBody: Option[JsValue],
             `X-CorrelationId`: String,
             auditResponse: AuditResponse): GenericAuditDetail = {
@@ -50,8 +68,8 @@ object GenericAuditDetail {
     GenericAuditDetail(
       userType = userDetails.userType,
       agentReferenceNumber = userDetails.agentReferenceNumber,
-      pathParams = pathParams,
-      queryParams = queryParams,
+      versionNumber = apiVersion,
+      params = params,
       requestBody = requestBody,
       `X-CorrelationId` = `X-CorrelationId`,
       auditResponse = auditResponse
@@ -59,3 +77,4 @@ object GenericAuditDetail {
   }
 
 }
+

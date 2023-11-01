@@ -16,9 +16,9 @@
 
 package v1.models.response.amendSEAnnual
 
+import api.hateoas.Link
+import api.hateoas.Method.{DELETE, GET, PUT}
 import api.models.domain.{BusinessId, Nino}
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, PUT}
 import mocks.MockAppConfig
 import support.UnitSpec
 

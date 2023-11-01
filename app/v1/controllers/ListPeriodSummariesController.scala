@@ -49,10 +49,10 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
 
       val rawData = ListPeriodSummariesRawData(nino, businessId, taxYear)
 
-      val requestHandler = RequestHandler
+      val requestHandler = RequestHandlerOld
         .withParser(parser)
         .withService(service.listPeriodSummaries)
-        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
+        .withResultCreator(ResultCreatorOld.hateoasListWrapping(hateoasFactory)((_, _) =>
           ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYear.map(TaxYear.fromMtd))))
 
       requestHandler.handleRequest(rawData)

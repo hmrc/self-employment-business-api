@@ -16,9 +16,9 @@
 
 package v1.models.response.listPeriodSummaries
 
+import api.hateoas.Link
+import api.hateoas.Method._
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.hateoas.Link
-import api.models.hateoas.Method._
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
