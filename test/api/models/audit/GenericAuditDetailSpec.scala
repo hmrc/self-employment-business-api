@@ -29,7 +29,7 @@ class GenericAuditDetailSpec extends UnitSpec {
   val taxYear: String                      = "2021-22"
   val userType: String                     = "Agent"
   val agentReferenceNumber: Option[String] = Some("012345678")
-  val versionNumber                        = "3"
+  val versionNumber                        = "3.0"
   val pathParams: Map[String, String]      = Map("nino" -> nino, "taxYear" -> taxYear)
   val requestBody: Option[JsValue]         = None
   val xCorrId                              = "a1e8057e-fbbc-47a8-a8b478d9f015c253"

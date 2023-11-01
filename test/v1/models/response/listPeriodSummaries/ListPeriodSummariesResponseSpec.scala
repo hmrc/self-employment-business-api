@@ -16,7 +16,7 @@
 
 package v1.models.response.listPeriodSummaries
 
-import api.hateoas
+import api.hateoas.Link
 import api.hateoas.Method._
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import mocks.MockAppConfig
@@ -104,8 +104,8 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
-          hateoas.Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
-          hateoas.Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self")
+          Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
+          Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self")
         )
       }
 
@@ -120,7 +120,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         )
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, periodDetails) shouldBe Seq(
-          hateoas.Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
+          Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
         )
       }
     }
@@ -130,8 +130,8 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasDataTys) shouldBe Seq(
-          hateoas.Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
-          hateoas.Link(href = s"/test/context/$nino/$businessId/period?taxYear=2023-24", method = GET, rel = "self")
+          Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
+          Link(href = s"/test/context/$nino/$businessId/period?taxYear=2023-24", method = GET, rel = "self")
         )
       }
 
@@ -146,7 +146,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         )
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, periodDetails) shouldBe Seq(
-          hateoas.Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")
+          Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")
         )
       }
     }

@@ -16,8 +16,7 @@
 
 package v1.models.response.amendPeriodSummary
 
-import api.hateoas
-import api.hateoas.Method
+import api.hateoas.{Link, Method}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import mocks.MockAppConfig
 import support.UnitSpec
@@ -35,9 +34,9 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          hateoas.Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
-          hateoas.Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
-          hateoas.Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
+          Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
         )
       }
     }
@@ -53,15 +52,12 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          hateoas.Link(
+          Link(
             href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24",
             method = Method.PUT,
             rel = "amend-self-employment-period-summary"),
-          hateoas.Link(href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = Method.GET, rel = "self"),
-          hateoas.Link(
-            href = s"/my/context/$nino/$businessId/period?taxYear=2023-24",
-            method = Method.GET,
-            rel = "list-self-employment-period-summaries")
+          Link(href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = Method.GET, rel = "self"),
+          Link(href = s"/my/context/$nino/$businessId/period?taxYear=2023-24", method = Method.GET, rel = "list-self-employment-period-summaries")
         )
       }
     }

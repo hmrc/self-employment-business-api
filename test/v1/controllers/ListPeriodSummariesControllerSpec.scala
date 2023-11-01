@@ -17,7 +17,6 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas
 import api.hateoas.Method.GET
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.{BusinessId, Nino, TaxYear}
@@ -180,8 +179,8 @@ class ListPeriodSummariesControllerSpec
     val rawData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, None)
     val requestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
 
-    val testHateoasLink: Link      = hateoas.Link(href = "test/href", method = GET, rel = "self")
-    val testInnerHateoasLink: Link = hateoas.Link(href = s"test/href/$periodId", method = GET, rel = "self")
+    val testHateoasLink: Link      = Link(href = "test/href", method = GET, rel = "self")
+    val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
     val hateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
       Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
@@ -203,8 +202,8 @@ class ListPeriodSummariesControllerSpec
 
     val rawTysData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, Some(taxYear))
     val tysRequestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
-    val testTysHateoasLink: Link                   = hateoas.Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
-    val testTysInnerHateoasLink: Link              = hateoas.Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
+    val testTysHateoasLink: Link                   = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
+    val testTysInnerHateoasLink: Link              = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
 
     val tysHateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
       Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))

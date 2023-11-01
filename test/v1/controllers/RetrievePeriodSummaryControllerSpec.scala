@@ -17,11 +17,10 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas
+import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
-import api.hateoas.Method.{GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -122,13 +121,13 @@ class RetrievePeriodSummaryControllerSpec
     )
 
     val testHateoasLink: Seq[Link] = Seq(
-      hateoas.Link(
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
-      hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-      hateoas.Link(
+      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
         method = GET,
         rel = "list-self-employment-period-summaries"
@@ -191,13 +190,13 @@ class RetrievePeriodSummaryControllerSpec
     )
 
     val testHateoasLink: Seq[Link] = Seq(
-      hateoas.Link(
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
-      hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
-      hateoas.Link(
+      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+      Link(
         href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = GET,
         rel = "list-self-employment-period-summaries"

@@ -17,11 +17,10 @@
 package v3.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas
+import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.hateoas.Method.{GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.Configuration
@@ -49,13 +48,13 @@ class CreatePeriodSummaryControllerSpec
   private val periodId   = "2017-01-25_2017-01-25"
 
   private val testHateoasLinks: Seq[Link] = Seq(
-    hateoas.Link(
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
       method = PUT,
       rel = "amend-self-employment-period-summary"
     ),
-    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-    hateoas.Link(
+    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
+    Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/period",
       method = GET,
       rel = "list-self-employment-period-summaries"
