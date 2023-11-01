@@ -31,18 +31,30 @@ security:
 
 requestBody:
   content:
-    application/json:
+    application/json TY 2023 :
       schema:
-        $ref: './schemas/create_and_amend_annual_submission_request.json'
+        $ref: './schemas/2023/create_and_amend_annual_submission_request.json'
       examples:
         example-with-trading-allowance-request:
           description: Example Request With Trading Income Allowance
           value:
-            $ref: './examples/create_and_amend_with_trading_income_allowance.json'
+            $ref: './examples/2023/create_and_amend_with_trading_income_allowance.json'
         example-without-trading-allowance-request:
           description: Example Request Without Trading Income Allowance
           value:
-            $ref: './examples/create_and_amend_without_trading_income_allowance.json'
+            $ref: './examples/2023/create_and_amend_without_trading_income_allowance.json'
+    application/json TY 2024 :
+      schema:
+        $ref: './schemas/2024/create_and_amend_annual_submission_request.json'
+      examples:
+        example-with-trading-allowance-request:
+          description: Example Request With Trading Income Allowance
+          value:
+            $ref: './examples/2024/create_and_amend_with_trading_income_allowance.json'
+        example-without-trading-allowance-request:
+          description: Example Request Without Trading Income Allowance
+          value:
+            $ref: './examples/2024/create_and_amend_without_trading_income_allowance.json'
 
 responses:
   "200":

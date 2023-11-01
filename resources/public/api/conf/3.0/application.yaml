@@ -50,13 +50,17 @@ components:
 tags:
   - name: Self-Employment Annual Submission
     description: Resources relating to an individual's self-employment annual submission
-  - name: Self-Employment Period Summaries
-    description: Resources relating to an individual's self-employment period summaries
+  - name: Self-Employment Period Summaries/2023
+    description: Resources relating to an individual's self-employment period summaries for tax year 2023
 
 paths:
   /individuals/business/self-employment/{nino}/{businessId}/annual/{taxYear}:
     $ref: "./annual_submissions.yaml"
   /individuals/business/self-employment/{nino}/{businessId}/period:
-    $ref: "./list_and_create_period_summary.yaml"
+    $ref: "./2023/list_and_create_period_summary.yaml"
+  /individuals/business/self-employment/{nino}/{businessID}/period:
+    $ref: "./2024/list_and_create_period_summary.yaml"
   /individuals/business/self-employment/{nino}/{businessId}/period/{periodId}:
-    $ref: "./amend_and_retrieve_period_summary.yaml"
+    $ref: "./2023/amend_and_retrieve_period_summary.yaml"
+  /individuals/business/self-employment/{nino}/{businessId}/period/{periodID}:
+    $ref: "./2024/amend_and_retrieve_period_summary.yaml"

@@ -35,18 +35,30 @@ responses:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
     content:
-      application/json:
+      application/json TY 2023:
         schema:
-          $ref: './schemas/retrieve_annual_submission_response.json'
+          $ref: './schemas/2023/retrieve_annual_submission_response.json'
         examples:
           example-with-allowances-response:
             description: Example Response with Full Allowances
             value:
-              $ref: './examples/retrieve_annual_submission_full_response.json'
+              $ref: './examples/2023/retrieve_annual_submission_full_response.json'
           example-with-trading-allowances-response:
             description: Example Response with Trading Allowance
             value:
-              $ref: './examples/retrieve_annual_submission_trading_allowance_response.json'
+              $ref: './examples/2023/retrieve_annual_submission_trading_allowance_response.json'
+      application/json TY 2024:
+        schema:
+          $ref: './schemas/2024/retrieve_annual_submission_response.json'
+        examples:
+          example-with-allowances-response:
+            description: Example Response with Full Allowances
+            value:
+              $ref: './examples/2024/retrieve_annual_submission_full_response.json'
+          example-with-trading-allowances-response:
+            description: Example Response with Trading Allowance
+            value:
+              $ref: './examples/2024/retrieve_annual_submission_trading_allowance_response.json'
 
   "400":
     description: Bad request
