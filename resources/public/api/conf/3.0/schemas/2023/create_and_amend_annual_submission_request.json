@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Create and Amend Self-Employment Annual Submission",
+  "title": "2023",
   "description": "Create and Amend Self-Employment Annual Submission Request",
   "type": "object",
   "properties": {

@@ -31,31 +31,28 @@ security:
 
 requestBody:
   content:
-    application/json TY 2023 :
+    application/json:
       schema:
-        $ref: './schemas/2023/create_and_amend_annual_submission_request.json'
+        oneOf:
+          - $ref: './schemas/2023/create_and_amend_annual_submission_request.json'
+          - $ref: './schemas/2024/create_and_amend_annual_submission_request.json'
       examples:
-        example-with-trading-allowance-request:
-          description: Example Request With Trading Income Allowance
+        2023_example-with-trading-allowance-request:
+          description: Example Request With Trading Income Allowance (2023)
           value:
             $ref: './examples/2023/create_and_amend_with_trading_income_allowance.json'
-        example-without-trading-allowance-request:
-          description: Example Request Without Trading Income Allowance
+        2023_example-without-trading-allowance-request:
+          description: Example Request Without Trading Income Allowance (2023)
           value:
             $ref: './examples/2023/create_and_amend_without_trading_income_allowance.json'
-    application/json TY 2024 :
-      schema:
-        $ref: './schemas/2024/create_and_amend_annual_submission_request.json'
-      examples:
-        example-with-trading-allowance-request:
-          description: Example Request With Trading Income Allowance
+        2024_example-with-trading-allowance-request:
+          description: Example Request With Trading Income Allowance (2024)
           value:
             $ref: './examples/2024/create_and_amend_with_trading_income_allowance.json'
-        example-without-trading-allowance-request:
-          description: Example Request Without Trading Income Allowance
+        2024_example-without-trading-allowance-request:
+          description: Example Request Without Trading Income Allowance (2024)
           value:
             $ref: './examples/2024/create_and_amend_without_trading_income_allowance.json'
-
 responses:
   "200":
     description: Success
