@@ -16,13 +16,14 @@
 
 package api.controllers
 
-import api.models.hateoas.Link
-import api.models.hateoas.Method.GET
+import api.hateoas
+import api.hateoas.Link
+import api.hateoas.Method.GET
 import play.api.libs.json.{JsObject, Json}
 
 trait ControllerSpecHateoasSupport {
 
-  val hateoaslinks: Seq[Link] = Seq(Link(href = "/foo/bar", method = GET, rel = "test-relationship"))
+  val hateoaslinks: Seq[Link] = Seq(hateoas.Link(href = "/foo/bar", method = GET, rel = "test-relationship"))
 
   val hateoaslinksJson: JsObject = Json
     .parse("""

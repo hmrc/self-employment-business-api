@@ -17,7 +17,8 @@
 package utils
 
 import support.UnitSpec
-import utils.EmptyPathsResult.{CompletelyEmpty, EmptyPaths, NoEmptyPaths}
+import utils.EmptinessChecker._
+import utils.EmptyPathsResult._
 
 import scala.annotation.nowarn
 
@@ -38,6 +39,7 @@ class EmptinessCheckerSpec extends UnitSpec {
 
   object SomeEnum {
     case object E1 extends SomeEnum
+
     case object E2 extends SomeEnum
 
     implicit val ckr: EmptinessChecker[SomeEnum] = EmptinessChecker.primitive

@@ -16,12 +16,14 @@
 
 package v3.models.response.retrievePeriodSummary
 
+import api.hateoas
+import api.hateoas.Method
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
 import v3.fixtures.RetrievePeriodSummaryFixture
+
 class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with RetrievePeriodSummaryFixture {
 
   "round trip" should {
@@ -47,9 +49,9 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
+          hateoas.Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
+          hateoas.Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
+          hateoas.Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
         )
       }
     }
@@ -62,12 +64,15 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          Link(
+          hateoas.Link(
             href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24",
             method = Method.PUT,
             rel = "amend-self-employment-period-summary"),
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/period?taxYear=2023-24", method = Method.GET, rel = "list-self-employment-period-summaries")
+          hateoas.Link(href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = Method.GET, rel = "self"),
+          hateoas.Link(
+            href = s"/my/context/$nino/$businessId/period?taxYear=2023-24",
+            method = Method.GET,
+            rel = "list-self-employment-period-summaries")
         )
       }
     }

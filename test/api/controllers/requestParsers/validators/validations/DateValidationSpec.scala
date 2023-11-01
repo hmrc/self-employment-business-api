@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{MtdError, RuleEndDateBeforeStartDateError, ToDateFormatError}
+import api.models.errors.{MtdError, RuleEndBeforeStartDateError, ToDateFormatError}
 import api.models.utils.JsonErrorValidators
 import support.UnitSpec
 
@@ -77,7 +77,7 @@ class DateValidationSpec extends UnitSpec with JsonErrorValidators {
 
     "return an error" when {
       "the to date is before from date" in {
-        DateValidation.validateEndDateBeforeStartDate("2020-01-01", "2019-01-01") shouldBe Seq(RuleEndDateBeforeStartDateError)
+        DateValidation.validateEndDateBeforeStartDate("2020-01-01", "2019-01-01") shouldBe Seq(RuleEndBeforeStartDateError)
       }
     }
   }

@@ -16,9 +16,8 @@
 
 package v1.models.response.listPeriodSummaries
 
-import api.hateoas.{HateoasLinks, HateoasListLinksFactory}
+import api.hateoas.{HateoasData, HateoasLinks, HateoasListLinksFactory, Link}
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.hateoas.{HateoasData, Link}
 import cats.Functor
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads, Writes}

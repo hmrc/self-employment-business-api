@@ -310,7 +310,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(RuleEndDateBeforeStartDateError)
+        response.json shouldBe Json.toJson(RuleEndBeforeStartDateError)
       }
       "a single invalid amount is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
@@ -552,7 +552,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
         (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-        (CONFLICT, "INVALID_PERIOD", BAD_REQUEST, RuleEndDateBeforeStartDateError),
+        (CONFLICT, "INVALID_PERIOD", BAD_REQUEST, RuleEndBeforeStartDateError),
         (CONFLICT, "OVERLAPS_IN_PERIOD", BAD_REQUEST, RuleOverlappingPeriod),
         (CONFLICT, "NOT_ALIGN_PERIOD", BAD_REQUEST, RuleMisalignedPeriod),
         (CONFLICT, "NOT_CONTIGUOUS_PERIOD", BAD_REQUEST, RuleNotContiguousPeriod),
@@ -570,7 +570,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "PERIOD_OVERLAP", BAD_REQUEST, RuleOverlappingPeriod),
         (UNPROCESSABLE_ENTITY, "PERIOD_ALIGNMENT", BAD_REQUEST, RuleMisalignedPeriod),
         (UNPROCESSABLE_ENTITY, "PERIOD_HAS_GAPS", BAD_REQUEST, RuleNotContiguousPeriod),
-        (UNPROCESSABLE_ENTITY, "END_BEFORE_START", BAD_REQUEST, RuleEndDateBeforeStartDateError),
+        (UNPROCESSABLE_ENTITY, "END_BEFORE_START", BAD_REQUEST, RuleEndBeforeStartDateError),
         (UNPROCESSABLE_ENTITY, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError)

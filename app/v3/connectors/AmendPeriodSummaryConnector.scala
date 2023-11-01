@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit
       hc: HeaderCarrier,
@@ -46,9 +46,9 @@ class AmendPeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig:
       taxYear match {
         case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
           TaxYearSpecificIfsUri[Unit](
-            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/${businessId.value}/periodic-summaries?from=$fromDate&to=$toDate")
+            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate")
         case _ =>
-          DesUri[Unit](s"income-tax/nino/$nino/self-employments/${businessId.value}/periodic-summaries?from=$fromDate&to=$toDate")
+          DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=$fromDate&to=$toDate")
       }
 
     put(body, downstreamUri)

@@ -16,8 +16,9 @@
 
 package v1.models.response.retrieveAnnual
 
+import api.hateoas
+import api.hateoas.Method
 import api.models.domain.{BusinessId, Nino}
-import api.models.hateoas.{Link, Method}
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
@@ -79,12 +80,15 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
-          Link(
+          hateoas.Link(
             href = s"/my/context/$nino/$businessId/annual/$taxYear",
             method = Method.PUT,
             rel = "create-and-amend-self-employment-annual-submission"),
-          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear", method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear", method = Method.DELETE, rel = "delete-self-employment-annual-submission")
+          hateoas.Link(href = s"/my/context/$nino/$businessId/annual/$taxYear", method = Method.GET, rel = "self"),
+          hateoas.Link(
+            href = s"/my/context/$nino/$businessId/annual/$taxYear",
+            method = Method.DELETE,
+            rel = "delete-self-employment-annual-submission")
         )
       }
     }

@@ -51,7 +51,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
 
       val rawData = AmendPeriodSummaryRawData(nino, businessId, periodId, request.body, taxYear)
 
-      val requestHandler = RequestHandler
+      val requestHandler = RequestHandlerOld
         .withParser(parser)
         .withService(service.amendPeriodSummary)
         .withHateoasResult(hateoasFactory)(AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear.map(TaxYear.fromMtd)))

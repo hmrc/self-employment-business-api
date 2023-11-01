@@ -44,11 +44,11 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appCon
     if (TaxYear.isTys(taxYear)) {
       get(
         TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
-          s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/${businessId.value}/periodic-summary-detail?from=$fromDate&to=$toDate"))
+          s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"))
     } else {
       get(
         DesUri[RetrievePeriodSummaryResponse](
-          s"income-tax/nino/$nino/self-employments/${businessId.value}/periodic-summary-detail?from=$fromDate&to=$toDate"))
+          s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"))
     }
   }
 

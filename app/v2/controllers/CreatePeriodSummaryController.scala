@@ -16,7 +16,7 @@
 
 package v2.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -53,7 +53,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
       val includeNegatives = FeatureSwitches(appConfig.featureSwitches).isAllowNegativeExpensesEnabled
       val rawData          = CreatePeriodSummaryRawData(nino, businessId, request.body, includeNegatives)
 
-      val requestHandler = RequestHandler
+      val requestHandler = RequestHandlerOld
         .withParser(parser)
         .withService(service.createPeriodSummary)
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, response) =>

@@ -16,9 +16,9 @@
 
 package v1.models.response.amendSEAnnual
 
+import api.hateoas
+import api.hateoas.Method.{DELETE, GET, PUT}
 import api.models.domain.{BusinessId, Nino}
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, PUT}
 import mocks.MockAppConfig
 import support.UnitSpec
 
@@ -36,9 +36,9 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
         mockAppConfig,
         AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear)) shouldBe
         Seq(
-          Link(s"/my/context/$nino/$businessId/annual/$taxYear", PUT, "create-and-amend-self-employment-annual-submission"),
-          Link(s"/my/context/$nino/$businessId/annual/$taxYear", GET, "self"),
-          Link(s"/my/context/$nino/$businessId/annual/$taxYear", DELETE, "delete-self-employment-annual-submission")
+          hateoas.Link(s"/my/context/$nino/$businessId/annual/$taxYear", PUT, "create-and-amend-self-employment-annual-submission"),
+          hateoas.Link(s"/my/context/$nino/$businessId/annual/$taxYear", GET, "self"),
+          hateoas.Link(s"/my/context/$nino/$businessId/annual/$taxYear", DELETE, "delete-self-employment-annual-submission")
         )
     }
   }

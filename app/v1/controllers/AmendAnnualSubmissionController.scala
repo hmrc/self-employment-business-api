@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -51,7 +51,7 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
 
       val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, request.body)
 
-      val requestHandler = RequestHandler
+      val requestHandler = RequestHandlerOld
         .withParser(parser)
         .withService(service.amendAnnualSubmission)
         .withHateoasResult(hateoasFactory)(AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))

@@ -50,7 +50,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
 
       val rawData = CreatePeriodSummaryRawData(nino, businessId, request.body)
 
-      val requestHandler = RequestHandler
+      val requestHandler = RequestHandlerOld
         .withParser(parser)
         .withService(service.createPeriodSummary)
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, response) =>

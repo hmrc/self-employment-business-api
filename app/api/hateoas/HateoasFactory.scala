@@ -16,7 +16,6 @@
 
 package api.hateoas
 
-import api.models.hateoas._
 import cats._
 import cats.implicits._
 import config.AppConfig

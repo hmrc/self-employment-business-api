@@ -29,6 +29,7 @@ class GenericAuditDetailSpec extends UnitSpec {
   val taxYear: String                      = "2021-22"
   val userType: String                     = "Agent"
   val agentReferenceNumber: Option[String] = Some("012345678")
+  val versionNumber                        = "3"
   val pathParams: Map[String, String]      = Map("nino" -> nino, "taxYear" -> taxYear)
   val requestBody: Option[JsValue]         = None
   val xCorrId                              = "a1e8057e-fbbc-47a8-a8b478d9f015c253"
@@ -43,8 +44,8 @@ class GenericAuditDetailSpec extends UnitSpec {
     GenericAuditDetail(
       userType = userType,
       agentReferenceNumber = agentReferenceNumber,
-      pathParams = pathParams,
-      queryParams = None,
+      versionNumber = versionNumber,
+      params = pathParams,
       requestBody = requestBody,
       `X-CorrelationId` = xCorrId,
       auditResponse = auditResponseModelWithBody
@@ -66,6 +67,7 @@ class GenericAuditDetailSpec extends UnitSpec {
        |{
        |   "userType" : "$userType",
        |   "agentReferenceNumber" : "${agentReferenceNumber.get}",
+       |   "versionNumber":"$versionNumber",
        |   "nino" : "$nino",
        |   "taxYear" : "$taxYear",
        |   "response":{
@@ -98,6 +100,7 @@ class GenericAuditDetailSpec extends UnitSpec {
        |{
        |   "userType" : "$userType",
        |   "agentReferenceNumber" : "${agentReferenceNumber.get}",
+       |   "versionNumber":"$versionNumber",
        |   "nino": "$nino",
        |   "taxYear" : "$taxYear",
        |   "response": $auditResponseJsonWithErrors,

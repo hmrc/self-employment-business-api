@@ -16,9 +16,9 @@
 
 package api.hateoas
 
+import api.hateoas
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{DELETE, GET, POST, PUT}
+import Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
 import support.UnitSpec
 
@@ -39,7 +39,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
       val link         = retrieveAnnualSubmission(mockAppConfig, nino, businessId, taxYear2023)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2022-23"
 
-      link shouldBe Link(expectedHref, GET, "self")
+      link shouldBe hateoas.Link(expectedHref, GET, "self")
     }
   }
 
@@ -48,7 +48,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
       val link         = amendAnnualSubmission(mockAppConfig, nino, businessId, taxYear2023)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2022-23"
 
-      link shouldBe Link(expectedHref, PUT, "create-and-amend-self-employment-annual-submission")
+      link shouldBe hateoas.Link(expectedHref, PUT, "create-and-amend-self-employment-annual-submission")
     }
   }
 
@@ -57,7 +57,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
       val link         = deleteAnnualSubmission(mockAppConfig, nino, businessId, taxYear2023)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/annual/2022-23"
 
-      link shouldBe Link(expectedHref, DELETE, "delete-self-employment-annual-submission")
+      link shouldBe hateoas.Link(expectedHref, DELETE, "delete-self-employment-annual-submission")
     }
   }
 
@@ -66,28 +66,28 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
       val link         = listPeriodSummaries(mockAppConfig, nino, businessId, None, true)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
 
-      link shouldBe Link(expectedHref, GET, "self")
+      link shouldBe hateoas.Link(expectedHref, GET, "self")
     }
 
     "generate the correct link with isSelf set to false" in new Test {
       val link         = listPeriodSummaries(mockAppConfig, nino, businessId, None, false)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
 
-      link shouldBe Link(expectedHref, GET, "list-self-employment-period-summaries")
+      link shouldBe hateoas.Link(expectedHref, GET, "list-self-employment-period-summaries")
     }
 
     "not include tax year query parameter given a non-TYS tax year" in new Test {
       val link         = listPeriodSummaries(mockAppConfig, nino, businessId, Some(taxYear2023), true)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
 
-      link shouldBe Link(expectedHref, GET, "self")
+      link shouldBe hateoas.Link(expectedHref, GET, "self")
     }
 
     "include tax year query parameter given a TYS tax year" in new Test {
       val link         = listPeriodSummaries(mockAppConfig, nino, businessId, Some(taxYear2024), true)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period?taxYear=2023-24"
 
-      link shouldBe Link(expectedHref, GET, "self")
+      link shouldBe hateoas.Link(expectedHref, GET, "self")
     }
   }
 
@@ -96,7 +96,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
       val link         = createPeriodSummary(mockAppConfig, nino, businessId)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period"
 
-      link shouldBe Link(expectedHref, POST, "create-self-employment-period-summary")
+      link shouldBe hateoas.Link(expectedHref, POST, "create-self-employment-period-summary")
     }
   }
 
@@ -105,21 +105,21 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
       val link         = retrievePeriodSummary(mockAppConfig, nino, businessId, periodId, None)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01"
 
-      link shouldBe Link(expectedHref, GET, "self")
+      link shouldBe hateoas.Link(expectedHref, GET, "self")
     }
 
     "not include tax year query parameter given a non-TYS tax year" in new Test {
       val link         = retrievePeriodSummary(mockAppConfig, nino, businessId, periodId, Some(taxYear2023))
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01"
 
-      link shouldBe Link(expectedHref, GET, "self")
+      link shouldBe hateoas.Link(expectedHref, GET, "self")
     }
 
     "include tax year query parameter given a TYS tax year" in new Test {
       val link         = retrievePeriodSummary(mockAppConfig, nino, businessId, periodId, Some(taxYear2024))
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01?taxYear=2023-24"
 
-      link shouldBe Link(expectedHref, GET, "self")
+      link shouldBe hateoas.Link(expectedHref, GET, "self")
     }
   }
 
@@ -128,21 +128,21 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
       val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId, None)
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01"
 
-      link shouldBe Link(expectedHref, PUT, "amend-self-employment-period-summary")
+      link shouldBe hateoas.Link(expectedHref, PUT, "amend-self-employment-period-summary")
     }
 
     "not include tax year query parameter given a non-TYS tax year" in new Test {
       val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId, Some(taxYear2023))
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01"
 
-      link shouldBe Link(expectedHref, PUT, "amend-self-employment-period-summary")
+      link shouldBe hateoas.Link(expectedHref, PUT, "amend-self-employment-period-summary")
     }
 
     "include tax year query parameter given a TYS tax year" in new Test {
       val link         = amendPeriodSummary(mockAppConfig, nino, businessId, periodId, Some(taxYear2024))
       val expectedHref = "/individuals/business/self-employment/AA123456A/XAIS12345678910/period/2019-01-01_2020-01-01?taxYear=2023-24"
 
-      link shouldBe Link(expectedHref, PUT, "amend-self-employment-period-summary")
+      link shouldBe hateoas.Link(expectedHref, PUT, "amend-self-employment-period-summary")
     }
   }
 

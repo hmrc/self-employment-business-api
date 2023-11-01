@@ -87,23 +87,23 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   }
 
   "Routing requests with valid version" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
+    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.1.0+json")
     handleWithDefaultRoutes()
   }
 
   "Routing requests with v1" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
-    handleWithVersionRoutes("/v1", V1Handler, Seq(Version1))
+    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.1.0+json")
+    handleWithVersionRoutes("/v1", V1Handler, Version1)
   }
 
   "Routing requests with v2" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.2.0+json")
-    handleWithVersionRoutes("/v2", V2Handler, Seq(Version2))
+    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.2.0+json")
+    handleWithVersionRoutes("/v2", V2Handler, Version2)
   }
 
   "Routing requests with v3" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.3.0+json")
-    handleWithVersionRoutes("/v3", V3Handler, Seq(Version3))
+    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.3.0+json")
+    handleWithVersionRoutes("/v3", V3Handler, Version3)
   }
 
   "Routing requests to non default router with no version" should {
@@ -168,22 +168,20 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     }
   }
 
-  private def handleWithVersionRoutes(path: String, handler: Handler, versions: Seq[Version])(implicit acceptHeader: Option[String]): Unit = {
-    "if the request ends with a trailing slash" when {
-      "handler found" should {
-        "use it" in new Test {
-          versions.foreach(v => MockAppConfig.endpointsEnabled(v).returns(true).anyNumberOfTimes())
+  private def handleWithVersionRoutes(path: String, handler: Handler, version: Version)(implicit acceptHeader: Option[String]): Unit = {
+    withClue("request ends with a trailing slash...") {
+      new Test {
+        MockAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
 
-          requestHandler.routeRequest(buildRequest(s"$path/")) shouldBe Some(handler)
-        }
+        requestHandler.routeRequest(buildRequest(s"$path/")) shouldBe Some(handler)
       }
+    }
 
-      "handler not found" should {
-        "try without the trailing slash" in new Test {
-          versions.foreach(v => MockAppConfig.endpointsEnabled(v).returns(true).anyNumberOfTimes())
+    withClue("request doesn't end with a trailing slash...") {
+      new Test {
+        MockAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
 
-          requestHandler.routeRequest(buildRequest(s"$path")) shouldBe Some(handler)
-        }
+        requestHandler.routeRequest(buildRequest(s"$path")) shouldBe Some(handler)
       }
     }
   }
@@ -202,14 +200,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
         }
       }
     }
-  }
-
-  "Routing requests with route that does not exist for V2 but exists in V1" should {
-    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.2.0+json")
-    "the V1 has a route that matches the V2 requested route and V1 is disabled" must {
-      handleWithVersionRoutes("/v1", V1Handler, Seq(Version1, Version2))
-    }
-
   }
 
 }

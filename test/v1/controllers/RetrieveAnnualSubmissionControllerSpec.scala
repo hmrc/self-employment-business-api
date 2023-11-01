@@ -17,11 +17,11 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.hateoas.MockHateoasFactory
+import api.hateoas
+import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.Method.{DELETE, GET, PUT}
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.hateoas.Method.{DELETE, GET, PUT}
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockRetrieveAnnualSubmissionRequestParser
@@ -44,12 +44,12 @@ class RetrieveAnnualSubmissionControllerSpec
   private val taxYear: String    = "2020-21"
 
   private val testHateoasLinks: Seq[Link] = Seq(
-    Link(
+    hateoas.Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
       method = PUT,
       rel = "create-and-amend-self-employment-annual-submission"),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
-    Link(
+    hateoas.Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+    hateoas.Link(
       href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
       method = DELETE,
       rel = "delete-self-employment-annual-submission")
