@@ -16,6 +16,6 @@
 
 package v1.models.request.retrievePeriodSummary
 
-import api.models.request.RawData
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 
-case class RetrievePeriodSummaryRawData(nino: String, businessId: String, periodId: String, taxYear: Option[String]) extends RawData
+case class RetrievePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear])
