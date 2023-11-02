@@ -37,6 +37,8 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
 
     import request._
 
+//    request.body.periodDates.periodEndDate.asTysDownstream
+
     val (downstreamUri, statusCode) =
       if (taxYear.useTaxYearSpecificApi) {
         (TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"), CREATED)

@@ -19,5 +19,5 @@ package v1.models.request.createPeriodSummary
 import api.models.domain.{BusinessId, Nino, TaxYear}
 
 case class CreatePeriodSummaryRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody) {
-  val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
+  lazy val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
 }

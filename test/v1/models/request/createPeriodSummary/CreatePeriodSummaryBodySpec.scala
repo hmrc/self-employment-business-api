@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class CreatePeriodSummaryBodySpec extends UnitSpec {
 
-  val fullMtdBody: CreatePeriodSummaryBody =
+  private val fullMtdBody =
     CreatePeriodSummaryBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       Some(
@@ -68,7 +68,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
         ))
     )
 
-  val someOptionalFieldsMtdBody: CreatePeriodSummaryBody =
+  private val someOptionalFieldsMtdBody =
     CreatePeriodSummaryBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       Some(
@@ -98,7 +98,7 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
       None
     )
 
-  val noOptionalFieldsMtdBody: CreatePeriodSummaryBody =
+  private val noOptionalFieldsMtdBody =
     CreatePeriodSummaryBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       None,

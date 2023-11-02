@@ -282,10 +282,6 @@ trait CreatePeriodSummaryFixture {
       |      "turnover": 1000.99,
       |      "other": 1000.09
       |    },
-      |   "periodDates": {
-      |     "periodStartDate": "2019-08-24",
-      |     "periodEndDate": "2019-08-24"
-      |    },
       |    "periodAllowableExpenses": {
       |      "costOfGoodsAllowable": 1000.99,
       |      "paymentsToSubcontractorsAllowable": 1000.99,
