@@ -17,7 +17,7 @@
 package v1.connectors
 
 import api.connectors.ConnectorSpec
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v1.models.request.amendPeriodSummary._
 
@@ -28,13 +28,13 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2020-01-01_2020-01-01"
-  val nonTysRequest = makeRequest(None)
-  val tysRequest    = makeRequest(Some("2023-24"))
+  val nonTysRequest      = makeRequest(None)
+  val tysRequest         = makeRequest(Some("2023-24"))
 
-  def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
+  def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequestData = AmendPeriodSummaryRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    periodId = periodId,
+    periodId = PeriodId(periodId),
     taxYear = taxYear.map(TaxYear.fromMtd),
     body = AmendPeriodSummaryBody(
       None,

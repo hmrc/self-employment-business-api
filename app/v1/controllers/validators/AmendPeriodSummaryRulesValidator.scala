@@ -17,58 +17,51 @@
 package v1.controllers.validators
 
 import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import api.controllers.validators.resolvers.ResolveParsedNumber
 import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
-import cats.data.Validated.Invalid
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.toFoldableOps
-import v1.models.request.createPeriodSummary.{CreatePeriodSummaryRequestData, PeriodAllowableExpenses, PeriodDisallowableExpenses, PeriodIncome}
+import v1.models.request.amendPeriodSummary.{AmendPeriodSummaryRequestData, PeriodAllowableExpenses, PeriodDisallowableExpenses, PeriodIncome}
 
-object CreatePeriodSummaryRulesValidator extends RulesValidator[CreatePeriodSummaryRequestData] {
-
-  private val minYear = 1900
-  private val maxYear = 2100
+object AmendPeriodSummaryRulesValidator extends RulesValidator[AmendPeriodSummaryRequestData] {
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
-  def validateBusinessRules(parsed: CreatePeriodSummaryRequestData): Validated[Seq[MtdError], CreatePeriodSummaryRequestData] = {
+  def validateBusinessRules(parsed: AmendPeriodSummaryRequestData): Validated[Seq[MtdError], AmendPeriodSummaryRequestData] = {
     import parsed.body._
 
     combine(
-      validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
       validateExpenses(periodAllowableExpenses, periodDisallowableExpenses),
-      periodIncome.map(validatePeriodIncomeNumericFields).getOrElse(valid),
-      periodAllowableExpenses.map(validateAllowableNumericFields).getOrElse(valid),
-      periodDisallowableExpenses.map(validateDisllowableNumericFields).getOrElse(valid)
+      periodIncome.map(validatePeriodIncome).getOrElse(Valid(())),
+      periodAllowableExpenses.map(validatePeriodAllowableExpenses).getOrElse(Valid(())),
+      periodDisallowableExpenses.map(validatePeriodDisallowableExpenses).getOrElse(Valid(()))
     ).onSuccess(parsed)
   }
 
   private def validateExpenses(allowableExpenses: Option[PeriodAllowableExpenses],
-                               disallowableExpenses: Option[PeriodDisallowableExpenses]): Validated[Seq[MtdError], Unit] =
-    (allowableExpenses, disallowableExpenses) match {
+                               periodDisallowableExpenses: Option[PeriodDisallowableExpenses]): Validated[Seq[MtdError], Unit] =
+    (allowableExpenses, periodDisallowableExpenses) match {
       case (Some(allowable), Some(_)) if allowable.consolidatedExpenses.isDefined => Invalid(List(RuleBothExpensesSuppliedError))
       case (Some(allowable), None) if allowable.consolidatedExpenses.isDefined =>
         allowable match {
-          case PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) =>
-            valid
+          case PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) => valid
           case _ => Invalid(List(RuleBothExpensesSuppliedError))
         }
       case _ => valid
+
     }
 
-  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] =
-    ResolveDateRange.withLimits(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
-
-  private def validatePeriodIncomeNumericFields(periodIncome: PeriodIncome): Validated[Seq[MtdError], Unit] =
+  private def validatePeriodIncome(income: PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(
-      (periodIncome.other, "/periodIncome/other"),
-      (periodIncome.turnover, "/periodIncome/turnover")
+      (income.turnover, "/periodIncome/turnover"),
+      (income.other, "/periodIncome/other")
     ).traverse_ { case (value, path) =>
       resolveNonNegativeParsedNumber(value, path = Some(path))
     }
 
-  private def validateAllowableNumericFields(expenses: PeriodAllowableExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validatePeriodAllowableExpenses(expenses: PeriodAllowableExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val validatedNonNegatives = List(
@@ -78,7 +71,8 @@ object CreatePeriodSummaryRulesValidator extends RulesValidator[CreatePeriodSumm
       (carVanTravelExpensesAllowable, "/periodAllowableExpenses/carVanTravelExpensesAllowable"),
       (adminCostsAllowable, "/periodAllowableExpenses/adminCostsAllowable"),
       (businessEntertainmentCostsAllowable, "/periodAllowableExpenses/businessEntertainmentCostsAllowable"),
-      (advertisingCostsAllowable, "/periodAllowableExpenses/advertisingCostsAllowable")
+      (advertisingCostsAllowable, "/periodAllowableExpenses/advertisingCostsAllowable"),
+      (otherExpensesAllowable, "/periodAllowableExpenses/otherExpensesAllowable")
     ).traverse_ { case (value, path) =>
       resolveNonNegativeParsedNumber(value, path = Some(path))
     }
@@ -91,8 +85,7 @@ object CreatePeriodSummaryRulesValidator extends RulesValidator[CreatePeriodSumm
       (financeChargesAllowable, "/periodAllowableExpenses/financeChargesAllowable"),
       (irrecoverableDebtsAllowable, "/periodAllowableExpenses/irrecoverableDebtsAllowable"),
       (professionalFeesAllowable, "/periodAllowableExpenses/professionalFeesAllowable"),
-      (depreciationAllowable, "/periodAllowableExpenses/depreciationAllowable"),
-      (otherExpensesAllowable, "/periodAllowableExpenses/otherExpensesAllowable")
+      (depreciationAllowable, "/periodAllowableExpenses/depreciationAllowable")
     ).traverse_ { case (value, path) =>
       resolveMaybeNegativeParsedNumber(value, path = Some(path))
     }
@@ -100,7 +93,7 @@ object CreatePeriodSummaryRulesValidator extends RulesValidator[CreatePeriodSumm
     combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
-  private def validateDisllowableNumericFields(expenses: PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validatePeriodDisallowableExpenses(expenses: PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val validatedNonNegatives = List(

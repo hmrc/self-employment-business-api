@@ -16,6 +16,10 @@
 
 package v1.models.request.amendPeriodSummary
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 
-case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody, taxYear: Option[TaxYear])
+case class AmendPeriodSummaryRequestData(nino: Nino,
+                                         businessId: BusinessId,
+                                         periodId: PeriodId,
+                                         taxYear: Option[TaxYear],
+                                         body: AmendPeriodSummaryBody)
