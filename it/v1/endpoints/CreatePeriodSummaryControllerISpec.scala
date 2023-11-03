@@ -33,6 +33,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
     val periodId: String   = s"${periodStartDate}_$periodEndDate"
+
     val requestBodyJson: JsValue = Json.parse(
       s"""
          |{
@@ -81,6 +82,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin
     )
+
     val responseBody: JsValue = Json.parse(
       s"""
          |{
@@ -105,6 +107,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin
     )
+
     val downstreamResponse: JsValue = Json.parse(
       s"""
          |{
@@ -159,21 +162,21 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysIfsTest extends Test {
-    override def downstreamUri: String   = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+    override def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
-    def downstreamTaxYear: String        = "23-24"
+    def downstreamTaxYear: String = "23-24"
 
     override def periodStartDate: String = "2023-07-24"
 
-    override def periodEndDate: String   = "2023-08-24"
+    override def periodEndDate: String = "2023-08-24"
 
-    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
     def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
-    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+    def listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
-    def mtdTaxYear: String               = "2023-24"
+    def mtdTaxYear: String = "2023-24"
 
   }
 
@@ -318,7 +321,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |{
              |     "periodDates": {
              |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-08-24"
+             |           "periodEndDate": "2019-09-24"
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
@@ -378,7 +381,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |{
              |     "periodDates": {
              |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-08-24"
+             |           "periodEndDate": "2019-09-24"
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
@@ -430,12 +433,18 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(
-          ValueFormatError.copy(paths = Some(Seq(
-            "/periodAllowableExpenses/premisesRunningCostsAllowable",
-            "/periodAllowableExpenses/financeChargesAllowable",
-            "/periodDisallowableExpenses/adminCostsDisallowable",
-            "/periodDisallowableExpenses/professionalFeesDisallowable"
-          ))))
+          ErrorWrapper(
+            "ignored",
+            BadRequestError,
+            Some(List(
+              ValueFormatError.withPaths(
+                List("/periodDisallowableExpenses/adminCostsDisallowable", "/periodDisallowableExpenses/professionalFeesDisallowable")),
+              ValueFormatError
+                .forPathAndRange("", min = "-99999999999.99", max = "99999999999.99")
+                .withPaths(List("/periodAllowableExpenses/premisesRunningCostsAllowable", "/periodAllowableExpenses/financeChargesAllowable"))
+            ))
+          )
+        )
       }
 
       "both expenses and consolidated expenses are provided" in new NonTysTest {
@@ -444,7 +453,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |{
              |     "periodDates": {
              |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-08-24"
+             |           "periodEndDate": "2019-09-24"
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
@@ -548,7 +557,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      val errors = Seq(
+      val errors = List(
         (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
         (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
@@ -562,7 +571,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
-      val extraTysErrors = Seq(
+      val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),

@@ -80,7 +80,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
         ))
     )
 
-  private val requestData = CreatePeriodSummaryRequest(
+  private val requestData = CreatePeriodSummaryRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     body = requestBody

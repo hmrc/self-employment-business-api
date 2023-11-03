@@ -17,18 +17,14 @@
 package v1.controllers.validators
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDateRange, ResolveIsoDate, ResolveNino, ResolveNonEmptyJsonObject}
-import api.models.errors.{EndDateFormatError, MtdError, RuleBothExpensesSuppliedError, StartDateFormatError}
+import api.controllers.validators.resolvers._
+import api.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
+import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple3Semigroupal, toFoldableOps}
 import play.api.libs.json.JsValue
-import v1.models.request.createPeriodSummary.{
-  CreatePeriodSummaryBody,
-  CreatePeriodSummaryRequest,
-  PeriodAllowableExpenses,
-  PeriodDisallowableExpenses
-}
+import v1.controllers.validators.CreatePeriodSummaryRulesValidator.validateBusinessRules
+import v1.models.request.createPeriodSummary.{CreatePeriodSummaryBody, CreatePeriodSummaryRequestData}
 
 import javax.inject.Singleton
 import scala.annotation.nowarn
@@ -36,61 +32,28 @@ import scala.annotation.nowarn
 @Singleton
 class CreatePeriodSummaryValidatorFactory {
 
-  private val minYear = 1900
-  private val maxYear = 2100
-
   @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[CreatePeriodSummaryBody]()
 
-  private val valid = Valid(())
+  def validator(nino: String, businessId: String, body: JsValue): Validator[CreatePeriodSummaryRequestData] =
+    new Validator[CreatePeriodSummaryRequestData] {
 
-  def validator(nino: String, businessId: String, body: JsValue): Validator[CreatePeriodSummaryRequest] =
-    new Validator[CreatePeriodSummaryRequest] {
-
-      def validate: Validated[Seq[MtdError], CreatePeriodSummaryRequest] =
+      def validate: Validated[Seq[MtdError], CreatePeriodSummaryRequestData] =
         validateJsonFields(body) andThen
           (resolvedBody =>
             (
               ResolveNino(nino),
               ResolveBusinessId(businessId),
               Valid(resolvedBody)
-            ).mapN(CreatePeriodSummaryRequest)) andThen validateBusinessRules
-
-      private def validateJsonFields(body: JsValue): Validated[Seq[MtdError], CreatePeriodSummaryBody] =
-        resolveJson(body) andThen (parsedBody =>
-          List(
-            ResolveIsoDate(parsedBody.periodDates.periodStartDate, StartDateFormatError),
-            ResolveIsoDate(parsedBody.periodDates.periodEndDate, EndDateFormatError)
-          ).traverse_(identity).map(_ => parsedBody))
-
-      private def validateBusinessRules(parsed: CreatePeriodSummaryRequest): Validated[Seq[MtdError], CreatePeriodSummaryRequest] = {
-        import parsed.body._
-
-        val validatedConsolidatedExpenses = validateExpenses(periodAllowableExpenses, periodDisallowableExpenses)
-        val validatedDates                = validateDates(periodDates.periodStartDate, periodDates.periodEndDate)
-
-        List(
-          validatedConsolidatedExpenses,
-          validatedDates
-        ).traverse_(identity).map(_ => parsed)
-      }
+            ).mapN(CreatePeriodSummaryRequestData)) andThen validateBusinessRules
 
     }
 
-  private def validateExpenses(allowableExpenses: Option[PeriodAllowableExpenses],
-                               disallowableExpenses: Option[PeriodDisallowableExpenses]): Validated[Seq[MtdError], Unit] =
-    (allowableExpenses, disallowableExpenses) match {
-      case (Some(allowable), Some(_)) if allowable.consolidatedExpenses.isDefined => Invalid(List(RuleBothExpensesSuppliedError))
-      case (Some(allowable), None) if allowable.consolidatedExpenses.isDefined =>
-        allowable match {
-          case PeriodAllowableExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) =>
-            valid
-          case _ => Invalid(List(RuleBothExpensesSuppliedError))
-        }
-      case _ => valid
-    }
-
-  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] =
-    ResolveDateRange.withLimits(minYear, maxYear)(periodStartDate -> periodEndDate).map(_ => ())
+  private def validateJsonFields(body: JsValue): Validated[Seq[MtdError], CreatePeriodSummaryBody] =
+    resolveJson(body) andThen (parsedBody =>
+      List(
+        ResolveIsoDate(parsedBody.periodDates.periodStartDate, StartDateFormatError),
+        ResolveIsoDate(parsedBody.periodDates.periodEndDate, EndDateFormatError)
+      ).traverse_(identity).map(_ => parsedBody))
 
 }

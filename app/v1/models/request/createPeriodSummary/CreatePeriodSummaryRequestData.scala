@@ -16,7 +16,8 @@
 
 package v1.models.request.createPeriodSummary
 
-import api.models.request.RawData
-import play.api.libs.json.JsValue
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class CreatePeriodSummaryRawData(nino: String, businessId: String, body: JsValue) extends RawData
+case class CreatePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody) {
+  lazy val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
+}

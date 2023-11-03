@@ -128,18 +128,18 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
   "validator" should {
     "return the parsed domain object" when {
       "passed a valid request" in {
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validBody).validateAndWrapResult()
 
-        result shouldBe Right(CreatePeriodSummaryRequest(parsedNino, parsedBusinessId, parsedBody()))
+        result shouldBe Right(CreatePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedBody()))
       }
 
       "passed a valid request with consolidated expenses" in {
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validBodyConsolidated).validateAndWrapResult()
 
         result shouldBe Right(
-          CreatePeriodSummaryRequest(
+          CreatePeriodSummaryRequestData(
             parsedNino,
             parsedBusinessId,
             parsedBody(periodAllowableExpenses = Some(parsedPeriodAllowableExpensesConsolidated), periodDisallowableExpenses = None)))
@@ -151,11 +151,11 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
           .removeProperty("/periodAllowableExpenses")
           .removeProperty("/periodDisallowableExpenses")
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, body).validateAndWrapResult()
 
         result shouldBe Right(
-          CreatePeriodSummaryRequest(
+          CreatePeriodSummaryRequestData(
             parsedNino,
             parsedBusinessId,
             parsedBody(periodIncome = None, periodAllowableExpenses = None, periodDisallowableExpenses = None)))
@@ -166,44 +166,44 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
           .removeProperty("/periodAllowableExpenses")
           .removeProperty("/periodDisallowableExpenses")
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, body).validateAndWrapResult()
 
         result shouldBe Right(
-          CreatePeriodSummaryRequest(parsedNino, parsedBusinessId, parsedBody(periodAllowableExpenses = None, periodDisallowableExpenses = None)))
+          CreatePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedBody(periodAllowableExpenses = None, periodDisallowableExpenses = None)))
       }
 
       "passed a valid request a body without period disallowable expenses" in {
         val body = validBody
           .removeProperty("/periodDisallowableExpenses")
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, body).validateAndWrapResult()
 
-        result shouldBe Right(CreatePeriodSummaryRequest(parsedNino, parsedBusinessId, parsedBody(periodDisallowableExpenses = None)))
+        result shouldBe Right(CreatePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedBody(periodDisallowableExpenses = None)))
       }
 
       "passed a valid request a body without period allowable expenses" in {
         val body = validBody
           .removeProperty("/periodAllowableExpenses")
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, body).validateAndWrapResult()
 
-        result shouldBe Right(CreatePeriodSummaryRequest(parsedNino, parsedBusinessId, parsedBody(periodAllowableExpenses = None)))
+        result shouldBe Right(CreatePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedBody(periodAllowableExpenses = None)))
       }
     }
 
     "return a single error" when {
       "passed an invalid nino is supplied" in {
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator("invalid", validBusinessId, validBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
 
       "passed an invalid business id is supplied" in {
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, "invalid", validBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
@@ -211,7 +211,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
       "passed an empty body" in {
         val invalidBody = JsObject.empty
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
@@ -219,17 +219,11 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
       def test(error: MtdError)(invalidBody: JsValue, path: String): Unit =
         s"return $error when passed an invalid value for $path" in {
-          val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+          val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
             validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
-          result shouldBe Left(ErrorWrapper(correlationId, error.withPath(path)))
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
-
-      def testRuleIncorrectOrEmptyBody(body: JsValue, path: String): Unit =
-        test(RuleIncorrectOrEmptyBodyError)(body, path)
-
-      def testValueFormatError(body: JsValue, path: String): Unit =
-        test(ValueFormatError)(body, path)
 
       List(
         "/periodIncome",
@@ -242,20 +236,34 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
         "/periodDisallowableExpenses",
         "/periodDisallowableExpenses/costOfGoodsDisallowable",
         "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"
-      ).foreach(path => testRuleIncorrectOrEmptyBody(validBody.replaceWithEmptyObject(path), path))
+      ).foreach(path => test(RuleIncorrectOrEmptyBodyError.withPath(path))(validBody.replaceWithEmptyObject(path), path))
 
       List(
         "/periodIncome/turnover",
         "/periodIncome/other",
-        "/periodAllowableExpenses/costOfGoodsAllowable",
         "/periodAllowableExpenses/paymentsToSubcontractorsAllowable",
         "/periodAllowableExpenses/wagesAndStaffCostsAllowable",
         "/periodAllowableExpenses/carVanTravelExpensesAllowable",
-        "/periodAllowableExpenses/premisesRunningCostsAllowable",
-        "/periodAllowableExpenses/maintenanceCostsAllowable",
         "/periodAllowableExpenses/adminCostsAllowable",
         "/periodAllowableExpenses/businessEntertainmentCostsAllowable",
         "/periodAllowableExpenses/advertisingCostsAllowable",
+        "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
+        "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
+        "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
+        "/periodDisallowableExpenses/adminCostsDisallowable",
+        "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
+        "/periodDisallowableExpenses/professionalFeesDisallowable",
+        "/periodDisallowableExpenses/advertisingCostsDisallowable",
+        "/periodDisallowableExpenses/otherExpensesDisallowable"
+      ).foreach(path =>
+        test(ValueFormatError.forPathAndRange(path, min = "0", max = "99999999999.99"))(
+          validBody.update(path, JsNumber(99999999999.99 + 0.01)),
+          path))
+
+      List(
+        "/periodAllowableExpenses/costOfGoodsAllowable",
+        "/periodAllowableExpenses/premisesRunningCostsAllowable",
+        "/periodAllowableExpenses/maintenanceCostsAllowable",
         "/periodAllowableExpenses/interestOnBankOtherLoansAllowable",
         "/periodAllowableExpenses/financeChargesAllowable",
         "/periodAllowableExpenses/irrecoverableDebtsAllowable",
@@ -263,30 +271,25 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
         "/periodAllowableExpenses/depreciationAllowable",
         "/periodAllowableExpenses/otherExpensesAllowable",
         "/periodDisallowableExpenses/costOfGoodsDisallowable",
-        "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
-        "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
-        "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
         "/periodDisallowableExpenses/premisesRunningCostsDisallowable",
         "/periodDisallowableExpenses/maintenanceCostsDisallowable",
-        "/periodDisallowableExpenses/adminCostsDisallowable",
-        "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
-        "/periodDisallowableExpenses/advertisingCostsDisallowable",
         "/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable",
         "/periodDisallowableExpenses/financeChargesDisallowable",
         "/periodDisallowableExpenses/irrecoverableDebtsDisallowable",
-        "/periodDisallowableExpenses/professionalFeesDisallowable",
-        "/periodDisallowableExpenses/depreciationDisallowable",
-        "/periodDisallowableExpenses/otherExpensesDisallowable"
-      ).foreach(path => testValueFormatError(validBody.update(path, JsNumber(99999999999.99 + 0.01)), path))
+        "/periodDisallowableExpenses/depreciationDisallowable"
+      ).foreach(path =>
+        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(
+          validBody.update(path, JsNumber(99999999999.99 + 0.01)),
+          path))
 
-      testValueFormatError(
+      test(ValueFormatError.forPathAndRange("/periodAllowableExpenses/consolidatedExpenses", min = "0", max = "99999999999.99"))(
         validBodyConsolidated.update("/periodAllowableExpenses/consolidatedExpenses", JsNumber(99999999999.99 + 0.01)),
         "/periodAllowableExpenses/consolidatedExpenses"
       )
 
       "passed a body with an invalid periodStartDate" in {
         val invalidBody = validBody.update("/periodDates/periodStartDate", JsString("2019-08-025"))
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, StartDateFormatError))
@@ -294,7 +297,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
       "passed a body with an invalid periodEndDate" in {
         val invalidBody = validBody.update("/periodDates/periodEndDate", JsString("2019-08-025"))
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, EndDateFormatError))
@@ -302,7 +305,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
       "passed a body with a period start date out of range" in {
         val invalidBody = validBody.update("/periodDates/periodStartDate", JsString("0010-01-01"))
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, StartDateFormatError))
@@ -310,7 +313,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
       "passed a body with a period end date out of range" in {
         val invalidBody = validBody.update("/periodDates/periodEndDate", JsString("2101-01-01"))
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, EndDateFormatError))
@@ -321,7 +324,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
           .update("/periodDates/periodStartDate", JsString("2020-08-25"))
           .update("/periodDates/periodEndDate", JsString("2019-08-24"))
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleEndBeforeStartDateError))
@@ -332,7 +335,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
           .update("/periodDates/periodStartDate", JsString("invalid"))
           .update("/periodDates/periodEndDate", JsString("invalid"))
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(EndDateFormatError, StartDateFormatError))))
@@ -342,7 +345,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
         val invalidBody = validBody
           .update("/periodAllowableExpenses/consolidatedExpenses", JsNumber(1000.99))
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleBothExpensesSuppliedError))
@@ -353,7 +356,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
           .removeProperty("/periodAllowableExpenses")
           .update("/periodAllowableExpenses/consolidatedExpenses", JsNumber(1000.99))
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleBothExpensesSuppliedError))
@@ -364,7 +367,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
           .removeProperty("/periodDisallowableExpenses")
           .update("/periodAllowableExpenses/consolidatedExpenses", JsNumber(1000.99))
 
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleBothExpensesSuppliedError))
@@ -374,7 +377,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
     "return multiple errors" when {
       "invalid parameters are supplied" in {
-        val result: Either[ErrorWrapper, CreatePeriodSummaryRequest] =
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator("invalid", "invalid", validBody).validateAndWrapResult()
 
         result shouldBe Left(
