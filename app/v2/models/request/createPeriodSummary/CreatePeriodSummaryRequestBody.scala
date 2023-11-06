@@ -19,19 +19,19 @@ package v2.models.request.createPeriodSummary
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class CreatePeriodSummaryBody(periodDates: PeriodDates,
-                                   periodIncome: Option[PeriodIncome],
-                                   periodExpenses: Option[PeriodExpenses],
-                                   periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+case class CreatePeriodSummaryRequestBody(periodDates: PeriodDates,
+                                          periodIncome: Option[PeriodIncome],
+                                          periodExpenses: Option[PeriodExpenses],
+                                          periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
 
-object CreatePeriodSummaryBody {
-  implicit val reads: Reads[CreatePeriodSummaryBody] = Json.reads[CreatePeriodSummaryBody]
+object CreatePeriodSummaryRequestBody {
+  implicit val reads: Reads[CreatePeriodSummaryRequestBody] = Json.reads[CreatePeriodSummaryRequestBody]
 
-  implicit val writes: OWrites[CreatePeriodSummaryBody] = (
+  implicit val writes: OWrites[CreatePeriodSummaryRequestBody] = (
     JsPath.write[PeriodDates] and
       (JsPath \ "financials" \ "incomes").writeNullable[PeriodIncome] and
       (JsPath \ "financials" \ "deductions").writeNullable[PeriodExpenses] and
       (JsPath \ "financials" \ "deductions").writeNullable[PeriodDisallowableExpenses]
-  )(unlift(CreatePeriodSummaryBody.unapply))
+  )(unlift(CreatePeriodSummaryRequestBody.unapply))
 
 }

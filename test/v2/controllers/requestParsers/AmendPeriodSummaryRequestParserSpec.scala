@@ -16,7 +16,7 @@
 
 package v2.controllers.requestParsers
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import play.api.libs.json.Json
 import support.UnitSpec
@@ -25,11 +25,12 @@ import v2.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
 
-  val nino: String                   = "AA123456B"
-  val businessId: String             = "XAIS12345678910"
-  val periodId: String               = "2019-01-01_2019-02-02"
   implicit val correlationId: String = "X-123"
-  val tysTaxYear: String             = "2023-24"
+
+  private val nino       = "AA123456B"
+  private val businessId = "XAIS12345678910"
+  private val periodId   = "2019-01-01_2019-02-02"
+  private val tysTaxYear = "2023-24"
 
   private val requestBodyJson = Json.parse(
     """
@@ -77,13 +78,9 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val requestBody: AmendPeriodSummaryBody = AmendPeriodSummaryBody(
-    periodIncome = Some(
-      PeriodIncome(
-        Some(200.00),
-        Some(200.00)
-      )),
-    periodExpenses = Some(
+  private val requestBody = AmendPeriodSummaryBody(
+    Some(PeriodIncome(Some(200.00), Some(200.00))),
+    Some(
       PeriodExpenses(
         Some(200.00),
         Some(200.00),
@@ -102,7 +99,7 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
         Some(200.00),
         Some(200.00)
       )),
-    periodDisallowableExpenses = Some(
+    Some(
       PeriodDisallowableExpenses(
         Some(200.00),
         Some(200.00),
@@ -122,21 +119,9 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
       ))
   )
 
-  val inputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
-    nino = nino,
-    businessId = businessId,
-    periodId = periodId,
-    body = requestBodyJson,
-    taxYear = None
-  )
+  private val inputData = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
 
-  val tysInputData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(
-    nino = nino,
-    businessId = businessId,
-    periodId = periodId,
-    body = requestBodyJson,
-    taxYear = Some(tysTaxYear)
-  )
+  private val tysInputData = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(tysTaxYear))
 
   trait Test extends MockAmendPeriodSummaryValidator {
     lazy val parser = new AmendPeriodSummaryRequestParser(mockValidator)
@@ -148,14 +133,14 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec {
         MockAmendPeriodSummaryValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None))
+          Right(AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None, requestBody))
       }
 
       "valid TYS request data is supplied" in new Test {
         MockAmendPeriodSummaryValidator.validate(tysInputData).returns(Nil)
 
         parser.parseRequest(tysInputData) shouldBe
-          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(tysTaxYear))))
+          Right(AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)), requestBody))
       }
     }
 

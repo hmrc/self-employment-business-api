@@ -20,7 +20,7 @@ import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 import v3.mocks.validators.MockRetrievePeriodSummaryValidator
-import v3.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
+import v3.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequestData}
 
 class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
 
@@ -58,12 +58,12 @@ class RetrievePeriodSummaryRequestParserSpec extends UnitSpec {
         MockRetrievePeriodSummaryValidator.validate(rawData).returns(Nil)
 
         parser.parseRequest(rawData) shouldBe
-          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))
+          Right(RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))
       }
       "valid TYS request data is supplied" in new Test {
         MockRetrievePeriodSummaryValidator.validate(tysRawData).returns(Nil)
         parser.parseRequest(tysRawData) shouldBe
-          Right(RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear))))
+          Right(RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear))))
       }
     }
 

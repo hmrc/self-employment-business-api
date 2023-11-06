@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
+import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRequestData
 import v3.services.AmendPeriodSummaryService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,9 +31,9 @@ trait MockAmendPeriodSummaryService extends MockFactory {
 
   object MockAmendPeriodSummaryService {
 
-    def amendPeriodSummary(requestData: AmendPeriodSummaryRequest): CallHandler[Future[ServiceOutcome[Unit]]] = {
+    def amendPeriodSummary(requestData: AmendPeriodSummaryRequestData): CallHandler[Future[ServiceOutcome[Unit]]] = {
       (mockAmendPeriodSummaryService
-        .amendPeriodSummary(_: AmendPeriodSummaryRequest)(_: RequestContext, _: ExecutionContext))
+        .amendPeriodSummary(_: AmendPeriodSummaryRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

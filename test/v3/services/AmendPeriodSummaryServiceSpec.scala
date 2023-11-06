@@ -24,7 +24,7 @@ import api.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
 import v3.mocks.connectors.MockAmendPeriodSummaryConnector
-import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest, PeriodIncome}
+import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData, PeriodIncome}
 
 import scala.concurrent.Future
 
@@ -39,7 +39,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
   private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
 
-  private val requestDataWithCl290Enabled = AmendPeriodSummaryRequest(
+  private val requestDataWithCl290Enabled = AmendPeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
@@ -47,7 +47,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
     taxYear = None
   )
 
-  private val requestDataWithCl290Disabled = AmendPeriodSummaryRequest(
+  private val requestDataWithCl290Disabled = AmendPeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,

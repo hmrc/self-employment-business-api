@@ -41,13 +41,13 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   private val parsedRequestBody = CreatePeriodSummaryBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
 
-  private val requestDataWithCl290Enabled = CreatePeriodSummaryRequest(
+  private val requestDataWithCl290Enabled = CreatePeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Enabled))
   )
 
-  private val requestDataWithCl290Disabled = CreatePeriodSummaryRequest(
+  private val requestDataWithCl290Disabled = CreatePeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Disabled))

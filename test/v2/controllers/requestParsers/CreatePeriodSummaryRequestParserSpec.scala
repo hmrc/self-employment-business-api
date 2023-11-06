@@ -21,7 +21,7 @@ import api.models.errors.{BadRequestError, BusinessIdFormatError, ErrorWrapper, 
 import support.UnitSpec
 import v2.fixtures.CreatePeriodSummaryFixture
 import v2.mocks.validators.MockCreatePeriodSummaryValidator
-import v2.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, CreatePeriodSummaryRequest}
+import v2.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, CreatePeriodSummaryRequestData}
 
 class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSummaryFixture {
 
@@ -44,7 +44,7 @@ class CreatePeriodSummaryRequestParserSpec extends UnitSpec with CreatePeriodSum
       "valid request data is supplied" in new Test {
         MockCreatePeriodSummaryValidator.validate(inputData).returns(Nil)
         parser.parseRequest(inputData) shouldBe
-          Right(CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), fullMTDResponseModel))
+          Right(CreatePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), fullMTDResponseModel))
       }
     }
 

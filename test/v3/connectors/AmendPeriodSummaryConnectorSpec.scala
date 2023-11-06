@@ -28,10 +28,10 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2020-01-01_2020-01-01"
-  val nonTysRequest: AmendPeriodSummaryRequest = makeRequest(None)
-  val tysRequest: AmendPeriodSummaryRequest    = makeRequest(Some("2023-24"))
+  val nonTysRequest: AmendPeriodSummaryRequestData = makeRequest(None)
+  val tysRequest: AmendPeriodSummaryRequestData    = makeRequest(Some("2023-24"))
 
-  def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
+  def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequestData = AmendPeriodSummaryRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     periodId = periodId,

@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package v2.models.request.createPeriodSummary
+package v3.models.request.createPeriodSummary
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class CreatePeriodSummaryRequest(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody) {
-  val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
+case class CreatePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryBody) {
+  lazy val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
+
+  def withoutTaxTakenOffTradingIncome: CreatePeriodSummaryRequestData =
+    copy(body = body.withoutTaxTakenOffTradingIncome)
+
 }

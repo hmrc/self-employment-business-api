@@ -115,7 +115,7 @@ class AmendPeriodSummaryControllerSpec
     val periodId: String
 
     val rawData: AmendPeriodSummaryRawData
-    val requestData: AmendPeriodSummaryRequest
+    val requestData: AmendPeriodSummaryRequestData
 
     val requestBodyJson: JsValue            = amendPeriodSummaryBodyMtdJson
     val requestBody: AmendPeriodSummaryBody = amendPeriodSummaryBody
@@ -141,7 +141,7 @@ class AmendPeriodSummaryControllerSpec
     val periodId: String = "2019-01-01_2020-01-01"
 
     val rawData: AmendPeriodSummaryRawData     = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
-    val requestData: AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
+    val requestData: AmendPeriodSummaryRequestData = AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
 
     val responseJson: JsValue = Json.parse(
       s"""
@@ -195,8 +195,8 @@ class AmendPeriodSummaryControllerSpec
 
     val rawData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
 
-    val requestData: AmendPeriodSummaryRequest =
-      AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
+    val requestData: AmendPeriodSummaryRequestData =
+      AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
 
     val responseJson: JsValue = Json.parse(
       s"""

@@ -90,7 +90,7 @@ class CreatePeriodSummaryControllerSpec
   )
 
   private val rawData     = CreatePeriodSummaryRawData(nino, businessId, requestMtdBodyJson)
-  private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), fullMTDRequestModel)
+  private val requestData = CreatePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), fullMTDRequestModel)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {

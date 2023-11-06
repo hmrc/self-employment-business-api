@@ -19,16 +19,16 @@ package v2.controllers.requestParsers
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import v2.controllers.requestParsers.validators.RetrievePeriodSummaryValidator
-import v2.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
+import v2.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequestData}
 
 import javax.inject.Inject
 
 class RetrievePeriodSummaryRequestParser @Inject() (val validator: RetrievePeriodSummaryValidator)
-    extends RequestParser[RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest] {
+    extends RequestParser[RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequestData] {
 
-  override protected def requestFor(data: RetrievePeriodSummaryRawData): RetrievePeriodSummaryRequest = {
+  override protected def requestFor(data: RetrievePeriodSummaryRawData): RetrievePeriodSummaryRequestData = {
     val taxYear = data.taxYear.map(TaxYear.fromMtd)
-    RetrievePeriodSummaryRequest(Nino(data.nino), BusinessId(data.businessId), PeriodId(data.periodId), taxYear)
+    RetrievePeriodSummaryRequestData(Nino(data.nino), BusinessId(data.businessId), PeriodId(data.periodId), taxYear)
   }
 
 }

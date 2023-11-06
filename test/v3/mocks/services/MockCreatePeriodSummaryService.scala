@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequestData
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 import v3.services.CreatePeriodSummaryService
 
@@ -32,9 +32,9 @@ trait MockCreatePeriodSummaryService extends MockFactory {
 
   object MockCreatePeriodicService {
 
-    def createPeriodic(requestData: CreatePeriodSummaryRequest): CallHandler[Future[ServiceOutcome[CreatePeriodSummaryResponse]]] = {
+    def createPeriodic(requestData: CreatePeriodSummaryRequestData): CallHandler[Future[ServiceOutcome[CreatePeriodSummaryResponse]]] = {
       (mockCreatePeriodicService
-        .createPeriodSummary(_: CreatePeriodSummaryRequest)(_: RequestContext, _: ExecutionContext))
+        .createPeriodSummary(_: CreatePeriodSummaryRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

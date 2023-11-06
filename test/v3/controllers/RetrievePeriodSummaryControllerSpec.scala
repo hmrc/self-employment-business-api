@@ -26,7 +26,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
 import v3.mocks.services.MockRetrievePeriodSummaryService
-import v3.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
+import v3.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequestData}
 import v3.models.response.retrievePeriodSummary._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -111,7 +111,7 @@ class RetrievePeriodSummaryControllerSpec
     val periodId: String = "2019-01-01_2020-01-01"
 
     val rawData: RetrievePeriodSummaryRawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
-    val requestData: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+    val requestData: RetrievePeriodSummaryRequestData = RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
     val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
       periodDates = PeriodDates("2019-01-01", "2020-01-01"),
@@ -179,8 +179,8 @@ class RetrievePeriodSummaryControllerSpec
     val periodId: String                      = "2024-01-01_2025-01-01"
     val rawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
 
-    val requestData: RetrievePeriodSummaryRequest =
-      RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
+    val requestData: RetrievePeriodSummaryRequestData =
+      RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
     val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
       periodDates = PeriodDates("2024-01-01", "2025-01-01"),

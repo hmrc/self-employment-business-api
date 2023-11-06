@@ -57,14 +57,14 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec with AmendPeriodSumma
         MockAmendPeriodSummaryValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, amendPeriodSummaryBody, None))
+          Right(AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, amendPeriodSummaryBody, None))
       }
 
       "valid TYS request data is supplied" in new Test {
         MockAmendPeriodSummaryValidator.validate(tysInputData).returns(Nil)
 
         parser.parseRequest(tysInputData) shouldBe
-          Right(AmendPeriodSummaryRequest(Nino(nino), BusinessId(businessId), periodId, amendPeriodSummaryBody, Some(TaxYear.fromMtd(tysTaxYear))))
+          Right(AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, amendPeriodSummaryBody, Some(TaxYear.fromMtd(tysTaxYear))))
       }
     }
 

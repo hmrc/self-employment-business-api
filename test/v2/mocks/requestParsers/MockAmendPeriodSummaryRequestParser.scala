@@ -20,7 +20,7 @@ import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v2.controllers.requestParsers.AmendPeriodSummaryRequestParser
-import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, AmendPeriodSummaryRequest}
+import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryRawData, AmendPeriodSummaryRequestData}
 
 trait MockAmendPeriodSummaryRequestParser extends MockFactory {
 
@@ -28,7 +28,7 @@ trait MockAmendPeriodSummaryRequestParser extends MockFactory {
 
   object MockAmendPeriodSummaryRequestParser {
 
-    def requestFor(data: AmendPeriodSummaryRawData): CallHandler[Either[ErrorWrapper, AmendPeriodSummaryRequest]] = {
+    def requestFor(data: AmendPeriodSummaryRawData): CallHandler[Either[ErrorWrapper, AmendPeriodSummaryRequestData]] = {
       (mockAmendPeriodSummaryRequestParser.parseRequest(_: AmendPeriodSummaryRawData)(_: String)).expects(data, *)
     }
 

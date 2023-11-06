@@ -39,14 +39,14 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
 
   @nowarn("cat=lint-byname-implicit")
   private def bodyFormatValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = { data =>
-    JsonFormatValidation.validateAndCheckNonEmpty[CreatePeriodSummaryBody](data.body) match {
+    JsonFormatValidation.validateAndCheckNonEmpty[CreatePeriodSummaryRequestBody](data.body) match {
       case Nil          => NoValidationErrors
       case schemaErrors => List(schemaErrors)
     }
   }
 
   private def bodyFieldValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = { data =>
-    val body = data.body.as[CreatePeriodSummaryBody]
+    val body = data.body.as[CreatePeriodSummaryRequestBody]
 
     List(
       Validator.flattenErrors(
@@ -250,7 +250,7 @@ class CreatePeriodSummaryValidator extends Validator[CreatePeriodSummaryRawData]
   }
 
   private def dateRuleValidation: CreatePeriodSummaryRawData => List[List[MtdError]] = (data: CreatePeriodSummaryRawData) => {
-    val body = data.body.as[CreatePeriodSummaryBody].periodDates
+    val body = data.body.as[CreatePeriodSummaryRequestBody].periodDates
     List(
       DateValidation.validateEndDateBeforeStartDate(body.periodStartDate, body.periodEndDate)
     )

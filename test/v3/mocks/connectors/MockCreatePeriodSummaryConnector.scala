@@ -21,7 +21,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.connectors.CreatePeriodSummaryConnector
-import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +31,9 @@ trait MockCreatePeriodSummaryConnector extends MockFactory {
 
   object MockCreatePeriodicConnector {
 
-    def createPeriodicSummary(requestData: CreatePeriodSummaryRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def createPeriodicSummary(requestData: CreatePeriodSummaryRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockCreatePeriodicConnector
-        .createPeriodSummary(_: CreatePeriodSummaryRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .createPeriodSummary(_: CreatePeriodSummaryRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

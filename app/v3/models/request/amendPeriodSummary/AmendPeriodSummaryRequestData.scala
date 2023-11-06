@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package v2.models.request.amendPeriodSummary
+package v3.models.request.amendPeriodSummary
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class AmendPeriodSummaryRequest(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody, taxYear: Option[TaxYear])
+case class AmendPeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: String, body: AmendPeriodSummaryBody, taxYear: Option[TaxYear]) {
+
+  def withoutTaxTakenOffTradingIncome: AmendPeriodSummaryRequestData =
+    copy(body = body.withoutTaxTakenOffTradingIncome)
+
+}
