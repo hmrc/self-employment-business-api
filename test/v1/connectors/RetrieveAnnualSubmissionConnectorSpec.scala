@@ -19,7 +19,7 @@ package v1.connectors
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
+import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v1.models.response.retrieveAnnual._
 
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with RetrieveA
     nonFinancials = Some(nonFinancials)
   )
 
-  def makeRequest(taxYear: String): RetrieveAnnualSubmissionRequest = RetrieveAnnualSubmissionRequest(
+  def makeRequest(taxYear: String): RetrieveAnnualSubmissionRequestData = RetrieveAnnualSubmissionRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = TaxYear.fromMtd(taxYear)

@@ -18,11 +18,10 @@ package v1.controllers.validators
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import mocks.MockAppConfig
 import support.UnitSpec
-import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
+import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 
-class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppConfig {
+class RetrieveAnnualSubmissionValidatorFactorySpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
@@ -34,23 +33,24 @@ class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppCo
   private val parsedBusinessId = BusinessId(validBusinessId)
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
-  private val validatorFactory = new DeleteAnnualSubmissionValidatorFactory
+  private val validatorFactory = new RetrieveAnnualSubmissionValidatorFactory
+
   private def validator(nino: String, businessId: String, taxYear: String) = validatorFactory.validator(nino, businessId, taxYear)
 
   "validator" should {
     "return the parsed domain object" when {
       "a valid request is made" in {
-        val result: Either[ErrorWrapper, DeleteAnnualSubmissionRequestData] =
+        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear).validateAndWrapResult()
         result shouldBe Right(
-          DeleteAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear)
+          RetrieveAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear)
         )
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        val result: Either[ErrorWrapper, DeleteAnnualSubmissionRequestData] =
+        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
           validator("A12344A", validBusinessId, validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
@@ -59,8 +59,8 @@ class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppCo
     }
 
     "return BusinessIdFormatError error" when {
-      "an invalid businessId is supplied" in {
-        val result: Either[ErrorWrapper, DeleteAnnualSubmissionRequestData] = validator(validNino, "Walruses", validTaxYear).validateAndWrapResult()
+      "an invalid nino is supplied" in {
+        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] = validator(validNino, "Walruses", validTaxYear).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, BusinessIdFormatError)
         )
@@ -69,7 +69,7 @@ class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppCo
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in {
-        val result: Either[ErrorWrapper, DeleteAnnualSubmissionRequestData] = validator(validNino, validBusinessId, "20178").validateAndWrapResult()
+        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] = validator(validNino, validBusinessId, "20178").validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, TaxYearFormatError)
         )
@@ -78,7 +78,8 @@ class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppCo
 
     "return RuleTaxYearRangeInvalidError" when {
       "an invalid tax year is supplied" in {
-        val result: Either[ErrorWrapper, DeleteAnnualSubmissionRequestData] = validator(validNino, validBusinessId, "2017-19").validateAndWrapResult()
+        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
+          validator(validNino, validBusinessId, "2017-19").validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
         )
@@ -87,7 +88,8 @@ class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppCo
 
     "return RuleTaxYearNotSupportedError" when {
       "an invalid tax year is supplied" in {
-        val result: Either[ErrorWrapper, DeleteAnnualSubmissionRequestData] = validator(validNino, validBusinessId, "2016-17").validateAndWrapResult()
+        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
+          validator(validNino, validBusinessId, "2016-17").validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
         )
@@ -96,7 +98,7 @@ class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppCo
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        val result: Either[ErrorWrapper, DeleteAnnualSubmissionRequestData] = validator("A12344A", "Baked Beans", "20178").validateAndWrapResult()
+        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] = validator("A12344A", "Baked Beans", "20178").validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, BadRequestError, Some(List(BusinessIdFormatError, NinoFormatError, TaxYearFormatError)))
         )

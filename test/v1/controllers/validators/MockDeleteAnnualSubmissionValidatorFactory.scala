@@ -26,17 +26,17 @@ import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
 trait MockDeleteAnnualSubmissionValidatorFactory extends MockFactory {
 
-  val mockDeleteOtherDeductionsValidatorFactory: DeleteAnnualSubmissionValidatorFactory = mock[DeleteAnnualSubmissionValidatorFactory]
+  val mockDeleteAnnualSubmissionValidatorFactory: DeleteAnnualSubmissionValidatorFactory = mock[DeleteAnnualSubmissionValidatorFactory]
 
-  object MockedDeleteOtherDeductionsValidatorFactory {
+  object MockDeleteAnnualSubmissionValidatorFactory {
 
     def validator(): CallHandler[Validator[DeleteAnnualSubmissionRequestData]] =
-      (mockDeleteOtherDeductionsValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
+      (mockDeleteAnnualSubmissionValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
 
   }
 
   def willUseValidator(use: Validator[DeleteAnnualSubmissionRequestData]): CallHandler[Validator[DeleteAnnualSubmissionRequestData]] = {
-    MockedDeleteOtherDeductionsValidatorFactory
+    MockDeleteAnnualSubmissionValidatorFactory
       .validator()
       .anyNumberOfTimes()
       .returns(use)

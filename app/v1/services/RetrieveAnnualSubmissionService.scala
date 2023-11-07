@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.RetrieveAnnualSubmissionConnector
-import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
+import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
 
 import javax.inject.{Inject, Singleton}
@@ -54,9 +54,9 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
     errors ++ extraTysErrors
   }
 
-  def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
+  def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequestData)(implicit
+                                                                             ctx: RequestContext,
+                                                                             ec: ExecutionContext): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

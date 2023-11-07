@@ -22,8 +22,7 @@ import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.RetrieveAnnualSubmissionRequestParser
-import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRawData
+import v1.controllers.validators.RetrieveAnnualSubmissionValidatorFactory
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionHateoasData
 import v1.services.RetrieveAnnualSubmissionService
 
@@ -33,7 +32,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
                                                     val lookupService: MtdIdLookupService,
-                                                    parser: RetrieveAnnualSubmissionRequestParser,
+                                                    validatorFactory: RetrieveAnnualSubmissionValidatorFactory,
                                                     service: RetrieveAnnualSubmissionService,
                                                     hateoasFactory: HateoasFactory,
                                                     cc: ControllerComponents,
@@ -47,14 +46,14 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = RetrieveAnnualSubmissionRawData(nino, businessId, taxYear)
+      val validator = validatorFactory.validator(nino, businessId, taxYear)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.retrieveAnnualSubmission)
         .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

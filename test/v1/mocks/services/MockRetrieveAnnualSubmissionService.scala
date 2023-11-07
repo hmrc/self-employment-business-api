@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
+import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
 import v1.services.RetrieveAnnualSubmissionService
 
@@ -32,10 +32,10 @@ trait MockRetrieveAnnualSubmissionService extends MockFactory {
 
   object MockRetrieveAnnualSubmissionService {
 
-    def retrieve(requestData: RetrieveAnnualSubmissionRequest): CallHandler[Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]]] = {
+    def retrieve(requestData: RetrieveAnnualSubmissionRequestData): CallHandler[Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]]] = {
       (
         mockRetrieveAnnualSubmissionService
-          .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequest)(
+          .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequestData)(
             _: RequestContext,
             _: ExecutionContext
           )

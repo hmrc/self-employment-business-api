@@ -78,7 +78,7 @@ class DeleteAnnualSubmissionControllerSpec
     val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      validatorFactory = mockDeleteOtherDeductionsValidatorFactory,
+      validatorFactory = mockDeleteAnnualSubmissionValidatorFactory,
       service = mockDeleteAnnualSubmissionService,
       cc = cc,
       idGenerator = mockIdGenerator

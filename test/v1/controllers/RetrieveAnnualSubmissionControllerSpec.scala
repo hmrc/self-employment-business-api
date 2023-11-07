@@ -23,9 +23,9 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockRetrieveAnnualSubmissionRequestParser
+import v1.controllers.validators.MockRetrieveAnnualSubmissionValidatorFactory
 import v1.mocks.services.MockRetrieveAnnualSubmissionService
-import v1.models.request.retrieveAnnual.{RetrieveAnnualSubmissionRawData, RetrieveAnnualSubmissionRequest}
+import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v1.models.response.retrieveAnnual._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,7 +35,7 @@ class RetrieveAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveAnnualSubmissionService
-    with MockRetrieveAnnualSubmissionRequestParser
+    with MockRetrieveAnnualSubmissionValidatorFactory
     with MockHateoasFactory
     with RetrieveAnnualSubmissionFixture {
 
@@ -54,17 +54,14 @@ class RetrieveAnnualSubmissionControllerSpec
       rel = "delete-self-employment-annual-submission")
   )
 
-  private val rawData     = RetrieveAnnualSubmissionRawData(nino, businessId, taxYear)
-  private val requestData = RetrieveAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData = RetrieveAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   private val responseBody: RetrieveAnnualSubmissionResponse = retrieveResponseModel
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-        MockRetrieveAnnualSubmissionRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveAnnualSubmissionService
           .retrieve(requestData)
@@ -83,19 +80,13 @@ class RetrieveAnnualSubmissionControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-
-        MockRetrieveAnnualSubmissionRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-
-        MockRetrieveAnnualSubmissionRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveAnnualSubmissionService
           .retrieve(requestData)
@@ -111,7 +102,7 @@ class RetrieveAnnualSubmissionControllerSpec
     val controller = new RetrieveAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockRetrieveAnnualSubmissionRequestParser,
+      validatorFactory = mockRetrieveAnnualSubmissionValidatorFactory,
       service = mockRetrieveAnnualSubmissionService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
