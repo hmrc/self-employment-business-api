@@ -20,7 +20,7 @@ import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.ResolveParsedNumber
 import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
+import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryRequestData, PeriodExpenses, PeriodDisallowableExpenses, PeriodIncome}
 
@@ -34,9 +34,9 @@ case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
 
     combine(
       validateExpenses(periodExpenses, periodDisallowableExpenses),
-      periodIncome.map(validatePeriodIncome).getOrElse(Valid(())),
-      periodExpenses.map(validatePeriodExpenses(includeNegatives)).getOrElse(Valid(())),
-      periodDisallowableExpenses.map(validatePeriodDisallowableExpenses(includeNegatives)).getOrElse(Valid(()))
+      periodIncome.map(validatePeriodIncome).getOrElse(valid),
+      periodExpenses.map(validatePeriodExpenses(includeNegatives)).getOrElse(valid),
+      periodDisallowableExpenses.map(validatePeriodDisallowableExpenses(includeNegatives)).getOrElse(valid)
     ).onSuccess(parsed)
   }
 

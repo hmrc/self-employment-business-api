@@ -23,7 +23,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
-import v3.mocks.connectors.MockAmendPeriodSummaryConnector
+import v3.connectors.MockAmendPeriodSummaryConnector
 import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData, PeriodIncome}
 
 import scala.concurrent.Future

@@ -23,7 +23,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
-import v3.mocks.connectors.MockCreatePeriodSummaryConnector
+import v3.connectors.MockCreatePeriodSummaryConnector
 import v3.models.request.createPeriodSummary._
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 

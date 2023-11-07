@@ -28,9 +28,9 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.controllers.validators.MockAmendPeriodSummaryValidatorFactory
 import v3.fixtures.AmendPeriodSummaryFixture
-import v3.mocks.services.MockAmendPeriodSummaryService
 import v3.models.request.amendPeriodSummary._
 import v3.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
+import v3.services.MockAmendPeriodSummaryService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

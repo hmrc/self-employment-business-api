@@ -21,7 +21,7 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v1.mocks.connectors.MockAmendAnnualSubmissionConnector
+import v1.connectors.MockAmendAnnualSubmissionConnector
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnualSubmissionRequest}
 
 import scala.concurrent.Future

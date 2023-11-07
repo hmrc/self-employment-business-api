@@ -21,7 +21,7 @@ import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v1.mocks.connectors.MockRetrievePeriodSummaryConnector
+import v1.connectors.MockRetrievePeriodSummaryConnector
 import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v1.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
 

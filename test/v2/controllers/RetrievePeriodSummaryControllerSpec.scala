@@ -25,9 +25,9 @@ import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrievePeriodSummaryValidatorFactory
-import v2.mocks.services.MockRetrievePeriodSummaryService
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary._
+import v2.services.MockRetrievePeriodSummaryService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

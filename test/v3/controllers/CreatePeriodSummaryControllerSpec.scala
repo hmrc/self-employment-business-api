@@ -28,9 +28,9 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import v3.controllers.validators.MockCreatePeriodSummaryValidatorFactory
 import v3.fixtures.CreatePeriodSummaryFixture
-import v3.mocks.services.MockCreatePeriodSummaryService
 import v3.models.request.createPeriodSummary._
 import v3.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
+import v3.services.MockCreatePeriodSummaryService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -31,13 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
-                                                                   hc: HeaderCarrier,
-                                                                   ec: ExecutionContext,
-                                                                   correlationId: String): Future[DownstreamOutcome[Unit]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
-
-//    request.body.periodDates.periodEndDate.asTysDownstream
 
     val (downstreamUri, statusCode) =
       if (taxYear.useTaxYearSpecificApi) {
