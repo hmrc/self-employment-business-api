@@ -16,7 +16,7 @@
 
 package v3.controllers.requestParsers
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 import v3.fixtures.AmendPeriodSummaryFixture
@@ -57,14 +57,20 @@ class AmendPeriodSummaryRequestParserSpec extends UnitSpec with AmendPeriodSumma
         MockAmendPeriodSummaryValidator.validate(inputData).returns(Nil)
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, amendPeriodSummaryBody, None))
+          Right(AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None, amendPeriodSummaryBody))
       }
 
       "valid TYS request data is supplied" in new Test {
         MockAmendPeriodSummaryValidator.validate(tysInputData).returns(Nil)
 
         parser.parseRequest(tysInputData) shouldBe
-          Right(AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, amendPeriodSummaryBody, Some(TaxYear.fromMtd(tysTaxYear))))
+          Right(
+            AmendPeriodSummaryRequestData(
+              Nino(nino),
+              BusinessId(businessId),
+              PeriodId(periodId),
+              Some(TaxYear.fromMtd(tysTaxYear)),
+              amendPeriodSummaryBody))
       }
     }
 

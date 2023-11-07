@@ -312,7 +312,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |{
              |     "periodDates": {
              |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-08-24"
+             |           "periodEndDate": "2019-09-24"
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
@@ -363,7 +363,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(ValueFormatError.copy(paths = Some(Seq("/periodDisallowableExpenses/professionalFeesDisallowable"))))
+        response.json shouldBe Json.toJson(
+          ValueFormatError.forPathAndRange("/periodDisallowableExpenses/professionalFeesDisallowable", "-99999999999.99", "99999999999.99"))
       }
 
       "multiple invalid amounts are provided" in new NonTysTest {
@@ -372,7 +373,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
              |{
              |     "periodDates": {
              |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-08-24"
+             |           "periodEndDate": "2019-09-24"
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
@@ -424,12 +425,14 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(
-          ValueFormatError.copy(paths = Some(Seq(
-            "/periodExpenses/premisesRunningCosts",
-            "/periodExpenses/financeCharges",
-            "/periodDisallowableExpenses/adminCostsDisallowable",
-            "/periodDisallowableExpenses/professionalFeesDisallowable"
-          ))))
+          ValueFormatError
+            .forPathAndRange("", "-99999999999.99", "99999999999.99")
+            .withPaths(List(
+              "/periodExpenses/premisesRunningCosts",
+              "/periodExpenses/financeCharges",
+              "/periodDisallowableExpenses/adminCostsDisallowable",
+              "/periodDisallowableExpenses/professionalFeesDisallowable"
+            )))
       }
 
       "an empty body is provided" in new NonTysTest {

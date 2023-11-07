@@ -17,7 +17,7 @@
 package v3.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino}
+import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
@@ -32,7 +32,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
   private val nino                           = Nino("AA123456A")
   private val businessId                     = BusinessId("XAIS12345678910")
-  private val periodId                       = "2019-01-25_2020-01-25"
+  private val periodId                       = PeriodId("2019-01-25_2020-01-25")
   private implicit val correlationId: String = "X-123"
 
   private val periodIncomeWithCl290Enabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))

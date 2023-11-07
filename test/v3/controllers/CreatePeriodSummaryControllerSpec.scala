@@ -24,10 +24,10 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Result
+import v3.controllers.validators.MockCreatePeriodSummaryValidatorFactory
 import v3.fixtures.CreatePeriodSummaryFixture
-import v3.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
 import v3.mocks.services.MockCreatePeriodSummaryService
 import v3.models.request.createPeriodSummary._
 import v3.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
@@ -39,7 +39,7 @@ class CreatePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
-    with MockCreatePeriodSummaryRequestParser
+    with MockCreatePeriodSummaryValidatorFactory
     with MockHateoasFactory
     with MockAppConfig
     with CreatePeriodSummaryFixture {
@@ -47,21 +47,13 @@ class CreatePeriodSummaryControllerSpec
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2017-01-25"
 
-  private val testHateoasLinks: Seq[Link] = Seq(
-    Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      method = PUT,
-      rel = "amend-self-employment-period-summary"
-    ),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-    Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period",
-      method = GET,
-      rel = "list-self-employment-period-summaries"
-    )
+  private val testHateoasLinks = List(
+    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
+    Link(s"/individuals/business/self-employment/$nino/$businessId/period", GET, "list-self-employment-period-summaries")
   )
 
-  val responseJson: JsValue = Json.parse(
+  private val responseJson = Json.parse(
     s"""
        |{
        |  "periodId": "$periodId",
@@ -89,15 +81,12 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val rawData     = CreatePeriodSummaryRawData(nino, businessId, requestMtdBodyJson)
   private val requestData = CreatePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), fullMTDRequestModel)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-        MockCreatePeriodSummaryRequestParser
-          .parseRequest(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreatePeriodicService
           .createPeriodic(requestData)
@@ -118,19 +107,14 @@ class CreatePeriodSummaryControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockCreatePeriodSummaryRequestParser
-          .parseRequest(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
 
       }
 
       "the service returns an error" in new Test {
-
-        MockCreatePeriodSummaryRequestParser
-          .parseRequest(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreatePeriodicService
           .createPeriodic(requestData)
@@ -147,7 +131,7 @@ class CreatePeriodSummaryControllerSpec
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockCreatePeriodicRequestParser,
+      validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
       appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,

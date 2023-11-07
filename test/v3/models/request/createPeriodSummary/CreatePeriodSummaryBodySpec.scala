@@ -22,8 +22,8 @@ import v3.fixtures.CreatePeriodSummaryFixture
 
 class CreatePeriodSummaryBodySpec extends UnitSpec with CreatePeriodSummaryFixture {
 
-  val someOptionalFieldsMtdBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
+  val someOptionalFieldsMtdBody: CreatePeriodSummaryRequestBody =
+    CreatePeriodSummaryRequestBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       Some(
         PeriodIncome(
@@ -53,8 +53,8 @@ class CreatePeriodSummaryBodySpec extends UnitSpec with CreatePeriodSummaryFixtu
       None
     )
 
-  val noOptionalFieldsMtdBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
+  val noOptionalFieldsMtdBody: CreatePeriodSummaryRequestBody =
+    CreatePeriodSummaryRequestBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       None,
       None,
@@ -104,15 +104,15 @@ class CreatePeriodSummaryBodySpec extends UnitSpec with CreatePeriodSummaryFixtu
           |""".stripMargin)
 
       "a valid request with all optional fields is made" in {
-        requestMtdBodyJson.as[CreatePeriodSummaryBody] shouldBe fullMTDRequestModel
+        requestMtdBodyJson.as[CreatePeriodSummaryRequestBody] shouldBe fullMTDRequestModel
       }
 
       "a valid request with some optional fields is made" in {
-        someOptionalRequestJson.as[CreatePeriodSummaryBody] shouldBe someOptionalFieldsMtdBody
+        someOptionalRequestJson.as[CreatePeriodSummaryRequestBody] shouldBe someOptionalFieldsMtdBody
       }
 
       "a valid request with no optional fields is made" in {
-        noOptionalRequestJson.as[CreatePeriodSummaryBody] shouldBe noOptionalFieldsMtdBody
+        noOptionalRequestJson.as[CreatePeriodSummaryRequestBody] shouldBe noOptionalFieldsMtdBody
       }
     }
   }

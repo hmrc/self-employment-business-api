@@ -39,7 +39,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
 
-  private val parsedRequestBody = CreatePeriodSummaryBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
+  private val parsedRequestBody = CreatePeriodSummaryRequestBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
 
   private val requestDataWithCl290Enabled = CreatePeriodSummaryRequestData(
     nino = nino,

@@ -71,7 +71,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
     def request: CreatePeriodSummaryRequestData = CreatePeriodSummaryRequestData(
       nino = Nino(nino),
       businessId = BusinessId(businessId),
-      body = CreatePeriodSummaryBody(
+      body = CreatePeriodSummaryRequestBody(
         periodDates,
         None,
         None,

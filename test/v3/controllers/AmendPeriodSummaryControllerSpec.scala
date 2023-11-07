@@ -19,15 +19,15 @@ package v3.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import v3.controllers.validators.MockAmendPeriodSummaryValidatorFactory
 import v3.fixtures.AmendPeriodSummaryFixture
-import v3.mocks.requestParsers.MockAmendPeriodSummaryRequestParser
 import v3.mocks.services.MockAmendPeriodSummaryService
 import v3.models.request.amendPeriodSummary._
 import v3.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
@@ -39,7 +39,7 @@ class AmendPeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAmendPeriodSummaryService
-    with MockAmendPeriodSummaryRequestParser
+    with MockAmendPeriodSummaryValidatorFactory
     with MockHateoasFactory
     with MockAppConfig
     with AmendPeriodSummaryFixture {
@@ -47,9 +47,7 @@ class AmendPeriodSummaryControllerSpec
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new PreTysTest {
-        MockAmendPeriodSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendPeriodSummaryService
           .amendPeriodSummary(requestData)
@@ -66,9 +64,7 @@ class AmendPeriodSummaryControllerSpec
       }
 
       "the TYS request received is valid" in new TysTest {
-        MockAmendPeriodSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendPeriodSummaryService
           .amendPeriodSummary(requestData)
@@ -86,17 +82,13 @@ class AmendPeriodSummaryControllerSpec
 
       "return the error as per spec" when {
         "the parser validation fails" in new PreTysTest {
-          MockAmendPeriodSummaryRequestParser
-            .requestFor(rawData)
-            .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+          willUseValidator(returning(NinoFormatError))
 
           runErrorTest(NinoFormatError)
         }
 
         "the service returns an error" in new PreTysTest {
-          MockAmendPeriodSummaryRequestParser
-            .requestFor(rawData)
-            .returns(Right(requestData))
+          willUseValidator(returningSuccess(requestData))
 
           MockAmendPeriodSummaryService
             .amendPeriodSummary(requestData)
@@ -114,7 +106,6 @@ class AmendPeriodSummaryControllerSpec
     val businessId: String = "XAIS12345678910"
     val periodId: String
 
-    val rawData: AmendPeriodSummaryRawData
     val requestData: AmendPeriodSummaryRequestData
 
     val requestBodyJson: JsValue            = amendPeriodSummaryBodyMtdJson
@@ -127,7 +118,7 @@ class AmendPeriodSummaryControllerSpec
     val controller = new AmendPeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockAmendPeriodSummaryRequestParser,
+      validatorFactory = mockAmendPeriodSummaryValidatorFactory,
       service = mockAmendPeriodSummaryService,
       appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,
@@ -140,8 +131,8 @@ class AmendPeriodSummaryControllerSpec
   private trait PreTysTest extends Test {
     val periodId: String = "2019-01-01_2020-01-01"
 
-    val rawData: AmendPeriodSummaryRawData     = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, None)
-    val requestData: AmendPeriodSummaryRequestData = AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, requestBody, None)
+    val requestData: AmendPeriodSummaryRequestData =
+      AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None, requestBody)
 
     val responseJson: JsValue = Json.parse(
       s"""
@@ -170,18 +161,10 @@ class AmendPeriodSummaryControllerSpec
     """.stripMargin
     )
 
-    val testHateoasLinks: Seq[Link] = Seq(
-      Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-        method = PUT,
-        rel = "amend-self-employment-period-summary"
-      ),
-      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-      Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period",
-        method = GET,
-        rel = "list-self-employment-period-summaries"
-      )
+    val testHateoasLinks: Seq[Link] = List(
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period", GET, "list-self-employment-period-summaries")
     )
 
     protected def callController(): Future[Result] =
@@ -193,10 +176,8 @@ class AmendPeriodSummaryControllerSpec
     val periodId: String = "2024-01-01_2025-01-01"
     val taxYear: String  = "2023-24"
 
-    val rawData: AmendPeriodSummaryRawData = AmendPeriodSummaryRawData(nino, businessId, periodId, requestBodyJson, Some(taxYear))
-
     val requestData: AmendPeriodSummaryRequestData =
-      AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), periodId, requestBody, Some(TaxYear.fromMtd(taxYear)))
+      AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)), requestBody)
 
     val responseJson: JsValue = Json.parse(
       s"""
@@ -222,18 +203,17 @@ class AmendPeriodSummaryControllerSpec
     """.stripMargin
     )
 
-    val testHateoasLinks: Seq[Link] = Seq(
+    val testHateoasLinks: Seq[Link] = List(
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
-        method = PUT,
-        rel = "amend-self-employment-period-summary"
+        s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        PUT,
+        "amend-self-employment-period-summary"
       ),
-      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", GET, "self"),
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
-        method = GET,
-        rel = "list-self-employment-period-summaries"
-      )
+        s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        GET,
+        "list-self-employment-period-summaries")
     )
 
     protected def callController(): Future[Result] =

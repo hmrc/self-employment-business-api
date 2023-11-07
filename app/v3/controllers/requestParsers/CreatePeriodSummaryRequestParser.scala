@@ -19,7 +19,7 @@ package v3.controllers.requestParsers
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.{BusinessId, Nino}
 import v3.controllers.requestParsers.validators.CreatePeriodSummaryValidator
-import v3.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, CreatePeriodSummaryBody, CreatePeriodSummaryRequestData}
+import v3.models.request.createPeriodSummary.{CreatePeriodSummaryRawData, CreatePeriodSummaryRequestBody, CreatePeriodSummaryRequestData}
 
 import javax.inject.Inject
 
@@ -27,6 +27,6 @@ class CreatePeriodSummaryRequestParser @Inject() (val validator: CreatePeriodSum
     extends RequestParser[CreatePeriodSummaryRawData, CreatePeriodSummaryRequestData] {
 
   override protected def requestFor(data: CreatePeriodSummaryRawData): CreatePeriodSummaryRequestData =
-    CreatePeriodSummaryRequestData(Nino(data.nino), BusinessId(data.businessId), data.body.as[CreatePeriodSummaryBody])
+    CreatePeriodSummaryRequestData(Nino(data.nino), BusinessId(data.businessId), data.body.as[CreatePeriodSummaryRequestBody])
 
 }

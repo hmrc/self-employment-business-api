@@ -17,7 +17,7 @@
 package v3.controllers.requestParsers
 
 import api.controllers.requestParsers.RequestParser
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import v3.controllers.requestParsers.validators.AmendPeriodSummaryValidator
 import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRawData, AmendPeriodSummaryRequestData}
 
@@ -26,10 +26,12 @@ import javax.inject.Inject
 class AmendPeriodSummaryRequestParser @Inject() (val validator: AmendPeriodSummaryValidator)
     extends RequestParser[AmendPeriodSummaryRawData, AmendPeriodSummaryRequestData] {
 
-  override protected def requestFor(data: AmendPeriodSummaryRawData): AmendPeriodSummaryRequestData = {
-
-    val taxYear: Option[TaxYear] = data.taxYear.map(TaxYear.fromMtd)
-    AmendPeriodSummaryRequestData(Nino(data.nino), BusinessId(data.businessId), data.periodId, data.body.as[AmendPeriodSummaryBody], taxYear)
-  }
+  override protected def requestFor(data: AmendPeriodSummaryRawData): AmendPeriodSummaryRequestData =
+    AmendPeriodSummaryRequestData(
+      Nino(data.nino),
+      BusinessId(data.businessId),
+      PeriodId(data.periodId),
+      data.taxYear.map(TaxYear.fromMtd),
+      data.body.as[AmendPeriodSummaryBody])
 
 }
