@@ -20,7 +20,7 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
 import v1.mocks.validators.MockDeleteAnnualSubmissionValidator
-import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
+import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequestData}
 
 class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
 
@@ -49,7 +49,7 @@ class DeleteAnnualSubmissionRequestParserSpec extends UnitSpec {
         MockDeleteAnnualSubmissionValidator.validate(deleteAnnualSubmissionRawData).returns(Nil)
 
         parser.parseRequest(deleteAnnualSubmissionRawData) shouldBe
-          Right(DeleteAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
+          Right(DeleteAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))
       }
     }
 

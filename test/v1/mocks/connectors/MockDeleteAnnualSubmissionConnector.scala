@@ -21,7 +21,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DeleteAnnualSubmissionConnector
-import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +31,9 @@ trait MockDeleteAnnualSubmissionConnector extends MockFactory {
 
   object MockDeleteAnnualSubmissionConnector {
 
-    def deleteAnnualSubmission(requestData: DeleteAnnualSubmissionRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def deleteAnnualSubmission(requestData: DeleteAnnualSubmissionRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockDeleteAnnualSubmissionConnector
-        .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .deleteAnnualSubmission(_: DeleteAnnualSubmissionRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

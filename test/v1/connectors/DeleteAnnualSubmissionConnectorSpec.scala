@@ -23,7 +23,7 @@ import api.models.outcomes.ResponseWrapper
 import mocks.MockFeatureSwitches
 import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsObject
-import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
 import scala.concurrent.Future
 
@@ -111,7 +111,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeature
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
-    val request: DeleteAnnualSubmissionRequest = DeleteAnnualSubmissionRequest(
+    val request: DeleteAnnualSubmissionRequestData = DeleteAnnualSubmissionRequestData(
       nino = Nino(nino),
       taxYear = taxYear,
       businessId = BusinessId(businessId)

@@ -18,4 +18,4 @@ package v1.models.request.deleteAnnual
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class DeleteAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear)
+case class DeleteAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

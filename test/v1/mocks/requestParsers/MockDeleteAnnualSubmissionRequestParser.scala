@@ -20,7 +20,7 @@ import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.DeleteAnnualSubmissionRequestParser
-import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
+import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequestData}
 
 trait MockDeleteAnnualSubmissionRequestParser extends MockFactory {
 
@@ -28,7 +28,7 @@ trait MockDeleteAnnualSubmissionRequestParser extends MockFactory {
 
   object MockDeleteAnnualSubmissionRequestParser {
 
-    def parse(data: DeleteAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, DeleteAnnualSubmissionRequest]] = {
+    def parse(data: DeleteAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, DeleteAnnualSubmissionRequestData]] = {
       (mockDeleteAnnualSubmissionRequestParser.parseRequest(_: DeleteAnnualSubmissionRawData)(_: String)).expects(data, *)
     }
 

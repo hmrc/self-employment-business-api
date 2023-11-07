@@ -22,7 +22,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockDeleteAnnualSubmissionConnector
-import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequest
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
 import scala.concurrent.Future
 
@@ -33,7 +33,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  private val requestData = DeleteAnnualSubmissionRequest(
+  private val requestData = DeleteAnnualSubmissionRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = TaxYear.fromMtd(taxYear)
