@@ -22,7 +22,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockListPeriodSummariesConnector
-import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.Future
@@ -44,13 +44,13 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
       ))
   )
 
-  private val requestData = ListPeriodSummariesRequest(
+  private val requestData = ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     None
   )
 
-  private val requestDataForTys = ListPeriodSummariesRequest(
+  private val requestDataForTys = ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = Some(TaxYear.fromMtd(taxYear))

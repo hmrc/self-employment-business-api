@@ -22,8 +22,7 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.ListPeriodSummariesRequestParser
-import v1.models.request.listPeriodSummaries.ListPeriodSummariesRawData
+import v1.controllers.validators.ListPeriodSummariesValidatorFactory
 import v1.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
 import v1.services.ListPeriodSummariesService
 
@@ -33,7 +32,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthService,
                                                val lookupService: MtdIdLookupService,
-                                               parser: ListPeriodSummariesRequestParser,
+                                               validatorFactory: ListPeriodSummariesValidatorFactory,
                                                service: ListPeriodSummariesService,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
@@ -47,15 +46,15 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = ListPeriodSummariesRawData(nino, businessId, taxYear)
+      val validator = validatorFactory.validator(nino, businessId, taxYear)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.listPeriodSummaries)
-        .withResultCreator(ResultCreatorOld.hateoasListWrapping(hateoasFactory)((_, _) =>
+        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
           ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYear.map(TaxYear.fromMtd))))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }
