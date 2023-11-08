@@ -32,7 +32,7 @@ private[resolvers] class ResolveDateRange private (yearLimits: Option[YearLimits
     val resolvedDates = (
       ResolveIsoDate(startDate, StartDateFormatError),
       ResolveIsoDate(endDate, EndDateFormatError)
-      ).mapN(resolveDateRange).andThen(identity)
+    ).mapN(resolveDateRange).andThen(identity)
 
     yearLimits match {
       case Some(YearLimits(minYear, maxYear)) => resolvedDates.andThen(validateFromAndToDate(_, minYear, maxYear))
@@ -44,7 +44,7 @@ private[resolvers] class ResolveDateRange private (yearLimits: Option[YearLimits
     val startDateEpochTime = parsedStartDate.toEpochDay
     val endDateEpochTime   = parsedEndDate.toEpochDay
 
-    if ((endDateEpochTime - startDateEpochTime) <= 0) {
+    if ((endDateEpochTime - startDateEpochTime) < 0) {
       Invalid(List(RuleEndBeforeStartDateError))
     } else {
       Valid(DateRange(parsedStartDate, parsedEndDate))
@@ -73,4 +73,3 @@ object ResolveDateRange {
 }
 
 private case class YearLimits(minYear: Int, maxYear: Int)
-
