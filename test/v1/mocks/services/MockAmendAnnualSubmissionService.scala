@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequestData
 import v1.services.AmendAnnualSubmissionService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,10 +31,10 @@ trait MockAmendAnnualSubmissionService extends MockFactory {
 
   object MockAmendAnnualSubmissionService {
 
-    def amendAnnualSubmission(requestData: AmendAnnualSubmissionRequest): CallHandler[Future[ServiceOutcome[Unit]]] = {
+    def amendAnnualSubmission(requestData: AmendAnnualSubmissionRequestData): CallHandler[Future[ServiceOutcome[Unit]]] = {
       (
         mockAmendAnnualSubmissionService
-          .amendAnnualSubmission(_: AmendAnnualSubmissionRequest)(
+          .amendAnnualSubmission(_: AmendAnnualSubmissionRequestData)(
             _: RequestContext,
             _: ExecutionContext
           )

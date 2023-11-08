@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendSEAnnual
+package v1.controllers.validators
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.controllers.validators.RulesValidator
+import api.models.errors.MtdError
+import cats.data.Validated
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequestData
 
-case class AmendAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear, body: AmendAnnualSubmissionBody)
+object AmendAnnualSubmissionRulesValidator extends RulesValidator[AmendAnnualSubmissionRequestData] {
+
+  def validateBusinessRules(parsed: AmendAnnualSubmissionRequestData): Validated[Seq[MtdError], AmendAnnualSubmissionRequestData] = {
+
+    combine(
+    ).onSuccess(parsed)
+  }
+
+}

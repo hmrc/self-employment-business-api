@@ -50,7 +50,7 @@ class AmendAnnualSubmissionRequestParserSpec extends UnitSpec with AmendAnnualSu
         val amendAnnualSummaryRequestBody: AmendAnnualSubmissionBody = amendAnnualSubmissionBody()
 
         parser.parseRequest(inputData) shouldBe
-          Right(AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), amendAnnualSummaryRequestBody))
+          Right(AmendAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), amendAnnualSummaryRequestBody))
       }
     }
 

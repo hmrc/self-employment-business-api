@@ -20,7 +20,7 @@ import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.AmendAnnualSubmissionRequestParser
-import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequest}
+import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionRawData, AmendAnnualSubmissionRequestData}
 
 trait MockAmendAnnualSubmissionRequestParser extends MockFactory {
 
@@ -28,7 +28,7 @@ trait MockAmendAnnualSubmissionRequestParser extends MockFactory {
 
   object MockAmendAnnualSummaryRequestParser {
 
-    def requestFor(data: AmendAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, AmendAnnualSubmissionRequest]] = {
+    def requestFor(data: AmendAnnualSubmissionRawData): CallHandler[Either[ErrorWrapper, AmendAnnualSubmissionRequestData]] = {
       (mockAmendAnnualSummaryRequestParser.parseRequest(_: AmendAnnualSubmissionRawData)(_: String)).expects(data, *)
     }
 

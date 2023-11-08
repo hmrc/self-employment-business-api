@@ -84,7 +84,7 @@ class AmendAnnualSubmissionControllerSpec
   )
 
   private val rawData     = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
-  private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
+  private val requestData = AmendAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
