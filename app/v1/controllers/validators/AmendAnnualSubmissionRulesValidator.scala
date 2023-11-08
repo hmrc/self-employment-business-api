@@ -17,16 +17,126 @@
 package v1.controllers.validators
 
 import api.controllers.validators.RulesValidator
-import api.models.errors.MtdError
+import api.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNumber, ResolveStringPattern}
+import api.models.errors.{DateFormatError, MtdError, StringFormatError}
 import cats.data.Validated
-import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequestData
+import cats.implicits._
+import v1.models.request.amendSEAnnual._
 
 object AmendAnnualSubmissionRulesValidator extends RulesValidator[AmendAnnualSubmissionRequestData] {
 
+  private val resolveNonNegativeParsedNumber       = ResolveParsedNumber()
+  private val resolveMaybeNegativeParsedNumber     = ResolveParsedNumber(min = -99999999999.99)
+  private val resolveNonNegativeCappedParsedNumber = ResolveParsedNumber(max = 1000)
+  private val regex                                = "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$".r
+  private val resolveStringPattern                 = new ResolveStringPattern(regex, StringFormatError)
+
   def validateBusinessRules(parsed: AmendAnnualSubmissionRequestData): Validated[Seq[MtdError], AmendAnnualSubmissionRequestData] = {
+    import parsed.body._
+    combine(
+      adjustments.map(validateAdjustments).getOrElse(valid),
+      allowances.map(validateAllowances).getOrElse(valid),
+    ).onSuccess(parsed)
+  }
+
+  private def validateAdjustments(adjustments: Adjustments): Validated[Seq[MtdError], Unit] = {
+    import adjustments._
+
+    val validatedNonNegatives = List(
+      (includedNonTaxableProfits, "/adjustments/includedNonTaxableProfits"),
+      (overlapReliefUsed, "/adjustments/overlapReliefUsed"),
+      (accountingAdjustment, "/adjustments/accountingAdjustment"),
+      (outstandingBusinessIncome, "/adjustments/outstandingBusinessIncome"),
+      (balancingChargeBpra, "/adjustments/balancingChargeBpra"),
+      (balancingChargeOther, "/adjustments/balancingChargeOther"),
+      (goodsAndServicesOwnUse, "/adjustments/goodsAndServicesOwnUse")
+    ).traverse_ { case (value, path) =>
+      resolveNonNegativeParsedNumber(value, path = Some(path))
+    }
+
+    val validatedMaybeNegatives = List(
+      (basisAdjustment, "/adjustments/basisAdjustment"),
+      (averagingAdjustment, "/adjustments/averagingAdjustment")
+    ).traverse_ { case (value, path) =>
+      resolveMaybeNegativeParsedNumber(value, path = Some(path))
+    }
+
+    combine(validatedNonNegatives, validatedMaybeNegatives)
+  }
+
+  private def validateAllowances(allowances: Allowances): Validated[Seq[MtdError], Unit] = {
+    import allowances._
+
+    val validatedNonNegatives = List(
+      (annualInvestmentAllowance, "/allowances/annualInvestmentAllowance"),
+      (businessPremisesRenovationAllowance, "/allowances/businessPremisesRenovationAllowance"),
+      (capitalAllowanceMainPool, "/allowances/capitalAllowanceMainPool"),
+      (capitalAllowanceSpecialRatePool, "/allowances/capitalAllowanceSpecialRatePool"),
+      (zeroEmissionsGoodsVehicleAllowance, "/allowances/zeroEmissionsGoodsVehicleAllowance"),
+      (enhancedCapitalAllowance, "/allowances/enhancedCapitalAllowance"),
+      (allowanceOnSales, "/allowances/allowanceOnSales"),
+      (capitalAllowanceSingleAssetPool, "/allowances/capitalAllowanceSingleAssetPool"),
+      (electricChargePointAllowance, "/allowances/electricChargePointAllowance"),
+      (zeroEmissionsCarAllowance, "/allowances/zeroEmissionsCarAllowance")
+    ).traverse_ { case (value, path) =>
+      resolveNonNegativeParsedNumber(value, path = Some(path))
+    }
+
+    val validatedTradingIncomeAllowance =
+      tradingIncomeAllowance.map(resolveNonNegativeCappedParsedNumber(_, "/allowances/tradingIncomeAllowance").toUnit).getOrElse(valid)
+
+    val validatedStructuredBuildingAllowance = structuredBuildingAllowance
+      .map(_.zipWithIndex.traverse_ { case (entry, i) =>
+        validateStructuredBuildingAllowance(entry, i, "structuredBuildingAllowance")
+      })
+      .getOrElse(valid)
+
+    val validatedEnhancedStructuredBuildingAllowance = enhancedStructuredBuildingAllowance
+      .map(_.zipWithIndex.traverse_ { case (entry, i) =>
+        validateStructuredBuildingAllowance(entry, i, "enhancedStructuredBuildingAllowance")
+      })
+      .getOrElse(valid)
 
     combine(
-    ).onSuccess(parsed)
+      validatedNonNegatives,
+      validatedTradingIncomeAllowance,
+      validatedStructuredBuildingAllowance,
+      validatedEnhancedStructuredBuildingAllowance)
+  }
+
+  private def validateStructuredBuildingAllowance(structuredBuildingAllowance: StructuredBuildingAllowance,
+                                                  index: Int,
+                                                  typeOfBuildingAllowance: String): Validated[Seq[MtdError], Unit] = {
+    import structuredBuildingAllowance._
+
+    val validatedTypeOfBuildingAllowance = resolveNonNegativeParsedNumber(amount, s"/allowances/$typeOfBuildingAllowance/$index/amount").toUnit
+
+    val validatedQualifyingAmountExpenditure = firstYear
+      .map(year =>
+        resolveNonNegativeParsedNumber(
+          year.qualifyingAmountExpenditure,
+          s"/allowances/$typeOfBuildingAllowance/$index/firstYear/qualifyingAmountExpenditure").toUnit)
+      .getOrElse(valid)
+
+    val validatedOptionalStrings = List(
+      (building.name, s"/allowances/$typeOfBuildingAllowance/$index/building/name"),
+      (building.number, s"/allowances/$typeOfBuildingAllowance/$index/building/number")
+    ).traverse_ { case (value, path) =>
+      resolveStringPattern(value, path = Some(path))
+    }
+
+    val validatedString = resolveStringPattern(building.postcode, s"/allowances/$typeOfBuildingAllowance/$index/building/postcode").toUnit
+
+    val validatedDate = firstYear.map(year => ResolveIsoDate(year.qualifyingDate, DateFormatError).toUnit).getOrElse(valid)
+
+    combine(
+      validatedTypeOfBuildingAllowance,
+      validatedQualifyingAmountExpenditure,
+      validatedOptionalStrings,
+      validatedString,
+      validatedDate
+    )
+
   }
 
 }

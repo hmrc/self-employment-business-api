@@ -19,11 +19,12 @@ package v1.controllers.validators
 import api.models.domain.ex.MtdNicExemption
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
-import play.api.libs.json.{JsNumber, JsValue, Json}
+import api.models.utils.JsonErrorValidators
+import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import support.UnitSpec
 import v1.models.request.amendSEAnnual._
 
-class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec {
+class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
   private implicit val correlationId: String = "1234"
 
@@ -431,22 +432,17 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec {
       }
     }
 
-    val badNumber = JsNumber(-200.12)
-    val badString = "badString"
+    val badNumber = JsNumber(123.123)
+    val badString = JsString("badString")
 
     List(
       "/adjustments/includedNonTaxableProfits",
-      "/adjustments/basisAdjustment",
       "/adjustments/overlapReliefUsed",
       "/adjustments/accountingAdjustment",
-      "/adjustments/averagingAdjustment",
       "/adjustments/outstandingBusinessIncome",
       "/adjustments/balancingChargeBpra",
       "/adjustments/balancingChargeOther",
-      "/adjustments/goodsAndServicesOwnUse"
-    ).foreach(path => test(ValueFormatError.withPath(path))(validRequestBody().update(path, badNumber), path))
-
-    List(
+      "/adjustments/goodsAndServicesOwnUse",
       "/allowances/annualInvestmentAllowance",
       "/allowances/businessPremisesRenovationAllowance",
       "/allowances/capitalAllowanceMainPool",
@@ -459,12 +455,18 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec {
       "/allowances/zeroEmissionsCarAllowance"
     ).foreach(path => test(ValueFormatError.withPath(path))(validRequestBody().update(path, badNumber), path))
 
-    test(ValueFormatError.withPath("/allowances/tradingIncomeAllowance"))(
+    List(
+      "/adjustments/basisAdjustment",
+      "/adjustments/averagingAdjustment"
+    ).foreach(path =>
+      test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(validRequestBody().update(path, badNumber), path))
+
+    test(ValueFormatError.forPathAndRange("/allowances/tradingIncomeAllowance", min = "0", max = "1000"))(
       validRequestBody(allowances = Json.obj("tradingIncomeAllowance" -> badNumber)),
       "/allowances/tradingIncomeAllowance"
     )
 
-    test(ValueFormatError.withPath("/allowances/structuredBuildingAllowance/amount"))(
+    test(ValueFormatError.withPath("/allowances/structuredBuildingAllowance/0/amount"))(
       validRequestBody(allowances = Json.parse(
         """
           |{
@@ -482,7 +484,7 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec {
           |}
           |""".stripMargin
       )),
-      "/allowances/structuredBuildingAllowance/amount"
+      "/allowances/structuredBuildingAllowance/0/amount"
     )
 
     test(DateFormatError.withPath("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"))(
@@ -510,7 +512,7 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec {
       "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"
     )
 
-    test(ValueFormatError.withPath("/allowances/enhancedStructuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure"))(
+    test(ValueFormatError.withPath("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualiyfingAmountExpenditure"))(
       validRequestBody(allowances = Json.parse(
         """
           |{
@@ -532,13 +534,13 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec {
           |}
           |""".stripMargin
       )),
-      "/allowances/enhancedStructuredBuildingAllowance/firstYear/qualiyfingAmountExpenditure"
+      "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualiyfingAmountExpenditure"
     )
 
     List(
-      "/allowances/enhancedStructuredBuildingAllowance/building/name",
-      "/allowances/enhancedStructuredBuildingAllowance/building/number",
-      "/allowances/enhancedStructuredBuildingAllowance/building/postcode"
+      "/allowances/enhancedStructuredBuildingAllowance/0/building/name",
+      "/allowances/enhancedStructuredBuildingAllowance/0/building/number",
+      "/allowances/enhancedStructuredBuildingAllowance/0/building/postcode"
     ).foreach(path => test(StringFormatError.withPath(path))(validRequestBody().update(path, badString), path))
 
     "/nonFinancials/class4NicsExemptionReason is invalid" in {

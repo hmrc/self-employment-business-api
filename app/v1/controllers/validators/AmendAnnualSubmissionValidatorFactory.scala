@@ -26,8 +26,11 @@ import play.api.libs.json.JsValue
 import v1.controllers.validators.AmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 
+import scala.annotation.nowarn
+
 class AmendAnnualSubmissionValidatorFactory {
 
+  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendAnnualSubmissionBody]()
 
   private val resolveTaxYear =
