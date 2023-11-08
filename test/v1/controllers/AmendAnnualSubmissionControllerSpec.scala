@@ -25,9 +25,9 @@ import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockAmendAnnualSubmissionRequestParser
-import v1.mocks.services.MockAmendAnnualSubmissionService
 import v1.models.request.amendSEAnnual._
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
+import v1.services.MockAmendAnnualSubmissionService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

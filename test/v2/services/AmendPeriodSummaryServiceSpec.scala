@@ -17,29 +17,25 @@
 package v2.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino}
+import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
-import v2.mocks.connectors.MockAmendPeriodSummaryConnector
-import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
+import api.services.{ServiceOutcome, ServiceSpec}
+import v2.connectors.MockAmendPeriodSummaryConnector
+import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData}
 
 import scala.concurrent.Future
 
 class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val periodId: String               = "2019-01-25_2020-01-25"
-  implicit val correlationId: String = "X-123"
+  implicit private val correlationId: String = "X-123"
 
-  private val requestData = AmendPeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    periodId = periodId,
-    body = AmendPeriodSummaryBody(None, None, None),
-    taxYear = None
-  )
+  private val nino       = "AA123456A"
+  private val businessId = "XAIS12345678910"
+  private val periodId   = "2019-01-25_2020-01-25"
+
+  private val requestData =
+    AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None, AmendPeriodSummaryBody(None, None, None))
 
   trait Test extends MockAmendPeriodSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
@@ -57,7 +53,9 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
           .amendPeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        await(service.amendPeriodSummary(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
+        val result: ServiceOutcome[Unit] = await(service.amendPeriodSummary(requestData))
+
+        result shouldBe Right(ResponseWrapper(correlationId, ()))
       }
     }
   }
@@ -71,10 +69,12 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
             .amendPeriodSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          await(service.amendPeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          val result: ServiceOutcome[Unit] = await(service.amendPeriodSummary(requestData))
+
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val errors = Seq(
+      val errors = List(
         "INVALID_NINO"                    -> NinoFormatError,
         "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
         "INVALID_DATE_FROM"               -> PeriodIdFormatError,
@@ -88,7 +88,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
         "SERVICE_UNAVAILABLE"             -> InternalError
       )
 
-      val extraTysErrors = Seq(
+      val extraTysErrors = List(
         "INVALID_TAX_YEAR"                      -> TaxYearFormatError,
         "TAX_YEAR_NOT_SUPPORTED"                -> RuleTaxYearNotSupportedError,
         "INVALID_CORRELATION_ID"                -> InternalError,

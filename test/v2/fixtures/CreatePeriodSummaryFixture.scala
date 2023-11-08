@@ -476,7 +476,7 @@ trait CreatePeriodSummaryFixture {
     otherExpensesDisallowable = Some(1000.99)
   )
 
-  val fullMTDResponseModel: CreatePeriodSummaryBody = CreatePeriodSummaryBody(
+  val fullMTDResponseModel: CreatePeriodSummaryRequestBody = CreatePeriodSummaryRequestBody(
     periodDates = periodDatesMTDModel,
     periodIncome = Some(periodIncomeMTDModel),
     periodExpenses = Some(periodExpensesModel),

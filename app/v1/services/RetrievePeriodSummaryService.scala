@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.RetrievePeriodSummaryConnector
-import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
@@ -52,9 +52,9 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
     downstreamErrors ++ extraTysErrors
   }
 
-  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+  def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
+                                                                       ctx: RequestContext,
+                                                                       ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
     connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

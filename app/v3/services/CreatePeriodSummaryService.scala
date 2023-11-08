@@ -23,7 +23,7 @@ import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import config.{AppConfig, FeatureSwitches}
 import v3.connectors.CreatePeriodSummaryConnector
-import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequestData
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
@@ -66,9 +66,9 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
     errors ++ extraTysErrors
   }
 
-  def createPeriodSummary(request: CreatePeriodSummaryRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
+  def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
+                                                                   ctx: RequestContext,
+                                                                   ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
 
     def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
       import request.body.periodDates._
@@ -80,7 +80,7 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def updateRequestCl290(request: CreatePeriodSummaryRequest): CreatePeriodSummaryRequest =
+  private def updateRequestCl290(request: CreatePeriodSummaryRequestData): CreatePeriodSummaryRequestData =
     if (FeatureSwitches(appConfig.featureSwitches).isCl290Enabled) request else request.withoutTaxTakenOffTradingIncome
 
 }

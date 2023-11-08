@@ -30,15 +30,12 @@ import v1.models.request.amendPeriodSummary.AmendPeriodSummaryFixture
 
 class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with AmendPeriodSummaryFixture {
 
-  val requestBodyJson: JsValue           = amendPeriodSummaryBodyMtdJson
-  val downstreamRequestBodyJson: JsValue = amendPeriodSummaryBodyDownstreamJson
+  private val requestBodyJson           = amendPeriodSummaryBodyMtdJson
+  private val downstreamRequestBodyJson = amendPeriodSummaryBodyDownstreamJson
 
   "Calling the V1 Amend Period Summary endpoint" should {
-
     "return a 200 status code" when {
-
       "any valid request is made for a non-tys tax year" in new NonTysTest {
-
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
@@ -56,7 +53,6 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
       }
 
       "any valid request is made for a TYS tax year" in new TysIfsTest {
-
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
@@ -75,18 +71,14 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
     }
 
     "return validation error according to spec" when {
-
       "validation error" when {
-
         def validationErrorTest(requestNino: String,
                                 requestBusinessId: String,
                                 requestPeriodId: String,
                                 requestBody: JsValue,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-
           s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val periodId: String   = requestPeriodId
@@ -102,7 +94,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           }
         }
 
-        val input = Seq(
+        val input = List(
           ("BADNINO", "XAIS12345678910", "2019-01-01_2020-01-01", requestBodyJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "BAD_BUSINESS_ID", "2019-01-01_2020-01-01", requestBodyJson, BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "BAD_PERIOD_ID", requestBodyJson, BAD_REQUEST, PeriodIdFormatError),
@@ -112,7 +104,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
             "2019-01-01_2020-01-01",
             requestBodyJson.update("/periodIncome/turnover", JsNumber(1.234)),
             BAD_REQUEST,
-            ValueFormatError.copy(paths = Some(Seq("/periodIncome/turnover")))
+            ValueFormatError.withPath("/periodIncome/turnover")
           ),
           (
             "AA123456A",
@@ -128,7 +120,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
             "2019-01-01_2020-01-01",
             requestBodyJson.replaceWithEmptyObject("/periodAllowableExpenses"),
             BAD_REQUEST,
-            RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodAllowableExpenses")))
+            RuleIncorrectOrEmptyBodyError.withPath("/periodAllowableExpenses")
           )
         )
 
@@ -136,10 +128,8 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
       }
 
       "downstream service error" when {
-
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
-
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
@@ -153,7 +143,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           }
         }
 
-        val errors = Seq(
+        val errors = List(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_DATE_FROM", BAD_REQUEST, PeriodIdFormatError),
@@ -167,7 +157,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        val extraTysErrors = Seq(
+        val extraTysErrors = List(
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
@@ -178,7 +168,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
           (UNPROCESSABLE_ENTITY, "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+        (errors ++ extraTysErrors).foreach((serviceErrorTest _).tupled)
       }
     }
   }
@@ -190,6 +180,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
     val periodId: String   = "2019-01-01_2020-01-01"
     val from               = "2019-01-01"
     val to                 = "2020-01-01"
+
     val responseJson: JsValue = Json.parse(s"""
          |{
          |  "links": [
@@ -247,15 +238,15 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
   }
 
   private trait TysIfsTest extends Test {
-    def mtdUri: String        = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def mtdUri: String = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
     def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
-    def tysTaxYear: String    = "23-24"
+    def tysTaxYear: String = "23-24"
 
-    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
-    def mtdTaxYear: String    = "2023-24"
+    def mtdTaxYear: String = "2023-24"
 
     def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"

@@ -22,7 +22,7 @@ import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import config.{AppConfig, FeatureSwitches}
 import v3.connectors.AmendPeriodSummaryConnector
-import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
+import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,12 +58,12 @@ class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnecto
     errors ++ extraTysErrors
   }
 
-  def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.amendPeriodSummary(updateRequestCl290(request)).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def updateRequestCl290(request: AmendPeriodSummaryRequest): AmendPeriodSummaryRequest =
+  private def updateRequestCl290(request: AmendPeriodSummaryRequestData): AmendPeriodSummaryRequestData =
     if (FeatureSwitches(appConfig.featureSwitches).isCl290Enabled) request else request.withoutTaxTakenOffTradingIncome
 
 }

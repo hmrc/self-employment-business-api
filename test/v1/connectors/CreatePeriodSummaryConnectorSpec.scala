@@ -68,7 +68,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
     def response: CreatePeriodSummaryResponse = CreatePeriodSummaryResponse("2017090920170909")
 
-    def request: CreatePeriodSummaryRequest = CreatePeriodSummaryRequest(
+    def request: CreatePeriodSummaryRequestData = CreatePeriodSummaryRequestData(
       nino = Nino(nino),
       businessId = BusinessId(businessId),
       body = CreatePeriodSummaryBody(

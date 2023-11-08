@@ -23,7 +23,7 @@ import cats.data.EitherT
 import cats.implicits._
 import config.{AppConfig, FeatureSwitches}
 import v3.connectors.RetrievePeriodSummaryConnector
-import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
@@ -54,9 +54,9 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
     errors ++ extraTysErrors
   }
 
-  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+  def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
+                                                                       ctx: RequestContext,
+                                                                       ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
     EitherT(connector.retrievePeriodSummary(request))
       .map(_.map(updateResponseCl290))

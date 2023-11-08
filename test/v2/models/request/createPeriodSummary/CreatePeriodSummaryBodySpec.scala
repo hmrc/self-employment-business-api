@@ -21,8 +21,8 @@ import support.UnitSpec
 
 class CreatePeriodSummaryBodySpec extends UnitSpec {
 
-  val fullMtdBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
+  val fullMtdBody: CreatePeriodSummaryRequestBody =
+    CreatePeriodSummaryRequestBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       Some(
         PeriodIncome(
@@ -68,8 +68,8 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
         ))
     )
 
-  val someOptionalFieldsMtdBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
+  val someOptionalFieldsMtdBody: CreatePeriodSummaryRequestBody =
+    CreatePeriodSummaryRequestBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       Some(
         PeriodIncome(
@@ -98,8 +98,8 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
       None
     )
 
-  val noOptionalFieldsMtdBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
+  val noOptionalFieldsMtdBody: CreatePeriodSummaryRequestBody =
+    CreatePeriodSummaryRequestBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       None,
       None,
@@ -195,15 +195,15 @@ class CreatePeriodSummaryBodySpec extends UnitSpec {
           |""".stripMargin)
 
       "a valid request with all optional fields is made" in {
-        fullRequestJson.as[CreatePeriodSummaryBody] shouldBe fullMtdBody
+        fullRequestJson.as[CreatePeriodSummaryRequestBody] shouldBe fullMtdBody
       }
 
       "a valid request with some optional fields is made" in {
-        someOptionalRequestJson.as[CreatePeriodSummaryBody] shouldBe someOptionalFieldsMtdBody
+        someOptionalRequestJson.as[CreatePeriodSummaryRequestBody] shouldBe someOptionalFieldsMtdBody
       }
 
       "a valid request with no optional fields is made" in {
-        noOptionalRequestJson.as[CreatePeriodSummaryBody] shouldBe noOptionalFieldsMtdBody
+        noOptionalRequestJson.as[CreatePeriodSummaryRequestBody] shouldBe noOptionalFieldsMtdBody
       }
     }
   }

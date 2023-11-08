@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.AmendPeriodSummaryConnector
-import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequest
+import v1.models.request.amendPeriodSummary.AmendPeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,7 +57,7 @@ class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnecto
     errors ++ extraTysErrors
   }
 
-  def amendPeriodSummary(request: AmendPeriodSummaryRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }

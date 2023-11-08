@@ -22,7 +22,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import v1.connectors.CreatePeriodSummaryConnector
-import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequest
+import v1.models.request.createPeriodSummary.CreatePeriodSummaryRequestData
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
@@ -64,9 +64,9 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
     errors ++ extraTysErrors
   }
 
-  def createPeriodSummary(request: CreatePeriodSummaryRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
+  def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
+                                                                   ctx: RequestContext,
+                                                                   ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
 
     def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
       import request.body.periodDates._

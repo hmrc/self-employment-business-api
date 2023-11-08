@@ -23,8 +23,7 @@ import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import v1.models.request.createPeriodSummary.CreatePeriodSummaryRawData
+import v1.controllers.validators.CreatePeriodSummaryValidatorFactory
 import v1.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v1.services.CreatePeriodSummaryService
 
@@ -34,7 +33,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
                                                val lookupService: MtdIdLookupService,
-                                               parser: CreatePeriodSummaryRequestParser,
+                                               validatorFactory: CreatePeriodSummaryValidatorFactory,
                                                service: CreatePeriodSummaryService,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
@@ -48,15 +47,15 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = CreatePeriodSummaryRawData(nino, businessId, request.body)
+      val validator = validatorFactory.validator(nino, businessId, request.body)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.createPeriodSummary)
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, response) =>
           CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), response.periodId, Some(parsedRequest.taxYear)))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

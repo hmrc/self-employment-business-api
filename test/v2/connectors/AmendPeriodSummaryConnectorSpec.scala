@@ -16,8 +16,8 @@
 
 package v2.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v2.models.request.amendPeriodSummary._
 
@@ -25,40 +25,26 @@ import scala.concurrent.Future
 
 class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  val nino: String       = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  val periodId: String   = "2020-01-01_2020-01-01"
-  val nonTysRequest: AmendPeriodSummaryRequest = makeRequest(None)
-  val tysRequest: AmendPeriodSummaryRequest    = makeRequest(Some("2023-24"))
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val periodId      = "2020-01-01_2020-01-01"
+  private val nonTysRequest = makeRequest(None)
+  private val tysRequest    = makeRequest(Some("2023-24"))
 
-  def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequest = AmendPeriodSummaryRequest(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    periodId = periodId,
-    taxYear = taxYear.map(TaxYear.fromMtd),
-    body = AmendPeriodSummaryBody(
-      None,
-      Some(
-        PeriodExpenses(
-          Some(200.10),
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None,
-          None
-        )),
-      None
+  def makeRequest(taxYear: Option[String]): AmendPeriodSummaryRequestData = AmendPeriodSummaryRequestData(
+    Nino(nino),
+    BusinessId(businessId),
+    PeriodId(periodId),
+    taxYear.map(TaxYear.fromMtd),
+    // @formatter:off
+    AmendPeriodSummaryBody(
+      None, Some(PeriodExpenses(
+          Some(200.10), None, None, None, None,
+          None, None, None, None, None, None,
+          None, None, None, None, None
+        )), None
     )
+    // @formatter:on
   )
 
   trait Test {
@@ -72,31 +58,31 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "AmendPeriodSummaryConnector" when {
-
     "amendPeriodSummary" must {
-
       "return a 204 status for a success TYS scenario" in new TysIfsTest with Test {
-
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         val url =
           s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
         willPut(url, tysRequest.body).returns(Future.successful(outcome))
 
-        await(connector.amendPeriodSummary(tysRequest)) shouldBe outcome
+        val result: DownstreamOutcome[Unit] = await(connector.amendPeriodSummary(tysRequest))
+
+        result shouldBe outcome
       }
 
       "return a 204 status for a success non-TYS scenario" in new DesTest with Test {
-
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         val url =
           s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
         willPut(url, nonTysRequest.body).returns(Future.successful(outcome))
 
-        await(connector.amendPeriodSummary(nonTysRequest)) shouldBe outcome
+        val result: DownstreamOutcome[Unit] = await(connector.amendPeriodSummary(nonTysRequest))
+
+        result shouldBe outcome
       }
     }
   }

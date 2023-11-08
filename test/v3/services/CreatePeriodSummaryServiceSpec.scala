@@ -23,7 +23,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
-import v3.mocks.connectors.MockCreatePeriodSummaryConnector
+import v3.connectors.MockCreatePeriodSummaryConnector
 import v3.models.request.createPeriodSummary._
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
@@ -39,15 +39,15 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
 
-  private val parsedRequestBody = CreatePeriodSummaryBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
+  private val parsedRequestBody = CreatePeriodSummaryRequestBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
 
-  private val requestDataWithCl290Enabled = CreatePeriodSummaryRequest(
+  private val requestDataWithCl290Enabled = CreatePeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Enabled))
   )
 
-  private val requestDataWithCl290Disabled = CreatePeriodSummaryRequest(
+  private val requestDataWithCl290Disabled = CreatePeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Disabled))
