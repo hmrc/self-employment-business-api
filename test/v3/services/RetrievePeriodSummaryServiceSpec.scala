@@ -23,8 +23,8 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
-import v3.mocks.connectors.MockRetrievePeriodSummaryConnector
-import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v3.connectors.MockRetrievePeriodSummaryConnector
+import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v3.models.response.retrievePeriodSummary.{PeriodDates, PeriodIncome, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   private val periodId                       = PeriodId("2019-01-25_2020-01-25")
   private implicit val correlationId: String = "X-123"
 
-  private val requestData = RetrievePeriodSummaryRequest(
+  private val requestData = RetrievePeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,

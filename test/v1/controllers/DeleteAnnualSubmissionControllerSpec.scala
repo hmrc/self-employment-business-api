@@ -23,8 +23,8 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
 import v1.controllers.validators.MockDeleteAnnualSubmissionValidatorFactory
-import v1.mocks.services.MockDeleteAnnualSubmissionService
 import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
+import v1.services.MockDeleteAnnualSubmissionService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

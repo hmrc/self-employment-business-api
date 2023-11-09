@@ -24,9 +24,9 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
 import v1.controllers.validators.MockRetrieveAnnualSubmissionValidatorFactory
-import v1.mocks.services.MockRetrieveAnnualSubmissionService
 import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v1.models.response.retrieveAnnual._
+import v1.services.MockRetrieveAnnualSubmissionService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

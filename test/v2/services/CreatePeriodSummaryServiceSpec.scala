@@ -21,7 +21,7 @@ import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v2.mocks.connectors.MockCreatePeriodSummaryConnector
+import v2.connectors.MockCreatePeriodSummaryConnector
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
@@ -33,8 +33,8 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
   val businessId: String             = "XAIS12345678910"
   implicit val correlationId: String = "X-123"
 
-  private val requestBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
+  private val requestBody: CreatePeriodSummaryRequestBody =
+    CreatePeriodSummaryRequestBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       Some(
         PeriodIncome(
@@ -80,7 +80,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
         ))
     )
 
-  private val requestData = CreatePeriodSummaryRequest(
+  private val requestData = CreatePeriodSummaryRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     body = requestBody

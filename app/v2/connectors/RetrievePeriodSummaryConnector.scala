@@ -22,7 +22,7 @@ import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.models.domain.TaxYear
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequest
+import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
@@ -31,10 +31,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def retrievePeriodSummary(request: RetrievePeriodSummaryRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
+  def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
+                                                                       hc: HeaderCarrier,
+                                                                       ec: ExecutionContext,
+                                                                       correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
     import request._
 

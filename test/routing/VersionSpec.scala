@@ -17,7 +17,9 @@
 package routing
 
 import play.api.http.HeaderNames.ACCEPT
+import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 import play.api.test.FakeRequest
+import routing.Version.VersionReads
 import support.UnitSpec
 
 class VersionSpec extends UnitSpec {
@@ -25,7 +27,7 @@ class VersionSpec extends UnitSpec {
   "Versions" when {
     "retrieved from a request header" must {
       "return an error if the version is unsupported" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.4.0+json"))) shouldBe Left(VersionNotFound)
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.5.0+json"))) shouldBe Left(VersionNotFound)
       }
 
       "return an error if the Accept header value is invalid" in {
@@ -35,6 +37,15 @@ class VersionSpec extends UnitSpec {
       "return the specified version" in {
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))) shouldBe Right(Version3)
       }
+    }
+  }
+
+  "VersionReads" should {
+    "successfully read Version4" in {
+      val versionJson: JsValue      = JsString(Version4.name)
+      val result: JsResult[Version] = VersionReads.reads(versionJson)
+
+      result shouldEqual JsSuccess(Version4)
     }
   }
 

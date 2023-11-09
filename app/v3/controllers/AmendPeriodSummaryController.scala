@@ -16,7 +16,7 @@
 
 package v3.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -24,8 +24,7 @@ import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v3.controllers.requestParsers.AmendPeriodSummaryRequestParser
-import v3.models.request.amendPeriodSummary.AmendPeriodSummaryRawData
+import v3.controllers.validators.AmendPeriodSummaryValidatorFactory
 import v3.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import v3.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
 import v3.services.AmendPeriodSummaryService
@@ -36,7 +35,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
                                               val lookupService: MtdIdLookupService,
-                                              parser: AmendPeriodSummaryRequestParser,
+                                              validatorFactory: AmendPeriodSummaryValidatorFactory,
                                               service: AmendPeriodSummaryService,
                                               appConfig: AppConfig,
                                               hateoasFactory: HateoasFactory,
@@ -52,14 +51,14 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val includeNegatives = FeatureSwitches(appConfig.featureSwitches).isAllowNegativeExpensesEnabled
-      val rawData          = AmendPeriodSummaryRawData(nino, businessId, periodId, request.body, taxYear, includeNegatives)
+      val validator        = validatorFactory.validator(nino, businessId, periodId, taxYear, request.body, includeNegatives)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.amendPeriodSummary)
         .withHateoasResult(hateoasFactory)(AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear.map(TaxYear.fromMtd)))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

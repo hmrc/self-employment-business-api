@@ -17,14 +17,14 @@
 package v3.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino}
+import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
-import v3.mocks.connectors.MockAmendPeriodSummaryConnector
-import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest, PeriodIncome}
+import v3.connectors.MockAmendPeriodSummaryConnector
+import v3.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData, PeriodIncome}
 
 import scala.concurrent.Future
 
@@ -32,14 +32,14 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
   private val nino                           = Nino("AA123456A")
   private val businessId                     = BusinessId("XAIS12345678910")
-  private val periodId                       = "2019-01-25_2020-01-25"
+  private val periodId                       = PeriodId("2019-01-25_2020-01-25")
   private implicit val correlationId: String = "X-123"
 
   private val periodIncomeWithCl290Enabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
   private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
 
-  private val requestDataWithCl290Enabled = AmendPeriodSummaryRequest(
+  private val requestDataWithCl290Enabled = AmendPeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
@@ -47,7 +47,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
     taxYear = None
   )
 
-  private val requestDataWithCl290Disabled = AmendPeriodSummaryRequest(
+  private val requestDataWithCl290Disabled = AmendPeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,

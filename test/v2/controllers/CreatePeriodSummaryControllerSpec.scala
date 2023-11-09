@@ -26,10 +26,10 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v2.mocks.requestParsers.MockCreatePeriodSummaryRequestParser
-import v2.mocks.services.MockCreatePeriodSummaryService
+import v2.controllers.validators.MockCreatePeriodSummaryValidatorFactory
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
+import v2.services.MockCreatePeriodSummaryService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,25 +38,17 @@ class CreatePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
-    with MockCreatePeriodSummaryRequestParser
+    with MockCreatePeriodSummaryValidatorFactory
     with MockAppConfig
     with MockHateoasFactory {
 
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2017-01-25"
 
-  private val testHateoasLinks: Seq[Link] = Seq(
-    Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-      method = PUT,
-      rel = "amend-self-employment-period-summary"
-    ),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-    Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/period",
-      method = GET,
-      rel = "list-self-employment-period-summaries"
-    )
+  private val testHateoasLinks: Seq[Link] = List(
+    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
+    Link(s"/individuals/business/self-employment/$nino/$businessId/period", GET, "list-self-employment-period-summaries")
   )
 
   private val requestJson = Json.parse(
@@ -108,8 +100,8 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val requestBody: CreatePeriodSummaryBody =
-    CreatePeriodSummaryBody(
+  private val requestBody: CreatePeriodSummaryRequestBody =
+    CreatePeriodSummaryRequestBody(
       PeriodDates("2019-08-24", "2019-08-24"),
       Some(
         PeriodIncome(
@@ -183,15 +175,12 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val rawData     = CreatePeriodSummaryRawData(nino, businessId, requestJson)
-  private val requestData = CreatePeriodSummaryRequest(Nino(nino), BusinessId(businessId), requestBody)
+  private val requestData = CreatePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-        MockCreatePeriodSummaryRequestParser
-          .parseRequest(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreatePeriodicService
           .createPeriodic(requestData)
@@ -212,19 +201,14 @@ class CreatePeriodSummaryControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockCreatePeriodSummaryRequestParser
-          .parseRequest(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
 
       }
 
       "the service returns an error" in new Test {
-
-        MockCreatePeriodSummaryRequestParser
-          .parseRequest(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreatePeriodicService
           .createPeriodic(requestData)
@@ -241,7 +225,7 @@ class CreatePeriodSummaryControllerSpec
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockCreatePeriodicRequestParser,
+      validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
       appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,

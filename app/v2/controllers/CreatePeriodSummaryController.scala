@@ -16,7 +16,7 @@
 
 package v2.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -24,8 +24,7 @@ import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v2.controllers.requestParsers.CreatePeriodSummaryRequestParser
-import v2.models.request.createPeriodSummary.CreatePeriodSummaryRawData
+import v2.controllers.validators.CreatePeriodSummaryValidatorFactory
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v2.services.CreatePeriodSummaryService
 
@@ -35,7 +34,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
                                                val lookupService: MtdIdLookupService,
-                                               parser: CreatePeriodSummaryRequestParser,
+                                               validatorFactory: CreatePeriodSummaryValidatorFactory,
                                                service: CreatePeriodSummaryService,
                                                appConfig: AppConfig,
                                                hateoasFactory: HateoasFactory,
@@ -51,15 +50,15 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val includeNegatives = FeatureSwitches(appConfig.featureSwitches).isAllowNegativeExpensesEnabled
-      val rawData          = CreatePeriodSummaryRawData(nino, businessId, request.body, includeNegatives)
+      val validator        = validatorFactory.validator(nino, businessId, request.body, includeNegatives)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.createPeriodSummary)
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, response) =>
           CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), response.periodId, Some(parsedRequest.taxYear)))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

@@ -24,10 +24,10 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v2.mocks.requestParsers.MockRetrievePeriodSummaryRequestParser
-import v2.mocks.services.MockRetrievePeriodSummaryService
-import v2.models.request.retrievePeriodSummary.{RetrievePeriodSummaryRawData, RetrievePeriodSummaryRequest}
+import v2.controllers.validators.MockRetrievePeriodSummaryValidatorFactory
+import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary._
+import v2.services.MockRetrievePeriodSummaryService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ class RetrievePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrievePeriodSummaryService
-    with MockRetrievePeriodSummaryRequestParser
+    with MockRetrievePeriodSummaryValidatorFactory
     with MockHateoasFactory {
 
   private val businessId = "XAIS12345678910"
@@ -45,9 +45,7 @@ class RetrievePeriodSummaryControllerSpec
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-        MockRetrievePeriodSummaryRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrievePeriodSummaryService
           .retrieve(requestData)
@@ -62,10 +60,9 @@ class RetrievePeriodSummaryControllerSpec
           maybeExpectedResponseBody = Some(responseJson)
         )
       }
+
       "the TYS request received is valid" in new TysTest {
-        MockRetrievePeriodSummaryRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrievePeriodSummaryService
           .retrieve(requestData)
@@ -84,19 +81,13 @@ class RetrievePeriodSummaryControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-
-        MockRetrievePeriodSummaryRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-
-        MockRetrievePeriodSummaryRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrievePeriodSummaryService
           .retrieve(requestData)
@@ -110,8 +101,7 @@ class RetrievePeriodSummaryControllerSpec
   private trait Test extends ControllerTest {
     val periodId: String = "2019-01-01_2020-01-01"
 
-    val rawData: RetrievePeriodSummaryRawData     = RetrievePeriodSummaryRawData(nino, businessId, periodId, None)
-    val requestData: RetrievePeriodSummaryRequest = RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
+    val requestData: RetrievePeriodSummaryRequestData = RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
 
     val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
       periodDates = PeriodDates("2019-01-01", "2020-01-01"),
@@ -121,17 +111,9 @@ class RetrievePeriodSummaryControllerSpec
     )
 
     val testHateoasLink: Seq[Link] = Seq(
-      Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-        method = PUT,
-        rel = "amend-self-employment-period-summary"
-      ),
-      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
-      Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
-        method = GET,
-        rel = "list-self-employment-period-summaries"
-      )
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "list-self-employment-period-summaries")
     )
 
     val responseJson: JsValue = Json.parse(
@@ -162,10 +144,10 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    private val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockRetrievePeriodSummaryRequestParser,
+      validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
@@ -176,31 +158,24 @@ class RetrievePeriodSummaryControllerSpec
   }
 
   private trait TysTest extends ControllerTest {
-    val periodId: String                      = "2024-01-01_2025-01-01"
-    val rawData: RetrievePeriodSummaryRawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, Some(taxYear))
+    val periodId: String = "2024-01-01_2025-01-01"
 
-    val requestData: RetrievePeriodSummaryRequest =
-      RetrievePeriodSummaryRequest(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
+    val requestData: RetrievePeriodSummaryRequestData =
+      RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)))
 
-    val responseBody: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
-      periodDates = PeriodDates("2024-01-01", "2025-01-01"),
-      periodIncome = None,
-      periodExpenses = None,
-      periodDisallowableExpenses = None
-    )
+    val responseBody: RetrievePeriodSummaryResponse =
+      RetrievePeriodSummaryResponse(PeriodDates("2024-01-01", "2025-01-01"), None, None, None)
 
-    val testHateoasLink: Seq[Link] = Seq(
+    val testHateoasLink: Seq[Link] = List(
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
-        method = PUT,
-        rel = "amend-self-employment-period-summary"
-      ),
-      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+        s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        PUT,
+        "amend-self-employment-period-summary"),
+      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", GET, "self"),
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
-        method = GET,
-        rel = "list-self-employment-period-summaries"
-      )
+        s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        GET,
+        "list-self-employment-period-summaries")
     )
 
     val responseJson: JsValue = Json.parse(
@@ -231,10 +206,10 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    private val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockRetrievePeriodSummaryRequestParser,
+      validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,

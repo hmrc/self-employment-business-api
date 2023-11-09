@@ -17,12 +17,12 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino}
+import api.models.domain.{BusinessId, Nino, PeriodId}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v1.mocks.connectors.MockAmendPeriodSummaryConnector
-import v1.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequest}
+import v1.connectors.MockAmendPeriodSummaryConnector
+import v1.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData}
 
 import scala.concurrent.Future
 
@@ -33,10 +33,10 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   val periodId: String               = "2019-01-25_2020-01-25"
   implicit val correlationId: String = "X-123"
 
-  private val requestData = AmendPeriodSummaryRequest(
+  private val requestData = AmendPeriodSummaryRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    periodId = periodId,
+    periodId = PeriodId(periodId),
     body = AmendPeriodSummaryBody(None, None, None),
     taxYear = None
   )

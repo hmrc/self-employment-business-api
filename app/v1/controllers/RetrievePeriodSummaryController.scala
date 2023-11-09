@@ -22,8 +22,7 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.RetrievePeriodSummaryRequestParser
-import v1.models.request.retrievePeriodSummary.RetrievePeriodSummaryRawData
+import v1.controllers.validators.RetrievePeriodSummaryValidatorFactory
 import v1.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData
 import v1.services.RetrievePeriodSummaryService
 
@@ -33,7 +32,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
                                                  val lookupService: MtdIdLookupService,
-                                                 parser: RetrievePeriodSummaryRequestParser,
+                                                 validatorFactory: RetrievePeriodSummaryValidatorFactory,
                                                  service: RetrievePeriodSummaryService,
                                                  hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
@@ -47,15 +46,15 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = RetrievePeriodSummaryRawData(nino, businessId, periodId, taxYear)
+      val validator = validatorFactory.validator(nino, businessId, periodId, taxYear)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.retrievePeriodSummary)
         .withHateoasResult(hateoasFactory)(
           RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear.map(TaxYear.fromMtd)))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }
