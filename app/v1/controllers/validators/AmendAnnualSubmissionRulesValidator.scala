@@ -18,8 +18,9 @@ package v1.controllers.validators
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNumber, ResolveStringPattern}
-import api.models.errors.{DateFormatError, MtdError, StringFormatError}
+import api.models.errors._
 import cats.data.Validated
+import cats.data.Validated.Invalid
 import cats.implicits._
 import v1.models.request.amendSEAnnual._
 
@@ -35,7 +36,8 @@ object AmendAnnualSubmissionRulesValidator extends RulesValidator[AmendAnnualSub
     import parsed.body._
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
-      allowances.map(validateAllowances).getOrElse(valid),
+      allowances.map(validateBothAllowancesSupplied).getOrElse(valid),
+      allowances.map(validateAllowances).getOrElse(valid)
     ).onSuccess(parsed)
   }
 
@@ -104,12 +106,23 @@ object AmendAnnualSubmissionRulesValidator extends RulesValidator[AmendAnnualSub
       validatedEnhancedStructuredBuildingAllowance)
   }
 
+  private def validateBothAllowancesSupplied(allowances: Allowances): Validated[Seq[MtdError], Unit] = {
+    if (allowances.tradingIncomeAllowance.isDefined) {
+      allowances match {
+        case Allowances(None, None, None, None, None, None, None, None, Some(_), None, None, None, None) => valid
+        case _ => Invalid(List(RuleBothAllowancesSuppliedError))
+      }
+    } else {
+      valid
+    }
+  }
+
   private def validateStructuredBuildingAllowance(structuredBuildingAllowance: StructuredBuildingAllowance,
                                                   index: Int,
                                                   typeOfBuildingAllowance: String): Validated[Seq[MtdError], Unit] = {
     import structuredBuildingAllowance._
 
-    val validatedTypeOfBuildingAllowance = resolveNonNegativeParsedNumber(amount, s"/allowances/$typeOfBuildingAllowance/$index/amount").toUnit
+    val validatedAmount = resolveNonNegativeParsedNumber(amount, s"/allowances/$typeOfBuildingAllowance/$index/amount").toUnit
 
     val validatedQualifyingAmountExpenditure = firstYear
       .map(year =>
@@ -129,14 +142,24 @@ object AmendAnnualSubmissionRulesValidator extends RulesValidator[AmendAnnualSub
 
     val validatedDate = firstYear.map(year => ResolveIsoDate(year.qualifyingDate, DateFormatError).toUnit).getOrElse(valid)
 
+    val validatedBuildingNameNumber = validateBuildingNameNumber(building, s"/allowances/$typeOfBuildingAllowance/$index/building")
+
     combine(
-      validatedTypeOfBuildingAllowance,
+      validatedAmount,
       validatedQualifyingAmountExpenditure,
       validatedOptionalStrings,
       validatedString,
-      validatedDate
+      validatedDate,
+      validatedBuildingNameNumber
     )
 
+  }
+
+  private def validateBuildingNameNumber(building: Building, path: String): Validated[Seq[MtdError], Unit] = {
+    building match {
+      case Building(None, None, _) => Invalid(List(RuleBuildingNameNumberError.withPath(path)))
+      case _                       => valid
+    }
   }
 
 }

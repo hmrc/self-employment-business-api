@@ -19,10 +19,11 @@ package v1.controllers.validators
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
 import api.models.domain.TaxYear
-import api.models.errors.MtdError
+import api.models.domain.ex.MtdNicExemption
+import api.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 import cats.data.Validated
 import cats.implicits._
-import play.api.libs.json.JsValue
+import play.api.libs.json._
 import v1.controllers.validators.AmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 
@@ -40,12 +41,24 @@ class AmendAnnualSubmissionValidatorFactory {
     new Validator[AmendAnnualSubmissionRequestData] {
 
       def validate: Validated[Seq[MtdError], AmendAnnualSubmissionRequestData] =
-        (
-          ResolveNino(nino),
-          ResolveBusinessId(businessId),
-          resolveTaxYear(taxYear),
-          resolveJson(body)
-        ).mapN(AmendAnnualSubmissionRequestData) andThen validateBusinessRules
+        validateClass4ExemptionReasonEnum andThen { _ =>
+          (
+            ResolveNino(nino),
+            ResolveBusinessId(businessId),
+            resolveTaxYear(taxYear),
+            resolveJson(body)
+          ).mapN(AmendAnnualSubmissionRequestData) andThen validateBusinessRules
+        }
+
+      private def validateClass4ExemptionReasonEnum: Validated[Seq[MtdError], Unit] = {
+        val either = (body \ "nonFinancials" \ "class4NicsExemptionReason").validate[String] match {
+          case JsSuccess(class4NicsExemptionReason, _) if MtdNicExemption.parser.isDefinedAt(class4NicsExemptionReason) => Right(())
+          case JsSuccess(_, _) => Left(List(Class4ExemptionReasonFormatError))
+          case _: JsError      => Right(())
+        }
+
+        Validated.fromEither(either)
+      }
 
     }
 
