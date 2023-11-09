@@ -20,7 +20,7 @@ import api.models.domain.ex.MtdNicExemption
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
-import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
+import play.api.libs.json.{JsNumber, JsValue, Json}
 import support.UnitSpec
 import v1.models.request.amendSEAnnual._
 
@@ -433,7 +433,6 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorV
     }
 
     val badNumber = JsNumber(123.123)
-    val badString = JsString("badString")
 
     List(
       "/adjustments/includedNonTaxableProfits",
@@ -470,7 +469,6 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorV
       validRequestBody(allowances = Json.parse(
         """
           |{
-          |  "allowances": {
           |    "structuredBuildingAllowance": [
           |      {
           |        "amount": 1.233,
@@ -480,7 +478,6 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorV
           |        }
           |      }
           |    ]
-          |  }
           |}
           |""".stripMargin
       )),
@@ -491,7 +488,6 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorV
       validRequestBody(allowances = Json.parse(
         """
           |{
-          |  "allowances": {
           |    "enhancedStructuredBuildingAllowance": [
           |      {
           |        "amount": 1.23,
@@ -505,18 +501,16 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorV
           |        }
           |      }
           |    ]
-          |  }
           |}
           |""".stripMargin
       )),
       "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate"
     )
 
-    test(ValueFormatError.withPath("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualiyfingAmountExpenditure"))(
+    test(ValueFormatError.withPath("/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"))(
       validRequestBody(allowances = Json.parse(
         """
           |{
-          |  "allowances": {
           |    "enhancedStructuredBuildingAllowance": [
           |      {
           |        "amount": 1.23,
@@ -530,18 +524,96 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorV
           |        }
           |      }
           |    ]
-          |  }
           |}
           |""".stripMargin
       )),
-      "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualiyfingAmountExpenditure"
+      "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure"
     )
 
-    List(
-      "/allowances/enhancedStructuredBuildingAllowance/0/building/name",
-      "/allowances/enhancedStructuredBuildingAllowance/0/building/number",
-      "/allowances/enhancedStructuredBuildingAllowance/0/building/postcode"
-    ).foreach(path => test(StringFormatError.withPath(path))(validRequestBody().update(path, badString), path))
+    "/allowances/structuredBuildingAllowance/0/building/name is invalid" in {
+      val result: Either[ErrorWrapper, AmendAnnualSubmissionRequestData] =
+        validator(
+          validNino,
+          validBusinessId,
+          validTaxYear,
+          Json.parse(
+            """
+              |{
+              |  "allowances": {
+              |    "structuredBuildingAllowance": [
+              |      {
+              |        "amount": 1.23,
+              |        "building": {
+              |          "name": "Plaza 2#",
+              |          "postcode": "TF3 4NT"
+              |        }
+              |      }
+              |    ]
+              |  }
+              |}
+              |""".stripMargin
+          )
+        ).validateAndWrapResult()
+      result shouldBe Left(
+        ErrorWrapper(correlationId, StringFormatError.withPath("/allowances/structuredBuildingAllowance/0/building/name"))
+      )
+    }
+    "/allowances/structuredBuildingAllowance/0/building/number is invalid" in {
+      val result: Either[ErrorWrapper, AmendAnnualSubmissionRequestData] =
+        validator(
+          validNino,
+          validBusinessId,
+          validTaxYear,
+          Json.parse(
+            """
+              |{
+              |  "allowances": {
+              |    "structuredBuildingAllowance": [
+              |      {
+              |        "amount": 1.23,
+              |        "building": {
+              |          "number": "#2",
+              |          "postcode": "TF3 4NT"
+              |        }
+              |      }
+              |    ]
+              |  }
+              |}
+              |""".stripMargin
+          )
+        ).validateAndWrapResult()
+      result shouldBe Left(
+        ErrorWrapper(correlationId, StringFormatError.withPath("/allowances/structuredBuildingAllowance/0/building/number"))
+      )
+    }
+    "/allowances/structuredBuildingAllowance/0/building/postcode is invalid" in {
+      val result: Either[ErrorWrapper, AmendAnnualSubmissionRequestData] =
+        validator(
+          validNino,
+          validBusinessId,
+          validTaxYear,
+          Json.parse(
+            """
+              |{
+              |  "allowances": {
+              |    "structuredBuildingAllowance": [
+              |      {
+              |        "amount": 1.23,
+              |        "building": {
+              |          "name": "Plaza 2",
+              |          "postcode": "TF3 4NT#"
+              |        }
+              |      }
+              |    ]
+              |  }
+              |}
+              |""".stripMargin
+          )
+        ).validateAndWrapResult()
+      result shouldBe Left(
+        ErrorWrapper(correlationId, StringFormatError.withPath("/allowances/structuredBuildingAllowance/0/building/postcode"))
+      )
+    }
 
     "/nonFinancials/class4NicsExemptionReason is invalid" in {
       val result: Either[ErrorWrapper, AmendAnnualSubmissionRequestData] =
@@ -740,15 +812,15 @@ class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorV
               DateFormatError.withPaths(Seq(
                 "/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate",
                 "/allowances/enhancedStructuredBuildingAllowance/0/firstYear/qualifyingDate")),
-              ValueFormatError
-                .forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99")
-                .withPaths(Seq("/adjustments/basisAdjustment", "/adjustments/averagingAdjustment")),
               StringFormatError.withPaths(Seq(
                 "/allowances/structuredBuildingAllowance/0/building/name",
                 "/allowances/structuredBuildingAllowance/0/building/postcode",
                 "/allowances/enhancedStructuredBuildingAllowance/0/building/number",
                 "/allowances/enhancedStructuredBuildingAllowance/0/building/postcode"
               )),
+              ValueFormatError
+                .forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99")
+                .withPaths(Seq("/adjustments/basisAdjustment", "/adjustments/averagingAdjustment")),
               ValueFormatError.withPaths(Seq(
                 "/adjustments/includedNonTaxableProfits",
                 "/adjustments/overlapReliefUsed",

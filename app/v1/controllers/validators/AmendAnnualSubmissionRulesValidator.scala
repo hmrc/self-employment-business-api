@@ -140,7 +140,10 @@ object AmendAnnualSubmissionRulesValidator extends RulesValidator[AmendAnnualSub
 
     val validatedString = resolveStringPattern(building.postcode, s"/allowances/$typeOfBuildingAllowance/$index/building/postcode").toUnit
 
-    val validatedDate = firstYear.map(year => ResolveIsoDate(year.qualifyingDate, DateFormatError).toUnit).getOrElse(valid)
+    val validatedDate = firstYear
+      .map(year =>
+        ResolveIsoDate(year.qualifyingDate, DateFormatError.withPath(s"/allowances/$typeOfBuildingAllowance/$index/firstYear/qualifyingDate")).toUnit)
+      .getOrElse(valid)
 
     val validatedBuildingNameNumber = validateBuildingNameNumber(building, s"/allowances/$typeOfBuildingAllowance/$index/building")
 
