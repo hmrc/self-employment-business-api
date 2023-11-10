@@ -21,18 +21,10 @@ import routing.Version
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.enums.Enums
 
-case class Parameter(name: String, required: Boolean = false)
-
-object Parameter {
-  implicit val formatParameter: OFormat[Parameter] = Json.format[Parameter]
-}
-
-case class PublishingException(message: String) extends Exception(message)
-
 sealed trait APIStatus
 
 object APIStatus {
-  val parser: PartialFunction[String, APIStatus]  = Enums.parser[APIStatus]
+  val parser: PartialFunction[String, APIStatus] = Enums.parser[APIStatus]
 
   case object ALPHA extends APIStatus
 
