@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
+import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v1.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,9 +32,9 @@ trait MockRetrieveAnnualSubmissionConnector extends MockFactory {
   object MockRetrieveConnector {
 
     def retrieveAnnualSubmission(
-        requestData: RetrieveAnnualSubmissionRequest): CallHandler[Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]]] = {
+        requestData: RetrieveAnnualSubmissionRequestData): CallHandler[Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]]] = {
       (mockRetrieveAnnualSubmissionConnector
-        .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .retrieveAnnualSubmission(_: RetrieveAnnualSubmissionRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

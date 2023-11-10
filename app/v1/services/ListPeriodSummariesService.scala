@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.ListPeriodSummariesConnector
-import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import javax.inject.{Inject, Singleton}
@@ -48,9 +48,9 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
     errors ++ extraTysErrors
   }
 
-  def listPeriodSummaries(request: ListPeriodSummariesRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
+  def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
+                                                                   ctx: RequestContext,
+                                                                   ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
     connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }

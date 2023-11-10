@@ -16,12 +16,11 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.DeleteAnnualSubmissionRequestParser
-import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRawData
+import v1.controllers.validators.DeleteAnnualSubmissionValidatorFactory
 import v1.services.DeleteAnnualSubmissionService
 
 import javax.inject.{Inject, Singleton}
@@ -30,7 +29,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
                                                   val lookupService: MtdIdLookupService,
-                                                  parser: DeleteAnnualSubmissionRequestParser,
+                                                  validatorFactory: DeleteAnnualSubmissionValidatorFactory,
                                                   service: DeleteAnnualSubmissionService,
                                                   cc: ControllerComponents,
                                                   idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -43,14 +42,14 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
+      val validator = validatorFactory.validator(nino, businessId, taxYear)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.deleteAnnualSubmission)
         .withNoContentResult()
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
 
     }
 

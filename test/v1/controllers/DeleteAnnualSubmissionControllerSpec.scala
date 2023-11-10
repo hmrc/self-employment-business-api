@@ -22,8 +22,8 @@ import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockDeleteAnnualSubmissionRequestParser
-import v1.models.request.deleteAnnual.{DeleteAnnualSubmissionRawData, DeleteAnnualSubmissionRequest}
+import v1.controllers.validators.MockDeleteAnnualSubmissionValidatorFactory
+import v1.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 import v1.services.MockDeleteAnnualSubmissionService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,20 +33,16 @@ class DeleteAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockDeleteAnnualSubmissionService
-    with MockDeleteAnnualSubmissionRequestParser {
+    with MockDeleteAnnualSubmissionValidatorFactory {
 
   private val taxYear: String    = "2019-20"
   private val businessId: String = "XAIS12345678910"
-
-  private val rawData     = DeleteAnnualSubmissionRawData(nino, businessId, taxYear)
-  private val requestData = DeleteAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData        = DeleteAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "handleRequest" should {
     "return NoContent" when {
       "the request received is valid" in new Test {
-        MockDeleteAnnualSubmissionRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockDeleteAnnualSubmissionService
           .deleteAnnualSubmission(requestData)
@@ -60,19 +56,13 @@ class DeleteAnnualSubmissionControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-
-        MockDeleteAnnualSubmissionRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-
-        MockDeleteAnnualSubmissionRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockDeleteAnnualSubmissionService
           .deleteAnnualSubmission(requestData)
@@ -88,7 +78,7 @@ class DeleteAnnualSubmissionControllerSpec
     val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockDeleteAnnualSubmissionRequestParser,
+      validatorFactory = mockDeleteAnnualSubmissionValidatorFactory,
       service = mockDeleteAnnualSubmissionService,
       cc = cc,
       idGenerator = mockIdGenerator

@@ -22,7 +22,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.connectors.MockRetrieveAnnualSubmissionConnector
-import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequest
+import v1.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v1.models.response.retrieveAnnual._
 
 import scala.concurrent.Future
@@ -40,7 +40,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
     nonFinancials = Some(NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
-  private val requestData = RetrieveAnnualSubmissionRequest(
+  private val requestData = RetrieveAnnualSubmissionRequestData(
     nino = Nino(nino),
     BusinessId(businessId),
     TaxYear.fromMtd(taxYear)

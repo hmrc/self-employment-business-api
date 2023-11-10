@@ -16,15 +16,14 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
+import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.AmendAnnualSubmissionRequestParser
-import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRawData
+import v1.controllers.validators.AmendAnnualSubmissionValidatorFactory
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory
 import v1.services.AmendAnnualSubmissionService
@@ -35,7 +34,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
                                                  val lookupService: MtdIdLookupService,
-                                                 parser: AmendAnnualSubmissionRequestParser,
+                                                 validatorFactory: AmendAnnualSubmissionValidatorFactory,
                                                  service: AmendAnnualSubmissionService,
                                                  hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
@@ -49,14 +48,14 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = AmendAnnualSubmissionRawData(nino, businessId, taxYear, request.body)
+      val validator = validatorFactory.validator(nino, businessId, taxYear, request.body)
 
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.amendAnnualSubmission)
         .withHateoasResult(hateoasFactory)(AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

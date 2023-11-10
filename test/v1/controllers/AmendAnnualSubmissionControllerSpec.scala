@@ -24,7 +24,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockAmendAnnualSubmissionRequestParser
+import v1.controllers.validators.MockAmendAnnualSubmissionValidatorFactory
 import v1.models.request.amendSEAnnual._
 import v1.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v1.services.MockAmendAnnualSubmissionService
@@ -36,7 +36,7 @@ class AmendAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockAmendAnnualSubmissionService
-    with MockAmendAnnualSubmissionRequestParser
+    with MockAmendAnnualSubmissionValidatorFactory
     with MockHateoasFactory
     with AmendAnnualSubmissionFixture {
 
@@ -83,15 +83,12 @@ class AmendAnnualSubmissionControllerSpec
     """.stripMargin
   )
 
-  private val rawData     = AmendAnnualSubmissionRawData(nino, businessId, taxYear, requestJson)
-  private val requestData = AmendAnnualSubmissionRequest(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
+  private val requestData = AmendAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-        MockAmendAnnualSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendAnnualSubmissionService
           .amendAnnualSubmission(requestData)
@@ -110,18 +107,13 @@ class AmendAnnualSubmissionControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-
-        MockAmendAnnualSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockAmendAnnualSummaryRequestParser
-          .requestFor(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockAmendAnnualSubmissionService
           .amendAnnualSubmission(requestData)
@@ -137,7 +129,7 @@ class AmendAnnualSubmissionControllerSpec
     val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockAmendAnnualSummaryRequestParser,
+      validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
       service = mockAmendAnnualSubmissionService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,

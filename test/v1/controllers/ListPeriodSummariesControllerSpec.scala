@@ -24,8 +24,8 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockListPeriodSummariesRequestParser
-import v1.models.request.listPeriodSummaries.{ListPeriodSummariesRawData, ListPeriodSummariesRequest}
+import v1.controllers.validators.MockListPeriodSummariesValidatorFactory
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v1.models.response.listPeriodSummaries._
 import v1.services.MockListPeriodSummariesService
 
@@ -36,7 +36,7 @@ class ListPeriodSummariesControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListPeriodSummariesService
-    with MockListPeriodSummariesRequestParser
+    with MockListPeriodSummariesValidatorFactory
     with MockHateoasFactory {
 
   private val businessId: String = "XAIS12345678910"
@@ -110,9 +110,7 @@ class ListPeriodSummariesControllerSpec
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-        MockListPeriodSummariesRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockListPeriodSummariesService
           .listPeriodSummaries(requestData)
@@ -129,10 +127,7 @@ class ListPeriodSummariesControllerSpec
       }
 
       "the Tys request received is valid" in new TysTest {
-
-        MockListPeriodSummariesRequestParser
-          .parse(rawTysData)
-          .returns(Right(tysRequestData))
+        willUseValidator(returningSuccess(tysRequestData))
 
         MockListPeriodSummariesService
           .listPeriodSummaries(tysRequestData)
@@ -151,19 +146,13 @@ class ListPeriodSummariesControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-
-        MockListPeriodSummariesRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-
-        MockListPeriodSummariesRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockListPeriodSummariesService
           .listPeriodSummaries(requestData)
@@ -176,8 +165,7 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val rawData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, None)
-    val requestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), None)
+    val requestData: ListPeriodSummariesRequestData = ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), None)
 
     val testHateoasLink: Link      = Link(href = "test/href", method = GET, rel = "self")
     val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
@@ -188,7 +176,7 @@ class ListPeriodSummariesControllerSpec
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockListPeriodSummariesRequestParser,
+      validatorFactory = mockListPeriodSummariesValidatorFactory,
       service = mockListPeriodSummariesService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
@@ -200,10 +188,11 @@ class ListPeriodSummariesControllerSpec
 
   private trait TysTest extends ControllerTest {
 
-    val rawTysData: ListPeriodSummariesRawData     = ListPeriodSummariesRawData(nino, businessId, Some(taxYear))
-    val tysRequestData: ListPeriodSummariesRequest = ListPeriodSummariesRequest(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
-    val testTysHateoasLink: Link                   = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
-    val testTysInnerHateoasLink: Link              = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
+    val tysRequestData: ListPeriodSummariesRequestData =
+      ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+
+    val testTysHateoasLink: Link      = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
+    val testTysInnerHateoasLink: Link = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
 
     val tysHateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
       Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
@@ -211,7 +200,7 @@ class ListPeriodSummariesControllerSpec
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockListPeriodSummariesRequestParser,
+      validatorFactory = mockListPeriodSummariesValidatorFactory,
       service = mockListPeriodSummariesService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,

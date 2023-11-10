@@ -19,7 +19,7 @@ package v1.connectors
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequest}
+import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 
 import scala.concurrent.Future
 
@@ -31,7 +31,7 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
   trait Test {
     _: ConnectorTest =>
-    val request: AmendAnnualSubmissionRequest = AmendAnnualSubmissionRequest(
+    val request: AmendAnnualSubmissionRequestData = AmendAnnualSubmissionRequestData(
       nino = Nino(nino),
       businessId = BusinessId(businessId),
       taxYear = taxYear,

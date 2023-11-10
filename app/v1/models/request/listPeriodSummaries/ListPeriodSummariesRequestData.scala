@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendSEAnnual
+package v1.models.request.listPeriodSummaries
 
-import api.models.request.RawData
-import play.api.libs.json.JsValue
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class AmendAnnualSubmissionRawData(nino: String, businessId: String, taxYear: String, body: JsValue) extends RawData
+case class ListPeriodSummariesRequestData(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear])

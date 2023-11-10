@@ -19,7 +19,7 @@ package v1.connectors
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequest
+import v1.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v1.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.Future
@@ -48,8 +48,8 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    protected def request(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): ListPeriodSummariesRequest =
-      ListPeriodSummariesRequest(nino, businessId, taxYear)
+    protected def request(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): ListPeriodSummariesRequestData =
+      ListPeriodSummariesRequestData(nino, businessId, taxYear)
 
   }
 

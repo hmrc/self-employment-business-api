@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendSEAnnual
+package v1.models.request.deleteAnnual
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class AmendAnnualSubmissionRequest(nino: Nino, businessId: BusinessId, taxYear: TaxYear, body: AmendAnnualSubmissionBody)
+case class DeleteAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

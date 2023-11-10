@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.AmendAnnualSubmissionConnector
-import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequest
+import v1.models.request.amendSEAnnual.AmendAnnualSubmissionRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,7 +57,7 @@ class AmendAnnualSubmissionService @Inject() (connector: AmendAnnualSubmissionCo
   }
 
   def amendAnnualSubmission(
-      request: AmendAnnualSubmissionRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+      request: AmendAnnualSubmissionRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.amendAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }

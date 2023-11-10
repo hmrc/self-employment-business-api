@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.listPeriodSummaries
+package v1.models.request.amendSEAnnual
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class ListPeriodSummariesRequest(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear])
+case class AmendAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear, body: AmendAnnualSubmissionBody)

@@ -22,7 +22,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.connectors.MockAmendAnnualSubmissionConnector
-import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnualSubmissionRequest}
+import v1.models.request.amendSEAnnual.{AmendAnnualSubmissionFixture, AmendAnnualSubmissionRequestData}
 
 import scala.concurrent.Future
 
@@ -34,7 +34,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
 
   private val requestBody = amendAnnualSubmissionBody()
 
-  private val requestData = AmendAnnualSubmissionRequest(
+  private val requestData = AmendAnnualSubmissionRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = TaxYear.fromMtd("2023-24"),

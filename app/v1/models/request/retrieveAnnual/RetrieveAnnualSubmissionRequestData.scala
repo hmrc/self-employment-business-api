@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.deleteAnnual
+package v1.models.request.retrieveAnnual
 
-import api.models.request.RawData
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
-case class DeleteAnnualSubmissionRawData(nino: String, businessId: String, taxYear: String) extends RawData
+case class RetrieveAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)
