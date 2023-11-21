@@ -28,28 +28,41 @@ class FeatureSwitchesSpec extends UnitSpec {
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isPassDeleteIntentEnabled shouldBe true
+        featureSwitches.isAllowNegativeExpensesEnabled shouldBe true
         featureSwitches.isCl290Enabled shouldBe true
+        featureSwitches.isRuleSubmissionDateIssueErrorEnabled shouldBe true
       }
 
       "enabled" in {
-        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> true, "allowNegativeExpenses.enabled" -> true, "cl290.enabled" -> true)
+        val configuration = Configuration(
+          "passDeleteIntentHeader.enabled"       -> true,
+          "allowNegativeExpenses.enabled"        -> true,
+          "cl290.enabled"                        -> true,
+          "ruleSubmissionDateIssueError.enabled" -> true)
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isPassDeleteIntentEnabled shouldBe true
         featureSwitches.isAllowNegativeExpensesEnabled shouldBe true
         featureSwitches.isCl290Enabled shouldBe true
+        featureSwitches.isRuleSubmissionDateIssueErrorEnabled shouldBe true
 
       }
     }
 
     "be false" when {
       "disabled" in {
-        val configuration   = Configuration("passDeleteIntentHeader.enabled" -> false, "allowNegativeExpenses.enabled" -> false, "cl290.enabled" -> false)
+        val configuration =
+          Configuration(
+            "passDeleteIntentHeader.enabled"       -> false,
+            "allowNegativeExpenses.enabled"        -> false,
+            "cl290.enabled"                        -> false,
+            "ruleSubmissionDateIssueError.enabled" -> false)
         val featureSwitches = FeatureSwitches(configuration)
 
         featureSwitches.isPassDeleteIntentEnabled shouldBe false
         featureSwitches.isAllowNegativeExpensesEnabled shouldBe false
         featureSwitches.isCl290Enabled shouldBe false
+        featureSwitches.isRuleSubmissionDateIssueErrorEnabled shouldBe false
 
       }
     }
