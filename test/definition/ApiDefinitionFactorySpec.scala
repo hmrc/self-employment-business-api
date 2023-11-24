@@ -42,12 +42,12 @@ class ApiDefinitionFactorySpec extends UnitSpec {
         MockAppConfig.apiStatus(Version2) returns "BETA"
         MockAppConfig.apiStatus(Version3) returns "BETA"
         //v4 disabled by MTDSA-20447
-        //MockAppConfig.apiStatus(Version4) returns "BETA"
+        MockAppConfig.apiStatus(Version4) returns "DISABLED"
         MockAppConfig.endpointsEnabled(Version1).returns(false).anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(Version2).returns(true).anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
         //v4 disabled by MTDSA-20447
-        //MockAppConfig.endpointsEnabled(Version4).returns(true).anyNumberOfTimes()
+        MockAppConfig.endpointsEnabled(Version4).returns(false).anyNumberOfTimes()
 
         MockAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
