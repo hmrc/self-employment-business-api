@@ -48,7 +48,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
         MockAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
         //v4 disabled by MTDSA-20447
         MockAppConfig.endpointsEnabled(Version4).returns(false).anyNumberOfTimes()
-
         MockAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
