@@ -41,17 +41,19 @@ class ApiDefinitionFactorySpec extends UnitSpec {
         MockAppConfig.apiStatus(Version1) returns "ALPHA"
         MockAppConfig.apiStatus(Version2) returns "BETA"
         MockAppConfig.apiStatus(Version3) returns "BETA"
-        MockAppConfig.apiStatus(Version4) returns "BETA"
+        //v4 disabled by MTDSA-20447
+        //MockAppConfig.apiStatus(Version4) returns "BETA"
         MockAppConfig.endpointsEnabled(Version1).returns(false).anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(Version2).returns(true).anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
-        MockAppConfig.endpointsEnabled(Version4).returns(true).anyNumberOfTimes()
+        //v4 disabled by MTDSA-20447
+        //MockAppConfig.endpointsEnabled(Version4).returns(true).anyNumberOfTimes()
 
         MockAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
 
-        private val readScope  = "read:self-assessment"
+        private val readScope = "read:self-assessment"
         private val writeScope = "write:self-assessment"
 
         apiDefinitionFactory.definition shouldBe
@@ -90,12 +92,13 @@ class ApiDefinitionFactorySpec extends UnitSpec {
                   version = Version3,
                   status = BETA,
                   endpointsEnabled = true
-                ),
-                APIVersion(
-                  version = Version4,
-                  status = BETA,
-                  endpointsEnabled = true
                 )
+                //v4 disabled by MTDSA-20447
+                //                APIVersion(
+                //                  version = Version4,
+                //                  status = BETA,
+                //                  endpointsEnabled = true
+                //                )
               ),
               requiresTrust = None
             )

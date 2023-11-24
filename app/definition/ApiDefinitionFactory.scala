@@ -18,15 +18,15 @@ package definition
 
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import config.AppConfig
-import routing.{Version, Version1, Version2, Version3, Version4}
+import routing.{Version, Version1, Version2, Version3}
 import utils.Logging
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
+class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
 
-  private val readScope  = "read:self-assessment"
+  private val readScope = "read:self-assessment"
   private val writeScope = "write:self-assessment"
 
   lazy val confidenceLevel: ConfidenceLevel = {
@@ -71,12 +71,13 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
             version = Version3,
             status = buildAPIStatus(Version3),
             endpointsEnabled = appConfig.endpointsEnabled(Version3)
-          ),
-          APIVersion(
-            version = Version4,
-            status = buildAPIStatus(Version4),
-            endpointsEnabled = appConfig.endpointsEnabled(Version4)
           )
+          //Hidden by MTDSA-20447
+          //          APIVersion(
+          //            version = Version4,
+          //            status = buildAPIStatus(Version4),
+          //            endpointsEnabled = appConfig.endpointsEnabled(Version4)
+          //          )
         ),
         requiresTrust = None
       )
