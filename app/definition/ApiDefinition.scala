@@ -37,6 +37,8 @@ object APIStatus {
   implicit val formatAPIStatus: Format[APIStatus] = Enums.format[APIStatus]
 
   case object RETIRED extends APIStatus
+
+  case object DISABLED extends APIStatus
 }
 
 case class APIVersion(version: Version, status: APIStatus, endpointsEnabled: Boolean)
