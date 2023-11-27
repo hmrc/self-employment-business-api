@@ -134,8 +134,9 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("PERIOD_HAS_GAPS", RuleNotContiguousPeriod),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
           ("INVALID_TAX_YEAR", InternalError),
-          ("BUSINESS_INCOME_PERIOD_RESTRICTION", RuleBusinessIncomePeriodRestriction)
-//          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
+          ("BUSINESS_INCOME_PERIOD_RESTRICTION", RuleBusinessIncomePeriodRestriction),
+          ("SUBMISSION_DATE_ISSUE", RuleMisalignedPeriod)
+          //          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
 //          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
         )
 

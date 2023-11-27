@@ -510,7 +510,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (UNPROCESSABLE_ENTITY, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
         (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (UNPROCESSABLE_ENTITY, "BUSINESS_INCOME_PERIOD_RESTRICTION", BAD_REQUEST, RuleBusinessIncomePeriodRestriction)
+        (UNPROCESSABLE_ENTITY, "BUSINESS_INCOME_PERIOD_RESTRICTION", BAD_REQUEST, RuleBusinessIncomePeriodRestriction),
+        (UNPROCESSABLE_ENTITY, "SUBMISSION_DATE_ISSUE", BAD_REQUEST, RuleMisalignedPeriod)
 //        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_PERIOD", BAD_REQUEST, RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
 //        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
       )
