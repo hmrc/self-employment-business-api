@@ -58,7 +58,8 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "PERIOD_HAS_GAPS"                    -> RuleNotContiguousPeriod,
       "PERIOD_OVERLAP"                     -> RuleOverlappingPeriod,
       "PERIOD_ALIGNMENT"                   -> RuleMisalignedPeriod,
-      "BUSINESS_INCOME_PERIOD_RESTRICTION" -> RuleBusinessIncomePeriodRestriction
+      "BUSINESS_INCOME_PERIOD_RESTRICTION" -> RuleBusinessIncomePeriodRestriction,
+      "SUBMISSION_DATE_ISSUE"              -> RuleMisalignedPeriod
 //      "INVALID_SUBMISSION_PERIOD"   -> RuleInvalidSubmissionPeriodError, // To be reinstated, see MTDSA-15595
 //      "INVALID_SUBMISSION_END_DATE" -> RuleInvalidSubmissionEndDateError // To be reinstated, see MTDSA-15595
     )
@@ -67,8 +68,8 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
   }
 
   def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
-                                                                   ctx: RequestContext,
-                                                                   ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
 
     def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
       import request.body.periodDates._
