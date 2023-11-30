@@ -28,150 +28,7 @@ import support.IntegrationBaseSpec
 
 class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
-  private trait Test {
-
-    val nino: String       = "AA123456A"
-    val businessId: String = "XAIS12345678910"
-    val periodId: String   = s"${periodStartDate}_$periodEndDate"
-
-    def periodStartDate: String
-    def periodEndDate: String
-    def amendPeriodSummaryHateoasUri: String
-    def retrievePeriodSummaryHateoasUri: String
-    def listPeriodSummariesHateoasUri: String
-
-    def uri: String = s"/$nino/$businessId/period"
-    def downstreamUri: String
-
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.3.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
-    val requestBodyJson: JsValue = Json.parse(
-      s"""
-         |{
-         |     "periodDates": {
-         |           "periodStartDate": "$periodStartDate",
-         |           "periodEndDate": "$periodEndDate"
-         |     },
-         |     "periodIncome": {
-         |          "turnover": 1000.99,
-         |          "other": 2000.99,
-         |          "taxTakenOffTradingIncome": 3000.99
-         |     },
-         |     "periodExpenses": {
-         |          "costOfGoods": 1000.99,
-         |          "paymentsToSubcontractors": 1000.99,
-         |          "wagesAndStaffCosts": 1000.99,
-         |          "carVanTravelExpenses": 1000.99,
-         |          "premisesRunningCosts": -99999.99,
-         |          "maintenanceCosts": -1000.99,
-         |          "adminCosts": 1000.99,
-         |          "businessEntertainmentCosts": 1000.99,
-         |          "advertisingCosts": 1000.99,
-         |          "interestOnBankOtherLoans": -1000.99,
-         |          "financeCharges": -1000.99,
-         |          "irrecoverableDebts": -1000.99,
-         |          "professionalFees": -99999999999.99,
-         |          "depreciation": -1000.99,
-         |          "otherExpenses": 1000.99
-         |      },
-         |     "periodDisallowableExpenses": {
-         |          "costOfGoodsDisallowable": 1000.99,
-         |          "paymentsToSubcontractorsDisallowable": 1000.99,
-         |          "wagesAndStaffCostsDisallowable": 1000.99,
-         |          "carVanTravelExpensesDisallowable": 1000.99,
-         |          "premisesRunningCostsDisallowable": -1000.99,
-         |          "maintenanceCostsDisallowable": -999.99,
-         |          "adminCostsDisallowable": 1000.99,
-         |          "businessEntertainmentCostsDisallowable": 1000.99,
-         |          "advertisingCostsDisallowable": 1000.99,
-         |          "interestOnBankOtherLoansDisallowable": -1000.99,
-         |          "financeChargesDisallowable": -9999.99,
-         |          "irrecoverableDebtsDisallowable": -1000.99,
-         |          "professionalFeesDisallowable": 10000.89,
-         |          "depreciationDisallowable": -99999999999.99,
-         |          "otherExpensesDisallowable": 1000.99
-         |      }
-         |}
-         |""".stripMargin
-    )
-
-    val responseBody: JsValue = Json.parse(
-      s"""
-         |{
-         |   "periodId":"$periodId",
-         |   "links":[
-         |      {
-         |         "href":"$amendPeriodSummaryHateoasUri",
-         |         "method":"PUT",
-         |         "rel":"amend-self-employment-period-summary"
-         |      },
-         |      {
-         |         "href":"$retrievePeriodSummaryHateoasUri",
-         |         "method":"GET",
-         |         "rel":"self"
-         |      },
-         |      {
-         |         "href":"$listPeriodSummariesHateoasUri",
-         |         "method":"GET",
-         |         "rel":"list-self-employment-period-summaries"
-         |      }
-         |   ]
-         |}
-         |""".stripMargin
-    )
-
-    val downstreamResponse: JsValue = Json.parse(
-      s"""
-         |{
-         |  "transactionReference": "2017090920170909"
-         |}
-         |""".stripMargin
-    )
-
-    def errorBody(code: String): String =
-      s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "message"
-         |      }
-    """.stripMargin
-
-  }
-
-  private trait NonTysTest extends Test {
-    override def downstreamUri: String   = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-    override def periodStartDate: String = "2019-07-24"
-    override def periodEndDate: String   = "2019-08-24"
-
-    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
-  }
-
-  private trait TysIfsTest extends Test {
-    def mtdTaxYear: String               = "2023-24"
-    def downstreamTaxYear: String        = "23-24"
-    override def downstreamUri: String   = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
-    override def periodStartDate: String = "2023-07-24"
-    override def periodEndDate: String   = "2023-08-24"
-
-    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
-
-  }
-
   "Calling the V3 create endpoint" should {
-
     "return a 200 status code" when {
       "any valid request is made" in new NonTysTest {
 
@@ -484,7 +341,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         }
       }
 
-      val errors = Seq(
+      val errors = List(
         (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
         (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
@@ -498,7 +355,8 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
-      val extraTysErrors = Seq(
+
+      val extraTysErrors = List(
         (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAX_YEAR", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
@@ -512,12 +370,161 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
         (UNPROCESSABLE_ENTITY, "BUSINESS_INCOME_PERIOD_RESTRICTION", BAD_REQUEST, RuleBusinessIncomePeriodRestriction),
         (UNPROCESSABLE_ENTITY, "SUBMISSION_DATE_ISSUE", BAD_REQUEST, RuleMisalignedPeriod)
-//        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_PERIOD", BAD_REQUEST, RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
-//        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+      val wis008Errors = List(
+        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_PERIOD", BAD_REQUEST, RuleInvalidSubmissionPeriodError),
+        (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleInvalidSubmissionEndDateError)
+      )
+
+      (errors ++ extraTysErrors ++ wis008Errors).foreach((serviceErrorTest _).tupled)
     }
+  }
+
+  private trait Test {
+
+    val nino: String       = "AA123456A"
+    val businessId: String = "XAIS12345678910"
+    val periodId: String   = s"${periodStartDate}_$periodEndDate"
+
+    def periodStartDate: String
+    def periodEndDate: String
+
+    def amendPeriodSummaryHateoasUri: String
+    def retrievePeriodSummaryHateoasUri: String
+    def listPeriodSummariesHateoasUri: String
+
+    def uri: String = s"/$nino/$businessId/period"
+
+    def downstreamUri: String
+    def setupStubs(): StubMapping
+
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.3.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+    val requestBodyJson: JsValue = Json.parse(
+      s"""
+         |{
+         |     "periodDates": {
+         |           "periodStartDate": "$periodStartDate",
+         |           "periodEndDate": "$periodEndDate"
+         |     },
+         |     "periodIncome": {
+         |          "turnover": 1000.99,
+         |          "other": 2000.99,
+         |          "taxTakenOffTradingIncome": 3000.99
+         |     },
+         |     "periodExpenses": {
+         |          "costOfGoods": 1000.99,
+         |          "paymentsToSubcontractors": 1000.99,
+         |          "wagesAndStaffCosts": 1000.99,
+         |          "carVanTravelExpenses": 1000.99,
+         |          "premisesRunningCosts": -99999.99,
+         |          "maintenanceCosts": -1000.99,
+         |          "adminCosts": 1000.99,
+         |          "businessEntertainmentCosts": 1000.99,
+         |          "advertisingCosts": 1000.99,
+         |          "interestOnBankOtherLoans": -1000.99,
+         |          "financeCharges": -1000.99,
+         |          "irrecoverableDebts": -1000.99,
+         |          "professionalFees": -99999999999.99,
+         |          "depreciation": -1000.99,
+         |          "otherExpenses": 1000.99
+         |      },
+         |     "periodDisallowableExpenses": {
+         |          "costOfGoodsDisallowable": 1000.99,
+         |          "paymentsToSubcontractorsDisallowable": 1000.99,
+         |          "wagesAndStaffCostsDisallowable": 1000.99,
+         |          "carVanTravelExpensesDisallowable": 1000.99,
+         |          "premisesRunningCostsDisallowable": -1000.99,
+         |          "maintenanceCostsDisallowable": -999.99,
+         |          "adminCostsDisallowable": 1000.99,
+         |          "businessEntertainmentCostsDisallowable": 1000.99,
+         |          "advertisingCostsDisallowable": 1000.99,
+         |          "interestOnBankOtherLoansDisallowable": -1000.99,
+         |          "financeChargesDisallowable": -9999.99,
+         |          "irrecoverableDebtsDisallowable": -1000.99,
+         |          "professionalFeesDisallowable": 10000.89,
+         |          "depreciationDisallowable": -99999999999.99,
+         |          "otherExpensesDisallowable": 1000.99
+         |      }
+         |}
+         |""".stripMargin
+    )
+
+    val responseBody: JsValue = Json.parse(
+      s"""
+         |{
+         |   "periodId":"$periodId",
+         |   "links":[
+         |      {
+         |         "href":"$amendPeriodSummaryHateoasUri",
+         |         "method":"PUT",
+         |         "rel":"amend-self-employment-period-summary"
+         |      },
+         |      {
+         |         "href":"$retrievePeriodSummaryHateoasUri",
+         |         "method":"GET",
+         |         "rel":"self"
+         |      },
+         |      {
+         |         "href":"$listPeriodSummariesHateoasUri",
+         |         "method":"GET",
+         |         "rel":"list-self-employment-period-summaries"
+         |      }
+         |   ]
+         |}
+         |""".stripMargin
+    )
+
+    val downstreamResponse: JsValue = Json.parse(
+      """
+         |{
+         |  "transactionReference": "2017090920170909"
+         |}
+         |""".stripMargin
+    )
+
+    def errorBody(code: String): String =
+      s"""
+         |      {
+         |        "code": "$code",
+         |        "reason": "message"
+         |      }
+    """.stripMargin
+
+  }
+
+  private trait NonTysTest extends Test {
+    override def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+
+    override def periodStartDate: String = "2019-07-24"
+    override def periodEndDate: String   = "2019-08-24"
+
+    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
+    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
+  }
+
+  private trait TysIfsTest extends Test {
+    def mtdTaxYear: String        = "2023-24"
+    def downstreamTaxYear: String = "23-24"
+
+    override def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+
+    override def periodStartDate: String = "2023-07-24"
+    override def periodEndDate: String   = "2023-08-24"
+
+    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+
   }
 
 }

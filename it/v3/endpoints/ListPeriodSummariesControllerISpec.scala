@@ -30,11 +30,8 @@ import support.IntegrationBaseSpec
 class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   "calling the V3 list period summaries endpoint" should {
-
     "return a 200 status code" when {
-
-      s"any valid request is made" in new NonTysTest {
-
+      "any valid request is made" in new NonTysTest {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
@@ -67,7 +64,6 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
       }
     }
     "return error according to spec" when {
-
       "validation error" when {
         def validationErrorTest(requestNino: String,
                                 requestBusinessId: String,
@@ -92,14 +88,15 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val input = List(
           ("AA123", "XAIS12345678910", "2023-24", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2023-24", BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "2021-2", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )
-        input.foreach(args => validationErrorTest(args._1, args._2, args._3, args._4, args._5))
+
+        input.foreach((validationErrorTest _).tupled)
       }
 
       "downstream service error" when {
@@ -119,7 +116,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           }
         }
 
-        val input = Seq(
+        val input = List(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_INCOME_SOURCEID", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
@@ -131,7 +128,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        input.foreach(args => serviceErrorTest(args._1, args._2, args._3, args._4))
+        input.foreach((serviceErrorTest _).tupled)
       }
     }
   }
@@ -206,10 +203,9 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait NonTysTest extends Test {
-    val periodId     = "2019-01-01_2020-01-01"
-    val fromDate     = "2019-01-01"
-    val toDate       = "2020-01-01"
-    val creationDate = "2020-01-03"
+    val periodId = "2019-01-01_2020-01-01"
+    val fromDate = "2019-01-01"
+    val toDate   = "2020-01-01"
 
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
     val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
@@ -229,12 +225,13 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   private trait TysIfsTest extends Test {
 
-    lazy val tysTaxYear                         = TaxYear.fromMtd(mtdTaxYear)
-    val periodId                                = "2024-01-01_2024-01-02"
-    val fromDate                                = "2024-01-01"
-    val toDate                                  = "2024-01-02"
-    val creationDate                            = "2020-01-03"
-    val mtdTaxYear                              = "2023-24"
+    val periodId   = "2024-01-01_2024-01-02"
+    val fromDate   = "2024-01-01"
+    val toDate     = "2024-01-02"
+    val mtdTaxYear = "2023-24"
+
+    private lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
+
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 

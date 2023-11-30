@@ -29,6 +29,15 @@ trait MockFeatureSwitches extends MockFactory {
     def isPassDeleteIntentEnabled: CallHandler[Boolean] =
       (() => mockFeatureSwitches.isPassDeleteIntentEnabled).expects()
 
+    def isAllowNegativeExpensesEnabled: CallHandler[Boolean] =
+      (() => mockFeatureSwitches.isAllowNegativeExpensesEnabled).expects()
+
+    def isCl290Enabled: CallHandler[Boolean] =
+      (() => mockFeatureSwitches.isCl290Enabled).expects()
+
+    def isWIS008Enabled: CallHandler[Boolean] =
+      (() => mockFeatureSwitches.isWIS008Enabled).expects()
+
   }
 
 }

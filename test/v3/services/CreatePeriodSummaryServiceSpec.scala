@@ -20,60 +20,35 @@ import api.controllers.EndpointLogContext
 import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
-import mocks.MockAppConfig
-import play.api.Configuration
+import api.services.{ServiceOutcome, ServiceSpec}
+import mocks.MockFeatureSwitches
 import v3.connectors.MockCreatePeriodSummaryConnector
 import v3.models.request.createPeriodSummary._
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 
-class CreatePeriodSummaryServiceSpec extends ServiceSpec {
+class CreatePeriodSummaryServiceSpec extends ServiceSpec with MockFeatureSwitches {
 
-  private val nino                           = Nino("AA123456A")
-  private val businessId                     = BusinessId("XAIS12345678910")
-  private implicit val correlationId: String = "X-123"
+  implicit private val correlationId: String = "X-123"
 
-  private val periodIncomeWithCl290Enabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val nino       = Nino("AA123456A")
+  private val businessId = BusinessId("XAIS12345678910")
 
-  private val periodIncomeWithCl290Disabled = PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+  private val periodIncomeWithCl290Enabled  = PeriodIncome(Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val periodIncomeWithCl290Disabled = PeriodIncome(Some(2000.00), None, taxTakenOffTradingIncome = None)
 
   private val parsedRequestBody = CreatePeriodSummaryRequestBody(PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
 
-  private val requestDataWithCl290Enabled = CreatePeriodSummaryRequestData(
-    nino = nino,
-    businessId = businessId,
-    body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Enabled))
-  )
+  private val requestDataWithCl290Enabled =
+    CreatePeriodSummaryRequestData(nino, businessId, parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Enabled)))
 
-  private val requestDataWithCl290Disabled = CreatePeriodSummaryRequestData(
-    nino = nino,
-    businessId = businessId,
-    body = parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Disabled))
-  )
-
-  trait Test extends MockCreatePeriodSummaryConnector with MockAppConfig {
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-
-    val service = new CreatePeriodSummaryService(
-      connector = mockCreatePeriodicConnector,
-      appConfig = mockAppConfig
-    )
-
-  }
-
-  trait Cl290Enabled extends Test {
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
-  }
-
-  trait Cl290Disabled extends Test {
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
-  }
+  private val requestDataWithCl290Disabled =
+    CreatePeriodSummaryRequestData(nino, businessId, parsedRequestBody.copy(periodIncome = Some(periodIncomeWithCl290Disabled)))
 
   "CreatePeriodSummaryServiceSpec" should {
     "return a valid response" when {
-      "a valid request is supplied with cl290 feature switch enabled" in new Cl290Enabled {
+      "a valid request is supplied with cl290 feature switch enabled" in new Test with Cl290Enabled with WIS008Enabled {
         val connectorOutcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] =
           Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
@@ -82,10 +57,11 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           .createPeriodicSummary(requestDataWithCl290Enabled)
           .returns(Future.successful(connectorOutcome))
 
-        await(service.createPeriodSummary(requestDataWithCl290Enabled)) shouldBe outcome
+        val result: ServiceOutcome[CreatePeriodSummaryResponse] = await(service.createPeriodSummary(requestDataWithCl290Enabled))
+        result shouldBe outcome
       }
 
-      "a valid request is supplied with cl290 feature switch disabled" in new Cl290Disabled {
+      "a valid request is supplied with cl290 feature switch disabled" in new Test with Cl290Disabled with WIS008Enabled {
         val connectorOutcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] =
           Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse("2019-08-24_2019-08-24")))
@@ -94,21 +70,24 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           .createPeriodicSummary(requestDataWithCl290Disabled)
           .returns(Future.successful(connectorOutcome))
 
-        await(service.createPeriodSummary(requestDataWithCl290Disabled)) shouldBe outcome
+        val result: ServiceOutcome[CreatePeriodSummaryResponse] = await(service.createPeriodSummary(requestDataWithCl290Disabled))
+        result shouldBe outcome
       }
 
       "map errors according to spec" when {
-        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-          s"a $downstreamErrorCode error is returned from the service" in new Cl290Disabled {
+        def serviceError(wis008Enabled: Boolean)(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a $downstreamErrorCode error is returned from the service and WIS008 is $wis008Enabled" in new Test with Cl290Disabled {
+            withWIS008Enabled(wis008Enabled)
 
             MockCreatePeriodicConnector
               .createPeriodicSummary(requestDataWithCl290Disabled)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-            await(service.createPeriodSummary(requestDataWithCl290Disabled)) shouldBe Left(ErrorWrapper(correlationId, error))
+            val result: ServiceOutcome[CreatePeriodSummaryResponse] = await(service.createPeriodSummary(requestDataWithCl290Disabled))
+            result shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val errors = Seq(
+        val errors = List(
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_INCOME_SOURCE", BusinessIdFormatError),
           ("INVALID_PAYLOAD", InternalError),
@@ -123,7 +102,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
-        val extraTysErrors = Seq(
+        val extraTysErrors = List(
           ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError),
           ("INVALID_CORRELATIONID", InternalError),
           ("INVALID_INCOME_SOURCE_ID", BusinessIdFormatError),
@@ -136,13 +115,43 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("INVALID_TAX_YEAR", InternalError),
           ("BUSINESS_INCOME_PERIOD_RESTRICTION", RuleBusinessIncomePeriodRestriction),
           ("SUBMISSION_DATE_ISSUE", RuleMisalignedPeriod)
-          //          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
-//          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+        val wis008Errors = List(
+          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError),
+          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError)
+        )
+
+        (errors ++ extraTysErrors ++ wis008Errors).foreach((serviceError(wis008Enabled = true) _).tupled)
+
+        List(
+          "INVALID_SUBMISSION_PERIOD",
+          "INVALID_SUBMISSION_END_DATE"
+        ).foreach(serviceError(wis008Enabled = false)(_, InternalError))
       }
     }
+  }
+
+  private trait Test extends MockCreatePeriodSummaryConnector {
+    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
+
+    val service = new CreatePeriodSummaryService(mockCreatePeriodicConnector)
+  }
+
+  private trait Cl290Enabled {
+    MockFeatureSwitches.isCl290Enabled.returns(true)
+  }
+
+  private trait Cl290Disabled {
+    MockFeatureSwitches.isCl290Enabled.returns(false)
+  }
+
+  private def withWIS008Enabled(enabled: Boolean): Unit = {
+    MockFeatureSwitches.isWIS008Enabled.returns(enabled)
+  }
+
+  private trait WIS008Enabled {
+    withWIS008Enabled(true)
   }
 
 }

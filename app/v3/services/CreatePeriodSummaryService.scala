@@ -21,18 +21,35 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import config.{AppConfig, FeatureSwitches}
+import config.FeatureSwitches
 import v3.connectors.CreatePeriodSummaryConnector
-import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequestData
+import v3.models.request.createPeriodSummary.{CreatePeriodSummaryRequestData, PeriodDates}
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector, appConfig: AppConfig) extends BaseService {
+class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnector)(implicit featureSwitches: FeatureSwitches) extends BaseService {
 
-  private val downstreamErrorMap: Map[String, MtdError] = {
+  def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] =
+    connector
+      .createPeriodSummary(updateRequestCl290(request))
+      .map(
+        _.map(createSummaryResponse(request.body.periodDates))
+          .leftMap(mapDownstreamErrors(downstreamErrorMap(featureSwitches.isWIS008Enabled))))
+
+  private def createSummaryResponse(periodDates: PeriodDates)(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
+    import periodDates._
+    wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
+  }
+
+  private def updateRequestCl290(request: CreatePeriodSummaryRequestData): CreatePeriodSummaryRequestData =
+    if (featureSwitches.isCl290Enabled) request else request.withoutTaxTakenOffTradingIncome
+
+  private val downstreamErrorMap = { wis008Enabled: Boolean =>
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
       "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
@@ -47,6 +64,7 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "SERVER_ERROR"                    -> InternalError,
       "SERVICE_UNAVAILABLE"             -> InternalError
     )
+
     val extraTysErrors = Map(
       "INVALID_TAX_YEAR"                   -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED"             -> RuleTaxYearNotSupportedError,
@@ -60,28 +78,17 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "PERIOD_ALIGNMENT"                   -> RuleMisalignedPeriod,
       "BUSINESS_INCOME_PERIOD_RESTRICTION" -> RuleBusinessIncomePeriodRestriction,
       "SUBMISSION_DATE_ISSUE"              -> RuleMisalignedPeriod
-//      "INVALID_SUBMISSION_PERIOD"   -> RuleInvalidSubmissionPeriodError, // To be reinstated, see MTDSA-15595
-//      "INVALID_SUBMISSION_END_DATE" -> RuleInvalidSubmissionEndDateError // To be reinstated, see MTDSA-15595
     )
 
-    errors ++ extraTysErrors
+    val wis008Errors = Map(
+      "INVALID_SUBMISSION_PERIOD"   -> RuleInvalidSubmissionPeriodError,
+      "INVALID_SUBMISSION_END_DATE" -> RuleInvalidSubmissionEndDateError
+    )
+
+    if (wis008Enabled)
+      errors ++ extraTysErrors ++ wis008Errors
+    else
+      errors ++ extraTysErrors
   }
-
-  def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
-
-    def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
-      import request.body.periodDates._
-      wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
-    }
-
-    connector
-      .createPeriodSummary(updateRequestCl290(request))
-      .map(_.map(createSummaryResponse).leftMap(mapDownstreamErrors(downstreamErrorMap)))
-  }
-
-  private def updateRequestCl290(request: CreatePeriodSummaryRequestData): CreatePeriodSummaryRequestData =
-    if (FeatureSwitches(appConfig.featureSwitches).isCl290Enabled) request else request.withoutTaxTakenOffTradingIncome
 
 }
