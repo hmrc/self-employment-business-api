@@ -26,7 +26,6 @@ class VersionRoutingMapSpec extends UnitSpec with GuiceOneAppPerSuite {
   val v1Routes: v1.Routes   = app.injector.instanceOf[v1.Routes]
   val v2Routes: v2.Routes   = app.injector.instanceOf[v2.Routes]
   val v3Routes: v3.Routes   = app.injector.instanceOf[v3.Routes]
-  val v4Routes: v4.Routes   = app.injector.instanceOf[v4.Routes]
 
   "map" when {
     "routing to v1" should {
@@ -36,8 +35,7 @@ class VersionRoutingMapSpec extends UnitSpec with GuiceOneAppPerSuite {
           defaultRouter = defaultRouter,
           v1Router = v1Routes,
           v2Router = v2Routes,
-          v3Router = v3Routes,
-          v4Router = v4Routes
+          v3Router = v3Routes
         )
 
         versionRoutingMap.map(Version1) shouldBe v1Routes
@@ -49,8 +47,7 @@ class VersionRoutingMapSpec extends UnitSpec with GuiceOneAppPerSuite {
           defaultRouter = defaultRouter,
           v1Router = v1Routes,
           v2Router = v2Routes,
-          v3Router = v3Routes,
-          v4Router = v4Routes
+          v3Router = v3Routes
         )
 
         versionRoutingMap.map(Version2) shouldBe v2Routes
@@ -62,25 +59,12 @@ class VersionRoutingMapSpec extends UnitSpec with GuiceOneAppPerSuite {
           defaultRouter = defaultRouter,
           v1Router = v1Routes,
           v2Router = v2Routes,
-          v3Router = v3Routes,
-          v4Router = v4Routes
+          v3Router = v3Routes
         )
 
         versionRoutingMap.map(Version3) shouldBe v3Routes
       }
 
-      s"route to ${v4Routes.toString}" in {
-
-        val versionRoutingMap: VersionRoutingMapImpl = VersionRoutingMapImpl(
-          defaultRouter = defaultRouter,
-          v1Router = v1Routes,
-          v2Router = v2Routes,
-          v3Router = v3Routes,
-          v4Router = v4Routes
-        )
-
-        versionRoutingMap.map(Version4) shouldBe v4Routes
-      }
     }
   }
 

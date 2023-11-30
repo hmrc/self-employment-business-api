@@ -60,13 +60,9 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     V3Handler
   }
 
-  private val v4Router = Router.from { case GET(p"/v4") =>
-    V4Handler
-  }
-
   private val routingMap = new VersionRoutingMap {
     override val defaultRouter: Router     = test.defaultRouter
-    override val map: Map[Version, Router] = Map(Version1 -> v1Router, Version2 -> v2Router, Version3 -> v3Router, Version4 -> v4Router)
+    override val map: Map[Version, Router] = Map(Version1 -> v1Router, Version2 -> v2Router, Version3 -> v3Router)
   }
 
   class Test(implicit acceptHeader: Option[String]) {
@@ -109,11 +105,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   "Routing requests with v3" should {
     implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.3.0+json")
     handleWithVersionRoutes("/v3", V3Handler, Version3)
-  }
-
-  "Routing requests with v4" should {
-    implicit val acceptHeader: Option[String] = Some("application/vnd.hmrc.4.0+json")
-    handleWithVersionRoutes("/v4", V4Handler, Version4)
   }
 
   "Routing requests to non default router with no version" should {
