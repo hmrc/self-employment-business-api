@@ -27,7 +27,7 @@ import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  private val config = app.injector.instanceOf[AppConfig]
+  private val config          = app.injector.instanceOf[AppConfig]
   private val confidenceLevel = config.confidenceLevelConfig.confidenceLevel
 
   private val apiDefinitionJson = Json.parse(
@@ -85,12 +85,11 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-    //v4 hidden by MTDSA-20447
-    List(Version1, Version2, Version3 /*Version4*/).foreach { version =>
+    List(Version1, Version2, Version3).foreach { version =>
       s"return the documentation for $version" in {
         val response = get(s"/api/conf/${version.name}/application.yaml")
 
-        val body = response.body[String]
+        val body         = response.body[String]
         val parserResult = Try(new OpenAPIV3Parser().readContents(body)).getOrElse(fail("openAPI couldn't read contents"))
 
         val openAPI = Option(parserResult.getOpenAPI).getOrElse(fail("openAPI wasn't defined"))
@@ -103,10 +102,10 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
 
       s"return the documentation with the correct accept header for version $version" in {
         val response = get(s"/api/conf/${version.name}/common/headers.yaml")
-        val body = response.body[String]
+        val body     = response.body[String]
 
         val headerRegex = """(?s).*?application/vnd\.hmrc\.(\d+\.\d+)\+json.*?""".r
-        val header = headerRegex.findFirstMatchIn(body)
+        val header      = headerRegex.findFirstMatchIn(body)
         header.isDefined shouldBe true
 
         val versionFromHeader = header.get.group(1)

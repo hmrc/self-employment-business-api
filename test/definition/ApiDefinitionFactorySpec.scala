@@ -88,12 +88,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
                   status = BETA,
                   endpointsEnabled = true
                 )
-                // v4 disabled by MTDSA-20447
-                //                APIVersion(
-                //                  version = Version4,
-                //                  status = BETA,
-                //                  endpointsEnabled = true
-                //                )
               ),
               requiresTrust = None
             )
