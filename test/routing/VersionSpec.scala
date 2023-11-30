@@ -42,10 +42,10 @@ class VersionSpec extends UnitSpec {
 
   "VersionReads" should {
     "successfully read Version4" in {
-      val versionJson: JsValue      = JsString(Version4.name)
+      val versionJson: JsValue      = JsString(Version3.name)
       val result: JsResult[Version] = VersionReads.reads(versionJson)
 
-      result shouldEqual JsSuccess(Version4)
+      result shouldEqual JsSuccess(Version3)
     }
   }
 
