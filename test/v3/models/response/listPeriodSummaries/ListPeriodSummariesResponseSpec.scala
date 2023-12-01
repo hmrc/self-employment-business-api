@@ -30,14 +30,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
-        periodEndDate = "2020-01-01"
-        //        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
+        periodEndDate = "2020-01-01",
+        periodCreationDate = Some("2023-02-31T11:08:17.488Z")
       ),
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
-        periodEndDate = "2020-01-01"
-        //        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
+        periodEndDate = "2020-01-01",
+        periodCreationDate = Some("2023-02-31T11:08:17.488Z")
       )
     )
   )
@@ -53,13 +53,13 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
             |           "transactionReference": "32131123131",
             |           "from": "2019-01-01",
             |           "to": "2020-01-01",
-            |           "periodCreationDate": "2020-01-02"
+            |           "periodCreationDate": "2023-02-31T11:08:17.488Z"
             |      },
             |      {
             |           "transactionReference": "3123123123121",
             |           "from": "2019-01-01",
             |           "to": "2020-01-01",
-            |           "periodCreationDate": "2020-01-02"
+            |           "periodCreationDate": "2023-02-31T11:08:17.488Z"
             |      }
             |   ]
             |}
@@ -78,12 +78,14 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
           |     {
           |         "periodId": "2019-01-01_2020-01-01",
           |         "periodStartDate": "2019-01-01",
-          |         "periodEndDate": "2020-01-01"
+          |         "periodEndDate": "2020-01-01",
+          |         "periodCreationDate": "2023-02-31T11:08:17.488Z"
           |     },
           |     {
           |         "periodId": "2019-01-01_2020-01-01",
           |         "periodStartDate": "2019-01-01",
-          |         "periodEndDate": "2020-01-01"
+          |         "periodEndDate": "2020-01-01",
+          |         "periodCreationDate": "2023-02-31T11:08:17.488Z"
           |     }
           |   ]
           |}
@@ -112,12 +114,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       "return the correct item-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
-        val periodDetails = PeriodDetails(
-          periodId,
-          "",
-          ""
-          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
-        )
+        val periodDetails = PeriodDetails(periodId, "", "", Some("2023-02-31T11:08:17.488Z"))
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, periodDetails) shouldBe List(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
@@ -138,12 +135,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       "return the correct item-level links" in {
         MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
-        val periodDetails = PeriodDetails(
-          periodId,
-          "",
-          ""
-          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
-        )
+        val periodDetails = PeriodDetails(periodId, "", "", Some("2023-02-31T11:08:17.488Z"))
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, periodDetails) shouldBe List(
           Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")

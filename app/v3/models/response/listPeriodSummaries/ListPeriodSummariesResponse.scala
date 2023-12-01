@@ -22,8 +22,6 @@ import cats.Functor
 import config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads, Writes}
 
-import scala.collection.immutable
-
 case class ListPeriodSummariesResponse[I](periods: Seq[I])
 
 object ListPeriodSummariesResponse extends HateoasLinks {
@@ -34,18 +32,16 @@ object ListPeriodSummariesResponse extends HateoasLinks {
 
   implicit object LinksFactory extends HateoasListLinksFactory[ListPeriodSummariesResponse, PeriodDetails, ListPeriodSummariesHateoasData] {
 
-    override def itemLinks(appConfig: AppConfig, data: ListPeriodSummariesHateoasData, item: PeriodDetails): immutable.Seq[Link] =
-      immutable.Seq(
+    override def itemLinks(appConfig: AppConfig, data: ListPeriodSummariesHateoasData, item: PeriodDetails): Seq[Link] =
+      List(
         retrievePeriodSummary(appConfig, data.nino, data.businessId, item.periodId, data.taxYear)
       )
 
-    override def links(appConfig: AppConfig, data: ListPeriodSummariesHateoasData): immutable.Seq[Link] = {
-
-      immutable.Seq(
+    override def links(appConfig: AppConfig, data: ListPeriodSummariesHateoasData): Seq[Link] =
+      List(
         createPeriodSummary(appConfig, data.nino, data.businessId),
         listPeriodSummaries(appConfig, data.nino, data.businessId, data.taxYear, isSelf = true)
       )
-    }
 
   }
 

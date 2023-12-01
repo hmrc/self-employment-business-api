@@ -57,8 +57,6 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "PERIOD_HAS_GAPS"          -> RuleNotContiguousPeriod,
       "PERIOD_OVERLAP"           -> RuleOverlappingPeriod,
       "PERIOD_ALIGNMENT"         -> RuleMisalignedPeriod
-//      "INVALID_SUBMISSION_PERIOD"   -> RuleInvalidSubmissionPeriodError, // To be reinstated, see MTDSA-15595
-//      "INVALID_SUBMISSION_END_DATE" -> RuleInvalidSubmissionEndDateError // To be reinstated, see MTDSA-15595
     )
 
     errors ++ extraTysErrors

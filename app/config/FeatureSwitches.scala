@@ -37,12 +37,12 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
   @Inject
   def this(appConfig: AppConfig) = this(appConfig.featureSwitches)
 
-  val isPassDeleteIntentEnabled: Boolean      = isConfigTrue("passDeleteIntentHeader.enabled")
-  val isAllowNegativeExpensesEnabled: Boolean = isConfigTrue("allowNegativeExpenses.enabled")
-  val isCl290Enabled: Boolean                 = isConfigTrue("cl290.enabled")
-  val isWIS008Enabled: Boolean                 = isConfigTrue("wis008.enabled")
+  val isPassDeleteIntentEnabled: Boolean      = isEnabled("passDeleteIntentHeader")
+  val isAllowNegativeExpensesEnabled: Boolean = isEnabled("allowNegativeExpenses")
+  val isCl290Enabled: Boolean                 = isEnabled("cl290")
+  val isWIS008Enabled: Boolean                = isEnabled("wis008")
 
-  def isEnabled(key: String): Boolean = isConfigTrue(key + ".enabled")
+  def isEnabled(key: String): Boolean                  = isConfigTrue(key + ".enabled")
   def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
 
   private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)

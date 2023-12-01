@@ -48,7 +48,6 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
       }
 
       s"any valid request is made for a TYS specific year" in new TysIfsTest {
-
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()

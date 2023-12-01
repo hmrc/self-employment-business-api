@@ -31,13 +31,11 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
         periodEndDate = "2020-01-01"
-        //        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
       ),
       PeriodDetails(
         periodId = "2019-01-01_2020-01-01",
         periodStartDate = "2019-01-01",
         periodEndDate = "2020-01-01"
-        //        periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
       )
     )
   )
@@ -116,7 +114,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
           periodId,
           "",
           ""
-          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
         )
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, periodDetails) shouldBe Seq(
@@ -142,7 +139,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
           periodId,
           "",
           ""
-          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
         )
 
         ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, periodDetails) shouldBe Seq(

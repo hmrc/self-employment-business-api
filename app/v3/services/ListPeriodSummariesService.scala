@@ -18,8 +18,10 @@ package v3.services
 
 import api.controllers.RequestContext
 import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import config.FeatureSwitches
 import v3.connectors.ListPeriodSummariesConnector
 import v3.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v3.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
@@ -28,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends BaseService {
+class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector)(implicit featureSwitches: FeatureSwitches) extends BaseService {
 
   def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
       ctx: RequestContext,
@@ -36,16 +38,16 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
     connector
       .listPeriodSummaries(request)
       .map(_.leftMap(mapDownstreamErrors(errorMap)))
+      .map(_.map(switchPeriodCreationDate))
 
   private val errorMap = {
-    val errors =
-      Map(
-        "INVALID_NINO"            -> NinoFormatError,
-        "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "SERVER_ERROR"            -> InternalError,
-        "SERVICE_UNAVAILABLE"     -> InternalError
-      )
+    val errors = Map(
+      "INVALID_NINO"            -> NinoFormatError,
+      "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
+      "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
+      "SERVER_ERROR"            -> InternalError,
+      "SERVICE_UNAVAILABLE"     -> InternalError
+    )
 
     val extraTysErrors = Map(
       "INVALID_TAX_YEAR"        -> TaxYearFormatError,
@@ -56,5 +58,14 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
 
     errors ++ extraTysErrors
   }
+
+  private def switchPeriodCreationDate(
+      responseWrapper: ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]): ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]] =
+    if (featureSwitches.isWIS008Enabled) {
+      responseWrapper
+    } else {
+      responseWrapper
+        .map(_.map(_.copy(periodCreationDate = None)))
+    }
 
 }

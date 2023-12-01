@@ -85,10 +85,7 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       "INVALID_SUBMISSION_END_DATE" -> RuleInvalidSubmissionEndDateError
     )
 
-    if (wis008Enabled)
-      errors ++ extraTysErrors ++ wis008Errors
-    else
-      errors ++ extraTysErrors
+    errors ++ extraTysErrors ++ (if (wis008Enabled) wis008Errors else Nil)
   }
 
 }

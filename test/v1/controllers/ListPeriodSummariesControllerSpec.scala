@@ -39,21 +39,15 @@ class ListPeriodSummariesControllerSpec
     with MockListPeriodSummariesValidatorFactory
     with MockHateoasFactory {
 
-  private val businessId: String = "XAIS12345678910"
-  private val from: String       = "2019-01-01"
-  private val to: String         = "2020-01-01"
-//  private val creationDate: String = "2020-01-02" // To be reinstated, see MTDSA-15595
-  private val periodId: String = s"${from}_$to"
-  private val taxYear: String  = "2024-25"
+  private val businessId = "XAIS12345678910"
+  private val from       = "2019-01-01"
+  private val to         = "2020-01-01"
+  private val periodId   = s"${from}_$to"
+  private val taxYear    = "2024-25"
 
-  private val periodDetails: PeriodDetails = PeriodDetails(
-    periodId,
-    from,
-    to
-//    Some(creationDate) // To be reinstated, see MTDSA-15595
-  )
+  private val periodDetails = PeriodDetails(periodId, from, to)
 
-  private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
+  private val response = ListPeriodSummariesResponse(Seq(periodDetails))
 
   private val responseBody = Json.parse(s"""
       |{
@@ -167,13 +161,13 @@ class ListPeriodSummariesControllerSpec
 
     val requestData: ListPeriodSummariesRequestData = ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), None)
 
-    val testHateoasLink: Link      = Link(href = "test/href", method = GET, rel = "self")
-    val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
+    val testHateoasLink: Link              = Link(href = "test/href", method = GET, rel = "self")
+    private val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
     val hateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
-      Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+      List(HateoasWrapper(periodDetails, List(testInnerHateoasLink))))
 
-    val controller = new ListPeriodSummariesController(
+    private val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
@@ -191,13 +185,13 @@ class ListPeriodSummariesControllerSpec
     val tysRequestData: ListPeriodSummariesRequestData =
       ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
 
-    val testTysHateoasLink: Link      = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
-    val testTysInnerHateoasLink: Link = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
+    val testTysHateoasLink: Link        = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
+    private val testTysInnerHateoasLink = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
 
     val tysHateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
-      Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
+      List(HateoasWrapper(periodDetails, List(testTysInnerHateoasLink))))
 
-    val controller = new ListPeriodSummariesController(
+    private val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,

@@ -21,36 +21,37 @@ import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{ServiceOutcome, ServiceSpec}
+import mocks.MockFeatureSwitches
 import v3.connectors.MockListPeriodSummariesConnector
 import v3.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v3.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.Future
 
-class ListPeriodSummariesServiceSpec extends ServiceSpec {
+class ListPeriodSummariesServiceSpec extends ServiceSpec with MockFeatureSwitches {
 
-  private val nino                           = "AA123456A"
-  private val businessId                     = "XAIS12345678910"
-  private val taxYear                        = "2024-25"
   implicit private val correlationId: String = "X-123"
 
-  private val response = ListPeriodSummariesResponse(
-    List(
-      PeriodDetails(
-        "2020-01-01_2020-01-01",
-        "2020-01-01",
-        "2020-01-01"
-//        Some("2020-01-01") // To be reinstated, see MTDSA-15595
-      ))
-  )
+  private val nino       = "AA123456A"
+  private val businessId = "XAIS12345678910"
+  private val taxYear    = "2024-25"
 
-  private val requestData = ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), None)
+  private val periodId           = "2020-01-01_2020-01-01"
+  private val periodStartDate    = "2020-01-01"
+  private val periodEndDate      = "2020-01-01"
+  private val periodCreationDate = "2023-02-31T11:08:17.488Z"
 
-  private val requestDataForTys = ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+  private val periodDetails = PeriodDetails(periodId, periodStartDate, periodEndDate, Some(periodCreationDate))
+
+  private val response                          = ListPeriodSummariesResponse(List(periodDetails))
+  private val responseWithoutPeriodCreationDate = ListPeriodSummariesResponse(List(periodDetails.copy(periodCreationDate = None)))
+
+  private val requestData    = ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), None)
+  private val requestDataTys = ListPeriodSummariesRequestData(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
 
   "service" should {
     "service call successful for default request" when {
-      "return mapped result" in new Test {
+      "return mapped result" in new Test with WIS008Enabled {
         MockedListPeriodSummariesConnector
           .listPeriodSummaries(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
@@ -58,15 +59,24 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
         val result: ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]] = await(service.listPeriodSummaries(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, response))
       }
+
+      "return mapped result without periodCreationDate" in new Test with WIS008Disabled {
+        MockedListPeriodSummariesConnector
+          .listPeriodSummaries(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        val result: ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]] = await(service.listPeriodSummaries(requestData))
+        result shouldBe Right(ResponseWrapper(correlationId, responseWithoutPeriodCreationDate))
+      }
     }
 
     "service call successful for TYS request" when {
-      "return mapped result" in new Test {
+      "return mapped result" in new Test with WIS008Enabled {
         MockedListPeriodSummariesConnector
-          .listPeriodSummaries(requestDataForTys)
+          .listPeriodSummaries(requestDataTys)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        val result: ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]] = await(service.listPeriodSummaries(requestDataForTys))
+        val result: ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]] = await(service.listPeriodSummaries(requestDataTys))
         result shouldBe Right(ResponseWrapper(correlationId, response))
       }
     }
@@ -75,7 +85,7 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
   "unsuccessful" should {
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-        s"a $downstreamErrorCode error is returned from the service" in new Test {
+        s"a $downstreamErrorCode error is returned from the service" in new Test with WIS008Enabled {
 
           MockedListPeriodSummariesConnector
             .listPeriodSummaries(requestData)
@@ -110,6 +120,14 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new ListPeriodSummariesService(mockListPeriodSummariesConnector)
+  }
+
+  private trait WIS008Enabled {
+    MockFeatureSwitches.isWIS008Enabled.returns(true).anyNumberOfTimes()
+  }
+
+  private trait WIS008Disabled {
+    MockFeatureSwitches.isWIS008Enabled.returns(false)
   }
 
 }

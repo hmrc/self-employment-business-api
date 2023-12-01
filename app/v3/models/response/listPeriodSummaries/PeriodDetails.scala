@@ -22,22 +22,22 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 case class PeriodDetails(
     periodId: String,
     periodStartDate: String,
-    periodEndDate: String
-//    periodCreationDate: Option[String] // To be reinstated, see MTDSA-15595
+    periodEndDate: String,
+    periodCreationDate: Option[String]
 )
 
 object PeriodDetails {
 
   implicit val reads: Reads[PeriodDetails] = (
     (JsPath \ "from").read[String] and
-      (JsPath \ "to").read[String]
-//      (JsPath \ "periodCreationDate").readNullable[String] // To be reinstated, see MTDSA-15595
-  )((from, to) =>
+      (JsPath \ "to").read[String] and
+      (JsPath \ "periodCreationDate").readNullable[String]
+  )((from, to, periodCreationDate) =>
     PeriodDetails(
       periodId = s"${from}_$to",
       periodStartDate = from,
-      periodEndDate = to
-//      periodCreationDate = periodCreationDate // To be reinstated, see MTDSA-15595
+      periodEndDate = to,
+      periodCreationDate = periodCreationDate
     ))
 
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]

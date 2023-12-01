@@ -23,7 +23,6 @@ case class PeriodDetails(
     periodId: String,
     periodStartDate: String,
     periodEndDate: String
-//    periodCreationDate: Option[String] // To be reinstated, see MTDSA-15595
 )
 
 object PeriodDetails {
@@ -31,13 +30,11 @@ object PeriodDetails {
   implicit val reads: Reads[PeriodDetails] = (
     (JsPath \ "from").read[String] and
       (JsPath \ "to").read[String]
-//      (JsPath \ "periodCreationDate").readNullable[String] // To be reinstated, see MTDSA-15595
   )((from, to) =>
     PeriodDetails(
       periodId = s"${from}_$to",
       periodStartDate = from,
       periodEndDate = to
-//      periodCreationDate = periodCreationDate // To be reinstated, see MTDSA-15595
     ))
 
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]

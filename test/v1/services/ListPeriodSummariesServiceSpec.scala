@@ -40,7 +40,6 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
         "2020-01-01_2020-01-01",
         "2020-01-01",
         "2020-01-01"
-//        Some("2020-01-01") // To be reinstated, see MTDSA-15595
       ))
   )
 
