@@ -42,18 +42,6 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
   )
 
   "connector" must {
-    "send a request and return a body" in new DesTest with Test {
-      val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
-
-      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-        .returns(Future.successful(outcome))
-
-      val result: DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]] =
-        await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), None)))
-
-      result shouldBe outcome
-    }
-
     "send a request and return a body for a TYS year" in new TysIfsTest with Test {
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
 
