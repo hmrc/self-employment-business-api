@@ -38,16 +38,27 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/amend_period_summary_request.json'
+        oneOf:
+          - $ref: './schemas/pre_TYS/amend_period_summary_request.json'
+          - $ref: './schemas/2023_24/amend_period_summary_request.json'
       examples:
-        example-consolidated-request:
-          description: Amend Period Summary Consolidated Request
-          value:
-            $ref: './examples/amend_period_summary_consolidated_request.json'
-        example-non-consolidated-request:
+        example-non-consolidated-request-2023-24-or-later:
           description: Amend Period Summary Non-Consolidated Request
           value:
-            $ref: './examples/amend_period_summary_non_consolidated_request.json'
+            $ref: './examples/2023_24/amend_period_summary_non_consolidated_request.json'
+        example-consolidated-request-2023-24-or-later:
+          description: Amend Period Summary Consolidated Request
+          value:
+            $ref: './examples/2023_24/amend_period_summary_consolidated_request.json'
+        example-non-consolidated-request-before-TY-2023-24:
+          description: Amend Period Summary Non-Consolidated Request
+          value:
+            $ref: './examples/pre_TYS/amend_period_summary_non_consolidated_request.json'
+        example-consolidated-request-before-TY-2023-24:
+          description: Amend Period Summary Consolidated Request
+          value:
+            $ref: './examples/pre_TYS/amend_period_summary_consolidated_request.json'
+
 
 responses:
   "200":

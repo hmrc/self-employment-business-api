@@ -39,16 +39,29 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/create_period_summary_request.json'
+        oneOf:
+          - $ref: './schemas/pre_TYS/create_period_summary_request.json'
+          - $ref: './schemas/2023_24/create_period_summary_request.json'
       examples:
-        example-without-consolidated-request:
+        example-without-consolidated-request-2023-24-or-later:
+          description: Create Period Summary Non-Consolidated Request
+          value:
+            $ref: './examples/2023_24/create_period_summary_non_consolidated_request.json'
+        example-with-consolidated-request-2023-24-or-later:
           description: Create Period Summary Request
           value:
-            $ref: './examples/create_period_summary_request.json'
-        example-with-consolidated-request:
-          description: Create Period Summary With Consolidated Request
+            $ref: './examples/2023_24/create_period_summary_consolidated_request.json'
+        example-without-consolidated-request-before-TY-2023-24:
+          description: Create Period Summary Non-Consolidated Request
           value:
-            $ref: './examples/create_period_summary_consolidated_request.json'
+            $ref: './examples/pre_TYS/create_period_summary_non_consolidated_request.json'
+        example-with-consolidated-request-before-TY-2023-24:
+          description: Create Period Summary Request
+          value:
+            $ref: './examples/pre_TYS/create_period_summary_consolidated_request.json'
+
+
+
 
 responses:
   "200":
