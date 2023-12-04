@@ -22,8 +22,7 @@ import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
-import play.api.Configuration
+import mocks.MockFeatureSwitches
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.controllers.validators.MockAmendPeriodSummaryValidatorFactory
@@ -40,7 +39,7 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryValidatorFactory
     with MockHateoasFactory
-    with MockAppConfig
+    with MockFeatureSwitches
     with AmendPeriodSummaryFixture {
 
   "handleRequest" should {
@@ -100,7 +99,7 @@ class AmendPeriodSummaryControllerSpec
   }
 
   private trait Test extends ControllerTest {
-    MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+    MockFeatureSwitches.isAllowNegativeExpensesEnabled.returns(false).anyNumberOfTimes()
 
     val businessId: String = "XAIS12345678910"
     val periodId: String
@@ -119,7 +118,7 @@ class AmendPeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendPeriodSummaryValidatorFactory,
       service = mockAmendPeriodSummaryService,
-      appConfig = mockAppConfig,
+      featureSwitches = mockFeatureSwitches,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
