@@ -21,15 +21,15 @@ description: |
   | STATEFUL                                     | Performs a stateful create.                                                                                                                                                        |
 
 tags:
-  - Self-Employment Period Summaries
+  - Self-Employment Period Summaries/2024
 
 parameters:
-  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
-  - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
-  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
-  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
-  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
-  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+  - $ref: '../common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: '../common/pathParameters.yaml#/components/parameters/businessId'
+  - $ref: '../common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: '../common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: '../common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+  - $ref: '../common/headers.yaml#/components/parameters/testScenarioHeader'
 
 security:
   - User-Restricted:
@@ -39,93 +39,93 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/create_period_summary_request.json'
+        $ref: '../schemas/create_period_summary_request.json'
       examples:
         example-without-consolidated-request:
           description: Create Period Summary Request
           value:
-            $ref: './examples/create_period_summary_request.json'
+            $ref: '../examples/create_period_summary_request.json'
         example-with-consolidated-request:
           description: Create Period Summary With Consolidated Request
           value:
-            $ref: './examples/create_period_summary_consolidated_request.json'
+            $ref: '../examples/create_period_summary_consolidated_request.json'
 
 responses:
   "200":
     description: Success
     headers:
       X-CorrelationId:
-        $ref: './common/headers.yaml#/components/parameters/correlationId'
+        $ref: '../common/headers.yaml#/components/parameters/correlationId'
     content:
       application/json:
         schema:
-          $ref: './schemas/create_period_summary_response.json'
+          $ref: '../schemas/create_period_summary_response.json'
         examples:
           example-response:
             description: Create Period Summary Response
             value:
-              $ref: './examples/create_period_summary_response.json'
+              $ref: '../examples/create_period_summary_response.json'
 
   "400":
     description: Bad request
     content:
       application/json:
         schema:
-          $ref: './schemas/error-response.yaml'
+          $ref: '../schemas/error-response.yaml'
         examples:
           FORMAT_NINO:
-            $ref: './common/errors.yaml#/components/examples/formatNino'
+            $ref: '../common/errors.yaml#/components/examples/formatNino'
           FORMAT_VALUE:
-            $ref: './common/errors.yaml#/components/examples/formatValue'
+            $ref: '../common/errors.yaml#/components/examples/formatValue'
           FORMAT_BUSINESS_ID:
-            $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+            $ref: '../common/errors.yaml#/components/examples/formatBusinessId'
           FORMAT_START_DATE:
-            $ref: './common/errors.yaml#/components/examples/formatStartDate'
+            $ref: '../common/errors.yaml#/components/examples/formatStartDate'
           FORMAT_END_DATE:
-            $ref: './common/errors.yaml#/components/examples/formatEndDate'
+            $ref: '../common/errors.yaml#/components/examples/formatEndDate'
           RULE_END_DATE_BEFORE_START_DATE:
-            $ref: './common/errors.yaml#/components/examples/ruleEndDateBeforeStartDate'
+            $ref: '../common/errors.yaml#/components/examples/ruleEndDateBeforeStartDate'
           RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
-            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+            $ref: '../common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
           RULE_TAX_YEAR_NOT_SUPPORTED:
-            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            $ref: '../common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
           RULE_OVERLAPPING_PERIOD:
-            $ref: './common/errors.yaml#/components/examples/ruleOverlappingPeriod'
+            $ref: '../common/errors.yaml#/components/examples/ruleOverlappingPeriod'
           RULE_BOTH_EXPENSES_SUPPLIED:
-            $ref: './common/errors.yaml#/components/examples/ruleBothExpensesSupplied'
+            $ref: '../common/errors.yaml#/components/examples/ruleBothExpensesSupplied'
           RULE_MISALIGNED_PERIOD:
-            $ref: './common/errors.yaml#/components/examples/ruleMisalignedPeriod'
+            $ref: '../common/errors.yaml#/components/examples/ruleMisalignedPeriod'
           RULE_NOT_CONTIGUOUS_PERIOD:
-            $ref: './common/errors.yaml#/components/examples/ruleNotContiguousPeriod'
+            $ref: '../common/errors.yaml#/components/examples/ruleNotContiguousPeriod'
           RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES:
-            $ref: './common/errors.yaml#/components/examples/ruleNotAllowedConsolidatedExpenses'
+            $ref: '../common/errors.yaml#/components/examples/ruleNotAllowedConsolidatedExpenses'
           RULE_DUPLICATE_SUBMISSION:
-            $ref: './common/errors.yaml#/components/examples/ruleDuplicateSubmission'
+            $ref: '../common/errors.yaml#/components/examples/ruleDuplicateSubmission'
           RULE_INVALID_SUBMISSION_PERIOD:
-            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionPeriod'
+            $ref: '../common/errors.yaml#/components/examples/ruleInvalidSubmissionPeriod'
           RULE_INVALID_SUBMISSION_END_DATE:
-            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
+            $ref: '../common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
           RULE_BUSINESS_INCOME_RESTRICTION:
-            $ref: './common/errors.yaml#/components/examples/ruleBusinessIncomePeriodRestriction'
+            $ref: '../common/errors.yaml#/components/examples/ruleBusinessIncomePeriodRestriction'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
-            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+            $ref: '../common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
   "403":
     description: Forbidden
     content:
       application/json:
         schema:
-          $ref: './schemas/error-response.yaml'
+          $ref: '../schemas/error-response.yaml'
         examples:
           CLIENT_OR_AGENT_NOT_AUTHORISED:
-            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+            $ref: '../common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
 
   "404":
     description: Not Found
     content:
       application/json:
         schema:
-          $ref: './schemas/error-response.yaml'
+          $ref: '../schemas/error-response.yaml'
         examples:
           MATCHING_RESOURCE_NOT_FOUND:
-            $ref: './common/errors.yaml#/components/examples/notFoundEmployments'
+            $ref: '../common/errors.yaml#/components/examples/notFoundEmployments'

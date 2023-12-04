@@ -12,4 +12,4 @@ get:
     - User-Restricted:
         - read:self-assessment
   parameters:
-    - $ref: './common/queryParameters.yaml#/components/parameters/taxYear'
+    - $ref: '../common/queryParameters.yaml#/components/parameters/taxYear'
