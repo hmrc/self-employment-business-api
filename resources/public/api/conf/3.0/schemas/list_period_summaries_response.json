@@ -25,6 +25,13 @@
             "type": "string",
             "example": "2020-01-01"
           }
+          {{#if (enabled 'wis008')}},
+          "periodCreationDate": {
+            "description": "{{#unless (releasedInProduction 'wis008')}}[Test only] {{/unless}}The date when the income, and expenses period was created",
+            "type": "string",
+            "example": "2023-07-06T14:15:22.000Z"
+          }
+          {{/if}}
         },
         "required": [
           "periodId",

@@ -52,6 +52,13 @@ object ListPeriodSummariesResponse extends HateoasLinks {
 
   }
 
+  implicit class ListPeriodSummariesResponseOps(response: ListPeriodSummariesResponse[PeriodDetails]) {
+
+    def withoutPeriodCreationDates: ListPeriodSummariesResponse[PeriodDetails] =
+      response.copy(periods = response.periods.map(_.withoutPeriodCreationDates))
+
+  }
+
 }
 
 case class ListPeriodSummariesHateoasData(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]) extends HateoasData

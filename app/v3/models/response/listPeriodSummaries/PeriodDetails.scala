@@ -24,7 +24,9 @@ case class PeriodDetails(
     periodStartDate: String,
     periodEndDate: String,
     periodCreationDate: Option[String]
-)
+) {
+  def withoutPeriodCreationDates: PeriodDetails = copy(periodCreationDate = None)
+}
 
 object PeriodDetails {
 

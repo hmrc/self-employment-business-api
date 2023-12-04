@@ -61,11 +61,6 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
 
   private def switchPeriodCreationDate(
       responseWrapper: ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]): ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]] =
-    if (featureSwitches.isWIS008Enabled) {
-      responseWrapper
-    } else {
-      responseWrapper
-        .map(_.map(_.copy(periodCreationDate = None)))
-    }
+    if (featureSwitches.isWIS008Enabled) responseWrapper else responseWrapper.map(_.withoutPeriodCreationDates)
 
 }

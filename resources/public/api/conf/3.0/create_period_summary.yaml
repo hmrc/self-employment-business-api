@@ -18,7 +18,9 @@ description: |
   | NOT_FOUND                                    | Simulates the scenario where no data is found.                                                                                                                                     |
   | BOTH_EXPENSES_SUPPLIED                       | Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.                                                                                  |
   | BUSINESS_INCOME_PERIOD_RESTRICTION           | Simulates the scenario where the customer has ITSA status 'Annual' or a latent business income source and the submission period is between 6 April to 5 April.                     |
-  | STATEFUL                                     | Performs a stateful create.                                                                                                                                                        |
+  {{#if (enabled 'wis008')}}| INVALID_SUBMISSION_PERIOD | {{#unless (releasedInProduction 'wis008')}}[Test only] {{/unless}}Simulates the scenario where the property income and expenses submissions cannot be more than 10 days before the end of the Period.|
+  | INVALID_SUBMISSION_END_DATE                  | {{#unless (releasedInProduction 'wis008')}}[Test only] {{/unless}}Simulates the scenario where the submitted end date must be the end of the quarter.                               
+  {{/if}}| STATEFUL                              | Performs a stateful create.                                                                                                                                                        |
 
 tags:
   - Self-Employment Period Summaries
@@ -103,10 +105,12 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleDuplicateSubmission'
           RULE_INVALID_SUBMISSION_PERIOD:
             $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionPeriod'
-          RULE_INVALID_SUBMISSION_END_DATE:
+          {{#if (enabled 'wis008')}}
+          "RULE_INVALID_SUBMISSION_END_DATE{{#unless (releasedInProduction 'wis008')}} [Test only]{{/unless}}":
             $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
-          RULE_BUSINESS_INCOME_RESTRICTION:
+          "RULE_BUSINESS_INCOME_RESTRICTION{{#unless (releasedInProduction 'wis008')}} [Test only]{{/unless}}":
             $ref: './common/errors.yaml#/components/examples/ruleBusinessIncomePeriodRestriction'
+          {{/if}}
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
