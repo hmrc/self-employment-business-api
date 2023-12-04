@@ -1,20 +1,20 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Create a Self-Employment Period Summary",
+  "title": "Before TY 2023-24",
   "description": "Create a Self-Employment Period Summary Request",
   "type": "object",
   "properties": {
     "periodDates": {
-      "$ref": "periodSummary/period_dates.json"
+      "$ref": "../periodSummary/period_dates.json"
     },
     "periodIncome": {
-      "$ref": "periodSummary/period_income.json"
+      "$ref": "../periodSummary/pre_TYS/period_income.json"
     },
     "periodExpenses": {
-      "$ref": "periodSummary/period_expenses.json"
+      "$ref": "../periodSummary/pre_TYS/period_expenses.json"
     },
     "periodDisallowableExpenses": {
-      "$ref": "periodSummary/period_disallowable_expenses.json"
+      "$ref": "../periodSummary/pre_TYS/period_disallowable_expenses.json"
     }
   },
   "additionalProperties": false,
