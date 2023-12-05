@@ -100,10 +100,10 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleNotAllowedConsolidatedExpenses'
           RULE_DUPLICATE_SUBMISSION:
             $ref: './common/errors.yaml#/components/examples/ruleDuplicateSubmission'
-          RULE_INVALID_SUBMISSION_PERIOD:
-            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionPeriod'
-          RULE_INVALID_SUBMISSION_END_DATE:
-            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
+#          RULE_INVALID_SUBMISSION_PERIOD:
+#            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionPeriod'
+#          RULE_INVALID_SUBMISSION_END_DATE:
+#            $ref: './common/errors.yaml#/components/examples/ruleInvalidSubmissionEndDate'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
