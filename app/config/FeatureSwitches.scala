@@ -26,7 +26,6 @@ trait FeatureSwitches {
   def isPassDeleteIntentEnabled: Boolean
   def isAllowNegativeExpensesEnabled: Boolean
   def isCl290Enabled: Boolean
-  def isWIS008Enabled: Boolean
   def isEnabled(key: String): Boolean
   def isReleasedInProduction(feature: String): Boolean
 }
@@ -40,9 +39,8 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
   val isPassDeleteIntentEnabled: Boolean      = isConfigTrue("passDeleteIntentHeader.enabled")
   val isAllowNegativeExpensesEnabled: Boolean = isConfigTrue("allowNegativeExpenses.enabled")
   val isCl290Enabled: Boolean                 = isConfigTrue("cl290.enabled")
-  val isWIS008Enabled: Boolean                 = isConfigTrue("wis008.enabled")
 
-  def isEnabled(key: String): Boolean = isConfigTrue(key + ".enabled")
+  def isEnabled(key: String): Boolean                  = isConfigTrue(key + ".enabled")
   def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
 
   private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
