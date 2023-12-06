@@ -16,7 +16,7 @@ components:
       description: |
         The tax year to which the data applies in the format YYYY-YY. The range must not be greater than a single year. For example, 2023-25 is not valid.
         
-        <p style="color:red; font-weight:bold">For tax years 2023-24 and onwards, this is mandatory and a 404 is returned if not provided. It must not be provided for earlier tax years.</p>
+        <p style="color:red; font-weight:bold">For tax years 2023-24 and onwards, this is mandatory and a 404 is returned if not provided. It must not be provided for an earlier tax year.</p>
       schema:
         type: string
         example: 2023-24
