@@ -95,7 +95,7 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           ("AA123", "XAIS12345678910", "2023-24", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2023-24", BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2021-2", BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )

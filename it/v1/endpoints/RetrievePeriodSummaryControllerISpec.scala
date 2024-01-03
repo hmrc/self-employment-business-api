@@ -347,7 +347,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           ("AA123", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-24", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2023-04-01_2024-01-01", "2023-24", BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "2020", "2023-24", BAD_REQUEST, PeriodIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-2", BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )

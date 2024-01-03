@@ -128,7 +128,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           ("Hippo", "XAIS12345678910", "2019-20", Status.BAD_REQUEST, NinoFormatError),
           ("AA123456A", "notABusinessId", "2019-20", Status.BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "203100", Status.BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2016-17", Status.BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "XAIS12345678910", "2018-20", Status.BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
