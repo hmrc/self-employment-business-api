@@ -20,6 +20,16 @@ description: |
   | BUSINESS_INCOME_PERIOD_RESTRICTION           | Simulates the scenario where the customer has ITSA status 'Annual' or a latent business income source and the submission period is between 6 April to 5 April.                     |
   | STATEFUL                                     | Performs a stateful create.                                                                                                                                                        |
 
+  ### Standard quarterly period dates
+  The standard quarterly periods and deadlines in each tax year are given in this table. For more information please visit [the guide](https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax)
+  
+  | Quarterly period       | Quarterly deadline |
+  |------------------------|--------------------|
+  | 6 April to 5 July      | 5 August           |
+  | 6 July to 5 October    | 5 November         |
+  | 6 October to 5 January | 5 February         |
+  | 6 January to 5 April   | 5 May              |
+
 tags:
   - Self-Employment Period Summaries
 
