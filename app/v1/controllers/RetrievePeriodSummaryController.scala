@@ -18,7 +18,6 @@ package v1.controllers
 
 import api.controllers._
 import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
@@ -51,9 +50,8 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.retrievePeriodSummary)
-        .withHateoasResult(hateoasFactory)(
-          RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear.map(TaxYear.fromMtd)))
-
+        .withHateoasResultFrom(hateoasFactory)((parsedRequest, _) =>
+          RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, parsedRequest.taxYear))
       requestHandler.handleRequest()
     }
 
