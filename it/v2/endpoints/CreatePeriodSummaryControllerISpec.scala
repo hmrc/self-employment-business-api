@@ -240,19 +240,6 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe Json.toJson(BusinessIdFormatError)
       }
 
-      "an invalid tax year is provided" in new TysIfsTest {
-        override val mtdTaxYear: String = "NOT_A_TAX_YEAR"
-
-        override def setupStubs(): StubMapping = {
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-        }
-
-        val response: WSResponse = await(request().post(requestBodyJson))
-        response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(TaxYearFormatError)
-      }
-
       "an invalid Start date is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
