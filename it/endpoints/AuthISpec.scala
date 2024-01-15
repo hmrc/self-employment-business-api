@@ -42,6 +42,7 @@ class AuthISpec extends IntegrationBaseSpec {
          |    }
          |}
         """.stripMargin
+
     val desResponseBody: JsValue = Json.parse("""{
         |   "transactionReference": "2017090920170909"
         |}""".stripMargin)
@@ -52,7 +53,7 @@ class AuthISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(s"/$nino/$businessId/annual/$taxYear")
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
