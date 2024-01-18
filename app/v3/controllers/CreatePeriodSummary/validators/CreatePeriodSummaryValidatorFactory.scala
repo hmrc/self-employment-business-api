@@ -19,7 +19,7 @@ package v3.controllers.CreatePeriodSummary.validators
 import api.controllers.validators.Validator
 import api.controllers.validators.common.InvalidResultValidator
 import api.models.domain.TaxYear
-import api.models.errors.{RuleIncorrectOrEmptyBodyError, TaxYearFormatError}
+import api.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
 import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.{JsObject, JsValue}
 import v3.controllers.CreatePeriodSummary.validators.def1.Def1_CreatePeriodSummaryValidator
@@ -37,8 +37,8 @@ class CreatePeriodSummaryValidatorFactory @Inject() (appConfig: AppConfig) {
 
   private val emptyBodyValidator = InvalidResultValidator[CreatePeriodSummaryRequestData](RuleIncorrectOrEmptyBodyError)
 
-  private val invalidTaxYearValidator =
-    InvalidResultValidator[CreatePeriodSummaryRequestData](TaxYearFormatError.withPath("periodDates/periodEndDate"))
+  private val invalidEndDateValidator =
+    InvalidResultValidator[CreatePeriodSummaryRequestData](EndDateFormatError.withPath("periodDates/periodEndDate"))
 
   def validator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean): Validator[CreatePeriodSummaryRequestData] = {
 
@@ -53,7 +53,7 @@ class CreatePeriodSummaryValidatorFactory @Inject() (appConfig: AppConfig) {
           new Def2_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)
 
         case None =>
-          invalidTaxYearValidator
+          invalidEndDateValidator
       }
   }
 
