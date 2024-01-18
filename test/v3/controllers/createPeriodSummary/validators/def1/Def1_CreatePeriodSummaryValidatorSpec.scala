@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers.CreatePeriodSummary.validators.def1
+package v3.controllers.createPeriodSummary.validators.def1
 
 import api.models.domain.{BusinessId, Nino}
 import api.models.errors._

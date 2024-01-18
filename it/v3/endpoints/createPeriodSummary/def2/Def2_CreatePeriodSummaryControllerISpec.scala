@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.endpoints.CreatePeriodSummary.def2
+package v3.endpoints.createPeriodSummary.def2
 
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping

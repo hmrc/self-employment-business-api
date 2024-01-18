@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers.CreatePeriodSummary
+package v3.controllers.createPeriodSummary
 
 import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
@@ -24,7 +24,7 @@ import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v3.controllers.CreatePeriodSummary.validators.CreatePeriodSummaryValidatorFactory
+import v3.controllers.createPeriodSummary.validators.CreatePeriodSummaryValidatorFactory
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
 import v3.services.CreatePeriodSummaryService
 

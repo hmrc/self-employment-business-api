@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers.CreatePeriodSummary
+package v3.controllers.createPeriodSummary
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
@@ -26,8 +26,8 @@ import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v3.controllers.CreatePeriodSummary.validators.MockCreatePeriodSummaryValidatorFactory
-import v3.fixtures.CreatePeriodSummary.def1.Def1_CreatePeriodSummaryFixture
+import v3.controllers.createPeriodSummary.validators.MockCreatePeriodSummaryValidatorFactory
+import v3.fixtures.createPeriodSummary.def1.Def1_CreatePeriodSummaryFixture
 import v3.models.request.createPeriodSummary._
 import v3.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
 import v3.services.MockCreatePeriodSummaryService

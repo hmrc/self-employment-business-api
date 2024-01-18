@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers.CreatePeriodSummary.validators.def1
+package v3.controllers.createPeriodSummary.validators.def2
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers._
@@ -23,18 +23,18 @@ import cats.data.Validated
 import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple3Semigroupal, toFoldableOps}
 import play.api.libs.json.JsValue
-import v3.models.request.createPeriodSummary.def1.Def1_CreatePeriodSummaryRequestBody
-import v3.models.request.createPeriodSummary.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData}
+import v3.models.request.createPeriodSummary.def2.Def2_CreatePeriodSummaryRequestBody
+import v3.models.request.createPeriodSummary.{CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestData}
 
 import scala.annotation.nowarn
 
-class Def1_CreatePeriodSummaryValidator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean)
+class Def2_CreatePeriodSummaryValidator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean)
     extends Validator[CreatePeriodSummaryRequestData] {
 
   @nowarn("cat=lint-byname-implicit")
-  private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreatePeriodSummaryRequestBody]()
+  private val resolveJson = new ResolveNonEmptyJsonObject[Def2_CreatePeriodSummaryRequestBody]()
 
-  private val rulesValidator = Def1_CreatePeriodSummaryRulesValidator(includeNegatives)
+  private val rulesValidator = Def2_CreatePeriodSummaryRulesValidator(includeNegatives)
 
   def validate: Validated[Seq[MtdError], CreatePeriodSummaryRequestData] = {
     validateJsonFields(body) andThen { parsedBody =>
@@ -42,11 +42,11 @@ class Def1_CreatePeriodSummaryValidator(nino: String, businessId: String, body: 
         ResolveNino(nino),
         ResolveBusinessId(businessId),
         Valid(parsedBody)
-      ).mapN(Def1_CreatePeriodSummaryRequestData)
+      ).mapN(Def2_CreatePeriodSummaryRequestData)
     } andThen rulesValidator.validateBusinessRules
   }
 
-  private def validateJsonFields(body: JsValue): Validated[Seq[MtdError], Def1_CreatePeriodSummaryRequestBody] =
+  private def validateJsonFields(body: JsValue): Validated[Seq[MtdError], Def2_CreatePeriodSummaryRequestBody] =
     resolveJson(body) andThen (parsedBody =>
       List(
         ResolveIsoDate(parsedBody.periodDates.periodStartDate, StartDateFormatError),

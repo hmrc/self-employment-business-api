@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers.CreatePeriodSummary.validators.def2
+package v3.controllers.createPeriodSummary.validators.def2
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers.CreatePeriodSummary.validators
+package v3.controllers.createPeriodSummary.validators
 
 import api.controllers.validators.Validator
 import api.controllers.validators.common.InvalidResultValidator
@@ -22,8 +22,8 @@ import api.models.domain.TaxYear
 import api.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
 import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.{JsObject, JsValue}
-import v3.controllers.CreatePeriodSummary.validators.def1.Def1_CreatePeriodSummaryValidator
-import v3.controllers.CreatePeriodSummary.validators.def2.Def2_CreatePeriodSummaryValidator
+import v3.controllers.createPeriodSummary.validators.def1.Def1_CreatePeriodSummaryValidator
+import v3.controllers.createPeriodSummary.validators.def2.Def2_CreatePeriodSummaryValidator
 import v3.models.request.createPeriodSummary.CreatePeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}

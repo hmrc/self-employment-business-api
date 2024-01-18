@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.controllers.CreatePeriodSummary.validators
+package v3.controllers.createPeriodSummary.validators
 
 import api.controllers.validators.Validator
 import api.models.errors.MtdError

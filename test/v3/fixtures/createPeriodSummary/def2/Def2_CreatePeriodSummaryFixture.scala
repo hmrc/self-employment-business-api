@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.fixtures.CreatePeriodSummary.def2
+package v3.fixtures.createPeriodSummary.def2
 
 import play.api.libs.json.{JsValue, Json}
 import v3.models.request.createPeriodSummary.def2._
