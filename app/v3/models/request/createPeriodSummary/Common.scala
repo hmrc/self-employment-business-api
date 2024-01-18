@@ -16,9 +16,16 @@
 
 package v3.models.request.createPeriodSummary
 
-trait CreatePeriodSummaryRequestBody {
-  val periodDates: Create_PeriodDates
-  val periodIncome: Option[Create_PeriodIncome]
-  val periodExpenses: Option[Create_PeriodExpenses]
-  val periodDisallowableExpenses: Option[Create_PeriodDisallowableExpenses]
+trait Create_PeriodDates {
+  val periodStartDate: String
+  val periodEndDate: String
 }
+
+trait Create_PeriodExpenses
+
+trait Create_PeriodIncome {
+  val turnover: Option[BigDecimal]
+  val other: Option[BigDecimal]
+}
+
+trait Create_PeriodDisallowableExpenses

@@ -20,6 +20,8 @@ import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino}
 import api.models.outcomes.ResponseWrapper
 import v3.models.request.createPeriodSummary._
+import v3.models.request.createPeriodSummary.def1.{Def1_CreatePeriodSummaryRequestBody, Def1_Create_PeriodDates}
+import v3.models.request.createPeriodSummary.def2.{Def2_CreatePeriodSummaryRequestBody, Def2_Create_PeriodDates}
 import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
@@ -29,7 +31,12 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
   "CreatePeriodSummaryConnectorSpec" when {
     "createPeriodSummary" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
-        def periodDates: PeriodDates                                              = PeriodDates("2019-08-24", "2019-08-24")
+        def request: CreatePeriodSummaryRequestData = Def1_CreatePeriodSummaryRequestData(
+          nino = Nino(nino),
+          businessId = BusinessId(businessId),
+          body = Def1_CreatePeriodSummaryRequestBody(Def1_Create_PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
+        )
+
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
         val url =
@@ -37,10 +44,16 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
         willPost(url, request.body).returns(Future.successful(outcome))
 
         await(connector.createPeriodSummary(request)) shouldBe outcome
+
       }
 
       "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
-        def periodDates: PeriodDates                                              = PeriodDates("2023-04-05", "2024-04-05")
+        def request: CreatePeriodSummaryRequestData = Def2_CreatePeriodSummaryRequestData(
+          nino = Nino(nino),
+          businessId = BusinessId(businessId),
+          body = Def2_CreatePeriodSummaryRequestBody(Def2_Create_PeriodDates("2023-04-05", "2024-04-05"), None, None, None)
+        )
+
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
         val url =
@@ -64,21 +77,9 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
     val businessId: String = "XAIS12345678910"
     val downstreamTaxYear  = "2023-24"
 
-    def periodDates: PeriodDates
+    def request: CreatePeriodSummaryRequestData
 
     def response: CreatePeriodSummaryResponse = CreatePeriodSummaryResponse("2017090920170909")
-
-    def request: CreatePeriodSummaryRequestData = CreatePeriodSummaryRequestData(
-      nino = Nino(nino),
-      businessId = BusinessId(businessId),
-      body = CreatePeriodSummaryRequestBody(
-        periodDates,
-        None,
-        None,
-        None
-      )
-    )
-
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package v3.models.request.createPeriodSummary
+package v3.models.request.createPeriodSummary.def1
 
-trait CreatePeriodSummaryRequestBody {
-  val periodDates: Create_PeriodDates
-  val periodIncome: Option[Create_PeriodIncome]
-  val periodExpenses: Option[Create_PeriodExpenses]
-  val periodDisallowableExpenses: Option[Create_PeriodDisallowableExpenses]
+import play.api.libs.json.{Json, OWrites, Reads}
+import v3.models.request.createPeriodSummary.Create_PeriodIncome
+
+case class Def1_Create_PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal]) extends Create_PeriodIncome
+
+object Def1_Create_PeriodIncome {
+  implicit val reads: Reads[Def1_Create_PeriodIncome] = Json.reads[Def1_Create_PeriodIncome]
+
+  implicit val writes: OWrites[Def1_Create_PeriodIncome] = Json.writes[Def1_Create_PeriodIncome]
 }

@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package v3.models.request.createPeriodSummary
+package api.controllers.validators.common
 
-trait CreatePeriodSummaryRequestBody {
-  val periodDates: Create_PeriodDates
-  val periodIncome: Option[Create_PeriodIncome]
-  val periodExpenses: Option[Create_PeriodExpenses]
-  val periodDisallowableExpenses: Option[Create_PeriodDisallowableExpenses]
+import api.controllers.validators.Validator
+import api.models.errors.{MtdError, TaxYearFormatError}
+import cats.data.Validated
+import cats.data.Validated.Invalid
+
+/** For ValidatorFactories that need to choose a validator for a schema definition, based on the tax year in the request.
+  */
+case class InvalidResultValidator[T](error: MtdError = TaxYearFormatError) extends Validator[T] {
+
+  def validate: Validated[Seq[MtdError], T] =
+    Invalid(List(error))
+
 }

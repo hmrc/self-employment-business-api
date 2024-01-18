@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,30 @@
 package v3.models.request.createPeriodSummary
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
+import play.api.libs.json.JsValue
+import v3.models.request.createPeriodSummary.def1.Def1_CreatePeriodSummaryRequestBody
+import v3.models.request.createPeriodSummary.def2.Def2_CreatePeriodSummaryRequestBody
 
-case class CreatePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, body: CreatePeriodSummaryRequestBody) {
+sealed trait CreatePeriodSummaryRequestData {
+  val nino: Nino
+  val businessId: BusinessId
+  val body: CreatePeriodSummaryRequestBody
   lazy val taxYear: TaxYear = TaxYear.fromIso(body.periodDates.periodEndDate)
-
-  def withoutTaxTakenOffTradingIncome: CreatePeriodSummaryRequestData =
-    copy(body = body.withoutTaxTakenOffTradingIncome)
-
 }
+
+object CreatePeriodSummaryRequestData {
+
+  def maybeTaxYear(body: JsValue): Option[TaxYear] = rawTaxYear(body).flatMap(TaxYear.maybeFromIso)
+
+  private def rawTaxYear(body: JsValue): Option[String] = (body \ "periodDates" \ "periodEndDate").asOpt[String]
+}
+
+/** Applicable from minimumTaxYear to 2022-23 (pre-TYS).
+  */
+case class Def1_CreatePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, body: Def1_CreatePeriodSummaryRequestBody)
+    extends CreatePeriodSummaryRequestData
+
+/** Applicable from 2023-24 onwards.
+  */
+case class Def2_CreatePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, body: Def2_CreatePeriodSummaryRequestBody)
+    extends CreatePeriodSummaryRequestData
