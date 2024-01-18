@@ -16,18 +16,18 @@
 
 package definition
 
-import uk.gov.hmrc.auth.core.ConfidenceLevel
 import config.AppConfig
 import definition.APIStatus.DISABLED
-import routing.{Version, Version1, Version2, Version3}
+import routing.{Version, Version2, Version3}
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
+class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
 
-  private val readScope = "read:self-assessment"
+  private val readScope  = "read:self-assessment"
   private val writeScope = "write:self-assessment"
 
   lazy val confidenceLevel: ConfidenceLevel = {
@@ -59,11 +59,6 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
         categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
           APIVersion(
-            version = Version1,
-            status = buildAPIStatus(Version1),
-            endpointsEnabled = appConfig.endpointsEnabled(Version1)
-          ),
-          APIVersion(
             version = Version2,
             status = buildAPIStatus(Version2),
             endpointsEnabled = appConfig.endpointsEnabled(Version2)
@@ -73,7 +68,7 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) extends Logging {
             status = buildAPIStatus(Version3),
             endpointsEnabled = appConfig.endpointsEnabled(Version3)
           )
-          //Hidden by MTDSA-20447
+          // Hidden by MTDSA-20447
           //          APIVersion(
           //            version = Version4,
           //            status = buildAPIStatus(Version4),
