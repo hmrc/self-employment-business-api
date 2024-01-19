@@ -26,7 +26,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
-import v1.models.request.amendSEAnnual.AmendAnnualSubmissionFixture
+import v2.fixtures.AmendAnnualSubmissionFixture
 
 class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with AmendAnnualSubmissionFixture with JsonErrorValidators {
 
