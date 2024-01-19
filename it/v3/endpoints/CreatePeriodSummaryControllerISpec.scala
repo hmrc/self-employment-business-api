@@ -230,6 +230,7 @@ class CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(BusinessIdFormatError)
       }
+
       "an invalid Start date is provided" in new NonTysTest {
         override val requestBodyJson: JsValue = Json.parse(
           s"""
