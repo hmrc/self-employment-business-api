@@ -69,6 +69,13 @@ class ResolveDateRangeSpec extends UnitSpec {
         result shouldBe Invalid(List(RuleEndBeforeStartDateError))
       }
 
+      "given an end date equals start date" in {
+        val validStart = "2023-06-21"
+        val validEnd = "2023-06-21"
+        val result = dateResolver(validEnd -> validStart)
+        result shouldBe Valid(DateRange(LocalDate.parse(validStart), LocalDate.parse(validEnd)))
+      }
+
       "given a fromYear less than minimumYear" in {
         val result = dateResolver("1899-04-06" -> "2019-04-05")
         result shouldBe Invalid(List(StartDateFormatError))
