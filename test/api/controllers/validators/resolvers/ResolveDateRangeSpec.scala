@@ -56,7 +56,7 @@ class ResolveDateRangeSpec extends UnitSpec {
       }
 
       "given an end date equals start date" in {
-        val result = dateResolver(sameValidEnd -> sameValidStart)
+        val result = dateResolver(sameValidStart -> sameValidEnd)
         result shouldBe Valid(DateRange(LocalDate.parse(sameValidStart), LocalDate.parse(sameValidEnd)))
       }
     }
