@@ -28,6 +28,9 @@ class ResolveDateRangeSpec extends UnitSpec {
   private val validStart = "2023-06-21"
   private val validEnd   = "2024-06-21"
 
+  private val sameValidStart = "2023-06-21"
+  private val sameValidEnd = "2023-06-21"
+
   private val minYear = 1900
   private val maxYear = 2100
 
@@ -50,6 +53,11 @@ class ResolveDateRangeSpec extends UnitSpec {
         val result            = unboundedResolver("1567-01-01" -> "1678-01-31")
 
         result shouldBe Valid(DateRange(LocalDate.parse("1567-01-01"), LocalDate.parse("1678-01-31")))
+      }
+
+      "given an end date equals start date" in {
+        val result = dateResolver(sameValidStart -> sameValidEnd)
+        result shouldBe Valid(DateRange(LocalDate.parse(sameValidStart), LocalDate.parse(sameValidEnd)))
       }
     }
 
