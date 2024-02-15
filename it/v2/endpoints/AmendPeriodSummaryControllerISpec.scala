@@ -81,15 +81,17 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
         def validationErrorTest(requestNino: String,
                                 requestBusinessId: String,
                                 requestPeriodId: String,
+                                requestTaxYear: String,
                                 requestBody: JsValue,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
 
-          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
+          s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val periodId: String   = requestPeriodId
+            override val mtdTaxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
@@ -103,13 +105,15 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
         }
 
         val input = Seq(
-          ("BADNINO", "XAIS12345678910", "2019-01-01_2020-01-01", requestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "BAD_BUSINESS_ID", "2019-01-01_2020-01-01", requestBodyJson, BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "BAD_PERIOD_ID", requestBodyJson, BAD_REQUEST, PeriodIdFormatError),
+          ("BADNINO", "XAIS12345678910", "2019-01-01_2020-01-01", "2023-24", requestBodyJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "BAD_BUSINESS_ID", "2019-01-01_2020-01-01", "2023-24", requestBodyJson, BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2019-01-01_2020-01-01", "NOT_TAX_YEAR", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "BAD_PERIOD_ID", "2023-24", requestBodyJson, BAD_REQUEST, PeriodIdFormatError),
           (
             "AA123456A",
             "XAIS12345678910",
             "2019-01-01_2020-01-01",
+            "2023-24",
             requestBodyJson.update("/periodIncome/turnover", JsNumber(1.234)),
             BAD_REQUEST,
             ValueFormatError.copy(paths = Some(Seq("/periodIncome/turnover")))
@@ -118,6 +122,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
             "AA123456A",
             "XAIS12345678910",
             "2019-01-01_2020-01-01",
+            "2023-24",
             requestBodyJson.replaceWithEmptyObject("/periodExpenses"),
             BAD_REQUEST,
             RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/periodExpenses")))
@@ -186,6 +191,7 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
     val periodId: String   = "2019-01-01_2020-01-01"
     val from               = "2019-01-01"
     val to                 = "2020-01-01"
+
     val responseJson: JsValue = Json.parse(s"""
          |{
          |  "links": [
@@ -243,19 +249,19 @@ class AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErr
   }
 
   private trait TysIfsTest extends Test {
-    def mtdUri: String        = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def mtdUri: String = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
     def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
-    def tysTaxYear: String    = "23-24"
+    def tysTaxYear: String = "23-24"
 
-    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
     def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
-    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+    def listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
-    def mtdTaxYear: String    = "2023-24"
+    def mtdTaxYear: String = "2023-24"
 
   }
 
