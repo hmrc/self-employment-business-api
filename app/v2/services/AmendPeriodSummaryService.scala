@@ -29,6 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnector) extends BaseService {
 
+  def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+    connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+  }
+
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
       "INVALID_NINO"                    -> NinoFormatError,
@@ -55,11 +59,6 @@ class AmendPeriodSummaryService @Inject() (connector: AmendPeriodSummaryConnecto
     )
 
     errors ++ extraTysErrors
-  }
-
-  def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
-
-    connector.amendPeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
 }

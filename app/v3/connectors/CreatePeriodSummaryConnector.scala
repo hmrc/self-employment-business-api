@@ -22,21 +22,17 @@ import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.request.createPeriodSummary.{
-  CreatePeriodSummaryRequestData,
-  Def1_CreatePeriodSummaryRequestData,
-  Def2_CreatePeriodSummaryRequestData
-}
+import v3.controllers.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestData}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
+                                                                   hc: HeaderCarrier,
+                                                                   ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._

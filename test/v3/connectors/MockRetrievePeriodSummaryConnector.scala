@@ -20,8 +20,8 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
-import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v3.controllers.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
+import v3.controllers.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +31,8 @@ trait MockRetrievePeriodSummaryConnector extends MockFactory {
 
   object MockRetrievePeriodSummaryConnector {
 
-    def retrievePeriodSummary(requestData: RetrievePeriodSummaryRequestData): CallHandler[Future[DownstreamOutcome[RetrievePeriodSummaryResponse]]] = {
+    def retrievePeriodSummary(
+        requestData: RetrievePeriodSummaryRequestData): CallHandler[Future[DownstreamOutcome[RetrievePeriodSummaryResponse]]] = {
       (mockRetrievePeriodSummaryConnector
         .retrievePeriodSummary(_: RetrievePeriodSummaryRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

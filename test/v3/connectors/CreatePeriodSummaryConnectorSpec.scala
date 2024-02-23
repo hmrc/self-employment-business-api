@@ -19,10 +19,10 @@ package v3.connectors
 import api.connectors.ConnectorSpec
 import api.models.domain.{BusinessId, Nino}
 import api.models.outcomes.ResponseWrapper
-import v3.models.request.createPeriodSummary._
-import v3.models.request.createPeriodSummary.def1.{Def1_CreatePeriodSummaryRequestBody, Def1_Create_PeriodDates}
-import v3.models.request.createPeriodSummary.def2.{Def2_CreatePeriodSummaryRequestBody, Def2_Create_PeriodDates}
-import v3.models.response.createPeriodSummary.CreatePeriodSummaryResponse
+import v3.controllers.createPeriodSummary.def1.model.request.Def1_Create_PeriodDates
+import v3.controllers.createPeriodSummary.def2.model.request.Def2_Create_PeriodDates
+import v3.controllers.createPeriodSummary.model.request._
+import v3.controllers.createPeriodSummary.model.response.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
 

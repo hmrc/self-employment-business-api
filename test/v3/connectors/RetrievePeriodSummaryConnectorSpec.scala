@@ -16,32 +16,79 @@
 
 package v3.connectors
 
-import api.connectors.ConnectorSpec
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
-import v3.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
+import v3.controllers.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
+import v3.controllers.retrievePeriodSummary.model.request.{
+  Def1_RetrievePeriodSummaryRequestData,
+  Def2_RetrievePeriodSummaryRequestData,
+  RetrievePeriodSummaryRequestData
+}
+import v3.controllers.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 
 class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  val nino: String       = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  val periodId: String   = "2019-01-25_2020-01-25"
-  val tysTaxYear: String = "2023-24"
-  val fromDate: String   = "2019-01-25"
-  val toDate: String     = "2020-01-25"
+  private val nino       = Nino("AA123456A")
+  private val businessId = BusinessId("XAIS12345678910")
+  private val periodId   = PeriodId("2019-01-25_2020-01-25")
+  private val tysTaxYear = TaxYear.fromMtd("2023-24")
+  private val fromDate   = "2019-01-25"
+  private val toDate     = "2020-01-25"
 
-  val request: RetrievePeriodSummaryRequestData =
-    RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None)
-
-  val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
-    PeriodDates("2019-01-25", "2020-01-25"),
+  private val def1Response: RetrievePeriodSummaryResponse = Def1_RetrievePeriodSummaryResponse(
+    Def1_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
     None,
     None,
     None
   )
+
+  private val def2Response: RetrievePeriodSummaryResponse = Def1_RetrievePeriodSummaryResponse(
+    Def1_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
+    None,
+    None,
+    None
+  )
+
+  "retrievePeriodSummary()" when {
+
+    "given a def1 (non-TYS) request" should {
+      "call the non-TYS URL and return a 200 status" in new DesTest with Test {
+        val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
+
+        val expectedDownstreamUrl = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+
+        willGet(expectedDownstreamUrl)
+          .returns(Future.successful(outcome))
+
+        val request: RetrievePeriodSummaryRequestData = Def1_RetrievePeriodSummaryRequestData(nino, businessId, periodId)
+
+        val result: DownstreamOutcome[RetrievePeriodSummaryResponse] = await(connector.retrievePeriodSummary(request))
+
+        result shouldBe outcome
+      }
+    }
+
+    "given a def2 (TYS) request" should {
+      "call the TYS URL and return a 200 status" in new TysIfsTest with Test {
+        val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
+
+        val expectedDownstreamUrl =
+          s"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+
+        willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
+
+        val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
+
+        val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
+          await(connector.retrievePeriodSummary(request))
+
+        result shouldBe outcome
+      }
+    }
+  }
 
   trait Test {
     _: ConnectorTest =>
@@ -51,32 +98,6 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    protected def request(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear]): RetrievePeriodSummaryRequestData =
-      RetrievePeriodSummaryRequestData(nino, businessId, periodId, taxYear)
-
-  }
-
-  "connector" must {
-    "return a 200 status for a success scenario" in new DesTest with Test {
-      val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
-
-      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-        .returns(Future.successful(outcome))
-
-      await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))) shouldBe outcome
-    }
-
-    "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
-      val taxYear: String                                                         = TaxYear.fromMtd(tysTaxYear).asTysDownstream
-      val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
-      val url = s"$baseUrl/income-tax/$taxYear/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
-
-      willGet(url).returns(Future.successful(outcome))
-
-      val result =
-        await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
-      result shouldBe outcome
-    }
   }
 
 }

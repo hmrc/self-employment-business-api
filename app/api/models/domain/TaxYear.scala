@@ -98,13 +98,12 @@ object TaxYear {
     */
   def fromMtd(taxYear: String): TaxYear = new TaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  /**
-    * Normally this would be done via a TaxYearResolver; in rare cases this can be used,
-    * e.g. to peek into an unparsed JSON request body.
+  /** Normally this would be done via a TaxYearResolver; in rare cases this can be used, e.g. to peek into an unparsed JSON request body.
     */
   def maybeFromMtd(taxYear: String): Option[TaxYear] = {
     mtdTaxYearFormat.findFirstIn(taxYear).map(TaxYear.fromMtd)
   }
+
   private val mtdTaxYearFormat = "20[1-9][0-9]-[1-9][0-9]".r
 
   def fromDownstream(taxYear: String): TaxYear =
@@ -127,9 +126,7 @@ object TaxYear {
     new TaxYear(year)
   }
 
-  /**
-    * Normally this would be done via a date resolver; in rare cases this can be used,
-    * e.g. to peek into an unparsed JSON request body.
+  /** Normally this would be done via a date resolver; in rare cases this can be used, e.g. to peek into an unparsed JSON request body.
     */
   def maybeFromIso(isoDate: String): Option[TaxYear] = Try(fromIso(isoDate)).toOption
 

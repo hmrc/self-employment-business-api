@@ -24,9 +24,7 @@ import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v3.controllers.createPeriodSummary.validators.CreatePeriodSummaryValidatorFactory
-import v3.models.response.createPeriodSummary.CreatePeriodSummaryHateoasData
-import v3.services.CreatePeriodSummaryService
+import v3.controllers.createPeriodSummary.model.response.CreatePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

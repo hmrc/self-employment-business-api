@@ -19,11 +19,18 @@ package v3.connectors
 import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import api.models.domain.TaxYear
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
-import v3.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
+import v3.controllers.retrievePeriodSummary.model.request.{
+  Def1_RetrievePeriodSummaryRequestData,
+  Def2_RetrievePeriodSummaryRequestData,
+  RetrievePeriodSummaryRequestData
+}
+import v3.controllers.retrievePeriodSummary.model.response.{
+  Def1_RetrievePeriodSummaryResponse,
+  Def2_RetrievePeriodSummaryResponse,
+  RetrievePeriodSummaryResponse
+}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,23 +39,28 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
-                                                                       hc: HeaderCarrier,
-                                                                       ec: ExecutionContext,
-                                                                       correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
     import request._
 
     val fromDate = periodId.from
     val toDate   = periodId.to
 
-    val downstreamUri = if (TaxYear.isTys(taxYear)) {
-      TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
-        s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-    } else {
-      DesUri[RetrievePeriodSummaryResponse](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-    }
+    request match {
+      case _: Def1_RetrievePeriodSummaryRequestData =>
+        val downstreamUri = DesUri[Def1_RetrievePeriodSummaryResponse](
+          s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        val result = get(downstreamUri)
+        result
 
-    get(downstreamUri)
+      case def2: Def2_RetrievePeriodSummaryRequestData =>
+        val downstreamUri = TaxYearSpecificIfsUri[Def2_RetrievePeriodSummaryResponse](
+          s"income-tax/${def2.taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        val result = get(downstreamUri)
+        result
+    }
   }
 
 }

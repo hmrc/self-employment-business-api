@@ -6,6 +6,6 @@ DELETE     /:nino/:businessId/annual/:taxYear       v2.controllers.DeleteAnnualS
 GET        /:nino/:businessId/period                v2.controllers.ListPeriodSummariesController.handleRequest(nino: String, businessId: String, taxYear: Option[String])
 
 POST       /:nino/:businessId/period                v3.controllers.createPeriodSummary.CreatePeriodSummaryController.handleRequest(nino: String, businessId: String)
-PUT        /:nino/:businessId/period/:periodId      v3.controllers.AmendPeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
-GET        /:nino/:businessId/period/:periodId      v3.controllers.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
+PUT        /:nino/:businessId/period/:periodId      v3.controllers.amendPeriodSummary.AmendPeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
+GET        /:nino/:businessId/period/:periodId      v3.controllers.retrievePeriodSummary.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
 
