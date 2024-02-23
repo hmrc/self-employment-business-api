@@ -36,8 +36,8 @@ class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: AppConfi
                 includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] = {
 
     maybeTaxYear match {
-      case Some(taxYearStr) => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
       case None             => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, body, includeNegatives)
+      case Some(taxYearStr) => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
     }
   }
 

@@ -29,8 +29,8 @@ class RetrievePeriodSummaryValidatorFactory {
   def validator(nino: String, businessId: String, periodId: String, maybeTaxYear: Option[String]): Validator[RetrievePeriodSummaryRequestData] = {
 
     maybeTaxYear match {
-      case Some(taxYearStr) => new Def2_RetrievePeriodSummaryValidator(nino, businessId, periodId, taxYearStr)
       case None             => new Def1_RetrievePeriodSummaryValidator(nino, businessId, periodId)
+      case Some(taxYearStr) => new Def2_RetrievePeriodSummaryValidator(nino, businessId, periodId, taxYearStr)
     }
 
   }

@@ -20,22 +20,23 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.controllers.createPeriodSummary.model.request.Create_PeriodDisallowableExpenses
 
-case class Def2_Create_PeriodDisallowableExpenses(costOfGoodsDisallowable: Option[BigDecimal],
-                                                  paymentsToSubcontractorsDisallowable: Option[BigDecimal],
-                                                  wagesAndStaffCostsDisallowable: Option[BigDecimal],
-                                                  carVanTravelExpensesDisallowable: Option[BigDecimal],
-                                                  premisesRunningCostsDisallowable: Option[BigDecimal],
-                                                  maintenanceCostsDisallowable: Option[BigDecimal],
-                                                  adminCostsDisallowable: Option[BigDecimal],
-                                                  businessEntertainmentCostsDisallowable: Option[BigDecimal],
-                                                  advertisingCostsDisallowable: Option[BigDecimal],
-                                                  interestOnBankOtherLoansDisallowable: Option[BigDecimal],
-                                                  financeChargesDisallowable: Option[BigDecimal],
-                                                  irrecoverableDebtsDisallowable: Option[BigDecimal],
-                                                  professionalFeesDisallowable: Option[BigDecimal],
-                                                  depreciationDisallowable: Option[BigDecimal],
-                                                  otherExpensesDisallowable: Option[BigDecimal])
-    extends Create_PeriodDisallowableExpenses
+case class Def2_Create_PeriodDisallowableExpenses(
+    costOfGoodsDisallowable: Option[BigDecimal],
+    paymentsToSubcontractorsDisallowable: Option[BigDecimal],
+    wagesAndStaffCostsDisallowable: Option[BigDecimal],
+    carVanTravelExpensesDisallowable: Option[BigDecimal],
+    premisesRunningCostsDisallowable: Option[BigDecimal],
+    maintenanceCostsDisallowable: Option[BigDecimal],
+    adminCostsDisallowable: Option[BigDecimal],
+    businessEntertainmentCostsDisallowable: Option[BigDecimal],
+    advertisingCostsDisallowable: Option[BigDecimal],
+    interestOnBankOtherLoansDisallowable: Option[BigDecimal],
+    financeChargesDisallowable: Option[BigDecimal],
+    irrecoverableDebtsDisallowable: Option[BigDecimal],
+    professionalFeesDisallowable: Option[BigDecimal],
+    depreciationDisallowable: Option[BigDecimal],
+    otherExpensesDisallowable: Option[BigDecimal]
+) extends Create_PeriodDisallowableExpenses
 
 object Def2_Create_PeriodDisallowableExpenses {
   implicit val reads: Reads[Def2_Create_PeriodDisallowableExpenses] = Json.reads[Def2_Create_PeriodDisallowableExpenses]

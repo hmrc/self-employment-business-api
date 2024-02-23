@@ -21,7 +21,8 @@ import api.models.errors.{MtdError, TaxYearFormatError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 
-/** For ValidatorFactories that need to choose a validator for a schema definition, based on the tax year in the request.
+/** For ValidatorFactories that need to choose a validator for a schema definition, but encounter a format error; usually the tax year format in the
+  * request. In this case, the factory can return a "predetermined" validator that will simply return the error.
   */
 case class InvalidResultValidator[T](error: MtdError = TaxYearFormatError) extends Validator[T] {
 
