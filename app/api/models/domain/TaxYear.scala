@@ -21,6 +21,7 @@ import play.api.libs.json.Writes
 
 import java.time.{LocalDate, ZoneOffset}
 import javax.inject.Singleton
+import scala.util.Try
 
 /** Opaque representation of a tax year.
   *
@@ -73,6 +74,9 @@ final case class TaxYear private (private val value: String) {
     */
   def useTaxYearSpecificApi: Boolean = year >= tysTaxYear
 
+  def isBefore(other: TaxYear): Boolean = year < other.year
+  def isAfter(other: TaxYear): Boolean  = year > other.year
+
   override def toString: String = s"TaxYear($value)"
 }
 
@@ -87,12 +91,20 @@ object TaxYear {
   private val taxYearMonthStart = 4
   private val taxYearDayStart   = 6
 
+  def now(): TaxYear = TaxYear.fromIso(LocalDate.now().toString)
+
   /** @param taxYear
     *   tax year in MTD format (e.g. 2017-18)
     */
   def fromMtd(taxYear: String): TaxYear = new TaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  def now(): TaxYear = TaxYear.fromIso(LocalDate.now().toString)
+  /** Normally this would be done via a TaxYearResolver; in rare cases this can be used, e.g. to peek into an unparsed JSON request body.
+    */
+  def maybeFromMtd(taxYear: String): Option[TaxYear] = {
+    mtdTaxYearFormat.findFirstIn(taxYear).map(TaxYear.fromMtd)
+  }
+
+  private val mtdTaxYearFormat = "20[1-9][0-9]-[1-9][0-9]".r
 
   def fromDownstream(taxYear: String): TaxYear =
     new TaxYear(taxYear)
@@ -114,6 +126,10 @@ object TaxYear {
     new TaxYear(year)
   }
 
+  /** Normally this would be done via a date resolver; in rare cases this can be used, e.g. to peek into an unparsed JSON request body.
+    */
+  def maybeFromIso(isoDate: String): Option[TaxYear] = Try(fromIso(isoDate)).toOption
+
   private def isPreviousTaxYear(date: LocalDate): Boolean = {
     val taxYearStartDate = LocalDate.of(date.getYear, taxYearMonthStart, taxYearDayStart)
     date.isBefore(taxYearStartDate)
@@ -132,7 +148,6 @@ object TaxYear {
   }
 
   implicit val writes: Writes[TaxYear] = implicitly[Writes[String]].contramap(_.asMtd)
-
 }
 
 @Singleton

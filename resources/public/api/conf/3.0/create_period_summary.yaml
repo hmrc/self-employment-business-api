@@ -50,25 +50,25 @@ requestBody:
     application/json:
       schema:
         oneOf:
-          - $ref: './schemas/pre_TYS/create_period_summary_request.json'
-          - $ref: './schemas/2023_24/create_period_summary_request.json'
+          - $ref: './schemas/def1/create_period_summary_request.json'
+          - $ref: './schemas/def2/create_period_summary_request.json'
       examples:
         example-without-consolidated-request-2023-24-or-later:
           description: Create Period Summary Non-Consolidated Request
           value:
-            $ref: './examples/2023_24/create_period_summary_non_consolidated_request.json'
+            $ref: './examples/def2/create_period_summary_non_consolidated_request.json'
         example-with-consolidated-request-2023-24-or-later:
           description: Create Period Summary Request
           value:
-            $ref: './examples/2023_24/create_period_summary_consolidated_request.json'
+            $ref: './examples/def2/create_period_summary_consolidated_request.json'
         example-without-consolidated-request-before-TY-2023-24:
           description: Create Period Summary Non-Consolidated Request
           value:
-            $ref: './examples/pre_TYS/create_period_summary_non_consolidated_request.json'
+            $ref: './examples/def1/create_period_summary_non_consolidated_request.json'
         example-with-consolidated-request-before-TY-2023-24:
           description: Create Period Summary Request
           value:
-            $ref: './examples/pre_TYS/create_period_summary_consolidated_request.json'
+            $ref: './examples/def1/create_period_summary_consolidated_request.json'
 
 
 

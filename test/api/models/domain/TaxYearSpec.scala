@@ -92,6 +92,7 @@ class TaxYearSpec extends UnitSpec with MockAppConfig {
         }
 
         val input = List(
+          "2023-10-05" -> 2024,
           "2025-01-01" -> 2025,
           "2025-04-01" -> 2025,
           "2025-04-06" -> 2026,
