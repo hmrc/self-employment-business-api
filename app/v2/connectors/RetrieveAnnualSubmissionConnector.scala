@@ -38,7 +38,7 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
     import request._
 
     val downstreamUri =
-      if (taxYear.useTaxYearSpecificApi) {
+      if (taxYear.isTys) {
         TaxYearSpecificIfsUri[RetrieveAnnualSubmissionResponse](
           s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
         )

@@ -87,7 +87,7 @@ class CreatePeriodSummaryControllerSpec
       "the request received is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockCreatePeriodicService
+        MockedCreatePeriodicService
           .createPeriodic(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse(periodId)))))
 
@@ -115,7 +115,7 @@ class CreatePeriodSummaryControllerSpec
       "the service returns an error" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockCreatePeriodicService
+        MockedCreatePeriodicService
           .createPeriodic(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 

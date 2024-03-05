@@ -40,7 +40,7 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
 
     val downstreamUri =
       taxYear match {
-        case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
+        case Some(taxYear) if taxYear.isTys =>
           TaxYearSpecificIfsUri[Unit](
             s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
         case _ =>

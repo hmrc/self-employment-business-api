@@ -21,7 +21,6 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import v3.connectors.CreatePeriodSummaryConnector
 import v3.controllers.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
 import v3.controllers.createPeriodSummary.model.response.CreatePeriodSummaryResponse
 

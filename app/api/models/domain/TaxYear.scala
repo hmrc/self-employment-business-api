@@ -72,7 +72,7 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def useTaxYearSpecificApi: Boolean = year >= tysTaxYear
+  def isTys: Boolean = year >= tysTaxYear
 
   def isBefore(other: TaxYear): Boolean = year < other.year
   def isAfter(other: TaxYear): Boolean  = year > other.year
@@ -112,7 +112,7 @@ object TaxYear {
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
 
-  def isTys(taxYear: Option[TaxYear]): Boolean = taxYear.exists(_.useTaxYearSpecificApi)
+  def isTys(taxYear: Option[TaxYear]): Boolean = taxYear.exists(_.isTys)
 
   /** @param date
     *   the date in extended ISO-8601 format (e.g. 2020-04-05)

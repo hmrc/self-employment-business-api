@@ -23,7 +23,6 @@ import api.models.outcomes.ResponseWrapper
 import api.services.{ServiceOutcome, ServiceSpec}
 import mocks.MockAppConfig
 import play.api.Configuration
-import v3.connectors.MockCreatePeriodSummaryConnector
 import v3.controllers.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDates, Def2_Create_PeriodIncome}
 import v3.controllers.createPeriodSummary.model.request.{Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 import v3.controllers.createPeriodSummary.model.response.CreatePeriodSummaryResponse

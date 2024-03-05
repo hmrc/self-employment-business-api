@@ -20,7 +20,6 @@ import api.controllers.RequestContext
 import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
-import v3.connectors.AmendPeriodSummaryConnector
 import v3.controllers.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}

@@ -23,15 +23,9 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
-import v3.connectors.MockAmendPeriodSummaryConnector
 import v3.controllers.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodIncome
 import v3.controllers.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodIncome
-import v3.controllers.amendPeriodSummary.model.request.{
-  Def1_AmendPeriodSummaryRequestBody,
-  Def1_AmendPeriodSummaryRequestData,
-  Def2_AmendPeriodSummaryRequestBody,
-  Def2_AmendPeriodSummaryRequestData
-}
+import v3.controllers.amendPeriodSummary.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 
 import scala.concurrent.Future
 
