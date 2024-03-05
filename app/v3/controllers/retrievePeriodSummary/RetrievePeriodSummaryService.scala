@@ -22,7 +22,6 @@ import api.services.{BaseService, ServiceOutcome}
 import cats.data.EitherT
 import cats.implicits._
 import config.{AppConfig, FeatureSwitches}
-import v3.connectors.RetrievePeriodSummaryConnector
 import v3.controllers.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v3.controllers.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 

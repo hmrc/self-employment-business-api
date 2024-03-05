@@ -48,7 +48,7 @@ trait HateoasLinks {
 
   private def withTaxYearParameter(uri: String, maybeTaxYear: Option[TaxYear]): String = {
     maybeTaxYear match {
-      case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
+      case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"
       case _                                              => uri
     }
   }

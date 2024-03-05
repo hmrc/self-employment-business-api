@@ -39,7 +39,7 @@ class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCon
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
     val downstreamUri =
-      if (taxYear.useTaxYearSpecificApi) {
+      if (taxYear.isTys) {
         TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
       } else {
         IfsUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")

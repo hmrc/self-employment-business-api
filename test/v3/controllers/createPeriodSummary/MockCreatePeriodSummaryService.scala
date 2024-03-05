@@ -29,7 +29,7 @@ trait MockCreatePeriodSummaryService extends MockFactory {
 
   val mockCreatePeriodicService: CreatePeriodSummaryService = mock[CreatePeriodSummaryService]
 
-  object MockCreatePeriodicService {
+  object MockedCreatePeriodicService {
 
     def createPeriodic(requestData: CreatePeriodSummaryRequestData): CallHandler[Future[ServiceOutcome[CreatePeriodSummaryResponse]]] = {
       (mockCreatePeriodicService

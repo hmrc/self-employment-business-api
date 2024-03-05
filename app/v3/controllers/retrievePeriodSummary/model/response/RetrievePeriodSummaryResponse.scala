@@ -46,7 +46,8 @@ object RetrievePeriodSummaryResponse extends HateoasLinks {
     case def2: Def2_RetrievePeriodSummaryResponse => Json.toJsObject(def2)
   }
 
-  implicit object RetrieveAnnualSubmissionLinksFactory extends HateoasLinksFactory[RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
+  implicit object RetrieveAnnualSubmissionLinksFactory
+    extends HateoasLinksFactory[RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
     override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] =
       data.taxYear match {
