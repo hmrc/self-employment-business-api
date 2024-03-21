@@ -16,13 +16,14 @@
 
 package v3.controllers.createPeriodSummary
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
 import api.models.domain.{BusinessId, Nino}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
 import v3.controllers.createPeriodSummary.model.response.CreatePeriodSummaryHateoasData
 
@@ -34,6 +35,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                val lookupService: MtdIdLookupService,
                                                validatorFactory: CreatePeriodSummaryValidatorFactory,
                                                service: CreatePeriodSummaryService,
+                                               auditService: AuditService,
                                                appConfig: AppConfig,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
@@ -53,6 +55,14 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.createPeriodSummary)
+        .withAuditing(AuditHandler(
+          auditService,
+          auditType = "CreatePeriodicEmployment",
+          transactionName = "self-employment-periodic-create",
+          apiVersion = Version.from(request, orElse = Version3),
+          params = Map("nino" -> nino, "businessId" -> businessId),
+          Some(request.body)
+        ))
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, response) =>
           CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), response.periodId, Some(parsedRequest.taxYear)))
 

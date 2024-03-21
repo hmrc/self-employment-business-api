@@ -16,11 +16,12 @@
 
 package v3.controllers.createAmendAnnualSubmission
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version3}
 import utils.IdGenerator
 import v3.controllers.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
 import v3.controllers.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionResponse.LinksFactory
@@ -30,12 +31,13 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class CreateAmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
-                                                 val lookupService: MtdIdLookupService,
-                                                 validatorFactory: CreateAmendAnnualSubmissionValidatorFactory,
-                                                 service: CreateAmendAnnualSubmissionService,
-                                                 hateoasFactory: HateoasFactory,
-                                                 cc: ControllerComponents,
-                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                                       val lookupService: MtdIdLookupService,
+                                                       validatorFactory: CreateAmendAnnualSubmissionValidatorFactory,
+                                                       service: CreateAmendAnnualSubmissionService,
+                                                       hateoasFactory: HateoasFactory,
+                                                       auditService: AuditService,
+                                                       cc: ControllerComponents,
+                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -50,6 +52,14 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.createAmendAnnualSubmission)
+        .withAuditing(AuditHandler(
+          auditService,
+          auditType = "UpdateAnnualEmployment",
+          transactionName = "self-employment-annual-summary-update",
+          apiVersion = Version.from(request, orElse = Version3),
+          params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
+          Some(request.body)
+        ))
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, _) =>
           CreateAmendAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear.asMtd))
 

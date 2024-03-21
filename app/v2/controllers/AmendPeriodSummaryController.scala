@@ -16,12 +16,13 @@
 
 package v2.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version2}
 import utils.IdGenerator
 import v2.controllers.validators.AmendPeriodSummaryValidatorFactory
 import v2.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
@@ -36,10 +37,10 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
                                               val lookupService: MtdIdLookupService,
                                               validatorFactory: AmendPeriodSummaryValidatorFactory,
                                               service: AmendPeriodSummaryService,
-                                              appConfig: AppConfig,
+                                              auditService: AuditService,
                                               hateoasFactory: HateoasFactory,
                                               cc: ControllerComponents,
-                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -55,6 +56,15 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.amendPeriodSummary)
+        .withAuditing(AuditHandler(
+          auditService,
+          auditType = "AmendPeriodicEmployment",
+          transactionName = "self-employment-periodic-amend",
+          apiVersion = Version.from(request, orElse = Version2),
+          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId) ++
+            taxYear.map(year => Map("taxYear" -> year)).getOrElse(Map.empty),
+          Some(request.body)
+        ))
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, _) =>
           AmendPeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, parsedRequest.taxYear))
 

@@ -16,11 +16,12 @@
 
 package v2.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import routing.{Version, Version2}
 import utils.IdGenerator
 import v2.controllers.validators.AmendAnnualSubmissionValidatorFactory
 import v2.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
@@ -35,6 +36,7 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
                                                  val lookupService: MtdIdLookupService,
                                                  validatorFactory: AmendAnnualSubmissionValidatorFactory,
                                                  service: AmendAnnualSubmissionService,
+                                                 auditService: AuditService,
                                                  hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext)
@@ -52,6 +54,14 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.amendAnnualSubmission)
+        .withAuditing(AuditHandler(
+          auditService,
+          auditType = "UpdateAnnualEmployment",
+          transactionName = "self-employment-annual-summary-update",
+          apiVersion = Version.from(request, orElse = Version2),
+          params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
+          Some(request.body)
+        ))
         .withHateoasResultFrom(hateoasFactory)((parsedRequest, _) =>
           AmendAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear.asMtd))
 

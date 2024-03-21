@@ -19,12 +19,14 @@ package v3.controllers.createPeriodSummary
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import mocks.MockAppConfig
 import play.api.Configuration
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.controllers.createPeriodSummary.def1.model.request.Def1_CreatePeriodSummaryFixture
 import v3.controllers.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData}
@@ -40,6 +42,7 @@ class CreatePeriodSummaryControllerSpec
     with MockCreatePeriodSummaryValidatorFactory
     with MockHateoasFactory
     with MockAppConfig
+    with MockAuditService
     with Def1_CreatePeriodSummaryFixture {
 
   private val businessId = "XAIS12345678910"
@@ -97,9 +100,11 @@ class CreatePeriodSummaryControllerSpec
             CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
-        runOkTest(
+        runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
+          maybeAuditRequestBody = Some(requestMtdBodyJson),
+          maybeExpectedResponseBody = Some(responseJson),
+          maybeAuditResponseBody = None
         )
       }
     }
@@ -124,7 +129,7 @@ class CreatePeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
     MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller = new CreatePeriodSummaryController(
@@ -132,6 +137,7 @@ class CreatePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
+      auditService = mockAuditService,
       appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
@@ -139,6 +145,22 @@ class CreatePeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestMtdBodyJson))
+
+    protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "CreatePeriodicEmployment",
+        transactionName = "self-employment-periodic-create",
+        detail = GenericAuditDetail(
+          versionNumber = "3.0",
+          userType = "Individual",
+          agentReferenceNumber = None,
+          params = Map("nino" -> nino, "businessId" -> businessId),
+          requestBody = requestBody,
+          `X-CorrelationId` = correlationId,
+          auditResponse = auditResponse
+        )
+      )
+
   }
 
 }

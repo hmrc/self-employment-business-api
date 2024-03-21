@@ -19,9 +19,11 @@ package v2.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
@@ -40,7 +42,8 @@ class CreatePeriodSummaryControllerSpec
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryValidatorFactory
     with MockAppConfig
-    with MockHateoasFactory {
+    with MockHateoasFactory
+    with MockAuditService {
 
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2017-01-25"
@@ -192,9 +195,11 @@ class CreatePeriodSummaryControllerSpec
             CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
-        runOkTest(
+        runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
+          maybeAuditRequestBody = Some(requestJson),
+          maybeExpectedResponseBody = Some(responseJson),
+          maybeAuditResponseBody = None
         )
       }
     }
@@ -219,7 +224,7 @@ class CreatePeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
     MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller = new CreatePeriodSummaryController(
@@ -227,11 +232,26 @@ class CreatePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
-      appConfig = mockAppConfig,
+      auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "CreatePeriodicEmployment",
+        transactionName = "self-employment-periodic-create",
+        detail = GenericAuditDetail(
+          versionNumber = "2.0",
+          userType = "Individual",
+          agentReferenceNumber = None,
+          params = Map("nino" -> nino, "businessId" -> businessId),
+          requestBody = requestBody,
+          `X-CorrelationId` = correlationId,
+          auditResponse = auditResponse
+        )
+      )
 
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
   }
