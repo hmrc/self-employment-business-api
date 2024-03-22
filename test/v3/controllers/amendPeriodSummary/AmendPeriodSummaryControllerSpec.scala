@@ -19,16 +19,22 @@ package v3.controllers.amendPeriodSummary
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.controllers.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v3.controllers.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
-import v3.controllers.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
+import v3.controllers.amendPeriodSummary.model.request.{
+  AmendPeriodSummaryRequestData,
+  Def1_AmendPeriodSummaryRequestData,
+  Def2_AmendPeriodSummaryRequestData
+}
 import v3.controllers.amendPeriodSummary.model.response.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,6 +46,7 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryValidatorFactory
     with MockHateoasFactory
+    with MockAuditService
     with MockAppConfig
     with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
@@ -57,9 +64,11 @@ class AmendPeriodSummaryControllerSpec
           .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear = None))
           .returns(HateoasWrapper((), testHateoasLinks))
 
-        runOkTest(
+        runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
+          maybeAuditRequestBody = Some(requestBodyJson),
+          maybeExpectedResponseBody = Some(responseJson),
+          maybeAuditResponseBody = None
         )
       }
 
@@ -74,9 +83,11 @@ class AmendPeriodSummaryControllerSpec
           .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear = Some(parsedTaxYear)))
           .returns(HateoasWrapper((), testHateoasLinks))
 
-        runOkTest(
+        runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
+          maybeAuditRequestBody = Some(requestBodyJson),
+          maybeExpectedResponseBody = Some(responseJson),
+          maybeAuditResponseBody = None
         )
       }
 
@@ -99,7 +110,7 @@ class AmendPeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
     MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId = "XAIS12345678910"
@@ -116,11 +127,26 @@ class AmendPeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendPeriodSummaryValidatorFactory,
       service = mockAmendPeriodSummaryService,
-      appConfig = mockAppConfig,
+      auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "AmendPeriodicEmployment",
+        transactionName = "self-employment-periodic-amend",
+        detail = GenericAuditDetail(
+          versionNumber = "3.0",
+          userType = "Individual",
+          agentReferenceNumber = None,
+          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId),
+          requestBody = requestBody,
+          `X-CorrelationId` = correlationId,
+          auditResponse = auditResponse
+        )
+      )
 
   }
 
@@ -167,6 +193,18 @@ class AmendPeriodSummaryControllerSpec
 
     protected def callController(): Future[Result] =
       controller.handleRequest(nino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
+
+    override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      super
+        .event(auditResponse, requestBody)
+        .copy(
+          detail = super
+            .event(auditResponse, requestBody)
+            .detail
+            .copy(
+              params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId)
+            )
+        )
 
   }
 
@@ -219,6 +257,18 @@ class AmendPeriodSummaryControllerSpec
 
     protected def callController(): Future[Result] =
       controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
+
+    override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      super
+        .event(auditResponse, requestBody)
+        .copy(
+          detail = super
+            .event(auditResponse, requestBody)
+            .detail
+            .copy(
+              params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear)
+            )
+        )
 
   }
 

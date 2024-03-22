@@ -19,9 +19,11 @@ package v2.controllers
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{DELETE, GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.controllers.validators.MockAmendAnnualSubmissionValidatorFactory
@@ -39,7 +41,8 @@ class AmendAnnualSubmissionControllerSpec
     with MockAmendAnnualSubmissionService
     with MockAmendAnnualSubmissionValidatorFactory
     with MockHateoasFactory
-    with AmendAnnualSubmissionFixture {
+    with AmendAnnualSubmissionFixture
+    with MockAuditService {
 
   private val businessId: String = "XAIS12345678910"
   private val taxYear: String    = "2019-20"
@@ -99,9 +102,11 @@ class AmendAnnualSubmissionControllerSpec
           .wrap((), AmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
           .returns(HateoasWrapper((), testHateoasLinks))
 
-        runOkTest(
+        runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
+          maybeAuditRequestBody = Some(requestJson),
+          maybeExpectedResponseBody = Some(responseJson),
+          maybeAuditResponseBody = None
         )
       }
     }
@@ -125,17 +130,33 @@ class AmendAnnualSubmissionControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
       service = mockAmendAnnualSubmissionService,
+      auditService = mockAuditService,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "UpdateAnnualEmployment",
+        transactionName = "self-employment-annual-summary-update",
+        detail = GenericAuditDetail(
+          versionNumber = "2.0",
+          userType = "Individual",
+          agentReferenceNumber = None,
+          params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
+          requestBody = requestBody,
+          `X-CorrelationId` = correlationId,
+          auditResponse = auditResponse
+        )
+      )
 
     protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePutRequest(requestJson))
 
