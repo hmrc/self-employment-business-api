@@ -30,10 +30,17 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
 
-  private val validPeriodDates = Json.parse("""
+  private val validPeriodDatesPreTYS = Json.parse("""
       |{
       |  "periodStartDate": "2019-08-24",
       |  "periodEndDate": "2020-08-24"
+      |}
+      |""".stripMargin)
+
+  private val validPeriodDatesTYS = Json.parse("""
+      |{
+      |  "periodStartDate": "2023-08-24",
+      |  "periodEndDate": "2024-08-24"
       |}
       |""".stripMargin)
 
@@ -92,7 +99,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
                  |""".stripMargin)
   }
 
-  private def validBody(periodDates: JsValue = validPeriodDates,
+  private def validBody(periodDates: JsValue = validPeriodDatesPreTYS,
                         periodIncome: JsValue = validPeriodIncome,
                         periodExpenses: JsValue = validPeriodExpenses(),
                         periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses()) =
@@ -107,6 +114,11 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
     validBody(periodExpenses = validPeriodExpenses(true), periodDisallowableExpenses = validPeriodDisallowableExpenses(true))
 
   private val validBodyConsolidated = validBody()
+    .removeProperty("/periodDisallowableExpenses")
+    .replaceWithEmptyObject("/periodExpenses")
+    .update("/periodExpenses", JsObject(List(("consolidatedExpenses", JsString("999999999.99")))))
+
+  private val invalidBodyConsolidated = validBody(validPeriodDatesTYS, validPeriodIncome, validPeriodExpenses(), validPeriodDisallowableExpenses())
     .removeProperty("/periodDisallowableExpenses")
     .replaceWithEmptyObject("/periodExpenses")
     .update("/periodExpenses", JsObject(List(("consolidatedExpenses", JsString("999999999.99")))))
@@ -134,20 +146,42 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
   private val parsedPeriodExpensesConsolidated = PeriodExpenses(
     Some(999999999.99),
-    None, None, None, None,
-    None, None, None, None,
-    None, None, None, None,
-    None, None, None
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None
   )
 
   private def parsedPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
     val number = numericValue(withNegatives)(_)
 
     PeriodDisallowableExpenses(
-      Some(number(1017.99)), Some(number(1018.99)), Some(number(1019.99)), Some(number(1020.99)),
-      Some(number(1021.99)), Some(number(1022.99)), Some(number(1023.99)), Some(number(1024.99)),
-      Some(number(1025.99)), Some(number(1026.99)), Some(number(1027.99)), Some(number(1028.99)),
-      Some(number(1029.99)), Some(number(1030.99)), Some(number(1031.99))
+      Some(number(1017.99)),
+      Some(number(1018.99)),
+      Some(number(1019.99)),
+      Some(number(1020.99)),
+      Some(number(1021.99)),
+      Some(number(1022.99)),
+      Some(number(1023.99)),
+      Some(number(1024.99)),
+      Some(number(1025.99)),
+      Some(number(1026.99)),
+      Some(number(1027.99)),
+      Some(number(1028.99)),
+      Some(number(1029.99)),
+      Some(number(1030.99)),
+      Some(number(1031.99))
     )
   }
   // @formatter:on
@@ -263,6 +297,14 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
           validator(validNino, "invalid", validBody()).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
+      }
+
+      "passed a invalid request with consolidated expenses" in {
+        val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
+          validator(validNino, validBusinessId, invalidBodyConsolidated).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleNotAllowedConsolidatedExpenses))
+
       }
 
       "passed an empty body" in {

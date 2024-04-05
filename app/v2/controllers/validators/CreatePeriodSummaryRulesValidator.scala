@@ -18,11 +18,12 @@ package v2.controllers.validators
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import api.models.domain.TaxYear
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import v2.models.request.createPeriodSummary.{CreatePeriodSummaryRequestData, PeriodExpenses, PeriodDisallowableExpenses, PeriodIncome}
+import v2.models.request.createPeriodSummary.{CreatePeriodSummaryRequestData, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
 case class CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[CreatePeriodSummaryRequestData] {
 
@@ -38,10 +39,23 @@ case class CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends 
     combine(
       validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
       validateExpenses(periodExpenses, periodDisallowableExpenses),
+      validateConsolidatedExpenses(periodDates.periodStartDate, periodExpenses),
       periodIncome.map(validatePeriodIncomeNumericFields(includeNegatives)).getOrElse(valid),
       periodExpenses.map(validateAllowableNumericFields(includeNegatives)).getOrElse(valid),
       periodDisallowableExpenses.map(validateDisllowableNumericFields(includeNegatives)).getOrElse(valid)
     ).onSuccess(parsed)
+  }
+
+  def validateConsolidatedExpenses(periodStartDate: String, periodExpenses: Option[PeriodExpenses]): Validated[Seq[MtdError], Unit] = {
+
+    val taxYear = TaxYear.maybeFromIso(periodStartDate)
+
+    (taxYear, periodExpenses) match {
+      case (Some(taxYear), Some(expenses)) if taxYear.isTys && expenses.consolidatedExpenses.isDefined =>
+        Invalid(List(RuleNotAllowedConsolidatedExpenses))
+      case _ => valid
+    }
+
   }
 
   private def validateExpenses(allowableExpenses: Option[PeriodExpenses],

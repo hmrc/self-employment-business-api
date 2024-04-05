@@ -18,13 +18,17 @@ package v2.controllers.validators
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.ResolveParsedNumber
-import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import api.models.domain.TaxYear
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryRequestData, PeriodExpenses, PeriodDisallowableExpenses, PeriodIncome}
+import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryRequestData, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
-case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[AmendPeriodSummaryRequestData] {
+import scala.util.Try
+
+case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean, taxYear: Option[String])
+    extends RulesValidator[AmendPeriodSummaryRequestData] {
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
@@ -33,7 +37,7 @@ case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
     import parsed.body._
 
     combine(
-      validateExpenses(periodExpenses, periodDisallowableExpenses),
+      validateExpenses(periodExpenses, periodDisallowableExpenses, taxYear),
       periodIncome.map(validatePeriodIncome).getOrElse(valid),
       periodExpenses.map(validatePeriodExpenses(includeNegatives)).getOrElse(valid),
       periodDisallowableExpenses.map(validatePeriodDisallowableExpenses(includeNegatives)).getOrElse(valid)
@@ -41,17 +45,23 @@ case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
   }
 
   private def validateExpenses(allowableExpenses: Option[PeriodExpenses],
-                               periodDisallowableExpenses: Option[PeriodDisallowableExpenses]): Validated[Seq[MtdError], Unit] =
-    (allowableExpenses, periodDisallowableExpenses) match {
-      case (Some(allowable), Some(_)) if allowable.consolidatedExpenses.isDefined => Invalid(List(RuleBothExpensesSuppliedError))
-      case (Some(allowable), None) if allowable.consolidatedExpenses.isDefined =>
+                               periodDisallowableExpenses: Option[PeriodDisallowableExpenses],
+                               taxYear: Option[String]): Validated[Seq[MtdError], Unit] = {
+
+    val tysTaxYear = taxYear.flatMap(year => Try(TaxYear.fromMtd(year)).toOption)
+
+    (allowableExpenses, periodDisallowableExpenses, tysTaxYear) match {
+      case (Some(allowable), Some(_), _) if allowable.consolidatedExpenses.isDefined => Invalid(List(RuleBothExpensesSuppliedError))
+      case (Some(allowable), None, None) if allowable.consolidatedExpenses.isDefined =>
         allowable match {
           case PeriodExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) => valid
           case _ => Invalid(List(RuleBothExpensesSuppliedError))
         }
+      case (Some(allowable), None, Some(taxYear)) if (taxYear.isTys && allowable.consolidatedExpenses.isDefined) =>
+        Invalid(List(RuleNotAllowedConsolidatedExpenses))
       case _ => valid
-
     }
+  }
 
   private def validatePeriodIncome(income: PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(

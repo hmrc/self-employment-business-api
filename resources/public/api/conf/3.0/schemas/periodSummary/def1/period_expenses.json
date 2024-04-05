@@ -5,7 +5,7 @@
   "properties": {
     "consolidatedExpenses": {
       "type": "number",
-      "description": "The sum of all expenses for the specified period. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+      "description": "The sum of all expenses for the specified period before tax Year 2023-24. The value must be between 0 and 99999999999.99 up to 2 decimal places. It is not allowed from tax year 2023-24 onwards.",
       "example": "10000.00"
     },
     "costOfGoods": {

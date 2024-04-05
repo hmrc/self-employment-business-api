@@ -42,7 +42,7 @@ class AmendPeriodSummaryValidatorFactory {
                 includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] =
     new Validator[AmendPeriodSummaryRequestData] {
 
-      private val rulesValidator = AmendPeriodSummaryRulesValidator(includeNegatives)
+      private val rulesValidator = AmendPeriodSummaryRulesValidator(includeNegatives, taxYear)
 
       def validate: Validated[Seq[MtdError], AmendPeriodSummaryRequestData] =
         (

@@ -30,7 +30,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
   private val validPeriodId   = "2017-01-25_2017-02-28"
-  private val validTaxYear    = Some("2023-24")
+  private val validTYSTaxYear = Some("2023-24")
 
   private val validPeriodIncome = Json.parse("""
       | {
@@ -106,7 +106,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
   private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
   private val parsedPeriodId   = PeriodId(validPeriodId)
-  private val parsedTaxYear    = validTaxYear.map(TaxYear.fromMtd)
+  private val parsedTaxYear    = validTYSTaxYear.map(TaxYear.fromMtd)
 
   private val parsedPeriodIncome = PeriodIncome(Some(200.00), Some(201.00))
 
@@ -174,12 +174,12 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
 
       "passed a valid request with a TYS tax year" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBody()).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, validTYSTaxYear, validBody()).validateAndWrapResult()
 
         result shouldBe Right(AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBody))
       }
 
-      "passed a valid request with consolidated expenses" in {
+      "passed an valid request with consolidated expenses" in {
         val body: JsValue =
           validBody(periodExpenses = validPeriodExpensesConsolidated).removeProperty("/periodDisallowableExpenses")
 
@@ -237,28 +237,28 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
     "return a single error" when {
       "passed an invalid nino is supplied" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator("invalid nino", validBusinessId, validPeriodId, validTaxYear, validBody()).validateAndWrapResult()
+          validator("invalid nino", validBusinessId, validPeriodId, validTYSTaxYear, validBody()).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
 
       "passed an invalid business id is supplied" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, "invalid business id", validPeriodId, validTaxYear, validBody()).validateAndWrapResult()
+          validator(validNino, "invalid business id", validPeriodId, validTYSTaxYear, validBody()).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
       }
 
       "passed an invalid period id is supplied" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, "invalid period id", validTaxYear, validBody()).validateAndWrapResult()
+          validator(validNino, validBusinessId, "invalid period id", validTYSTaxYear, validBody()).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, PeriodIdFormatError))
       }
 
       "passed a period id outside of range is supplied" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, "0010-01-01_2017-02-31", validTaxYear, validBody()).validateAndWrapResult()
+          validator(validNino, validBusinessId, "0010-01-01_2017-02-31", validTYSTaxYear, validBody()).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, PeriodIdFormatError))
       }
@@ -284,10 +284,20 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
         result shouldBe Left(ErrorWrapper(correlationId, InvalidTaxYearParameterError))
       }
 
+      "passed an invalid request with consolidated expenses" in {
+        val body: JsValue =
+          validBody(periodExpenses = validPeriodExpensesConsolidated).removeProperty("/periodDisallowableExpenses")
+
+        val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
+          validator(validNino, validBusinessId, validPeriodId, Some("2023-24"), body).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleNotAllowedConsolidatedExpenses))
+      }
+
       def test(error: MtdError)(body: JsValue, path: String, withNegatives: Boolean = false): Unit = {
         s"passed a bad value at $path returning $error with negatives ${if (withNegatives) "enabled" else "disabled"}" in {
           val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-            validator(validNino, validBusinessId, validPeriodId, validTaxYear, body, withNegatives).validateAndWrapResult()
+            validator(validNino, validBusinessId, validPeriodId, None, body, withNegatives).validateAndWrapResult()
 
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -417,7 +427,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
           .update("/periodExpenses/consolidatedExpenses", JsNumber(1000.99))
 
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, invalidBody).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, validTYSTaxYear, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleBothExpensesSuppliedError))
       }
@@ -428,7 +438,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
           .update("/periodExpenses/consolidatedExpenses", JsNumber(1000.99))
 
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, invalidBody).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, validTYSTaxYear, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleBothExpensesSuppliedError))
       }
@@ -439,7 +449,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
           .update("/periodExpenses/consolidatedExpenses", JsNumber(1000.99))
 
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, invalidBody).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, None, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleBothExpensesSuppliedError))
       }
@@ -448,7 +458,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
         val invalidBody = JsObject.empty
 
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, invalidBody).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, validTYSTaxYear, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
@@ -457,7 +467,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
         val invalidBody = validBody(JsObject.empty, JsObject.empty, JsObject.empty)
 
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, invalidBody).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, validTYSTaxYear, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(
           ErrorWrapper(
