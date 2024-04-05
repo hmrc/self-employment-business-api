@@ -42,14 +42,10 @@ requestBody:
           - $ref: './schemas/def1/amend_period_summary_request.json'
           - $ref: './schemas/def2/amend_period_summary_request.json'
       examples:
-        example-non-consolidated-request-2023-24-or-later:
-          description: Amend Period Summary Non-Consolidated Request
+        example-request-2023-24-or-later:
+          description: Amend Period Summary Request
           value:
             $ref: './examples/def2/amend_period_summary_non_consolidated_request.json'
-        example-consolidated-request-2023-24-or-later:
-          description: Amend Period Summary Consolidated Request
-          value:
-            $ref: './examples/def2/amend_period_summary_consolidated_request.json'
         example-non-consolidated-request-before-TY-2023-24:
           description: Amend Period Summary Non-Consolidated Request
           value:
