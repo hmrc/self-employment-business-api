@@ -37,7 +37,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
 
   val response: RetrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
     allowances = Some(Def1_Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Def1_Retrieve_Adjustments(None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Def1_Retrieve_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
     nonFinancials = Some(Def1_Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 

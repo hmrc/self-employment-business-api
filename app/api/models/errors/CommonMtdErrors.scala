@@ -199,3 +199,4 @@ object InvalidBodyTypeError
 
 //Stub Errors
 object RuleIncorrectGovTestScenarioError extends MtdError("RULE_INCORRECT_GOV_TEST_SCENARIO", "The Gov-Test-Scenario was not found", BAD_REQUEST)
+object RuleWrongTpaAmountSubmittedError extends MtdError(code = "RULE_WRONG_TPA_AMOUNT_SUBMITTED", message = "Transition profit acceleration value cannot be submitted without a transition profit value", BAD_REQUEST)

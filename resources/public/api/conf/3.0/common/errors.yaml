@@ -184,6 +184,12 @@ components:
         code: RULE_INCORRECT_GOV_TEST_SCENARIO
         message: The Gov-Test-Scenario was not found
 
+    ruleWrongTpaAmountSubmitted:
+      description: Transition profit acceleration value cannot be submitted without a transition profit value.
+      value:
+        code: RULE_WRONG_TPA_AMOUNT_SUBMITTED
+        message: Transition profit acceleration value cannot be submitted without a transition profit value
+
     # 403
 
     clientOrAgentNotAuthorised:

@@ -53,7 +53,9 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       (outstandingBusinessIncome, "/adjustments/outstandingBusinessIncome"),
       (balancingChargeBpra, "/adjustments/balancingChargeBpra"),
       (balancingChargeOther, "/adjustments/balancingChargeOther"),
-      (goodsAndServicesOwnUse, "/adjustments/goodsAndServicesOwnUse")
+      (goodsAndServicesOwnUse, "/adjustments/goodsAndServicesOwnUse"),
+      (transitionProfitAmount, "/adjustments/transitionProfitAmount"),
+      (transitionProfitAccelerationAmount, "/adjustments/transitionProfitAccelerationAmount")
     ).traverse_ { case (value, path) =>
       resolveNonNegativeParsedNumber(value, path = Some(path))
     }

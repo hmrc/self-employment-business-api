@@ -27,7 +27,9 @@ case class Def1_CreateAmend_Adjustments(
     outstandingBusinessIncome: Option[BigDecimal],
     balancingChargeBpra: Option[BigDecimal],
     balancingChargeOther: Option[BigDecimal],
-    goodsAndServicesOwnUse: Option[BigDecimal]
+    goodsAndServicesOwnUse: Option[BigDecimal],
+    transitionProfitAmount: Option[BigDecimal],
+    transitionProfitAccelerationAmount: Option[BigDecimal]
 )
 
 object Def1_CreateAmend_Adjustments {

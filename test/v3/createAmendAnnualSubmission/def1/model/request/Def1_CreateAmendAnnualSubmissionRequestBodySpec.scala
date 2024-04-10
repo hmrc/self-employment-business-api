@@ -23,7 +23,7 @@ class Def1_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def1
 
   val model: Def1_CreateAmendAnnualSubmissionRequestBody = Def1_CreateAmendAnnualSubmissionRequestBody(
     allowances = Some(Def1_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Def1_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Def1_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
     nonFinancials = Some(Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
