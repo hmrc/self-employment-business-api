@@ -224,7 +224,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           parsedBusinessId,
           parsedTaxYear,
           parsedRequestBody.copy(
-            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None)),
+            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None,None,None)),
             None,
             None)
         )
@@ -466,7 +466,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       "an valid body with no transition profit value is submitted" in {
         val requestBody: JsValue =
           validRequestBody(adjustments = validAdjustmentsWithNoTransitionProfitValue)
-println(requestBody.toString())
+
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
 

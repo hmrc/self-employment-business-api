@@ -38,6 +38,7 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     import parsed.body._
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
+      adjustments.map(validateTPAAmount).getOrElse(valid),
       allowances.map(validateBothAllowancesSupplied).getOrElse(valid),
       allowances.map(validateAllowances).getOrElse(valid)
     ).onSuccess(parsed)
@@ -168,5 +169,14 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       case _                                        => valid
     }
   }
-
+  private def validateTPAAmount(adjustments: Def1_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
+    if (adjustments.transitionProfitAccelerationAmount.isDefined) {
+      adjustments match {
+        case Def1_CreateAmend_Adjustments(Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_)) => valid
+        case _ => Invalid(List(RuleWrongTpaAmountSubmittedError))
+      }
+    } else {
+      valid
+    }
+  }
 }
