@@ -9,8 +9,10 @@
     "balancingChargeBpra": 145.98,
     "balancingChargeOther": 457.23,
     "goodsAndServicesOwnUse": 432.9,
-    "transitionProfitAmount": 435.9,
+    {{#if (enabled 'adjustmentsAdditionalFields')}}
+    ,"transitionProfitAmount": 435.9,
     "transitionProfitAccelerationAmount": 439.9
+    {{/if}}
   },
   "allowances": {
     "tradingIncomeAllowance": 572.99
