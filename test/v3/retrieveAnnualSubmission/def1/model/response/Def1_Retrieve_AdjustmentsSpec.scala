@@ -31,7 +31,9 @@ class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12)
+      goodsAndServicesOwnUse = Some(9.12),
+      transitionProfitAmount = Some(9.12),
+      transitionProfitAccelerationAmount = Some(9.12)
     )
 
   "reads" when {
@@ -47,7 +49,9 @@ class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
              |  "outstandingBusinessIncome": 6.12,
              |  "balancingChargeBpra": 7.12,
              |  "balancingChargeOther": 8.12,
-             |  "goodsAndServicesOwnUse": 9.12
+             |  "goodsAndServicesOwnUse": 9.12,
+             |  "transitionProfitAmount": 9.12,
+             |  "transitionProfitAccelerationAmount": 9.12
              |}
              |""".stripMargin)
           .as[Def1_Retrieve_Adjustments]
@@ -71,7 +75,9 @@ class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
              |  "outstandingBusinessIncome": 6.12,
              |  "balancingChargeBpra": 7.12,
              |  "balancingChargeOther": 8.12,
-             |  "goodsAndServicesOwnUse": 9.12
+             |  "goodsAndServicesOwnUse": 9.12,
+             |  "transitionProfitAmount": 9.12,
+             |  "transitionProfitAccelerationAmount": 9.12
              |}
              |""".stripMargin)
       }

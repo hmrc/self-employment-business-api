@@ -27,8 +27,9 @@ case class Def1_Retrieve_Adjustments(
     outstandingBusinessIncome: Option[BigDecimal],
     balancingChargeBpra: Option[BigDecimal],
     balancingChargeOther: Option[BigDecimal],
-    goodsAndServicesOwnUse: Option[BigDecimal]
-)
+    goodsAndServicesOwnUse: Option[BigDecimal],
+    transitionProfitAmount: Option[BigDecimal],
+    transitionProfitAccelerationAmount: Option[BigDecimal])
 
 object Def1_Retrieve_Adjustments {
   implicit val format: Format[Def1_Retrieve_Adjustments] = Json.format[Def1_Retrieve_Adjustments]

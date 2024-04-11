@@ -56,10 +56,11 @@ class CreateAmendAnnualSubmissionService @Inject() (connector: CreateAmendAnnual
     )
 
     val extraTysErrors = Map(
-      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID"   -> InternalError,
-      "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError
+      "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"       -> InternalError,
+      "INCOME_SOURCE_NOT_FOUND"      -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError,
+      "WRONG_TPA_AMOUNT_SUBMITTED"   -> RuleWrongTpaAmountSubmittedError
     )
 
     errors ++ extraTysErrors

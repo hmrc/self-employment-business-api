@@ -8,7 +8,9 @@
     "outstandingBusinessIncome": 342.67,
     "balancingChargeBpra": 145.98,
     "balancingChargeOther": 457.23,
-    "goodsAndServicesOwnUse": 432.9
+    "goodsAndServicesOwnUse": 432.9,
+    "transitionProfitAmount": 435.9,
+    "transitionProfitAccelerationAmount": 439.9
   },
   "allowances": {
     "tradingIncomeAllowance": 572.99

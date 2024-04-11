@@ -45,7 +45,9 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
      |    "outstandingBusinessIncome": 200.12,
      |    "balancingChargeBpra": 200.12,
      |    "balancingChargeOther": 200.12,
-     |    "goodsAndServicesOwnUse": 200.12
+     |    "goodsAndServicesOwnUse": 200.12,
+     |    "transitionProfitAmount": 200.12,
+     |    "transitionProfitAccelerationAmount": 200.12
      |  }
      |""".stripMargin
   )
@@ -101,6 +103,23 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |""".stripMargin
   )
 
+  private val validAdjustmentsWithNoTransitionProfitValue = Json.parse(
+    """
+      |  {
+      |    "includedNonTaxableProfits": 200.12,
+      |    "basisAdjustment": 200.12,
+      |    "overlapReliefUsed": 200.12,
+      |    "accountingAdjustment": 200.12,
+      |    "averagingAdjustment": 200.12,
+      |    "outstandingBusinessIncome": 200.12,
+      |    "balancingChargeBpra": 200.12,
+      |    "balancingChargeOther": 200.12,
+      |    "goodsAndServicesOwnUse": 200.12,
+      |    "transitionProfitAccelerationAmount": 200.12
+      |  }
+      |""".stripMargin
+  )
+
   private val validNonFinancials = Json.parse(
     """
       |  {
@@ -131,7 +150,9 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     outstandingBusinessIncome = Some(200.12),
     balancingChargeBpra = Some(200.12),
     balancingChargeOther = Some(200.12),
-    goodsAndServicesOwnUse = Some(200.12)
+    goodsAndServicesOwnUse = Some(200.12),
+    transitionProfitAmount = Some(200.12),
+    transitionProfitAccelerationAmount = Some(200.12)
   )
 
   private val parsedFirstYear = Def1_CreateAmend_FirstYear(qualifyingDate = "2021-11-11", qualifyingAmountExpenditure = 1.23)
@@ -203,7 +224,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           parsedBusinessId,
           parsedTaxYear,
           parsedRequestBody.copy(
-            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None)),
+            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None,None,None)),
             None,
             None)
         )
@@ -441,6 +462,19 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       }
     }
 
+    "return RuleWrongTpaAmountSubmittedError" when {
+      "an valid body with no transition profit value is submitted" in {
+        val requestBody: JsValue =
+          validRequestBody(adjustments = validAdjustmentsWithNoTransitionProfitValue)
+
+        val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
+          validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleWrongTpaAmountSubmittedError)
+        )
+      }
+    }
     def test(error: MtdError)(body: JsValue, path: String): Unit = {
       s"passed an invalid value at $path returns $error" in {
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
@@ -460,6 +494,8 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       "/adjustments/balancingChargeBpra",
       "/adjustments/balancingChargeOther",
       "/adjustments/goodsAndServicesOwnUse",
+      "/adjustments/transitionProfitAmount",
+      "/adjustments/transitionProfitAccelerationAmount",
       "/allowances/annualInvestmentAllowance",
       "/allowances/businessPremisesRenovationAllowance",
       "/allowances/capitalAllowanceMainPool",
@@ -774,7 +810,9 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               |    "outstandingBusinessIncome": 200.123,
               |    "balancingChargeBpra": 200.123,
               |    "balancingChargeOther": 200.132,
-              |    "goodsAndServicesOwnUse": 200.132
+              |    "goodsAndServicesOwnUse": 200.132,
+              |    "transitionProfitAmount": 200.132,
+              |    "transitionProfitAccelerationAmount": 200.132
               |  },
               |  "allowances": {
               |    "annualInvestmentAllowance": 200.132,
@@ -847,6 +885,8 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
                 "/adjustments/balancingChargeBpra",
                 "/adjustments/balancingChargeOther",
                 "/adjustments/goodsAndServicesOwnUse",
+                "/adjustments/transitionProfitAmount",
+                "/adjustments/transitionProfitAccelerationAmount",
                 "/allowances/annualInvestmentAllowance",
                 "/allowances/businessPremisesRenovationAllowance",
                 "/allowances/capitalAllowanceMainPool",

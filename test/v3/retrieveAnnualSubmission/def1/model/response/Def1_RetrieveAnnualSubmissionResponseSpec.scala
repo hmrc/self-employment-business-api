@@ -29,7 +29,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
 
   private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
     allowances = Some(Def1_Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Def1_Retrieve_Adjustments(None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Def1_Retrieve_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
     nonFinancials = Some(Def1_Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 

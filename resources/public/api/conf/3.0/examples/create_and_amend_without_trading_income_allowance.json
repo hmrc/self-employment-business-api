@@ -8,7 +8,9 @@
     "outstandingBusinessIncome": 200.12,
     "balancingChargeBpra": 200.12,
     "balancingChargeOther": 200.12,
-    "goodsAndServicesOwnUse": 200.12
+    "goodsAndServicesOwnUse": 200.12,
+    "transitionProfitAmount": 200.12,
+    "transitionProfitAccelerationAmount": 200.12
   },
   "allowances": {
     "annualInvestmentAllowance": 200.12,
