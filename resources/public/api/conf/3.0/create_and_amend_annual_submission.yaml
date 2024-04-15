@@ -12,7 +12,9 @@ description: |
   | ALLOWANCE_NOT_SUPPORTED              | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year. |
   | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                  |
   | STATEFUL                             | Performs a stateful create or update.                                                                           |
+  {{#if (enabled 'adjustmentsAdditionalFields')}}
   | WRONG_TPA_AMOUNT_SUBMITTED           | Simulates the scenario where the Transition Profit Acceleration Amount cannot be submitted without Transition Profit Amount. |
+  {{/if}}
 
 tags:
   - Self-Employment Annual Submission
