@@ -98,9 +98,10 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleAllowanceNotSupported'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          {{#if (enabled 'adjustmentsAdditionalFields')}}
           RULE_WRONG_TPA_AMOUNT_SUBMITTED:
             $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
-
+	      {{/if}}
 
   "403":
     description: Forbidden
