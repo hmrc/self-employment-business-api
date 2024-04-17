@@ -25,7 +25,7 @@ class FeatureSwitchesSpec extends UnitSpec {
     "be true" when {
       "absent from the config" in {
         val configuration   = Configuration.empty
-        val featureSwitches = new FeatureSwitchesImpl(configuration)
+        val featureSwitches = FeatureSwitchesImpl(configuration)
 
         featureSwitches.isPassDeleteIntentEnabled shouldBe true
         featureSwitches.isCl290Enabled shouldBe true
