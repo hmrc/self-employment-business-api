@@ -20,13 +20,15 @@ import api.models.domain.ex.MtdNicExemption
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
+import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import support.UnitSpec
 import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
 import v3.createAmendAnnualSubmission.def1.model.request._
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators {
+class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -186,14 +188,18 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
   private val parsedRequestBody =
     Def1_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))
 
-  private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory
+  private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory(mockAppConfig)
 
   private def validator(nino: String, businessId: String, taxYear: String, body: JsValue) =
     validatorFactory.validator(nino, businessId, taxYear, body)
 
+  private def setupMocks(): Unit =
+    MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+
   "validate()" should {
     "return the parsed domain object" when {
       "a valid request is made" in {
+        setupMocks()
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
 
@@ -203,6 +209,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       }
 
       "a minimal adjustments request is supplied" in {
+        setupMocks()
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(
             validNino,
@@ -224,7 +231,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           parsedBusinessId,
           parsedTaxYear,
           parsedRequestBody.copy(
-            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None,None,None)),
+            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None, None, None)),
             None,
             None)
         )
@@ -233,6 +240,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       }
 
       "only adjustments is supplied" in {
+        setupMocks()
         val requestBody: JsValue = validRequestBody().removeProperty("/allowances").removeProperty("/nonFinancials")
 
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
@@ -278,6 +286,22 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       }
     }
     "return a path parameter error" when {
+      "the feature flag is off for adjustments additional fields" in {
+        MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> false)).anyNumberOfTimes()
+
+        val requestBody: JsValue =
+          validRequestBody(allowances = validAllowancesWithOnlyTradingIncomeAllowance)
+
+        val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
+          validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleIncorrectOrEmptyBodyError.withPaths(List("/adjustments/transitionProfitAmount", "/adjustments/transitionProfitAccelerationAmount")))
+        )
+      }
+
       "an invalid nino is supplied" in {
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator("A12344A", validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
