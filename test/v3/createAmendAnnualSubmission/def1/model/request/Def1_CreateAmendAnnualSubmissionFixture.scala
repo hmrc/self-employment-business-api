@@ -45,6 +45,19 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
        |  "balancingChargeOther": 8.12,
+       |  "goodsAndServicesOwnUse": 9.12
+       |}
+       |""".stripMargin)
+
+  val adjustmentsWithAdditionalFieldsMtdJson: JsValue = Json.parse(s"""{
+       |  "includedNonTaxableProfits": 1.12,
+       |  "basisAdjustment": 2.12,
+       |  "overlapReliefUsed": 3.12,
+       |  "accountingAdjustment": 4.12,
+       |  "averagingAdjustment": 5.12,
+       |  "outstandingBusinessIncome": 6.12,
+       |  "balancingChargeBpra": 7.12,
+       |  "balancingChargeOther": 8.12,
        |  "goodsAndServicesOwnUse": 9.12,
        |  "transitionProfitAmount": 9.12,
        |  "transitionProfitAccelerationAmount": 9.12
@@ -60,9 +73,7 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
        |  "balancingChargeOther": 8.12,
-       |  "goodsAndServicesOwnUse": 9.12,
-       |  "transitionProfitAmount": 9.12,
-       |  "transitionProfitAccelerationAmount": 9.12
+       |  "goodsAndServicesOwnUse": 9.12
        |}
        |""".stripMargin)
 
@@ -177,6 +188,16 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
   def createAmendAnnualSubmissionRequestBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
                                                     allowances: Option[JsValue] = Some(allowancesMtdJson),
                                                     nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
+    JsObject(
+      List(
+        adjustments.map("adjustments"     -> _),
+        allowances.map("allowances"       -> _),
+        nonFinancials.map("nonFinancials" -> _)
+      ).collect { case Some((a, b)) => a -> b })
+
+  def createAmendAnnualSubmissionRequestBodyWithAdditionalFieldsMtdJson(adjustments: Option[JsValue] = Some(adjustmentsWithAdditionalFieldsMtdJson),
+                                                                        allowances: Option[JsValue] = Some(allowancesMtdJson),
+                                                                        nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
     JsObject(
       List(
         adjustments.map("adjustments"     -> _),

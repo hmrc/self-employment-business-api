@@ -23,7 +23,7 @@ class Def1_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def1
 
   val model: Def1_CreateAmendAnnualSubmissionRequestBody = Def1_CreateAmendAnnualSubmissionRequestBody(
     allowances = Some(Def1_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Def1_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
+    adjustments = Some(Def1_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None, None, None)),
     nonFinancials = Some(Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
@@ -47,10 +47,18 @@ class Def1_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def1
 
     "given populated JSON" should {
       "return the deserialised Scala object" in {
-        val result = createAmendAnnualSubmissionRequestBodyMtdJson()
+        val result = createAmendAnnualSubmissionRequestBodyWithAdditionalFieldsMtdJson()
           .as[Def1_CreateAmendAnnualSubmissionRequestBody]
 
         result shouldBe createAmendAnnualSubmissionRequestBody()
+      }
+
+      "return the deserialised Scala object with additional fields" in {
+        val result = createAmendAnnualSubmissionRequestBodyMtdJson()
+          .as[Def1_CreateAmendAnnualSubmissionRequestBody]
+
+        result shouldBe createAmendAnnualSubmissionRequestBody().copy(adjustments =
+          Some(adjustments.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
       }
     }
   }
@@ -76,8 +84,8 @@ class Def1_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def1
 
     "given a populated case class" should {
       "return the populated downstream JSON" in {
-        val result = Json.toJson(createAmendAnnualSubmissionRequestBody())
-        result shouldBe createAmendAnnualSubmissionRequestBodyDownstreamJson()
+        val result = Json.toJson(createAmendAnnualSubmissionRequestBodyWithAdditionalFieldsMtdJson())
+        result shouldBe createAmendAnnualSubmissionRequestBodyWithAdditionalFieldsMtdJson()
       }
     }
   }
