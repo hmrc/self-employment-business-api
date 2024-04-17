@@ -17,13 +17,16 @@
 package v3.createAmendAnnualSubmission
 
 import api.controllers.validators.Validator
+import config.AppConfig
 import play.api.libs.json._
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
-class CreateAmendAnnualSubmissionValidatorFactory {
+import javax.inject.Inject
+
+class CreateAmendAnnualSubmissionValidatorFactory  @Inject() (appConfig: AppConfig){
 
   def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[CreateAmendAnnualSubmissionRequestData] =
-    new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
+    new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body, appConfig)
 
 }

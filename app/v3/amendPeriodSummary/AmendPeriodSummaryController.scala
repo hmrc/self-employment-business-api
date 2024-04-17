@@ -48,7 +48,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = FeatureSwitches(appConfig.featureSwitches).isAllowNegativeExpensesEnabled
+      val includeNegatives = FeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, periodId, taxYear, request.body, includeNegatives)
 
       val requestHandler = RequestHandler

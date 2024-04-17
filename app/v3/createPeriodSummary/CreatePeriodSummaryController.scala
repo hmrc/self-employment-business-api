@@ -49,7 +49,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = FeatureSwitches(appConfig.featureSwitches).isAllowNegativeExpensesEnabled
+      val includeNegatives = FeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, request.body, includeNegatives)
 
       val requestHandler = RequestHandler

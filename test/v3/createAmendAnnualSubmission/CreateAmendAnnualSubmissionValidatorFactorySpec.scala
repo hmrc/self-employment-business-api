@@ -42,7 +42,7 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
          |}
          |""".stripMargin)
 
-  private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory
+  private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory(mockAppConfig)
 
   private def setupMocks(): Unit =
     MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()

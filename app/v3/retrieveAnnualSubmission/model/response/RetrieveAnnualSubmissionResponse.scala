@@ -24,7 +24,9 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.retrieveAnnualSubmission.def1.model.response.{Def1_Retrieve_Adjustments, Def1_Retrieve_Allowances, Def1_Retrieve_NonFinancials}
 import v3.retrieveAnnualSubmission.model.response.Def1_RetrieveAnnualSubmissionResponse.Def1_RetrieveAnnualSubmissionLinksFactory
 
-sealed trait RetrieveAnnualSubmissionResponse
+sealed trait RetrieveAnnualSubmissionResponse {
+  def withoutAdjustmentsAdditionalFields: Def1_RetrieveAnnualSubmissionResponse
+}
 
 object RetrieveAnnualSubmissionResponse extends HateoasLinks {
 
@@ -46,7 +48,12 @@ case class Def1_RetrieveAnnualSubmissionResponse(
     adjustments: Option[Def1_Retrieve_Adjustments],
     allowances: Option[Def1_Retrieve_Allowances],
     nonFinancials: Option[Def1_Retrieve_NonFinancials]
-) extends RetrieveAnnualSubmissionResponse
+) extends RetrieveAnnualSubmissionResponse {
+
+  def withoutAdjustmentsAdditionalFields: Def1_RetrieveAnnualSubmissionResponse =
+    this.copy(adjustments = adjustments.map(adjs => adjs.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
+
+}
 
 object Def1_RetrieveAnnualSubmissionResponse extends HateoasLinks {
 

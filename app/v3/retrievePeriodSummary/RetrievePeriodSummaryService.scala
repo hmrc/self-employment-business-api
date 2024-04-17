@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector, appConfig: AppConfig) extends BaseService {
 
-  lazy private val featureSwitches = FeatureSwitches(appConfig.featureSwitches)
+  lazy private val featureSwitches = FeatureSwitches(appConfig)
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
       ctx: RequestContext,

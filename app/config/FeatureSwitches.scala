@@ -19,7 +19,7 @@ package config
 import com.google.inject.ImplementedBy
 import play.api.Configuration
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 @ImplementedBy(classOf[FeatureSwitchesImpl])
 trait FeatureSwitches {
@@ -28,17 +28,18 @@ trait FeatureSwitches {
   def isCl290Enabled: Boolean
   def isEnabled(key: String): Boolean
   def isReleasedInProduction(feature: String): Boolean
+  def isAdjustmentsAdditionalFieldsEnabled: Boolean
 }
 
-@Singleton
-class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwitches {
+case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwitches {
 
   @Inject
   def this(appConfig: AppConfig) = this(appConfig.featureSwitches)
 
-  val isPassDeleteIntentEnabled: Boolean      = isConfigTrue("passDeleteIntentHeader.enabled")
-  val isAllowNegativeExpensesEnabled: Boolean = isConfigTrue("allowNegativeExpenses.enabled")
-  val isCl290Enabled: Boolean                 = isConfigTrue("cl290.enabled")
+  val isPassDeleteIntentEnabled: Boolean            = isConfigTrue("passDeleteIntentHeader.enabled")
+  val isAllowNegativeExpensesEnabled: Boolean       = isConfigTrue("allowNegativeExpenses.enabled")
+  val isCl290Enabled: Boolean                       = isConfigTrue("cl290.enabled")
+  val isAdjustmentsAdditionalFieldsEnabled: Boolean = isConfigTrue("adjustmentsAdditionalFields.enabled")
 
   def isEnabled(key: String): Boolean                  = isConfigTrue(key + ".enabled")
   def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
@@ -47,5 +48,5 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
 }
 
 object FeatureSwitches {
-  def apply(configuration: Configuration): FeatureSwitches = new FeatureSwitchesImpl(configuration)
+  def apply(appConfig: AppConfig): FeatureSwitches = FeatureSwitchesImpl(appConfig.featureSwitches)
 }

@@ -35,7 +35,7 @@ import scala.annotation.nowarn
 class Def2_CreatePeriodSummaryValidator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean, appConfig: AppConfig)
     extends Validator[CreatePeriodSummaryRequestData] {
 
-  lazy private val featureSwitches = FeatureSwitches(appConfig.featureSwitches)
+  lazy private val featureSwitches = FeatureSwitches(appConfig)
 
   @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_CreatePeriodSummaryRequestBody]()

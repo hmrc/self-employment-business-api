@@ -33,7 +33,7 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
     implicit appConfig: AppConfig)
     extends Validator[AmendPeriodSummaryRequestData] {
 
-  lazy private val featureSwitches = FeatureSwitches(appConfig.featureSwitches)
+  lazy private val featureSwitches = FeatureSwitches(appConfig)
 
   @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_AmendPeriodSummaryRequestBody]()
