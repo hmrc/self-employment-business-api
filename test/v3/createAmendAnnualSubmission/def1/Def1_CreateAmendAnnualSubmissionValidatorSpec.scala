@@ -286,7 +286,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       }
     }
     "return a path parameter error" when {
-      "the feature flag is off for adjustments additional fields" in {
+      "adjustments additional fields are not enabled" in {
         MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> false)).anyNumberOfTimes()
 
         val requestBody: JsValue =
