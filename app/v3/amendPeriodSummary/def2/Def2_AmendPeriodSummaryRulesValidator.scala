@@ -33,7 +33,7 @@ import v3.amendPeriodSummary.model.request.Def2_AmendPeriodSummaryRequestData
 class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: AppConfig)
     extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
 
-  private lazy val featureSwitches = FeatureSwitches(appConfig.featureSwitches)
+  private lazy val featureSwitches = FeatureSwitches(appConfig)
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)

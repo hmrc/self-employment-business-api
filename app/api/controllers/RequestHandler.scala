@@ -58,14 +58,15 @@ object RequestHandler {
       service: Input => Future[ServiceOutcome[Output]],
       errorHandling: ErrorHandling = ErrorHandling.Default,
       resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
-      auditHandler: Option[AuditHandler] = None
+      auditHandler: Option[AuditHandler] = None,
+      modelHandler: Option[Output => Output] = None
   ) extends RequestHandler {
 
     def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] =
       Delegate.handleRequest()
 
-    def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
-      copy(errorHandling = errorHandling)
+    def withModelHandling(modelHandler: Output => Output): RequestHandlerBuilder[Input, Output] =
+      copy(modelHandler = Option(modelHandler))
 
     def withAuditing(auditHandler: AuditHandler): RequestHandlerBuilder[Input, Output] =
       copy(auditHandler = Some(auditHandler))
@@ -143,7 +144,12 @@ object RequestHandler {
             parsedRequest   <- EitherT.fromEither[Future](validator.validateAndWrapResult())
             serviceResponse <- EitherT(service(parsedRequest))
           } yield doWithContext(ctx.withCorrelationId(serviceResponse.correlationId)) { implicit ctx: RequestContext =>
-            handleSuccess(parsedRequest, serviceResponse)
+            modelHandler match {
+              case Some(responseHandler) =>
+                handleSuccess(parsedRequest, serviceResponse.copy(responseData = responseHandler(serviceResponse.responseData)))
+              case None =>
+                handleSuccess(parsedRequest, serviceResponse)
+            }
           }
 
         result.leftMap { errorWrapper =>

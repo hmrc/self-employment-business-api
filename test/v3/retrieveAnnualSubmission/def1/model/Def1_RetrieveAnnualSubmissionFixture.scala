@@ -121,6 +121,19 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
+  val adjustmentsWithoutAdditionalFieldsMtdJson: JsValue = Json.parse(s"""{
+       |  "includedNonTaxableProfits": 1.12,
+       |  "basisAdjustment": 2.12,
+       |  "overlapReliefUsed": 3.12,
+       |  "accountingAdjustment": 4.12,
+       |  "averagingAdjustment": 5.12,
+       |  "outstandingBusinessIncome": 6.12,
+       |  "balancingChargeBpra": 7.12,
+       |  "balancingChargeOther": 8.12,
+       |  "goodsAndServicesOwnUse": 9.12
+       |}
+       |""".stripMargin)
+
   val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
@@ -244,6 +257,14 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
+  val mtdRetrieveResponseWithNoAdditionalFieldsJson: JsValue = Json.parse(s"""
+       |{
+       |  "adjustments": $adjustmentsWithoutAdditionalFieldsMtdJson,
+       |  "allowances": $allowancesMtdJson,
+       |  "nonFinancials": $nonFinancialsMtdJson
+       |}
+       |""".stripMargin)
+
   val downstreamRetrieveResponseJson: JsValue = Json.parse(s"""
        |{
        |  "annualAdjustments": $adjustmentsDownstreamJson,
@@ -252,8 +273,11 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  def mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String, businessId: String, taxYear: String): JsValue =
-    mtdRetrieveResponseJson.as[JsObject] ++ Json
+  def mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String,
+                                                 businessId: String,
+                                                 taxYear: String,
+                                                 responseBody: JsValue = mtdRetrieveResponseJson): JsValue =
+    responseBody.as[JsObject] ++ Json
       .parse(s"""
          |{
          |  "links": [
