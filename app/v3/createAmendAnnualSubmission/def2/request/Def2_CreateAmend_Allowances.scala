@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1.model.request
+package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Def1_CreateAmend_Allowances(annualInvestmentAllowance: Option[BigDecimal],
+case class Def2_CreateAmend_Allowances(annualInvestmentAllowance: Option[BigDecimal],
                                        businessPremisesRenovationAllowance: Option[BigDecimal],
                                        capitalAllowanceMainPool: Option[BigDecimal],
                                        capitalAllowanceSpecialRatePool: Option[BigDecimal],
@@ -30,13 +30,13 @@ case class Def1_CreateAmend_Allowances(annualInvestmentAllowance: Option[BigDeci
                                        tradingIncomeAllowance: Option[BigDecimal],
                                        electricChargePointAllowance: Option[BigDecimal],
                                        zeroEmissionsCarAllowance: Option[BigDecimal],
-                                       structuredBuildingAllowance: Option[Seq[Def1_CreateAmend_StructuredBuildingAllowance]],
-                                       enhancedStructuredBuildingAllowance: Option[Seq[Def1_CreateAmend_StructuredBuildingAllowance]])
+                                       structuredBuildingAllowance: Option[Seq[Def2_CreateAmend_StructuredBuildingAllowance]],
+                                       enhancedStructuredBuildingAllowance: Option[Seq[Def2_CreateAmend_StructuredBuildingAllowance]])
 
-object Def1_CreateAmend_Allowances {
-  implicit val reads: Reads[Def1_CreateAmend_Allowances] = Json.reads[Def1_CreateAmend_Allowances]
+object Def2_CreateAmend_Allowances {
+  implicit val reads: Reads[Def2_CreateAmend_Allowances] = Json.reads[Def2_CreateAmend_Allowances]
 
-  implicit val writes: OWrites[Def1_CreateAmend_Allowances] = (
+  implicit val writes: OWrites[Def2_CreateAmend_Allowances] = (
     (JsPath \ "annualInvestmentAllowance").writeNullable[BigDecimal] and
       (JsPath \ "businessPremisesRenovationAllowance").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceMainPool").writeNullable[BigDecimal] and
@@ -48,8 +48,8 @@ object Def1_CreateAmend_Allowances {
       (JsPath \ "tradingIncomeAllowance").writeNullable[BigDecimal] and
       (JsPath \ "electricChargePointAllowance").writeNullable[BigDecimal] and
       (JsPath \ "zeroEmissionsCarAllowance").writeNullable[BigDecimal] and
-      (JsPath \ "structuredBuildingAllowance").writeNullable[Seq[Def1_CreateAmend_StructuredBuildingAllowance]] and
-      (JsPath \ "enhancedStructuredBuildingAllowance").writeNullable[Seq[Def1_CreateAmend_StructuredBuildingAllowance]]
-  )(unlift(Def1_CreateAmend_Allowances.unapply))
+      (JsPath \ "structuredBuildingAllowance").writeNullable[Seq[Def2_CreateAmend_StructuredBuildingAllowance]] and
+      (JsPath \ "enhancedStructuredBuildingAllowance").writeNullable[Seq[Def2_CreateAmend_StructuredBuildingAllowance]]
+  )(unlift(Def2_CreateAmend_Allowances.unapply))
 
 }

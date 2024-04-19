@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1.model.request
+package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class Def1_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def1_CreateAmendAnnualSubmissionFixture {
+class Def2_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def2_CreateAmendAnnualSubmissionFixture {
 
-  val model: Def1_CreateAmendAnnualSubmissionRequestBody = Def1_CreateAmendAnnualSubmissionRequestBody(
-    allowances = Some(Def1_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Def1_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, None))
+  val model: Def2_CreateAmendAnnualSubmissionRequestBody = Def2_CreateAmendAnnualSubmissionRequestBody(
+    allowances = Some(Def2_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Def2_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None, None, None)),
+    nonFinancials = Some(Def2_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
   "reads" when {
@@ -39,7 +39,7 @@ class Def1_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def1
              |  }
              |}
              |""".stripMargin)
-          .as[Def1_CreateAmendAnnualSubmissionRequestBody]
+          .as[Def2_CreateAmendAnnualSubmissionRequestBody]
 
         result shouldBe model
       }
@@ -48,9 +48,17 @@ class Def1_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def1
     "given populated JSON" should {
       "return the deserialised Scala object" in {
         val result = createAmendAnnualSubmissionRequestBodyWithAdditionalFieldsMtdJson()
-          .as[Def1_CreateAmendAnnualSubmissionRequestBody]
+          .as[Def2_CreateAmendAnnualSubmissionRequestBody]
 
         result shouldBe createAmendAnnualSubmissionRequestBody()
+      }
+
+      "return the deserialised Scala object with additional fields" in {
+        val result = createAmendAnnualSubmissionRequestBodyMtdJson()
+          .as[Def2_CreateAmendAnnualSubmissionRequestBody]
+
+        result shouldBe createAmendAnnualSubmissionRequestBody().copy(adjustments =
+          Some(adjustments.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
       }
     }
   }

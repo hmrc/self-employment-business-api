@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1.model.request
+package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.json.{Format, Json}
 
-case class Def1_CreateAmend_Adjustments(
+case class Def2_CreateAmend_Adjustments(
     includedNonTaxableProfits: Option[BigDecimal],
     basisAdjustment: Option[BigDecimal],
     overlapReliefUsed: Option[BigDecimal],
@@ -27,9 +27,11 @@ case class Def1_CreateAmend_Adjustments(
     outstandingBusinessIncome: Option[BigDecimal],
     balancingChargeBpra: Option[BigDecimal],
     balancingChargeOther: Option[BigDecimal],
-    goodsAndServicesOwnUse: Option[BigDecimal]
+    goodsAndServicesOwnUse: Option[BigDecimal],
+    transitionProfitAmount: Option[BigDecimal],
+    transitionProfitAccelerationAmount: Option[BigDecimal]
 )
 
-object Def1_CreateAmend_Adjustments {
-  implicit val format: Format[Def1_CreateAmend_Adjustments] = Json.format[Def1_CreateAmend_Adjustments]
+object Def2_CreateAmend_Adjustments {
+  implicit val format: Format[Def2_CreateAmend_Adjustments] = Json.format[Def2_CreateAmend_Adjustments]
 }

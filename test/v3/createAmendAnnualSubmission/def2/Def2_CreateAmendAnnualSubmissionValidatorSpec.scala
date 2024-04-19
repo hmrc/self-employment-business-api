@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1
+package v3.createAmendAnnualSubmission.def2
 
 import api.models.domain.ex.MtdNicExemption
 import api.models.domain.{BusinessId, Nino, TaxYear}
@@ -25,16 +25,16 @@ import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import support.UnitSpec
 import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
-import v3.createAmendAnnualSubmission.def1.model.request._
-import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
+import v3.createAmendAnnualSubmission.def2.request._
+import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validTaxYear    = "2021-22"
+  private val validTaxYear    = "2024-25"
 
   private val validAdjustments = Json.parse(
     """
@@ -47,7 +47,9 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
      |    "outstandingBusinessIncome": 200.12,
      |    "balancingChargeBpra": 200.12,
      |    "balancingChargeOther": 200.12,
-     |    "goodsAndServicesOwnUse": 200.12
+     |    "goodsAndServicesOwnUse": 200.12,
+     |    "transitionProfitAmount": 200.12,
+     |    "transitionProfitAccelerationAmount": 200.12
      |  }
      |""".stripMargin
   )
@@ -103,6 +105,23 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |""".stripMargin
   )
 
+  private val validAdjustmentsWithNoTransitionProfitValue = Json.parse(
+    """
+      |  {
+      |    "includedNonTaxableProfits": 200.12,
+      |    "basisAdjustment": 200.12,
+      |    "overlapReliefUsed": 200.12,
+      |    "accountingAdjustment": 200.12,
+      |    "averagingAdjustment": 200.12,
+      |    "outstandingBusinessIncome": 200.12,
+      |    "balancingChargeBpra": 200.12,
+      |    "balancingChargeOther": 200.12,
+      |    "goodsAndServicesOwnUse": 200.12,
+      |    "transitionProfitAccelerationAmount": 200.12
+      |  }
+      |""".stripMargin
+  )
+
   private val validNonFinancials = Json.parse(
     """
       |  {
@@ -124,7 +143,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
   private val parsedBusinessId = BusinessId(validBusinessId)
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
-  private val parsedAdjustments = Def1_CreateAmend_Adjustments(
+  private val parsedAdjustments = Def2_CreateAmend_Adjustments(
     includedNonTaxableProfits = Some(200.12),
     basisAdjustment = Some(200.12),
     overlapReliefUsed = Some(200.12),
@@ -133,16 +152,18 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     outstandingBusinessIncome = Some(200.12),
     balancingChargeBpra = Some(200.12),
     balancingChargeOther = Some(200.12),
-    goodsAndServicesOwnUse = Some(200.12)
+    goodsAndServicesOwnUse = Some(200.12),
+    transitionProfitAmount = Some(200.12),
+    transitionProfitAccelerationAmount = Some(200.12)
   )
 
-  private val parsedFirstYear = Def1_CreateAmend_FirstYear(qualifyingDate = "2021-11-11", qualifyingAmountExpenditure = 1.23)
-  private val parsedBuilding  = Def1_CreateAmend_Building(name = Some("Plaza 2"), number = None, postcode = "TF3 4NT")
+  private val parsedFirstYear = Def2_CreateAmend_FirstYear(qualifyingDate = "2021-11-11", qualifyingAmountExpenditure = 1.23)
+  private val parsedBuilding  = Def2_CreateAmend_Building(name = Some("Plaza 2"), number = None, postcode = "TF3 4NT")
 
   private val parsedStructuredBuildingAllowance =
-    Def1_CreateAmend_StructuredBuildingAllowance(amount = 1.23, firstYear = Some(parsedFirstYear), building = parsedBuilding)
+    Def2_CreateAmend_StructuredBuildingAllowance(amount = 1.23, firstYear = Some(parsedFirstYear), building = parsedBuilding)
 
-  private val parsedAllowances = Def1_CreateAmend_Allowances(
+  private val parsedAllowances = Def2_CreateAmend_Allowances(
     annualInvestmentAllowance = Some(200.12),
     businessPremisesRenovationAllowance = Some(200.12),
     capitalAllowanceMainPool = Some(200.12),
@@ -159,13 +180,13 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
   )
 
   private val parsedAllowancesWithOnlyTradingIncomeAllowance =
-    Def1_CreateAmend_Allowances(None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None, None)
+    Def2_CreateAmend_Allowances(None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None, None)
 
   private val parsedNonFinancials =
-    Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
+    Def2_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
 
   private val parsedRequestBody =
-    Def1_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))
+    Def2_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))
 
   private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory
 
@@ -183,7 +204,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           validator(validNino, validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
 
         result shouldBe Right(
-          Def1_CreateAmendAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear, parsedRequestBody)
+          Def2_CreateAmendAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear, parsedRequestBody)
         )
       }
 
@@ -205,12 +226,12 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
             )
           ).validateAndWrapResult()
 
-        val expected = Def1_CreateAmendAnnualSubmissionRequestData(
+        val expected = Def2_CreateAmendAnnualSubmissionRequestData(
           parsedNino,
           parsedBusinessId,
           parsedTaxYear,
           parsedRequestBody.copy(
-            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None)),
+            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None, None, None)),
             None,
             None)
         )
@@ -225,7 +246,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
 
-        val expected = Def1_CreateAmendAnnualSubmissionRequestData(
+        val expected = Def2_CreateAmendAnnualSubmissionRequestData(
           parsedNino,
           parsedBusinessId,
           parsedTaxYear,
@@ -240,7 +261,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
         result shouldBe Right(
-          Def1_CreateAmendAnnualSubmissionRequestData(
+          Def2_CreateAmendAnnualSubmissionRequestData(
             parsedNino,
             parsedBusinessId,
             parsedTaxYear,
@@ -255,7 +276,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
         result shouldBe Right(
-          Def1_CreateAmendAnnualSubmissionRequestData(
+          Def2_CreateAmendAnnualSubmissionRequestData(
             parsedNino,
             parsedBusinessId,
             parsedTaxYear,
@@ -265,7 +286,6 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       }
     }
     "return a path parameter error" when {
-
       "an invalid nino is supplied" in {
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator("A12344A", validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
@@ -450,6 +470,19 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       }
     }
 
+    "return RuleWrongTpaAmountSubmittedError" when {
+      "an valid body with no transition profit value is submitted" in {
+        val requestBody: JsValue =
+          validRequestBody(adjustments = validAdjustmentsWithNoTransitionProfitValue)
+
+        val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
+          validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleWrongTpaAmountSubmittedError)
+        )
+      }
+    }
     def test(error: MtdError)(body: JsValue, path: String): Unit = {
       s"passed an invalid value at $path returns $error" in {
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
@@ -469,6 +502,8 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       "/adjustments/balancingChargeBpra",
       "/adjustments/balancingChargeOther",
       "/adjustments/goodsAndServicesOwnUse",
+      "/adjustments/transitionProfitAmount",
+      "/adjustments/transitionProfitAccelerationAmount",
       "/allowances/annualInvestmentAllowance",
       "/allowances/businessPremisesRenovationAllowance",
       "/allowances/capitalAllowanceMainPool",
@@ -761,16 +796,6 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     }
 
     "return multiple errors" when {
-      "tax year is invalid" in {
-        val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
-          validator("AJAA12", "XASOE12", "201219", validRequestBody()).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
-      }
-      "every path parameter format is invalid" in {
-        val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
-          validator("AJAA12", "XASOE12", validTaxYear, validRequestBody()).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(BusinessIdFormatError, NinoFormatError))))
-      }
       "every field in the body is invalid" in {
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] = validator(
           validNino,
@@ -788,7 +813,9 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               |    "outstandingBusinessIncome": 200.123,
               |    "balancingChargeBpra": 200.123,
               |    "balancingChargeOther": 200.132,
-              |    "goodsAndServicesOwnUse": 200.132
+              |    "goodsAndServicesOwnUse": 200.132,
+              |    "transitionProfitAmount": 200.132,
+              |    "transitionProfitAccelerationAmount": 200.132
               |  },
               |  "allowances": {
               |    "annualInvestmentAllowance": 200.132,
@@ -861,6 +888,8 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
                 "/adjustments/balancingChargeBpra",
                 "/adjustments/balancingChargeOther",
                 "/adjustments/goodsAndServicesOwnUse",
+                "/adjustments/transitionProfitAmount",
+                "/adjustments/transitionProfitAccelerationAmount",
                 "/allowances/annualInvestmentAllowance",
                 "/allowances/businessPremisesRenovationAllowance",
                 "/allowances/capitalAllowanceMainPool",

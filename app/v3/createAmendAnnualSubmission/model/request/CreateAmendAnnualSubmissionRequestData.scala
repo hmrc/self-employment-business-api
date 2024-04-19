@@ -18,6 +18,7 @@ package v3.createAmendAnnualSubmission.model.request
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
+import v3.createAmendAnnualSubmission.def2.request.Def2_CreateAmendAnnualSubmissionRequestBody
 
 sealed trait CreateAmendAnnualSubmissionRequestData {
   val nino: Nino
@@ -31,4 +32,11 @@ case class Def1_CreateAmendAnnualSubmissionRequestData(
     businessId: BusinessId,
     taxYear: TaxYear,
     body: Def1_CreateAmendAnnualSubmissionRequestBody
+) extends CreateAmendAnnualSubmissionRequestData
+
+case class Def2_CreateAmendAnnualSubmissionRequestData(
+    nino: Nino,
+    businessId: BusinessId,
+    taxYear: TaxYear,
+    body: Def2_CreateAmendAnnualSubmissionRequestBody
 ) extends CreateAmendAnnualSubmissionRequestData

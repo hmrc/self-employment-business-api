@@ -19,10 +19,15 @@ package v3.createAmendAnnualSubmission
 import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import config.AppConfig
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
+import v3.createAmendAnnualSubmission.model.request.{
+  CreateAmendAnnualSubmissionRequestData,
+  Def1_CreateAmendAnnualSubmissionRequestData,
+  Def2_CreateAmendAnnualSubmissionRequestData
+}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,15 +46,23 @@ class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val 
       case def1: Def1_CreateAmendAnnualSubmissionRequestData =>
         import def1._
         val downstreamUri =
-          if (taxYear.isTys) {
-            TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
-          } else {
-            IfsUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
-          }
-
+          uriFactory(nino, businessId, taxYear)
+        put(body, downstreamUri)
+      case def2: Def2_CreateAmendAnnualSubmissionRequestData =>
+        import def2._
+        val downstreamUri =
+          uriFactory(nino, businessId, taxYear)
         put(body, downstreamUri)
     }
 
+  }
+
+  private def uriFactory(nino: Nino, businessId: BusinessId, taxYear: TaxYear) = {
+    if (taxYear.isTys) {
+      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+    } else {
+      IfsUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
+    }
   }
 
 }

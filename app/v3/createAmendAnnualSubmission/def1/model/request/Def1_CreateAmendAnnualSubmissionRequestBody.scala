@@ -21,10 +21,10 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestBody
 
 case class Def1_CreateAmendAnnualSubmissionRequestBody(
-                                                        adjustments: Option[Def1_CreateAmend_Adjustments],
-                                                        allowances: Option[Def1_CreateAmend_Allowances],
-                                                        nonFinancials: Option[Def1_CreateAmend_NonFinancials]
-                                                      ) extends CreateAmendAnnualSubmissionRequestBody
+    adjustments: Option[Def1_CreateAmend_Adjustments],
+    allowances: Option[Def1_CreateAmend_Allowances],
+    nonFinancials: Option[Def1_CreateAmend_NonFinancials]
+) extends CreateAmendAnnualSubmissionRequestBody
 
 object Def1_CreateAmendAnnualSubmissionRequestBody {
 
