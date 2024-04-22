@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1
+package v3.createAmendAnnualSubmission.def2
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNumber, ResolveStringPattern}
@@ -22,10 +22,9 @@ import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits._
-import v3.createAmendAnnualSubmission.def1.model.request._
-import v3.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
+import v3.createAmendAnnualSubmission.model.request.Def2_CreateAmendAnnualSubmissionRequestData
 
-object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def1_CreateAmendAnnualSubmissionRequestData] {
+object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def2_CreateAmendAnnualSubmissionRequestData] {
 
   private val resolveNonNegativeParsedNumber       = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber     = ResolveParsedNumber(min = -99999999999.99)
@@ -34,16 +33,17 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   private val resolveStringPattern                 = new ResolveStringPattern(regex, StringFormatError)
 
   def validateBusinessRules(
-      parsed: Def1_CreateAmendAnnualSubmissionRequestData): Validated[Seq[MtdError], Def1_CreateAmendAnnualSubmissionRequestData] = {
+      parsed: Def2_CreateAmendAnnualSubmissionRequestData): Validated[Seq[MtdError], Def2_CreateAmendAnnualSubmissionRequestData] = {
     import parsed.body._
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
+      adjustments.map(validateTPAAmount).getOrElse(valid),
       allowances.map(validateBothAllowancesSupplied).getOrElse(valid),
       allowances.map(validateAllowances).getOrElse(valid)
     ).onSuccess(parsed)
   }
 
-  private def validateAdjustments(adjustments: Def1_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
+  private def validateAdjustments(adjustments: request.Def2_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
     import adjustments._
 
     val validatedNonNegatives = List(
@@ -53,7 +53,9 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       (outstandingBusinessIncome, "/adjustments/outstandingBusinessIncome"),
       (balancingChargeBpra, "/adjustments/balancingChargeBpra"),
       (balancingChargeOther, "/adjustments/balancingChargeOther"),
-      (goodsAndServicesOwnUse, "/adjustments/goodsAndServicesOwnUse")
+      (goodsAndServicesOwnUse, "/adjustments/goodsAndServicesOwnUse"),
+      (transitionProfitAmount, "/adjustments/transitionProfitAmount"),
+      (transitionProfitAccelerationAmount, "/adjustments/transitionProfitAccelerationAmount")
     ).traverse_ { case (value, path) =>
       resolveNonNegativeParsedNumber(value, path = Some(path))
     }
@@ -68,7 +70,7 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
-  private def validateAllowances(allowances: Def1_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
+  private def validateAllowances(allowances: request.Def2_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
     import allowances._
 
     val validatedNonNegatives = List(
@@ -108,10 +110,10 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       validatedEnhancedStructuredBuildingAllowance)
   }
 
-  private def validateBothAllowancesSupplied(allowances: Def1_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
+  private def validateBothAllowancesSupplied(allowances: request.Def2_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
     if (allowances.tradingIncomeAllowance.isDefined) {
       allowances match {
-        case Def1_CreateAmend_Allowances(None, None, None, None, None, None, None, None, Some(_), None, None, None, None) => valid
+        case request.Def2_CreateAmend_Allowances(None, None, None, None, None, None, None, None, Some(_), None, None, None, None) => valid
         case _ => Invalid(List(RuleBothAllowancesSuppliedError))
       }
     } else {
@@ -119,7 +121,7 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     }
   }
 
-  private def validateStructuredBuildingAllowance(structuredBuildingAllowance: Def1_CreateAmend_StructuredBuildingAllowance,
+  private def validateStructuredBuildingAllowance(structuredBuildingAllowance: request.Def2_CreateAmend_StructuredBuildingAllowance,
                                                   index: Int,
                                                   typeOfBuildingAllowance: String): Validated[Seq[MtdError], Unit] = {
     import structuredBuildingAllowance._
@@ -160,10 +162,20 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
 
   }
 
-  private def validateBuildingNameNumber(building: Def1_CreateAmend_Building, path: String): Validated[Seq[MtdError], Unit] = {
+  private def validateBuildingNameNumber(building: request.Def2_CreateAmend_Building, path: String): Validated[Seq[MtdError], Unit] = {
     building match {
-      case Def1_CreateAmend_Building(None, None, _) => Invalid(List(RuleBuildingNameNumberError.withPath(path)))
+      case request.Def2_CreateAmend_Building(None, None, _) => Invalid(List(RuleBuildingNameNumberError.withPath(path)))
       case _                                        => valid
+    }
+  }
+  private def validateTPAAmount(adjustments: request.Def2_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
+    if (adjustments.transitionProfitAccelerationAmount.isDefined) {
+      adjustments match {
+        case request.Def2_CreateAmend_Adjustments(Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_)) => valid
+        case _ => Invalid(List(RuleWrongTpaAmountSubmittedError))
+      }
+    } else {
+      valid
     }
   }
 }

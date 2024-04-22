@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1.model.request
+package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Def1_CreateAmend_StructuredBuildingAllowance(amount: BigDecimal,
-                                                        firstYear: Option[Def1_CreateAmend_FirstYear],
-                                                        building: Def1_CreateAmend_Building)
+case class Def2_CreateAmend_FirstYear(qualifyingDate: String, qualifyingAmountExpenditure: BigDecimal)
 
-object Def1_CreateAmend_StructuredBuildingAllowance {
-  implicit val format: OFormat[Def1_CreateAmend_StructuredBuildingAllowance] = Json.format[Def1_CreateAmend_StructuredBuildingAllowance]
+object Def2_CreateAmend_FirstYear {
+  implicit val format: OFormat[Def2_CreateAmend_FirstYear] = Json.format[Def2_CreateAmend_FirstYear]
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1
+package v3.createAmendAnnualSubmission.def2
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
@@ -24,17 +24,17 @@ import api.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 import cats.data.Validated
 import cats.implicits._
 import play.api.libs.json._
-import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionRulesValidator.validateBusinessRules
-import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
-import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
+import v3.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionRulesValidator.validateBusinessRules
+import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
 
 import scala.annotation.nowarn
 
-class Def1_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)
+class Def2_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)
     extends Validator[CreateAmendAnnualSubmissionRequestData] {
 
+
   @nowarn("cat=lint-byname-implicit")
-  private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendAnnualSubmissionRequestBody]()
+  private val resolveJson = new ResolveNonEmptyJsonObject[request.Def2_CreateAmendAnnualSubmissionRequestBody]()
 
   private val resolveTaxYear =
     DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
@@ -46,7 +46,7 @@ class Def1_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String
         ResolveBusinessId(businessId),
         resolveTaxYear(taxYear),
         resolveJson(body)
-      ).mapN(Def1_CreateAmendAnnualSubmissionRequestData) andThen validateBusinessRules
+      ).mapN(Def2_CreateAmendAnnualSubmissionRequestData) andThen validateBusinessRules
     }
 
   private def validateClass4ExemptionReasonEnum: Validated[Seq[MtdError], Unit] = {

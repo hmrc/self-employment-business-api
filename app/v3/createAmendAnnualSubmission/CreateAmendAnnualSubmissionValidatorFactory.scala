@@ -17,16 +17,36 @@
 package v3.createAmendAnnualSubmission
 
 import api.controllers.validators.Validator
-import config.AppConfig
+import api.controllers.validators.common.InvalidResultValidator
+import api.models.domain.TaxYear
+import api.models.errors.TaxYearFormatError
 import play.api.libs.json._
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
+import v3.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
-import javax.inject.Inject
+class CreateAmendAnnualSubmissionValidatorFactory {
 
-class CreateAmendAnnualSubmissionValidatorFactory  @Inject() (appConfig: AppConfig){
+  private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2024-25")
 
-  def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[CreateAmendAnnualSubmissionRequestData] =
-    new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body, appConfig)
+
+  private val invalidTaxYearValidator =
+    InvalidResultValidator[CreateAmendAnnualSubmissionRequestData](TaxYearFormatError)
+
+  def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[CreateAmendAnnualSubmissionRequestData] = {
+
+    TaxYear.maybeFromMtd(taxYear) match {
+
+      case Some(ty) if ty.isBefore(def2TaxYearApplicableFrom) =>
+        new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
+
+      case Some(_) =>
+        new Def2_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
+
+      case None =>
+        invalidTaxYearValidator
+    }
+
+  }
 
 }

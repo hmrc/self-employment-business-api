@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1.model.request
+package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class Def1_CreateAmend_AdjustmentsSpec extends UnitSpec {
+class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
 
-  val model: Def1_CreateAmend_Adjustments =
-    Def1_CreateAmend_Adjustments(
+  val model: Def2_CreateAmend_Adjustments =
+    Def2_CreateAmend_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
       overlapReliefUsed = Some(3.12),
@@ -31,7 +31,9 @@ class Def1_CreateAmend_AdjustmentsSpec extends UnitSpec {
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12)
+      goodsAndServicesOwnUse = Some(9.12),
+      transitionProfitAmount = Some(9.12),
+      transitionProfitAccelerationAmount = Some(9.12)
     )
 
   "reads" when {
@@ -52,7 +54,7 @@ class Def1_CreateAmend_AdjustmentsSpec extends UnitSpec {
              |  "transitionProfitAccelerationAmount": 9.12
              |}
              |""".stripMargin)
-          .as[Def1_CreateAmend_Adjustments] shouldBe model
+          .as[Def2_CreateAmend_Adjustments] shouldBe model
       }
     }
   }
@@ -69,7 +71,9 @@ class Def1_CreateAmend_AdjustmentsSpec extends UnitSpec {
              |  "outstandingBusinessIncome": 6.12,
              |  "balancingChargeBpra": 7.12,
              |  "balancingChargeOther": 8.12,
-             |  "goodsAndServicesOwnUse": 9.12
+             |  "goodsAndServicesOwnUse": 9.12,
+             |  "transitionProfitAmount": 9.12,
+             |  "transitionProfitAccelerationAmount": 9.12
              |}
              |""".stripMargin)
       }

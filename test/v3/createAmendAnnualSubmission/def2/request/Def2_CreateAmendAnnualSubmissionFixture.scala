@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v3.createAmendAnnualSubmission.def1.model.request
+package v3.createAmendAnnualSubmission.def2.request
 
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
 
-trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_StructuredBuildingAllowanceFixture {
+trait Def2_CreateAmendAnnualSubmissionFixture extends Def2_CreateAmend_StructuredBuildingAllowanceFixture {
 
-  val adjustments: Def1_CreateAmend_Adjustments =
-    Def1_CreateAmend_Adjustments(
+  val adjustments: Def2_CreateAmend_Adjustments =
+    Def2_CreateAmend_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
       overlapReliefUsed = Some(3.12),
@@ -31,7 +31,9 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12)
+      goodsAndServicesOwnUse = Some(9.12),
+      transitionProfitAmount = Some(9.12),
+      transitionProfitAccelerationAmount = Some(9.12)
     )
 
   val adjustmentsMtdJson: JsValue = Json.parse(s"""{
@@ -56,7 +58,9 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
        |  "balancingChargeOther": 8.12,
-       |  "goodsAndServicesOwnUse": 9.12
+       |  "goodsAndServicesOwnUse": 9.12,
+       |  "transitionProfitAmount": 9.12,
+       |  "transitionProfitAccelerationAmount": 9.12
        |}
        |""".stripMargin)
 
@@ -73,11 +77,11 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |}
        |""".stripMargin)
 
-  val allowances: Def1_CreateAmend_Allowances = allowancesWith()
+  val allowances: Def2_CreateAmend_Allowances = allowancesWith()
   val allowancesMtdJson: JsValue              = allowancesMtdJsonWith()
   val allowancesDownstreamJson: JsValue       = allowancesDownstreamJsonWith()
 
-  val allowancesTradingIncomeAllowance: Def1_CreateAmend_Allowances = Def1_CreateAmend_Allowances(
+  val allowancesTradingIncomeAllowance: Def2_CreateAmend_Allowances = Def2_CreateAmend_Allowances(
     None,
     None,
     None,
@@ -103,8 +107,8 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |}
        |""".stripMargin)
 
-  val nonFinancials: Def1_CreateAmend_NonFinancials =
-    Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
+  val nonFinancials: Def2_CreateAmend_NonFinancials =
+    Def2_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
 
   val nonFinancialsMtdJson: JsValue = Json.parse(s"""
        |{
@@ -121,10 +125,10 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |}
        |""".stripMargin)
 
-  def allowancesWith(structuredBuildingAllowances: Seq[Def1_CreateAmend_StructuredBuildingAllowance] = List(structuredBuildingAllowance),
-                     enhancedStructuredBuildingAllowances: Seq[Def1_CreateAmend_StructuredBuildingAllowance] = List(structuredBuildingAllowance))
-      : Def1_CreateAmend_Allowances =
-    Def1_CreateAmend_Allowances(
+  def allowancesWith(structuredBuildingAllowances: Seq[Def2_CreateAmend_StructuredBuildingAllowance] = List(structuredBuildingAllowance),
+                     enhancedStructuredBuildingAllowances: Seq[Def2_CreateAmend_StructuredBuildingAllowance] = List(structuredBuildingAllowance))
+      : Def2_CreateAmend_Allowances =
+    Def2_CreateAmend_Allowances(
       annualInvestmentAllowance = Some(1.12),
       capitalAllowanceMainPool = Some(2.12),
       capitalAllowanceSpecialRatePool = Some(3.12),
@@ -176,10 +180,10 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |""".stripMargin)
 
   def createAmendAnnualSubmissionRequestBody(
-      adjustmentsModel: Option[Def1_CreateAmend_Adjustments] = Some(adjustments),
-      allowancesModel: Option[Def1_CreateAmend_Allowances] = Some(allowances),
-      nonFinancialsModel: Option[Def1_CreateAmend_NonFinancials] = Some(nonFinancials)): Def1_CreateAmendAnnualSubmissionRequestBody =
-    Def1_CreateAmendAnnualSubmissionRequestBody(adjustmentsModel, allowancesModel, nonFinancialsModel)
+      adjustmentsModel: Option[Def2_CreateAmend_Adjustments] = Some(adjustments),
+      allowancesModel: Option[Def2_CreateAmend_Allowances] = Some(allowances),
+      nonFinancialsModel: Option[Def2_CreateAmend_NonFinancials] = Some(nonFinancials)): Def2_CreateAmendAnnualSubmissionRequestBody =
+    Def2_CreateAmendAnnualSubmissionRequestBody(adjustmentsModel, allowancesModel, nonFinancialsModel)
 
   def createAmendAnnualSubmissionRequestBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
                                                     allowances: Option[JsValue] = Some(allowancesMtdJson),
