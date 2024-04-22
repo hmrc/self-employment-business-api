@@ -42,7 +42,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
 
           val response: WSResponse = await(request().get())
           response.status shouldBe OK
-          response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseWithNoAdditionalFieldsJson)
+          response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseJson)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
         }
@@ -58,7 +58,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
 
           val response: WSResponse = await(request().get())
           response.status shouldBe OK
-          response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseWithNoAdditionalFieldsJson)
+          response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseJson)
           response.header("X-CorrelationId").nonEmpty shouldBe true
           response.header("Content-Type") shouldBe Some("application/json")
         }
