@@ -37,16 +37,26 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/retrieve_annual_submission_response.json'
+          oneOf:
+            - $ref: './schemas/def1/retrieve_annual_submission_response.json'
+            - $ref: './schemas/def2/retrieve_annual_submission_response.json'
         examples:
-          example-with-allowances-response:
+          example-with-allowances-response-TY-2023-24-or-before:
             description: Example Response with Full Allowances
             value:
-              $ref: './examples/retrieve_annual_submission_full_response.json'
-          example-with-trading-allowances-response:
+              $ref: './examples/def1/retrieve_annual_submission_full_response.json'
+          example-with-trading-allowances-response-TY-2023-24-or-before:
             description: Example Response with Trading Allowance
             value:
-              $ref: './examples/retrieve_annual_submission_trading_allowance_response.json'
+              $ref: './examples/def1/retrieve_annual_submission_trading_allowance_response.json'
+          example-with-allowances-response-TY-2024-25-or-later:
+            description: Example Response with Full Allowances
+            value:
+              $ref: './examples/def2/retrieve_annual_submission_full_response.json'
+          example-with-trading-allowances-response-TY-2024-25-or-later:
+            description: Example Response with Trading Allowance
+            value:
+              $ref: './examples/def2/retrieve_annual_submission_trading_allowance_response.json'
 
   "400":
     description: Bad request
