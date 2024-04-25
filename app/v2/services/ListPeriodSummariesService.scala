@@ -33,24 +33,24 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
   private val errorMap: Map[String, MtdError] = {
     val errors =
       Map(
-        "INVALID_NINO"            -> NinoFormatError,
-        "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
-        "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-        "SERVER_ERROR"            -> InternalError,
-        "SERVICE_UNAVAILABLE"     -> InternalError
+        "INVALID_NINO"             -> NinoFormatError,
+        "INVALID_INCOME_SOURCEID"  -> BusinessIdFormatError,
+        "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+        "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+        "SERVER_ERROR"             -> InternalError,
+        "SERVICE_UNAVAILABLE"      -> InternalError
       )
     val extraTysErrors = Map(
       "INVALID_TAX_YEAR"        -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID" -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID"  -> InternalError,
       "TAX_YEAR_NOT_SUPPORTED"  -> RuleTaxYearNotSupportedError
     )
     errors ++ extraTysErrors
   }
 
   def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
-                                                                   ctx: RequestContext,
-                                                                   ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
     connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
