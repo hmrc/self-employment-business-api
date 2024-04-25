@@ -131,15 +131,15 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
 
       val input: Seq[(String, MtdError)] = {
         val errors: Seq[(String, MtdError)] = List(
-          "INVALID_NINO"            -> NinoFormatError,
-          "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
-          "INVALID_INCOME_SOURCE_ID"  -> BusinessIdFormatError,
-          "INVALID_DATE_FROM"       -> PeriodIdFormatError,
-          "INVALID_DATE_TO"         -> PeriodIdFormatError,
-          "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-          "NOT_FOUND_PERIOD"        -> NotFoundError,
-          "SERVER_ERROR"            -> InternalError,
-          "SERVICE_UNAVAILABLE"     -> InternalError
+          "INVALID_NINO"             -> NinoFormatError,
+          "INVALID_INCOMESOURCEID"   -> BusinessIdFormatError,
+          "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+          "INVALID_DATE_FROM"        -> PeriodIdFormatError,
+          "INVALID_DATE_TO"          -> PeriodIdFormatError,
+          "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+          "NOT_FOUND_PERIOD"         -> NotFoundError,
+          "SERVER_ERROR"             -> InternalError,
+          "SERVICE_UNAVAILABLE"      -> InternalError
         )
         val extraTysErrors: Seq[(String, MtdError)] = List(
           "INVALID_TAX_YEAR"             -> TaxYearFormatError,

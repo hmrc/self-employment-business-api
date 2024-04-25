@@ -42,6 +42,7 @@ case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends Featu
   val isCl290Enabled: Boolean                          = isConfigTrue("cl290.enabled")
   val isAdjustmentsAdditionalFieldsEnabled: Boolean    = isConfigTrue("adjustmentsAdditionalFields.enabled")
   val isDesIf_MigrationEnabled: Boolean                = isConfigTrue("desIf_Migration.enabled")
+
   def isEnabled(key: String): Boolean                  = isConfigTrue(key + ".enabled")
   def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
 
