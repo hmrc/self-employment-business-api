@@ -19,13 +19,18 @@ package v3.retrievePeriodSummary
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
+import mocks.MockFeatureSwitches
 import v3.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
-import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import v3.retrievePeriodSummary.model.request.{
+  Def1_RetrievePeriodSummaryRequestData,
+  Def2_RetrievePeriodSummaryRequestData,
+  RetrievePeriodSummaryRequestData
+}
 import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 
-class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
+class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
 
   private val nino       = Nino("AA123456A")
   private val businessId = BusinessId("XAIS12345678910")
@@ -50,8 +55,10 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   "retrievePeriodSummary()" when {
 
-    "given a def1 (non-TYS) request" should {
+    "given a def1 (non-TYS) request and 'isDesIf_MigrationEnabled' is off" should {
       "call the non-TYS URL and return a 200 status" in new DesTest with Test {
+
+        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
         val expectedDownstreamUrl = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
@@ -63,6 +70,22 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val result: DownstreamOutcome[RetrievePeriodSummaryResponse] = await(connector.retrievePeriodSummary(request))
 
+        result shouldBe outcome
+      }
+    }
+
+    "given a def1 (non-TYS) request and 'isDesIf_MigrationEnabled' is on" should {
+      "call the non-TYS IFS URL and return a 200 status" in new IfsTest with Test {
+
+        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
+        val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
+
+        val expectedDownstreamUrl = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+
+        willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
+
+        val request: RetrievePeriodSummaryRequestData                = Def1_RetrievePeriodSummaryRequestData(nino, businessId, periodId)
+        val result: DownstreamOutcome[RetrievePeriodSummaryResponse] = await(connector.retrievePeriodSummary(request))
         result shouldBe outcome
       }
     }

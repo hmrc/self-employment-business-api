@@ -54,6 +54,7 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
     val errors = Map(
       "INVALID_NINO"            -> NinoFormatError,
       "INVALID_INCOMESOURCEID"  -> BusinessIdFormatError,
+      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
       "INVALID_DATE_FROM"       -> PeriodIdFormatError,
       "INVALID_DATE_TO"         -> PeriodIdFormatError,
       "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
@@ -65,11 +66,11 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
       "INVALID_TAX_YEAR"             -> TaxYearFormatError,
       "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
       "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
-      "INVALID_CORRELATION_ID"       -> InternalError,
       "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
     )
     errors ++ extraTysErrors
+
   }
 
 }
