@@ -18,7 +18,7 @@ package definition
 
 import config.AppConfig
 import definition.APIStatus.DISABLED
-import routing.{Version, Version2, Version3}
+import routing.{Version, Version2, Version3, Version4}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.Logging
 
@@ -67,13 +67,12 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
             version = Version3,
             status = buildAPIStatus(Version3),
             endpointsEnabled = appConfig.endpointsEnabled(Version3)
+          ),
+          APIVersion(
+            version = Version4,
+            status = buildAPIStatus(Version4),
+            endpointsEnabled = appConfig.endpointsEnabled(Version4)
           )
-          // Hidden by MTDSA-20447
-          //          APIVersion(
-          //            version = Version4,
-          //            status = buildAPIStatus(Version4),
-          //            endpointsEnabled = appConfig.endpointsEnabled(Version4)
-          //          )
         ).filter(apiVersion => apiVersion.status != DISABLED),
         requiresTrust = None
       )

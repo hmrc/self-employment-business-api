@@ -21,7 +21,7 @@ import config.ConfidenceLevelConfig
 import definition.APIStatus.{ALPHA, BETA}
 import mocks.MockAppConfig
 import play.api.Configuration
-import routing.{Version2, Version3}
+import routing.{Version2, Version3, Version4}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -40,8 +40,10 @@ class ApiDefinitionFactorySpec extends UnitSpec {
         MockAppConfig.featureSwitches returns Configuration.empty
         MockAppConfig.apiStatus(Version2) returns "BETA"
         MockAppConfig.apiStatus(Version3) returns "BETA"
+        MockAppConfig.apiStatus(Version4) returns "BETA"
         MockAppConfig.endpointsEnabled(Version2).returns(true).anyNumberOfTimes()
         MockAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
+        MockAppConfig.endpointsEnabled(Version4).returns(true).anyNumberOfTimes()
         MockAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
@@ -78,6 +80,11 @@ class ApiDefinitionFactorySpec extends UnitSpec {
                 ),
                 APIVersion(
                   version = Version3,
+                  status = BETA,
+                  endpointsEnabled = true
+                ),
+                APIVersion(
+                  version = Version4,
                   status = BETA,
                   endpointsEnabled = true
                 )
@@ -121,7 +128,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     }
 
     "the 'apiStatus' parameter is present and invalid" should {
-      Seq(Version2, Version3).foreach { version =>
+      Seq(Version2, Version3, Version4).foreach { version =>
         s"default to alpha for $version " in new Test {
           MockAppConfig.apiStatus(version) returns "ALPHO"
           apiDefinitionFactory.buildAPIStatus(version) shouldBe ALPHA
