@@ -29,6 +29,7 @@ trait FeatureSwitches {
   def isEnabled(key: String): Boolean
   def isReleasedInProduction(feature: String): Boolean
   def isAdjustmentsAdditionalFieldsEnabled: Boolean
+  def isDesIf_MigrationEnabled: Boolean
 }
 
 case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwitches {
@@ -36,11 +37,11 @@ case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends Featu
   @Inject
   def this(appConfig: AppConfig) = this(appConfig.featureSwitches)
 
-  val isPassDeleteIntentEnabled: Boolean            = isConfigTrue("passDeleteIntentHeader.enabled")
-  val isAllowNegativeExpensesEnabled: Boolean       = isConfigTrue("allowNegativeExpenses.enabled")
-  val isCl290Enabled: Boolean                       = isConfigTrue("cl290.enabled")
-  val isAdjustmentsAdditionalFieldsEnabled: Boolean = isConfigTrue("adjustmentsAdditionalFields.enabled")
-
+  val isPassDeleteIntentEnabled: Boolean               = isConfigTrue("passDeleteIntentHeader.enabled")
+  val isAllowNegativeExpensesEnabled: Boolean          = isConfigTrue("allowNegativeExpenses.enabled")
+  val isCl290Enabled: Boolean                          = isConfigTrue("cl290.enabled")
+  val isAdjustmentsAdditionalFieldsEnabled: Boolean    = isConfigTrue("adjustmentsAdditionalFields.enabled")
+  val isDesIf_MigrationEnabled: Boolean                = isConfigTrue("desIf_Migration.enabled")
   def isEnabled(key: String): Boolean                  = isConfigTrue(key + ".enabled")
   def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
 
