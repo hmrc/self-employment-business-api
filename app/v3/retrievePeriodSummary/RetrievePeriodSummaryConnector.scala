@@ -44,16 +44,15 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appCon
 
     val fromDate = periodId.from
     val toDate   = periodId.to
+    val path     = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
     request match {
       case _: Def1_RetrievePeriodSummaryRequestData =>
         val downstreamUri =
           if (featureSwitches.isDesIf_MigrationEnabled)
-            IfsUri[Def1_RetrievePeriodSummaryResponse](
-              s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+            IfsUri[Def1_RetrievePeriodSummaryResponse](path)
           else
-            DesUri[Def1_RetrievePeriodSummaryResponse](
-              s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+            DesUri[Def1_RetrievePeriodSummaryResponse](path)
         val result = get(downstreamUri)
         result
 

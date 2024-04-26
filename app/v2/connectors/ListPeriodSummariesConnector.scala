@@ -28,7 +28,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: FeatureSwitches) extends BaseDownstreamConnector {
+class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: FeatureSwitches)
+    extends BaseDownstreamConnector {
+
   def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
@@ -36,16 +38,17 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
 
     import request._
 
+    val path = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+
     val downstreamUri =
       taxYear match {
         case Some(taxYear) if taxYear.isTys =>
           TaxYearSpecificIfsUri[ListPeriodSummariesResponse[PeriodDetails]](
             s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+        case _ if featureSwitches.isDesIf_MigrationEnabled =>
+          IfsUri[ListPeriodSummariesResponse[PeriodDetails]](path)
         case _ =>
-          if (featureSwitches.isDesIf_MigrationEnabled)
-            IfsUri[ListPeriodSummariesResponse[PeriodDetails]](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-          else
-            DesUri[ListPeriodSummariesResponse[PeriodDetails]](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+          DesUri[ListPeriodSummariesResponse[PeriodDetails]](path)
       }
 
     get(downstreamUri)
