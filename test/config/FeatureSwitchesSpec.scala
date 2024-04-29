@@ -29,13 +29,15 @@ class FeatureSwitchesSpec extends UnitSpec {
 
         featureSwitches.isPassDeleteIntentEnabled shouldBe true
         featureSwitches.isCl290Enabled shouldBe true
+        featureSwitches.isDesIf_MigrationEnabled shouldBe true
       }
 
       "enabled" in {
         val configuration = Configuration(
           "passDeleteIntentHeader.enabled" -> true,
           "allowNegativeExpenses.enabled"  -> true,
-          "cl290.enabled"                  -> true
+          "cl290.enabled"                  -> true,
+          "desIf_Migration.enabled"        -> true
         )
 
         val featureSwitches = new FeatureSwitchesImpl(configuration)
@@ -43,6 +45,7 @@ class FeatureSwitchesSpec extends UnitSpec {
         featureSwitches.isPassDeleteIntentEnabled shouldBe true
         featureSwitches.isAllowNegativeExpensesEnabled shouldBe true
         featureSwitches.isCl290Enabled shouldBe true
+        featureSwitches.isDesIf_MigrationEnabled shouldBe true
 
       }
     }
@@ -52,7 +55,8 @@ class FeatureSwitchesSpec extends UnitSpec {
         val configuration = Configuration(
           "passDeleteIntentHeader.enabled" -> false,
           "allowNegativeExpenses.enabled"  -> false,
-          "cl290.enabled"                  -> false
+          "cl290.enabled"                  -> false,
+          "desIf_Migration.enabled"        -> false
         )
 
         val featureSwitches = new FeatureSwitchesImpl(configuration)
@@ -60,6 +64,7 @@ class FeatureSwitchesSpec extends UnitSpec {
         featureSwitches.isPassDeleteIntentEnabled shouldBe false
         featureSwitches.isAllowNegativeExpensesEnabled shouldBe false
         featureSwitches.isCl290Enabled shouldBe false
+        featureSwitches.isDesIf_MigrationEnabled shouldBe false
 
       }
     }

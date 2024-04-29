@@ -102,11 +102,12 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
       val input: Seq[(String, MtdError)] = {
         val errors: Seq[(String, MtdError)] =
           Seq(
-            "INVALID_NINO"            -> NinoFormatError,
-            "INVALID_INCOME_SOURCEID" -> BusinessIdFormatError,
-            "NOT_FOUND_INCOME_SOURCE" -> NotFoundError,
-            "SERVER_ERROR"            -> InternalError,
-            "SERVICE_UNAVAILABLE"     -> InternalError
+            "INVALID_NINO"             -> NinoFormatError,
+            "INVALID_INCOME_SOURCEID"  -> BusinessIdFormatError,
+            "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+            "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
+            "SERVER_ERROR"             -> InternalError,
+            "SERVICE_UNAVAILABLE"      -> InternalError
           )
         val tysSpecificErrors: Seq[(String, MtdError)] =
           Seq(

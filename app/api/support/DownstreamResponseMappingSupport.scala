@@ -29,10 +29,13 @@ trait DownstreamResponseMappingSupport {
 
     lazy val defaultErrorCodeMapping: String => MtdError = {
 
-      case "UNMATCHED_STUB_ERROR" => {
+      case "UNMATCHED_STUB_ERROR" =>
         logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No matching stub was found")
         RuleIncorrectGovTestScenarioError
-      }
+
+      case "INVALID_CORRELATION_ID" | "INVALID_CORRELATIONID" =>
+        logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - An internal server error occurred")
+        InternalError
 
       case code =>
         logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No mapping found for error code $code")
