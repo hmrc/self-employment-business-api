@@ -1,0 +1,14 @@
+put:
+  $ref: "./amend_period_summary.yaml"
+  summary: Amend a Self-Employment Period Summary
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+get:
+  $ref: "./retrieve_period_summary.yaml"
+  summary: Retrieve a Self-Employment Period Summary
+  security:
+    - User-Restricted:
+        - read:self-assessment
+
