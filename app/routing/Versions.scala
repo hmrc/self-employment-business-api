@@ -25,25 +25,25 @@ object Version {
   def from(request: RequestHeader, orElse: Version): Version =
     Versions.getFromRequest(request).getOrElse(orElse)
 
-  implicit object VersionWrites extends Writes[Version] {
+  object VersionWrites extends Writes[Version] {
 
-    def writes(version: Version): JsValue = version match {
-      case Version2 => Json.toJson(Version2.name)
-      case Version3 => Json.toJson(Version3.name)
-      case Version4 => Json.toJson(Version4.name)
-    }
+    def writes(version: Version): JsValue = version.asJson
 
   }
 
-  implicit object VersionReads extends Reads[Version] {
+  object VersionReads extends Reads[Version] {
 
+    /** @param version
+      *   expecting a JsString e.g. "1.0"
+      */
     override def reads(version: JsValue): JsResult[Version] =
-      version.validate[String].flatMap {
-        case Version2.name => JsSuccess(Version2)
-        case Version3.name => JsSuccess(Version3)
-        case Version4.name => JsSuccess(Version4)
-        case _             => JsError("Unrecognised version")
-      }
+      version
+        .validate[String]
+        .flatMap(name =>
+          Versions.getFrom(name) match {
+            case Left(_)        => JsError("Version not recognised")
+            case Right(version) => JsSuccess(version)
+          })
 
   }
 
@@ -52,6 +52,7 @@ object Version {
 
 sealed trait Version {
   val name: String
+  lazy val asJson: JsValue      = Json.toJson(name)
   override def toString: String = name
 }
 
@@ -83,10 +84,10 @@ object Versions {
       ver <- getFrom(str)
     } yield ver
 
-  private def getFrom(headers: Seq[(String, String)]): Either[GetFromRequestError, String] =
+  def getFrom(headers: Seq[(String, String)]): Either[GetFromRequestError, String] =
     headers.collectFirst { case (ACCEPT, versionRegex(ver)) => ver }.toRight(left = InvalidHeader)
 
-  private def getFrom(name: String): Either[GetFromRequestError, Version] =
+  def getFrom(name: String): Either[GetFromRequestError, Version] =
     versionsByName.get(name).toRight(left = VersionNotFound)
 
 }
