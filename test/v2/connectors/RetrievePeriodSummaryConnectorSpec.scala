@@ -16,7 +16,7 @@
 
 package v2.connectors
 
-import api.connectors.ConnectorSpec
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
@@ -63,7 +63,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
         .returns(Future.successful(outcome))
 
-      await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))) shouldBe outcome
+      await(connector.retrievePeriodSummary(this.request(Nino(nino), BusinessId(businessId), PeriodId(periodId), None))) shouldBe outcome
     }
 
     "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
@@ -73,8 +73,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
       willGet(url).returns(Future.successful(outcome))
 
-      val result =
-        await(connector.retrievePeriodSummary(request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
+      val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
+        await(connector.retrievePeriodSummary(this.request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
       result shouldBe outcome
     }
   }

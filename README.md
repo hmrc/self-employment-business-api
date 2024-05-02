@@ -12,16 +12,16 @@ The Self-Employment Business API allows software packages to:
 
 ## Requirements
 
-- Scala 2.12.x
-- Java 8
-- sbt 1.6.x
+- Scala 2.13.x
+- Java 11
+- sbt 1.9.7
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ## Development Setup
 
 To run the microservice from console, use `sbt run`. (starts on port 7801 by default)
 
-To start the service manager profile: `sm --start MTDFB_SELF_EMPLOYMENT_BUSINESS`.
+To start the service manager profile: `sm2 --start MTDFB_SELF_EMPLOYMENT_BUSINESS`.
 
 ## Run Tests
 
