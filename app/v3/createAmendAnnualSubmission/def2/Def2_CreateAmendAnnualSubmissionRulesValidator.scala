@@ -168,14 +168,12 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       case _                                        => valid
     }
   }
+
   private def validateTPAAmount(adjustments: request.Def2_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
-    if (adjustments.transitionProfitAccelerationAmount.isDefined) {
-      adjustments match {
-        case request.Def2_CreateAmend_Adjustments(Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_), Some(_)) => valid
-        case _ => Invalid(List(RuleWrongTpaAmountSubmittedError))
-      }
-    } else {
-      valid
+    adjustments match {
+      case request.Def2_CreateAmend_Adjustments(_, _, _, _, _, _, _, _, _, Some(_), Some(_)) => valid
+      case request.Def2_CreateAmend_Adjustments(_, _, _, _, _, _, _, _, _, None, Some(_)) => Invalid(List(RuleWrongTpaAmountSubmittedError))
+      case _ => valid
     }
   }
 }
