@@ -165,15 +165,16 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   private def validateBuildingNameNumber(building: request.Def2_CreateAmend_Building, path: String): Validated[Seq[MtdError], Unit] = {
     building match {
       case request.Def2_CreateAmend_Building(None, None, _) => Invalid(List(RuleBuildingNameNumberError.withPath(path)))
-      case _                                        => valid
+      case _                                                => valid
     }
   }
 
   private def validateTPAAmount(adjustments: request.Def2_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
-    adjustments match {
-      case request.Def2_CreateAmend_Adjustments(_, _, _, _, _, _, _, _, _, Some(_), Some(_)) => valid
-      case request.Def2_CreateAmend_Adjustments(_, _, _, _, _, _, _, _, _, None, Some(_)) => Invalid(List(RuleWrongTpaAmountSubmittedError))
-      case _ => valid
+    if (adjustments.transitionProfitAccelerationAmount.isDefined && adjustments.transitionProfitAmount.isEmpty) {
+      Invalid(List(RuleWrongTpaAmountSubmittedError))
+    } else {
+      valid
     }
   }
+
 }
