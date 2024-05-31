@@ -22,11 +22,16 @@ import api.models.errors.{ErrorWrapper, InternalError}
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceOutcome
 import cats.data.EitherT
+import cats.data.Validated.Valid
 import cats.implicits._
+import config.AppConfig
+import config.Deprecation.Deprecated
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
+import routing.Version
+import utils.DateUtils.longDateTimestampGmt
 import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -114,7 +119,25 @@ object RequestHandler {
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {
 
-      implicit class Response(result: Result) {
+      implicit class Response(result: Result) (implicit appConfig: AppConfig, apiVersion: Version) {
+
+        private def withDeprecationHeaders: List[(String, String)] = {
+
+          appConfig.deprecationFor(apiVersion) match {
+            case Valid(Deprecated(deprecatedOn, Some(sunsetDate))) =>
+              List(
+                "Deprecation" -> longDateTimestampGmt(deprecatedOn),
+                "Sunset" -> longDateTimestampGmt(sunsetDate),
+                "Link" -> appConfig.apiDocumentationUrl
+              )
+            case Valid(Deprecated(deprecatedOn, None)) =>
+              List(
+                "Deprecation" -> longDateTimestampGmt(deprecatedOn),
+                "Link" -> appConfig.apiDocumentationUrl
+              )
+            case _ => Nil
+          }
+        }
 
         def withApiHeaders(correlationId: String, responseHeaders: (String, String)*): Result = {
           val headers =
