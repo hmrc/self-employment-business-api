@@ -26,12 +26,10 @@ import play.api.libs.json.JsValue
 import v2.models.request.createPeriodSummary.{CreatePeriodSummaryRequestBody, CreatePeriodSummaryRequestData}
 
 import javax.inject.Singleton
-import scala.annotation.nowarn
 
 @Singleton
 class CreatePeriodSummaryValidatorFactory {
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[CreatePeriodSummaryRequestBody]()
 
   def validator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean): Validator[CreatePeriodSummaryRequestData] =

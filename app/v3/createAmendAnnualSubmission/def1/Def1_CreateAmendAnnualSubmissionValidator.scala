@@ -28,12 +28,9 @@ import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionRules
 import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-import scala.annotation.nowarn
-
 class Def1_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)
     extends Validator[CreateAmendAnnualSubmissionRequestData] {
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendAnnualSubmissionRequestBody]()
 
   private val resolveTaxYear =
