@@ -16,9 +16,9 @@
 
 package v3.amendPeriodSummary
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v3.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 

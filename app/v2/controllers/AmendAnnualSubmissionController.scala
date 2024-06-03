@@ -16,13 +16,13 @@
 
 package v2.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version2}
-import utils.IdGenerator
+import shared.hateoas.HateoasFactory
+import shared.routing.{Version, Version2}
+import shared.utils.IdGenerator
 import v2.controllers.validators.AmendAnnualSubmissionValidatorFactory
 import v2.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v2.models.response.amendSEAnnual.AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory

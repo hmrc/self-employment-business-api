@@ -16,8 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.domain.TransactionId
-import api.models.errors.TransactionIdFormatError
+import shared.models.errors.TransactionIdFormatError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 

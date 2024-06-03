@@ -16,13 +16,14 @@
 
 package v3.amendPeriodSummary.def2
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTysTaxYear}
-import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTysTaxYear}
+import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
+import shared.config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
@@ -33,7 +34,7 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
     implicit appConfig: AppConfig)
     extends Validator[AmendPeriodSummaryRequestData] {
 
-  lazy private val featureSwitches = FeatureSwitches(appConfig)
+  lazy private val featureSwitches = SeBusinessFeatureSwitches(appConfig)
 
   @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_AmendPeriodSummaryRequestBody]()

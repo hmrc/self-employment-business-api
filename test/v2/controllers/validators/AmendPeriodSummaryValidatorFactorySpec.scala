@@ -16,8 +16,8 @@
 
 package v2.controllers.validators
 
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
+import shared.models.domain.{Nino, PeriodId, TaxYear}
+import shared.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import support.UnitSpec

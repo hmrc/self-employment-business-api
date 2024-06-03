@@ -16,23 +16,23 @@
 
 package api.controllers
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import api.hateoas._
 import api.mocks.MockIdGenerator
-import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.auth.UserDetails
-import api.models.errors.{ErrorWrapper, MtdError, NinoFormatError}
-import api.models.outcomes.ResponseWrapper
-import api.services.{MockAuditService, ServiceOutcome}
+import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.auth.UserDetails
+import shared.models.errors.{ErrorWrapper, MtdError, NinoFormatError}
+import shared.models.outcomes.ResponseWrapper
+import shared.services.{MockAuditService, ServiceOutcome}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import config.AppConfig
+import shared.config.AppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.AnyContent
 import play.api.test.{FakeRequest, ResultExtractors}
-import routing.Version3
+import shared.routing.Version3
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult

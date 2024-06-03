@@ -16,10 +16,10 @@
 
 package v3.createAmendAnnualSubmission
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import api.controllers.validators.common.InvalidResultValidator
-import api.models.domain.TaxYear
-import api.models.errors.TaxYearFormatError
+import shared.models.domain.TaxYear
+import shared.models.errors.TaxYearFormatError
 import play.api.libs.json._
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator

@@ -16,12 +16,12 @@
 
 package v2.controllers
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.controllers._
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.hateoas.HateoasFactory
+import shared.utils.IdGenerator
 import v2.controllers.validators.ListPeriodSummariesValidatorFactory
 import v2.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
 import v2.services.ListPeriodSummariesService

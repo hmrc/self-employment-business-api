@@ -18,6 +18,7 @@ package config
 
 import com.google.inject.ImplementedBy
 import play.api.Configuration
+import shared.config.AppConfig
 
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ trait FeatureSwitches {
 case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwitches {
 
   @Inject
-  def this(appConfig: AppConfig) = this(appConfig.featureSwitches)
+  def this(appConfig: AppConfig) = this(appConfig. featureSwitchConfig)
 
   val isPassDeleteIntentEnabled: Boolean               = isConfigTrue("passDeleteIntentHeader.enabled")
   val isAllowNegativeExpensesEnabled: Boolean          = isConfigTrue("allowNegativeExpenses.enabled")
@@ -50,5 +51,5 @@ case class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends Featu
 }
 
 object FeatureSwitches {
-  def apply(appConfig: AppConfig): FeatureSwitches = FeatureSwitchesImpl(appConfig.featureSwitches)
+  def apply(appConfig: AppConfig): FeatureSwitches = FeatureSwitchesImpl(appConfig. featureSwitchConfig)
 }

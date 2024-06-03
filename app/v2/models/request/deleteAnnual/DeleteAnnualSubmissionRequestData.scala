@@ -16,6 +16,6 @@
 
 package v2.models.request.deleteAnnual
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 case class DeleteAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)

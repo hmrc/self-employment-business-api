@@ -16,7 +16,7 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import support.UnitSpec
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData

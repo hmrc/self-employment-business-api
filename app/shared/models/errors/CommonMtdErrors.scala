@@ -52,6 +52,10 @@ object EndDateFormatError extends MtdError("FORMAT_END_DATE", "The provided End 
 
 object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The provided calculation ID is invalid", BAD_REQUEST)
 
+object StringFormatError extends MtdError(code = "FORMAT_STRING", message = "The supplied string format is not valid", BAD_REQUEST)
+
+object DateFormatError extends MtdError(code = "FORMAT_DATE", message = "The supplied date format is not valid", BAD_REQUEST)
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
 
@@ -71,14 +75,22 @@ object InvalidTaxYearParameterError
     extends MtdError(code = "INVALID_TAX_YEAR_PARAMETER", message = "A tax year before 2023-24 was supplied", BAD_REQUEST)
 
 //Authentication/Authorisation errors
-
-/** Authentication OK but not allowed access to the requested resource
-  */
+//Authentication OK but not allowed access to the requested resource
 object ClientOrAgentNotAuthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", FORBIDDEN){
   def withStatus401: MtdError = copy(httpStatus = UNAUTHORIZED)
 }
 
 object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized", UNAUTHORIZED)
+
+object ClientNotAuthorisedError
+  extends MtdError(code = "CLIENT_OR_AGENT_NOT_AUTHORISED", message = "The client and/or agent is not authorised", FORBIDDEN)
+
+object ClientNotAuthenticatedError
+  extends MtdError(
+    code = "CLIENT_OR_AGENT_NOT_AUTHORISED",
+    message = "The client and/or agent is not authorised",
+    UNAUTHORIZED
+  )
 
 // Accept header Errors
 object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid", NOT_ACCEPTABLE)
@@ -120,9 +132,69 @@ object RuleInvalidDateRangeError extends MtdError(code = "RULE_INVALID_DATE_RANG
 object NoTransactionDetailsFoundError extends MtdError(code = "NO_DETAILS_FOUND", message = "No transaction details found", BAD_REQUEST)
 
 object RuleEndBeforeStartDateError
-    extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "The supplied accounting period end date is before the start date", BAD_REQUEST)
+    extends MtdError(code = "RULE_END_DATE_BEFORE_START_DATE", message = "The End date cannot be earlier than the Start date", BAD_REQUEST)
+
+object RuleBothExpensesSuppliedError
+    extends MtdError(
+      code = "RULE_BOTH_EXPENSES_SUPPLIED",
+      message = "Both expenses and consolidatedExpenses can not be present at the same time",
+      BAD_REQUEST)
+
+object RuleBothAllowancesSuppliedError
+    extends MtdError(
+      code = "RULE_BOTH_ALLOWANCES_SUPPLIED",
+      message = "Both allowances and trading allowances must not be present at the same time",
+      BAD_REQUEST)
+
+object RuleAllowanceNotSupportedError
+    extends MtdError(
+      code = "RULE_ALLOWANCE_NOT_SUPPORTED",
+      message =
+        "One or more of supplied allowances (electricChargePointAllowance, zeroEmissionsCarAllowance, structuredBuildingAllowance, enhancedStructuredBuildingAllowance) is not supported for the supplied tax year",
+      BAD_REQUEST)
+
+object RuleBuildingNameNumberError
+    extends MtdError(code = "RULE_BUILDING_NAME_NUMBER", message = "Postcode must be supplied along with at least one of name or number", BAD_REQUEST)
+
+object RuleDuplicateSubmissionError
+    extends MtdError(code = "RULE_DUPLICATE_SUBMISSION", message = "A summary has already been submitted for the period specified", BAD_REQUEST)
 
 object RuleCountryCodeError extends MtdError("RULE_COUNTRY_CODE", "The country code is not a valid ISO 3166-1 alpha-3 country code", BAD_REQUEST)
 
 //Stub Errors
 object RuleIncorrectGovTestScenarioError extends MtdError("RULE_INCORRECT_GOV_TEST_SCENARIO", "The Gov-Test-Scenario was not found", BAD_REQUEST)
+
+object RuleWrongTpaAmountSubmittedError extends MtdError(code = "RULE_WRONG_TPA_AMOUNT_SUBMITTED", message = "Transition profit acceleration value cannot be submitted without a transition profit value", BAD_REQUEST)
+object PeriodIdFormatError extends MtdError(code = "FORMAT_PERIOD_ID", message = "The provided Period ID is invalid", BAD_REQUEST)
+
+object Class4ExemptionReasonFormatError
+  extends MtdError(
+    code = "FORMAT_CLASS_4_EXEMPTION_REASON",
+    message = "The format of the supplied Class 4 National Insurance exemption reason is not valid",
+    BAD_REQUEST)
+
+// Rule Errors
+object RuleInvalidSubmissionPeriodError
+  extends MtdError(
+    code = "RULE_INVALID_SUBMISSION_PERIOD",
+    message = "Self Employment submissions cannot be more than 10 days before the end of the Period",
+    BAD_REQUEST)
+
+object RuleInvalidSubmissionEndDateError
+  extends MtdError(code = "RULE_INVALID_SUBMISSION_END_DATE", message = "The submitted end date must be the end of the quarter", BAD_REQUEST)
+object RuleOverlappingPeriod
+  extends MtdError(code = "RULE_OVERLAPPING_PERIOD", message = "Period summary overlaps with any of the existing period summaries", BAD_REQUEST)
+
+object RuleMisalignedPeriod
+  extends MtdError(code = "RULE_MISALIGNED_PERIOD", message = "Period summary is not within the accounting period", BAD_REQUEST)
+
+object RuleNotContiguousPeriod extends MtdError(code = "RULE_NOT_CONTIGUOUS_PERIOD", message = "Period summaries are not contiguous", BAD_REQUEST)
+
+object RuleNotAllowedConsolidatedExpenses
+  extends MtdError(
+    code = "RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES",
+    message = "Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold",
+    BAD_REQUEST)
+
+object RuleToDateBeforeFromDateError
+  extends MtdError(code = "RULE_TO_DATE_BEFORE_FROM_DATE", message = "The To date cannot be earlier than the From date", BAD_REQUEST)

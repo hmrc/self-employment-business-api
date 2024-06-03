@@ -16,9 +16,9 @@
 
 package v3.amendPeriodSummary.def1
 
-import api.controllers.validators.Validator
-import api.models.domain.{BusinessId, Nino, PeriodId}
-import api.models.errors._
+import shared.controllers.validators.Validator
+import shared.models.domain.{Nino, PeriodId}
+import shared.models.errors._
 import api.models.utils.JsonErrorValidators
 import mocks.MockAppConfig
 import play.api.Configuration
@@ -168,7 +168,7 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
     new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, body, includeNegatives)
 
   private def setupMocks(): Unit =
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {

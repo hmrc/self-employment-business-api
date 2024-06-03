@@ -16,10 +16,10 @@
 
 package api.connectors
 
-import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import api.mocks.MockHttpClient
-import api.models.outcomes.ResponseWrapper
-import config.AppConfig
+import shared.models.outcomes.ResponseWrapper
+import shared.config.AppConfig
 import mocks.MockAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 

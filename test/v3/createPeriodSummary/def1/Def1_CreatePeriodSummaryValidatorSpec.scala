@@ -16,8 +16,8 @@
 
 package v3.createPeriodSummary.def1
 
-import api.models.domain.{BusinessId, Nino}
-import api.models.errors._
+import shared.models.domain.Nino
+import shared.models.errors._
 import api.models.utils.JsonErrorValidators
 import mocks.MockAppConfig
 import play.api.libs.json._

@@ -16,7 +16,7 @@
 
 package v3.retrievePeriodSummary.model.request
 
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import shared.models.domain.{Nino, PeriodId, TaxYear}
 
 sealed trait RetrievePeriodSummaryRequestData {
   val nino: Nino

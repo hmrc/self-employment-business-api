@@ -16,8 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.domain.BusinessId
-import api.models.errors.BusinessIdFormatError
+import shared.models.errors.BusinessIdFormatError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 

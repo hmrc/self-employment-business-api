@@ -16,12 +16,12 @@
 
 package v3.retrievePeriodSummary
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import api.hateoas.HateoasFactory
-import api.models.domain.TaxYear
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.models.domain.TaxYear
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.utils.IdGenerator
 import v3.retrievePeriodSummary.model.response.RetrievePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}

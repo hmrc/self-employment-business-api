@@ -16,11 +16,11 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v2.connectors.MockListPeriodSummariesConnector
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v2.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}

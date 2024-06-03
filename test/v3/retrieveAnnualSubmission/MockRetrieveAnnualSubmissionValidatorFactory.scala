@@ -16,8 +16,8 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers.validators.Validator
-import api.models.errors.MtdError
+import shared.controllers.validators.Validator
+import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler

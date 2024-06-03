@@ -16,9 +16,9 @@
 
 package v2.controllers.validators
 
-import api.models.domain.ex.MtdNicExemption
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
+import shared.models.domain.ex.MtdNicExemption
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import support.UnitSpec

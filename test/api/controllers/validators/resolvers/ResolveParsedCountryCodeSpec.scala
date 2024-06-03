@@ -16,7 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{CountryCodeFormatError, RuleCountryCodeError}
+import shared.models.errors.{CountryCodeFormatError, RuleCountryCodeError}
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 

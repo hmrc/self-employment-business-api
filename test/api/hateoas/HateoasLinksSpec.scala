@@ -17,7 +17,7 @@
 package api.hateoas
 
 import api.hateoas
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 import Method.{DELETE, GET, POST, PUT}
 import mocks.MockAppConfig
 import support.UnitSpec

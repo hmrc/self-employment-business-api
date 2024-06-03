@@ -16,9 +16,9 @@
 
 package v2.controllers.validators.resolvers
 
-import api.controllers.validators.resolvers.ResolveDateRange
-import api.models.domain.{DateRange, PeriodId}
-import api.models.errors.{MtdError, PeriodIdFormatError}
+import shared.controllers.validators.resolvers.ResolveDateRange
+import shared.models.domain.{DateRange, PeriodId}
+import shared.models.errors.{MtdError, PeriodIdFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 

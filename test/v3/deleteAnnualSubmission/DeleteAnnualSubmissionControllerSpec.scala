@@ -16,11 +16,11 @@
 
 package v3.deleteAnnualSubmission
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
 import v3.deleteAnnualSubmission
 import v3.deleteAnnualSubmission.model.Def1_DeleteAnnualSubmissionRequestData

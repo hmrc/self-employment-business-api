@@ -16,7 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.IdFormatError
+import shared.models.errors.IdFormatError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 

@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
-package api.controllers
+package shared.models.domain
 
-import api.models.errors.ErrorWrapper
-import play.api.libs.json.Json
-import play.api.mvc.Result
-import play.api.mvc.Results.Status
+import play.api.libs.json.{JsString, Writes}
 
-case class ErrorHandling(errorHandler: PartialFunction[ErrorWrapper, Result])
+case class PeriodId(value: String) {
 
-object ErrorHandling {
+  val (from, to): (String, String) = {
+    if (value.length == 21) {
+      val f = value.substring(0, 10)
+      val t = value.substring(11, 21)
+      (f, t)
+    } else {
+      ("", "")
+    }
+  }
 
-  val Default: ErrorHandling = ErrorHandling { case errorWrapper: ErrorWrapper =>
-    Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
+}
+
+object PeriodId {
+  implicit val writes: Writes[PeriodId] = Writes(x => JsString(x.value))
+
+  def apply(from: String, to: String): PeriodId = {
+    PeriodId(s"${from}_$to")
   }
 
 }

@@ -16,8 +16,8 @@
 
 package v2.controllers.validators
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
 import mocks.MockAppConfig
 import support.UnitSpec
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData

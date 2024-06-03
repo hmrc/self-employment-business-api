@@ -16,7 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.BadRequestError
+import shared.models.errors.BadRequestError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 

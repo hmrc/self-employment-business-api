@@ -17,7 +17,7 @@
 package v3.retrievePeriodSummary.def1.model.response
 
 import api.hateoas.{Link, Method}
-import api.models.domain.{BusinessId, Nino}
+import shared.models.domain.Nino
 import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec

@@ -16,8 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.domain.CalculationId
-import api.models.errors.CalculationIdFormatError
+import shared.models.errors.CalculationIdFormatError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 

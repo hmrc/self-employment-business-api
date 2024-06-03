@@ -16,11 +16,11 @@
 
 package mocks
 
-import config.{AppConfig, ConfidenceLevelConfig}
+import shared.config.{AppConfig, ConfidenceLevelConfig}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
-import routing.Version
+import shared.routing.Version
 
 trait MockAppConfig extends MockFactory {
 
@@ -50,7 +50,7 @@ trait MockAppConfig extends MockFactory {
     def tysIfsEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.tysIfsEnvironmentHeaders).expects()
 
     // API Config
-    def featureSwitches: CallHandler[Configuration]              = (() => mockAppConfig.featureSwitches).expects()
+    def featureSwitches: CallHandler[Configuration]              = (() => mockappConfig. featureSwitchConfig).expects()
     def apiGatewayContext: CallHandler[String]                   = (() => mockAppConfig.apiGatewayContext).expects()
     def apiStatus(status: Version): CallHandler[String]          = (mockAppConfig.apiStatus: Version => String).expects(status)
     def endpointsEnabled(version: String): CallHandler[Boolean]  = (mockAppConfig.endpointsEnabled(_: String)).expects(version)

@@ -16,7 +16,7 @@
 
 package v3.amendPeriodSummary.model.request
 
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import shared.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import play.api.libs.json.JsValue
 
 sealed trait AmendPeriodSummaryRequestData {

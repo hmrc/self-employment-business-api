@@ -65,17 +65,17 @@ class TaxYearSpec extends UnitSpec with MockAppConfig {
       }
     }
 
-    "isTys" should {
+    "useTaxYearSpecificApi" should {
       "return false for None" in {
-        TaxYear.isTys(None) shouldBe false
+        TaxYear.useTaxYearSpecificApi(None) shouldBe false
       }
 
       "return false for a tax year before 2023-24" in {
-        TaxYear.isTys(Some(TaxYear.fromMtd("2022-23"))) shouldBe false
+        TaxYear.useTaxYearSpecificApi(Some(TaxYear.fromMtd("2022-23"))) shouldBe false
       }
 
       "return true for the 2023-24 tax year" in {
-        TaxYear.isTys(Some(TaxYear.fromMtd("2023-24"))) shouldBe true
+        TaxYear.useTaxYearSpecificApi(Some(TaxYear.fromMtd("2023-24"))) shouldBe true
       }
     }
 

@@ -16,10 +16,11 @@
 
 package api.hateoas
 
-import api.hateoas.Method.{DELETE, GET, POST, PUT}
 import api.hateoas.RelType._
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import config.AppConfig
+import shared.config.AppConfig
+import shared.hateoas.Link
+import shared.hateoas.Method.{DELETE, GET, POST, PUT}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 trait HateoasLinks {
 
@@ -48,7 +49,7 @@ trait HateoasLinks {
 
   private def withTaxYearParameter(uri: String, maybeTaxYear: Option[TaxYear]): String = {
     maybeTaxYear match {
-      case Some(taxYear) if taxYear.isTys => s"$uri?taxYear=${taxYear.asMtd}"
+      case Some(taxYear) if taxYear.useTaxYearSpecificApi => s"$uri?taxYear=${taxYear.asMtd}"
       case _                                              => uri
     }
   }

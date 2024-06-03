@@ -16,12 +16,11 @@
 
 package v2.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
-import api.models.domain.TaxYear
-import api.models.errors.MtdError
+import shared.controllers.validators.Validator
+import shared.models.domain.TaxYear
+import shared.models.errors.MtdError
 import cats.data.Validated
-import cats.implicits._
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
 import javax.inject.Singleton
@@ -33,7 +32,7 @@ class DeleteAnnualSubmissionValidatorFactory {
     new Validator[DeleteAnnualSubmissionRequestData] {
 
       private val resolveTaxYear =
-        DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+        ResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
 
       def validate: Validated[Seq[MtdError], DeleteAnnualSubmissionRequestData] =
         (

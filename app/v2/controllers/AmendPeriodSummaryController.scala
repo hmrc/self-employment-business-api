@@ -16,14 +16,15 @@
 
 package v2.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
+import shared.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.hateoas.HateoasFactory
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version2}
-import utils.IdGenerator
+import shared.routing.{Version, Version2}
+import shared.utils.IdGenerator
 import v2.controllers.validators.AmendPeriodSummaryValidatorFactory
 import v2.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import v2.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
@@ -50,7 +51,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = FeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
+      val includeNegatives = SeBusinessFeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, periodId, taxYear, request.body, includeNegatives)
 
       val requestHandler = RequestHandler

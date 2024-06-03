@@ -16,7 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.MtdError
+import shared.models.errors.MtdError
 import api.models.utils.JsonErrorValidators
 import cats.data.Validated.{Invalid, Valid}
 import play.api.http.Status.BAD_REQUEST

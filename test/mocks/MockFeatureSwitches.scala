@@ -16,7 +16,7 @@
 
 package mocks
 
-import config.FeatureSwitches
+import shared.config.FeatureSwitches
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 

@@ -16,8 +16,8 @@
 
 package v2.controllers.validators
 
-import api.models.domain.{BusinessId, Nino}
-import api.models.errors._
+import shared.models.domain.Nino
+import shared.models.errors._
 import api.models.utils.JsonErrorValidators
 import play.api.libs.json._
 import support.UnitSpec

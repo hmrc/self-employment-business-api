@@ -16,9 +16,9 @@
 
 package v3.createAmendAnnualSubmission.def1
 
-import api.models.domain.ex.MtdNicExemption
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
+import shared.models.domain.ex.MtdNicExemption
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
 import api.models.utils.JsonErrorValidators
 import mocks.MockAppConfig
 import play.api.Configuration
@@ -173,7 +173,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     validatorFactory.validator(nino, businessId, taxYear, body)
 
   private def setupMocks(): Unit =
-    MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+    MockappConfig. featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {

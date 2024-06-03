@@ -16,9 +16,10 @@
 
 package v3.amendPeriodSummary.model.response
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import config.AppConfig
+import api.hateoas.HateoasLinks
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 object AmendPeriodSummaryResponse extends HateoasLinks {
 

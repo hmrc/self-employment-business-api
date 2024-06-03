@@ -16,11 +16,11 @@
 
 package v3.retrievePeriodSummary
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, PeriodId}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.{ServiceOutcome, ServiceSpec}
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, PeriodId}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.{ServiceOutcome, ServiceSpec}
 import mocks.MockAppConfig
 import play.api.Configuration
 import v3.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodIncome}
@@ -82,7 +82,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def1Response))))
 
-        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
+        MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def1Response))
@@ -96,7 +96,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))))
 
-        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
+        MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))
@@ -109,7 +109,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))))
 
-        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true))
+        MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> true))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))

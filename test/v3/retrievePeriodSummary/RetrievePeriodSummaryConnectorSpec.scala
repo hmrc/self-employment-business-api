@@ -16,9 +16,9 @@
 
 package v3.retrievePeriodSummary
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, PeriodId, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import mocks.MockFeatureSwitches
 import v3.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
 import v3.retrievePeriodSummary.model.request.{

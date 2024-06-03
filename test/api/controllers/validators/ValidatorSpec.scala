@@ -16,9 +16,9 @@
 
 package api.controllers.validators
 
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
+import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits._

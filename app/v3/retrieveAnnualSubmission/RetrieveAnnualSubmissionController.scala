@@ -16,13 +16,13 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers._
+import shared.controllers._
 import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig, FeatureSwitches}
+import shared.models.domain.Nino
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.config.{AppConfig, FeatureSwitches}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.utils.IdGenerator
 import v3.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
 
 import javax.inject.{Inject, Singleton}

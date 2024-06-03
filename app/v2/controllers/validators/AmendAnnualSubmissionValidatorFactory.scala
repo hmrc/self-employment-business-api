@@ -16,11 +16,11 @@
 
 package v2.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
-import api.models.domain.TaxYear
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveTaxYear, ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
+import shared.models.domain.TaxYear
 import api.models.domain.ex.MtdNicExemption
-import api.models.errors.{Class4ExemptionReasonFormatError, MtdError}
+import shared.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 import cats.data.Validated
 import cats.implicits._
 import play.api.libs.json._
@@ -35,7 +35,7 @@ class AmendAnnualSubmissionValidatorFactory {
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendAnnualSubmissionBody]()
 
   private val resolveTaxYear =
-    DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+    ResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
 
   def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[AmendAnnualSubmissionRequestData] =
     new Validator[AmendAnnualSubmissionRequestData] {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package shared.controllers
+package controllers
 
 import play.api.Environment
 import play.api.http.{AcceptEncoding, HttpErrorHandler}
@@ -32,15 +32,15 @@ trait Rewriter {
 
 @Singleton
 class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsMetadata, env: Environment)(implicit ec: ExecutionContext)
-    extends Assets(errorHandler, meta, env) {
+  extends Assets(errorHandler, meta, env) {
   import meta._
 
   /** If no rewriters, Play's own static Assets.assetAt() will be called.
-    * @param path
-    *   e.g. "/public/api/conf/1.0"
-    * @param filename
-    *   e.g. "schemas/retrieve_other_expenses_response.json" or "employment_expenses_delete.yaml"
-    */
+   * @param path
+   *   e.g. "/public/api/conf/1.0"
+   * @param filename
+   *   e.g. "schemas/retrieve_other_expenses_response.json" or "employment_expenses_delete.yaml"
+   */
   def rewriteableAt(path: String, filename: String, rewriters: Seq[Rewriter]): Action[AnyContent] = {
     if (rewriters.isEmpty)
       at(path, filename)
@@ -52,7 +52,7 @@ class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsM
 
   // Mostly copied from the private method in Assets:
   private def assetAt(path: String, filename: String, rewrites: Seq[Rewriter])(implicit
-      request: RequestHeader
+                                                                               request: RequestHeader
   ): Future[Result] = {
     val assetName: Option[String] = resourceNameAt(path, filename)
     val assetInfoFuture: Future[Option[(AssetInfo, AcceptEncoding)]] = assetName

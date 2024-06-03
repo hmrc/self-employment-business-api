@@ -17,11 +17,11 @@
 package definition
 
 import api.mocks.MockHttpClient
-import config.ConfidenceLevelConfig
+import shared.config.ConfidenceLevelConfig
 import definition.APIStatus.{ALPHA, BETA}
 import mocks.MockAppConfig
 import play.api.Configuration
-import routing.{Version2, Version3, Version4}
+import shared.routing.{Version2, Version3, Version4}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -37,7 +37,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        MockAppConfig.featureSwitches returns Configuration.empty
+        MockappConfig. featureSwitchConfig returns Configuration.empty
         MockAppConfig.apiStatus(Version2) returns "BETA"
         MockAppConfig.apiStatus(Version3) returns "BETA"
         MockAppConfig.apiStatus(Version4) returns "BETA"

@@ -16,7 +16,7 @@
 
 package v3.createAmendAnnualSubmission.def1.model.request
 
-import api.models.domain.ex.MtdNicExemption
+import shared.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
 
 trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_StructuredBuildingAllowanceFixture {

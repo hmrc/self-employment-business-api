@@ -16,7 +16,7 @@
 
 package api.models.errors
 
-import api.models.audit.AuditError
+import shared.models.audit.AuditError
 import play.api.libs.json.Json
 import support.UnitSpec
 

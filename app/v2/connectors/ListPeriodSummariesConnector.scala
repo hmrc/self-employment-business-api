@@ -16,10 +16,11 @@
 
 package v2.connectors
 
-import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
+import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v2.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
@@ -28,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: FeatureSwitches)
+class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: SeBusinessFeatureSwitches)
     extends BaseDownstreamConnector {
 
   def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
@@ -42,7 +43,7 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
 
     val downstreamUri =
       taxYear match {
-        case Some(taxYear) if taxYear.isTys =>
+        case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
           TaxYearSpecificIfsUri[ListPeriodSummariesResponse[PeriodDetails]](
             s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         case _ if featureSwitches.isDesIf_MigrationEnabled =>

@@ -16,11 +16,11 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v3.retrieveAnnualSubmission.def1.model.response.{Def1_Retrieve_Adjustments, Def1_Retrieve_Allowances, Def1_Retrieve_NonFinancials}
 import v3.retrieveAnnualSubmission.model.request.Def1_RetrieveAnnualSubmissionRequestData

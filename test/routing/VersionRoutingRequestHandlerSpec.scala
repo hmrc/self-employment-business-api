@@ -16,7 +16,7 @@
 
 package routing
 
-import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import shared.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import mocks.MockAppConfig
 import org.apache.pekko.actor.ActorSystem
 import org.scalatest.Inside

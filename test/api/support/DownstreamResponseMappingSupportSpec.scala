@@ -16,12 +16,12 @@
 
 package api.support
 
-import api.controllers.EndpointLogContext
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
+import shared.controllers.EndpointLogContext
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.{Format, Json}
 import support.UnitSpec
-import utils.Logging
+import shared.utils.Logging
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
 

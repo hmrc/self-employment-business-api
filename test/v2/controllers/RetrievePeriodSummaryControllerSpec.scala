@@ -16,12 +16,12 @@
 
 package v2.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
+import shared.models.domain.{Nino, PeriodId, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrievePeriodSummaryValidatorFactory

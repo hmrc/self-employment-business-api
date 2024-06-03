@@ -16,9 +16,9 @@
 
 package config
 
-import api.controllers.ControllerBaseSpec
+import shared.controllers.ControllerBaseSpec
 import com.typesafe.config.ConfigFactory
-import config.rewriters._
+import shared.config.rewriters._
 import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
 import definition.ApiDefinitionFactory
 import mocks.MockAppConfig
@@ -95,7 +95,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     protected def numberOfTestOnlyOccurrences(str: String): Int = "\\[test only]".r.findAllIn(str).size
 
-    MockAppConfig.featureSwitches returns Configuration("openApiFeatureTest.enabled" -> featureEnabled)
+    MockappConfig. featureSwitchConfig returns Configuration("openApiFeatureTest.enabled" -> featureEnabled)
 
     private val apiFactory = new ApiDefinitionFactory(mockAppConfig)
 

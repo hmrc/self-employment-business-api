@@ -16,12 +16,12 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{DELETE, GET, PUT}
 import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import play.api.Configuration
 import play.api.mvc.Result
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
@@ -62,7 +62,7 @@ class RetrieveAnnualSubmissionControllerSpec
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
 
-        MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+        MockappConfig. featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
 
         willUseValidator(returningSuccess(requestData))
 
@@ -85,7 +85,7 @@ class RetrieveAnnualSubmissionControllerSpec
         val responseBody =
           retrieveResponseModel.copy(adjustments = Some(adjustments.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
 
-        MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> false)).anyNumberOfTimes()
+        MockappConfig. featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> false)).anyNumberOfTimes()
 
         willUseValidator(returningSuccess(requestData))
 
@@ -108,7 +108,7 @@ class RetrieveAnnualSubmissionControllerSpec
     "return the error as per spec" when {
 
       "the parser validation fails" in new Test {
-        MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+        MockappConfig. featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
         willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
@@ -117,7 +117,7 @@ class RetrieveAnnualSubmissionControllerSpec
       "the service returns an error" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+        MockappConfig. featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
         MockedRetrieveAnnualSubmissionService
           .retrieve(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))

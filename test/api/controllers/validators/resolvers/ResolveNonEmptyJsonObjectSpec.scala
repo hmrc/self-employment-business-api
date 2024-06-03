@@ -16,13 +16,13 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.RuleIncorrectOrEmptyBodyError
+import shared.models.errors.RuleIncorrectOrEmptyBodyError
 import api.models.utils.JsonErrorValidators
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.{JsString, Json, OFormat}
 import shapeless.HNil
 import support.UnitSpec
-import utils.EmptinessChecker
+import shared.utils.EmptinessChecker
 
 import scala.annotation.nowarn
 

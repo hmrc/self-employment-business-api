@@ -16,11 +16,11 @@
 
 package v3.amendPeriodSummary
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, PeriodId, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import mocks.MockAppConfig
 import play.api.Configuration
 import v3.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodIncome
@@ -64,11 +64,11 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   }
 
   trait Cl290Enabled extends Test {
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
   }
 
   trait Cl290Disabled extends Test {
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
+    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
   }
 
   "AmendPeriodSummaryService" should {

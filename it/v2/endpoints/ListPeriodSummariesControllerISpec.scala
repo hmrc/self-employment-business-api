@@ -16,8 +16,8 @@
 
 package v2.endpoints
 
-import api.models.domain.TaxYear
-import api.models.errors._
+import shared.models.domain.TaxYear
+import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._

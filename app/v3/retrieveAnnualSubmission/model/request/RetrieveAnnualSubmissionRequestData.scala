@@ -16,7 +16,7 @@
 
 package v3.retrieveAnnualSubmission.model.request
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 
 sealed trait RetrieveAnnualSubmissionRequestData {
   val nino: Nino

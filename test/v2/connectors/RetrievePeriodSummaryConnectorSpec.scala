@@ -16,9 +16,9 @@
 
 package v2.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, PeriodId, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
 

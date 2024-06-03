@@ -16,10 +16,10 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.retrieveAnnualSubmission.model.request.{Def1_RetrieveAnnualSubmissionRequestData, RetrieveAnnualSubmissionRequestData}
 import v3.retrieveAnnualSubmission.model.response.{Def1_RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionResponse}
@@ -36,7 +36,7 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
       correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     request match {
-      case tysDef1: Def1_RetrieveAnnualSubmissionRequestData if tysDef1.taxYear.isTys =>
+      case tysDef1: Def1_RetrieveAnnualSubmissionRequestData if tysDef1.taxYear.useTaxYearSpecificApi =>
         import tysDef1._
 
         val downstreamUri = TaxYearSpecificIfsUri[Def1_RetrieveAnnualSubmissionResponse](

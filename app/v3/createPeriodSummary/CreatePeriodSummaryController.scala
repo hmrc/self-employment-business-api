@@ -16,15 +16,16 @@
 
 package v3.createPeriodSummary
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino}
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version3}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.models.domain.{BusinessId, Nino}
+import shared.routing.{Version, Version3}
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v3.createPeriodSummary.model.response.CreatePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}
@@ -49,7 +50,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = FeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
+      val includeNegatives = SeBusinessFeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, request.body, includeNegatives)
 
       val requestHandler = RequestHandler

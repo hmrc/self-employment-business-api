@@ -16,13 +16,13 @@
 
 package v3.createAmendAnnualSubmission
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.controllers._
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version3}
-import utils.IdGenerator
+import shared.hateoas.HateoasFactory
+import shared.routing.{Version, Version3}
+import shared.utils.IdGenerator
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionResponse.LinksFactory
 

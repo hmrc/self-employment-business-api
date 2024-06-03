@@ -16,7 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.ValueFormatError
+import shared.models.errors.ValueFormatError
 import cats.data.Validated.{Invalid, Valid}
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks

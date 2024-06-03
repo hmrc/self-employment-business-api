@@ -16,7 +16,7 @@
 
 package v3.createPeriodSummary.def1
 
-import api.models.errors._
+import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._

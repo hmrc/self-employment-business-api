@@ -18,7 +18,7 @@ package v3.createAmendAnnualSubmission.model.response
 
 import api.hateoas.Link
 import api.hateoas.Method.{DELETE, GET, PUT}
-import api.models.domain.{BusinessId, Nino}
+import shared.models.domain.Nino
 import mocks.MockAppConfig
 import support.UnitSpec
 

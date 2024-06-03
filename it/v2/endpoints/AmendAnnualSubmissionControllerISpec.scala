@@ -16,7 +16,7 @@
 
 package v2.endpoints
 
-import api.models.errors._
+import shared.models.errors._
 import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT

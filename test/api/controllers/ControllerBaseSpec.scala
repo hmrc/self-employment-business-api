@@ -16,11 +16,11 @@
 
 package api.controllers
 
-import api.controllers.ControllerTestRunner.validNino
+import shared.controllers.ControllerTestRunner.validNino
 import api.mocks.MockIdGenerator
-import api.models.audit.{AuditError, AuditEvent, AuditResponse}
-import api.models.errors.MtdError
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import shared.models.audit.{AuditError, AuditEvent, AuditResponse}
+import shared.models.errors.MtdError
+import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import mocks.MockAppConfig
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.JsValue

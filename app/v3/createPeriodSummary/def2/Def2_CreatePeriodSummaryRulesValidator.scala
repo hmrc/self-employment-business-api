@@ -16,9 +16,9 @@
 
 package v3.createPeriodSummary.def2
 
-import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import shared.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps

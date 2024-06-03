@@ -16,9 +16,9 @@
 
 package v2.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.ConnectorSpec
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import mocks.MockFeatureSwitches
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v2.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}

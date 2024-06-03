@@ -16,8 +16,8 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.domain.TaxYear
-import api.models.errors.{InvalidTaxYearParameterError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import shared.models.domain.TaxYear
+import shared.models.errors.{InvalidTaxYearParameterError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 

@@ -16,12 +16,12 @@
 
 package v3.retrievePeriodSummary
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import cats.data.EitherT
 import cats.implicits._
-import config.{AppConfig, FeatureSwitches}
+import shared.config.{AppConfig, FeatureSwitches}
 import v3.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v3.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 

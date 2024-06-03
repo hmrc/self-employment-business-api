@@ -16,12 +16,12 @@
 
 package v3.createPeriodSummary
 
-import api.controllers.validators.Validator
 import api.controllers.validators.common.InvalidResultValidator
-import api.models.domain.TaxYear
-import api.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
-import config.AppConfig
 import play.api.libs.json.{JsObject, JsValue}
+import shared.config.AppConfig
+import shared.controllers.validators.Validator
+import shared.models.domain.TaxYear
+import shared.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
 import v3.createPeriodSummary.def1.Def1_CreatePeriodSummaryValidator
 import v3.createPeriodSummary.def2.Def2_CreatePeriodSummaryValidator
 import v3.createPeriodSummary.model.request.CreatePeriodSummaryRequestData

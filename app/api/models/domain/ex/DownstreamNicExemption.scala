@@ -17,7 +17,7 @@
 package api.models.domain.ex
 
 import play.api.libs.json.Format
-import utils.enums.Enums
+import shared.utils.enums.Enums
 
 sealed trait DownstreamNicExemption {
   def toMtd: MtdNicExemption
