@@ -6,18 +6,16 @@ description: |
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario)     | Scenario                                                                                                        |
-  |--------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-  | N/A - DEFAULT                        | Simulate success response.                                                                                      |
-  | ALLOWANCE_NOT_SUPPORTED              | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year. |
-  | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                  |
-  | STATEFUL                             | Performs a stateful create or update.                                                                           |
-  {{#if (enabled 'adjustmentsAdditionalFields')}}
-  | WRONG_TPA_AMOUNT_SUBMITTED           | Simulates the scenario where the Transition Profit Acceleration Amount cannot be submitted without Transition Profit Amount. |
-  {{/if}}
+  | Header Value (Gov-Test-Scenario)     | Scenario                                                                                                                     |
+  |--------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+  | N/A - DEFAULT                        | Simulate success response.                                                                                                   |
+  | ALLOWANCE_NOT_SUPPORTED              | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year.              |
+  | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                               |
+  | STATEFUL                             | Performs a stateful create or update.                                                                                        |
+  {{#if (enabled 'adjustmentsAdditionalFields')}}| WRONG_TPA_AMOUNT_SUBMITTED           | Simulates the scenario where the Transition Profit Acceleration Amount cannot be submitted without Transition Profit Amount. |{{/if}}
 
 tags:
-  - Self-Employment Annual Submission
+   - Self-Employment Annual Submission
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -29,23 +27,33 @@ parameters:
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 
 security:
-  - User-Restricted:
-      - write:self-assessment
+- User-Restricted:
+  - write:self-assessment
 
 requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/create_and_amend_annual_submission_request.json'
+        oneOf:
+          - $ref: './schemas/def1/create_and_amend_annual_submission_request.json'
+          - $ref: './schemas/def2/create_and_amend_annual_submission_request.json'
       examples:
-        example-with-trading-allowance-request:
+        example-with-trading-allowance-request-TY-2023-24-or-before:
           description: Example Request With Trading Income Allowance
           value:
-            $ref: './examples/create_and_amend_with_trading_income_allowance.json'
-        example-without-trading-allowance-request:
+            $ref: './examples/def1/create_and_amend_with_trading_income_allowance.json'
+        example-without-trading-allowance-request-TY-2023-24-or-before:
           description: Example Request Without Trading Income Allowance
           value:
-            $ref: './examples/create_and_amend_without_trading_income_allowance.json'
+            $ref: './examples/def1/create_and_amend_without_trading_income_allowance.json'
+        example-with-trading-allowance-request-TY-2024-25-or-later:
+          description: Example Request With Trading Income Allowance
+          value:
+            $ref: './examples/def2/create_and_amend_with_trading_income_allowance.json'
+        example-without-trading-allowance-request-TY-2024-25-or-later:
+          description: Example Request Without Trading Income Allowance
+          value:
+            $ref: './examples/def2/create_and_amend_without_trading_income_allowance.json'
 
 responses:
   "200":
@@ -105,9 +113,9 @@ responses:
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
           {{#if (enabled 'adjustmentsAdditionalFields')}}
-          RULE_WRONG_TPA_AMOUNT_SUBMITTED:
-            $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
-	      {{/if}}
+            RULE_WRONG_TPA_AMOUNT_SUBMITTED:
+              $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
+              {{/if}}
 
   "403":
     description: Forbidden

@@ -1,0 +1,39 @@
+{
+  "adjustments": {
+    "includedNonTaxableProfits": 210,
+    "basisAdjustment": 178.23,
+    "overlapReliefUsed": 123.78,
+    "accountingAdjustment": 678.9,
+    "averagingAdjustment": 674.98,
+    "outstandingBusinessIncome": 342.67,
+    "balancingChargeBpra": 145.98,
+    "balancingChargeOther": 457.23,
+    "goodsAndServicesOwnUse": 432.9,
+    "transitionProfitAmount": 435.9,
+    "transitionProfitAccelerationAmount": 439.9
+  },
+  "allowances": {
+    "tradingIncomeAllowance": 572.99
+  },
+  "nonFinancials": {
+    "businessDetailsChangedRecently": true,
+    "class4NicsExemptionReason": "non-resident"
+  },
+  "links": [
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
+      "rel": "create-and-amend-self-employment-annual-submission",
+      "method": "PUT"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/annual/2019-20",
+      "rel": "delete-self-employment-annual-submission",
+      "method": "DELETE"
+    }
+  ]
+}
