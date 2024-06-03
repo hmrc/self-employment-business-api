@@ -22,19 +22,12 @@ import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import play.api.libs.json.JsValue
-import v3.amendPeriodSummary.model.request.{
-  AmendPeriodSummaryRequestData,
-  Def1_AmendPeriodSummaryRequestBody,
-  Def1_AmendPeriodSummaryRequestData
-}
+import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
-
-import scala.annotation.nowarn
 
 class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, body: JsValue, includeNegatives: Boolean)
     extends Validator[AmendPeriodSummaryRequestData] {
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_AmendPeriodSummaryRequestBody]()
 
   private val rulesValidator = new Def1_AmendPeriodSummaryRulesValidator(includeNegatives)

@@ -28,19 +28,20 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged                 := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
     scalaVersion                    := "2.13.12",
-    scalacOptions ++= Seq(
+    scalacOptions ++= List(
+      "-language:higherKinds",
+      "-Xlint:-byname-implicit",
       "-Xfatal-warnings",
       "-Wconf:src=routes/.*:silent",
-      "-feature",
-      "-language:higherKinds"
+      "-feature"
     )
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
   )
-  .settings(majorVersion := 0)
-  .settings(CodeCoverageSettings.settings *)
-  .settings(defaultSettings() *)
+  .settings(majorVersion := 1)
+  .settings(CodeCoverageSettings.settings: _*)
+  .settings(defaultSettings(): _*)
   .configs(ItTest)
   .settings(
     inConfig(ItTest)(Defaults.itSettings ++ headerSettings(ItTest) ++ automateHeaderSettings(ItTest) ++ ScalafmtPlugin.scalafmtConfigSettings),

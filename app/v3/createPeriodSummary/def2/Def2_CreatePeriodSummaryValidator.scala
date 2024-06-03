@@ -24,20 +24,13 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.{catsSyntaxTuple3Semigroupal, toFoldableOps}
 import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.JsValue
-import v3.createPeriodSummary.model.request.{
-  CreatePeriodSummaryRequestData,
-  Def2_CreatePeriodSummaryRequestBody,
-  Def2_CreatePeriodSummaryRequestData
-}
-
-import scala.annotation.nowarn
+import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 
 class Def2_CreatePeriodSummaryValidator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean, appConfig: AppConfig)
     extends Validator[CreatePeriodSummaryRequestData] {
 
   lazy private val featureSwitches = FeatureSwitches(appConfig)
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_CreatePeriodSummaryRequestBody]()
 
   private val rulesValidator = Def2_CreatePeriodSummaryRulesValidator(includeNegatives)
