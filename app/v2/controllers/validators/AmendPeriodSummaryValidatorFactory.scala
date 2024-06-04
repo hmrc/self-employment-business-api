@@ -26,12 +26,10 @@ import v2.controllers.validators.resolvers.ResolvePeriodId
 import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData}
 
 import javax.inject.Singleton
-import scala.annotation.nowarn
 
 @Singleton
 class AmendPeriodSummaryValidatorFactory {
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendPeriodSummaryBody]()
 
   def validator(nino: String,

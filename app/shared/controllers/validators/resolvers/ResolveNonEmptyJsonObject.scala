@@ -17,8 +17,7 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
-import play.api.libs.json.{JsObject, JsValue, OFormat, Reads}
+import play.api.libs.json.{JsValue, OFormat, Reads}
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import shared.utils.EmptinessChecker
 import shared.utils.EmptyPathsResult._
@@ -45,15 +44,5 @@ object ResolveNonEmptyJsonObject extends ResolverSupport {
 
   def resolver[T: OFormat: EmptinessChecker]: Resolver[JsValue, T] =
     new ResolveNonEmptyJsonObject().resolver
-
-  /** Use this first if you have additional pre-parse validators/resolvers that would incorrectly return an error with a field path if the Json object
-   * is empty.
-   */
-  def validateNonEmpty(json: JsValue): Validated[Seq[MtdError], Unit] =
-    json match {
-      case obj: JsObject if obj.fields.isEmpty => Invalid(List(RuleIncorrectOrEmptyBodyError))
-      case _: JsObject => Valid(())
-      case _: JsValue => Invalid(List(RuleIncorrectOrEmptyBodyError))
-    }
 
 }

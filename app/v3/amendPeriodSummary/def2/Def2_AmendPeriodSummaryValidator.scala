@@ -28,15 +28,12 @@ import play.api.libs.json.JsValue
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 
-import scala.annotation.nowarn
-
 class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)(
     implicit appConfig: AppConfig)
     extends Validator[AmendPeriodSummaryRequestData] {
 
   lazy private val featureSwitches = SeBusinessFeatureSwitches(appConfig)
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_AmendPeriodSummaryRequestBody]()
 
   private val rulesValidator = new Def2_AmendPeriodSummaryRulesValidator(includeNegatives)
@@ -52,7 +49,8 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
 
   /** Can be removed when CL290 is released.
     */
-  private def validateTaxTakenOffTradingIncome(parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] =
+  private def validateTaxTakenOffTradingIncome(
+      parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] =
     (for {
       income <- parsed.body.periodIncome if !featureSwitches.isCl290Enabled
       _      <- income.taxTakenOffTradingIncome

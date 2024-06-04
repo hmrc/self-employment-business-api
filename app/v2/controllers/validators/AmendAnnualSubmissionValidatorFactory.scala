@@ -24,14 +24,11 @@ import shared.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 import cats.data.Validated
 import cats.implicits._
 import play.api.libs.json._
-import AmendAnnualSubmissionRulesValidator.validateBusinessRules
+import v2.controllers.validators.AmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v2.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
-
-import scala.annotation.nowarn
 
 class AmendAnnualSubmissionValidatorFactory {
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendAnnualSubmissionBody]()
 
   private val resolveTaxYear =
