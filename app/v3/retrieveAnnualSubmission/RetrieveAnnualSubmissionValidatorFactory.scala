@@ -18,6 +18,7 @@ package v3.retrieveAnnualSubmission
 
 import api.controllers.validators.Validator
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
+import v3.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 import javax.inject.Singleton
@@ -26,7 +27,11 @@ import javax.inject.Singleton
 class RetrieveAnnualSubmissionValidatorFactory {
 
   def validator(nino: String, businessId: String, taxYear: String): Validator[RetrieveAnnualSubmissionRequestData] = {
-    new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
+    RetrieveAnnualSubmissionSchema.schemaFor(taxYear) match {
+      case RetrieveAnnualSubmissionSchema.Def1 => new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
+      case RetrieveAnnualSubmissionSchema.Def2 => new Def2_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
+    }
+
   }
 
 }

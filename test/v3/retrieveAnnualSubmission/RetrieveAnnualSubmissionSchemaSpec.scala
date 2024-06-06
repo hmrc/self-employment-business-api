@@ -24,14 +24,14 @@ import RetrieveAnnualSubmissionSchema._
 class RetrieveAnnualSubmissionSchemaSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks with TaxYearPropertyCheckSupport {
 
   "Getting a schema" when {
-    "use Def1 for tax years before 2023-24" in {
-      forTaxYearsBefore(TaxYear.fromMtd("2023-24")) { taxYear =>
+    "use Def1 for tax years before 2024-25" in {
+      forTaxYearsBefore(TaxYear.fromMtd("2024-25")) { taxYear =>
         schemaFor(taxYear.asMtd) shouldBe Def1
       }
     }
 
-    "use Def2 for tax years from 2023-24" in {
-      forTaxYearsFrom(TaxYear.fromMtd("2023-24")) { taxYear =>
+    "use Def2 for tax years from 2024-25" in {
+      forTaxYearsFrom(TaxYear.fromMtd("2024-25")) { taxYear =>
         schemaFor(taxYear.asMtd) shouldBe Def2
       }
     }

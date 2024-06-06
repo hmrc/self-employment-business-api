@@ -26,7 +26,7 @@ case class Def1_RetrieveAnnualSubmissionResponse(
                                                   nonFinancials: Option[Retrieve_NonFinancials]
 ) extends RetrieveAnnualSubmissionResponse {
 
-  def withoutAdjustmentsAdditionalFields: Def1_RetrieveAnnualSubmissionResponse =
+  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse =
     this.copy(adjustments = adjustments.map(adjs => adjs.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
 
 }

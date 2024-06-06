@@ -18,11 +18,9 @@ package v3.retrieveAnnualSubmission
 
 import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
-import v3.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
@@ -37,27 +35,16 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
-    request match {
-      case tysDef1: Def1_RetrieveAnnualSubmissionRequestData if tysDef1.taxYear.isTys =>
-        import tysDef1._
+    import request._
+    import schema._
 
-        val downstreamUri = TaxYearSpecificIfsUri[Def1_RetrieveAnnualSubmissionResponse](
-          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
-        )
-        val result = get(downstreamUri)
-        result
+    val downstreamUri: DownstreamUri[DownstreamResp] =
+      if (taxYear.isTys)
+        TaxYearSpecificIfsUri(s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+      else
+        IfsUri(s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
 
-      case nonTysDef1: Def1_RetrieveAnnualSubmissionRequestData =>
-        import nonTysDef1._
-
-        val downstreamUri = IfsUri[Def1_RetrieveAnnualSubmissionResponse](
-          s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}"
-        )
-        val result = get(downstreamUri)
-        result
-
-      case _ => ??? // FIXME <<<<<
-    }
+    get(downstreamUri)
   }
 
 }

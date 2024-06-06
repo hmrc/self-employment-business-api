@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package api.connectors
+package v3.retrieveAnnualSubmission.def2.model.response
 
-sealed trait DownstreamUri[+Resp] {
-  val value: String
+import play.api.libs.json.{Json, OWrites, Reads}
+import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
+
+case class Def2_RetrieveAnnualSubmissionResponse(a: Int) extends RetrieveAnnualSubmissionResponse {
+
+  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse = this
+
 }
 
-object DownstreamUri {
-  final case class DesUri[Resp](value: String)          extends DownstreamUri[Resp]
-  final case class IfsUri[Resp](value: String)          extends DownstreamUri[Resp]
-  case class TaxYearSpecificIfsUri[Resp](value: String) extends DownstreamUri[Resp]
+object Def2_RetrieveAnnualSubmissionResponse {
+
+  implicit val reads: Reads[Def2_RetrieveAnnualSubmissionResponse] = Json.reads
+
+  implicit val writes: OWrites[Def2_RetrieveAnnualSubmissionResponse] = Json.writes
+
 }
