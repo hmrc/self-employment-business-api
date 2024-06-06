@@ -16,20 +16,16 @@
 
 package v3.retrieveAnnualSubmission.def2.model.response
 
+import config.FeatureSwitches
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 case class Def2_RetrieveAnnualSubmissionResponse(
-                                                  adjustments: Option[Retrieve_Adjustments],
-                                                  allowances: Option[Retrieve_Allowances],
-                                                  nonFinancials: Option[Retrieve_NonFinancials]
-) extends RetrieveAnnualSubmissionResponse {
-
-  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse =
-    this.copy(adjustments = adjustments.map(adjs => adjs.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
-
-}
+    adjustments: Option[Retrieve_Adjustments],
+    allowances: Option[Retrieve_Allowances],
+    nonFinancials: Option[Retrieve_NonFinancials]
+) extends RetrieveAnnualSubmissionResponse
 
 object Def2_RetrieveAnnualSubmissionResponse {
 
@@ -39,6 +35,7 @@ object Def2_RetrieveAnnualSubmissionResponse {
       (JsPath \ "annualNonFinancials").readNullable[Retrieve_NonFinancials]
   )(Def2_RetrieveAnnualSubmissionResponse.apply _)
 
-  implicit val writes: OWrites[Def2_RetrieveAnnualSubmissionResponse] = Json.writes[Def2_RetrieveAnnualSubmissionResponse]
+  implicit def writes(implicit featureSwitches: FeatureSwitches): OWrites[Def2_RetrieveAnnualSubmissionResponse] =
+    Json.writes[Def2_RetrieveAnnualSubmissionResponse]
 
 }

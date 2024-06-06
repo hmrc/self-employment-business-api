@@ -16,20 +16,20 @@
 
 package v3.retrieveAnnualSubmission.def2.model.response
 
-import api.hateoas.{Link, Method}
-import api.models.domain.{BusinessId, Nino}
+import config.FeatureSwitchesImpl
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
 import v3.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
-import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionHateoasData
-import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory
 
 class Def2_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def2_RetrieveAnnualSubmissionFixture {
 
+  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
+
   private val retrieveAnnualSubmissionResponse = Def2_RetrieveAnnualSubmissionResponse(
     allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
+    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None, None, None)),
     nonFinancials = Some(Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
@@ -66,35 +66,6 @@ class Def2_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
                |  }
                |}
                |""".stripMargin)
-      }
-    }
-  }
-
-  "LinksFactory" should {
-    "produce the correct links" when {
-      "called" in {
-        val nino       = "AA111111A"
-        val businessId = "XAIS12345678910"
-        val taxYear    = "2019-20"
-
-        val data: RetrieveAnnualSubmissionHateoasData = RetrieveAnnualSubmissionHateoasData(
-          Nino(nino),
-          BusinessId(businessId),
-          taxYear
-        )
-
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-
-        val result = RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data)
-
-        result shouldBe List(
-          Link(
-            href = s"/my/context/$nino/$businessId/annual/$taxYear",
-            method = Method.PUT,
-            rel = "create-and-amend-self-employment-annual-submission"),
-          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear", method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/annual/$taxYear", method = Method.DELETE, rel = "delete-self-employment-annual-submission")
-        )
       }
     }
   }

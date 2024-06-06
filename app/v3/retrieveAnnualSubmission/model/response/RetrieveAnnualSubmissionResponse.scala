@@ -18,22 +18,20 @@ package v3.retrieveAnnualSubmission.model.response
 
 import api.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import api.models.domain.{BusinessId, Nino, TaxYear}
-import config.AppConfig
+import config.{AppConfig, FeatureSwitches}
 import play.api.libs.json.{Json, OWrites}
 import shared.utils.JsonWritesUtil
 import v2.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
 import v3.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v3.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
 
-trait RetrieveAnnualSubmissionResponse {
-  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse
-}
+trait RetrieveAnnualSubmissionResponse
 
 object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
 
-  implicit val writes: OWrites[RetrieveAnnualSubmissionResponse] = writesFrom {
-    case response: Def1_RetrieveAnnualSubmissionResponse =>    Json.toJsObject(response)
-    case response: Def2_RetrieveAnnualSubmissionResponse =>    Json.toJsObject(response)
+  implicit def writes(implicit featureSwitches: FeatureSwitches): OWrites[RetrieveAnnualSubmissionResponse] = writesFrom {
+    case response: Def1_RetrieveAnnualSubmissionResponse => Json.toJsObject(response)
+    case response: Def2_RetrieveAnnualSubmissionResponse => Json.toJsObject(response)
   }
 
   implicit object RetrieveAnnualSubmissionLinksFactory

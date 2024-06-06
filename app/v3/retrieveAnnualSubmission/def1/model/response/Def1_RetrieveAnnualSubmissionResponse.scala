@@ -24,11 +24,7 @@ case class Def1_RetrieveAnnualSubmissionResponse(
     adjustments: Option[Retrieve_Adjustments],
     allowances: Option[Retrieve_Allowances],
     nonFinancials: Option[Retrieve_NonFinancials]
-) extends RetrieveAnnualSubmissionResponse {
-
-  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse = this
-
-}
+) extends RetrieveAnnualSubmissionResponse
 
 object Def1_RetrieveAnnualSubmissionResponse {
 
