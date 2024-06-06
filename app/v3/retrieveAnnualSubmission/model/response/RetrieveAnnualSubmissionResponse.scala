@@ -23,6 +23,7 @@ import play.api.libs.json.{Json, OWrites}
 import shared.utils.JsonWritesUtil
 import v2.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
 import v3.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
+import v3.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
 
 trait RetrieveAnnualSubmissionResponse {
   def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse
@@ -30,8 +31,9 @@ trait RetrieveAnnualSubmissionResponse {
 
 object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
 
-  implicit val writes: OWrites[RetrieveAnnualSubmissionResponse] = writesFrom { case def1: Def1_RetrieveAnnualSubmissionResponse =>
-    Json.toJsObject(def1)
+  implicit val writes: OWrites[RetrieveAnnualSubmissionResponse] = writesFrom {
+    case response: Def1_RetrieveAnnualSubmissionResponse =>    Json.toJsObject(response)
+    case response: Def2_RetrieveAnnualSubmissionResponse =>    Json.toJsObject(response)
   }
 
   implicit object RetrieveAnnualSubmissionLinksFactory

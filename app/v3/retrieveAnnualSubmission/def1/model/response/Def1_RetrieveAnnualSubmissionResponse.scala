@@ -21,13 +21,12 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 case class Def1_RetrieveAnnualSubmissionResponse(
-                                                  adjustments: Option[Retrieve_Adjustments],
-                                                  allowances: Option[Retrieve_Allowances],
-                                                  nonFinancials: Option[Retrieve_NonFinancials]
+    adjustments: Option[Retrieve_Adjustments],
+    allowances: Option[Retrieve_Allowances],
+    nonFinancials: Option[Retrieve_NonFinancials]
 ) extends RetrieveAnnualSubmissionResponse {
 
-  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse =
-    this.copy(adjustments = adjustments.map(adjs => adjs.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
+  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse = this
 
 }
 

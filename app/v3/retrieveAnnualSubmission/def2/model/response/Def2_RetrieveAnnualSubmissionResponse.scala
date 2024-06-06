@@ -16,19 +16,29 @@
 
 package v3.retrieveAnnualSubmission.def2.model.response
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
-case class Def2_RetrieveAnnualSubmissionResponse(a: Int) extends RetrieveAnnualSubmissionResponse {
+case class Def2_RetrieveAnnualSubmissionResponse(
+                                                  adjustments: Option[Retrieve_Adjustments],
+                                                  allowances: Option[Retrieve_Allowances],
+                                                  nonFinancials: Option[Retrieve_NonFinancials]
+) extends RetrieveAnnualSubmissionResponse {
 
-  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse = this
+  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse =
+    this.copy(adjustments = adjustments.map(adjs => adjs.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
 
 }
 
 object Def2_RetrieveAnnualSubmissionResponse {
 
-  implicit val reads: Reads[Def2_RetrieveAnnualSubmissionResponse] = Json.reads
+  implicit val reads: Reads[Def2_RetrieveAnnualSubmissionResponse] = (
+    (JsPath \ "annualAdjustments").readNullable[Retrieve_Adjustments] and
+      (JsPath \ "annualAllowances").readNullable[Retrieve_Allowances] and
+      (JsPath \ "annualNonFinancials").readNullable[Retrieve_NonFinancials]
+  )(Def2_RetrieveAnnualSubmissionResponse.apply _)
 
-  implicit val writes: OWrites[Def2_RetrieveAnnualSubmissionResponse] = Json.writes
+  implicit val writes: OWrites[Def2_RetrieveAnnualSubmissionResponse] = Json.writes[Def2_RetrieveAnnualSubmissionResponse]
 
 }

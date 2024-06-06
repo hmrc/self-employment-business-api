@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1.model
+package v3.retrieveAnnualSubmission.def2.model
 
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsObject, JsValue, Json}
-import v3.retrieveAnnualSubmission.def1.model.response._
+import v3.retrieveAnnualSubmission.def2.model.response._
 
-trait Def1_RetrieveAnnualSubmissionFixture {
+trait Def2_RetrieveAnnualSubmissionFixture {
 
   val structuredBuildingAllowance: Retrieve_StructuredBuildingAllowance =
     Retrieve_StructuredBuildingAllowance(
@@ -100,10 +100,27 @@ trait Def1_RetrieveAnnualSubmissionFixture {
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12)
+      goodsAndServicesOwnUse = Some(9.12),
+      transitionProfitAmount = Some(9.12),
+      transitionProfitAccelerationAmount = Some(9.12)
     )
 
   val adjustmentsMtdJson: JsValue = Json.parse(s"""{
+       |  "includedNonTaxableProfits": 1.12,
+       |  "basisAdjustment": 2.12,
+       |  "overlapReliefUsed": 3.12,
+       |  "accountingAdjustment": 4.12,
+       |  "averagingAdjustment": 5.12,
+       |  "outstandingBusinessIncome": 6.12,
+       |  "balancingChargeBpra": 7.12,
+       |  "balancingChargeOther": 8.12,
+       |  "goodsAndServicesOwnUse": 9.12,
+       |  "transitionProfitAmount": 9.12,
+       |  "transitionProfitAccelerationAmount": 9.12
+       |}
+       |""".stripMargin)
+
+  val adjustmentsWithoutAdditionalFieldsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
        |  "overlapReliefUsed": 3.12,
@@ -125,7 +142,9 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
        |  "balancingChargeOther": 8.12,
-       |  "goodsAndServicesOwnUse": 9.12
+       |  "goodsAndServicesOwnUse": 9.12,
+       |  "transitionProfitAmount": 9.12,
+       |  "transitionProfitAccelerationAmount": 9.12
        |}
        |""".stripMargin)
 
@@ -223,7 +242,7 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val retrieveResponseModel: Def1_RetrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
+  val retrieveResponseModel: Def2_RetrieveAnnualSubmissionResponse = Def2_RetrieveAnnualSubmissionResponse(
     Some(adjustments),
     Some(allowances),
     Some(nonFinancials)
@@ -232,6 +251,14 @@ trait Def1_RetrieveAnnualSubmissionFixture {
   val mtdRetrieveResponseJson: JsValue = Json.parse(s"""
        |{
        |  "adjustments": $adjustmentsMtdJson,
+       |  "allowances": $allowancesMtdJson,
+       |  "nonFinancials": $nonFinancialsMtdJson
+       |}
+       |""".stripMargin)
+
+  val mtdRetrieveResponseWithNoAdditionalFieldsJson: JsValue = Json.parse(s"""
+       |{
+       |  "adjustments": $adjustmentsWithoutAdditionalFieldsMtdJson,
        |  "allowances": $allowancesMtdJson,
        |  "nonFinancials": $nonFinancialsMtdJson
        |}
@@ -276,8 +303,8 @@ trait Def1_RetrieveAnnualSubmissionFixture {
   def retrieveAnnualSubmissionBody(
                                     adjustmentsModel: Option[Retrieve_Adjustments] = Some(adjustments),
                                     allowancesModel: Option[Retrieve_Allowances] = Some(allowances),
-                                    nonFinancialsModel: Option[Retrieve_NonFinancials] = Some(nonFinancials)): Def1_RetrieveAnnualSubmissionResponse =
-    Def1_RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
+                                    nonFinancialsModel: Option[Retrieve_NonFinancials] = Some(nonFinancials)): Def2_RetrieveAnnualSubmissionResponse =
+    Def2_RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
 
   def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
                                           allowances: Option[JsValue] = Some(allowancesMtdJson),

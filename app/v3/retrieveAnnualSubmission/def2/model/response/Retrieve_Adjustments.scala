@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1.model.response
+package v3.retrieveAnnualSubmission.def2.model.response
 
 import play.api.libs.json.{Format, Json}
 
@@ -26,7 +26,9 @@ case class Retrieve_Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                                 outstandingBusinessIncome: Option[BigDecimal],
                                 balancingChargeBpra: Option[BigDecimal],
                                 balancingChargeOther: Option[BigDecimal],
-                                goodsAndServicesOwnUse: Option[BigDecimal])
+                                goodsAndServicesOwnUse: Option[BigDecimal],
+                                transitionProfitAmount: Option[BigDecimal],
+                                transitionProfitAccelerationAmount: Option[BigDecimal])
 
 object Retrieve_Adjustments {
   implicit val format: Format[Retrieve_Adjustments] = Json.format[Retrieve_Adjustments]
