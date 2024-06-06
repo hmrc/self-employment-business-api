@@ -177,32 +177,6 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val allowancesTradingIncomeAllowance: Retrieve_Allowances = Retrieve_Allowances(
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    tradingIncomeAllowance = Some(10.12),
-    None,
-    None,
-    None,
-    None
-  )
-
-  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(s"""{
-       |  "tradingIncomeAllowance": 10.12
-       |}
-       |""".stripMargin)
-
-  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(s"""{
-       |  "tradingIncomeAllowance": 10.12
-       |}
-       |""".stripMargin)
-
   val nonFinancials: Retrieve_NonFinancials =
     Retrieve_NonFinancials(
       businessDetailsChangedRecently = true,
@@ -272,31 +246,5 @@ trait Def1_RetrieveAnnualSubmissionFixture {
          |}
          |""".stripMargin)
       .as[JsObject]
-
-  def retrieveAnnualSubmissionBody(
-                                    adjustmentsModel: Option[Retrieve_Adjustments] = Some(adjustments),
-                                    allowancesModel: Option[Retrieve_Allowances] = Some(allowances),
-                                    nonFinancialsModel: Option[Retrieve_NonFinancials] = Some(nonFinancials)): Def1_RetrieveAnnualSubmissionResponse =
-    Def1_RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
-
-  def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
-                                          allowances: Option[JsValue] = Some(allowancesMtdJson),
-                                          nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
-    JsObject(
-      Seq(
-        adjustments.map("adjustments"     -> _),
-        allowances.map("allowances"       -> _),
-        nonFinancials.map("nonFinancials" -> _)
-      ).collect { case Some((a, b)) => a -> b })
-
-  def retrieveAnnualSubmissionBodyDownstreamJson(adjustments: Option[JsValue] = Some(adjustmentsDownstreamJson),
-                                                 allowances: Option[JsValue] = Some(allowancesDownstreamJson),
-                                                 nonFinancials: Option[JsValue] = Some(nonFinancialsDownstreamJson)): JsValue =
-    JsObject(
-      Seq(
-        adjustments.map("annualAdjustments"     -> _),
-        allowances.map("annualAllowances"       -> _),
-        nonFinancials.map("annualNonFinancials" -> _)
-      ).collect { case Some((a, b)) => a -> b })
 
 }

@@ -120,19 +120,6 @@ trait Def2_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val adjustmentsWithoutAdditionalFieldsMtdJson: JsValue = Json.parse(s"""{
-       |  "includedNonTaxableProfits": 1.12,
-       |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
-       |  "accountingAdjustment": 4.12,
-       |  "averagingAdjustment": 5.12,
-       |  "outstandingBusinessIncome": 6.12,
-       |  "balancingChargeBpra": 7.12,
-       |  "balancingChargeOther": 8.12,
-       |  "goodsAndServicesOwnUse": 9.12
-       |}
-       |""".stripMargin)
-
   val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
@@ -196,32 +183,6 @@ trait Def2_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val allowancesTradingIncomeAllowance: Retrieve_Allowances = Retrieve_Allowances(
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    tradingIncomeAllowance = Some(10.12),
-    None,
-    None,
-    None,
-    None
-  )
-
-  val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(s"""{
-       |  "tradingIncomeAllowance": 10.12
-       |}
-       |""".stripMargin)
-
-  val allowancesTradingIncomeAllowanceDownstreamJson: JsValue = Json.parse(s"""{
-       |  "tradingIncomeAllowance": 10.12
-       |}
-       |""".stripMargin)
-
   val nonFinancials: Retrieve_NonFinancials =
     Retrieve_NonFinancials(
       businessDetailsChangedRecently = true,
@@ -251,14 +212,6 @@ trait Def2_RetrieveAnnualSubmissionFixture {
   val mtdRetrieveResponseJson: JsValue = Json.parse(s"""
        |{
        |  "adjustments": $adjustmentsMtdJson,
-       |  "allowances": $allowancesMtdJson,
-       |  "nonFinancials": $nonFinancialsMtdJson
-       |}
-       |""".stripMargin)
-
-  val mtdRetrieveResponseWithNoAdditionalFieldsJson: JsValue = Json.parse(s"""
-       |{
-       |  "adjustments": $adjustmentsWithoutAdditionalFieldsMtdJson,
        |  "allowances": $allowancesMtdJson,
        |  "nonFinancials": $nonFinancialsMtdJson
        |}
@@ -299,31 +252,5 @@ trait Def2_RetrieveAnnualSubmissionFixture {
          |}
          |""".stripMargin)
       .as[JsObject]
-
-  def retrieveAnnualSubmissionBody(
-                                    adjustmentsModel: Option[Retrieve_Adjustments] = Some(adjustments),
-                                    allowancesModel: Option[Retrieve_Allowances] = Some(allowances),
-                                    nonFinancialsModel: Option[Retrieve_NonFinancials] = Some(nonFinancials)): Def2_RetrieveAnnualSubmissionResponse =
-    Def2_RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
-
-  def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),
-                                          allowances: Option[JsValue] = Some(allowancesMtdJson),
-                                          nonFinancials: Option[JsValue] = Some(nonFinancialsMtdJson)): JsValue =
-    JsObject(
-      Seq(
-        adjustments.map("adjustments"     -> _),
-        allowances.map("allowances"       -> _),
-        nonFinancials.map("nonFinancials" -> _)
-      ).collect { case Some((a, b)) => a -> b })
-
-  def retrieveAnnualSubmissionBodyDownstreamJson(adjustments: Option[JsValue] = Some(adjustmentsDownstreamJson),
-                                                 allowances: Option[JsValue] = Some(allowancesDownstreamJson),
-                                                 nonFinancials: Option[JsValue] = Some(nonFinancialsDownstreamJson)): JsValue =
-    JsObject(
-      Seq(
-        adjustments.map("annualAdjustments"     -> _),
-        allowances.map("annualAllowances"       -> _),
-        nonFinancials.map("annualNonFinancials" -> _)
-      ).collect { case Some((a, b)) => a -> b })
 
 }
