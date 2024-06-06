@@ -16,25 +16,28 @@
 
 package v3.validators.resolvers
 
-import shared.controllers.validators.resolvers.ResolveDateRange
-import shared.models.domain.PeriodId
-import shared.models.errors.{MtdError, PeriodIdFormatError}
+import api.models.domain.PeriodId
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import shared.controllers.validators.resolvers.ResolveDateRange
+import shared.models.domain.DateRange
+import shared.models.errors.{MtdError, PeriodIdFormatError}
 
 object ResolvePeriodId {
 
   private val periodIdRegex = "(.{10})_(.{10})".r
 
+  private val resolveDateRange: ResolveDateRange = ResolveDateRange()
+
   def apply(periodId: String): Validated[Seq[MtdError], PeriodId] =
     periodId match {
-      case periodIdRegex(fromDate, toDate) => mapResult(ResolveDateRange.unlimited(fromDate -> toDate))
+      case periodIdRegex(fromDate, toDate) => mapResult(resolveDateRange(fromDate -> toDate))
       case _                               => Invalid(List(PeriodIdFormatError))
     }
 
   def apply(periodId: String, minYear: Int, maxYear: Int): Validated[Seq[MtdError], PeriodId] =
     periodId match {
-      case periodIdRegex(fromDate, toDate) => mapResult(ResolveDateRange.withLimits(minYear, maxYear)(fromDate -> toDate))
+      case periodIdRegex(fromDate, toDate) => mapResult(resolveDateRange.withYearsLimitedTo(minYear, maxYear)(fromDate -> toDate))
       case _                               => Invalid(List(PeriodIdFormatError))
     }
 

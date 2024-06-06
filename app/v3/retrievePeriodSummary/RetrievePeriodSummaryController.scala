@@ -16,11 +16,12 @@
 
 package v3.retrievePeriodSummary
 
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import shared.config.AppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
+import shared.hateoas.HateoasFactory
 import shared.models.domain.TaxYear
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.utils.IdGenerator
 import v3.retrievePeriodSummary.model.response.RetrievePeriodSummaryHateoasData
 
@@ -34,7 +35,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
                                                  service: RetrievePeriodSummaryService,
                                                  hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
-                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

@@ -16,8 +16,9 @@
 
 package v3.retrieveAnnualSubmission.model.response
 
-import api.hateoas.{HateoasLinks, HateoasLinksFactory, Link}
-import shared.models.domain.{Nino, TaxYear}
+import api.hateoas.HateoasLinks
+import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}

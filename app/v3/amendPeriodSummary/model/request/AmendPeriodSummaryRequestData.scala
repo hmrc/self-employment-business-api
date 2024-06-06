@@ -16,8 +16,9 @@
 
 package v3.amendPeriodSummary.model.request
 
-import shared.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.domain.PeriodId
 import play.api.libs.json.JsValue
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 sealed trait AmendPeriodSummaryRequestData {
   val nino: Nino
@@ -28,8 +29,6 @@ sealed trait AmendPeriodSummaryRequestData {
 }
 
 object AmendPeriodSummaryRequestData {
-
-  def maybeTaxYear(body: JsValue): Option[TaxYear] = rawTaxYear(body).flatMap(TaxYear.maybeFromIso)
 
   private def rawTaxYear(body: JsValue): Option[String] = (body \ "periodDates" \ "periodEndDate").asOpt[String]
 }

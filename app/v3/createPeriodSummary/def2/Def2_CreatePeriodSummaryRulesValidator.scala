@@ -33,6 +33,8 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
+  private val resolveDateRange = ResolveDateRange()
+
   def validateBusinessRules(parsed: Def2_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def2_CreatePeriodSummaryRequestData] = {
     import parsed.body._
 
@@ -61,8 +63,9 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
         valid
     }
 
-  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] =
-    ResolveDateRange.withLimits(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
+  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] = {
+    resolveDateRange.withYearsLimitedTo(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
+  }
 
   private def validatePeriodIncomeNumericFields(includeNegatives: Boolean)(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(

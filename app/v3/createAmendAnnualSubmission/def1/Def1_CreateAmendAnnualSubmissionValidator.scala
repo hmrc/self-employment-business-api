@@ -16,25 +16,30 @@
 
 package v3.createAmendAnnualSubmission.def1
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
-import shared.models.domain.TaxYear
 import api.models.domain.ex.MtdNicExemption
-import shared.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 import cats.data.Validated
 import cats.implicits._
+import config.SeBusinessConfig
 import play.api.libs.json._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
+import shared.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)
+class Def1_CreateAmendAnnualSubmissionValidator(
+    nino: String,
+    businessId: String,
+    taxYear: String,
+    body: JsValue
+)(implicit seBusinessConfig: SeBusinessConfig)
     extends Validator[CreateAmendAnnualSubmissionRequestData] {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendAnnualSubmissionRequestBody]()
 
   private val resolveTaxYear =
-    DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+    ResolveTaxYearMinimum(minimumTaxYear = seBusinessConfig.minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], CreateAmendAnnualSubmissionRequestData] =
     validateClass4ExemptionReasonEnum andThen { _ =>

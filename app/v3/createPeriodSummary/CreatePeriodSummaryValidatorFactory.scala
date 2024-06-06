@@ -21,15 +21,18 @@ import play.api.libs.json.{JsObject, JsValue}
 import shared.config.AppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.TaxYear
+import shared.models.domain.TaxYear.fromIso
 import shared.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
 import v3.createPeriodSummary.def1.Def1_CreatePeriodSummaryValidator
 import v3.createPeriodSummary.def2.Def2_CreatePeriodSummaryValidator
 import v3.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
+import scala.math.Ordering.Implicits.infixOrderingOps
+import scala.util.Try
 
 @Singleton
-class CreatePeriodSummaryValidatorFactory @Inject() (appConfig: AppConfig) {
+class CreatePeriodSummaryValidatorFactory @Inject() (implicit appConfig: AppConfig) {
 
   private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2023-24")
 
@@ -41,18 +44,25 @@ class CreatePeriodSummaryValidatorFactory @Inject() (appConfig: AppConfig) {
   def validator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean): Validator[CreatePeriodSummaryRequestData] = {
 
     if (body == JsObject.empty) emptyBodyValidator
-    else
-      CreatePeriodSummaryRequestData.maybeTaxYear(body) match {
-
-        case Some(taxYear) if taxYear.isBefore(def2TaxYearApplicableFrom) =>
+    else {
+      maybeTaxYear(body) match {
+        case Some(taxYear) if taxYear < def2TaxYearApplicableFrom =>
           new Def1_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)
 
         case Some(_) =>
-          new Def2_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives, appConfig)
+          new Def2_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)
 
         case None =>
           invalidEndDateValidator
       }
+    }
+  }
+
+  private def maybeTaxYear(body: JsValue): Option[TaxYear] = {
+    for {
+      isoDateStr <- CreatePeriodSummaryRequestData.rawTaxYear(body)
+      taxYear    <- Try(fromIso(isoDateStr)).toOption
+    } yield taxYear
   }
 
 }

@@ -20,7 +20,7 @@ import config.SeBusinessFeatureSwitches
 import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.{AppConfig, FeatureSwitches}
+import shared.config.AppConfig
 import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData

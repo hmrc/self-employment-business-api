@@ -16,6 +16,7 @@
 
 package v3.createPeriodSummary
 
+import api.models.errors.RuleBusinessIncomePeriodRestriction
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper

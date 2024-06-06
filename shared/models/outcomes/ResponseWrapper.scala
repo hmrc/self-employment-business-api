@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-package shared.models.domain
+package shared.models.outcomes
 
-import play.api.libs.json.{JsString, Writes}
-
-case class PeriodId(value: String) {
-
-  val (from, to): (String, String) = {
-    if (value.length == 21) {
-      val f = value.substring(0, 10)
-      val t = value.substring(11, 21)
-      (f, t)
-    } else {
-      ("", "")
-    }
-  }
-
-}
-
-object PeriodId {
-  implicit val writes: Writes[PeriodId] = Writes(x => JsString(x.value))
-
-  def apply(from: String, to: String): PeriodId = {
-    PeriodId(s"${from}_$to")
-  }
-
+case class ResponseWrapper[+A](correlationId: String, responseData: A) {
+  def map[B](f: A => B): ResponseWrapper[B] = ResponseWrapper(correlationId, f(responseData))
 }

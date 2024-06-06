@@ -16,21 +16,24 @@
 
 package v3.deleteAnnualSubmission
 
+import config.SeBusinessConfig
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import shared.config.AppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
-                                                  val lookupService: MtdIdLookupService,
-                                                  validatorFactory: DeleteAnnualSubmissionValidatorFactory,
-                                                  service: DeleteAnnualSubmissionService,
-                                                  cc: ControllerComponents,
-                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class DeleteAnnualSubmissionController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    validatorFactory: DeleteAnnualSubmissionValidatorFactory,
+    service: DeleteAnnualSubmissionService,
+    cc: ControllerComponents,
+    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig, seBusinessConfig: SeBusinessConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -40,7 +43,7 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, businessId, taxYear)
+      val validator = validatorFactory.validator(nino, businessId, taxYear)(seBusinessConfig)
 
       val requestHandler = RequestHandler
         .withValidator(validator)

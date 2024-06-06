@@ -16,7 +16,7 @@
 
 package v3.retrieveAnnualSubmission.def1.model.response
 
-import shared.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
+import api.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 

@@ -81,7 +81,7 @@ trait BaseDownstreamConnector extends Logging {
     doDelete(getBackendHeaders(uri, hc, correlationId))
   }
 
-  def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(implicit
+  def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp], intent: Option[String] = None)(implicit
       ec: ExecutionContext,
       hc: HeaderCarrier,
       httpReads: HttpReads[DownstreamOutcome[Resp]],
@@ -91,7 +91,10 @@ trait BaseDownstreamConnector extends Logging {
       http.PUT(getBackendUri(uri), body)
     }
 
-    doPut(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
+    intent match {
+      case Some(intent) => doPut(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader, intentHeader(intent)))
+      case None         => doPut(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
+    }
   }
 
   private def getBackendUri[Resp](uri: DownstreamUri[Resp]): String =
@@ -128,4 +131,5 @@ trait BaseDownstreamConnector extends Logging {
       case TaxYearSpecificIfsUri(_) => appConfig.tysIfsDownstreamConfig
     }
 
+  private def intentHeader(intent: String): (String, String) = "intent" -> intent
 }

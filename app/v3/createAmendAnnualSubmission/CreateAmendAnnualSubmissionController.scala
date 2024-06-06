@@ -16,12 +16,13 @@
 
 package v3.createAmendAnnualSubmission
 
-import shared.controllers._
-import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
+import shared.config.AppConfig
+import shared.controllers._
 import shared.hateoas.HateoasFactory
-import shared.routing.{Version, Version3}
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionResponse.LinksFactory
@@ -37,7 +38,7 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
                                                        hateoasFactory: HateoasFactory,
                                                        auditService: AuditService,
                                                        cc: ControllerComponents,
-                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -56,7 +57,7 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
           auditService,
           auditType = "UpdateAnnualEmployment",
           transactionName = "self-employment-annual-summary-update",
-          apiVersion = Version.from(request, orElse = Version3),
+          apiVersion = Version(request),
           params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
           Some(request.body)
         ))

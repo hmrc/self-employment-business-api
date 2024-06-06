@@ -16,17 +16,13 @@
 
 package v3.createPeriodSummary.def1
 
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import shared.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import v3.createPeriodSummary.def1.model.request.{
-  Def1_Create_PeriodDisallowableExpenses,
-  Def1_Create_PeriodExpenses,
-  Def1_Create_PeriodIncome
-}
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import shared.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import v3.createPeriodSummary.def1.model.request.{Def1_Create_PeriodDisallowableExpenses, Def1_Create_PeriodExpenses, Def1_Create_PeriodIncome}
 import v3.createPeriodSummary.model.request.Def1_CreatePeriodSummaryRequestData
 
 case class Def1_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[Def1_CreatePeriodSummaryRequestData] {
@@ -36,6 +32,8 @@ case class Def1_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
+
+  private val resolveDateRange = ResolveDateRange()
 
   def validateBusinessRules(parsed: Def1_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def1_CreatePeriodSummaryRequestData] = {
     import parsed.body._
@@ -64,8 +62,9 @@ case class Def1_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
         valid
     }
 
-  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] =
-    ResolveDateRange.withLimits(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
+  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] = {
+    resolveDateRange.withYearsLimitedTo(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
+  }
 
   private def validatePeriodIncomeNumericFields(includeNegatives: Boolean)(periodIncome: Def1_Create_PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(

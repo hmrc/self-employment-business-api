@@ -23,7 +23,7 @@ import shared.config.AppConfig
 import shared.controllers._
 import shared.hateoas.HateoasFactory
 import shared.models.domain.{BusinessId, Nino}
-import shared.routing.{Version, Version3}
+import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v3.createPeriodSummary.model.response.CreatePeriodSummaryHateoasData
@@ -37,20 +37,21 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                validatorFactory: CreatePeriodSummaryValidatorFactory,
                                                service: CreatePeriodSummaryService,
                                                auditService: AuditService,
-                                               appConfig: AppConfig,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
-                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreatePeriodSummaryController", endpointName = "createSelfEmploymentPeriodSummary")
 
+  private val featureSwitches = SeBusinessFeatureSwitches()
+
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = SeBusinessFeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
+      val includeNegatives = featureSwitches.isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, request.body, includeNegatives)
 
       val requestHandler = RequestHandler
@@ -60,7 +61,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
           auditService,
           auditType = "CreatePeriodicEmployment",
           transactionName = "self-employment-periodic-create",
-          apiVersion = Version.from(request, orElse = Version3),
+          apiVersion = Version(request),
           params = Map("nino" -> nino, "businessId" -> businessId),
           Some(request.body)
         ))

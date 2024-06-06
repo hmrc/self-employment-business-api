@@ -16,24 +16,24 @@
 
 package v2.controllers.validators
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveTaxYear, ResolveBusinessId, ResolveNino}
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
+import config.SeBusinessConfig
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import shared.models.errors.MtdError
 import v2.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 
 import javax.inject.Singleton
 
 @Singleton
-class RetrieveAnnualSubmissionValidatorFactory {
+class RetrieveAnnualSubmissionValidatorFactory(implicit seBusinessConfig: SeBusinessConfig) {
 
   def validator(nino: String, businessId: String, taxYear: String): Validator[RetrieveAnnualSubmissionRequestData] =
     new Validator[RetrieveAnnualSubmissionRequestData] {
 
       private val resolveTaxYear =
-        ResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+        ResolveTaxYearMinimum(minimumTaxYear = seBusinessConfig.minimumTaxYear)
 
       def validate: Validated[Seq[MtdError], RetrieveAnnualSubmissionRequestData] =
         (

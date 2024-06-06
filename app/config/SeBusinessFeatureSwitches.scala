@@ -19,21 +19,16 @@ package config
 import play.api.Configuration
 import shared.config.{AppConfig, FeatureSwitches}
 
-import javax.inject.Inject
+case class SeBusinessFeatureSwitches private (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
 
-case class SeBusinessFeatureSwitches(featureSwitchConfig: Configuration) extends FeatureSwitches {
-
-  @Inject
-  def this(appConfig: AppConfig) = this(appConfig. featureSwitchConfig)
-
-  val isPassDeleteIntentEnabled: Boolean               = isEnabled("passDeleteIntentHeader")
-  val isAllowNegativeExpensesEnabled: Boolean          = isEnabled("allowNegativeExpenses")
-  val isCl290Enabled: Boolean                          = isEnabled("cl290")
-  val isAdjustmentsAdditionalFieldsEnabled: Boolean    = isEnabled("adjustmentsAdditionalFields")
-  val isDesIf_MigrationEnabled: Boolean                = isEnabled("desIf_Migration")
+  val isPassDeleteIntentEnabled: Boolean            = isEnabled("passDeleteIntentHeader")
+  val isAllowNegativeExpensesEnabled: Boolean       = isEnabled("allowNegativeExpenses")
+  val isCl290Enabled: Boolean                       = isEnabled("cl290")
+  val isAdjustmentsAdditionalFieldsEnabled: Boolean = isEnabled("adjustmentsAdditionalFields")
+  val isDesIf_MigrationEnabled: Boolean             = isEnabled("desIf_Migration")
 
 }
 
-object FeatureSwitches {
+object SeBusinessFeatureSwitches {
   def apply()(implicit appConfig: AppConfig): SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(appConfig.featureSwitchConfig)
 }

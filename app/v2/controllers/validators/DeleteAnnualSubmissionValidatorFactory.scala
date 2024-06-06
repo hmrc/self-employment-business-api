@@ -16,31 +16,35 @@
 
 package v2.controllers.validators
 
-import shared.controllers.validators.Validator
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 import cats.data.Validated
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
+import cats.implicits.catsSyntaxTuple3Semigroupal
+import config.SeBusinessConfig
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import shared.models.errors.MtdError
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
 import javax.inject.Singleton
 
 @Singleton
-class DeleteAnnualSubmissionValidatorFactory {
+class DeleteAnnualSubmissionValidatorFactory(implicit seBusinessConfig: SeBusinessConfig) {
 
-  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteAnnualSubmissionRequestData] =
-    new Validator[DeleteAnnualSubmissionRequestData] {
+  def validator(
+      nino: String,
+      businessId: String,
+      taxYear: String
+  ): Validator[DeleteAnnualSubmissionRequestData] = new Validator[DeleteAnnualSubmissionRequestData] {
 
-      private val resolveTaxYear =
-        ResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+    private val resolveTaxYear =
+      ResolveTaxYearMinimum(minimumTaxYear = seBusinessConfig.minimumTaxYear)
 
-      def validate: Validated[Seq[MtdError], DeleteAnnualSubmissionRequestData] =
-        (
-          ResolveNino(nino),
-          ResolveBusinessId(businessId),
-          resolveTaxYear(taxYear)
-        ).mapN(DeleteAnnualSubmissionRequestData)
+    def validate: Validated[Seq[MtdError], DeleteAnnualSubmissionRequestData] =
+      (
+        ResolveNino(nino),
+        ResolveBusinessId(businessId),
+        resolveTaxYear(taxYear)
+      ).mapN(DeleteAnnualSubmissionRequestData)
 
-    }
+  }
 
 }

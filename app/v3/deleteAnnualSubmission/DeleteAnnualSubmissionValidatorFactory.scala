@@ -16,6 +16,7 @@
 
 package v3.deleteAnnualSubmission
 
+import config.SeBusinessConfig
 import shared.controllers.validators.Validator
 import v3.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
 import v3.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
@@ -25,8 +26,9 @@ import javax.inject.Singleton
 @Singleton
 class DeleteAnnualSubmissionValidatorFactory {
 
-  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteAnnualSubmissionRequestData] = {
-    new Def1_DeleteAnnualSubmissionValidator(nino, businessId, taxYear)
+  def validator(nino: String, businessId: String, taxYear: String)(implicit
+      seBusinessConfig: SeBusinessConfig): Validator[DeleteAnnualSubmissionRequestData] = {
+    new Def1_DeleteAnnualSubmissionValidator(nino, businessId, taxYear)(seBusinessConfig)
   }
 
 }

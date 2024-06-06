@@ -31,20 +31,21 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
-                                                                       hc: HeaderCarrier,
-                                                                       ec: ExecutionContext,
-                                                                       correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
     import request._
 
     val fromDate = periodId.from
     val toDate   = periodId.to
 
-    val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
-        s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-    } else {
-      DesUri[RetrievePeriodSummaryResponse](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+    val downstreamUri = taxYear match {
+      case Some(ty) =>
+        TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
+          s"income-tax/${ty.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+      case None =>
+        DesUri[RetrievePeriodSummaryResponse](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
     }
 
     get(downstreamUri)
