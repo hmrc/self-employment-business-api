@@ -17,6 +17,10 @@
 package v3.retrieveAnnualSubmission.def1.model.request
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-case class Def1_RetrieveAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends RetrieveAnnualSubmissionRequestData
+case class Def1_RetrieveAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)
+    extends RetrieveAnnualSubmissionRequestData {
+  override val schema: RetrieveAnnualSubmissionSchema = RetrieveAnnualSubmissionSchema.Def1
+}

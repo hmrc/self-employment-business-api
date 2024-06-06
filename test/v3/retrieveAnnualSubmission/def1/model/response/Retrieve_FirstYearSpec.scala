@@ -21,8 +21,8 @@ import support.UnitSpec
 
 class Retrieve_FirstYearSpec extends UnitSpec {
 
-  val model: Def1_Retrieve_FirstYear =
-    Def1_Retrieve_FirstYear(
+  val model: Retrieve_FirstYear =
+    Retrieve_FirstYear(
       "2020-01-01",
       3000.40
     )
@@ -37,7 +37,7 @@ class Retrieve_FirstYearSpec extends UnitSpec {
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        json.as[Def1_Retrieve_FirstYear] shouldBe model
+        json.as[Retrieve_FirstYear] shouldBe model
       }
     }
   }

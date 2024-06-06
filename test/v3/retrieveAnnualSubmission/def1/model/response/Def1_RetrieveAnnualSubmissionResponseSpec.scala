@@ -25,12 +25,12 @@ import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixtu
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionHateoasData
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory
 
-class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveAnnualSubmissionFixture {
+class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveAnnualSubmissionFixture {
 
   private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
-    allowances = Some(Def1_Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
     adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
-    nonFinancials = Some(Def1_Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
+    nonFinancials = Some(Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
   "reads" should {

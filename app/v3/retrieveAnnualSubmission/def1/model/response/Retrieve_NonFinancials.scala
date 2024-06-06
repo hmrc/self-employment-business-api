@@ -20,14 +20,14 @@ import api.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Def1_Retrieve_NonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
+case class Retrieve_NonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
 
-object Def1_Retrieve_NonFinancials {
-  implicit val writes: OWrites[Def1_Retrieve_NonFinancials] = Json.writes[Def1_Retrieve_NonFinancials]
+object Retrieve_NonFinancials {
+  implicit val writes: OWrites[Retrieve_NonFinancials] = Json.writes[Retrieve_NonFinancials]
 
-  implicit val reads: Reads[Def1_Retrieve_NonFinancials] = (
+  implicit val reads: Reads[Retrieve_NonFinancials] = (
     (JsPath \ "businessDetailsChangedRecently").read[Boolean] and
       (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd))
-  )(Def1_Retrieve_NonFinancials.apply _)
+  )(Retrieve_NonFinancials.apply _)
 
 }

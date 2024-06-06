@@ -25,7 +25,7 @@ class Retrieve_BuildingSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionF
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        buildingAllowanceDownstreamJson.as[Def1_Retrieve_Building] shouldBe buildingMtdModel
+        buildingAllowanceDownstreamJson.as[Retrieve_Building] shouldBe buildingMtdModel
       }
     }
   }

@@ -33,7 +33,7 @@ class Retrieve_NonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmis
              |}
              |""".stripMargin)
 
-        requestJson.as[Def1_Retrieve_NonFinancials] shouldBe Def1_Retrieve_NonFinancials(
+        requestJson.as[Retrieve_NonFinancials] shouldBe Retrieve_NonFinancials(
           businessDetailsChangedRecently = true,
           class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
         )
@@ -55,7 +55,7 @@ class Retrieve_NonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmis
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-          Json.toJson(Def1_Retrieve_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+          Json.toJson(Retrieve_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
             Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true

@@ -25,7 +25,7 @@ class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def1_Retrie
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-          val result = structuredBuildingAllowanceDownstreamJson.as[Def1_Retrieve_StructuredBuildingAllowance]
+          val result = structuredBuildingAllowanceDownstreamJson.as[Retrieve_StructuredBuildingAllowance]
         result shouldBe structuredBuildingAllowance
       }
     }

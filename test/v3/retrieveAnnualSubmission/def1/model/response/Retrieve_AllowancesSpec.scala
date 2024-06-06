@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class Retrieve_AllowancesSpec extends UnitSpec {
 
-  val model: Def1_Retrieve_Allowances = Def1_Retrieve_Allowances(
+  val model: Retrieve_Allowances = Retrieve_Allowances(
     annualInvestmentAllowance = Some(1.12),
     capitalAllowanceMainPool = Some(2.12),
     capitalAllowanceSpecialRatePool = Some(3.12),
@@ -57,7 +57,7 @@ class Retrieve_AllowancesSpec extends UnitSpec {
              |  "enhancedStructuredBuildingAllowance": []
              |}
              |""".stripMargin)
-          .as[Def1_Retrieve_Allowances] shouldBe model
+          .as[Retrieve_Allowances] shouldBe model
       }
     }
   }

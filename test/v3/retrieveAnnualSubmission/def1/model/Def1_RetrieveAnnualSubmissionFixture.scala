@@ -22,23 +22,23 @@ import v3.retrieveAnnualSubmission.def1.model.response._
 
 trait Def1_RetrieveAnnualSubmissionFixture {
 
-  val structuredBuildingAllowance: Def1_Retrieve_StructuredBuildingAllowance =
-    Def1_Retrieve_StructuredBuildingAllowance(
+  val structuredBuildingAllowance: Retrieve_StructuredBuildingAllowance =
+    Retrieve_StructuredBuildingAllowance(
       3000.30,
       Some(
-        Def1_Retrieve_FirstYear(
+        Retrieve_FirstYear(
           "2020-01-01",
           3000.40
         )),
-      Def1_Retrieve_Building(
+      Retrieve_Building(
         Some("house name"),
         Some("house number"),
         "GF49JH"
       )
     )
 
-  val buildingMtdModel: Def1_Retrieve_Building =
-    Def1_Retrieve_Building(
+  val buildingMtdModel: Retrieve_Building =
+    Retrieve_Building(
       Some("house name"),
       Some("house number"),
       "GF4 9JH"
@@ -148,7 +148,7 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val allowances: Def1_Retrieve_Allowances = Def1_Retrieve_Allowances(
+  val allowances: Retrieve_Allowances = Retrieve_Allowances(
     annualInvestmentAllowance = Some(1.12),
     capitalAllowanceMainPool = Some(2.12),
     capitalAllowanceSpecialRatePool = Some(3.12),
@@ -196,7 +196,7 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val allowancesTradingIncomeAllowance: Def1_Retrieve_Allowances = Def1_Retrieve_Allowances(
+  val allowancesTradingIncomeAllowance: Retrieve_Allowances = Retrieve_Allowances(
     None,
     None,
     None,
@@ -222,8 +222,8 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val nonFinancials: Def1_Retrieve_NonFinancials =
-    Def1_Retrieve_NonFinancials(
+  val nonFinancials: Retrieve_NonFinancials =
+    Retrieve_NonFinancials(
       businessDetailsChangedRecently = true,
       class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
     )
@@ -302,8 +302,8 @@ trait Def1_RetrieveAnnualSubmissionFixture {
 
   def retrieveAnnualSubmissionBody(
                                     adjustmentsModel: Option[Retrieve_Adjustments] = Some(adjustments),
-                                    allowancesModel: Option[Def1_Retrieve_Allowances] = Some(allowances),
-                                    nonFinancialsModel: Option[Def1_Retrieve_NonFinancials] = Some(nonFinancials)): Def1_RetrieveAnnualSubmissionResponse =
+                                    allowancesModel: Option[Retrieve_Allowances] = Some(allowances),
+                                    nonFinancialsModel: Option[Retrieve_NonFinancials] = Some(nonFinancials)): Def1_RetrieveAnnualSubmissionResponse =
     Def1_RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
 
   def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),

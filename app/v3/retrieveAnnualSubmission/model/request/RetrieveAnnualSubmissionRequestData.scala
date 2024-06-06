@@ -17,11 +17,14 @@
 package v3.retrieveAnnualSubmission.model.request
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema
 
 trait RetrieveAnnualSubmissionRequestData {
   val nino: Nino
   val businessId: BusinessId
   val taxYear: TaxYear
+
+  val schema: RetrieveAnnualSubmissionSchema
 }
 
 
