@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.model.request
+package v3.retrieveAnnualSubmission.def1.model.request
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-trait RetrieveAnnualSubmissionRequestData {
-  val nino: Nino
-  val businessId: BusinessId
-  val taxYear: TaxYear
-}
-
-
+case class Def1_RetrieveAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends RetrieveAnnualSubmissionRequestData

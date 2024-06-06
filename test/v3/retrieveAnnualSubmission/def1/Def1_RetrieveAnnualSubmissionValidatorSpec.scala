@@ -19,7 +19,8 @@ package v3.retrieveAnnualSubmission.def1
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
-import v3.retrieveAnnualSubmission.model.request.{Def1_RetrieveAnnualSubmissionRequestData, RetrieveAnnualSubmissionRequestData}
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
 

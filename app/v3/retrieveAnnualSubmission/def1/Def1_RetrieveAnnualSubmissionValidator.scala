@@ -22,7 +22,8 @@ import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
-import v3.retrieveAnnualSubmission.model.request.{Def1_RetrieveAnnualSubmissionRequestData, RetrieveAnnualSubmissionRequestData}
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 class Def1_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String)
     extends Validator[RetrieveAnnualSubmissionRequestData] {

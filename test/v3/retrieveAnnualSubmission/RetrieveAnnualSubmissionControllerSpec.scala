@@ -25,7 +25,7 @@ import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
 import play.api.mvc.Result
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
-import v3.retrieveAnnualSubmission.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global

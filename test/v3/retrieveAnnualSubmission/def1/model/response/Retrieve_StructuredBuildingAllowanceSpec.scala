@@ -16,36 +16,26 @@
 
 package v3.retrieveAnnualSubmission.def1.model.response
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import support.UnitSpec
+import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
-class Def1_Retrieve_FirstYearSpec extends UnitSpec {
-
-  val model: Def1_Retrieve_FirstYear =
-    Def1_Retrieve_FirstYear(
-      "2020-01-01",
-      3000.40
-    )
-
-  val json: JsValue = Json.parse("""
-      |{
-      |  "qualifyingDate": "2020-01-01",
-      |  "qualifyingAmountExpenditure": 3000.40
-      |}
-      |""".stripMargin)
+class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
 
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        json.as[Def1_Retrieve_FirstYear] shouldBe model
+          val result = structuredBuildingAllowanceDownstreamJson.as[Def1_Retrieve_StructuredBuildingAllowance]
+        result shouldBe structuredBuildingAllowance
       }
     }
   }
 
   "writes" when {
     "passed a model" should {
-      "return downstream JSON" in {
-        Json.toJson(model) shouldBe json
+      "return Mtd JSON" in {
+          val result = Json.toJson(structuredBuildingAllowance)
+        result shouldBe structuredBuildingAllowanceMtdJson
       }
     }
   }

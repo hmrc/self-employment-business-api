@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
-class Def1_Retrieve_NonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
+class Retrieve_NonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
 
   "reads" should {
     "passed a valid JSON" should {

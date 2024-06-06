@@ -19,7 +19,6 @@ package v3.retrieveAnnualSubmission.def1.model
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsObject, JsValue, Json}
 import v3.retrieveAnnualSubmission.def1.model.response._
-import v3.retrieveAnnualSubmission.model.response.Def1_RetrieveAnnualSubmissionResponse
 
 trait Def1_RetrieveAnnualSubmissionFixture {
 
@@ -91,8 +90,8 @@ trait Def1_RetrieveAnnualSubmissionFixture {
       |}
       |""".stripMargin)
 
-  val adjustments: Def1_Retrieve_Adjustments =
-    Def1_Retrieve_Adjustments(
+  val adjustments: Retrieve_Adjustments =
+    Retrieve_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
       overlapReliefUsed = Some(3.12),
@@ -302,9 +301,9 @@ trait Def1_RetrieveAnnualSubmissionFixture {
       .as[JsObject]
 
   def retrieveAnnualSubmissionBody(
-      adjustmentsModel: Option[Def1_Retrieve_Adjustments] = Some(adjustments),
-      allowancesModel: Option[Def1_Retrieve_Allowances] = Some(allowances),
-      nonFinancialsModel: Option[Def1_Retrieve_NonFinancials] = Some(nonFinancials)): Def1_RetrieveAnnualSubmissionResponse =
+                                    adjustmentsModel: Option[Retrieve_Adjustments] = Some(adjustments),
+                                    allowancesModel: Option[Def1_Retrieve_Allowances] = Some(allowances),
+                                    nonFinancialsModel: Option[Def1_Retrieve_NonFinancials] = Some(nonFinancials)): Def1_RetrieveAnnualSubmissionResponse =
     Def1_RetrieveAnnualSubmissionResponse(adjustmentsModel, allowancesModel, nonFinancialsModel)
 
   def retrieveAnnualSubmissionBodyMtdJson(adjustments: Option[JsValue] = Some(adjustmentsMtdJson),

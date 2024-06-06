@@ -50,7 +50,7 @@ class Def2_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        Def2_RetrievePeriodSummaryResponse.Def2_RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe List(
+        Def2_RetrievePeriodSummaryResponse.Def2_RetrievePeriodSubmissionLinksFactory.links(mockAppConfig, data) shouldBe List(
           Link(
             href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24",
             method = Method.PUT,

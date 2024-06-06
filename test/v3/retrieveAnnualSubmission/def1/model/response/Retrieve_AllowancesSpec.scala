@@ -19,7 +19,7 @@ package v3.retrieveAnnualSubmission.def1.model.response
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class Def1_Retrieve_AllowancesSpec extends UnitSpec {
+class Retrieve_AllowancesSpec extends UnitSpec {
 
   val model: Def1_Retrieve_Allowances = Def1_Retrieve_Allowances(
     annualInvestmentAllowance = Some(1.12),

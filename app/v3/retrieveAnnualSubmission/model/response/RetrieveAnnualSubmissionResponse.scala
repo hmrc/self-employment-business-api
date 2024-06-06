@@ -16,57 +16,26 @@
 
 package v3.retrieveAnnualSubmission.model.response
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
+import api.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import config.AppConfig
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v3.retrieveAnnualSubmission.def1.model.response.{Def1_Retrieve_Adjustments, Def1_Retrieve_Allowances, Def1_Retrieve_NonFinancials}
-import v3.retrieveAnnualSubmission.model.response.Def1_RetrieveAnnualSubmissionResponse.Def1_RetrieveAnnualSubmissionLinksFactory
+import play.api.libs.json.{Json, OWrites}
+import shared.utils.JsonWritesUtil
+import v2.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
+import v3.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 
-sealed trait RetrieveAnnualSubmissionResponse {
-  def withoutAdjustmentsAdditionalFields: Def1_RetrieveAnnualSubmissionResponse
+trait RetrieveAnnualSubmissionResponse {
+  def withoutAdjustmentsAdditionalFields: RetrieveAnnualSubmissionResponse
 }
 
-object RetrieveAnnualSubmissionResponse extends HateoasLinks {
+object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
 
-  implicit val writes: OWrites[RetrieveAnnualSubmissionResponse] = { case def1: Def1_RetrieveAnnualSubmissionResponse =>
+  implicit val writes: OWrites[RetrieveAnnualSubmissionResponse] = writesFrom { case def1: Def1_RetrieveAnnualSubmissionResponse =>
     Json.toJsObject(def1)
   }
 
   implicit object RetrieveAnnualSubmissionLinksFactory
       extends HateoasLinksFactory[RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
-
-    override def links(appConfig: AppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] =
-      Def1_RetrieveAnnualSubmissionLinksFactory.links(appConfig, data)
-
-  }
-
-}
-
-case class Def1_RetrieveAnnualSubmissionResponse(
-    adjustments: Option[Def1_Retrieve_Adjustments],
-    allowances: Option[Def1_Retrieve_Allowances],
-    nonFinancials: Option[Def1_Retrieve_NonFinancials]
-) extends RetrieveAnnualSubmissionResponse {
-
-  def withoutAdjustmentsAdditionalFields: Def1_RetrieveAnnualSubmissionResponse =
-    this.copy(adjustments = adjustments.map(adjs => adjs.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
-
-}
-
-object Def1_RetrieveAnnualSubmissionResponse extends HateoasLinks {
-
-  implicit val reads: Reads[Def1_RetrieveAnnualSubmissionResponse] = (
-    (JsPath \ "annualAdjustments").readNullable[Def1_Retrieve_Adjustments] and
-      (JsPath \ "annualAllowances").readNullable[Def1_Retrieve_Allowances] and
-      (JsPath \ "annualNonFinancials").readNullable[Def1_Retrieve_NonFinancials]
-  )(Def1_RetrieveAnnualSubmissionResponse.apply _)
-
-  implicit val writes: OWrites[Def1_RetrieveAnnualSubmissionResponse] = Json.writes[Def1_RetrieveAnnualSubmissionResponse]
-
-  implicit object Def1_RetrieveAnnualSubmissionLinksFactory
-      extends HateoasLinksFactory[Def1_RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
 
     override def links(appConfig: AppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
       import data._

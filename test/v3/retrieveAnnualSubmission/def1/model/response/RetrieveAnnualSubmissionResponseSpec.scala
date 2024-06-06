@@ -22,14 +22,14 @@ import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
-import v3.retrieveAnnualSubmission.model.response.Def1_RetrieveAnnualSubmissionResponse.Def1_RetrieveAnnualSubmissionLinksFactory
-import v3.retrieveAnnualSubmission.model.response.{Def1_RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData}
+import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionHateoasData
+import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory
 
-class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveAnnualSubmissionFixture {
+class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveAnnualSubmissionFixture {
 
   private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
     allowances = Some(Def1_Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Def1_Retrieve_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
+    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
     nonFinancials = Some(Def1_Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
@@ -85,7 +85,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        val result = Def1_RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data)
+        val result = RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data)
 
         result shouldBe List(
           Link(

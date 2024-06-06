@@ -21,8 +21,10 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.retrieveAnnualSubmission.model.request.{Def1_RetrieveAnnualSubmissionRequestData, RetrieveAnnualSubmissionRequestData}
-import v3.retrieveAnnualSubmission.model.response.{Def1_RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionResponse}
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
+import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,6 +55,8 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
         )
         val result = get(downstreamUri)
         result
+
+      case _ => ??? // FIXME <<<<<
     }
   }
 

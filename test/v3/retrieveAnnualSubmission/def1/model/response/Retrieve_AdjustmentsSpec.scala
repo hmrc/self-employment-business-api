@@ -19,10 +19,10 @@ package v3.retrieveAnnualSubmission.def1.model.response
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
+class Retrieve_AdjustmentsSpec extends UnitSpec {
 
-  val adjustments: Def1_Retrieve_Adjustments =
-    Def1_Retrieve_Adjustments(
+  val adjustments: Retrieve_Adjustments =
+    Retrieve_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
       overlapReliefUsed = Some(3.12),
@@ -54,7 +54,7 @@ class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
              |  "transitionProfitAccelerationAmount": 9.12
              |}
              |""".stripMargin)
-          .as[Def1_Retrieve_Adjustments]
+          .as[Retrieve_Adjustments]
 
         result shouldBe adjustments
       }
