@@ -48,7 +48,7 @@ class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig
 
         MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        Def1_RetrievePeriodSummaryResponse.Def1_RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe List(
+        Def1_RetrievePeriodSummaryResponse.Def1_RetrievePeriodSubmissionLinksFactory.links(mockAppConfig, data) shouldBe List(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")

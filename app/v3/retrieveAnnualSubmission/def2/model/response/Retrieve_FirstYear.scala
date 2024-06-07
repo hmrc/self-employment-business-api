@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package api.connectors
+package v3.retrieveAnnualSubmission.def2.model.response
 
-sealed trait DownstreamUri[+Resp] {
-  val value: String
-}
+import play.api.libs.json.{Json, OFormat}
 
-object DownstreamUri {
-  final case class DesUri[Resp](value: String)          extends DownstreamUri[Resp]
-  final case class IfsUri[Resp](value: String)          extends DownstreamUri[Resp]
-  case class TaxYearSpecificIfsUri[Resp](value: String) extends DownstreamUri[Resp]
+case class Retrieve_FirstYear(qualifyingDate: String, qualifyingAmountExpenditure: BigDecimal)
+
+object Retrieve_FirstYear {
+  implicit val format: OFormat[Retrieve_FirstYear] = Json.format[Retrieve_FirstYear]
 }

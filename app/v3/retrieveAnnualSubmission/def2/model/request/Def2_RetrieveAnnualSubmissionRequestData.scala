@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package api.connectors
+package v3.retrieveAnnualSubmission.def2.model.request
 
-sealed trait DownstreamUri[+Resp] {
-  val value: String
-}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema
+import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-object DownstreamUri {
-  final case class DesUri[Resp](value: String)          extends DownstreamUri[Resp]
-  final case class IfsUri[Resp](value: String)          extends DownstreamUri[Resp]
-  case class TaxYearSpecificIfsUri[Resp](value: String) extends DownstreamUri[Resp]
+case class Def2_RetrieveAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)
+  extends RetrieveAnnualSubmissionRequestData {
+  override val schema: RetrieveAnnualSubmissionSchema = RetrieveAnnualSubmissionSchema.Def2
 }

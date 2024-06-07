@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1.model.response
+package v3.retrieveAnnualSubmission.def2.model.response
 
+import config.FeatureSwitchesImpl
 import mocks.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
+import v3.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveAnnualSubmissionFixture {
+class Def2_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def2_RetrieveAnnualSubmissionFixture {
 
-  private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
+  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
+
+  private val retrieveAnnualSubmissionResponse = Def2_RetrieveAnnualSubmissionResponse(
     allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None, None, None)),
     nonFinancials = Some(Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
@@ -41,7 +45,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
              |  }
              |}
              |""".stripMargin)
-          .as[Def1_RetrieveAnnualSubmissionResponse]
+          .as[Def2_RetrieveAnnualSubmissionResponse]
 
         result shouldBe retrieveAnnualSubmissionResponse
       }
@@ -65,4 +69,5 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
       }
     }
   }
+
 }

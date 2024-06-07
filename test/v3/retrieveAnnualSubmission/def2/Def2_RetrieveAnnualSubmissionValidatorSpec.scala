@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1
+package v3.retrieveAnnualSubmission.def2
 
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import support.UnitSpec
-import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.def2.model.request.Def2_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
+class Def2_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
@@ -35,7 +35,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
   private def validator(nino: String, businessId: String, taxYear: String) =
-    new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
+    new Def2_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
 
   "validator" should {
     "return the parsed domain object" when {
@@ -43,7 +43,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Right(Def1_RetrieveAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear))
+        result shouldBe Right(Def2_RetrieveAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear))
       }
     }
 

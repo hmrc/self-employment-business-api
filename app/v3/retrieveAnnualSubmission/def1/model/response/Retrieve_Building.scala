@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package api.connectors
+package v3.retrieveAnnualSubmission.def1.model.response
 
-sealed trait DownstreamUri[+Resp] {
-  val value: String
-}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-object DownstreamUri {
-  final case class DesUri[Resp](value: String)          extends DownstreamUri[Resp]
-  final case class IfsUri[Resp](value: String)          extends DownstreamUri[Resp]
-  case class TaxYearSpecificIfsUri[Resp](value: String) extends DownstreamUri[Resp]
+case class Retrieve_Building(name: Option[String], number: Option[String], postcode: String)
+
+object Retrieve_Building {
+  implicit val writes: OWrites[Retrieve_Building] = Json.writes[Retrieve_Building]
+
+  implicit val reads: Reads[Retrieve_Building] = (
+    (JsPath \ "name").readNullable[String] and
+      (JsPath \ "number").readNullable[String] and
+      (JsPath \ "postCode").read[String]
+  )(Retrieve_Building.apply _)
+
 }

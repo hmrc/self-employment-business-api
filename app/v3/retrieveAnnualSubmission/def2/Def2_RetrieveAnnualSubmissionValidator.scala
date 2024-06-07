@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1
+package v3.retrieveAnnualSubmission.def2
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
@@ -22,10 +22,10 @@ import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
-import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.def2.model.request.Def2_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class Def1_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String)
+class Def2_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String)
     extends Validator[RetrieveAnnualSubmissionRequestData] {
 
   private val resolveTaxYear =
@@ -36,6 +36,6 @@ class Def1_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, t
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolveTaxYear(taxYear)
-    ).mapN(Def1_RetrieveAnnualSubmissionRequestData)
+    ).mapN(Def2_RetrieveAnnualSubmissionRequestData)
 
 }

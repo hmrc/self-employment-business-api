@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1.model.response
+package v3.retrieveAnnualSubmission.def2.model.response
 
 import play.api.libs.json.Json
 import support.UnitSpec
-import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
+import v3.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Def1_Retrieve_BuildingSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
+class Retrieve_BuildingSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
 
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        buildingAllowanceDownstreamJson.as[Def1_Retrieve_Building] shouldBe buildingMtdModel
+        buildingAllowanceDownstreamJson.as[Retrieve_Building] shouldBe buildingMtdModel
       }
     }
   }

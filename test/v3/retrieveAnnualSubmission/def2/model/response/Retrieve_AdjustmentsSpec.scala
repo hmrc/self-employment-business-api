@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1.model.response
+package v3.retrieveAnnualSubmission.def2.model.response
 
+import config.FeatureSwitchesImpl
+import play.api.Configuration
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
+class Retrieve_AdjustmentsSpec extends UnitSpec {
 
-  val adjustments: Def1_Retrieve_Adjustments =
-    Def1_Retrieve_Adjustments(
+  val adjustments: Retrieve_Adjustments =
+    Retrieve_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
       overlapReliefUsed = Some(3.12),
@@ -32,14 +34,14 @@ class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
       balancingChargeBpra = Some(7.12),
       balancingChargeOther = Some(8.12),
       goodsAndServicesOwnUse = Some(9.12),
-      transitionProfitAmount = Some(9.12),
-      transitionProfitAccelerationAmount = Some(9.12)
+      transitionProfitAmount = Some(10.12),
+      transitionProfitAccelerationAmount = Some(11.13)
     )
 
   "reads" when {
-    "given valid mtd JSON" should {
-      "return the deserialised case class" in {
-        val result = Json
+    "given valid downstream JSON" should {
+      "work" in {
+        Json
           .parse(s"""{
              |  "includedNonTaxableProfits": 1.12,
              |  "basisAdjustment": 2.12,
@@ -50,23 +52,21 @@ class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
              |  "balancingChargeBpra": 7.12,
              |  "balancingChargeOther": 8.12,
              |  "goodsAndServicesOwnUse": 9.12,
-             |  "transitionProfitAmount": 9.12,
-             |  "transitionProfitAccelerationAmount": 9.12
+             |  "transitionProfitAmount": 10.12,
+             |  "transitionProfitAccelerationAmount": 11.13
              |}
              |""".stripMargin)
-          .as[Def1_Retrieve_Adjustments]
-
-        result shouldBe adjustments
+          .as[Retrieve_Adjustments] shouldBe adjustments
       }
     }
   }
 
   "writes" when {
-    "given a Scala object" should {
-      "return downstream JSON" in {
-        val result = Json.toJson(adjustments)
+    "additional fields are switched on" should {
+      "include those fields" in {
+        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> true))
 
-        result shouldBe Json.parse(s"""{
+        Json.toJson(adjustments) shouldBe Json.parse(s"""{
              |  "includedNonTaxableProfits": 1.12,
              |  "basisAdjustment": 2.12,
              |  "overlapReliefUsed": 3.12,
@@ -76,10 +76,29 @@ class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
              |  "balancingChargeBpra": 7.12,
              |  "balancingChargeOther": 8.12,
              |  "goodsAndServicesOwnUse": 9.12,
-             |  "transitionProfitAmount": 9.12,
-             |  "transitionProfitAccelerationAmount": 9.12
+             |  "transitionProfitAmount": 10.12,
+             |  "transitionProfitAccelerationAmount": 11.13
              |}
              |""".stripMargin)
+      }
+    }
+
+    "additional fields are switched off" should {
+      "not include those fields" in {
+        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> false))
+
+        Json.toJson(adjustments) shouldBe Json.parse(s"""{
+                                      |  "includedNonTaxableProfits": 1.12,
+                                      |  "basisAdjustment": 2.12,
+                                      |  "overlapReliefUsed": 3.12,
+                                      |  "accountingAdjustment": 4.12,
+                                      |  "averagingAdjustment": 5.12,
+                                      |  "outstandingBusinessIncome": 6.12,
+                                      |  "balancingChargeBpra": 7.12,
+                                      |  "balancingChargeOther": 8.12,
+                                      |  "goodsAndServicesOwnUse": 9.12
+                                      |}
+                                      |""".stripMargin)
       }
     }
   }

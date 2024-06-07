@@ -18,8 +18,8 @@ package v3.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Def1_Retrieve_FirstYear(qualifyingDate: String, qualifyingAmountExpenditure: BigDecimal)
+case class Retrieve_FirstYear(qualifyingDate: String, qualifyingAmountExpenditure: BigDecimal)
 
-object Def1_Retrieve_FirstYear {
-  implicit val format: OFormat[Def1_Retrieve_FirstYear] = Json.format[Def1_Retrieve_FirstYear]
+object Retrieve_FirstYear {
+  implicit val format: OFormat[Retrieve_FirstYear] = Json.format[Retrieve_FirstYear]
 }

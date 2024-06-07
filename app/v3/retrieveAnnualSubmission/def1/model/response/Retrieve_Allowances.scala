@@ -19,23 +19,23 @@ package v3.retrieveAnnualSubmission.def1.model.response
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Def1_Retrieve_Allowances(annualInvestmentAllowance: Option[BigDecimal],
-                      businessPremisesRenovationAllowance: Option[BigDecimal],
-                      capitalAllowanceMainPool: Option[BigDecimal],
-                      capitalAllowanceSpecialRatePool: Option[BigDecimal],
-                      zeroEmissionsGoodsVehicleAllowance: Option[BigDecimal],
-                      enhancedCapitalAllowance: Option[BigDecimal],
-                      allowanceOnSales: Option[BigDecimal],
-                      capitalAllowanceSingleAssetPool: Option[BigDecimal],
-                      tradingIncomeAllowance: Option[BigDecimal],
-                      electricChargePointAllowance: Option[BigDecimal],
-                      zeroEmissionsCarAllowance: Option[BigDecimal],
-                      structuredBuildingAllowance: Option[Seq[Def1_Retrieve_StructuredBuildingAllowance]],
-                      enhancedStructuredBuildingAllowance: Option[Seq[Def1_Retrieve_StructuredBuildingAllowance]])
+case class Retrieve_Allowances(annualInvestmentAllowance: Option[BigDecimal],
+                               businessPremisesRenovationAllowance: Option[BigDecimal],
+                               capitalAllowanceMainPool: Option[BigDecimal],
+                               capitalAllowanceSpecialRatePool: Option[BigDecimal],
+                               zeroEmissionsGoodsVehicleAllowance: Option[BigDecimal],
+                               enhancedCapitalAllowance: Option[BigDecimal],
+                               allowanceOnSales: Option[BigDecimal],
+                               capitalAllowanceSingleAssetPool: Option[BigDecimal],
+                               tradingIncomeAllowance: Option[BigDecimal],
+                               electricChargePointAllowance: Option[BigDecimal],
+                               zeroEmissionsCarAllowance: Option[BigDecimal],
+                               structuredBuildingAllowance: Option[Seq[Retrieve_StructuredBuildingAllowance]],
+                               enhancedStructuredBuildingAllowance: Option[Seq[Retrieve_StructuredBuildingAllowance]])
 
-object Def1_Retrieve_Allowances {
+object Retrieve_Allowances {
 
-  implicit val reads: Reads[Def1_Retrieve_Allowances] = (
+  implicit val reads: Reads[Retrieve_Allowances] = (
     (JsPath \ "annualInvestmentAllowance").readNullable[BigDecimal] and
       (JsPath \ "businessPremisesRenovationAllowance").readNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceMainPool").readNullable[BigDecimal] and
@@ -47,10 +47,10 @@ object Def1_Retrieve_Allowances {
       (JsPath \ "tradingIncomeAllowance").readNullable[BigDecimal] and
       (JsPath \ "electricChargePointAllowance").readNullable[BigDecimal] and
       (JsPath \ "zeroEmissionsCarAllowance").readNullable[BigDecimal] and
-      (JsPath \ "structuredBuildingAllowance").readNullable[Seq[Def1_Retrieve_StructuredBuildingAllowance]] and
-      (JsPath \ "enhancedStructuredBuildingAllowance").readNullable[Seq[Def1_Retrieve_StructuredBuildingAllowance]]
-  )(Def1_Retrieve_Allowances.apply _)
+      (JsPath \ "structuredBuildingAllowance").readNullable[Seq[Retrieve_StructuredBuildingAllowance]] and
+      (JsPath \ "enhancedStructuredBuildingAllowance").readNullable[Seq[Retrieve_StructuredBuildingAllowance]]
+  )(Retrieve_Allowances.apply _)
 
-  implicit val writes: OWrites[Def1_Retrieve_Allowances] = Json.writes[Def1_Retrieve_Allowances]
+  implicit val writes: OWrites[Retrieve_Allowances] = Json.writes[Retrieve_Allowances]
 
 }
