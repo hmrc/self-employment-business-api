@@ -20,6 +20,7 @@ import api.models.domain.ex.MtdNicExemption
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors._
 import api.models.utils.JsonErrorValidators
+import config.FeatureSwitchesImpl
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
@@ -30,7 +31,8 @@ import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmission
 
 class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
-  private implicit val correlationId: String = "1234"
+  private implicit val correlationId: String                = "1234"
+  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"

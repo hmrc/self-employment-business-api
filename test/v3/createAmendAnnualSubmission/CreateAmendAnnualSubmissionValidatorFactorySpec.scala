@@ -17,6 +17,7 @@
 package v3.createAmendAnnualSubmission
 
 import api.controllers.validators.Validator
+import config.FeatureSwitchesImpl
 import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json._
@@ -28,6 +29,7 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
+  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
 
   private def validBody(startDate: String, endDate: String) =
     Json.parse(s"""
