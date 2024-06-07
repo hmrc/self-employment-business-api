@@ -30,11 +30,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v3.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v3.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
-import v3.amendPeriodSummary.model.request.{
-  AmendPeriodSummaryRequestData,
-  Def1_AmendPeriodSummaryRequestData,
-  Def2_AmendPeriodSummaryRequestData
-}
+import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
 import v3.amendPeriodSummary.model.response.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -138,7 +134,7 @@ class AmendPeriodSummaryControllerSpec
         auditType = "AmendPeriodicEmployment",
         transactionName = "self-employment-periodic-amend",
         detail = GenericAuditDetail(
-          versionNumber = "3.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId),

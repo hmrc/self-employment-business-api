@@ -41,7 +41,8 @@ trait RequestHandler {
   def handleRequest()(implicit
       ctx: RequestContext,
       request: UserRequest[_],
-      ec: ExecutionContext
+      ec: ExecutionContext,
+      appConfig: AppConfig
   ): Future[Result]
 
 }
@@ -67,7 +68,7 @@ object RequestHandler {
       modelHandler: Option[Output => Output] = None
   ) extends RequestHandler {
 
-    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] =
+    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
       Delegate.handleRequest()
 
     def withModelHandling(modelHandler: Output => Output): RequestHandlerBuilder[Input, Output] =
@@ -145,7 +146,7 @@ object RequestHandler {
               List(
                 "X-CorrelationId"        -> correlationId,
                 "X-Content-Type-Options" -> "nosniff"
-              )
+              ) ++ withDeprecationHeaders
 
           result.copy(header = result.header.copy(headers = result.header.headers ++ headers))
         }
@@ -155,7 +156,8 @@ object RequestHandler {
       def handleRequest()(implicit
           ctx: RequestContext,
           request: UserRequest[_],
-          ec: ExecutionContext
+          ec: ExecutionContext,
+          appConfig: AppConfig
       ): Future[Result] = {
 
         logger.info(
@@ -187,8 +189,12 @@ object RequestHandler {
       private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(implicit
           ctx: RequestContext,
           request: UserRequest[_],
-          ec: ExecutionContext
+          ec: ExecutionContext,
+          appConfig: AppConfig
       ): Result = {
+
+        implicit val apiVersion: Version = Version(request)
+
         logger.info(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
             s"Success response received with CorrelationId: ${ctx.correlationId}")
@@ -204,8 +210,12 @@ object RequestHandler {
       private def handleFailure(errorWrapper: ErrorWrapper)(implicit
           ctx: RequestContext,
           request: UserRequest[_],
-          ec: ExecutionContext
+          ec: ExecutionContext,
+          appConfig: AppConfig
       ): Result = {
+
+        implicit val apiVersion: Version = Version(request)
+
         logger.warn(
           s"[${ctx.endpointLogContext.controllerName}][${ctx.endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: ${ctx.correlationId}")
