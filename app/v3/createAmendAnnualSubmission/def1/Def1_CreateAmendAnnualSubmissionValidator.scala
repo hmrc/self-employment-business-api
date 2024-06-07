@@ -18,7 +18,7 @@ package v3.createAmendAnnualSubmission.def1
 
 import api.models.domain.ex.MtdNicExemption
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.catsSyntaxTuple4Semigroupal
 import config.SeBusinessConfig
 import play.api.libs.json._
 import shared.controllers.validators.Validator
@@ -28,12 +28,8 @@ import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionRules
 import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidator(
-    nino: String,
-    businessId: String,
-    taxYear: String,
-    body: JsValue
-)(implicit seBusinessConfig: SeBusinessConfig)
+class Def1_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)(implicit
+    seBusinessConfig: SeBusinessConfig)
     extends Validator[CreateAmendAnnualSubmissionRequestData] {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendAnnualSubmissionRequestBody]()

@@ -17,8 +17,8 @@
 package v3.createAmendAnnualSubmission
 
 import api.controllers.validators.common.InvalidResultValidator
+import config.SeBusinessConfig
 import play.api.libs.json.{JsObject, JsValue}
-import shared.config.AppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.TaxYear
 import shared.models.domain.TaxYear.fromIso
@@ -33,7 +33,7 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 import scala.util.Try
 
 @Singleton
-class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit appConfig: AppConfig) {
+class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
 
   private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2024-25")
 
@@ -48,7 +48,7 @@ class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit appConfig:
     else {
       maybeTaxYear(body) match {
         case Some(taxYear) if taxYear < def2TaxYearApplicableFrom =>
-          new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
+          new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear.toString, body)
 
         case Some(_) =>
           new Def2_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)

@@ -43,7 +43,7 @@ class DeleteAnnualSubmissionController @Inject() (
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val validator = validatorFactory.validator(nino, businessId, taxYear)(seBusinessConfig)
+      val validator = validatorFactory.validator(nino, businessId, taxYear)
 
       val requestHandler = RequestHandler
         .withValidator(validator)

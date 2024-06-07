@@ -136,7 +136,9 @@ object AmendAnnualSubmissionRulesValidator extends RulesValidator[AmendAnnualSub
       (building.name, s"/allowances/$typeOfBuildingAllowance/$index/building/name"),
       (building.number, s"/allowances/$typeOfBuildingAllowance/$index/building/number")
     ).traverse_ { case (maybeValue, path) =>
-      val x = maybeValue.map(value => ResolveStringPattern(regex, StringFormatError.withPath(path))(value))
+      maybeValue
+        .map(value => resolveStringPattern(regex, path, value))
+        .getOrElse(valid)
     }
 
     val validatedString = resolveStringPattern(regex, s"/allowances/$typeOfBuildingAllowance/$index/building/postcode", building.postcode)

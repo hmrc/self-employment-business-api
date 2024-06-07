@@ -16,13 +16,15 @@
 
 package v3.createAmendAnnualSubmission.def2
 
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNumber, ResolveStringPattern}
-import shared.models.errors._
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits._
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNumber, ResolveStringPattern}
+import shared.models.errors._
 import v3.createAmendAnnualSubmission.model.request.Def2_CreateAmendAnnualSubmissionRequestData
+
+import scala.util.matching.Regex
 
 object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def2_CreateAmendAnnualSubmissionRequestData] {
 
@@ -30,7 +32,6 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   private val resolveMaybeNegativeParsedNumber     = ResolveParsedNumber(min = -99999999999.99)
   private val resolveNonNegativeCappedParsedNumber = ResolveParsedNumber(max = 1000)
   private val regex                                = "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$".r
-  private val resolveStringPattern                 = new ResolveStringPattern(regex, StringFormatError)
 
   def validateBusinessRules(
       parsed: Def2_CreateAmendAnnualSubmissionRequestData): Validated[Seq[MtdError], Def2_CreateAmendAnnualSubmissionRequestData] = {
@@ -57,14 +58,14 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       (transitionProfitAmount, "/adjustments/transitionProfitAmount"),
       (transitionProfitAccelerationAmount, "/adjustments/transitionProfitAccelerationAmount")
     ).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives = List(
       (basisAdjustment, "/adjustments/basisAdjustment"),
       (averagingAdjustment, "/adjustments/averagingAdjustment")
     ).traverse_ { case (value, path) =>
-      resolveMaybeNegativeParsedNumber(value, path = Some(path))
+      resolveMaybeNegativeParsedNumber(value, path)
     }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
@@ -85,7 +86,7 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       (electricChargePointAllowance, "/allowances/electricChargePointAllowance"),
       (zeroEmissionsCarAllowance, "/allowances/zeroEmissionsCarAllowance")
     ).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedTradingIncomeAllowance =
@@ -138,11 +139,13 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     val validatedOptionalStrings = List(
       (building.name, s"/allowances/$typeOfBuildingAllowance/$index/building/name"),
       (building.number, s"/allowances/$typeOfBuildingAllowance/$index/building/number")
-    ).traverse_ { case (value, path) =>
-      resolveStringPattern(value, path = Some(path))
+    ).traverse_ { case (maybeValue, path) =>
+      maybeValue
+        .map(value => resolveStringPattern(regex, path, value))
+        .getOrElse(valid)
     }
 
-    val validatedString = resolveStringPattern(building.postcode, s"/allowances/$typeOfBuildingAllowance/$index/building/postcode").toUnit
+    val validatedString = resolveStringPattern(regex, s"/allowances/$typeOfBuildingAllowance/$index/building/postcode", building.postcode)
 
     val validatedDate = firstYear
       .map(year =>
@@ -175,6 +178,10 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     } else {
       valid
     }
+  }
+
+  private def resolveStringPattern(regex: Regex, path: String, value: String): Validated[Seq[MtdError], String] = {
+    ResolveStringPattern(regex, StringFormatError.withPath(path))(value)
   }
 
 }

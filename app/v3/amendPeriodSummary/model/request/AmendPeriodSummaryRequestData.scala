@@ -17,7 +17,6 @@
 package v3.amendPeriodSummary.model.request
 
 import api.models.domain.PeriodId
-import play.api.libs.json.JsValue
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 sealed trait AmendPeriodSummaryRequestData {
@@ -26,11 +25,6 @@ sealed trait AmendPeriodSummaryRequestData {
   val periodId: PeriodId
   val maybeTaxYear: Option[TaxYear]
   val body: AmendPeriodSummaryRequestBody
-}
-
-object AmendPeriodSummaryRequestData {
-
-  private def rawTaxYear(body: JsValue): Option[String] = (body \ "periodDates" \ "periodEndDate").asOpt[String]
 }
 
 /** Applicable from minimumTaxYear to 2022-23 (pre-TYS).

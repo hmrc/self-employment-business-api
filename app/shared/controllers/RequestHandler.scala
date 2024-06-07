@@ -57,11 +57,15 @@ object RequestHandler {
       service: Input => Future[ServiceOutcome[Output]],
       errorHandling: ErrorHandling = ErrorHandling.Default,
       resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
-      auditHandler: Option[AuditHandler] = None
+      auditHandler: Option[AuditHandler] = None,
+      modelHandler: Option[Output => Output] = None
   ) extends RequestHandler {
 
     def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
       Delegate.handleRequest()
+
+    def withModelHandling(modelHandler: Output => Output): RequestHandlerBuilder[Input, Output] =
+      copy(modelHandler = Option(modelHandler))
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
       copy(errorHandling = errorHandling)
@@ -223,7 +227,7 @@ object RequestHandler {
         InternalServerError(InternalError.asJson)
       }
 
-      def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+      private def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext): Unit =

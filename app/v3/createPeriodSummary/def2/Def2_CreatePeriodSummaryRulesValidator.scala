@@ -73,9 +73,9 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
       (periodIncome.turnover, "/periodIncome/turnover")
     ).traverse_ { case (value, path) =>
       if (includeNegatives)
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       else
-        resolveNonNegativeParsedNumber(value, path = Some(path))
+        resolveNonNegativeParsedNumber(value, path)
     }
 
   private def validateAllowableNumericFields(includeNegatives: Boolean)(expenses: Def2_Create_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
@@ -104,12 +104,12 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
@@ -141,12 +141,12 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)

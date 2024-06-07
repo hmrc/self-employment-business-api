@@ -77,7 +77,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
       (income.turnover, "/periodIncome/turnover"),
       (income.other, "/periodIncome/other")
     ).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
   private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: Def2_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
@@ -106,12 +106,12 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
@@ -143,12 +143,12 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
