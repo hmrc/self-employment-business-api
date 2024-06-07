@@ -182,6 +182,26 @@ class RequestHandlerSpec
             header("Link", result) shouldBe Some("http://someUrl")
             status(result) shouldBe successCode
           }
+          "only deprecatedOn exists" in {
+            val requestHandler = RequestHandler
+              .withValidator(successValidatorForRequest)
+              .withService(mockService.service)
+              .withPlainJsonResult(successCode)
+
+            mockDeprecation(Deprecated(LocalDateTime.parse("2023-01-17T12:00:00"), None))
+            MockAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+
+            service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
+
+            val result = requestHandler.handleRequest()
+
+            contentAsJson(result) shouldBe successResponseJson
+            header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
+            header("Deprecation", result) shouldBe Some("Tue, 17 Jan 2023 12:00:00 GMT")
+            header("Sunset", result) shouldBe None
+            header("Link", result) shouldBe Some("http://someUrl")
+            status(result) shouldBe successCode
+          }
         }
     }
 
