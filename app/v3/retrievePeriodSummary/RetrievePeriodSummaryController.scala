@@ -27,6 +27,7 @@ import v3.retrievePeriodSummary.model.response.RetrievePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 @Singleton
 class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
@@ -52,7 +53,8 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
           .withValidator(validator)
           .withService(service.retrievePeriodSummary)
           .withHateoasResultFrom(hateoasFactory) { (parsedRequest, _) =>
-            RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, taxYear.flatMap(TaxYear.maybeFromMtd))
+            val maybeTaxYear = taxYear.flatMap(t => Try(TaxYear.fromMtd(t)).toOption)
+            RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, maybeTaxYear)
           }
 
       requestHandler.handleRequest()
