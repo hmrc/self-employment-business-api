@@ -21,7 +21,7 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import play.api.libs.json.{JsNumber, JsValue, Json}
-import support.UnitSpec
+import shared.UnitSpec
 import v2.models.request.amendSEAnnual._
 
 class AmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with JsonErrorValidators {

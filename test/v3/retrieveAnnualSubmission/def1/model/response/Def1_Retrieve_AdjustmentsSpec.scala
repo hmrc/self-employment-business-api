@@ -17,8 +17,7 @@
 package v3.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.Json
-import support.UnitSpec
-
+import shared.UnitSpec
 class Def1_Retrieve_AdjustmentsSpec extends UnitSpec {
 
   val adjustments: Def1_Retrieve_Adjustments =

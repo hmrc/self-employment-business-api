@@ -19,8 +19,7 @@ package v2.controllers.validators.resolvers
 import api.models.domain.PeriodId
 import shared.models.errors.PeriodIdFormatError
 import cats.data.Validated.{Invalid, Valid}
-import support.UnitSpec
-
+import shared.UnitSpec
 class ResolvePeriodIdSpec extends UnitSpec {
 
   private val validPeriodId  = "2017-01-25_2017-02-28"

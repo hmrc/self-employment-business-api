@@ -22,7 +22,7 @@ import shared.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
 import play.api.Configuration
 import play.api.libs.json._
 import shared.config.MockAppConfig
-import support.UnitSpec
+import shared.UnitSpec
 import v3.createPeriodSummary.def1.Def1_CreatePeriodSummaryValidator
 import v3.createPeriodSummary.def2.Def2_CreatePeriodSummaryValidator
 import v3.createPeriodSummary.model.request.CreatePeriodSummaryRequestData

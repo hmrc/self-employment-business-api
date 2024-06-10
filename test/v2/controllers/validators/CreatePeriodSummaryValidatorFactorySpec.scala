@@ -20,7 +20,7 @@ import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import play.api.libs.json._
-import support.UnitSpec
+import shared.UnitSpec
 import v2.models.request.createPeriodSummary._
 
 class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorValidators {

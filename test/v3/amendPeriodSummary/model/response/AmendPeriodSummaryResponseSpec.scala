@@ -19,8 +19,7 @@ package v3.amendPeriodSummary.model.response
 import shared.config.MockAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import support.UnitSpec
-
+import shared.UnitSpec
 class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {

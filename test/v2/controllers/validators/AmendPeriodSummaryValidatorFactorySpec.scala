@@ -21,7 +21,7 @@ import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
-import support.UnitSpec
+import shared.UnitSpec
 import v2.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorValidators {

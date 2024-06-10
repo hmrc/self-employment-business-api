@@ -23,7 +23,7 @@ import shared.models.utils.JsonErrorValidators
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.config.MockAppConfig
-import support.UnitSpec
+import shared.UnitSpec
 import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
 import v3.createAmendAnnualSubmission.def1.model.request._
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}

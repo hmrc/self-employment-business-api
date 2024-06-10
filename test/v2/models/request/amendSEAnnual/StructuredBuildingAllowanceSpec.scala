@@ -17,8 +17,7 @@
 package v2.models.request.amendSEAnnual
 
 import play.api.libs.json.Json
-import support.UnitSpec
-
+import shared.UnitSpec
 class StructuredBuildingAllowanceSpec extends UnitSpec with StructuredBuildingAllowanceFixture {
 
   "reads" when {

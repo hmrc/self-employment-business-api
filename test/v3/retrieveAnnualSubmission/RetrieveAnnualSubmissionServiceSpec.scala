@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission
 
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec

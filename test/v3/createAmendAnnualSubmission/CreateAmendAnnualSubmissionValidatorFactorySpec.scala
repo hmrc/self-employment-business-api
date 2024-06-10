@@ -20,7 +20,7 @@ import shared.controllers.validators.Validator
 import play.api.Configuration
 import play.api.libs.json._
 import shared.config.MockAppConfig
-import support.UnitSpec
+import shared.UnitSpec
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 

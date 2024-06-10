@@ -36,7 +36,7 @@ class DeleteAnnualSubmissionControllerSpec
 
   private val taxYear: String    = "2019-20"
   private val businessId: String = "XAIS12345678910"
-  private val requestData        = Def1_DeleteAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData        = Def1_DeleteAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "handleRequest" should {
     "return NoContent" when {
@@ -83,7 +83,7 @@ class DeleteAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeRequest)
   }
 
 }

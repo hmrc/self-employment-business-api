@@ -57,7 +57,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, None))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -76,7 +76,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd(taxYear))))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -141,7 +141,7 @@ class AmendPeriodSummaryControllerSpec
           versionNumber = "2.0",
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId),
+          params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId),
           requestBody = requestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
@@ -154,26 +154,26 @@ class AmendPeriodSummaryControllerSpec
     val periodId: String = "2019-01-01_2020-01-01"
 
     val requestData: AmendPeriodSummaryRequestData =
-      AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), None, requestBody)
+      AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), None, requestBody)
 
     val responseJson: JsValue = Json.parse(
       s"""
          |{
          |    "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "PUT",
          |      "rel": "amend-self-employment-period-summary"
          |     
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "GET",
          |      "rel": "self"
          |      
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period",
          |      "method": "GET",
          |      "rel": "list-self-employment-period-summaries"
          |      
@@ -185,20 +185,20 @@ class AmendPeriodSummaryControllerSpec
 
     val testHateoasLinks: Seq[Link] = Seq(
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+        href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
-      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", method = GET, rel = "self"),
+      Link(href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", method = GET, rel = "self"),
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period",
+        href = s"/individuals/business/self-employment/$validNino/$businessId/period",
         method = GET,
         rel = "list-self-employment-period-summaries"
       )
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(nino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -208,7 +208,7 @@ class AmendPeriodSummaryControllerSpec
             .event(auditResponse, requestBody)
             .detail
             .copy(
-              params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId)
+              params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId)
             )
         )
 
@@ -219,24 +219,24 @@ class AmendPeriodSummaryControllerSpec
     val taxYear: String  = "2023-24"
 
     val requestData: AmendPeriodSummaryRequestData =
-      AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)), requestBody)
+      AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(taxYear)), requestBody)
 
     val responseJson: JsValue = Json.parse(
       s"""
          |{
          |  "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "PUT",
          |      "rel": "amend-self-employment-period-summary"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "GET",
          |      "rel": "self"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "GET",
          |      "rel": "list-self-employment-period-summaries"
          |    }
@@ -247,20 +247,20 @@ class AmendPeriodSummaryControllerSpec
 
     val testHateoasLinks: Seq[Link] = Seq(
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
-      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+      Link(href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = GET,
         rel = "list-self-employment-period-summaries"
       )
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -270,7 +270,7 @@ class AmendPeriodSummaryControllerSpec
             .event(auditResponse, requestBody)
             .detail
             .copy(
-              params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear)
+              params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear)
             )
         )
 

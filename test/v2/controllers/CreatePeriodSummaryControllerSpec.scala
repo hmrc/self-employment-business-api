@@ -49,9 +49,9 @@ class CreatePeriodSummaryControllerSpec
   private val periodId   = "2017-01-25_2017-01-25"
 
   private val testHateoasLinks: Seq[Link] = List(
-    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
-    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
-    Link(s"/individuals/business/self-employment/$nino/$businessId/period", GET, "list-self-employment-period-summaries")
+    Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+    Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "self"),
+    Link(s"/individuals/business/self-employment/$validNino/$businessId/period", GET, "list-self-employment-period-summaries")
   )
 
   private val requestJson = Json.parse(
@@ -156,19 +156,19 @@ class CreatePeriodSummaryControllerSpec
        |  "periodId": "$periodId",
        |  "links": [
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
        |      "method": "PUT",
        |      "rel": "amend-self-employment-period-summary"
        |
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
        |      "method": "GET",
        |      "rel": "self"
        |
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period",
        |      "method": "GET",
        |      "rel": "list-self-employment-period-summaries"
        |
@@ -178,7 +178,7 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val requestData = CreatePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), requestBody)
+  private val requestData = CreatePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -192,7 +192,7 @@ class CreatePeriodSummaryControllerSpec
         MockHateoasFactory
           .wrap(
             CreatePeriodSummaryResponse(periodId),
-            CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
+            CreatePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -246,14 +246,14 @@ class CreatePeriodSummaryControllerSpec
           versionNumber = "2.0",
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "businessId" -> businessId),
+          params = Map("nino" -> validNino, "businessId" -> businessId),
           requestBody = requestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakePostRequest(requestJson))
   }
 
 }

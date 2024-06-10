@@ -21,7 +21,7 @@ import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import play.api.libs.json._
 import shared.config.MockAppConfig
-import support.UnitSpec
+import shared.UnitSpec
 import v3.createPeriodSummary.def1.model.request._
 import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestBody, Def1_CreatePeriodSummaryRequestData}
 

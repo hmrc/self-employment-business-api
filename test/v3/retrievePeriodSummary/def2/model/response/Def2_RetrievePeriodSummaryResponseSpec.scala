@@ -16,10 +16,11 @@
 
 package v3.retrievePeriodSummary.def2.model.response
 
-import api.hateoas.{Link, Method}
-import shared.models.domain.Nino
+import shared.hateoas.{Link, Method}
+import shared.models.domain.{BusinessId, Nino}
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.UnitSpec
+import shared.config.MockAppConfig
 import v3.retrievePeriodSummary.def2.model.Def2_RetrievePeriodSummaryFixture
 import v3.retrievePeriodSummary.model.response.{Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData}
 

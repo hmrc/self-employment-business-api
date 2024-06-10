@@ -17,7 +17,7 @@
 package v3.retrievePeriodSummary
 
 import shared.controllers.validators.Validator
-import support.UnitSpec
+import shared.UnitSpec
 import v3.retrievePeriodSummary.def1.Def1_RetrievePeriodSummaryValidator
 import v3.retrievePeriodSummary.def2.Def2_RetrievePeriodSummaryValidator
 import v3.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData

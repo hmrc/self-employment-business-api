@@ -17,7 +17,7 @@
 package v3.deleteAnnualSubmission
 
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -30,7 +30,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
   val taxYear: String                = "2017-18"
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   private val requestData = Def1_DeleteAnnualSubmissionRequestData(
     nino = Nino(nino),

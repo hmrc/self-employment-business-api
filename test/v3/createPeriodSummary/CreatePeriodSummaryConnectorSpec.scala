@@ -17,7 +17,7 @@
 package v3.createPeriodSummary
 
 import shared.connectors.ConnectorSpec
-import shared.models.domain.Nino
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.outcomes.ResponseWrapper
 import v3.createPeriodSummary.def1.model.request.Def1_Create_PeriodDates
 import v3.createPeriodSummary.def2.model.request.Def2_Create_PeriodDates

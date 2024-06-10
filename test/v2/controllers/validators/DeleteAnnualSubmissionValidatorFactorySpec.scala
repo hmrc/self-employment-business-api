@@ -19,7 +19,7 @@ package v2.controllers.validators
 import shared.config.MockAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
-import support.UnitSpec
+import shared.UnitSpec
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
 class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppConfig {

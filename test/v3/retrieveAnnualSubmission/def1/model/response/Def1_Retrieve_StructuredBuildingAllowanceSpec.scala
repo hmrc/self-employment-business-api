@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
 class Def1_Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {

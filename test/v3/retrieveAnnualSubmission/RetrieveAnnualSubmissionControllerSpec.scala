@@ -44,17 +44,17 @@ class RetrieveAnnualSubmissionControllerSpec
 
   private val testHateoasLinks: Seq[Link] = Seq(
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
       rel = "create-and-amend-self-employment-annual-submission"),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+    Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = DELETE,
       rel = "delete-self-employment-annual-submission")
   )
 
-  private val requestData = Def1_RetrieveAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData = Def1_RetrieveAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   private val responseBody: RetrieveAnnualSubmissionResponse = retrieveResponseModel
 
@@ -71,12 +71,12 @@ class RetrieveAnnualSubmissionControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
           .returns(HateoasWrapper(responseBody, testHateoasLinks))
 
         runOkTest(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear))
+          maybeExpectedResponseBody = Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(validNino, businessId, taxYear))
         )
       }
 
@@ -94,13 +94,13 @@ class RetrieveAnnualSubmissionControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
           .returns(HateoasWrapper(responseBody, testHateoasLinks))
 
         runOkTest(
           expectedStatus = OK,
           maybeExpectedResponseBody =
-            Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseWithNoAdditionalFieldsJson))
+            Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(validNino, businessId, taxYear, mtdRetrieveResponseWithNoAdditionalFieldsJson))
         )
       }
     }
@@ -139,7 +139,7 @@ class RetrieveAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }
 
 }

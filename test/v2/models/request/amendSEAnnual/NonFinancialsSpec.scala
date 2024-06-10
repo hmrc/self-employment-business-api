@@ -18,8 +18,7 @@ package v2.models.request.amendSEAnnual
 
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
-
+import shared.UnitSpec
 class NonFinancialsSpec extends UnitSpec {
 
   "reads" should {

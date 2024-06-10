@@ -47,12 +47,12 @@ class CreateAmendAnnualSubmissionControllerSpec
 
   private val testHateoasLinks: Seq[Link] = Seq(
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
       rel = "create-and-amend-self-employment-annual-submission"),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+    Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = DELETE,
       rel = "delete-self-employment-annual-submission")
   )
@@ -66,17 +66,17 @@ class CreateAmendAnnualSubmissionControllerSpec
        |{
        |  "links": [
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
        |      "rel": "create-and-amend-self-employment-annual-submission",
        |      "method": "PUT"
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
        |      "rel": "self",
        |      "method": "GET"
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
        |      "rel": "delete-self-employment-annual-submission",
        |      "method": "DELETE"
        |    }
@@ -85,7 +85,7 @@ class CreateAmendAnnualSubmissionControllerSpec
     """.stripMargin
   )
 
-  private val requestData = Def1_CreateAmendAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
+  private val requestData = Def1_CreateAmendAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -97,7 +97,7 @@ class CreateAmendAnnualSubmissionControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), CreateAmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+          .wrap((), CreateAmendAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -141,7 +141,7 @@ class CreateAmendAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePutRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakePutRequest(requestJson))
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -151,7 +151,7 @@ class CreateAmendAnnualSubmissionControllerSpec
           versionNumber = "3.0",
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
+          params = Map("nino" -> validNino, "businessId" -> businessId, "taxYear" -> taxYear),
           requestBody = requestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

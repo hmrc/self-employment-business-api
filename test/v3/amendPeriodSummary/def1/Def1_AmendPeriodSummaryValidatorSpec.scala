@@ -24,7 +24,7 @@ import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
-import support.UnitSpec
+import shared.UnitSpec
 import v3.amendPeriodSummary.def1.model.request.{Def1_Amend_PeriodDisallowableExpenses, Def1_Amend_PeriodExpenses, Def1_Amend_PeriodIncome}
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 

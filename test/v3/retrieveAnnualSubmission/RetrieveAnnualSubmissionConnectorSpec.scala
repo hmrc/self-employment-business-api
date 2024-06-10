@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission
 
 import shared.connectors.ConnectorSpec
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v3.retrieveAnnualSubmission.model.request.Def1_RetrieveAnnualSubmissionRequestData

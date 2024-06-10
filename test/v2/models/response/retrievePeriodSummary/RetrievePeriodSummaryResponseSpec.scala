@@ -20,8 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import shared.config.MockAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import support.UnitSpec
-
+import shared.UnitSpec
 class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   val downstreamFullJson: JsValue = Json.parse("""

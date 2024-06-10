@@ -16,9 +16,10 @@
 
 package v3.retrievePeriodSummary.def2
 
-import shared.models.domain.{Nino, PeriodId, TaxYear}
+import api.models.domain.PeriodId
+import shared.UnitSpec
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
-import support.UnitSpec
 import v3.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 
 class Def2_RetrievePeriodSummaryValidatorSpec extends UnitSpec {

@@ -20,7 +20,7 @@ import shared.controllers.EndpointLogContext
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import play.api.libs.json.{Format, Json}
-import support.UnitSpec
+import shared.UnitSpec
 import shared.utils.Logging
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {

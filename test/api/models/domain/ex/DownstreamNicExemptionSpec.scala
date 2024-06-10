@@ -19,8 +19,7 @@ package api.models.domain.ex
 import api.models.domain.ex.DownstreamNicExemption._
 import play.api.libs.json.{JsError, JsValue, Json}
 import shared.utils.enums.EnumJsonSpecSupport
-import support.UnitSpec
-
+import shared.UnitSpec
 class DownstreamNicExemptionSpec extends UnitSpec with EnumJsonSpecSupport {
 
   val desJson: JsValue = Json.toJson("")

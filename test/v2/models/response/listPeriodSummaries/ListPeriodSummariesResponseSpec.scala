@@ -21,8 +21,7 @@ import shared.hateoas.Method._
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
-import support.UnitSpec
-
+import shared.UnitSpec
 class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
   private val model = ListPeriodSummariesResponse(

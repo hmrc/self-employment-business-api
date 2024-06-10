@@ -17,8 +17,7 @@
 package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.json.Json
-import support.UnitSpec
-
+import shared.UnitSpec
 class Def2_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def2_CreateAmendAnnualSubmissionFixture {
 
   val model: Def2_CreateAmendAnnualSubmissionRequestBody = Def2_CreateAmendAnnualSubmissionRequestBody(
