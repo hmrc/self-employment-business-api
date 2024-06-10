@@ -26,10 +26,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v3.createAmendAnnualSubmission.def1.model.request.{
-  Def1_CreateAmendAnnualSubmissionFixture,
-  Def1_CreateAmendAnnualSubmissionRequestBody
-}
+import v3.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
 import v3.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
 
@@ -151,7 +148,7 @@ class CreateAmendAnnualSubmissionControllerSpec
         auditType = "UpdateAnnualEmployment",
         transactionName = "self-employment-annual-summary-update",
         detail = GenericAuditDetail(
-          versionNumber = "3.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),

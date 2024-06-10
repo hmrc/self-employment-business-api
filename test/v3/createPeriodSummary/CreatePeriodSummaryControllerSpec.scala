@@ -138,7 +138,6 @@ class CreatePeriodSummaryControllerSpec
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
       auditService = mockAuditService,
-      appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -151,7 +150,7 @@ class CreatePeriodSummaryControllerSpec
         auditType = "CreatePeriodicEmployment",
         transactionName = "self-employment-periodic-create",
         detail = GenericAuditDetail(
-          versionNumber = "3.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> nino, "businessId" -> businessId),

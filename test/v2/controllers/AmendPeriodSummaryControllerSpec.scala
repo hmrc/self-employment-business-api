@@ -24,7 +24,6 @@ import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
-import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -42,7 +41,6 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryValidatorFactory
     with MockHateoasFactory
-    with MockAppConfig
     with AmendPeriodSummaryFixture
     with MockAuditService {
 
