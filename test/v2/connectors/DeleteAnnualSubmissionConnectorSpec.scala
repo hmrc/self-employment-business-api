@@ -17,7 +17,7 @@
 package v2.connectors
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import shared.models.outcomes.ResponseWrapper
 import mocks.MockFeatureSwitches
@@ -111,6 +111,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeature
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
+
     val request: DeleteAnnualSubmissionRequestData = DeleteAnnualSubmissionRequestData(
       nino = Nino(nino),
       taxYear = taxYear,

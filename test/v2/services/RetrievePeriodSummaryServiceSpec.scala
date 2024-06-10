@@ -16,8 +16,9 @@
 
 package v2.services
 
+import api.models.domain.PeriodId
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, PeriodId}
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -33,7 +34,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   val businessId: String             = "XAIS12345678910"
   val periodId: String               = "2019-01-25_2020-01-25"
   val tysTaxYear: String             = "23-24"
-  implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),

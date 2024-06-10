@@ -18,7 +18,7 @@ package v3.retrievePeriodSummary
 
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import api.hateoas.{HateoasWrapper, Link}
 import shared.models.domain.{Nino, PeriodId, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper

@@ -22,14 +22,14 @@ import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import shared.config.AppConfig
-import shared.routing.{Version3, Version4, Version5}
+import shared.routing.{Version2, Version3, Version4}
 import support.IntegrationBaseSpec
 
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  private val apiTitle = "Business Source Adjustable Summary (MTD)"
+  private val apiTitle = "Self-Employment Business (MTD)"
 
   private val config          = app.injector.instanceOf[AppConfig]
   private val confidenceLevel = config.confidenceLevelConfig.confidenceLevel
@@ -51,22 +51,22 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
        |  ],
        |  "api": {
        |    "name": "$apiTitle",
-       |    "description": "An API for providing business source adjustable summary data",
-       |    "context": "individuals/self-assessment/adjustable-summary",
+       |    "description": "An API for providing Annual and Periodic Summary data",
+       |    "context": "individuals/business/self-employment",
        |    "categories": ["INCOME_TAX_MTD"],
        |    "versions":[
        |      {
-       |        "version":"3.0",
+       |        "version":"2.0",
        |        "status":"DEPRECATED",
        |        "endpointsEnabled":true
        |      },
        |      {
-       |        "version":"4.0",
+       |        "version":"3.0",
        |        "status":"BETA",
        |        "endpointsEnabled":true
        |      },
        |      {
-       |        "version":"5.0",
+       |        "version":"4.0",
        |        "status":"BETA",
        |        "endpointsEnabled":true
        |      }     
@@ -84,7 +84,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-    List(Version3, Version4, Version5).foreach { version =>
+    List(Version2, Version3, Version4).foreach { version =>
       s"return the documentation for $version" in {
         val response = get(s"/api/conf/$version/application.yaml")
         response.status shouldBe Status.OK

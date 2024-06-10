@@ -18,8 +18,8 @@ package api.models.domain.ex
 
 import api.models.domain.ex.MtdNicExemption._
 import play.api.libs.json.{JsError, JsValue, Json}
+import shared.utils.enums.EnumJsonSpecSupport
 import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
 
 class MtdNicExemptionSpec extends UnitSpec with EnumJsonSpecSupport {
 

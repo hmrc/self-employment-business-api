@@ -16,7 +16,7 @@
 
 package v3.createAmendAnnualSubmission.def1.model.request
 
-import shared.models.domain.ex.MtdNicExemption
+import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 

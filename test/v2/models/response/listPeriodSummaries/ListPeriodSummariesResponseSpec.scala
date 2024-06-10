@@ -16,11 +16,11 @@
 
 package v2.models.response.listPeriodSummaries
 
-import api.hateoas.Link
-import api.hateoas.Method._
-import shared.models.domain.{Nino, TaxYear}
-import mocks.MockAppConfig
+import shared.hateoas.Link
+import shared.hateoas.Method._
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.Json
+import shared.config.MockAppConfig
 import support.UnitSpec
 
 class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {

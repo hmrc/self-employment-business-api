@@ -16,8 +16,9 @@
 
 package v2.services
 
+import api.models.domain.PeriodId
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, PeriodId}
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}

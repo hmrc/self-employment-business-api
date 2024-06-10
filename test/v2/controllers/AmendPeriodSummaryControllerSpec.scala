@@ -16,18 +16,19 @@
 
 package v2.controllers
 
+import api.models.domain.PeriodId
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.Method.{GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{Nino, PeriodId, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
-import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.config.MockAppConfig
 import v2.controllers.validators.MockAmendPeriodSummaryValidatorFactory
 import v2.models.request.amendPeriodSummary._
 import v2.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
@@ -106,8 +107,8 @@ class AmendPeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
-    MockappConfig. featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+  private trait Test extends ControllerTest with AuditEventChecking {
+    MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId: String = "XAIS12345678910"
     val periodId: String

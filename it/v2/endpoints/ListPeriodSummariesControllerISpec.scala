@@ -16,15 +16,16 @@
 
 package v2.endpoints
 
-import shared.models.domain.TaxYear
-import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
+import shared.models.domain.TaxYear
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import stubs.BaseDownstreamStub
 import support.IntegrationBaseSpec
 
 class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
@@ -33,38 +34,38 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     "return a 200 status code" when {
 
-        s"any valid request is made" in new NonTysTest {
+      s"any valid request is made" in new NonTysTest {
 
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub
-              .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
-          }
-
-          val response: WSResponse = await(request().get())
-          response.status shouldBe OK
-          response.json shouldBe responseBody(periodId, fromDate, toDate)
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-          response.header("Content-Type") shouldBe Some("application/json")
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          BaseDownstreamStub
+            .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
         }
 
-        s"any valid request is made for a TYS specific year" in new TysIfsTest {
+        val response: WSResponse = await(request().get())
+        response.status shouldBe OK
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
 
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
-          }
+      s"any valid request is made for a TYS specific year" in new TysIfsTest {
 
-          val response: WSResponse = await(request().get())
-          response.status shouldBe OK
-          response.json shouldBe responseBody(periodId, fromDate, toDate)
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-          response.header("Content-Type") shouldBe Some("application/json")
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
         }
+
+        val response: WSResponse = await(request().get())
+        response.status shouldBe OK
+        response.json shouldBe responseBody(periodId, fromDate, toDate)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
     }
     "return error according to spec" when {
 
@@ -229,12 +230,12 @@ class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   private trait TysIfsTest extends Test {
 
-    lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
-    val periodId        = "2024-01-01_2024-01-02"
-    val fromDate        = "2024-01-01"
-    val toDate          = "2024-01-02"
-    val creationDate    = "2020-01-03"
-    val mtdTaxYear      = "2023-24"
+    lazy val tysTaxYear                         = TaxYear.fromMtd(mtdTaxYear)
+    val periodId                                = "2024-01-01_2024-01-02"
+    val fromDate                                = "2024-01-01"
+    val toDate                                  = "2024-01-02"
+    val creationDate                            = "2020-01-03"
+    val mtdTaxYear                              = "2023-24"
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 

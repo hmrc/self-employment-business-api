@@ -17,9 +17,9 @@
 package v3.createAmendAnnualSubmission
 
 import shared.controllers.validators.Validator
-import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json._
+import shared.config.MockAppConfig
 import support.UnitSpec
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
@@ -45,7 +45,7 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
   private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory
 
   private def setupMocks(): Unit =
-    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validator()" when {
     "given any tax year" should {

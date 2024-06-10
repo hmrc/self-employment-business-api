@@ -16,7 +16,7 @@
 
 package v2.models.response.retrieveAnnual
 
-import shared.models.domain.ex.MtdNicExemption
+import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v2.fixtures.RetrieveAnnualSubmissionFixture

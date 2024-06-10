@@ -17,7 +17,7 @@
 package v2.connectors
 
 import shared.connectors.ConnectorSpec
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v2.fixtures.RetrieveAnnualSubmissionFixture
 import v2.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData

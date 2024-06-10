@@ -16,18 +16,14 @@
 
 package v3.createPeriodSummary.def1
 
-import shared.models.domain.Nino
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
-import api.models.utils.JsonErrorValidators
-import mocks.MockAppConfig
+import shared.models.utils.JsonErrorValidators
 import play.api.libs.json._
+import shared.config.MockAppConfig
 import support.UnitSpec
 import v3.createPeriodSummary.def1.model.request._
-import v3.createPeriodSummary.model.request.{
-  CreatePeriodSummaryRequestData,
-  Def1_CreatePeriodSummaryRequestBody,
-  Def1_CreatePeriodSummaryRequestData
-}
+import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestBody, Def1_CreatePeriodSummaryRequestData}
 
 class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 

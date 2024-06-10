@@ -16,10 +16,10 @@
 
 package v3.retrieveAnnualSubmission.def1.model.response
 
-import api.hateoas.{Link, Method}
-import shared.models.domain.Nino
-import mocks.MockAppConfig
+import shared.hateoas.{Link, Method}
+import shared.models.domain.{BusinessId, Nino}
 import play.api.libs.json.Json
+import shared.config.MockAppConfig
 import support.UnitSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v3.retrieveAnnualSubmission.model.response.Def1_RetrieveAnnualSubmissionResponse.Def1_RetrieveAnnualSubmissionLinksFactory

@@ -16,9 +16,9 @@
 
 package v2.models.response.amendPeriodSummary
 
-import api.hateoas.{Link, Method}
-import shared.models.domain.{Nino, TaxYear}
-import mocks.MockAppConfig
+import shared.config.MockAppConfig
+import shared.hateoas.{Link, Method}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import support.UnitSpec
 
 class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {

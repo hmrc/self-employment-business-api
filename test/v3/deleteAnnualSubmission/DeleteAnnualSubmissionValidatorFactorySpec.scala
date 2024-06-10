@@ -16,8 +16,8 @@
 
 package v3.deleteAnnualSubmission
 
+import shared.config.MockAppConfig
 import shared.controllers.validators.Validator
-import mocks.MockAppConfig
 import support.UnitSpec
 import v3.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
 import v3.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData

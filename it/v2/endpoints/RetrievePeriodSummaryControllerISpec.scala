@@ -16,15 +16,16 @@
 
 package v2.endpoints
 
-import shared.models.domain.TaxYear
-import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
+import shared.models.domain.TaxYear
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import stubs.BaseDownstreamStub
 import support.IntegrationBaseSpec
 
 class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
@@ -215,11 +216,11 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysTest extends Test {
-    lazy val tysTaxYear   = TaxYear.fromMtd(mtdTaxYear)
-    override val periodId = "2023-04-01_2024-01-01"
-    val fromDate          = "2023-04-01"
-    val toDate            = "2024-01-01"
-    val mtdTaxYear        = "2023-24"
+    lazy val tysTaxYear                         = TaxYear.fromMtd(mtdTaxYear)
+    override val periodId                       = "2023-04-01_2024-01-01"
+    val fromDate                                = "2023-04-01"
+    val toDate                                  = "2024-01-01"
+    val mtdTaxYear                              = "2023-24"
     val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"

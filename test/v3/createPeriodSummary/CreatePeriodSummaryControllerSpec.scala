@@ -17,17 +17,17 @@
 package v3.createPeriodSummary
 
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.Method.{GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
-import mocks.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.config.MockAppConfig
 import v3.createPeriodSummary.def1.model.request.Def1_CreatePeriodSummaryFixture
 import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData}
 import v3.createPeriodSummary.model.response.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
@@ -129,8 +129,8 @@ class CreatePeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
-    MockappConfig. featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+  private trait Test extends ControllerTest with AuditEventChecking {
+    MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -138,7 +138,6 @@ class CreatePeriodSummaryControllerSpec
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
       auditService = mockAuditService,
-      appConfig = mockAppConfig,
       hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator

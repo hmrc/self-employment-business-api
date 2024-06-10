@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package v3.endpoints
+package v3
 
-import shared.models.domain.TaxYear
-import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
+import shared.models.domain.TaxYear
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import stubs.BaseDownstreamStub
 import support.IntegrationBaseSpec
 
 class ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {

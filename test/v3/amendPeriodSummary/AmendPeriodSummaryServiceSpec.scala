@@ -16,13 +16,14 @@
 
 package v3.amendPeriodSummary
 
+import api.models.domain.PeriodId
+import play.api.Configuration
+import shared.config.MockAppConfig
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, PeriodId, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import mocks.MockAppConfig
-import play.api.Configuration
 import v3.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodIncome
 import v3.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodIncome
 import v3.amendPeriodSummary.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
@@ -64,11 +65,11 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   }
 
   trait Cl290Enabled extends Test {
-    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
   }
 
   trait Cl290Disabled extends Test {
-    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
   }
 
   "AmendPeriodSummaryService" should {

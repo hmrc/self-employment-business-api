@@ -17,19 +17,16 @@
 package v3.createAmendAnnualSubmission
 
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{DELETE, GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.Method.{DELETE, GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v3.createAmendAnnualSubmission.def1.model.request.{
-  Def1_CreateAmendAnnualSubmissionFixture,
-  Def1_CreateAmendAnnualSubmissionRequestBody
-}
+import v3.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
 import v3.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
 
@@ -131,7 +128,7 @@ class CreateAmendAnnualSubmissionControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new CreateAmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,

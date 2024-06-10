@@ -17,7 +17,7 @@
 package v2.services
 
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -32,7 +32,7 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   val taxYear: String                = "2024-25"
-  implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
     Seq(

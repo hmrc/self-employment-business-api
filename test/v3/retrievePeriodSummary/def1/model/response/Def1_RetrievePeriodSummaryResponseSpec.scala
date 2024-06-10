@@ -18,7 +18,6 @@ package v3.retrievePeriodSummary.def1.model.response
 
 import api.hateoas.{Link, Method}
 import shared.models.domain.Nino
-import mocks.MockAppConfig
 import play.api.libs.json.Json
 import support.UnitSpec
 import v3.retrievePeriodSummary.def1.model.Def1_RetrievePeriodSummaryFixture

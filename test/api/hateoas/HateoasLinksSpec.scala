@@ -16,11 +16,11 @@
 
 package api.hateoas
 
-import api.hateoas
-import shared.models.domain.{Nino, TaxYear}
-import Method.{DELETE, GET, POST, PUT}
-import mocks.MockAppConfig
-import support.UnitSpec
+import shared.UnitSpec
+import shared.hateoas
+import shared.config.MockAppConfig
+import shared.hateoas.Method.{DELETE, GET, POST, PUT}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
 

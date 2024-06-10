@@ -16,14 +16,15 @@
 
 package v3.deleteAnnualSubmission.def1
 
-import shared.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import stubs.BaseDownstreamStub
 import support.IntegrationBaseSpec
 
 class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
@@ -45,7 +46,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
     def nino: String = "AA123456A"
 
-    def businessId   = "XAIS12345678910"
+    def businessId = "XAIS12345678910"
 
   }
 
@@ -61,40 +62,40 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
 
   "calling the V3 deleteAnnualSubmission endpoint" should {
     "return a 204 status" when {
-        s"any valid non-TYS request is made" in new NonTysTest {
+      s"any valid non-TYS request is made" in new NonTysTest {
 
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub
-              .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
-              .withRequestBody(Json.parse("{}"))
-              .thenReturn(status = Status.NO_CONTENT)
-          }
-
-          val response: WSResponse = await(request().delete())
-          response.status shouldBe Status.NO_CONTENT
-          response.body shouldBe ""
-          response.header("X-CorrelationId").nonEmpty shouldBe true
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          BaseDownstreamStub
+            .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
+            .withRequestBody(Json.parse("{}"))
+            .thenReturn(status = Status.NO_CONTENT)
         }
 
-        s"any valid TYS request is made" in new TysIfsTest {
+        val response: WSResponse = await(request().delete())
+        response.status shouldBe Status.NO_CONTENT
+        response.body shouldBe ""
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
 
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
+      s"any valid TYS request is made" in new TysIfsTest {
 
-            BaseDownstreamStub.onSuccess(BaseDownstreamStub.DELETE, downstreamUri, Status.NO_CONTENT, JsObject.empty)
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
 
-          }
+          BaseDownstreamStub.onSuccess(BaseDownstreamStub.DELETE, downstreamUri, Status.NO_CONTENT, JsObject.empty)
 
-          val response: WSResponse = await(request().delete())
-          response.status shouldBe Status.NO_CONTENT
-          response.body shouldBe ""
-          response.header("X-CorrelationId").nonEmpty shouldBe true
         }
+
+        val response: WSResponse = await(request().delete())
+        response.status shouldBe Status.NO_CONTENT
+        response.body shouldBe ""
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+      }
     }
 
     "return error according to spec" when {

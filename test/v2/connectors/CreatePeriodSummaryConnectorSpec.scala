@@ -17,7 +17,7 @@
 package v2.connectors
 
 import shared.connectors.ConnectorSpec
-import shared.models.domain.Nino
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.outcomes.ResponseWrapper
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse

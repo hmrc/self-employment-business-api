@@ -16,13 +16,13 @@
 
 package mocks
 
-import shared.config.FeatureSwitches
+import config.SeBusinessFeatureSwitches
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 
 trait MockFeatureSwitches extends MockFactory {
 
-  implicit val mockFeatureSwitches: FeatureSwitches = mock[FeatureSwitches]
+  implicit val mockFeatureSwitches: SeBusinessFeatureSwitches = mock[SeBusinessFeatureSwitches]
 
   object MockFeatureSwitches {
 
@@ -31,6 +31,7 @@ trait MockFeatureSwitches extends MockFactory {
 
     def isDesIf_MigrationEnabled: CallHandler[Boolean] =
       (() => mockFeatureSwitches.isDesIf_MigrationEnabled).expects()
+
   }
 
 }

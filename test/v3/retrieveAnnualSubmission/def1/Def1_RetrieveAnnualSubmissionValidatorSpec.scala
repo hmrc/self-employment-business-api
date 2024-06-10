@@ -16,7 +16,7 @@
 
 package v3.retrieveAnnualSubmission.def1
 
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import support.UnitSpec
 import v3.retrieveAnnualSubmission.model.request.{Def1_RetrieveAnnualSubmissionRequestData, RetrieveAnnualSubmissionRequestData}
@@ -34,7 +34,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
   private def validator(nino: String, businessId: String, taxYear: String) =
-    new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
+    new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)(mockAppConfig)
 
   "validator" should {
     "return the parsed domain object" when {

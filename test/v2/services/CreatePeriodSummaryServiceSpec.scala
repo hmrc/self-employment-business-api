@@ -17,7 +17,7 @@
 package v2.services
 
 import shared.controllers.EndpointLogContext
-import shared.models.domain.Nino
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
@@ -31,7 +31,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   private val requestBody: CreatePeriodSummaryRequestBody =
     CreatePeriodSummaryRequestBody(

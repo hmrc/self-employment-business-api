@@ -16,19 +16,15 @@
 
 package v3.createPeriodSummary.def2
 
-import shared.models.domain.Nino
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
-import api.models.utils.JsonErrorValidators
-import mocks.MockAppConfig
+import shared.models.utils.JsonErrorValidators
 import play.api.Configuration
 import play.api.libs.json._
+import shared.config.MockAppConfig
 import support.UnitSpec
 import v3.createPeriodSummary.def2.model.request._
-import v3.createPeriodSummary.model.request.{
-  CreatePeriodSummaryRequestData,
-  Def2_CreatePeriodSummaryRequestBody,
-  Def2_CreatePeriodSummaryRequestData
-}
+import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 
 class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
@@ -169,10 +165,10 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
     Def2_CreatePeriodSummaryRequestBody(periodDates, periodIncome, periodExpenses, periodDisallowableExpenses)
 
   private def validator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean = false) =
-    new Def2_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives, mockAppConfig)
+    new Def2_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)(mockAppConfig)
 
   private def setupMocks(): Unit =
-    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validator" should {
     "return the parsed domain object" when {

@@ -16,34 +16,28 @@
 
 package v3.amendPeriodSummary.def2
 
-import shared.models.domain.{Nino, PeriodId, TaxYear}
-import shared.models.errors._
-import api.models.utils.JsonErrorValidators
-import mocks.MockAppConfig
+import api.models.domain.PeriodId
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
+import shared.config.MockAppConfig
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
 import support.UnitSpec
-import v3.amendPeriodSummary.def2.model.request.{
-  Def2_Amend_PeriodDisallowableExpenses,
-  Def2_Amend_PeriodExpenses,
-  Def2_Amend_PeriodIncome
-}
-import v3.amendPeriodSummary.model.request.{
-  AmendPeriodSummaryRequestData,
-  Def2_AmendPeriodSummaryRequestBody,
-  Def2_AmendPeriodSummaryRequestData
-}
+import v3.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
+import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 
 class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino       = "AA123456A"
+  private val validNino = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validPeriodId   = "2017-01-25_2017-02-28"
-  private val validTaxYear    = "2023-24"
+  private val validPeriodId = "2017-01-25_2017-02-28"
+  private val validTaxYear = "2023-24"
 
-  private val validPeriodIncome = Json.parse("""
+  private val validPeriodIncome = Json.parse(
+    """
       | {
       |   "turnover": 200.00,
       |   "other": 201.00,
@@ -54,7 +48,8 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   private def validPeriodExpenses(withNegatives: Boolean = false) = {
     val maybeNegative = if (withNegatives) "-" else ""
 
-    Json.parse(s"""
+    Json.parse(
+      s"""
          |{
          |   "costOfGoods": ${maybeNegative}203.00,
          |   "paymentsToSubcontractors": ${maybeNegative}204.00,
@@ -77,7 +72,8 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
 
   private def validPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
     val maybeNegative = if (withNegatives) "-" else ""
-    Json.parse(s"""
+    Json.parse(
+      s"""
          | {
          |   "costOfGoodsDisallowable": ${maybeNegative}218.00,
          |   "paymentsToSubcontractorsDisallowable": ${maybeNegative}219.00,
@@ -98,7 +94,8 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
          |""".stripMargin)
   }
 
-  private val validPeriodExpensesConsolidated = Json.parse("""
+  private val validPeriodExpensesConsolidated = Json.parse(
+    """
       |{
       |   "consolidatedExpenses": 1000.99
       |}
@@ -107,18 +104,18 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   private def validBody(periodIncome: JsValue = validPeriodIncome,
                         periodExpenses: JsValue = validPeriodExpenses(),
                         periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses()) = Json.obj(
-    "periodIncome"               -> periodIncome,
-    "periodExpenses"             -> periodExpenses,
+    "periodIncome" -> periodIncome,
+    "periodExpenses" -> periodExpenses,
     "periodDisallowableExpenses" -> periodDisallowableExpenses
   )
 
   private val validBodyWithNegatives =
     validBody(periodExpenses = validPeriodExpenses(true), periodDisallowableExpenses = validPeriodDisallowableExpenses(true))
 
-  private val parsedNino       = Nino(validNino)
+  private val parsedNino = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
-  private val parsedPeriodId   = PeriodId(validPeriodId)
-  private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
+  private val parsedPeriodId = PeriodId(validPeriodId)
+  private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
 
   private val parsedPeriodIncome = Def2_Amend_PeriodIncome(Some(200.00), Some(201.00), Some(202.00))
 
@@ -162,7 +159,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
     new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
 
   private def setupMocks(): Unit =
-    MockappConfig. featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {

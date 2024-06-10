@@ -17,7 +17,7 @@
 package v3.deleteAnnualSubmission
 
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
