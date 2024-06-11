@@ -143,7 +143,7 @@ class CreatePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakePostRequest(requestMtdBodyJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakeRequestWithBody(requestMtdBodyJson))
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(

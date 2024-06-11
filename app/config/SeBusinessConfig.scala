@@ -32,5 +32,5 @@ class SeBusinessConfig @Inject()(config: ServicesConfig, configuration: Configur
 
   def featureSwitches: FeatureSwitches = SeBusinessFeatureSwitches(featureSwitchConfig)
 
-  val minimumTaxYear: TaxYear = TaxYear.ending(2018)
+  def minimumTaxYear: TaxYear = TaxYear.ending(2018)
 }

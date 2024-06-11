@@ -16,6 +16,7 @@
 
 package v3.retrievePeriodSummary
 
+import api.models.errors.PeriodIdFormatError
 import cats.data.EitherT
 import cats.implicits._
 import config.SeBusinessFeatureSwitches

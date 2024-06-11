@@ -16,7 +16,15 @@
 
 package v3.createPeriodSummary.def2
 
-import api.models.errors.RuleBusinessIncomePeriodRestriction
+import api.models.errors.{
+  RuleBothExpensesSuppliedError,
+  RuleBusinessIncomePeriodRestriction,
+  RuleDuplicateSubmissionError,
+  RuleMisalignedPeriod,
+  RuleNotAllowedConsolidatedExpenses,
+  RuleNotContiguousPeriod,
+  RuleOverlappingPeriod
+}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._

@@ -16,12 +16,13 @@
 
 package v3.retrieveAnnualSubmission
 
+import config.MockSeBusinessConfig
 import shared.controllers.validators.Validator
 import shared.UnitSpec
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class RetrieveAnnualSubmissionValidatorFactorySpec extends UnitSpec {
+class RetrieveAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSeBusinessConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"

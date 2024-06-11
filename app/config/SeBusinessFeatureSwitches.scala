@@ -19,7 +19,7 @@ package config
 import play.api.Configuration
 import shared.config.{AppConfig, FeatureSwitches}
 
-case class SeBusinessFeatureSwitches private (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
+case class SeBusinessFeatureSwitches (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
 
   val isPassDeleteIntentEnabled: Boolean            = isEnabled("passDeleteIntentHeader")
   val isAllowNegativeExpensesEnabled: Boolean       = isEnabled("allowNegativeExpenses")

@@ -16,6 +16,7 @@
 
 package v3.amendPeriodSummary.def2
 
+import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
@@ -23,7 +24,7 @@ import config.SeBusinessFeatureSwitches
 import shared.config.AppConfig
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
-import shared.models.errors.{MtdError, RuleBothExpensesSuppliedError, RuleIncorrectOrEmptyBodyError}
+import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v3.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
 import v3.amendPeriodSummary.model.request.Def2_AmendPeriodSummaryRequestData
 

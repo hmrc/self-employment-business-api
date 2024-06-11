@@ -64,7 +64,7 @@ object RequestHandler {
     def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
       Delegate.handleRequest()
 
-    def withModelHandling(modelHandler: Output => Output): RequestHandlerBuilder[Input, Output] =
+    def withResponseObjectHandling(modelHandler: Output => Output): RequestHandlerBuilder[Input, Output] =
       copy(modelHandler = Option(modelHandler))
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =

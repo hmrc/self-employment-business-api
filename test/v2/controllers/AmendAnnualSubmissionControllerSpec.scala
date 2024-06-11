@@ -51,7 +51,8 @@ class AmendAnnualSubmissionControllerSpec
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"),
+      rel = "create-and-amend-self-employment-annual-submission"
+    ),
     Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
@@ -132,7 +133,7 @@ class AmendAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest with AuditEventChecking {
 
-    val controller = new AmendAnnualSubmissionController(
+    private val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
@@ -158,7 +159,7 @@ class AmendAnnualSubmissionControllerSpec
         )
       )
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakePutRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeRequestWithBody(requestJson))
 
   }
 

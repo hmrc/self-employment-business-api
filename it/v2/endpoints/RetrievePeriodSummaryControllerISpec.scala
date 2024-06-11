@@ -16,6 +16,7 @@
 
 package v2.endpoints
 
+import api.models.errors.PeriodIdFormatError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -216,7 +217,7 @@ class RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait TysTest extends Test {
-    lazy val tysTaxYear                         = TaxYear.fromMtd(mtdTaxYear)
+    private lazy val tysTaxYear                 = TaxYear.fromMtd(mtdTaxYear)
     override val periodId                       = "2023-04-01_2024-01-01"
     val fromDate                                = "2023-04-01"
     val toDate                                  = "2024-01-01"

@@ -17,6 +17,7 @@
 package v2.services
 
 import api.models.domain.PeriodId
+import api.models.errors.PeriodIdFormatError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
@@ -30,10 +31,10 @@ import scala.concurrent.Future
 
 class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val periodId: String               = "2019-01-25_2020-01-25"
-  val tysTaxYear: String             = "23-24"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
+  val periodId: String                        = "2019-01-25_2020-01-25"
+  val tysTaxYear: String                      = "23-24"
   override implicit val correlationId: String = "X-123"
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(

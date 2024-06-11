@@ -16,6 +16,7 @@
 
 package v2.services
 
+import api.models.errors._
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
@@ -29,8 +30,8 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
   override implicit val correlationId: String = "X-123"
 
   private val requestBody: CreatePeriodSummaryRequestBody =

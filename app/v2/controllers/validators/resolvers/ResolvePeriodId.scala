@@ -17,16 +17,16 @@
 package v2.controllers.validators.resolvers
 
 import api.models.domain.PeriodId
+import api.models.errors.PeriodIdFormatError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.controllers.validators.resolvers.ResolveDateRange
 import shared.models.domain.DateRange
-import shared.models.errors.{MtdError, PeriodIdFormatError}
+import shared.models.errors.MtdError
 
 object ResolvePeriodId {
 
   private val periodIdRegex = "(.{10})_(.{10})".r
-
 
   private val resolveDateRange: ResolveDateRange = ResolveDateRange()
 

@@ -17,6 +17,7 @@
 package v2.services
 
 import api.models.domain.PeriodId
+import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
@@ -29,7 +30,7 @@ import scala.concurrent.Future
 
 class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
-  implicit private val correlationId: String = "X-123"
+  override implicit protected val correlationId: String = "X-123"
 
   private val nino       = "AA123456A"
   private val businessId = "XAIS12345678910"

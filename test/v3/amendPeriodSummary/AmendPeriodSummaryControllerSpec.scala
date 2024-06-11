@@ -189,7 +189,7 @@ class AmendPeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, None)(fakeRequestWithBody(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -253,7 +253,7 @@ class AmendPeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeRequestWithBody(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super

@@ -253,7 +253,7 @@ class CreatePeriodSummaryControllerSpec
         )
       )
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakePostRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakeRequestWithBody(requestJson))
   }
 
 }

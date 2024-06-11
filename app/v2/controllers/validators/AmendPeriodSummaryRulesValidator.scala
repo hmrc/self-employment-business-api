@@ -16,12 +16,13 @@
 
 package v2.controllers.validators
 
+import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
-import shared.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import shared.models.errors.MtdError
 import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryRequestData, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
 case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[AmendPeriodSummaryRequestData] {

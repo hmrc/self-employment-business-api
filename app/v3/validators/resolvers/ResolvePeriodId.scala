@@ -17,11 +17,12 @@
 package v3.validators.resolvers
 
 import api.models.domain.PeriodId
+import api.models.errors.PeriodIdFormatError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import shared.controllers.validators.resolvers.ResolveDateRange
 import shared.models.domain.DateRange
-import shared.models.errors.{MtdError, PeriodIdFormatError}
+import shared.models.errors.MtdError
 
 object ResolvePeriodId {
 

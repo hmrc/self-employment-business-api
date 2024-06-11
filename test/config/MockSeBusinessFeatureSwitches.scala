@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package config
 
-import cats.data.Validated
-import shared.models.domain.BusinessId
-import shared.models.errors.{BusinessIdFormatError, MtdError}
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
 
-object ResolveBusinessId extends ResolverSupport {
+trait MockSeBusinessFeatureSwitches extends MockFactory {
 
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
+  implicit val mockSeBusinessFeatureSwitches: SeBusinessFeatureSwitches = mock[SeBusinessFeatureSwitches]
 
-  val resolver: Resolver[String, BusinessId] =
-    ResolveStringPattern(businessIdRegex, BusinessIdFormatError).resolver.map(BusinessId)
+  object MockedSeBusinessFeatureSwitches {
 
-  def apply(value: String): Validated[Seq[MtdError], BusinessId] = resolver(value)
+    def isPassDeleteIntentEnabled: CallHandler[Boolean] =
+      (() => mockSeBusinessFeatureSwitches.isPassDeleteIntentEnabled).expects()
+
+    def isDesIf_MigrationEnabled: CallHandler[Boolean] =
+      (() => mockSeBusinessFeatureSwitches.isDesIf_MigrationEnabled).expects()
+
+  }
 
 }

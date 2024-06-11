@@ -16,6 +16,7 @@
 
 package v3.createAmendAnnualSubmission.def2
 
+import api.models.errors.{RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError, RuleWrongTpaAmountSubmittedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits._

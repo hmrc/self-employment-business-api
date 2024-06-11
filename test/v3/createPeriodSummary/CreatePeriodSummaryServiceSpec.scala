@@ -16,7 +16,15 @@
 
 package v3.createPeriodSummary
 
-import api.models.errors.RuleBusinessIncomePeriodRestriction
+import api.models.errors.{
+  RuleBothExpensesSuppliedError,
+  RuleBusinessIncomePeriodRestriction,
+  RuleDuplicateSubmissionError,
+  RuleMisalignedPeriod,
+  RuleNotAllowedConsolidatedExpenses,
+  RuleNotContiguousPeriod,
+  RuleOverlappingPeriod
+}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
@@ -34,7 +42,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   private val nino                           = Nino("AA123456A")
   private val businessId                     = BusinessId("XAIS12345678910")
-  private implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   private val periodIncome = Def2_Create_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 

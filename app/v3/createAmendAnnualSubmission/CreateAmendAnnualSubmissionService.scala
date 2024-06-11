@@ -16,10 +16,11 @@
 
 package v3.createAmendAnnualSubmission
 
+import api.models.errors.{RuleAllowanceNotSupportedError, RuleWrongTpaAmountSubmittedError}
+import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
-import cats.implicits._
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
 import javax.inject.{Inject, Singleton}
@@ -56,11 +57,11 @@ class CreateAmendAnnualSubmissionService @Inject() (connector: CreateAmendAnnual
     )
 
     val extraTysErrors = Map(
-      "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID"       -> InternalError,
-      "INCOME_SOURCE_NOT_FOUND"      -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError,
-      "WRONG_TPA_AMOUNT_SUBMITTED"   -> RuleWrongTpaAmountSubmittedError
+      "INVALID_INCOME_SOURCE_ID"   -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"     -> InternalError,
+      "INCOME_SOURCE_NOT_FOUND"    -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+      "WRONG_TPA_AMOUNT_SUBMITTED" -> RuleWrongTpaAmountSubmittedError
     )
 
     errors ++ extraTysErrors

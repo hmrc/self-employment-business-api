@@ -54,7 +54,7 @@ class RetrieveAnnualSubmissionController @Inject() (
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.retrieveAnnualSubmission)
-        .withModelHandling { response: RetrieveAnnualSubmissionResponse => adjustmentsAdditionalFields(response) }
+        .withResponseObjectHandling { response: RetrieveAnnualSubmissionResponse => adjustmentsAdditionalFields(response) }
         .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
 
       requestHandler.handleRequest()

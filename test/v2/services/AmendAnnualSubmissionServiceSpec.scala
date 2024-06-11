@@ -16,6 +16,7 @@
 
 package v2.services
 
+import api.models.errors.RuleAllowanceNotSupportedError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._

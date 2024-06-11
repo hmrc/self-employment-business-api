@@ -16,12 +16,13 @@
 
 package v3.createPeriodSummary.def1
 
+import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import shared.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import shared.models.errors.MtdError
 import v3.createPeriodSummary.def1.model.request.{Def1_Create_PeriodDisallowableExpenses, Def1_Create_PeriodExpenses, Def1_Create_PeriodIncome}
 import v3.createPeriodSummary.model.request.Def1_CreatePeriodSummaryRequestData
 

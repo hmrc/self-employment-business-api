@@ -17,6 +17,7 @@
 package v3.retrievePeriodSummary.def2
 
 import api.models.domain.PeriodId
+import api.models.errors.PeriodIdFormatError
 import shared.UnitSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._

@@ -16,6 +16,7 @@
 
 package v3.createAmendAnnualSubmission.def1
 
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._

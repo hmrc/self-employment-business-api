@@ -16,6 +16,7 @@
 
 package v2.endpoints
 
+import api.models.errors.{Class4ExemptionReasonFormatError, RuleAllowanceNotSupportedError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -59,6 +60,7 @@ class AmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Amen
          |  ]
          |}
          |""".stripMargin)
+
     val downstreamResponseBody: JsValue = Json.parse("""{
         |   "transactionReference": "ignored"
         |}""".stripMargin)

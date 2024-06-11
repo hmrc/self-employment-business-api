@@ -17,13 +17,14 @@
 package v2.controllers.validators
 
 import api.models.domain.ex.MtdNicExemption
+import api.models.errors.Class4ExemptionReasonFormatError
 import cats.data.Validated
 import cats.implicits._
 import config.SeBusinessConfig
 import play.api.libs.json._
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
-import shared.models.errors.{Class4ExemptionReasonFormatError, MtdError}
+import shared.models.errors.MtdError
 import v2.controllers.validators.AmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v2.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 

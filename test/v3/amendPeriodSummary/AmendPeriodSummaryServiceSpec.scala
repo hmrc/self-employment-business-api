@@ -17,6 +17,7 @@
 package v3.amendPeriodSummary
 
 import api.models.domain.PeriodId
+import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import play.api.Configuration
 import shared.config.MockAppConfig
 import shared.controllers.EndpointLogContext
@@ -36,7 +37,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   private val businessId                     = BusinessId("XAIS12345678910")
   private val periodId                       = PeriodId("2019-01-25_2020-01-25")
   private val taxYear                        = TaxYear.fromMtd("2023-24")
-  private implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   private val periodIncomeWithCl290Enabled = Def2_Amend_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 

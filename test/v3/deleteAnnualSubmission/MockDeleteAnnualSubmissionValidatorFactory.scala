@@ -20,11 +20,12 @@ import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import config.MockSeBusinessConfig
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v3.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
 
-trait MockDeleteAnnualSubmissionValidatorFactory extends MockFactory {
+trait MockDeleteAnnualSubmissionValidatorFactory extends MockFactory with MockSeBusinessConfig {
 
   val mockDeleteAnnualSubmissionValidatorFactory: DeleteAnnualSubmissionValidatorFactory = mock[DeleteAnnualSubmissionValidatorFactory]
 

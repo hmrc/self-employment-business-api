@@ -16,12 +16,13 @@
 
 package v3.deleteAnnualSubmission
 
+import config.MockSeBusinessConfig
+import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import play.api.mvc.Result
 import v3.deleteAnnualSubmission
 import v3.deleteAnnualSubmission.model.Def1_DeleteAnnualSubmissionRequestData
 
@@ -32,6 +33,7 @@ class DeleteAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockDeleteAnnualSubmissionService
+    with MockSeBusinessConfig
     with deleteAnnualSubmission.MockDeleteAnnualSubmissionValidatorFactory {
 
   private val taxYear: String    = "2019-20"
@@ -74,7 +76,7 @@ class DeleteAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new DeleteAnnualSubmissionController(
+    private val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockDeleteAnnualSubmissionValidatorFactory,

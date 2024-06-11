@@ -16,6 +16,7 @@
 
 package v3.retrieveAnnualSubmission
 
+import config.MockSeBusinessConfig
 import play.api.Configuration
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -26,7 +27,11 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v3.retrieveAnnualSubmission.model.request.Def1_RetrieveAnnualSubmissionRequestData
-import v3.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
+import v3.retrieveAnnualSubmission.model.response.{
+  Def1_RetrieveAnnualSubmissionResponse,
+  RetrieveAnnualSubmissionHateoasData,
+  RetrieveAnnualSubmissionResponse
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -37,6 +42,7 @@ class RetrieveAnnualSubmissionControllerSpec
     with MockRetrieveAnnualSubmissionService
     with MockRetrieveAnnualSubmissionValidatorFactory
     with MockHateoasFactory
+    with MockSeBusinessConfig
     with Def1_RetrieveAnnualSubmissionFixture {
 
   private val businessId: String = "XAIS12345678910"
@@ -46,7 +52,8 @@ class RetrieveAnnualSubmissionControllerSpec
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"),
+      rel = "create-and-amend-self-employment-annual-submission"
+    ),
     Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
@@ -82,7 +89,7 @@ class RetrieveAnnualSubmissionControllerSpec
 
       "the request received is valid but additional fields feature switch is off" in new Test {
 
-        val responseBody =
+        val responseBody: Def1_RetrieveAnnualSubmissionResponse =
           retrieveResponseModel.copy(adjustments = Some(adjustments.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
 
         MockAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> false)).anyNumberOfTimes()
@@ -129,7 +136,7 @@ class RetrieveAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    lazy val controller = new RetrieveAnnualSubmissionController(
+    private lazy val controller = new RetrieveAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveAnnualSubmissionValidatorFactory,

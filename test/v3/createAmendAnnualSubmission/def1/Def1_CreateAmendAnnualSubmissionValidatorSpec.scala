@@ -17,18 +17,20 @@
 package v3.createAmendAnnualSubmission.def1
 
 import api.models.domain.ex.MtdNicExemption
+import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
+import config.MockSeBusinessConfig
+import play.api.Configuration
+import play.api.libs.json.{JsNumber, JsValue, Json}
+import shared.UnitSpec
+import shared.config.MockAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
-import play.api.Configuration
-import play.api.libs.json.{JsNumber, JsValue, Json}
-import shared.config.MockAppConfig
-import shared.UnitSpec
 import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
 import v3.createAmendAnnualSubmission.def1.model.request._
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig with MockSeBusinessConfig {
 
   private implicit val correlationId: String = "1234"
 

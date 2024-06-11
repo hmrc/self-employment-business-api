@@ -16,6 +16,7 @@
 
 package v2.controllers.validators
 
+import api.models.errors.{RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits._

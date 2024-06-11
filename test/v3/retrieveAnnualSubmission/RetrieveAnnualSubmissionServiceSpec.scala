@@ -33,7 +33,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   val taxYear: String                = "2019-20"
-  implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   val response: RetrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
     allowances = Some(Def1_Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),

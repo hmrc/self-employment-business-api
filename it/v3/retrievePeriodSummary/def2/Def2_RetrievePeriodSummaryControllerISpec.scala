@@ -16,6 +16,7 @@
 
 package v3.retrievePeriodSummary.def2
 
+import api.models.errors.PeriodIdFormatError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
