@@ -16,18 +16,12 @@
 
 package config
 
-import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import shared.models.domain.TaxYear
 
 trait MockSeBusinessConfig extends MockFactory {
 
   implicit val mockSeBusinessConfig: SeBusinessConfig = mock[SeBusinessConfig]
 
-  object MockedBsasConfig {
-
-    def  minimumTaxYear: CallHandler[TaxYear] = (() => mockSeBusinessConfig.minimumTaxYear).expects()
-
-  }
+  object MockedBsasConfig {}
 
 }
