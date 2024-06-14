@@ -28,7 +28,12 @@ import shared.models.outcomes.ResponseWrapper
 import v3.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
 import v3.retrievePeriodSummary.def2.model.response.Def2_Retrieve_PeriodDates
 import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData}
-import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData, RetrievePeriodSummaryResponse}
+import v3.retrievePeriodSummary.model.response.{
+  Def1_RetrievePeriodSummaryResponse,
+  Def2_RetrievePeriodSummaryResponse,
+  RetrievePeriodSummaryHateoasData,
+  RetrievePeriodSummaryResponse
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -142,7 +147,7 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    private val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
@@ -210,7 +215,7 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    private val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,

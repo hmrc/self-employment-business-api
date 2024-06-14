@@ -34,7 +34,7 @@ class AmendAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig
 
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendAnnualSubmissionBody]()
 
-  private val resolveTaxYear =
+  lazy private val resolveTaxYear =
     ResolveTaxYearMinimum(minimumTaxYear = seBusinessConfig.minimumTaxYear)
 
   def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[AmendAnnualSubmissionRequestData] =

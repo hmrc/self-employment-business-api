@@ -16,14 +16,14 @@
 
 package v2.controllers
 
+import play.api.libs.json.Json
+import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.GET
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import play.api.libs.json.Json
-import play.api.mvc.Result
 import v2.controllers.validators.MockListPeriodSummariesValidatorFactory
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v2.models.response.listPeriodSummaries.{ListPeriodSummariesHateoasData, ListPeriodSummariesResponse, PeriodDetails}
@@ -167,13 +167,13 @@ class ListPeriodSummariesControllerSpec
 
     val requestData: ListPeriodSummariesRequestData = ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
 
-    val testHateoasLink: Link      = Link(href = "test/href", method = GET, rel = "self")
-    val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
+    val testHateoasLink: Link              = Link(href = "test/href", method = GET, rel = "self")
+    private val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
 
     val hateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
       Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
 
-    val controller = new ListPeriodSummariesController(
+    private val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
@@ -191,13 +191,13 @@ class ListPeriodSummariesControllerSpec
     val tysRequestData: ListPeriodSummariesRequestData =
       ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
 
-    val testTysHateoasLink: Link      = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
-    val testTysInnerHateoasLink: Link = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
+    val testTysHateoasLink: Link              = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
+    private val testTysInnerHateoasLink: Link = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
 
     val tysHateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
       Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
 
-    val controller = new ListPeriodSummariesController(
+    private val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,

@@ -29,6 +29,7 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.MockAppConfig
+import shared.routing.{Version, Version3}
 import v3.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v3.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
@@ -47,6 +48,8 @@ class AmendPeriodSummaryControllerSpec
     with MockAppConfig
     with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
+
+  override val apiVersion: Version = Version3
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -135,7 +138,7 @@ class AmendPeriodSummaryControllerSpec
         auditType = "AmendPeriodicEmployment",
         transactionName = "self-employment-periodic-amend",
         detail = GenericAuditDetail(
-          versionNumber = apiVersion.name,
+          versionNumber = "3.0",
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId),
@@ -207,7 +210,7 @@ class AmendPeriodSummaryControllerSpec
 
   private trait TysTest extends Test {
     val periodId: String                 = "2024-01-01_2025-01-01"
-    protected val taxYear: String        = "2023-24"
+    private val taxYear: String          = "2023-24"
     protected val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
 
     val requestBodyJson: JsValue = def2_AmendPeriodSummaryBodyMtdJson

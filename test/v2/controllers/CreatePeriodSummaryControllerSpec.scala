@@ -28,6 +28,7 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.MockAppConfig
+import shared.routing.{Version, Version2}
 import v2.controllers.validators.MockCreatePeriodSummaryValidatorFactory
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
@@ -47,6 +48,8 @@ class CreatePeriodSummaryControllerSpec
 
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2017-01-25"
+  override val apiVersion: Version = Version2
+
 
   private val testHateoasLinks: Seq[Link] = List(
     Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
@@ -243,7 +246,7 @@ class CreatePeriodSummaryControllerSpec
         auditType = "CreatePeriodicEmployment",
         transactionName = "self-employment-periodic-create",
         detail = GenericAuditDetail(
-          versionNumber = apiVersion.name,
+          versionNumber = "2.0",
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId),

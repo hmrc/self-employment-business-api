@@ -52,8 +52,8 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
         response.json shouldBe responseBody
+        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }

@@ -16,12 +16,12 @@
 
 package v2.controllers
 
+import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import play.api.mvc.Result
 import v2.controllers.validators.MockDeleteAnnualSubmissionValidatorFactory
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 import v2.services.MockDeleteAnnualSubmissionService
@@ -75,7 +75,7 @@ class DeleteAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new DeleteAnnualSubmissionController(
+    private val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockDeleteAnnualSubmissionValidatorFactory,

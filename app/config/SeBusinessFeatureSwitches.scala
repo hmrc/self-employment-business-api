@@ -23,11 +23,11 @@ import javax.inject.Inject
 
 case class SeBusinessFeatureSwitches @Inject() (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
 
-  val isPassDeleteIntentEnabled: Boolean            = isEnabled("passDeleteIntentHeader")
-  val isAllowNegativeExpensesEnabled: Boolean       = isEnabled("allowNegativeExpenses")
-  val isCl290Enabled: Boolean                       = isEnabled("cl290")
-  val isAdjustmentsAdditionalFieldsEnabled: Boolean = isEnabled("adjustmentsAdditionalFields")
-  val isDesIf_MigrationEnabled: Boolean             = isEnabled("desIf_Migration")
+  def isPassDeleteIntentEnabled: Boolean            = isEnabled("passDeleteIntentHeader")
+  def isAllowNegativeExpensesEnabled: Boolean       = isEnabled("allowNegativeExpenses")
+  def isCl290Enabled: Boolean                       = isEnabled("cl290")
+  def isAdjustmentsAdditionalFieldsEnabled: Boolean = isEnabled("adjustmentsAdditionalFields")
+  def isDesIf_MigrationEnabled: Boolean             = isEnabled("desIf_Migration")
 
 }
 

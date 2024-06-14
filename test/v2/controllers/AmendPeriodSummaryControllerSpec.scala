@@ -17,6 +17,10 @@
 package v2.controllers
 
 import api.models.domain.PeriodId
+import play.api.Configuration
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
+import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, PUT}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
@@ -24,11 +28,8 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version2}
 import shared.services.MockAuditService
-import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
-import shared.config.MockAppConfig
 import v2.controllers.validators.MockAmendPeriodSummaryValidatorFactory
 import v2.models.request.amendPeriodSummary._
 import v2.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
@@ -46,6 +47,8 @@ class AmendPeriodSummaryControllerSpec
     with MockAppConfig
     with AmendPeriodSummaryFixture
     with MockAuditService {
+
+  override val apiVersion: Version = Version2
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -138,7 +141,7 @@ class AmendPeriodSummaryControllerSpec
         auditType = "AmendPeriodicEmployment",
         transactionName = "self-employment-periodic-amend",
         detail = GenericAuditDetail(
-          versionNumber = apiVersion.name,
+          versionNumber = "2.0",
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId),

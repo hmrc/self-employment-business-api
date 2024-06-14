@@ -100,7 +100,7 @@ class RetrieveAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new RetrieveAnnualSubmissionController(
+    private val controller = new RetrieveAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveAnnualSubmissionValidatorFactory,

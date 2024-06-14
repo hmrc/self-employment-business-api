@@ -16,6 +16,8 @@
 
 package v3.createAmendAnnualSubmission
 
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{DELETE, GET, PUT}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
@@ -23,9 +25,8 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
 import v3.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
 import v3.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
@@ -42,14 +43,16 @@ class CreateAmendAnnualSubmissionControllerSpec
     with MockAuditService
     with Def1_CreateAmendAnnualSubmissionFixture {
 
-  private val businessId: String = "XAIS12345678910"
-  private val taxYear: String    = "2019-20"
+  private val businessId: String   = "XAIS12345678910"
+  private val taxYear: String      = "2019-20"
+  override val apiVersion: Version = Version3
 
   private val testHateoasLinks: Seq[Link] = Seq(
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"),
+      rel = "create-and-amend-self-employment-annual-submission"
+    ),
     Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
@@ -85,7 +88,8 @@ class CreateAmendAnnualSubmissionControllerSpec
     """.stripMargin
   )
 
-  private val requestData = Def1_CreateAmendAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
+  private val requestData =
+    Def1_CreateAmendAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -148,7 +152,7 @@ class CreateAmendAnnualSubmissionControllerSpec
         auditType = "UpdateAnnualEmployment",
         transactionName = "self-employment-annual-summary-update",
         detail = GenericAuditDetail(
-          versionNumber = apiVersion.name,
+          versionNumber = "3.0",
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId, "taxYear" -> taxYear),

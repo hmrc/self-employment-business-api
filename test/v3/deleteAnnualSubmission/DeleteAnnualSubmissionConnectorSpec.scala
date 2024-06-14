@@ -45,20 +45,21 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
 
           def taxYear: TaxYear = preTysTaxYear
 
-          stubHttpResponse(outcome)
+          stubPreTysHttpResponse(outcome)
           MockedSeBusinessFeatureSwitches.isPassDeleteIntentEnabled.returns(true)
 
           private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
           result shouldBe outcome
         }
       }
+
       "`isPassDeleteIntentEnabled` feature switch is off" must {
         "send a request and return 204 no content" in new DesTest with Test {
-          override lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders :+ ("intent" -> "DELETE")
+//          override lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders :+ ("intent" -> "DELETE")
 
           def taxYear: TaxYear = preTysTaxYear
 
-          stubHttpResponse(outcome)
+          stubPreTysHttpResponse(outcome, List("intent" -> "DELETE"))
           MockedSeBusinessFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
 
           private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
@@ -85,7 +86,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
 
       "return the error" in new DesTest with Test {
         def taxYear: TaxYear = preTysTaxYear
-        stubHttpResponse(outcome)
+        stubPreTysHttpResponse(outcome)
         MockedSeBusinessFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
 
         val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
@@ -117,10 +118,12 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
       businessId = BusinessId(businessId)
     )
 
-    protected def stubHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
+    protected def stubPreTysHttpResponse(outcome: DownstreamOutcome[Unit],
+                                         excludedHeaders: Seq[(String, String)] = Nil): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
       willPut(
         url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
-        body = JsObject.empty
+        body = JsObject.empty,
+        excludedHeaders = excludedHeaders
       ).returns(Future.successful(outcome))
     }
 

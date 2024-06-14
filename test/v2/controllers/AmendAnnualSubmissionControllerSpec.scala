@@ -25,6 +25,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version2}
 import shared.services.MockAuditService
 import v2.controllers.validators.MockAmendAnnualSubmissionValidatorFactory
 import v2.fixtures.AmendAnnualSubmissionFixture
@@ -44,8 +45,9 @@ class AmendAnnualSubmissionControllerSpec
     with AmendAnnualSubmissionFixture
     with MockAuditService {
 
-  private val businessId: String = "XAIS12345678910"
-  private val taxYear: String    = "2019-20"
+  private val businessId: String   = "XAIS12345678910"
+  private val taxYear: String      = "2019-20"
+  override val apiVersion: Version = Version2
 
   private val testHateoasLinks: Seq[Link] = Seq(
     Link(
@@ -159,7 +161,8 @@ class AmendAnnualSubmissionControllerSpec
         )
       )
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeRequestWithBody(requestJson))
+    protected def callController(): Future[Result] =
+      controller.handleRequest(validNino, businessId, taxYear)(fakeRequestWithBody(requestJson))
 
   }
 

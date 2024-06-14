@@ -29,7 +29,7 @@ class SeBusinessApiDefinitionFactory @Inject() (protected val appConfig: AppConf
     Definition(
       scopes = scopes,
       api = APIDefinition(
-        name = "Self-Employment Business (MTD)",
+        name = "Self Employment Business (MTD)",
         description = "An API for providing Annual and Periodic Summary data",
         context = appConfig.apiGatewayContext,
         categories = List(mtdCategory),

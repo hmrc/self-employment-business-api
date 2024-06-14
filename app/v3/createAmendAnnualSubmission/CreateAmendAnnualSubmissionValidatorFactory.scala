@@ -21,16 +21,13 @@ import config.SeBusinessConfig
 import play.api.libs.json.{JsObject, JsValue}
 import shared.controllers.validators.Validator
 import shared.models.domain.TaxYear
-import shared.models.domain.TaxYear.fromIso
 import shared.models.errors.{RuleIncorrectOrEmptyBodyError, TaxYearFormatError}
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
-import v3.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.math.Ordering.Implicits.infixOrderingOps
-import scala.util.Try
 
 @Singleton
 class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
@@ -46,9 +43,9 @@ class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit seBusiness
 
     if (body == JsObject.empty) emptyBodyValidator
     else {
-      maybeTaxYear(body) match {
-        case Some(taxYear) if taxYear < def2TaxYearApplicableFrom =>
-          new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear.toString, body)
+      TaxYear.maybeFromMtd(taxYear) match {
+        case Some(ty) if ty < def2TaxYearApplicableFrom =>
+          new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
 
         case Some(_) =>
           new Def2_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
@@ -57,13 +54,6 @@ class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit seBusiness
           invalidTaxYearValidator
       }
     }
-  }
-
-  private def maybeTaxYear(body: JsValue): Option[TaxYear] = {
-    for {
-      isoDateStr <- CreatePeriodSummaryRequestData.rawTaxYear(body)
-      taxYear    <- Try(fromIso(isoDateStr)).toOption
-    } yield taxYear
   }
 
 }
