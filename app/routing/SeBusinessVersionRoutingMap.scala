@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-package v3.deleteAnnualSubmission
+package routing
 
-import config.SeBusinessConfig
-import shared.controllers.validators.Validator
-import v3.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
-import v3.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
+import play.api.routing.Router
+import shared.config.AppConfig
+import shared.routing._
 
 import javax.inject.{Inject, Singleton}
 
-@Singleton
-class DeleteAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
+@Singleton case class SeBusinessVersionRoutingMap @Inject() (
+    appConfig: AppConfig,
+    defaultRouter: Router,
+    v2Router: v2.Routes,
+    v3Router: v3.Routes,
+    v4Router: v4.Routes
+) extends VersionRoutingMap {
 
-  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteAnnualSubmissionRequestData] = {
-    new Def1_DeleteAnnualSubmissionValidator(nino, businessId, taxYear)
-  }
+  /** Routes corresponding to available versions.
+    */
+  val map: Map[Version, Router] = Map(
+    Version2 -> v2Router,
+    Version3 -> v3Router,
+    Version4 -> v4Router
+  )
 
 }

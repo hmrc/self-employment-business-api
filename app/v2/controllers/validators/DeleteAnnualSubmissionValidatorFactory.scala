@@ -24,10 +24,10 @@ import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, 
 import shared.models.errors.MtdError
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DeleteAnnualSubmissionValidatorFactory(implicit seBusinessConfig: SeBusinessConfig) {
+class DeleteAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
 
   def validator(
       nino: String,

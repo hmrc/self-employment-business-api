@@ -21,14 +21,13 @@ import shared.controllers.validators.Validator
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RetrieveAnnualSubmissionValidatorFactory {
+class RetrieveAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
 
-  def validator(nino: String, businessId: String, taxYear: String)(implicit
-      seBusinessConfig: SeBusinessConfig): Validator[RetrieveAnnualSubmissionRequestData] = {
-    new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)(seBusinessConfig)
+  def validator(nino: String, businessId: String, taxYear: String): Validator[RetrieveAnnualSubmissionRequestData] = {
+    new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
   }
 
 }

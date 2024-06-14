@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package shared.stubs
+package config
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status.NO_CONTENT
-import support.WireMockMethods
+import com.google.inject.AbstractModule
+import definition.SeBusinessApiDefinitionFactory
+import routing.SeBusinessVersionRoutingMap
+import shared.definition.ApiDefinitionFactory
+import shared.routing.VersionRoutingMap
 
-object AuditStub extends WireMockMethods {
+class SeBusinessPlayModule extends AbstractModule {
 
-  private val auditUri: String = s"/write/audit.*"
-
-  def audit(): StubMapping = {
-    when(method = POST, uri = auditUri)
-      .thenReturn(status = NO_CONTENT)
+  override def configure(): Unit = {
+    bind(classOf[ApiDefinitionFactory]).to(classOf[SeBusinessApiDefinitionFactory]).asEagerSingleton()
+    bind(classOf[VersionRoutingMap]).to(classOf[SeBusinessVersionRoutingMap]).asEagerSingleton()
   }
 
 }

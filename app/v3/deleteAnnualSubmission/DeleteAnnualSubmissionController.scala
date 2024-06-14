@@ -16,7 +16,6 @@
 
 package v3.deleteAnnualSubmission
 
-import config.SeBusinessConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
@@ -27,13 +26,12 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteAnnualSubmissionController @Inject() (
-    val authService: EnrolmentsAuthService,
-    val lookupService: MtdIdLookupService,
-    validatorFactory: DeleteAnnualSubmissionValidatorFactory,
-    service: DeleteAnnualSubmissionService,
-    cc: ControllerComponents,
-    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig, seBusinessConfig: SeBusinessConfig)
+class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
+                                                  val lookupService: MtdIdLookupService,
+                                                  validatorFactory: DeleteAnnualSubmissionValidatorFactory,
+                                                  service: DeleteAnnualSubmissionService,
+                                                  cc: ControllerComponents,
+                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

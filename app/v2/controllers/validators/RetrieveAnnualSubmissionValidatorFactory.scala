@@ -24,10 +24,10 @@ import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, 
 import shared.models.errors.MtdError
 import v2.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RetrieveAnnualSubmissionValidatorFactory(implicit seBusinessConfig: SeBusinessConfig) {
+class RetrieveAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
 
   def validator(nino: String, businessId: String, taxYear: String): Validator[RetrieveAnnualSubmissionRequestData] =
     new Validator[RetrieveAnnualSubmissionRequestData] {

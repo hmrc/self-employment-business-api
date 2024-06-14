@@ -28,7 +28,9 @@ import shared.models.errors.MtdError
 import v2.controllers.validators.AmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v2.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 
-class AmendAnnualSubmissionValidatorFactory(implicit seBusinessConfig: SeBusinessConfig) {
+import javax.inject.Inject
+
+class AmendAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendAnnualSubmissionBody]()
 

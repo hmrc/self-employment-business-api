@@ -130,7 +130,7 @@ class CreateAmendAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest with AuditEventChecking {
 
-    val controller = new CreateAmendAnnualSubmissionController(
+    private val controller = new CreateAmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
@@ -148,7 +148,7 @@ class CreateAmendAnnualSubmissionControllerSpec
         auditType = "UpdateAnnualEmployment",
         transactionName = "self-employment-annual-summary-update",
         detail = GenericAuditDetail(
-          versionNumber = "3.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId, "taxYear" -> taxYear),
