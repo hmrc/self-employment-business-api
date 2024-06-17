@@ -25,13 +25,7 @@ import javax.inject.{Inject, Singleton}
 /** Put API-specific config here...
   */
 @Singleton
-class SeBusinessConfig @Inject() (config: ServicesConfig, configuration: Configuration) {
-
-  def featureSwitchConfig: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
-
-  def featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(featureSwitchConfig)
-
-}
+class SeBusinessConfig @Inject() (config: ServicesConfig, configuration: Configuration)
 
 object SeBusinessConfig {
   val minimumTaxYear: TaxYear = TaxYear.ending(2018)

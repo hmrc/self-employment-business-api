@@ -16,6 +16,7 @@
 
 package v3.retrieveAnnualSubmission
 
+import play.api.Configuration
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{DELETE, GET, PUT}
@@ -108,6 +109,8 @@ class RetrieveAnnualSubmissionControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockAppConfig.featureSwitchConfig.returns(Configuration.empty).anyNumberOfTimes()
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }

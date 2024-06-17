@@ -22,6 +22,6 @@ trait MockSeBusinessConfig extends MockFactory {
 
   implicit val mockSeBusinessConfig: SeBusinessConfig = mock[SeBusinessConfig]
 
-  object MockedBsasConfig {}
+  object MockedSeBusinessConfig {}
 
 }
