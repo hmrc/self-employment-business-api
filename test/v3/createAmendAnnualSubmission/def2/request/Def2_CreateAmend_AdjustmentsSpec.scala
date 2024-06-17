@@ -16,6 +16,8 @@
 
 package v3.createAmendAnnualSubmission.def2.request
 
+import config.FeatureSwitchesImpl
+import play.api.Configuration
 import play.api.libs.json.Json
 import shared.UnitSpec
 class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
@@ -36,24 +38,58 @@ class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
     )
 
   "reads" when {
-    "passed valid mtd JSON" should {
-      "return the model" in {
+    val json = Json
+      .parse(s"""{
+           |  "includedNonTaxableProfits": 1.12,
+           |  "basisAdjustment": 2.12,
+           |  "overlapReliefUsed": 3.12,
+           |  "accountingAdjustment": 4.12,
+           |  "averagingAdjustment": 5.12,
+           |  "outstandingBusinessIncome": 6.12,
+           |  "balancingChargeBpra": 7.12,
+           |  "balancingChargeOther": 8.12,
+           |  "goodsAndServicesOwnUse": 9.12,
+           |  "transitionProfitAmount": 9.12,
+           |  "transitionProfitAccelerationAmount": 9.12
+           |}
+           |""".stripMargin)
+
+    "additional fields are switched on" should {
+      "return the full model" in {
+        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> true))
+
+        json
+          .as[Def2_CreateAmend_Adjustments] shouldBe model
+      }
+    }
+
+    "additional fields are switched off" should {
+      "return the model without the additional fields" in {
+        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> false))
+
+        json
+          .as[Def2_CreateAmend_Adjustments] shouldBe model.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)
+      }
+
+      "ignore ill-typed additional fields" in {
+        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> false))
+
         Json
           .parse(s"""{
-             |  "includedNonTaxableProfits": 1.12,
-             |  "basisAdjustment": 2.12,
-             |  "overlapReliefUsed": 3.12,
-             |  "accountingAdjustment": 4.12,
-             |  "averagingAdjustment": 5.12,
-             |  "outstandingBusinessIncome": 6.12,
-             |  "balancingChargeBpra": 7.12,
-             |  "balancingChargeOther": 8.12,
-             |  "goodsAndServicesOwnUse": 9.12,
-             |  "transitionProfitAmount": 9.12,
-             |  "transitionProfitAccelerationAmount": 9.12
-             |}
-             |""".stripMargin)
-          .as[Def2_CreateAmend_Adjustments] shouldBe model
+                    |  "includedNonTaxableProfits": 1.12,
+                    |  "basisAdjustment": 2.12,
+                    |  "overlapReliefUsed": 3.12,
+                    |  "accountingAdjustment": 4.12,
+                    |  "averagingAdjustment": 5.12,
+                    |  "outstandingBusinessIncome": 6.12,
+                    |  "balancingChargeBpra": 7.12,
+                    |  "balancingChargeOther": 8.12,
+                    |  "goodsAndServicesOwnUse": 9.12,
+                    |  "transitionProfitAmount": "XXX",
+                    |  "transitionProfitAccelerationAmount": true
+                    |}
+                    |""".stripMargin)
+          .as[Def2_CreateAmend_Adjustments] shouldBe model.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)
       }
     }
   }

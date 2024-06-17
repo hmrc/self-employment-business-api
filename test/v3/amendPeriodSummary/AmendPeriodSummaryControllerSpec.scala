@@ -138,7 +138,7 @@ class AmendPeriodSummaryControllerSpec
         auditType = "AmendPeriodicEmployment",
         transactionName = "self-employment-periodic-amend",
         detail = GenericAuditDetail(
-          versionNumber = "3.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId),

@@ -32,7 +32,8 @@ import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmission
 
 class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig with MockSeBusinessConfig {
 
-  private implicit val correlationId: String = "1234"
+  private implicit val correlationId: String                = "1234"
+  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"

@@ -17,27 +17,37 @@
 package v3.retrieveAnnualSubmission
 
 import config.MockSeBusinessConfig
-import shared.controllers.validators.Validator
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import shared.UnitSpec
+import shared.controllers.validators.Validator
+import shared.models.domain.{TaxYear, TaxYearPropertyCheckSupport}
+import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema.{Def1, Def2}
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
+import v3.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class RetrieveAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSeBusinessConfig {
+class RetrieveAnnualSubmissionValidatorFactorySpec
+    extends UnitSpec
+    with ScalaCheckDrivenPropertyChecks
+    with TaxYearPropertyCheckSupport
+    with MockSeBusinessConfig {
 
-  private val validNino       = "AA123456A"
-  private val validBusinessId = "XAIS12345678910"
-  private val validTaxYear    = "2017-18"
+  private val nino       = "AA123456A"
+  private val businessId = "XAIS12345678910"
 
   private val validatorFactory = new RetrieveAnnualSubmissionValidatorFactory
 
-  "validator()" when {
+  "ValidatorFactory" when {
 
-    "given any request regardless of tax year" should {
-      "return the Validator for schema definition 1" in {
+    "given a tax year" should {
+      "return the Validator corresponding to the schema for that tax year" in forTaxYearsFrom(TaxYear.starting(2020)) { taxYear: TaxYear =>
         val result: Validator[RetrieveAnnualSubmissionRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, taxYear = validTaxYear)
+          validatorFactory.validator(nino, businessId, taxYear = taxYear.asMtd)
 
-        result shouldBe a[Def1_RetrieveAnnualSubmissionValidator]
+        RetrieveAnnualSubmissionSchema.schemaFor(taxYear) match {
+          case Def1 => result shouldBe a[Def1_RetrieveAnnualSubmissionValidator]
+          case Def2 => result shouldBe a[Def2_RetrieveAnnualSubmissionValidator]
+        }
       }
     }
 

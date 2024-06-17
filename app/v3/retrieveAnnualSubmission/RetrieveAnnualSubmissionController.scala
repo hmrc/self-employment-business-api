@@ -24,7 +24,7 @@ import shared.hateoas.HateoasFactory
 import shared.models.domain.{BusinessId, Nino}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v3.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
+import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -42,7 +42,7 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = "retrieveSelfEmploymentAnnualSubmission")
 
-  private val featureSwitches = SeBusinessFeatureSwitches()
+  private implicit val featureSwitches = SeBusinessFeatureSwitches()
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -53,13 +53,9 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.retrieveAnnualSubmission)
-        .withResponseObjectHandling { response: RetrieveAnnualSubmissionResponse => adjustmentsAdditionalFields(response) }
         .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
 
       requestHandler.handleRequest()
     }
-
-  private def adjustmentsAdditionalFields(response: RetrieveAnnualSubmissionResponse): RetrieveAnnualSubmissionResponse =
-    if (featureSwitches.isAdjustmentsAdditionalFieldsEnabled) response else response.withoutAdjustmentsAdditionalFields
 
 }

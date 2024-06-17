@@ -17,11 +17,12 @@
 package v3.retrieveAnnualSubmission.model.request
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
+import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema
 
-sealed trait RetrieveAnnualSubmissionRequestData {
+trait RetrieveAnnualSubmissionRequestData {
   val nino: Nino
   val businessId: BusinessId
   val taxYear: TaxYear
-}
 
-case class Def1_RetrieveAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends RetrieveAnnualSubmissionRequestData
+  val schema: RetrieveAnnualSubmissionSchema
+}

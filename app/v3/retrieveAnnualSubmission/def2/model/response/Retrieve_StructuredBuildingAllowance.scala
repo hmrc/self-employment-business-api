@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1.model.response
+package v3.retrieveAnnualSubmission.def2.model.response
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Def1_Retrieve_FirstYear(qualifyingDate: String, qualifyingAmountExpenditure: BigDecimal)
+case class Retrieve_StructuredBuildingAllowance(
+                                                 amount: BigDecimal,
+                                                 firstYear: Option[Retrieve_FirstYear],
+                                                 building: Retrieve_Building
+)
 
-object Def1_Retrieve_FirstYear {
-  implicit val format: OFormat[Def1_Retrieve_FirstYear] = Json.format[Def1_Retrieve_FirstYear]
+object Retrieve_StructuredBuildingAllowance {
+
+  implicit val format: OFormat[Retrieve_StructuredBuildingAllowance] =
+    Json.format[Retrieve_StructuredBuildingAllowance]
+
 }

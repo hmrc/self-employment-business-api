@@ -18,9 +18,10 @@ package v3.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.Json
 import shared.UnitSpec
-class Def1_Retrieve_AllowancesSpec extends UnitSpec {
 
-  val model: Def1_Retrieve_Allowances = Def1_Retrieve_Allowances(
+class Retrieve_AllowancesSpec extends UnitSpec {
+
+  val model: Retrieve_Allowances = Retrieve_Allowances(
     annualInvestmentAllowance = Some(1.12),
     capitalAllowanceMainPool = Some(2.12),
     capitalAllowanceSpecialRatePool = Some(3.12),
@@ -56,7 +57,7 @@ class Def1_Retrieve_AllowancesSpec extends UnitSpec {
              |  "enhancedStructuredBuildingAllowance": []
              |}
              |""".stripMargin)
-          .as[Def1_Retrieve_Allowances] shouldBe model
+          .as[Retrieve_Allowances] shouldBe model
       }
     }
   }

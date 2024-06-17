@@ -22,7 +22,8 @@ import config.SeBusinessConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
 import shared.models.errors.MtdError
-import v3.retrieveAnnualSubmission.model.request.{Def1_RetrieveAnnualSubmissionRequestData, RetrieveAnnualSubmissionRequestData}
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 class Def1_RetrieveAnnualSubmissionValidator(
     nino: String,

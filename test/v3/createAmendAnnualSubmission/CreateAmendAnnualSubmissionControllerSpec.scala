@@ -152,7 +152,7 @@ class CreateAmendAnnualSubmissionControllerSpec
         auditType = "UpdateAnnualEmployment",
         transactionName = "self-employment-annual-summary-update",
         detail = GenericAuditDetail(
-          versionNumber = "3.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId, "taxYear" -> taxYear),

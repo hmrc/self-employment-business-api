@@ -153,7 +153,7 @@ class CreatePeriodSummaryControllerSpec
         auditType = "CreatePeriodicEmployment",
         transactionName = "self-employment-periodic-create",
         detail = GenericAuditDetail(
-          versionNumber = "3.0",
+          versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
           params = Map("nino" -> validNino, "businessId" -> businessId),

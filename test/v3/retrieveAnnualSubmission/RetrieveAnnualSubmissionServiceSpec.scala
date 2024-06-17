@@ -22,9 +22,9 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
-import v3.retrieveAnnualSubmission.def1.model.response.{Def1_Retrieve_Adjustments, Def1_Retrieve_Allowances, Def1_Retrieve_NonFinancials}
-import v3.retrieveAnnualSubmission.model.request.Def1_RetrieveAnnualSubmissionRequestData
-import v3.retrieveAnnualSubmission.model.response.{Def1_RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionResponse}
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.def1.model.response.{Def1_RetrieveAnnualSubmissionResponse, Retrieve_Allowances, Retrieve_NonFinancials, Retrieve_Adjustments}
+import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.concurrent.Future
 
@@ -36,9 +36,9 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
   override implicit val correlationId: String = "X-123"
 
   val response: RetrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
-    allowances = Some(Def1_Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Def1_Retrieve_Adjustments(None, None, None, None, None, None, None, None, None,None,None)),
-    nonFinancials = Some(Def1_Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
+    allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None)),
+    nonFinancials = Some(Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
   )
 
   private val requestData = Def1_RetrieveAnnualSubmissionRequestData(

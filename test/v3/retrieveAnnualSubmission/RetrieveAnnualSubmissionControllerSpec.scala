@@ -17,7 +17,6 @@
 package v3.retrieveAnnualSubmission
 
 import config.MockSeBusinessConfig
-import play.api.Configuration
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{DELETE, GET, PUT}
@@ -26,12 +25,7 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
-import v3.retrieveAnnualSubmission.model.request.Def1_RetrieveAnnualSubmissionRequestData
-import v3.retrieveAnnualSubmission.model.response.{
-  Def1_RetrieveAnnualSubmissionResponse,
-  RetrieveAnnualSubmissionHateoasData,
-  RetrieveAnnualSubmissionResponse
-}
+import v3.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -68,9 +62,6 @@ class RetrieveAnnualSubmissionControllerSpec
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-
-        MockAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
-
         willUseValidator(returningSuccess(requestData))
 
         MockedRetrieveAnnualSubmissionService
@@ -86,45 +77,18 @@ class RetrieveAnnualSubmissionControllerSpec
           maybeExpectedResponseBody = Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(validNino, businessId, taxYear))
         )
       }
-
-      "the request received is valid but additional fields feature switch is off" in new Test {
-
-        val responseBody: Def1_RetrieveAnnualSubmissionResponse =
-          retrieveResponseModel.copy(adjustments = Some(adjustments.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)))
-
-        MockAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> false)).anyNumberOfTimes()
-
-        willUseValidator(returningSuccess(requestData))
-
-        MockedRetrieveAnnualSubmissionService
-          .retrieve(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
-
-        MockHateoasFactory
-          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
-          .returns(HateoasWrapper(responseBody, testHateoasLinks))
-
-        runOkTest(
-          expectedStatus = OK,
-          maybeExpectedResponseBody =
-            Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(validNino, businessId, taxYear, mtdRetrieveResponseWithNoAdditionalFieldsJson))
-        )
-      }
     }
 
     "return the error as per spec" when {
 
       "the parser validation fails" in new Test {
-        MockAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
         willUseValidator(returning(NinoFormatError))
-
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
         MockedRetrieveAnnualSubmissionService
           .retrieve(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))

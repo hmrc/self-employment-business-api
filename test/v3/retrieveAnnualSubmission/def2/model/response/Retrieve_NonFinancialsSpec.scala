@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v3.retrieveAnnualSubmission.def1.model.response
+package v3.retrieveAnnualSubmission.def2.model.response
 
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
-import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
+import support.UnitSpec
+import v3.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Def1_Retrieve_NonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
+class Retrieve_NonFinancialsSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
 
   "reads" should {
     "passed a valid JSON" should {
@@ -33,7 +33,7 @@ class Def1_Retrieve_NonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualS
              |}
              |""".stripMargin)
 
-        requestJson.as[Def1_Retrieve_NonFinancials] shouldBe Def1_Retrieve_NonFinancials(
+        requestJson.as[Retrieve_NonFinancials] shouldBe Retrieve_NonFinancials(
           businessDetailsChangedRecently = true,
           class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
         )
@@ -55,7 +55,7 @@ class Def1_Retrieve_NonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualS
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-          Json.toJson(Def1_Retrieve_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+          Json.toJson(Retrieve_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
             Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true

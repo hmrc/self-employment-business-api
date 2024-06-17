@@ -21,10 +21,20 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import shared.config.AppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import v3.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodDisallowableExpenses, Def1_Retrieve_PeriodExpenses, Def1_Retrieve_PeriodIncome}
-import v3.retrievePeriodSummary.def2.model.response.{Def2_Retrieve_PeriodDates, Def2_Retrieve_PeriodDisallowableExpenses, Def2_Retrieve_PeriodExpenses, Def2_Retrieve_PeriodIncome}
-import v3.retrievePeriodSummary.model.response.Def1_RetrievePeriodSummaryResponse.Def1_RetrieveAnnualSubmissionLinksFactory
-import v3.retrievePeriodSummary.model.response.Def2_RetrievePeriodSummaryResponse.Def2_RetrieveAnnualSubmissionLinksFactory
+import v3.retrievePeriodSummary.def1.model.response.{
+  Def1_Retrieve_PeriodDates,
+  Def1_Retrieve_PeriodDisallowableExpenses,
+  Def1_Retrieve_PeriodExpenses,
+  Def1_Retrieve_PeriodIncome
+}
+import v3.retrievePeriodSummary.def2.model.response.{
+  Def2_Retrieve_PeriodDates,
+  Def2_Retrieve_PeriodDisallowableExpenses,
+  Def2_Retrieve_PeriodExpenses,
+  Def2_Retrieve_PeriodIncome
+}
+import v3.retrievePeriodSummary.model.response.Def1_RetrievePeriodSummaryResponse.Def1_RetrievePeriodSubmissionLinksFactory
+import v3.retrievePeriodSummary.model.response.Def2_RetrievePeriodSummaryResponse.Def2_RetrievePeriodSubmissionLinksFactory
 
 sealed trait RetrievePeriodSummaryResponse {
   def withoutTaxTakenOffTradingIncome: RetrievePeriodSummaryResponse
@@ -42,9 +52,9 @@ object RetrievePeriodSummaryResponse extends HateoasLinks {
     override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] =
       data.taxYear match {
         case None =>
-          Def1_RetrieveAnnualSubmissionLinksFactory.links(appConfig, data)
+          Def1_RetrievePeriodSubmissionLinksFactory.links(appConfig, data)
         case Some(_) =>
-          Def2_RetrieveAnnualSubmissionLinksFactory.links(appConfig, data)
+          Def2_RetrievePeriodSubmissionLinksFactory.links(appConfig, data)
       }
 
   }
@@ -83,7 +93,7 @@ object Def1_RetrievePeriodSummaryResponse extends HateoasLinks {
 
   implicit val writes: OWrites[Def1_RetrievePeriodSummaryResponse] = Json.writes[Def1_RetrievePeriodSummaryResponse]
 
-  implicit object Def1_RetrieveAnnualSubmissionLinksFactory
+  implicit object Def1_RetrievePeriodSubmissionLinksFactory
       extends HateoasLinksFactory[Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
     override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
@@ -136,7 +146,7 @@ object Def2_RetrievePeriodSummaryResponse extends HateoasLinks {
 
   implicit val writes: OWrites[Def2_RetrievePeriodSummaryResponse] = Json.writes[Def2_RetrievePeriodSummaryResponse]
 
-  implicit object Def2_RetrieveAnnualSubmissionLinksFactory
+  implicit object Def2_RetrievePeriodSubmissionLinksFactory
       extends HateoasLinksFactory[Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
     override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {

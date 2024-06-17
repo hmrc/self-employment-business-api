@@ -16,13 +16,13 @@
 
 package v3.retrieveAnnualSubmission
 
+import shared.config.AppConfig
 import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.retrieveAnnualSubmission.model.request.{Def1_RetrieveAnnualSubmissionRequestData, RetrieveAnnualSubmissionRequestData}
-import v3.retrieveAnnualSubmission.model.response.{Def1_RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionResponse}
+import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
+import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,25 +35,16 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
-    request match {
-      case tysDef1: Def1_RetrieveAnnualSubmissionRequestData if tysDef1.taxYear.useTaxYearSpecificApi =>
-        import tysDef1._
+    import request._
+    import schema._
 
-        val downstreamUri = TaxYearSpecificIfsUri[Def1_RetrieveAnnualSubmissionResponse](
-          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
-        )
-        val result = get(downstreamUri)
-        result
+    val downstreamUri: DownstreamUri[DownstreamResp] =
+      if (taxYear.useTaxYearSpecificApi)
+        TaxYearSpecificIfsUri(s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+      else
+        IfsUri(s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
 
-      case nonTysDef1: Def1_RetrieveAnnualSubmissionRequestData =>
-        import nonTysDef1._
-
-        val downstreamUri = IfsUri[Def1_RetrieveAnnualSubmissionResponse](
-          s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}"
-        )
-        val result = get(downstreamUri)
-        result
-    }
+    get(downstreamUri)
   }
 
 }

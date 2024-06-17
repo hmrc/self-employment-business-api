@@ -16,11 +16,11 @@
 
 package v2.controllers
 
-import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.hateoas.HateoasFactory
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v2.controllers.validators.RetrievePeriodSummaryValidatorFactory
 import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryHateoasData

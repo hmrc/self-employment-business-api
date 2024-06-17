@@ -16,11 +16,11 @@
 
 package v2.controllers
 
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.PeriodId
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{GET, PUT}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
@@ -44,7 +44,6 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryValidatorFactory
     with MockHateoasFactory
-    with MockAppConfig
     with AmendPeriodSummaryFixture
     with MockAuditService {
 
