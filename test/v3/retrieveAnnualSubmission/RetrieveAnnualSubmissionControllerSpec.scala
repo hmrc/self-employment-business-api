@@ -16,7 +16,6 @@
 
 package v3.retrieveAnnualSubmission
 
-import config.MockSeBusinessConfig
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{DELETE, GET, PUT}
@@ -25,6 +24,7 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,7 +36,6 @@ class RetrieveAnnualSubmissionControllerSpec
     with MockRetrieveAnnualSubmissionService
     with MockRetrieveAnnualSubmissionValidatorFactory
     with MockHateoasFactory
-    with MockSeBusinessConfig
     with Def1_RetrieveAnnualSubmissionFixture {
 
   private val businessId: String = "XAIS12345678910"
@@ -100,7 +99,7 @@ class RetrieveAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    private lazy val controller = new RetrieveAnnualSubmissionController(
+    lazy val controller = new RetrieveAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveAnnualSubmissionValidatorFactory,

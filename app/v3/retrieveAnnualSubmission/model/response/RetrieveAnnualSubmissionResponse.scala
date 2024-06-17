@@ -16,8 +16,9 @@
 
 package v3.retrieveAnnualSubmission.model.response
 
+import config.SeBusinessFeatureSwitches
 import play.api.libs.json.{Json, OWrites}
-import shared.config.{AppConfig, FeatureSwitches}
+import shared.config.AppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.utils.JsonWritesUtil
@@ -29,7 +30,7 @@ trait RetrieveAnnualSubmissionResponse
 
 object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
 
-  implicit def writes(implicit featureSwitches: FeatureSwitches): OWrites[RetrieveAnnualSubmissionResponse] = writesFrom {
+  implicit def writes(implicit seBusinessFeatureSwitches: SeBusinessFeatureSwitches): OWrites[RetrieveAnnualSubmissionResponse] = writesFrom {
     case response: Def1_RetrieveAnnualSubmissionResponse => Json.toJsObject(response)
     case response: Def2_RetrieveAnnualSubmissionResponse => Json.toJsObject(response)
   }

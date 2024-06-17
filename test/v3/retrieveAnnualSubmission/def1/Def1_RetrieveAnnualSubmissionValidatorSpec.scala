@@ -20,6 +20,7 @@ import config.MockSeBusinessConfig
 import shared.UnitSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
+import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBusinessConfig {

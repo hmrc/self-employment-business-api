@@ -29,14 +29,13 @@ import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionRules
 import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)(implicit
-    seBusinessConfig: SeBusinessConfig)
+class Def1_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)
     extends Validator[CreateAmendAnnualSubmissionRequestData] {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendAnnualSubmissionRequestBody]()
 
   private val resolveTaxYear =
-    ResolveTaxYearMinimum(minimumTaxYear = seBusinessConfig.minimumTaxYear)
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], CreateAmendAnnualSubmissionRequestData] =
     validateClass4ExemptionReasonEnum andThen { _ =>

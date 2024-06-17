@@ -16,9 +16,10 @@
 
 package v3.retrieveAnnualSubmission.model.response
 
-import api.hateoas.{Link, Method}
-import api.models.domain.{BusinessId, Nino}
 import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.hateoas.{Link, Method}
+import shared.models.domain.{BusinessId, Nino}
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory
 
 class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {

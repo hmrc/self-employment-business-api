@@ -16,20 +16,21 @@
 
 package v3.createAmendAnnualSubmission.def2.request
 
-import config.FeatureSwitches
+import config.SeBusinessFeatureSwitches
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestBody
 
 case class Def2_CreateAmendAnnualSubmissionRequestBody(
-                                                        adjustments: Option[Def2_CreateAmend_Adjustments],
-                                                        allowances: Option[Def2_CreateAmend_Allowances],
-                                                        nonFinancials: Option[Def2_CreateAmend_NonFinancials]
-                                                      ) extends CreateAmendAnnualSubmissionRequestBody
+    adjustments: Option[Def2_CreateAmend_Adjustments],
+    allowances: Option[Def2_CreateAmend_Allowances],
+    nonFinancials: Option[Def2_CreateAmend_NonFinancials]
+) extends CreateAmendAnnualSubmissionRequestBody
 
 object Def2_CreateAmendAnnualSubmissionRequestBody {
 
-  implicit def reads(implicit featureSwitches: FeatureSwitches): Reads[Def2_CreateAmendAnnualSubmissionRequestBody] = Json.reads[Def2_CreateAmendAnnualSubmissionRequestBody]
+  implicit def reads(implicit featureSwitches: SeBusinessFeatureSwitches): Reads[Def2_CreateAmendAnnualSubmissionRequestBody] =
+    Json.reads[Def2_CreateAmendAnnualSubmissionRequestBody]
 
   implicit val writes: OWrites[Def2_CreateAmendAnnualSubmissionRequestBody] = (
     (JsPath \ "annualAdjustments").writeNullable[Def2_CreateAmend_Adjustments] and

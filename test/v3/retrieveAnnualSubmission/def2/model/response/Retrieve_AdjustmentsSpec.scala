@@ -16,10 +16,10 @@
 
 package v3.retrieveAnnualSubmission.def2.model.response
 
-import config.FeatureSwitchesImpl
+import config.SeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
 class Retrieve_AdjustmentsSpec extends UnitSpec {
 
@@ -64,7 +64,8 @@ class Retrieve_AdjustmentsSpec extends UnitSpec {
   "writes" when {
     "additional fields are switched on" should {
       "include those fields" in {
-        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> true))
+        implicit val featureSwitches: SeBusinessFeatureSwitches =
+          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> true))
 
         Json.toJson(adjustments) shouldBe Json.parse(s"""{
              |  "includedNonTaxableProfits": 1.12,
@@ -85,7 +86,8 @@ class Retrieve_AdjustmentsSpec extends UnitSpec {
 
     "additional fields are switched off" should {
       "not include those fields" in {
-        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> false))
+        implicit val featureSwitches: SeBusinessFeatureSwitches =
+          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> false))
 
         Json.toJson(adjustments) shouldBe Json.parse(s"""{
                                       |  "includedNonTaxableProfits": 1.12,

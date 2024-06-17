@@ -18,7 +18,7 @@ package v3.createAmendAnnualSubmission.def1
 
 import api.models.domain.ex.MtdNicExemption
 import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
-import config.MockSeBusinessConfig
+import config.MockSeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.UnitSpec
@@ -30,10 +30,9 @@ import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactor
 import v3.createAmendAnnualSubmission.def1.model.request._
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig with MockSeBusinessConfig {
+class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig with MockSeBusinessFeatureSwitches {
 
-  private implicit val correlationId: String                = "1234"
-  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
+  private implicit val correlationId: String = "1234"
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"

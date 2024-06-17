@@ -29,11 +29,10 @@ class Def1_RetrieveAnnualSubmissionValidator(
     nino: String,
     businessId: String,
     taxYear: String
-)(implicit seBusinessConfig: SeBusinessConfig)
-    extends Validator[RetrieveAnnualSubmissionRequestData] {
+) extends Validator[RetrieveAnnualSubmissionRequestData] {
 
   private val resolveTaxYear =
-    ResolveTaxYearMinimum(minimumTaxYear = seBusinessConfig.minimumTaxYear)
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], RetrieveAnnualSubmissionRequestData] =
     (

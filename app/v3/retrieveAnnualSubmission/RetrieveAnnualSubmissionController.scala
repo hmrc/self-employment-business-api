@@ -16,7 +16,7 @@
 
 package v3.retrieveAnnualSubmission
 
-import config.SeBusinessFeatureSwitches
+import config.{SeBusinessConfig, SeBusinessFeatureSwitches}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers._
@@ -30,19 +30,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
-                                                    val lookupService: MtdIdLookupService,
-                                                    validatorFactory: RetrieveAnnualSubmissionValidatorFactory,
-                                                    service: RetrieveAnnualSubmissionService,
-                                                    hateoasFactory: HateoasFactory,
-                                                    cc: ControllerComponents,
-                                                    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class RetrieveAnnualSubmissionController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    validatorFactory: RetrieveAnnualSubmissionValidatorFactory,
+    service: RetrieveAnnualSubmissionService,
+    hateoasFactory: HateoasFactory,
+    cc: ControllerComponents,
+    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig, seBusinessConfig: SeBusinessConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = "retrieveSelfEmploymentAnnualSubmission")
 
-  private implicit val featureSwitches = SeBusinessFeatureSwitches()
+  implicit val featureSwitches: SeBusinessFeatureSwitches = seBusinessConfig.featureSwitches
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

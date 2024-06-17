@@ -16,7 +16,6 @@
 
 package v3.retrieveAnnualSubmission
 
-import config.SeBusinessConfig
 import shared.controllers.validators.Validator
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
@@ -25,7 +24,7 @@ import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequest
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RetrieveAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
+class RetrieveAnnualSubmissionValidatorFactory @Inject() {
 
   def validator(nino: String, businessId: String, taxYear: String): Validator[RetrieveAnnualSubmissionRequestData] = {
     RetrieveAnnualSubmissionSchema.schemaFor(taxYear) match {

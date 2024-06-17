@@ -28,14 +28,15 @@ import shared.models.errors.MtdError
 import v2.controllers.validators.AmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v2.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 
-import javax.inject.Inject
+import javax.inject.Singleton
 
-class AmendAnnualSubmissionValidatorFactory @Inject() (implicit seBusinessConfig: SeBusinessConfig) {
+@Singleton
+class AmendAnnualSubmissionValidatorFactory {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendAnnualSubmissionBody]()
 
   lazy private val resolveTaxYear =
-    ResolveTaxYearMinimum(minimumTaxYear = seBusinessConfig.minimumTaxYear)
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[AmendAnnualSubmissionRequestData] =
     new Validator[AmendAnnualSubmissionRequestData] {

@@ -16,7 +16,6 @@
 
 package v3.createPeriodSummary
 
-import api.controllers._
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}

@@ -17,7 +17,6 @@
 package config
 
 import play.api.Configuration
-import shared.config.FeatureSwitches
 import shared.models.domain.TaxYear
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -30,7 +29,10 @@ class SeBusinessConfig @Inject() (config: ServicesConfig, configuration: Configu
 
   def featureSwitchConfig: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
-  def featureSwitches: FeatureSwitches = SeBusinessFeatureSwitches(featureSwitchConfig)
+  def featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(featureSwitchConfig)
 
+}
+
+object SeBusinessConfig {
   val minimumTaxYear: TaxYear = TaxYear.ending(2018)
 }
