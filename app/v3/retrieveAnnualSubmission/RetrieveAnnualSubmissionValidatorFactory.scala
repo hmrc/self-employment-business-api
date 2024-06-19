@@ -16,15 +16,15 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers.validators.Validator
+import shared.controllers.validators.Validator
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RetrieveAnnualSubmissionValidatorFactory {
+class RetrieveAnnualSubmissionValidatorFactory @Inject() {
 
   def validator(nino: String, businessId: String, taxYear: String): Validator[RetrieveAnnualSubmissionRequestData] = {
     RetrieveAnnualSubmissionSchema.schemaFor(taxYear) match {

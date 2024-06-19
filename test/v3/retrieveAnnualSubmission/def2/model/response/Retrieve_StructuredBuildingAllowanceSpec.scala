@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission.def2.model.response
 
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 import v3.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
 class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
@@ -25,7 +25,7 @@ class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def2_Retrie
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-          val result = structuredBuildingAllowanceDownstreamJson.as[Retrieve_StructuredBuildingAllowance]
+        val result = structuredBuildingAllowanceDownstreamJson.as[Retrieve_StructuredBuildingAllowance]
         result shouldBe structuredBuildingAllowance
       }
     }
@@ -34,7 +34,7 @@ class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def2_Retrie
   "writes" when {
     "passed a model" should {
       "return Mtd JSON" in {
-          val result = Json.toJson(structuredBuildingAllowance)
+        val result = Json.toJson(structuredBuildingAllowance)
         result shouldBe structuredBuildingAllowanceMtdJson
       }
     }

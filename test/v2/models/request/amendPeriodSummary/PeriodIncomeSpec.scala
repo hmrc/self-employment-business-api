@@ -17,8 +17,7 @@
 package v2.models.request.amendPeriodSummary
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
-
+import shared.UnitSpec
 class PeriodIncomeSpec extends UnitSpec {
 
   val mtdJson: JsValue = Json.parse(

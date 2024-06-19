@@ -16,12 +16,13 @@
 
 package v3.deleteAnnualSubmission
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
+import config.MockSeBusinessConfig
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import v3.deleteAnnualSubmission
 import v3.deleteAnnualSubmission.model.Def1_DeleteAnnualSubmissionRequestData
 
@@ -32,11 +33,12 @@ class DeleteAnnualSubmissionControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockDeleteAnnualSubmissionService
+    with MockSeBusinessConfig
     with deleteAnnualSubmission.MockDeleteAnnualSubmissionValidatorFactory {
 
   private val taxYear: String    = "2019-20"
   private val businessId: String = "XAIS12345678910"
-  private val requestData        = Def1_DeleteAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData        = Def1_DeleteAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   "handleRequest" should {
     "return NoContent" when {
@@ -74,7 +76,7 @@ class DeleteAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val controller = new DeleteAnnualSubmissionController(
+    private val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockDeleteAnnualSubmissionValidatorFactory,
@@ -83,7 +85,7 @@ class DeleteAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeRequest)
   }
 
 }

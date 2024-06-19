@@ -29,14 +29,11 @@ import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  // TODO: Update this test so that its not specific to the api
-  //  private val apiTitle = "Business Source Adjustable Summary (MTD)"
   private val apiTitle = "Self Employment Business (MTD)"
 
   private val config          = app.injector.instanceOf[AppConfig]
   private val confidenceLevel = config.confidenceLevelConfig.confidenceLevel
 
-  // TODO: Update this json so that its not specific to the api
   private val apiDefinitionJson = Json.parse(s"""
        |{
        |  "scopes": [
@@ -53,7 +50,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
        |    }
        |  ],
        |  "api": {
-       |    "name": "Self-Employment Business (MTD)",
+       |    "name": "$apiTitle",
        |    "description": "An API for providing Annual and Periodic Summary data",
        |    "context": "individuals/business/self-employment",
        |    "categories": ["INCOME_TAX_MTD"],
@@ -72,12 +69,11 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
        |        "version":"4.0",
        |        "status":"BETA",
        |        "endpointsEnabled":true
-       |      }
+       |      }     
        |    ]
        |  }
        |}
-    """.stripMargin
-  )
+    """.stripMargin)
 
   "GET /api/definition" should {
     "return a 200 with the correct response body" in {
@@ -116,6 +112,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
 
         val versionFromHeader = header.get.group(1)
         versionFromHeader shouldBe version.name
+
       }
     }
   }

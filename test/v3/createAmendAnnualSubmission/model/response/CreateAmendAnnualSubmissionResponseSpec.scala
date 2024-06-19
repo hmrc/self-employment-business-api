@@ -16,12 +16,11 @@
 
 package v3.createAmendAnnualSubmission.model.response
 
-import api.hateoas.Link
-import api.hateoas.Method.{DELETE, GET, PUT}
-import api.models.domain.{BusinessId, Nino}
-import mocks.MockAppConfig
-import support.UnitSpec
-
+import shared.config.MockAppConfig
+import shared.hateoas.Link
+import shared.hateoas.Method.{DELETE, GET, PUT}
+import shared.models.domain.{BusinessId, Nino}
+import shared.UnitSpec
 class CreateAmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {

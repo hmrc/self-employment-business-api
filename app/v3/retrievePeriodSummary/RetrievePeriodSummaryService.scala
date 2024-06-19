@@ -16,12 +16,14 @@
 
 package v3.retrievePeriodSummary
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import api.models.errors.PeriodIdFormatError
 import cats.data.EitherT
 import cats.implicits._
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
+import shared.config.AppConfig
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v3.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v3.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
@@ -29,9 +31,12 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryConnector, appConfig: AppConfig) extends BaseService {
+class RetrievePeriodSummaryService @Inject() (
+    connector: RetrievePeriodSummaryConnector
+)(implicit appConfig: AppConfig)
+    extends BaseService {
 
-  lazy private val featureSwitches = FeatureSwitches(appConfig)
+  lazy private val featureSwitches = SeBusinessFeatureSwitches()
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
       ctx: RequestContext,

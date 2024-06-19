@@ -16,16 +16,18 @@
 
 package v3.retrievePeriodSummary
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
-import api.models.domain.TaxYear
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.hateoas.HateoasFactory
+import shared.models.domain.TaxYear
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v3.retrievePeriodSummary.model.response.RetrievePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 @Singleton
 class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
@@ -34,7 +36,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
                                                  service: RetrievePeriodSummaryService,
                                                  hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
-                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: config.AppConfig)
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -51,7 +53,8 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
           .withValidator(validator)
           .withService(service.retrievePeriodSummary)
           .withHateoasResultFrom(hateoasFactory) { (parsedRequest, _) =>
-            RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, taxYear.flatMap(TaxYear.maybeFromMtd))
+            val maybeTaxYear = taxYear.flatMap(t => Try(TaxYear.fromMtd(t)).toOption)
+            RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, maybeTaxYear)
           }
 
       requestHandler.handleRequest()

@@ -16,7 +16,7 @@
 
 package v3.retrieveAnnualSubmission.model.request
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema
 
 trait RetrieveAnnualSubmissionRequestData {
@@ -26,5 +26,3 @@ trait RetrieveAnnualSubmissionRequestData {
 
   val schema: RetrieveAnnualSubmissionSchema
 }
-
-

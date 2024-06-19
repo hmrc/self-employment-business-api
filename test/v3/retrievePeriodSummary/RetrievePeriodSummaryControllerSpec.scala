@@ -16,18 +16,24 @@
 
 package v3.retrievePeriodSummary
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
+import api.models.domain.PeriodId
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.{GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import v3.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
 import v3.retrievePeriodSummary.def2.model.response.Def2_Retrieve_PeriodDates
 import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData}
-import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData, RetrievePeriodSummaryResponse}
+import v3.retrievePeriodSummary.model.response.{
+  Def1_RetrievePeriodSummaryResponse,
+  Def2_RetrievePeriodSummaryResponse,
+  RetrievePeriodSummaryHateoasData,
+  RetrievePeriodSummaryResponse
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -53,7 +59,7 @@ class RetrievePeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None))
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, None))
           .returns(HateoasWrapper(responseBody, testHateoasLink))
 
         runOkTest(
@@ -69,7 +75,7 @@ class RetrievePeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(parsedTaxYear)))
+          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(parsedTaxYear)))
           .returns(HateoasWrapper(responseBody, testHateoasLink))
 
         runOkTest(
@@ -102,15 +108,15 @@ class RetrievePeriodSummaryControllerSpec
     val periodId = "2019-01-01_2020-01-01"
 
     val requestData: Def1_RetrievePeriodSummaryRequestData =
-      Def1_RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId))
+      Def1_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId))
 
     val responseBody: RetrievePeriodSummaryResponse =
       Def1_RetrievePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2019-01-01", "2020-01-01"), None, None, None)
 
     val testHateoasLink: Seq[Link] = List(
-      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
-      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
-      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "list-self-employment-period-summaries")
+      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "self"),
+      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "list-self-employment-period-summaries")
     )
 
     val responseJson: JsValue = Json.parse(
@@ -122,17 +128,17 @@ class RetrievePeriodSummaryControllerSpec
          |  },
          |  "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "PUT",
          |      "rel": "amend-self-employment-period-summary"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "GET",
          |      "rel": "self"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "GET",
          |      "rel": "list-self-employment-period-summaries"
          |    }
@@ -141,7 +147,7 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    private val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
@@ -151,14 +157,14 @@ class RetrievePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, periodId, None)(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, None)(fakeGetRequest)
   }
 
   private trait TysTest extends ControllerTest {
     val periodId = "2024-01-01_2025-01-01"
 
     val requestData: Def2_RetrievePeriodSummaryRequestData =
-      Def2_RetrievePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), TaxYear.fromMtd(taxYear))
+      Def2_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), TaxYear.fromMtd(taxYear))
 
     val responseBody: RetrievePeriodSummaryResponse = Def2_RetrievePeriodSummaryResponse(
       periodDates = Def2_Retrieve_PeriodDates("2024-01-01", "2025-01-01"),
@@ -169,13 +175,13 @@ class RetrievePeriodSummaryControllerSpec
 
     val testHateoasLink: Seq[Link] = Seq(
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = PUT,
         rel = "amend-self-employment-period-summary"
       ),
-      Link(href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
+      Link(href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
       Link(
-        href = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
         method = GET,
         rel = "list-self-employment-period-summaries"
       )
@@ -190,17 +196,17 @@ class RetrievePeriodSummaryControllerSpec
          |  },
          |  "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "PUT",
          |      "rel": "amend-self-employment-period-summary"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "GET",
          |      "rel": "self"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "GET",
          |      "rel": "list-self-employment-period-summaries"
          |    }
@@ -209,7 +215,7 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    private val controller = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
@@ -219,7 +225,7 @@ class RetrievePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeGetRequest)
   }
 
 }

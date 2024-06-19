@@ -18,8 +18,7 @@ package v3.createAmendAnnualSubmission.def2.request
 
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
-
+import shared.UnitSpec
 class Def2_CreateAmend_NonFinancialsSpec extends UnitSpec {
 
   "reads" should {

@@ -17,8 +17,7 @@
 package v2.models.request.amendPeriodSummary
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
-
+import shared.UnitSpec
 class AmendPeriodSummaryBodySpec extends UnitSpec with AmendPeriodSummaryFixture {
 
   val emptyJson: JsValue = Json.parse(

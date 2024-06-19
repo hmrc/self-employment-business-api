@@ -125,14 +125,16 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-    protected def willPut[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
+    protected def willPut[BODY, T](url: String,
+                                   body: BODY,
+                                   excludedHeaders: Seq[(String, String)] = List("AnotherHeader" -> "HeaderValue")): CallHandler[Future[T]] = {
       MockedHttpClient
         .put(
           url = url,
           config = dummyHeaderCarrierConfig,
           body = body,
           requiredHeaders = requiredHeaders ++ List("Content-Type" -> "application/json"),
-          excludedHeaders = List("AnotherHeader" -> "HeaderValue")
+          excludedHeaders = excludedHeaders
         )
     }
 
@@ -156,7 +158,10 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
     MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
-    MockAppConfig.desDownstreamConfig.anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "des-environment", "des-token", Some(allowedDesHeaders))
+
+    MockAppConfig.desDownstreamConfig
+      .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "des-environment", "des-token", Some(allowedDesHeaders))
+
   }
 
   protected trait IfsTest extends ConnectorTest {
@@ -167,7 +172,10 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockAppConfig.ifsToken returns "ifs-token"
     MockAppConfig.ifsEnvironment returns "ifs-environment"
     MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-    MockAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "ifs-environment", "ifs-token", Some(allowedIfsHeaders))
+
+    MockAppConfig.ifsDownstreamConfig
+      .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "ifs-environment", "ifs-token", Some(allowedIfsHeaders))
+
   }
 
   protected trait TysIfsTest extends ConnectorTest {

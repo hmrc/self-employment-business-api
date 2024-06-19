@@ -16,13 +16,14 @@
 
 package v3.createPeriodSummary
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.{ServiceOutcome, ServiceSpec}
-import mocks.MockAppConfig
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.{ServiceOutcome, ServiceSpec}
 import play.api.Configuration
+import shared.config.MockAppConfig
 import v3.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDates, Def2_Create_PeriodIncome}
 import v3.createPeriodSummary.model.request.{Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 import v3.createPeriodSummary.model.response.CreatePeriodSummaryResponse
@@ -33,7 +34,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
   private val nino                           = Nino("AA123456A")
   private val businessId                     = BusinessId("XAIS12345678910")
-  private implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   private val periodIncome = Def2_Create_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
@@ -108,7 +109,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
   }
 
   trait Test extends MockCreatePeriodSummaryConnector with MockAppConfig {
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 

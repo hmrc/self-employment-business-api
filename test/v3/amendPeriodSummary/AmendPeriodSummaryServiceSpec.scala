@@ -16,13 +16,15 @@
 
 package v3.amendPeriodSummary
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
-import mocks.MockAppConfig
+import api.models.domain.PeriodId
+import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import play.api.Configuration
+import shared.config.MockAppConfig
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v3.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodIncome
 import v3.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodIncome
 import v3.amendPeriodSummary.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
@@ -35,7 +37,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   private val businessId                     = BusinessId("XAIS12345678910")
   private val periodId                       = PeriodId("2019-01-25_2020-01-25")
   private val taxYear                        = TaxYear.fromMtd("2023-24")
-  private implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   private val periodIncomeWithCl290Enabled = Def2_Amend_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
@@ -64,11 +66,11 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   }
 
   trait Cl290Enabled extends Test {
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
   }
 
   trait Cl290Disabled extends Test {
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
   }
 
   "AmendPeriodSummaryService" should {

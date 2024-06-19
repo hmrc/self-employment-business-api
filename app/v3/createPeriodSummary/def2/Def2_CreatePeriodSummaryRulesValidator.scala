@@ -16,12 +16,13 @@
 
 package v3.createPeriodSummary.def2
 
-import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import shared.models.errors.MtdError
 import v3.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDisallowableExpenses, Def2_Create_PeriodExpenses}
 import v3.createPeriodSummary.model.request.{Create_PeriodIncome, Def2_CreatePeriodSummaryRequestData}
 
@@ -32,6 +33,8 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
+
+  private val resolveDateRange = ResolveDateRange()
 
   def validateBusinessRules(parsed: Def2_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def2_CreatePeriodSummaryRequestData] = {
     import parsed.body._
@@ -61,8 +64,9 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
         valid
     }
 
-  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] =
-    ResolveDateRange.withLimits(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
+  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] = {
+    resolveDateRange.withYearsLimitedTo(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
+  }
 
   private def validatePeriodIncomeNumericFields(includeNegatives: Boolean)(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(
@@ -70,9 +74,9 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
       (periodIncome.turnover, "/periodIncome/turnover")
     ).traverse_ { case (value, path) =>
       if (includeNegatives)
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       else
-        resolveNonNegativeParsedNumber(value, path = Some(path))
+        resolveNonNegativeParsedNumber(value, path)
     }
 
   private def validateAllowableNumericFields(includeNegatives: Boolean)(expenses: Def2_Create_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
@@ -101,12 +105,12 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
@@ -138,12 +142,12 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)

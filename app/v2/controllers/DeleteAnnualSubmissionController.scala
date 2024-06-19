@@ -16,10 +16,11 @@
 
 package v2.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v2.controllers.validators.DeleteAnnualSubmissionValidatorFactory
 import v2.services.DeleteAnnualSubmissionService
 
@@ -32,7 +33,7 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
                                                   validatorFactory: DeleteAnnualSubmissionValidatorFactory,
                                                   service: DeleteAnnualSubmissionService,
                                                   cc: ControllerComponents,
-                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: config.AppConfig)
+                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

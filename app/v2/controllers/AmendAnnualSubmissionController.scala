@@ -16,13 +16,14 @@
 
 package v2.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version2}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v2.controllers.validators.AmendAnnualSubmissionValidatorFactory
 import v2.models.response.amendSEAnnual.AmendAnnualSubmissionHateoasData
 import v2.models.response.amendSEAnnual.AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory
@@ -39,7 +40,7 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
                                                  auditService: AuditService,
                                                  hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
-                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: config.AppConfig)
+                                                 idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -58,7 +59,7 @@ class AmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuth
           auditService,
           auditType = "UpdateAnnualEmployment",
           transactionName = "self-employment-annual-summary-update",
-          apiVersion = Version.from(request, orElse = Version2),
+          apiVersion = Version(request),
           params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
           Some(request.body)
         ))

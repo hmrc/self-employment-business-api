@@ -16,9 +16,9 @@
 
 package v3.createPeriodSummary.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers._
-import api.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers._
+import shared.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
 import cats.data.Validated
 import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple3Semigroupal, toFoldableOps}

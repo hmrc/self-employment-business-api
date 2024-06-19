@@ -16,16 +16,17 @@
 
 package v3.createAmendAnnualSubmission
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{DELETE, GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.{DELETE, GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version3}
+import shared.services.MockAuditService
 import v3.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
 import v3.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
 import v3.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
@@ -42,17 +43,19 @@ class CreateAmendAnnualSubmissionControllerSpec
     with MockAuditService
     with Def1_CreateAmendAnnualSubmissionFixture {
 
-  private val businessId: String = "XAIS12345678910"
-  private val taxYear: String    = "2019-20"
+  private val businessId: String   = "XAIS12345678910"
+  private val taxYear: String      = "2019-20"
+  override val apiVersion: Version = Version3
 
   private val testHateoasLinks: Seq[Link] = Seq(
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+      rel = "create-and-amend-self-employment-annual-submission"
+    ),
+    Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = DELETE,
       rel = "delete-self-employment-annual-submission")
   )
@@ -66,17 +69,17 @@ class CreateAmendAnnualSubmissionControllerSpec
        |{
        |  "links": [
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
        |      "rel": "create-and-amend-self-employment-annual-submission",
        |      "method": "PUT"
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
        |      "rel": "self",
        |      "method": "GET"
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
        |      "rel": "delete-self-employment-annual-submission",
        |      "method": "DELETE"
        |    }
@@ -85,7 +88,8 @@ class CreateAmendAnnualSubmissionControllerSpec
     """.stripMargin
   )
 
-  private val requestData = Def1_CreateAmendAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
+  private val requestData =
+    Def1_CreateAmendAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -97,7 +101,7 @@ class CreateAmendAnnualSubmissionControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), CreateAmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+          .wrap((), CreateAmendAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -128,9 +132,9 @@ class CreateAmendAnnualSubmissionControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
-    val controller = new CreateAmendAnnualSubmissionController(
+    private val controller = new CreateAmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
@@ -141,7 +145,7 @@ class CreateAmendAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakePutRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeRequestWithBody(requestJson))
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -151,7 +155,7 @@ class CreateAmendAnnualSubmissionControllerSpec
           versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
+          params = Map("nino" -> validNino, "businessId" -> businessId, "taxYear" -> taxYear),
           requestBody = requestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

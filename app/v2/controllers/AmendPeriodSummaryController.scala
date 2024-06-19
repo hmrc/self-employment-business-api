@@ -16,14 +16,15 @@
 
 package v2.controllers
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version2}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v2.controllers.validators.AmendPeriodSummaryValidatorFactory
 import v2.models.response.amendPeriodSummary.AmendPeriodSummaryHateoasData
 import v2.models.response.amendPeriodSummary.AmendPeriodSummaryResponse.LinksFactory
@@ -46,11 +47,13 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "AmendPeriodSummaryController", endpointName = "amendSelfEmploymentPeriodSummary")
 
+  private val featureSwitches = SeBusinessFeatureSwitches()
+
   def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = FeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
+      val includeNegatives = featureSwitches.isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, periodId, taxYear, request.body, includeNegatives)
 
       val requestHandler = RequestHandler
@@ -60,7 +63,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
           auditService,
           auditType = "AmendPeriodicEmployment",
           transactionName = "self-employment-periodic-amend",
-          apiVersion = Version.from(request, orElse = Version2),
+          apiVersion = Version(request),
           params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId) ++
             taxYear.map(year => Map("taxYear" -> year)).getOrElse(Map.empty),
           Some(request.body)

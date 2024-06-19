@@ -16,11 +16,12 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino}
 import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v2.connectors.MockCreatePeriodSummaryConnector
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.CreatePeriodSummaryResponse
@@ -29,9 +30,9 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
+  override implicit val correlationId: String = "X-123"
 
   private val requestBody: CreatePeriodSummaryRequestBody =
     CreatePeriodSummaryRequestBody(

@@ -17,8 +17,7 @@
 package v2.models.request.createPeriodSummary
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
-
+import shared.UnitSpec
 class PeriodDisallowableExpensesSpec extends UnitSpec {
 
   val json: JsValue = Json.parse(

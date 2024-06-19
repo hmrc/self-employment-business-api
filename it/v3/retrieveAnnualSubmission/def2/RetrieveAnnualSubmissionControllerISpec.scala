@@ -16,14 +16,15 @@
 
 package v3.retrieveAnnualSubmission.def2
 
-import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import stubs.BaseDownstreamStub
 import support.IntegrationBaseSpec
 import v3.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
@@ -145,7 +146,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
         )
     }
 
-    def uri: String = s"/$nino/$businessId/annual/$taxYear"
+    private def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
     def errorBody(code: String): String =
       s"""

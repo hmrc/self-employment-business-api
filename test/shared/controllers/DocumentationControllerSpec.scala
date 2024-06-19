@@ -31,8 +31,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig {
-  // TODO: Update this test so that its not specific to the api
-//  private val apiTitle = "Business Source Adjustable Summary (MTD)"
+
+  //TODO: Will be updated when BSAS shared code is made non-api specific
   private val apiTitle = "Self Employment Business (MTD)"
 
   "/file endpoint" should {

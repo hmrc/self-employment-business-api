@@ -16,7 +16,7 @@
 
 package v3.createPeriodSummary.model.request
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.JsValue
 
 sealed trait CreatePeriodSummaryRequestData {
@@ -28,9 +28,7 @@ sealed trait CreatePeriodSummaryRequestData {
 
 object CreatePeriodSummaryRequestData {
 
-  def maybeTaxYear(body: JsValue): Option[TaxYear] = rawTaxYear(body).flatMap(TaxYear.maybeFromIso)
-
-  private def rawTaxYear(body: JsValue): Option[String] = (body \ "periodDates" \ "periodEndDate").asOpt[String]
+  def rawTaxYear(body: JsValue): Option[String] = (body \ "periodDates" \ "periodEndDate").asOpt[String]
 }
 
 /** Applicable from minimumTaxYear to 2022-23 (pre-TYS).

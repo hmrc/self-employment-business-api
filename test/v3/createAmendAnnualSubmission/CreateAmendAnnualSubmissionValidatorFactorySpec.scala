@@ -16,20 +16,19 @@
 
 package v3.createAmendAnnualSubmission
 
-import api.controllers.validators.Validator
-import config.FeatureSwitchesImpl
-import mocks.MockAppConfig
+import config.MockSeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json._
-import support.UnitSpec
+import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.controllers.validators.Validator
 import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
-class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppConfig {
+class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppConfig with MockSeBusinessFeatureSwitches {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
 
   private def validBody(startDate: String, endDate: String) =
     Json.parse(s"""
@@ -47,7 +46,7 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
   private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory
 
   private def setupMocks(): Unit =
-    MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validator()" when {
     "given any tax year" should {

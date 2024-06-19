@@ -75,13 +75,13 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
       "given a JSON object with a missing required field in multiple array objects" in {
         val json = Json.parse("""
-          |{
-          |  "arrayField" : [
-          |    { "field1" : "Something" },
-          |    { "field1" : "Something" }
-          |  ]
-          |}
-          |""".stripMargin)
+                                |{
+                                |  "arrayField" : [
+                                |    { "field1" : "Something" },
+                                |    { "field1" : "Something" }
+                                |  ]
+                                |}
+                                |""".stripMargin)
 
         val result = resolveTestDataWrapper(json)
         result shouldBe Invalid(

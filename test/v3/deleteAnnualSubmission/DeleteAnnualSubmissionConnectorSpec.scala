@@ -16,18 +16,18 @@
 
 package v3.deleteAnnualSubmission
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
-import api.models.outcomes.ResponseWrapper
-import mocks.MockFeatureSwitches
+import config.MockSeBusinessFeatureSwitches
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
+import shared.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsObject
 import v3.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
 
 import scala.concurrent.Future
 
-class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
+class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusinessFeatureSwitches {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -41,25 +41,24 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeature
     "deleteAnnualSubmission is called with a valid request and a non-TYS tax year" when {
       "`isPassDeleteIntentEnabled` feature switch is on" must {
         "send a request and return 204 no content" in new DesTest with Test {
-          override lazy val requiredHeaders: scala.Seq[(String, String)] = requiredDesHeaders :+ ("intent" -> "DELETE")
+          override lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders :+ ("intent" -> "DELETE")
 
           def taxYear: TaxYear = preTysTaxYear
 
-          stubHttpResponse(outcome)
-          MockFeatureSwitches.isPassDeleteIntentEnabled.returns(true)
+          stubPreTysHttpResponse(outcome)
+          MockedSeBusinessFeatureSwitches.isPassDeleteIntentEnabled.returns(true)
 
           private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
           result shouldBe outcome
         }
       }
+
       "`isPassDeleteIntentEnabled` feature switch is off" must {
         "send a request and return 204 no content" in new DesTest with Test {
-          override lazy val excludedHeaders: scala.Seq[(String, String)] = super.excludedHeaders :+ ("intent" -> "DELETE")
-
           def taxYear: TaxYear = preTysTaxYear
 
-          stubHttpResponse(outcome)
-          MockFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
+          stubPreTysHttpResponse(outcome, List("intent" -> "DELETE"))
+          MockedSeBusinessFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
 
           private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
           result shouldBe outcome
@@ -85,8 +84,8 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeature
 
       "return the error" in new DesTest with Test {
         def taxYear: TaxYear = preTysTaxYear
-        stubHttpResponse(outcome)
-        MockFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
+        stubPreTysHttpResponse(outcome)
+        MockedSeBusinessFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
 
         val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
         result shouldBe outcome
@@ -117,10 +116,12 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockFeature
       businessId = BusinessId(businessId)
     )
 
-    protected def stubHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
+    protected def stubPreTysHttpResponse(outcome: DownstreamOutcome[Unit],
+                                         excludedHeaders: Seq[(String, String)] = Nil): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
       willPut(
         url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
-        body = JsObject.empty
+        body = JsObject.empty,
+        excludedHeaders = excludedHeaders
       ).returns(Future.successful(outcome))
     }
 

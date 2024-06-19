@@ -16,9 +16,11 @@
 
 package v2.controllers.validators
 
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
-import support.UnitSpec
+import api.models.domain.PeriodId
+import api.models.errors.PeriodIdFormatError
+import shared.UnitSpec
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 
 class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {

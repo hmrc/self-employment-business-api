@@ -16,14 +16,15 @@
 
 package v3.retrieveAnnualSubmission.def1
 
-import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import stubs.BaseDownstreamStub
 import support.IntegrationBaseSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
@@ -32,36 +33,36 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
   "calling the V3 retrieve endpoint" should {
 
     "return a 200 status code" when {
-        s"any valid request is made" in new NonTysTest {
-          override def setupStubs(): StubMapping = {
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
-          }
-
-          val response: WSResponse = await(request().get())
-          response.status shouldBe OK
-          response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseJson)
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-          response.header("Content-Type") shouldBe Some("application/json")
+      s"any valid request is made" in new NonTysTest {
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
         }
 
-        s"any valid request is made with a TYS tax year" in new TysIfsTest {
-          override def setupStubs(): StubMapping = {
+        val response: WSResponse = await(request().get())
+        response.status shouldBe OK
+        response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseJson)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
 
-            AuditStub.audit()
-            AuthStub.authorised()
-            MtdIdLookupStub.ninoFound(nino)
-            BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
-          }
+      s"any valid request is made with a TYS tax year" in new TysIfsTest {
+        override def setupStubs(): StubMapping = {
 
-          val response: WSResponse = await(request().get())
-          response.status shouldBe OK
-          response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseJson)
-          response.header("X-CorrelationId").nonEmpty shouldBe true
-          response.header("Content-Type") shouldBe Some("application/json")
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
         }
+
+        val response: WSResponse = await(request().get())
+        response.status shouldBe OK
+        response.json shouldBe mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear, mtdRetrieveResponseJson)
+        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
     }
 
     "return error according to spec" when {

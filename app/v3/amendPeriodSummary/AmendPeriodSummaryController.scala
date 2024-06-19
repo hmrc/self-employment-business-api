@@ -16,14 +16,15 @@
 
 package v3.amendPeriodSummary
 
-import api.controllers.{AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.hateoas.HateoasFactory
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version3}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v3.amendPeriodSummary.model.response.AmendPeriodSummaryHateoasData
 import v3.amendPeriodSummary.model.response.AmendPeriodSummaryResponse.LinksFactory
 
@@ -48,7 +49,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = FeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
+      val includeNegatives = SeBusinessFeatureSwitches().isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, periodId, taxYear, request.body, includeNegatives)
 
       val requestHandler = RequestHandler
@@ -58,7 +59,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
           auditService,
           auditType = "AmendPeriodicEmployment",
           transactionName = "self-employment-periodic-amend",
-          apiVersion = Version.from(request, orElse = Version3),
+          apiVersion = Version(request),
           params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId) ++
             taxYear.map(year => Map("taxYear" -> year)).getOrElse(Map.empty),
           Some(request.body)

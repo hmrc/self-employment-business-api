@@ -16,13 +16,13 @@
 
 package v2.controllers.validators
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import mocks.MockAppConfig
-import support.UnitSpec
+import config.MockSeBusinessConfig
+import shared.UnitSpec
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
 
-class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppConfig {
+class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSeBusinessConfig {
 
   private implicit val correlationId: String = "1234"
 

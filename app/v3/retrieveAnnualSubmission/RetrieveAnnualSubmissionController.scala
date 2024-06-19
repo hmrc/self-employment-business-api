@@ -16,13 +16,14 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.models.domain.{BusinessId, Nino}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionHateoasData
 
 import javax.inject.{Inject, Singleton}
@@ -41,7 +42,7 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = "retrieveSelfEmploymentAnnualSubmission")
 
-  private implicit val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig)
+  implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches()
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
@@ -56,4 +57,5 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
 
       requestHandler.handleRequest()
     }
+
 }

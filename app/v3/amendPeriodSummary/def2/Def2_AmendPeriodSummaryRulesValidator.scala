@@ -16,24 +16,22 @@
 
 package v3.amendPeriodSummary.def2
 
-import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.ResolveParsedNumber
-import api.models.errors.{MtdError, RuleBothExpensesSuppliedError, RuleIncorrectOrEmptyBodyError}
+import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import config.{AppConfig, FeatureSwitches}
-import v3.amendPeriodSummary.def2.model.request.{
-  Def2_Amend_PeriodDisallowableExpenses,
-  Def2_Amend_PeriodExpenses,
-  Def2_Amend_PeriodIncome
-}
+import config.SeBusinessFeatureSwitches
+import shared.config.AppConfig
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.ResolveParsedNumber
+import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v3.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
 import v3.amendPeriodSummary.model.request.Def2_AmendPeriodSummaryRequestData
 
 class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: AppConfig)
     extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
 
-  private lazy val featureSwitches = FeatureSwitches(appConfig)
+  private lazy val featureSwitches = SeBusinessFeatureSwitches()
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
@@ -80,7 +78,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
       (income.turnover, "/periodIncome/turnover"),
       (income.other, "/periodIncome/other")
     ).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
   private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: Def2_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
@@ -109,12 +107,12 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
@@ -146,12 +144,12 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)

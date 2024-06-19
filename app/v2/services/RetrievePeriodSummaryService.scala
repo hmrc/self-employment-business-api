@@ -16,10 +16,11 @@
 
 package v2.services
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import api.models.errors.PeriodIdFormatError
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v2.connectors.RetrievePeriodSummaryConnector
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
@@ -53,8 +54,8 @@ class RetrievePeriodSummaryService @Inject() (connector: RetrievePeriodSummaryCo
   }
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
-                                                                       ctx: RequestContext,
-                                                                       ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
 
     connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

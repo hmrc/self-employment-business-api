@@ -16,10 +16,10 @@
 
 package v2.connectors
 
-import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.config.AppConfig
 import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v2.models.request.createPeriodSummary.CreatePeriodSummaryRequestData
@@ -38,7 +38,7 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
     import request._
 
     val (downstreamUri, statusCode) =
-      if (taxYear.isTys) {
+      if (taxYear.useTaxYearSpecificApi) {
         (TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"), CREATED)
       } else {
         (DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"), OK)

@@ -16,11 +16,10 @@
 
 package v2.connectors
 
-import api.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import api.models.domain.TaxYear
-import config.AppConfig
+import shared.config.AppConfig
+import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary.RetrievePeriodSummaryResponse
@@ -32,20 +31,21 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
-                                                                       hc: HeaderCarrier,
-                                                                       ec: ExecutionContext,
-                                                                       correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrievePeriodSummaryResponse]] = {
 
     import request._
 
     val fromDate = periodId.from
     val toDate   = periodId.to
 
-    val downstreamUri = if (TaxYear.isTys(taxYear)) {
-      TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
-        s"income-tax/${taxYear.get.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-    } else {
-      DesUri[RetrievePeriodSummaryResponse](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+    val downstreamUri = taxYear match {
+      case Some(ty) =>
+        TaxYearSpecificIfsUri[RetrievePeriodSummaryResponse](
+          s"income-tax/${ty.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+      case None =>
+        DesUri[RetrievePeriodSummaryResponse](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
     }
 
     get(downstreamUri)

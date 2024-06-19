@@ -16,12 +16,13 @@
 
 package v2.controllers
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v2.controllers.validators.ListPeriodSummariesValidatorFactory
 import v2.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
 import v2.services.ListPeriodSummariesService
@@ -36,7 +37,7 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
                                                service: ListPeriodSummariesService,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
-                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: config.AppConfig)
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

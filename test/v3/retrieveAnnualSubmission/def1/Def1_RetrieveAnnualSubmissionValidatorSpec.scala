@@ -16,13 +16,14 @@
 
 package v3.retrieveAnnualSubmission.def1
 
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import support.UnitSpec
+import config.MockSeBusinessConfig
+import shared.UnitSpec
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
 import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
+class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBusinessConfig {
 
   private implicit val correlationId: String = "1234"
 

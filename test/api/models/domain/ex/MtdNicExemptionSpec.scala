@@ -18,9 +18,8 @@ package api.models.domain.ex
 
 import api.models.domain.ex.MtdNicExemption._
 import play.api.libs.json.{JsError, JsValue, Json}
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
-
+import shared.utils.enums.EnumJsonSpecSupport
+import shared.UnitSpec
 class MtdNicExemptionSpec extends UnitSpec with EnumJsonSpecSupport {
 
   val desJson: JsValue = Json.toJson("")

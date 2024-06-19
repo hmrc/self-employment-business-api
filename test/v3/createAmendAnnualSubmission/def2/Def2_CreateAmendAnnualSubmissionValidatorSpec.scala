@@ -17,22 +17,23 @@
 package v3.createAmendAnnualSubmission.def2
 
 import api.models.domain.ex.MtdNicExemption
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.utils.JsonErrorValidators
-import config.FeatureSwitchesImpl
-import mocks.MockAppConfig
+import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError, RuleWrongTpaAmountSubmittedError}
+import config.{MockSeBusinessFeatureSwitches, SeBusinessFeatureSwitches}
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
-import support.UnitSpec
+import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
 import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
 import v3.createAmendAnnualSubmission.def2.request._
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
 
-class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig with MockSeBusinessFeatureSwitches {
 
-  private implicit val correlationId: String                = "1234"
-  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
+
+  private implicit val correlationId: String = "1234"
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
@@ -165,6 +166,8 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
   private val parsedStructuredBuildingAllowance =
     Def2_CreateAmend_StructuredBuildingAllowance(amount = 1.23, firstYear = Some(parsedFirstYear), building = parsedBuilding)
 
+  private implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(Configuration.empty)
+
   private val parsedAllowances = Def2_CreateAmend_Allowances(
     annualInvestmentAllowance = Some(200.12),
     businessPremisesRenovationAllowance = Some(200.12),
@@ -196,7 +199,7 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     validatorFactory.validator(nino, businessId, taxYear, body)
 
   private def setupMocks(): Unit =
-    MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {
@@ -289,6 +292,7 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     }
     "return a path parameter error" when {
       "an invalid nino is supplied" in {
+        setupMocks()
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator("A12344A", validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
 

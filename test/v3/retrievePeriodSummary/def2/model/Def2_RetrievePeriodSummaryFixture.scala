@@ -16,7 +16,7 @@
 
 package v3.retrievePeriodSummary.def2.model
 
-import api.models.domain.TaxYear
+import shared.models.domain.TaxYear
 import play.api.libs.json.{JsValue, Json}
 
 trait Def2_RetrievePeriodSummaryFixture {

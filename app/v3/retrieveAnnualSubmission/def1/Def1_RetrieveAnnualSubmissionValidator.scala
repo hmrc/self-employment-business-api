@@ -16,20 +16,23 @@
 
 package v3.retrieveAnnualSubmission.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
-import api.models.domain.TaxYear
-import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
+import config.SeBusinessConfig
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import shared.models.errors.MtdError
 import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class Def1_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String)
-    extends Validator[RetrieveAnnualSubmissionRequestData] {
+class Def1_RetrieveAnnualSubmissionValidator(
+    nino: String,
+    businessId: String,
+    taxYear: String
+) extends Validator[RetrieveAnnualSubmissionRequestData] {
 
   private val resolveTaxYear =
-    DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], RetrieveAnnualSubmissionRequestData] =
     (

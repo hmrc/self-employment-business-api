@@ -16,9 +16,9 @@
 
 package v2.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v2.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 
 import scala.concurrent.Future
@@ -31,12 +31,14 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
   trait Test {
     _: ConnectorTest =>
+
     val request: AmendAnnualSubmissionRequestData = AmendAnnualSubmissionRequestData(
       nino = Nino(nino),
       businessId = BusinessId(businessId),
       taxYear = taxYear,
       body = body
     )
+
     protected val connector: AmendAnnualSubmissionConnector = new AmendAnnualSubmissionConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -52,7 +54,7 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
         new IfsTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
-          val outcome = Right(ResponseWrapper(correlationId, ()))
+          val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
           willPut(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}", body) returns Future
             .successful(outcome)
@@ -68,7 +70,7 @@ class AmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
       new TysIfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
           .successful(outcome)

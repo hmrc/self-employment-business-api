@@ -16,18 +16,22 @@
 
 package v3.deleteAnnualSubmission.def1
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino}
-import api.models.domain.TaxYear
-import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
+import config.SeBusinessConfig
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import shared.models.errors.MtdError
 import v3.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
 
-class Def1_DeleteAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String) extends Validator[DeleteAnnualSubmissionRequestData] {
+class Def1_DeleteAnnualSubmissionValidator(
+    nino: String,
+    businessId: String,
+    taxYear: String
+) extends Validator[DeleteAnnualSubmissionRequestData] {
 
   private val resolveTaxYear =
-    DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], DeleteAnnualSubmissionRequestData] =
     (

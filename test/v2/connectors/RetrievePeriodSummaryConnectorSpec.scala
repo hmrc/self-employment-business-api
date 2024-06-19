@@ -16,9 +16,10 @@
 
 package v2.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import api.models.domain.PeriodId
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
 
@@ -74,7 +75,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       willGet(url).returns(Future.successful(outcome))
 
       val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
-        await(connector.retrievePeriodSummary(this.request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
+        await(
+          connector.retrievePeriodSummary(this.request(Nino(nino), BusinessId(businessId), PeriodId(periodId), Some(TaxYear.fromMtd(tysTaxYear)))))
       result shouldBe outcome
     }
   }

@@ -16,25 +16,31 @@
 
 package v3.createAmendAnnualSubmission.def2
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
-import api.models.domain.TaxYear
 import api.models.domain.ex.MtdNicExemption
-import api.models.errors.{Class4ExemptionReasonFormatError, MtdError}
+import api.models.errors.Class4ExemptionReasonFormatError
 import cats.data.Validated
 import cats.implicits._
-import config.FeatureSwitches
+import config.{SeBusinessConfig, SeBusinessFeatureSwitches}
 import play.api.libs.json._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
+import shared.models.errors.MtdError
 import v3.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionRulesValidator.validateBusinessRules
+import v3.createAmendAnnualSubmission.def2.request.Def2_CreateAmendAnnualSubmissionRequestBody
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
 
-class Def2_CreateAmendAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String, body: JsValue)(implicit featureSwitches: FeatureSwitches)
+class Def2_CreateAmendAnnualSubmissionValidator(
+    nino: String,
+    businessId: String,
+    taxYear: String,
+    body: JsValue
+)(implicit featureSwitches: SeBusinessFeatureSwitches)
     extends Validator[CreateAmendAnnualSubmissionRequestData] {
 
-  private val resolveJson = new ResolveNonEmptyJsonObject[request.Def2_CreateAmendAnnualSubmissionRequestBody]()
+  private val resolveJson = new ResolveNonEmptyJsonObject[Def2_CreateAmendAnnualSubmissionRequestBody]()
 
   private val resolveTaxYear =
-    DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def validate: Validated[Seq[MtdError], CreateAmendAnnualSubmissionRequestData] =
     validateClass4ExemptionReasonEnum andThen { _ =>

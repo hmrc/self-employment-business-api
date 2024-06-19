@@ -16,11 +16,11 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v2.connectors.MockRetrieveAnnualSubmissionConnector
 import v2.fixtures.RetrieveAnnualSubmissionFixture
 import v2.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
@@ -33,7 +33,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnua
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   val taxYear: String                = "2019-20"
-  implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(
     allowances = Some(Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),

@@ -16,10 +16,11 @@
 
 package v3.amendPeriodSummary
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v3.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}

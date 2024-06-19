@@ -16,23 +16,27 @@
 
 package v2.controllers.validators
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{DetailedResolveTaxYear, ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
-import api.models.domain.TaxYear
 import api.models.domain.ex.MtdNicExemption
-import api.models.errors.{Class4ExemptionReasonFormatError, MtdError}
+import api.models.errors.Class4ExemptionReasonFormatError
 import cats.data.Validated
 import cats.implicits._
+import config.SeBusinessConfig
 import play.api.libs.json._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
+import shared.models.errors.MtdError
 import v2.controllers.validators.AmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v2.models.request.amendSEAnnual.{AmendAnnualSubmissionBody, AmendAnnualSubmissionRequestData}
 
+import javax.inject.Singleton
+
+@Singleton
 class AmendAnnualSubmissionValidatorFactory {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendAnnualSubmissionBody]()
 
-  private val resolveTaxYear =
-    DetailedResolveTaxYear(maybeMinimumTaxYear = Some(TaxYear.minimumTaxYear.year))
+  lazy private val resolveTaxYear =
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def validator(nino: String, businessId: String, taxYear: String, body: JsValue): Validator[AmendAnnualSubmissionRequestData] =
     new Validator[AmendAnnualSubmissionRequestData] {

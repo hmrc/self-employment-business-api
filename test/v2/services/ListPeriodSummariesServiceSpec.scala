@@ -16,11 +16,11 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v2.connectors.MockListPeriodSummariesConnector
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 import v2.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
@@ -32,7 +32,7 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
   val nino: String                   = "AA123456A"
   val businessId: String             = "XAIS12345678910"
   val taxYear: String                = "2024-25"
-  implicit val correlationId: String = "X-123"
+  override implicit val correlationId: String = "X-123"
 
   val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
     Seq(

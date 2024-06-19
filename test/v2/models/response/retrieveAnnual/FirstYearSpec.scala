@@ -17,8 +17,7 @@
 package v2.models.response.retrieveAnnual
 
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
-
+import shared.UnitSpec
 class FirstYearSpec extends UnitSpec {
 
   val model: FirstYear =

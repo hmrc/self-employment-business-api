@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
 class Retrieve_AllowancesSpec extends UnitSpec {
 

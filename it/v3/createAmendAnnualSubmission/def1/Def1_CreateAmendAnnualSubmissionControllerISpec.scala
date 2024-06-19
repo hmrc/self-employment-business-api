@@ -17,18 +17,23 @@
 package v3.createAmendAnnualSubmission.def1
 
 import api.models.errors._
-import api.models.utils.JsonErrorValidators
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import stubs.{AuditStub, AuthStub, BaseDownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
+import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import stubs.BaseDownstreamStub
 import support.IntegrationBaseSpec
 import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionFixture
 
-class Def1_CreateAmendAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def1_CreateAmendAnnualSubmissionFixture with JsonErrorValidators {
+class Def1_CreateAmendAnnualSubmissionControllerISpec
+    extends IntegrationBaseSpec
+    with Def1_CreateAmendAnnualSubmissionFixture
+    with JsonErrorValidators {
 
   val requestBodyJson: JsValue           = createAmendAnnualSubmissionRequestBodyMtdJson()
   val downstreamRequestBodyJson: JsValue = createAmendAnnualSubmissionRequestBodyDownstreamJson()
@@ -47,8 +52,8 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec extends IntegrationBaseSpe
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
         response.json shouldBe responseBody
+        response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
       }

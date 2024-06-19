@@ -17,8 +17,7 @@
 package v2.models.response.listPeriodSummaries
 
 import play.api.libs.json.Json
-import support.UnitSpec
-
+import shared.UnitSpec
 class PeriodDetailsSpec extends UnitSpec {
 
   private val model =

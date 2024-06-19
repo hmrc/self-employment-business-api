@@ -16,20 +16,26 @@
 
 package v3.createPeriodSummary.def2
 
-import api.controllers.validators.Validator
-import api.controllers.validators.resolvers._
-import api.models.errors.{EndDateFormatError, MtdError, RuleIncorrectOrEmptyBodyError, StartDateFormatError}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers._
+import shared.models.errors.{EndDateFormatError, MtdError, RuleIncorrectOrEmptyBodyError, StartDateFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.{catsSyntaxTuple3Semigroupal, toFoldableOps}
-import config.{AppConfig, FeatureSwitches}
+import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
+import shared.config.AppConfig
 import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 
-class Def2_CreatePeriodSummaryValidator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean, appConfig: AppConfig)
+class Def2_CreatePeriodSummaryValidator(
+    nino: String,
+    businessId: String,
+    body: JsValue,
+    includeNegatives: Boolean
+)(implicit appConfig: AppConfig)
     extends Validator[CreatePeriodSummaryRequestData] {
 
-  lazy private val featureSwitches = FeatureSwitches(appConfig)
+  lazy private val featureSwitches = SeBusinessFeatureSwitches()
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_CreatePeriodSummaryRequestBody]()
 

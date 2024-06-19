@@ -16,13 +16,15 @@
 
 package v3.retrievePeriodSummary
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, PeriodId}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.{ServiceOutcome, ServiceSpec}
-import mocks.MockAppConfig
+import api.models.domain.PeriodId
+import api.models.errors.PeriodIdFormatError
 import play.api.Configuration
+import shared.config.MockAppConfig
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.{ServiceOutcome, ServiceSpec}
 import v3.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodIncome}
 import v3.retrievePeriodSummary.def2.model.response.{Def2_Retrieve_PeriodDates, Def2_Retrieve_PeriodIncome}
 import v3.retrievePeriodSummary.model.request.Def1_RetrievePeriodSummaryRequestData
@@ -32,10 +34,10 @@ import scala.concurrent.Future
 
 class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
 
-  private val nino                           = Nino("AA123456A")
-  private val businessId                     = BusinessId("XAIS12345678910")
-  private val periodId                       = PeriodId("2019-01-25_2020-01-25")
-  private implicit val correlationId: String = "X-123"
+  private val nino                            = Nino("AA123456A")
+  private val businessId                      = BusinessId("XAIS12345678910")
+  private val periodId                        = PeriodId("2019-01-25_2020-01-25")
+  override implicit val correlationId: String = "X-123"
 
   private val requestData = Def1_RetrievePeriodSummaryRequestData(
     nino = nino,
@@ -66,12 +68,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
 
   trait Test extends MockRetrievePeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-
-    val service = new RetrievePeriodSummaryService(
-      connector = mockRetrievePeriodSummaryConnector,
-      appConfig = mockAppConfig
-    )
-
+    val service                                 = new RetrievePeriodSummaryService(connector = mockRetrievePeriodSummaryConnector)
   }
 
   "retrievePeriodSummary()" when {
@@ -82,7 +79,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def1Response))))
 
-        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def1Response))
@@ -96,7 +93,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))))
 
-        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> false))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))
@@ -109,7 +106,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))))
 
-        MockAppConfig.featureSwitches.returns(Configuration("cl290.enabled" -> true))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))

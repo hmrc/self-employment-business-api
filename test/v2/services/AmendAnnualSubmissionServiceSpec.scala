@@ -16,11 +16,12 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import api.models.errors.RuleAllowanceNotSupportedError
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v2.connectors.MockAmendAnnualSubmissionConnector
 import v2.fixtures.AmendAnnualSubmissionFixture
 import v2.models.request.amendSEAnnual.AmendAnnualSubmissionRequestData
@@ -29,9 +30,9 @@ import scala.concurrent.Future
 
 class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmissionFixture {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  implicit val correlationId: String = "X-123"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
+  override implicit val correlationId: String = "X-123"
 
   private val requestBody = amendAnnualSubmissionBody()
 
@@ -54,7 +55,7 @@ class AmendAnnualSubmissionServiceSpec extends ServiceSpec with AmendAnnualSubmi
   "AmendAnnualSubmissionService" when {
     "amendAnnualSubmission called" must {
       "return correct result for a success" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         MockAmendAnnualSubmissionConnector
           .amendAnnualSubmission(requestData)

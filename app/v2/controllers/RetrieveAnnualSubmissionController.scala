@@ -16,12 +16,13 @@
 
 package v2.controllers
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.models.domain.{BusinessId, Nino}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v2.controllers.validators.RetrieveAnnualSubmissionValidatorFactory
 import v2.models.response.retrieveAnnual.RetrieveAnnualSubmissionHateoasData
 import v2.services.RetrieveAnnualSubmissionService
@@ -36,7 +37,7 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
                                                     service: RetrieveAnnualSubmissionService,
                                                     hateoasFactory: HateoasFactory,
                                                     cc: ControllerComponents,
-                                                    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: config.AppConfig)
+                                                    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

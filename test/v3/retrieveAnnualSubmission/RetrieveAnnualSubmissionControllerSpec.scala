@@ -16,14 +16,14 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{DELETE, GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
 import play.api.mvc.Result
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.{DELETE, GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
@@ -44,24 +44,24 @@ class RetrieveAnnualSubmissionControllerSpec
 
   private val testHateoasLinks: Seq[Link] = Seq(
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"),
-    Link(href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear", method = GET, rel = "self"),
+      rel = "create-and-amend-self-employment-annual-submission"
+    ),
+    Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
-      href = s"/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
+      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = DELETE,
       rel = "delete-self-employment-annual-submission")
   )
 
-  private val requestData = Def1_RetrieveAnnualSubmissionRequestData(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+  private val requestData = Def1_RetrieveAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   private val responseBody: RetrieveAnnualSubmissionResponse = retrieveResponseModel
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-
         willUseValidator(returningSuccess(requestData))
 
         MockedRetrieveAnnualSubmissionService
@@ -69,12 +69,12 @@ class RetrieveAnnualSubmissionControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
         MockHateoasFactory
-          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
           .returns(HateoasWrapper(responseBody, testHateoasLinks))
 
         runOkTest(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(nino, businessId, taxYear))
+          maybeExpectedResponseBody = Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(validNino, businessId, taxYear))
         )
       }
     }
@@ -83,7 +83,6 @@ class RetrieveAnnualSubmissionControllerSpec
 
       "the parser validation fails" in new Test {
         willUseValidator(returning(NinoFormatError))
-
         runErrorTest(NinoFormatError)
       }
 
@@ -111,9 +110,9 @@ class RetrieveAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockAppConfig.featureSwitches.returns(Configuration.empty).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration.empty).anyNumberOfTimes()
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId, taxYear)(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }
 
 }

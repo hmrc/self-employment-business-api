@@ -16,16 +16,21 @@
 
 package v3.retrieveAnnualSubmission
 
-import api.controllers.validators.Validator
+import config.MockSeBusinessConfig
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import shared.UnitSpec
+import shared.controllers.validators.Validator
 import shared.models.domain.{TaxYear, TaxYearPropertyCheckSupport}
-import support.UnitSpec
 import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema.{Def1, Def2}
 import v3.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class RetrieveAnnualSubmissionValidatorFactorySpec extends UnitSpec with ScalaCheckDrivenPropertyChecks with TaxYearPropertyCheckSupport {
+class RetrieveAnnualSubmissionValidatorFactorySpec
+    extends UnitSpec
+    with ScalaCheckDrivenPropertyChecks
+    with TaxYearPropertyCheckSupport
+    with MockSeBusinessConfig {
 
   private val nino       = "AA123456A"
   private val businessId = "XAIS12345678910"

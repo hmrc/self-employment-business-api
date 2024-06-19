@@ -16,18 +16,19 @@
 
 package v2.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
-import mocks.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.{GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.MockAuditService
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.config.MockAppConfig
+import shared.routing.{Version, Version2}
 import v2.controllers.validators.MockCreatePeriodSummaryValidatorFactory
 import v2.models.request.createPeriodSummary._
 import v2.models.response.createPeriodSummary.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
@@ -47,11 +48,13 @@ class CreatePeriodSummaryControllerSpec
 
   private val businessId = "XAIS12345678910"
   private val periodId   = "2017-01-25_2017-01-25"
+  override val apiVersion: Version = Version2
+
 
   private val testHateoasLinks: Seq[Link] = List(
-    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
-    Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
-    Link(s"/individuals/business/self-employment/$nino/$businessId/period", GET, "list-self-employment-period-summaries")
+    Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+    Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "self"),
+    Link(s"/individuals/business/self-employment/$validNino/$businessId/period", GET, "list-self-employment-period-summaries")
   )
 
   private val requestJson = Json.parse(
@@ -156,19 +159,19 @@ class CreatePeriodSummaryControllerSpec
        |  "periodId": "$periodId",
        |  "links": [
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
        |      "method": "PUT",
        |      "rel": "amend-self-employment-period-summary"
        |
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
        |      "method": "GET",
        |      "rel": "self"
        |
        |    },
        |    {
-       |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period",
        |      "method": "GET",
        |      "rel": "list-self-employment-period-summaries"
        |
@@ -178,7 +181,7 @@ class CreatePeriodSummaryControllerSpec
     """.stripMargin
   )
 
-  private val requestData = CreatePeriodSummaryRequestData(Nino(nino), BusinessId(businessId), requestBody)
+  private val requestData = CreatePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), requestBody)
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -192,7 +195,7 @@ class CreatePeriodSummaryControllerSpec
         MockHateoasFactory
           .wrap(
             CreatePeriodSummaryResponse(periodId),
-            CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
+            CreatePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -224,8 +227,8 @@ class CreatePeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
-    MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+  private trait Test extends ControllerTest with AuditEventChecking {
+    MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -246,14 +249,14 @@ class CreatePeriodSummaryControllerSpec
           versionNumber = "2.0",
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "businessId" -> businessId),
+          params = Map("nino" -> validNino, "businessId" -> businessId),
           requestBody = requestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
 
-    protected def callController(): Future[Result] = controller.handleRequest(nino, businessId)(fakePostRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakeRequestWithBody(requestJson))
   }
 
 }

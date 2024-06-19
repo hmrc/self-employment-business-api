@@ -16,12 +16,11 @@
 
 package v3.createPeriodSummary.model.response
 
-import api.hateoas.{Link, Method}
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import mocks.MockAppConfig
+import shared.hateoas.{Link, Method}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
-
+import shared.config.MockAppConfig
+import shared.UnitSpec
 class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   val json: JsValue = Json.parse(

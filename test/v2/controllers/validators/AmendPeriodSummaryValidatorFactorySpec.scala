@@ -16,23 +16,26 @@
 
 package v2.controllers.validators
 
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
-import api.models.utils.JsonErrorValidators
+import api.models.domain.PeriodId
+import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
-import support.UnitSpec
+import shared.UnitSpec
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
 import v2.models.request.amendPeriodSummary._
 
 class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorValidators {
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino       = "AA123456A"
+  private val validNino = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validPeriodId   = "2017-01-25_2017-02-28"
-  private val validTaxYear    = Some("2023-24")
+  private val validPeriodId = "2017-01-25_2017-02-28"
+  private val validTaxYear = Some("2023-24")
 
-  private val validPeriodIncome = Json.parse("""
+  private val validPeriodIncome = Json.parse(
+    """
       | {
       |   "turnover": 200.00,
       |   "other": 201.00
@@ -42,51 +45,54 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
   private def validPeriodExpenses(withNegatives: Boolean = false) = {
     val maybeNegative = if (withNegatives) "-" else ""
 
-    Json.parse(s"""
-                 |{
-                 |   "costOfGoods": ${maybeNegative}203.00,
-                 |   "paymentsToSubcontractors": ${maybeNegative}204.00,
-                 |   "wagesAndStaffCosts": ${maybeNegative}205.00,
-                 |   "carVanTravelExpenses": ${maybeNegative}206.00,
-                 |   "premisesRunningCosts": ${maybeNegative}207.00,
-                 |   "maintenanceCosts": ${maybeNegative}208.00,
-                 |   "adminCosts": ${maybeNegative}209.00,
-                 |   "businessEntertainmentCosts": ${maybeNegative}210.00,
-                 |   "advertisingCosts": ${maybeNegative}211.00,
-                 |   "interestOnBankOtherLoans": ${maybeNegative}212.00,
-                 |   "financeCharges": ${maybeNegative}213.00,
-                 |   "irrecoverableDebts": ${maybeNegative}214.00,
-                 |   "professionalFees": ${maybeNegative}215.00,
-                 |   "depreciation": ${maybeNegative}216.00,
-                 |   "otherExpenses": ${maybeNegative}217.00
-                 | }
-                 |""".stripMargin)
+    Json.parse(
+      s"""
+         |{
+         |   "costOfGoods": ${maybeNegative}203.00,
+         |   "paymentsToSubcontractors": ${maybeNegative}204.00,
+         |   "wagesAndStaffCosts": ${maybeNegative}205.00,
+         |   "carVanTravelExpenses": ${maybeNegative}206.00,
+         |   "premisesRunningCosts": ${maybeNegative}207.00,
+         |   "maintenanceCosts": ${maybeNegative}208.00,
+         |   "adminCosts": ${maybeNegative}209.00,
+         |   "businessEntertainmentCosts": ${maybeNegative}210.00,
+         |   "advertisingCosts": ${maybeNegative}211.00,
+         |   "interestOnBankOtherLoans": ${maybeNegative}212.00,
+         |   "financeCharges": ${maybeNegative}213.00,
+         |   "irrecoverableDebts": ${maybeNegative}214.00,
+         |   "professionalFees": ${maybeNegative}215.00,
+         |   "depreciation": ${maybeNegative}216.00,
+         |   "otherExpenses": ${maybeNegative}217.00
+         | }
+         |""".stripMargin)
   }
 
   private def validPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
     val maybeNegative = if (withNegatives) "-" else ""
-    Json.parse(s"""
-                 | {
-                 |   "costOfGoodsDisallowable": ${maybeNegative}218.00,
-                 |   "paymentsToSubcontractorsDisallowable": ${maybeNegative}219.00,
-                 |   "wagesAndStaffCostsDisallowable": ${maybeNegative}220.00,
-                 |   "carVanTravelExpensesDisallowable": ${maybeNegative}221.00,
-                 |   "premisesRunningCostsDisallowable": ${maybeNegative}222.00,
-                 |   "maintenanceCostsDisallowable": ${maybeNegative}223.00,
-                 |   "adminCostsDisallowable": ${maybeNegative}224.00,
-                 |   "businessEntertainmentCostsDisallowable": ${maybeNegative}225.00,
-                 |   "advertisingCostsDisallowable": ${maybeNegative}226.00,
-                 |   "interestOnBankOtherLoansDisallowable": ${maybeNegative}227.00,
-                 |   "financeChargesDisallowable": ${maybeNegative}228.00,
-                 |   "irrecoverableDebtsDisallowable": ${maybeNegative}229.00,
-                 |   "professionalFeesDisallowable": ${maybeNegative}230.00,
-                 |   "depreciationDisallowable": ${maybeNegative}231.00,
-                 |   "otherExpensesDisallowable": ${maybeNegative}232.00
-                 | }
-                 |""".stripMargin)
+    Json.parse(
+      s"""
+         | {
+         |   "costOfGoodsDisallowable": ${maybeNegative}218.00,
+         |   "paymentsToSubcontractorsDisallowable": ${maybeNegative}219.00,
+         |   "wagesAndStaffCostsDisallowable": ${maybeNegative}220.00,
+         |   "carVanTravelExpensesDisallowable": ${maybeNegative}221.00,
+         |   "premisesRunningCostsDisallowable": ${maybeNegative}222.00,
+         |   "maintenanceCostsDisallowable": ${maybeNegative}223.00,
+         |   "adminCostsDisallowable": ${maybeNegative}224.00,
+         |   "businessEntertainmentCostsDisallowable": ${maybeNegative}225.00,
+         |   "advertisingCostsDisallowable": ${maybeNegative}226.00,
+         |   "interestOnBankOtherLoansDisallowable": ${maybeNegative}227.00,
+         |   "financeChargesDisallowable": ${maybeNegative}228.00,
+         |   "irrecoverableDebtsDisallowable": ${maybeNegative}229.00,
+         |   "professionalFeesDisallowable": ${maybeNegative}230.00,
+         |   "depreciationDisallowable": ${maybeNegative}231.00,
+         |   "otherExpensesDisallowable": ${maybeNegative}232.00
+         | }
+         |""".stripMargin)
   }
 
-  private val validPeriodExpensesConsolidated = Json.parse("""
+  private val validPeriodExpensesConsolidated = Json.parse(
+    """
       |{
       |   "consolidatedExpenses": 1000.99
       |}
@@ -95,18 +101,18 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVali
   private def validBody(periodIncome: JsValue = validPeriodIncome,
                         periodExpenses: JsValue = validPeriodExpenses(),
                         periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses()) = Json.obj(
-    "periodIncome"               -> periodIncome,
-    "periodExpenses"             -> periodExpenses,
+    "periodIncome" -> periodIncome,
+    "periodExpenses" -> periodExpenses,
     "periodDisallowableExpenses" -> periodDisallowableExpenses
   )
 
   private val validBodyWithNegatives =
     validBody(periodExpenses = validPeriodExpenses(true), periodDisallowableExpenses = validPeriodDisallowableExpenses(true))
 
-  private val parsedNino       = Nino(validNino)
+  private val parsedNino = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
-  private val parsedPeriodId   = PeriodId(validPeriodId)
-  private val parsedTaxYear    = validTaxYear.map(TaxYear.fromMtd)
+  private val parsedPeriodId = PeriodId(validPeriodId)
+  private val parsedTaxYear = validTaxYear.map(TaxYear.fromMtd)
 
   private val parsedPeriodIncome = PeriodIncome(Some(200.00), Some(201.00))
 

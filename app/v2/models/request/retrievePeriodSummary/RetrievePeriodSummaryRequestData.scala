@@ -16,6 +16,12 @@
 
 package v2.models.request.retrievePeriodSummary
 
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.domain.PeriodId
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-case class RetrievePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: Option[TaxYear])
+case class RetrievePeriodSummaryRequestData(
+    nino: Nino,
+    businessId: BusinessId,
+    periodId: PeriodId,
+    taxYear: Option[TaxYear]
+)

@@ -16,11 +16,11 @@
 
 package v3.retrievePeriodSummary.def1.model.response
 
-import api.hateoas.{Link, Method}
-import api.models.domain.{BusinessId, Nino}
-import mocks.MockAppConfig
+import shared.hateoas.{Link, Method}
+import shared.models.domain.{BusinessId, Nino}
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
+import shared.config.MockAppConfig
 import v3.retrievePeriodSummary.def1.model.Def1_RetrievePeriodSummaryFixture
 import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData}
 

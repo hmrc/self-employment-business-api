@@ -16,13 +16,14 @@
 
 package v2.controllers.validators
 
-import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.ResolveParsedNumber
-import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
+import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryRequestData, PeriodExpenses, PeriodDisallowableExpenses, PeriodIncome}
+import shared.controllers.validators.RulesValidator
+import shared.controllers.validators.resolvers.ResolveParsedNumber
+import shared.models.errors.MtdError
+import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryRequestData, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
 case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[AmendPeriodSummaryRequestData] {
 
@@ -58,7 +59,7 @@ case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
       (income.turnover, "/periodIncome/turnover"),
       (income.other, "/periodIncome/other")
     ).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
   private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: PeriodExpenses): Validated[Seq[MtdError], Unit] = {
@@ -87,12 +88,12 @@ case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
@@ -123,12 +124,12 @@ case class AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
     )
 
     val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path = Some(path))
+      resolveNonNegativeParsedNumber(value, path)
     }
 
     val validatedMaybeNegatives =
       (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path = Some(path))
+        resolveMaybeNegativeParsedNumber(value, path)
       }
 
     combine(validatedNonNegatives, validatedMaybeNegatives)

@@ -16,10 +16,10 @@
 
 package v3.createAmendAnnualSubmission.def2.request
 
-import config.FeatureSwitchesImpl
+import config.SeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
 class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
 
@@ -57,7 +57,8 @@ class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
 
     "additional fields are switched on" should {
       "return the full model" in {
-        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> true))
+        implicit val featureSwitches: SeBusinessFeatureSwitches =
+          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> true))
 
         json
           .as[Def2_CreateAmend_Adjustments] shouldBe model
@@ -66,14 +67,16 @@ class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
 
     "additional fields are switched off" should {
       "return the model without the additional fields" in {
-        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> false))
+        implicit val featureSwitches: SeBusinessFeatureSwitches =
+          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> false))
 
         json
           .as[Def2_CreateAmend_Adjustments] shouldBe model.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)
       }
 
       "ignore ill-typed additional fields" in {
-        implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration("adjustmentsAdditionalFields.enabled" -> false))
+        implicit val featureSwitches: SeBusinessFeatureSwitches =
+          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> false))
 
         Json
           .parse(s"""{

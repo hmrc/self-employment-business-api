@@ -16,9 +16,9 @@
 
 package v2.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import shared.connectors.ConnectorSpec
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v2.fixtures.RetrieveAnnualSubmissionFixture
 import v2.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 import v2.models.response.retrieveAnnual.RetrieveAnnualSubmissionResponse

@@ -17,22 +17,22 @@
 package v3.createAmendAnnualSubmission.def1
 
 import api.models.domain.ex.MtdNicExemption
-import api.models.domain.{BusinessId, Nino, TaxYear}
-import api.models.errors._
-import api.models.utils.JsonErrorValidators
-import config.FeatureSwitchesImpl
-import mocks.MockAppConfig
+import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
+import config.MockSeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
-import support.UnitSpec
+import shared.UnitSpec
+import shared.config.MockAppConfig
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.utils.JsonErrorValidators
 import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
 import v3.createAmendAnnualSubmission.def1.model.request._
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig with MockSeBusinessFeatureSwitches {
 
-  private implicit val correlationId: String                = "1234"
-  private implicit val featureSwitches: FeatureSwitchesImpl = FeatureSwitchesImpl(Configuration.empty)
+  private implicit val correlationId: String = "1234"
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
@@ -175,7 +175,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     validatorFactory.validator(nino, businessId, taxYear, body)
 
   private def setupMocks(): Unit =
-    MockAppConfig.featureSwitches.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+    MockAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {

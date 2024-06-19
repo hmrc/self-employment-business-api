@@ -16,11 +16,12 @@
 
 package v2.models.response.listPeriodSummaries
 
-import api.hateoas.{HateoasData, HateoasLinks, HateoasListLinksFactory, Link}
-import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.hateoas.HateoasLinks
 import cats.Functor
-import config.AppConfig
 import play.api.libs.json.{Json, OWrites, Reads, Writes}
+import shared.config.AppConfig
+import shared.hateoas.{HateoasData, HateoasListLinksFactory, Link}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 import scala.collection.immutable
 

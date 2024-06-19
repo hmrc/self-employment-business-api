@@ -16,11 +16,13 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{BusinessId, Nino, PeriodId}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import api.models.domain.PeriodId
+import api.models.errors.PeriodIdFormatError
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{BusinessId, Nino}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v2.connectors.MockRetrievePeriodSummaryConnector
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 import v2.models.response.retrievePeriodSummary.{PeriodDates, RetrievePeriodSummaryResponse}
@@ -29,11 +31,11 @@ import scala.concurrent.Future
 
 class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val periodId: String               = "2019-01-25_2020-01-25"
-  val tysTaxYear: String             = "23-24"
-  implicit val correlationId: String = "X-123"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
+  val periodId: String                        = "2019-01-25_2020-01-25"
+  val tysTaxYear: String                      = "23-24"
+  override implicit val correlationId: String = "X-123"
 
   val response: RetrievePeriodSummaryResponse = RetrievePeriodSummaryResponse(
     PeriodDates("2019-01-25", "2020-01-25"),

@@ -16,18 +16,20 @@
 
 package v3.amendPeriodSummary
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.Method.{GET, PUT}
-import api.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
-import mocks.MockAppConfig
+import api.models.domain.PeriodId
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.Method.{GET, PUT}
+import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.MockAuditService
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import shared.config.MockAppConfig
+import shared.routing.{Version, Version3}
 import v3.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v3.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
@@ -47,6 +49,8 @@ class AmendPeriodSummaryControllerSpec
     with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
 
+  override val apiVersion: Version = Version3
+
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "given a valid non-TYS request" in new PreTysTest {
@@ -57,7 +61,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear = None))
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, taxYear = None))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -76,7 +80,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, taxYear = Some(parsedTaxYear)))
+          .wrap((), AmendPeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, taxYear = Some(parsedTaxYear)))
           .returns(HateoasWrapper((), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -106,8 +110,8 @@ class AmendPeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
-    MockAppConfig.featureSwitches.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+  private trait Test extends ControllerTest with AuditEventChecking {
+    MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId = "XAIS12345678910"
 
@@ -137,7 +141,7 @@ class AmendPeriodSummaryControllerSpec
           versionNumber = apiVersion.name,
           userType = "Individual",
           agentReferenceNumber = None,
-          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId),
+          params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId),
           requestBody = requestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
@@ -152,26 +156,26 @@ class AmendPeriodSummaryControllerSpec
     val requestBodyJson: JsValue = def1_AmendPeriodSummaryBodyMtdJson
 
     val requestData: AmendPeriodSummaryRequestData =
-      Def1_AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), def1_AmendPeriodSummaryBody)
+      Def1_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), def1_AmendPeriodSummaryBody)
 
     val responseJson: JsValue = Json.parse(
       s"""
          |{
          |    "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "PUT",
          |      "rel": "amend-self-employment-period-summary"
          |     
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "GET",
          |      "rel": "self"
          |      
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period",
          |      "method": "GET",
          |      "rel": "list-self-employment-period-summaries"
          |      
@@ -182,13 +186,13 @@ class AmendPeriodSummaryControllerSpec
     )
 
     val testHateoasLinks: Seq[Link] = List(
-      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
-      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId", GET, "self"),
-      Link(s"/individuals/business/self-employment/$nino/$businessId/period", GET, "list-self-employment-period-summaries")
+      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
+      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "self"),
+      Link(s"/individuals/business/self-employment/$validNino/$businessId/period", GET, "list-self-employment-period-summaries")
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(nino, businessId, periodId, None)(fakePutRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, None)(fakeRequestWithBody(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -198,7 +202,7 @@ class AmendPeriodSummaryControllerSpec
             .event(auditResponse, requestBody)
             .detail
             .copy(
-              params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId)
+              params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId)
             )
         )
 
@@ -206,30 +210,30 @@ class AmendPeriodSummaryControllerSpec
 
   private trait TysTest extends Test {
     val periodId: String                 = "2024-01-01_2025-01-01"
-    protected val taxYear: String        = "2023-24"
+    private val taxYear: String          = "2023-24"
     protected val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
 
     val requestBodyJson: JsValue = def2_AmendPeriodSummaryBodyMtdJson
 
     val requestData: Def2_AmendPeriodSummaryRequestData =
-      Def2_AmendPeriodSummaryRequestData(Nino(nino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def2_AmendPeriodSummaryBody)
+      Def2_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def2_AmendPeriodSummaryBody)
 
     val responseJson: JsValue = Json.parse(
       s"""
          |{
          |  "links": [
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "PUT",
          |      "rel": "amend-self-employment-period-summary"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "GET",
          |      "rel": "self"
          |    },
          |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
          |      "method": "GET",
          |      "rel": "list-self-employment-period-summaries"
          |    }
@@ -240,19 +244,19 @@ class AmendPeriodSummaryControllerSpec
 
     val testHateoasLinks: Seq[Link] = List(
       Link(
-        s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
         PUT,
         "amend-self-employment-period-summary"
       ),
-      Link(s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]", GET, "self"),
+      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]", GET, "self"),
       Link(
-        s"/individuals/business/self-employment/$nino/$businessId/period/$periodId[?taxYear=$taxYear]",
+        s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
         GET,
         "list-self-employment-period-summaries")
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(nino, businessId, periodId, Some(taxYear))(fakePutRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeRequestWithBody(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -262,7 +266,7 @@ class AmendPeriodSummaryControllerSpec
             .event(auditResponse, requestBody)
             .detail
             .copy(
-              params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear)
+              params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear)
             )
         )
 

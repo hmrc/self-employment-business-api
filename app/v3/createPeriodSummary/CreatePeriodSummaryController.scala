@@ -16,15 +16,16 @@
 
 package v3.createPeriodSummary
 
-import api.controllers._
-import api.hateoas.HateoasFactory
-import api.models.domain.{BusinessId, Nino}
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.FeatureSwitches
+import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import routing.{Version, Version3}
-import utils.IdGenerator
+import shared.config.AppConfig
+import shared.controllers._
+import shared.hateoas.HateoasFactory
+import shared.models.domain.{BusinessId, Nino}
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
 import v3.createPeriodSummary.model.response.CreatePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}
@@ -38,17 +39,19 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                auditService: AuditService,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
-                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: config.AppConfig)
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreatePeriodSummaryController", endpointName = "createSelfEmploymentPeriodSummary")
 
+  private val featureSwitches = SeBusinessFeatureSwitches()
+
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = FeatureSwitches(appConfig).isAllowNegativeExpensesEnabled
+      val includeNegatives = featureSwitches.isAllowNegativeExpensesEnabled
       val validator        = validatorFactory.validator(nino, businessId, request.body, includeNegatives)
 
       val requestHandler = RequestHandler
@@ -58,7 +61,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
           auditService,
           auditType = "CreatePeriodicEmployment",
           transactionName = "self-employment-periodic-create",
-          apiVersion = Version.from(request, orElse = Version3),
+          apiVersion = Version(request),
           params = Map("nino" -> nino, "businessId" -> businessId),
           Some(request.body)
         ))

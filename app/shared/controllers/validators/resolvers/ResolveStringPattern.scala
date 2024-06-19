@@ -31,6 +31,9 @@ case class ResolveStringPattern(regexFormat: Regex, error: MtdError) extends Res
       Invalid(List(error))
 
   def apply(value: String): Validated[Seq[MtdError], String] = resolver(value)
+
+
+
 }
 
 object ResolveStringPattern {

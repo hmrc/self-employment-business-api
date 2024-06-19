@@ -16,9 +16,10 @@
 
 package v3.amendPeriodSummary
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
-import api.models.outcomes.ResponseWrapper
+import api.models.domain.PeriodId
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
 import v3.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodExpenses
 import v3.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodExpenses
 import v3.amendPeriodSummary.model.request._
