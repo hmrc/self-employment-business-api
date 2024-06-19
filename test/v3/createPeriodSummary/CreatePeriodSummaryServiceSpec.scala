@@ -16,15 +16,7 @@
 
 package v3.createPeriodSummary
 
-import api.models.errors.{
-  RuleBothExpensesSuppliedError,
-  RuleBusinessIncomePeriodRestriction,
-  RuleDuplicateSubmissionError,
-  RuleMisalignedPeriod,
-  RuleNotAllowedConsolidatedExpenses,
-  RuleNotContiguousPeriod,
-  RuleOverlappingPeriod
-}
+import api.models.errors._
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._

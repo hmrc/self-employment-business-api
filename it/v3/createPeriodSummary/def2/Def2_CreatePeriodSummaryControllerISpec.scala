@@ -16,15 +16,7 @@
 
 package v3.createPeriodSummary.def2
 
-import api.models.errors.{
-  RuleBothExpensesSuppliedError,
-  RuleBusinessIncomePeriodRestriction,
-  RuleDuplicateSubmissionError,
-  RuleMisalignedPeriod,
-  RuleNotAllowedConsolidatedExpenses,
-  RuleNotContiguousPeriod,
-  RuleOverlappingPeriod
-}
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -379,25 +371,25 @@ class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-    val periodId: String   = s"${periodStartDate}_$periodEndDate"
+    private val periodId: String   = s"${periodStartDate}_$periodEndDate"
 
-    def mtdTaxYear: String = "2023-24"
+    private def mtdTaxYear: String = "2023-24"
 
-    def downstreamTaxYear: String = "23-24"
+    private def downstreamTaxYear: String = "23-24"
 
     def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
-    def periodStartDate: String = "2023-07-24"
+    private def periodStartDate: String = "2023-07-24"
 
-    def periodEndDate: String = "2023-08-24"
+    private def periodEndDate: String = "2023-08-24"
 
-    def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    private def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
-    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    private def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
-    def listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
+    private def listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
-    def uri: String = s"/$nino/$businessId/period"
+    private def uri: String = s"/$nino/$businessId/period"
 
     def setupStubs(): StubMapping
 
