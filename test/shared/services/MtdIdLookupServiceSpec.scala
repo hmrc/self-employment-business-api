@@ -37,7 +37,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
 
         MockedMtdIdLookupConnector.lookup(nino) returns Future.successful(Right(mtdId))
 
-        await(target.lookup(nino)) shouldBe Right(mtdId)
+        val result = await(target.lookup(nino))
+        result shouldBe Right(mtdId)
       }
     }
 
@@ -45,7 +46,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       "return NinoFormatError" in new Test {
         val invalidNino = "INVALID_NINO"
 
-        await(target.lookup(invalidNino)) shouldBe Left(NinoFormatError)
+        val result = await(target.lookup(invalidNino))
+        result shouldBe Left(NinoFormatError)
       }
     }
 
@@ -53,7 +55,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       "return ClientOrAgentNotAuthorisedError" in new Test {
         MockedMtdIdLookupConnector.lookup(nino) returns Future.successful(Left(MtdIdLookupConnector.Error(FORBIDDEN)))
 
-        await(target.lookup(nino)) shouldBe Left(ClientOrAgentNotAuthorisedError)
+        val result = await(target.lookup(nino))
+        result shouldBe Left(ClientOrAgentNotAuthorisedError)
       }
     }
 
@@ -61,7 +64,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       "return InvalidBearerTokenError" in new Test {
         MockedMtdIdLookupConnector.lookup(nino) returns Future.successful(Left(MtdIdLookupConnector.Error(UNAUTHORIZED)))
 
-        await(target.lookup(nino)) shouldBe Left(InvalidBearerTokenError)
+        val result = await(target.lookup(nino))
+        result shouldBe Left(InvalidBearerTokenError)
       }
     }
 
@@ -69,7 +73,8 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       "return InternalError" in new Test {
         MockedMtdIdLookupConnector.lookup(nino) returns Future.successful(Left(MtdIdLookupConnector.Error(IM_A_TEAPOT)))
 
-        await(target.lookup(nino)) shouldBe Left(InternalError)
+        val result = await(target.lookup(nino))
+        result shouldBe Left(InternalError)
       }
     }
 
