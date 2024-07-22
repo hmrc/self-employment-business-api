@@ -18,7 +18,7 @@ package v2.endpoints
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
@@ -32,8 +32,7 @@ class AuthISpec extends IntegrationBaseSpec {
     val taxYear        = "2022"
     val incomeSourceId = "XAIS12345678910"
 
-    val downstreamResponseJsonMin: JsValue = Json.parse(
-      """
+    val downstreamResponseJson: JsValue = Json.parse("""
         |
         |{
         |  "annualAdjustments": {
@@ -96,7 +95,6 @@ class AuthISpec extends IntegrationBaseSpec {
         |}
       """.stripMargin)
 
-
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$incomeSourceId/annual-summaries/$taxYear"
 
     def setupStubs(): StubMapping
@@ -110,7 +108,7 @@ class AuthISpec extends IntegrationBaseSpec {
         )
     }
 
-    def uri: String = s"/$nino/$incomeSourceId/annual/2021-22"
+    private def uri: String = s"/$nino/$incomeSourceId/annual/2021-22"
   }
 
   "Calling the sample endpoint" when {
@@ -122,11 +120,11 @@ class AuthISpec extends IntegrationBaseSpec {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
-          MtdIdLookupStub.error(nino, Status.INTERNAL_SERVER_ERROR)
+          MtdIdLookupStub.error(nino, INTERNAL_SERVER_ERROR)
         }
 
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.INTERNAL_SERVER_ERROR
+        response.status shouldBe INTERNAL_SERVER_ERROR
       }
     }
 
@@ -137,11 +135,11 @@ class AuthISpec extends IntegrationBaseSpec {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
-          MtdIdLookupStub.error(nino, Status.FORBIDDEN)
+          MtdIdLookupStub.error(nino, FORBIDDEN)
         }
 
         val response: WSResponse = await(request().get())
-        response.status shouldBe Status.FORBIDDEN
+        response.status shouldBe FORBIDDEN
       }
     }
   }
@@ -153,11 +151,11 @@ class AuthISpec extends IntegrationBaseSpec {
         AuditStub.audit()
         AuthStub.authorised()
         MtdIdLookupStub.ninoFound(nino)
-        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, Status.OK, downstreamResponseJsonMin)
+        DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUri, OK, downstreamResponseJson)
       }
 
       val response: WSResponse = await(request().get())
-      response.status shouldBe Status.OK
+      response.status shouldBe OK
       response.header("Content-Type") shouldBe Some("application/json")
     }
   }
@@ -174,7 +172,7 @@ class AuthISpec extends IntegrationBaseSpec {
       }
 
       val response: WSResponse = await(request().delete())
-      response.status shouldBe Status.FORBIDDEN
+      response.status shouldBe FORBIDDEN
     }
   }
 
@@ -190,7 +188,7 @@ class AuthISpec extends IntegrationBaseSpec {
       }
 
       val response: WSResponse = await(request().get())
-      response.status shouldBe Status.FORBIDDEN
+      response.status shouldBe FORBIDDEN
     }
   }
 
