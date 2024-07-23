@@ -16,11 +16,11 @@
 
 package v3.retrievePeriodSummary.def2
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYear}
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYearWithMax}
+import shared.models.errors.MtdError
 import v3.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 
@@ -32,7 +32,7 @@ class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, peri
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId, 1900, 2100),
-      ResolveTysTaxYear(taxYear)
+      ResolveTysTaxYearWithMax(taxYear)
     ).mapN(Def2_RetrievePeriodSummaryRequestData)
   }
 

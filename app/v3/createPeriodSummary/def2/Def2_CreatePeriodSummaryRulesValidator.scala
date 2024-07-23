@@ -22,19 +22,21 @@ import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import shared.models.errors.MtdError
+import shared.models.errors.{MtdError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError}
 import v3.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDisallowableExpenses, Def2_Create_PeriodExpenses}
 import v3.createPeriodSummary.model.request.{Create_PeriodIncome, Def2_CreatePeriodSummaryRequestData}
 
+import java.time.LocalDate
+
 case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[Def2_CreatePeriodSummaryRequestData] {
 
-  private val minYear = 1900
-  private val maxYear = 2100
+  private val minDate = LocalDate.of(1900, 4, 6)
+  private val maxDate: LocalDate = LocalDate.of(2024, 4, 5)
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
-  private val resolveDateRange = ResolveDateRange()
+  private val resolveDateRange = ResolveDateRange(RuleTaxYearNotSupportedError, RuleTaxYearNotSupportedError, RuleEndBeforeStartDateError)
 
   def validateBusinessRules(parsed: Def2_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def2_CreatePeriodSummaryRequestData] = {
     import parsed.body._
@@ -65,7 +67,7 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     }
 
   private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] = {
-    resolveDateRange.withYearsLimitedTo(minYear, maxYear)(periodStartDate -> periodEndDate).toUnit
+    resolveDateRange.withDatesLimitedTo(minDate, maxDate)(periodStartDate -> periodEndDate).toUnit
   }
 
   private def validatePeriodIncomeNumericFields(includeNegatives: Boolean)(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =

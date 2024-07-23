@@ -23,7 +23,7 @@ import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import shared.config.AppConfig
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTysTaxYear}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTysTaxYearWithMax}
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
@@ -43,7 +43,7 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId),
-      ResolveTysTaxYear(taxYear),
+      ResolveTysTaxYearWithMax(taxYear),
       resolveJson(body)
     ).mapN(Def2_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
 

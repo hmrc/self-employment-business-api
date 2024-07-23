@@ -16,11 +16,11 @@
 
 package v2.controllers.validators
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYear}
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYearWithMax}
+import shared.models.errors.MtdError
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactory {
@@ -32,7 +32,7 @@ class ListPeriodSummariesValidatorFactory {
         (
           ResolveNino(nino),
           ResolveBusinessId(businessId),
-          ResolveTysTaxYear(taxYear)
+          ResolveTysTaxYearWithMax(taxYear)
         ).mapN(ListPeriodSummariesRequestData)
 
     }
