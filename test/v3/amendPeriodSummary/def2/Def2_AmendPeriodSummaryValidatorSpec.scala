@@ -290,6 +290,13 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
       }
 
+      "a tax year 2025 or over is passed" in {
+        val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
+          validator(validNino, validBusinessId, validPeriodId, "2025-26", validBody()).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
       "given a non-TYS tax year" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, "2021-22", validBody()).validateAndWrapResult()

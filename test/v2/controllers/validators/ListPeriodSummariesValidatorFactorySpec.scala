@@ -95,6 +95,16 @@ class ListPeriodSummariesValidatorFactorySpec extends UnitSpec {
       }
     }
 
+    "return RuleTaxYearNotSupportedError" when {
+      "a tax year 2025 or over is passed" in {
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
+          validator(validNino, validBusinessId, Some("2025-26")).validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
+        )
+      }
+    }
+
     "return InvalidTaxYearParameterError" when {
       "an invalid tax year is supplied" in {
         val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =

@@ -102,6 +102,13 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
       }
 
+      "a tax year 2025 or over is supplied" in {
+        val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
+          validator(validNino, validBusinessId, validPeriodId, Some("2025-26")).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
       "a non-TYS tax year is supplied" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, Some("2021-22")).validateAndWrapResult()

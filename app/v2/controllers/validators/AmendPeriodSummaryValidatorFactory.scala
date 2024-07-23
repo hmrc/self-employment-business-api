@@ -16,12 +16,12 @@
 
 package v2.controllers.validators
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
-import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import play.api.libs.json.JsValue
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers._
+import shared.models.errors.MtdError
 import v2.controllers.validators.resolvers.ResolvePeriodId
 import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData}
 
@@ -47,7 +47,7 @@ class AmendPeriodSummaryValidatorFactory {
           ResolveNino(nino),
           ResolveBusinessId(businessId),
           ResolvePeriodId(periodId),
-          ResolveTysTaxYear(taxYear),
+          ResolveTysTaxYearWithMax(taxYear),
           resolveJson(body)
         ).mapN(AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
 

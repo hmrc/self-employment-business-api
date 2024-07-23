@@ -93,3 +93,16 @@ object ResolveTysTaxYear extends ResolverSupport {
     }
 
 }
+object ResolveTysTaxYearWithMax extends ResolverSupport {
+
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate satisfiesMax(TaxYear.tysTaxYearEnd, RuleTaxYearNotSupportedError)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
+    }
+}
