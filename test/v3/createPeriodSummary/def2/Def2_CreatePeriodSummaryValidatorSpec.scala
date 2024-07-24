@@ -427,7 +427,7 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a body with a period end date out of range" in {
-        val invalidBody = validBody().update("/periodDates/periodEndDate", JsString("2024-04-06"))
+        val invalidBody = validBody().update("/periodDates/periodEndDate", JsString("2025-04-06"))
         val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
