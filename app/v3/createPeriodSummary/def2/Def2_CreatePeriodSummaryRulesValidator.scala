@@ -31,7 +31,7 @@ import java.time.LocalDate
 case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[Def2_CreatePeriodSummaryRequestData] {
 
   private val minDate = LocalDate.of(1900, 4, 6)
-  private val maxDate: LocalDate = LocalDate.of(2024, 4, 5)
+  private val maxDate: LocalDate = LocalDate.of(2025, 4, 5)
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
