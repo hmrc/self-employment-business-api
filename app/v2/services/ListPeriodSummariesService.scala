@@ -36,6 +36,7 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
         "INVALID_NINO"             -> NinoFormatError,
         "INVALID_INCOME_SOURCEID"  -> BusinessIdFormatError,
         "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+        "NOT_FOUND"                -> NotFoundError,
         "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
         "SERVER_ERROR"             -> InternalError,
         "SERVICE_UNAVAILABLE"      -> InternalError

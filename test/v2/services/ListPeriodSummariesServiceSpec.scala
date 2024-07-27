@@ -29,9 +29,9 @@ import scala.concurrent.Future
 
 class ListPeriodSummariesServiceSpec extends ServiceSpec {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val taxYear: String                = "2024-25"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
+  val taxYear: String                         = "2024-25"
   override implicit val correlationId: String = "X-123"
 
   val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
@@ -105,6 +105,7 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
             "INVALID_NINO"             -> NinoFormatError,
             "INVALID_INCOME_SOURCEID"  -> BusinessIdFormatError,
             "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+            "NOT_FOUND"                -> NotFoundError,
             "NOT_FOUND_INCOME_SOURCE"  -> NotFoundError,
             "SERVER_ERROR"             -> InternalError,
             "SERVICE_UNAVAILABLE"      -> InternalError
