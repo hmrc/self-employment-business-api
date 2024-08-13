@@ -108,7 +108,7 @@ class AmendPeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
     MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId: String = "XAIS12345678910"
@@ -199,7 +199,7 @@ class AmendPeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, None)(fakeRequestWithBody(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, None)(fakeRequest.withBody(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -261,7 +261,7 @@ class AmendPeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeRequestWithBody(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeRequest.withBody(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super

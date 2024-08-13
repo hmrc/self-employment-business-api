@@ -16,7 +16,7 @@
 
 package v3.retrieveAnnualSubmission.model.response
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.config.MockAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino}

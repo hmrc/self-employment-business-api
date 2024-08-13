@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class Retrieve_AdjustmentsSpec extends UnitSpec {
 

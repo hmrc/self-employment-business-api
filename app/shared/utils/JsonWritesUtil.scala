@@ -20,14 +20,17 @@ import play.api.libs.json._
 
 trait JsonWritesUtil {
 
-  def filterNull(json: JsValue): JsObject = json match {
-    case JsObject(fields) =>
-      JsObject(fields.flatMap {
-        case (_, JsNull) => None
-        case other       => Some(other)
-      })
-    case other => other.as[JsObject]
-  }
+  def filterNull(json: JsValue): JsObject =
+    json match {
+      case JsObject(fields) =>
+        JsObject(fields.filter {
+          case (_, JsNull) => false
+          case _           => true
+        })
+
+      case other =>
+        other.as[JsObject]
+    }
 
   def writesFrom[A](pf: PartialFunction[A, JsObject]): OWrites[A] = {
     val f: A => JsObject = pf.orElse(a => throw new IllegalArgumentException(s"No writes defined for type ${a.getClass.getName}"))

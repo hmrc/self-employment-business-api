@@ -17,7 +17,7 @@
 package v2.models.request.amendSEAnnual
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class AllowancesSpec extends UnitSpec {
 
   val model: Allowances = Allowances(

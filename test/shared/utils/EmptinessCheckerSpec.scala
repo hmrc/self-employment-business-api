@@ -16,7 +16,6 @@
 
 package shared.utils
 
-import shared.UnitSpec
 import shared.utils.EmptinessChecker._
 import shared.utils.EmptyPathsResult._
 
@@ -89,13 +88,16 @@ class EmptinessCheckerSpec extends UnitSpec {
 
     "has multiple empty objects" must {
       "return an error with the paths for all of them" in {
-        EmptinessChecker.findEmptyPaths(Foo(bar = Some(Bar(Some(Baz()))),
-          arr1 = Some(Nil),
-          arr2 = Some(List(Bar())),
-          arr3 = Some(List(Bar(Some(Baz())))),
-          bar2 = Some(Bar()))) shouldBe
+        EmptinessChecker.findEmptyPaths(
+          Foo(
+            bar = Some(Bar(Some(Baz()))),
+            arr1 = Some(Nil),
+            arr2 = Some(List(Bar())),
+            arr3 = Some(List(Bar(Some(Baz())))),
+            bar2 = Some(Bar()))) shouldBe
           EmptyPaths(List("/bar/baz", "/arr1", "/arr2/0", "/arr3/0/baz", "/bar2"))
       }
     }
   }
+
 }

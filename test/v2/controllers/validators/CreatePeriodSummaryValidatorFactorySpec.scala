@@ -18,7 +18,7 @@ package v2.controllers.validators
 
 import api.models.errors.RuleBothExpensesSuppliedError
 import play.api.libs.json._
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators

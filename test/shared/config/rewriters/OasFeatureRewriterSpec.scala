@@ -18,9 +18,9 @@ package shared.config.rewriters
 
 import controllers.Rewriter
 import play.api.Configuration
-import shared.UnitSpec
 import shared.config.MockAppConfig
 import shared.config.rewriters.DocumentationRewriters.CheckRewrite
+import shared.utils.UnitSpec
 
 class OasFeatureRewriterSpec extends UnitSpec with MockAppConfig {
 
@@ -29,8 +29,6 @@ class OasFeatureRewriterSpec extends UnitSpec with MockAppConfig {
       "oasFeature.enabled"                -> oasFeatureEnabled,
       "oasFeature.released-in-production" -> oasFeatureReleasedInProd
     )
-
-
 
     val rewriter = new OasFeatureRewriter()
     rewriter.rewriteOasFeature.asTuple

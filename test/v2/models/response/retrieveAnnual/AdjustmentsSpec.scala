@@ -17,7 +17,7 @@
 package v2.models.response.retrieveAnnual
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class AdjustmentsSpec extends UnitSpec {
 
   val model: Adjustments =

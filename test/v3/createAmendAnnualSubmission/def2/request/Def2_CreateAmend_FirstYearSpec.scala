@@ -17,7 +17,7 @@
 package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class Def2_CreateAmend_FirstYearSpec extends UnitSpec {
 
   val model: Def2_CreateAmend_FirstYear =

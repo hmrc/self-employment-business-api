@@ -19,20 +19,31 @@ package v3.retrievePeriodSummary.def2
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYearWithMax}
-import shared.models.errors.MtdError
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear, ResolverSupport}
+import shared.models.domain.TaxYear
+import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
+import v3.retrievePeriodSummary.def2.Def2_RetrievePeriodSummaryValidator.resolveTaxYear
 import v3.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 
+object Def2_RetrievePeriodSummaryValidator extends ResolverSupport {
+
+  private val resolveTaxYear =
+    (ResolveTaxYear.resolver thenValidate
+      satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate
+      satisfiesMax(TaxYear.fromMtd("2024-25"), RuleTaxYearNotSupportedError))
+
+}
+
 class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)
-    extends Validator[RetrievePeriodSummaryRequestData] {
+  extends Validator[RetrievePeriodSummaryRequestData] {
 
   def validate: Validated[Seq[MtdError], RetrievePeriodSummaryRequestData] = {
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId, 1900, 2100),
-      ResolveTysTaxYearWithMax(taxYear)
+      resolveTaxYear(taxYear)
     ).mapN(Def2_RetrievePeriodSummaryRequestData)
   }
 

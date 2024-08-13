@@ -16,8 +16,7 @@
 
 package shared.utils
 
-import play.api.libs.json.{Json, OWrites}
-import shared.UnitSpec
+import play.api.libs.json.{JsResultException, Json, OWrites}
 
 object JsonWritesUtilSpec {
   trait D
@@ -47,6 +46,59 @@ class JsonWritesUtilSpec extends UnitSpec with JsonWritesUtil {
         assertThrows[IllegalArgumentException](Json.toJson[D](D3(false)))
       }
     }
+  }
+
+  "filterNull()" when {
+    "given a JsObject with no nulls" should {
+      "return the JsObject unchanged" in {
+        val json = Json.parse(
+          """
+            | {
+            |   "A": "ay",
+            |   "B": "bee"
+            | }
+            |""".stripMargin
+        )
+
+        val result = filterNull(json)
+        result shouldBe json
+      }
+    }
+
+    "given a JsObject including nulls" should {
+      "filter out the nulls" in {
+        val json = Json.parse(
+          """
+            | {
+            |   "A": null,
+            |   "B": "bee"
+            | }
+            |""".stripMargin
+        )
+
+        val result = filterNull(json)
+        result shouldBe Json.parse(
+          """
+            | {
+            |   "B": "bee"
+            | }
+            |""".stripMargin
+        )
+      }
+    }
+
+    "given some json that isn't a JsObject" should {
+      "try to turn it into a JsObject (which may fail)" in {
+        val json = Json.parse(
+          """
+            | "just a string"
+            |""".stripMargin
+        )
+
+        a[JsResultException] should be thrownBy filterNull(json)
+      }
+    }
+
   }
 
 }

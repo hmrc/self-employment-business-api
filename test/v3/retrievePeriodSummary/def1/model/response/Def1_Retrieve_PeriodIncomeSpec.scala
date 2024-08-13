@@ -17,7 +17,7 @@
 package v3.retrievePeriodSummary.def1.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class Def1_Retrieve_PeriodIncomeSpec extends UnitSpec {
 
   val mtdJson: JsValue = Json.parse(

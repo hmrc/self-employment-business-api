@@ -20,7 +20,7 @@ import shared.config.MockAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, PUT}
 import shared.models.domain.{BusinessId, Nino}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class CreateAmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {

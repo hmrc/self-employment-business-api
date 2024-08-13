@@ -28,7 +28,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
   private def extraPredicatesAnd(predicate: Predicate) = predicate and
@@ -165,10 +164,11 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
           .authorise[A](_: Predicate, _: Retrieval[A])(_: HeaderCarrier, _: ExecutionContext))
           .expects(predicate, retrievals, *, *)
       }
+
     }
 
     def mockConfidenceLevelCheckConfig(authValidationEnabled: Boolean): Unit = {
-      MockAppConfig.confidenceLevelCheckEnabled.returns(
+      MockAppConfig.confidenceLevelConfig.returns(
         ConfidenceLevelConfig(
           confidenceLevel = ConfidenceLevel.L200,
           definitionEnabled = true,

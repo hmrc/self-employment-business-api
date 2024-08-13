@@ -16,13 +16,12 @@
 
 package shared.services
 
+import play.api.http.Status.BAD_REQUEST
+import play.api.libs.json.{Format, Json}
 import shared.controllers.EndpointLogContext
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json.{Format, Json}
-import shared.UnitSpec
-import shared.utils.Logging
+import shared.utils.{Logging, UnitSpec}
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
 

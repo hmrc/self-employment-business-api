@@ -19,12 +19,24 @@ package v2.controllers.validators
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYearWithMax}
-import shared.models.errors.MtdError
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear, ResolverSupport}
+import shared.models.domain.TaxYear
+import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
+import v2.controllers.validators.RetrievePeriodSummaryValidatorFactory.resolveTaxYear
 import v2.controllers.validators.resolvers.ResolvePeriodId
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 
 import javax.inject.Singleton
+
+object RetrievePeriodSummaryValidatorFactory {
+  import ResolverSupport._
+
+  private val resolveTaxYear =
+    (ResolveTaxYear.resolver thenValidate
+      satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate
+      satisfiesMax(TaxYear.fromMtd("2024-25"), RuleTaxYearNotSupportedError)).resolveOptionally
+
+}
 
 @Singleton
 class RetrievePeriodSummaryValidatorFactory {
@@ -37,7 +49,7 @@ class RetrievePeriodSummaryValidatorFactory {
           ResolveNino(nino),
           ResolveBusinessId(businessId),
           ResolvePeriodId(periodId, 1900, 2100),
-          ResolveTysTaxYearWithMax(taxYear)
+          resolveTaxYear(taxYear)
         ).mapN(RetrievePeriodSummaryRequestData)
 
     }

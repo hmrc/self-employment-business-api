@@ -20,7 +20,7 @@ import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino}
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v2.fixtures.RetrieveAnnualSubmissionFixture
 
 class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with RetrieveAnnualSubmissionFixture {

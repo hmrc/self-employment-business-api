@@ -17,7 +17,7 @@
 package v2.models.request.createPeriodSummary
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class CreatePeriodSummaryBodySpec extends UnitSpec {
 
   val fullMtdBody: CreatePeriodSummaryRequestBody =

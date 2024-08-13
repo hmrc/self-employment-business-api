@@ -16,8 +16,8 @@
 
 package shared.config.rewriters
 
-import shared.UnitSpec
 import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 
 class EndpointSummaryRewriterSpec extends UnitSpec with MockAppConfig {
 

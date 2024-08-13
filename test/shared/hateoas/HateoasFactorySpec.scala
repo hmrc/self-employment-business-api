@@ -16,10 +16,10 @@
 
 package shared.hateoas
 
-import shared.hateoas.Method.GET
 import cats.Functor
-import shared.UnitSpec
 import shared.config.{AppConfig, MockAppConfig}
+import shared.hateoas.Method.GET
+import shared.utils.UnitSpec
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 

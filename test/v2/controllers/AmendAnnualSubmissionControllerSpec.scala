@@ -133,7 +133,7 @@ class AmendAnnualSubmissionControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     private val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
@@ -162,7 +162,7 @@ class AmendAnnualSubmissionControllerSpec
       )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, taxYear)(fakeRequestWithBody(requestJson))
+      controller.handleRequest(validNino, businessId, taxYear)(fakeRequest.withBody(requestJson))
 
   }
 

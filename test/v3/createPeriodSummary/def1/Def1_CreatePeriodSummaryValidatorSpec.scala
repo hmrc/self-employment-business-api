@@ -18,7 +18,7 @@ package v3.createPeriodSummary.def1
 
 import api.models.errors.RuleBothExpensesSuppliedError
 import play.api.libs.json._
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.config.MockAppConfig
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._

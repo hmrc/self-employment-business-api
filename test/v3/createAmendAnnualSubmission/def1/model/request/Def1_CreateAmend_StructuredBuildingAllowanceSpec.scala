@@ -17,7 +17,7 @@
 package v3.createAmendAnnualSubmission.def1.model.request
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class Def1_CreateAmend_StructuredBuildingAllowanceSpec extends UnitSpec with Def1_CreateAmend_StructuredBuildingAllowanceFixture {
 
   "reads" when {

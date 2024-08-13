@@ -18,9 +18,9 @@ package shared.connectors
 
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import shared.UnitSpec
 import shared.config.{DownstreamConfig, MockAppConfig}
 import shared.mocks.MockHttpClient
+import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -125,16 +125,14 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-    protected def willPut[BODY, T](url: String,
-                                   body: BODY,
-                                   excludedHeaders: Seq[(String, String)] = List("AnotherHeader" -> "HeaderValue")): CallHandler[Future[T]] = {
+    protected def willPut[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
       MockedHttpClient
         .put(
           url = url,
           config = dummyHeaderCarrierConfig,
           body = body,
           requiredHeaders = requiredHeaders ++ List("Content-Type" -> "application/json"),
-          excludedHeaders = excludedHeaders
+          excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
     }
 

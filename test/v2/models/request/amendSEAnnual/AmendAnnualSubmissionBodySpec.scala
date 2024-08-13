@@ -17,7 +17,7 @@
 package v2.models.request.amendSEAnnual
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v2.fixtures.AmendAnnualSubmissionFixture
 
 class AmendAnnualSubmissionBodySpec extends UnitSpec with AmendAnnualSubmissionFixture {

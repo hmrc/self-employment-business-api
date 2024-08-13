@@ -21,16 +21,28 @@ import cats.implicits.catsSyntaxTuple5Semigroupal
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
-import shared.models.errors.MtdError
+import shared.models.domain.TaxYear
+import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 import v2.controllers.validators.resolvers.ResolvePeriodId
 import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData}
 
 import javax.inject.Singleton
 
-@Singleton
-class AmendPeriodSummaryValidatorFactory {
+object AmendPeriodSummaryValidatorFactory {
+  import ResolverSupport._
 
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendPeriodSummaryBody]()
+
+  private val resolveTaxYear =
+    (ResolveTaxYear.resolver thenValidate
+      satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate
+      satisfiesMax(TaxYear.fromMtd("2024-25"), RuleTaxYearNotSupportedError)).resolveOptionally
+
+}
+
+@Singleton
+class AmendPeriodSummaryValidatorFactory {
+  import AmendPeriodSummaryValidatorFactory._
 
   def validator(nino: String,
                 businessId: String,
@@ -47,7 +59,7 @@ class AmendPeriodSummaryValidatorFactory {
           ResolveNino(nino),
           ResolveBusinessId(businessId),
           ResolvePeriodId(periodId),
-          ResolveTysTaxYearWithMax(taxYear),
+          resolveTaxYear(taxYear),
           resolveJson(body)
         ).mapN(AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
 

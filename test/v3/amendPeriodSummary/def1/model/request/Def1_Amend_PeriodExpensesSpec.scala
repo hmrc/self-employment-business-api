@@ -17,7 +17,7 @@
 package v3.amendPeriodSummary.def1.model.request
 
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class Def1_Amend_PeriodExpensesSpec extends UnitSpec {
 
   val json: JsValue = Json.parse(

@@ -21,7 +21,7 @@ import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSu
 import config.MockSeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.config.MockAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._

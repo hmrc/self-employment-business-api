@@ -16,7 +16,7 @@
 
 package api.hateoas
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.hateoas
 import shared.config.MockAppConfig
 import shared.hateoas.Method.{DELETE, GET, POST, PUT}

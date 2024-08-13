@@ -23,14 +23,25 @@ import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import shared.config.AppConfig
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTysTaxYearWithMax}
-import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import shared.controllers.validators.resolvers._
+import shared.models.domain.TaxYear
+import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
+import v3.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator.resolveTaxYear
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 
+object Def2_AmendPeriodSummaryValidator extends ResolverSupport {
+
+  private val resolveTaxYear =
+    (ResolveTaxYear.resolver thenValidate
+      satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate
+      satisfiesMax(TaxYear.fromMtd("2024-25"), RuleTaxYearNotSupportedError))
+
+}
+
 class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)(
-    implicit appConfig: AppConfig)
-    extends Validator[AmendPeriodSummaryRequestData] {
+  implicit appConfig: AppConfig)
+  extends Validator[AmendPeriodSummaryRequestData] {
 
   lazy private val featureSwitches = SeBusinessFeatureSwitches()
 
@@ -43,14 +54,14 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId),
-      ResolveTysTaxYearWithMax(taxYear),
+      resolveTaxYear(taxYear),
       resolveJson(body)
     ).mapN(Def2_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
 
   /** Can be removed when CL290 is released.
     */
   private def validateTaxTakenOffTradingIncome(
-      parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] =
+                                                parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] =
     (for {
       income <- parsed.body.periodIncome if !featureSwitches.isCl290Enabled
       _      <- income.taxTakenOffTradingIncome

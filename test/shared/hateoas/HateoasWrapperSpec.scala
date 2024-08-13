@@ -16,9 +16,9 @@
 
 package shared.hateoas
 
-import shared.hateoas.Method.GET
 import play.api.libs.json.{Json, OWrites}
-import shared.UnitSpec
+import shared.hateoas.Method.GET
+import shared.utils.UnitSpec
 
 class HateoasWrapperSpec extends UnitSpec {
 

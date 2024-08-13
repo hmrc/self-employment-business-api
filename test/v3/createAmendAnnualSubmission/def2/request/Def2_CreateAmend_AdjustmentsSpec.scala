@@ -19,7 +19,7 @@ package v3.createAmendAnnualSubmission.def2.request
 import config.SeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
 

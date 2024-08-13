@@ -17,7 +17,7 @@
 package v2.controllers.validators
 
 import config.MockSeBusinessConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData

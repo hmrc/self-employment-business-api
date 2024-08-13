@@ -17,8 +17,8 @@
 package shared.config.rewriters
 
 import com.github.jknack.handlebars.HandlebarsException
-import shared.UnitSpec
 import shared.config.MockAppConfig
+import shared.utils.UnitSpec
 
 class EndpointSummaryGroupRewriterSpec extends UnitSpec with MockAppConfig {
 

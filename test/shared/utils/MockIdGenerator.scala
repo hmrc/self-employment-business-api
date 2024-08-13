@@ -21,9 +21,9 @@ import org.scalamock.scalatest.MockFactory
 
 trait MockIdGenerator extends MockFactory {
 
-  val mockIdGenerator: IdGenerator = mock[IdGenerator]
+  protected val mockIdGenerator: IdGenerator = mock[IdGenerator]
 
-  object MockIdGenerator {
+  object MockedIdGenerator {
     def generateCorrelationId: CallHandler[String] = (() => mockIdGenerator.generateCorrelationId).expects()
   }
 

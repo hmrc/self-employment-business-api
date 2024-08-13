@@ -20,7 +20,7 @@ import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.{JsValue, Json}
 import shared.config.MockAppConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   val json: JsValue = Json.parse(
