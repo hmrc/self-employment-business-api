@@ -16,13 +16,15 @@
 
 package shared.connectors
 
+import com.google.common.base.Charsets
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import shared.config.{DownstreamConfig, MockAppConfig}
+import shared.config.{BasicAuthDownstreamConfig, DownstreamConfig, MockAppConfig}
 import shared.mocks.MockHttpClient
 import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.Base64
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
@@ -30,12 +32,12 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   lazy val baseUrl                   = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
-  val otherHeaders: Seq[(String, String)] = List(
+  val inputHeaders: Seq[(String, String)] = List(
     "Gov-Test-Scenario" -> "DEFAULT",
     "AnotherHeader"     -> "HeaderValue"
   )
 
-  implicit val hc: HeaderCarrier    = HeaderCarrier(otherHeaders = otherHeaders)
+  implicit val hc: HeaderCarrier    = HeaderCarrier(otherHeaders = inputHeaders)
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   val dummyHeaderCarrierConfig: HeaderCarrier.Config =
@@ -45,63 +47,14 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       Some("this-api")
     )
 
-  val requiredDesHeaders: Seq[(String, String)] = List(
-    "Authorization"     -> "Bearer des-token",
-    "Environment"       -> "des-environment",
-    "User-Agent"        -> "this-api",
-    "CorrelationId"     -> correlationId,
-    "Gov-Test-Scenario" -> "DEFAULT"
-  )
-
-  val allowedDesHeaders: Seq[String] = List(
-    "Accept",
-    "Gov-Test-Scenario",
-    "Content-Type",
-    "Location",
-    "X-Request-Timestamp",
-    "X-Session-Id"
-  )
-
-  val requiredIfsHeaders: Seq[(String, String)] = List(
-    "Authorization"     -> "Bearer ifs-token",
-    "Environment"       -> "ifs-environment",
-    "User-Agent"        -> "this-api",
-    "CorrelationId"     -> correlationId,
-    "Gov-Test-Scenario" -> "DEFAULT"
-  )
-
-  val allowedIfsHeaders: Seq[String] = List(
-    "Accept",
-    "Gov-Test-Scenario",
-    "Content-Type",
-    "Location",
-    "X-Request-Timestamp",
-    "X-Session-Id"
-  )
-
-  val requiredTysIfsHeaders: Seq[(String, String)] = List(
-    "Authorization"     -> "Bearer TYS-IFS-token",
-    "Environment"       -> "TYS-IFS-environment",
-    "User-Agent"        -> "this-api",
-    "CorrelationId"     -> correlationId,
-    "Gov-Test-Scenario" -> "DEFAULT"
-  )
-
-  val allowedTysIfsHeaders: Seq[String] = List(
-    "Accept",
-    "Gov-Test-Scenario",
-    "Content-Type",
-    "Location",
-    "X-Request-Timestamp",
-    "X-Session-Id"
-  )
-
   protected trait ConnectorTest extends MockHttpClient with MockAppConfig {
     protected val baseUrl: String = "http://test-BaseUrl"
 
-    implicit protected val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
-
     protected val requiredHeaders: Seq[(String, String)]
+
+    protected val allowedHeaders: Seq[String] = List("Gov-Test-Scenario")
+
+    protected def intent: Option[String] = None
 
     protected def willGet[T](url: String, parameters: Seq[(String, String)] = Nil): CallHandler[Future[T]] = {
       MockedHttpClient
@@ -148,45 +101,60 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   }
 
-  protected trait DesTest extends ConnectorTest {
+  protected trait StandardConnectorTest extends ConnectorTest {
+    protected def name: String
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders
+    private val token       = s"$name-token"
+    private val environment = s"$name-environment"
 
-    MockAppConfig.desBaseUrl returns this.baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    protected final lazy val requiredHeaders: Seq[(String, String)] = List(
+      "Authorization"        -> s"Bearer $token",
+      "Environment"          -> environment,
+      "User-Agent"           -> "this-api",
+      "CorrelationId"        -> correlationId,
+      "Gov-Test-Scenario"    -> "DEFAULT"
+    ) ++ intent.map("intent" -> _)
 
-    MockAppConfig.desDownstreamConfig
-      .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "des-environment", "des-token", Some(allowedDesHeaders))
-
+    protected final val config: DownstreamConfig = DownstreamConfig(this.baseUrl, environment, token, Some(allowedHeaders))
   }
 
-  protected trait IfsTest extends ConnectorTest {
+  protected trait DesTest extends StandardConnectorTest {
+    val name = "des"
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
-
-    MockAppConfig.ifsBaseUrl returns this.baseUrl
-    MockAppConfig.ifsToken returns "ifs-token"
-    MockAppConfig.ifsEnvironment returns "ifs-environment"
-    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
-
-    MockAppConfig.ifsDownstreamConfig
-      .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "ifs-environment", "ifs-token", Some(allowedIfsHeaders))
-
+    MockAppConfig.desDownstreamConfig.anyNumberOfTimes() returns config
   }
 
-  protected trait TysIfsTest extends ConnectorTest {
+  protected trait IfsTest extends StandardConnectorTest {
+    override val name = "ifs"
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
+    MockAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
+  }
 
-    MockAppConfig.tysIfsBaseUrl returns this.baseUrl
-    MockAppConfig.tysIfsToken returns "TYS-IFS-token"
-    MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
-    MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
+  protected trait TysIfsTest extends StandardConnectorTest {
+    override val name = "tys-ifs"
 
-    MockAppConfig.tysIfsDownstreamConfig
-      .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "TYS-IFS-environment", "TYS-IFS-token", Some(allowedTysIfsHeaders))
+    MockAppConfig.tysIfsDownstreamConfig.anyNumberOfTimes() returns config
+  }
+
+  protected trait HipTest extends ConnectorTest {
+    private val clientId     = "clientId"
+    private val clientSecret = "clientSecret"
+
+    private val token =
+      Base64.getEncoder.encodeToString(s"$clientId:$clientSecret".getBytes(Charsets.UTF_8))
+
+    private val environment = "hip-environment"
+
+    protected final lazy val requiredHeaders: Seq[(String, String)] = List(
+      "Authorization"        -> s"Basic $token",
+      "Environment"          -> environment,
+      "User-Agent"           -> "this-api",
+      "CorrelationId"        -> correlationId,
+      "Gov-Test-Scenario"    -> "DEFAULT"
+    ) ++ intent.map("intent" -> _)
+
+    MockAppConfig.hipDownstreamConfig
+      .anyNumberOfTimes() returns BasicAuthDownstreamConfig(this.baseUrl, environment, clientId, clientSecret, Some(allowedHeaders))
 
   }
 

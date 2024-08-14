@@ -16,11 +16,11 @@
 
 package v3.amendPeriodSummary
 
-import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import play.api.http.Status.OK
+import shared.config.AppConfig
+import shared.connectors.DownstreamUri.{DesToHipMigrationUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
-import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
 
@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit
-                                                                 hc: HeaderCarrier,
-                                                                 ec: ExecutionContext,
-                                                                 correlationId: String): Future[DownstreamOutcome[Unit]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 
@@ -41,8 +41,9 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
 
     request match {
       case def1: Def1_AmendPeriodSummaryRequestData =>
-        val desUri = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
-        put(def1.body, desUri)
+        val uri =
+          DesToHipMigrationUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}", switchName = "des_hip_migration_1402")
+        put(def1.body, uri)
 
       case def2: Def2_AmendPeriodSummaryRequestData =>
         import def2._

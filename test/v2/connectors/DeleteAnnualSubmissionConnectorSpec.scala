@@ -41,7 +41,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
     "deleteAnnualSubmission is called with a valid request and a non-TYS tax year" when {
       "`isPassDeleteIntentEnabled` feature switch is on" must {
         "send a request and return 204 no content" in new DesTest with Test {
-          override lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders :+ ("intent" -> "DELETE")
+          override lazy val intent: Option[String] = Some("DELETE")
 
           def taxYear: TaxYear = preTysTaxYear
 

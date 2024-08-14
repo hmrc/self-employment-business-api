@@ -16,11 +16,11 @@
 
 package v3.createPeriodSummary
 
-import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import play.api.http.Status.{CREATED, OK}
+import shared.config.{AppConfig, ConfigFeatureSwitches}
+import shared.connectors.DownstreamUri._
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
-import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestData}
 
@@ -28,20 +28,25 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
-                                                                   hc: HeaderCarrier,
-                                                                   ec: ExecutionContext,
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 
     request match {
       case def1: Def1_CreatePeriodSummaryRequestData =>
-        val desUri                            = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+        val uri = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1401")) {
+          HipUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+        } else {
+          DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+        }
+
         implicit val successCode: SuccessCode = SuccessCode(OK)
-        post(def1.body, desUri)
+        post(def1.body, uri)
 
       case def2: Def2_CreatePeriodSummaryRequestData =>
         val ifsUri = TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")

@@ -26,8 +26,8 @@ import shared.utils.UnitSpec
 
 trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServerPerSuite with BeforeAndAfterEach with BeforeAndAfterAll {
   lazy val client: WSClient = app.injector.instanceOf[WSClient]
-  val mockHost: String = WireMockHelper.host
-  val mockPort: String = WireMockHelper.wireMockPort.toString
+  val mockHost: String      = WireMockHelper.host
+  val mockPort: String      = WireMockHelper.wireMockPort.toString
 
   def servicesConfig: Map[String, String] = Map(
     "microservice.services.des.host"           -> mockHost,
@@ -36,6 +36,8 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
     "microservice.services.ifs.port"           -> mockPort,
     "microservice.services.tys-ifs.host"       -> mockHost,
     "microservice.services.tys-ifs.port"       -> mockPort,
+    "microservice.services.hip.host"           -> mockHost,
+    "microservice.services.hip.port"           -> mockPort,
     "microservice.services.mtd-id-lookup.host" -> mockHost,
     "microservice.services.mtd-id-lookup.port" -> mockPort,
     "microservice.services.auth.host"          -> mockHost,
