@@ -16,6 +16,7 @@
 
 package v3.createPeriodSummary
 
+import play.api.Configuration
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.outcomes.ResponseWrapper
@@ -29,25 +30,52 @@ import scala.concurrent.Future
 class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   "CreatePeriodSummaryConnectorSpec" when {
-    "createPeriodSummary" must {
-      "return a 200 status for a success scenario" in new DesTest with Test {
-        def request: CreatePeriodSummaryRequestData = Def1_CreatePeriodSummaryRequestData(
-          nino = Nino(nino),
-          businessId = BusinessId(businessId),
-          body = Def1_CreatePeriodSummaryRequestBody(Def1_Create_PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
-        )
+    "given a non-TYS request" when {
+      "DES is not migrated to HIP" must {
+        "return a success response" in new DesTest with Test {
+          MockAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1401.enabled" -> false)
 
-        val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
+          def request: CreatePeriodSummaryRequestData = Def1_CreatePeriodSummaryRequestData(
+            nino = Nino(nino),
+            businessId = BusinessId(businessId),
+            body = Def1_CreatePeriodSummaryRequestBody(Def1_Create_PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
+          )
 
-        val url =
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-        willPost(url, request.body).returns(Future.successful(outcome))
+          val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
-        await(connector.createPeriodSummary(request)) shouldBe outcome
+          val url =
+            s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+          willPost(url, request.body).returns(Future.successful(outcome))
 
+          await(connector.createPeriodSummary(request)) shouldBe outcome
+
+        }
       }
 
-      "return a 200 status for a success TYS scenario" in new TysIfsTest with Test {
+      "DES is migrated to HIP" must {
+        "return a success response" in new HipTest with Test {
+          MockAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1401.enabled" -> true)
+
+          def request: CreatePeriodSummaryRequestData = Def1_CreatePeriodSummaryRequestData(
+            nino = Nino(nino),
+            businessId = BusinessId(businessId),
+            body = Def1_CreatePeriodSummaryRequestBody(Def1_Create_PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
+          )
+
+          val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
+
+          val url =
+            s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+          willPost(url, request.body).returns(Future.successful(outcome))
+
+          await(connector.createPeriodSummary(request)) shouldBe outcome
+
+        }
+      }
+    }
+
+    "given a TYS request" must {
+      "return a success response" in new TysIfsTest with Test {
         def request: CreatePeriodSummaryRequestData = Def2_CreatePeriodSummaryRequestData(
           nino = Nino(nino),
           businessId = BusinessId(businessId),

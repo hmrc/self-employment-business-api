@@ -17,6 +17,7 @@
 package v3.amendPeriodSummary
 
 import api.models.domain.PeriodId
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -86,21 +87,34 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "amendPeriodSummary" when {
+    "given a non-TYS request" when {
+      "DES is not migrated to HIP" must {
+        "return a success response " in new DesTest with Test {
+          MockAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1402.enabled" -> false)
+          val expectedDownstreamUrl =
+            s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
-    "given a non-TYS request" should {
-      "call the non-TYS downstream URL and return 204" in new DesTest with Test {
-        val expectedDownstreamUrl =
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
+          willPut(expectedDownstreamUrl, nonTysRequest.body).returns(Future.successful(outcome))
 
-        willPut(expectedDownstreamUrl, nonTysRequest.body).returns(Future.successful(outcome))
+          await(connector.amendPeriodSummary(nonTysRequest)) shouldBe outcome
+        }
+      }
 
-        val result: DownstreamOutcome[Unit] = await(connector.amendPeriodSummary(nonTysRequest))
-        result shouldBe outcome
+      "DES is migrated to HIP" must {
+        "return a success response" in new HipTest with Test {
+          MockAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1402.enabled" -> true)
+          val expectedDownstreamUrl =
+            s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
+
+          willPut(expectedDownstreamUrl, nonTysRequest.body).returns(Future.successful(outcome))
+
+          await(connector.amendPeriodSummary(nonTysRequest)) shouldBe outcome
+        }
       }
     }
 
     "given a TYS request" should {
-      "call the TYS downstream URL and return 204" in new TysIfsTest with Test {
+      "return a success response" in new TysIfsTest with Test {
         val expectedDownstreamUrl =
           s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
