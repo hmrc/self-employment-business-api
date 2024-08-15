@@ -121,7 +121,6 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
       willPut(
         url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
         body = JsObject.empty,
-        excludedHeaders = excludedHeaders
       ).returns(Future.successful(outcome))
     }
 

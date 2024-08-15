@@ -16,7 +16,7 @@
 
 package api.hateoas
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.hateoas
 import shared.config.MockAppConfig
 import shared.hateoas.Method.{DELETE, GET, POST, PUT}
@@ -31,7 +31,7 @@ class HateoasLinksSpec extends UnitSpec with MockAppConfig with HateoasLinks {
   private val periodId    = "2019-01-01_2020-01-01"
 
   class Test {
-    MockAppConfig.apiGatewayContext.returns("individuals/business/self-employment")
+    MockedAppConfig.apiGatewayContext.returns("individuals/business/self-employment")
   }
 
   "retrieveAnnualSubmission" should {

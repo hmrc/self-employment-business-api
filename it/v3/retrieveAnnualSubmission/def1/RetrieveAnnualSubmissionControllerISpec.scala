@@ -23,9 +23,9 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
-import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import support.IntegrationBaseSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
 class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def1_RetrieveAnnualSubmissionFixture {

@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendAnnualSubmission(request: AmendAnnualSubmissionRequestData)(implicit
-                                                                       hc: HeaderCarrier,
-                                                                       ec: ExecutionContext,
-                                                                       correlationId: String): Future[DownstreamOutcome[Unit]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
     implicit val successCode: SuccessCode = SuccessCode(OK)

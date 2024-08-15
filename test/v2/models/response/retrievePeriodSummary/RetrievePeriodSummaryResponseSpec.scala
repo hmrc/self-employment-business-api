@@ -20,7 +20,8 @@ import play.api.libs.json.{JsValue, Json}
 import shared.config.MockAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   val downstreamFullJson: JsValue = Json.parse("""
@@ -219,7 +220,7 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
       "called" in {
         val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
@@ -234,7 +235,7 @@ class RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val data: RetrievePeriodSummaryHateoasData =
           RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2023-24")))
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrievePeriodSummaryResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(

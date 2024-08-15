@@ -42,8 +42,10 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  val endpointName = "amend-period-summary"
+
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendPeriodSummaryController", endpointName = "amendSelfEmploymentPeriodSummary")
+    EndpointLogContext(controllerName = "AmendPeriodSummaryController", endpointName = endpointName)
 
   def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>

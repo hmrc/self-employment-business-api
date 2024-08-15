@@ -55,8 +55,8 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
   }
 
   def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequestData)(implicit
-                                                                             ctx: RequestContext,
-                                                                             ec: ExecutionContext): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     connector.retrieveAnnualSubmission(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

@@ -20,7 +20,8 @@ import shared.config.MockAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, PUT}
 import shared.models.domain.{BusinessId, Nino}
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
@@ -29,7 +30,7 @@ class AmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
       val businessId = "XAIS12345678910"
       val taxYear    = "2019-20"
 
-      MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       AmendAnnualSubmissionResponse.AmendAnnualSubmissionLinksFactory.links(
         mockAppConfig,

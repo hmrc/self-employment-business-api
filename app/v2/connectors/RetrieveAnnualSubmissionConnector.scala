@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequestData)(implicit
-                                                                             hc: HeaderCarrier,
-                                                                             ec: ExecutionContext,
-                                                                             correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     import request._
 

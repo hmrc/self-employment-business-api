@@ -31,7 +31,8 @@ trait MockRetrievePeriodSummaryConnector extends MockFactory {
 
   object MockRetrievePeriodSummaryConnector {
 
-    def retrievePeriodSummary(requestData: RetrievePeriodSummaryRequestData): CallHandler[Future[DownstreamOutcome[RetrievePeriodSummaryResponse]]] = {
+    def retrievePeriodSummary(
+        requestData: RetrievePeriodSummaryRequestData): CallHandler[Future[DownstreamOutcome[RetrievePeriodSummaryResponse]]] = {
       (mockRetrievePeriodSummaryConnector
         .retrievePeriodSummary(_: RetrievePeriodSummaryRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

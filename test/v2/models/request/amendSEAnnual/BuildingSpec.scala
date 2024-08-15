@@ -17,7 +17,8 @@
 package v2.models.request.amendSEAnnual
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class BuildingSpec extends UnitSpec {
 
   val model: Building =

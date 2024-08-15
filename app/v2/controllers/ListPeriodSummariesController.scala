@@ -40,8 +40,10 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  val endpointName = "list-period-summaries"
+
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "ListPeriodSummariesController", endpointName = "handleRequest")
+    EndpointLogContext(controllerName = "ListPeriodSummariesController", endpointName = endpointName)
 
   def handleRequest(nino: String, businessId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

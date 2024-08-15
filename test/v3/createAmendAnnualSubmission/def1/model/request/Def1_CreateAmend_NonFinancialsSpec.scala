@@ -18,7 +18,8 @@ package v3.createAmendAnnualSubmission.def1.model.request
 
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class Def1_CreateAmend_NonFinancialsSpec extends UnitSpec {
 
   "reads" should {
@@ -42,7 +43,9 @@ class Def1_CreateAmend_NonFinancialsSpec extends UnitSpec {
       "there is an exemption reason" must {
         "set exemptFromPayingClass4Nics false" in {
           Json.toJson(
-            Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
+            Def1_CreateAmend_NonFinancials(
+              businessDetailsChangedRecently = true,
+              class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
             Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true,
@@ -55,7 +58,7 @@ class Def1_CreateAmend_NonFinancialsSpec extends UnitSpec {
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-            Json.toJson(Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+          Json.toJson(Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
             Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true,

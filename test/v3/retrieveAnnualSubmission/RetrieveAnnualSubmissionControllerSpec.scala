@@ -110,7 +110,13 @@ class RetrieveAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockAppConfig.featureSwitchConfig.returns(Configuration.empty).anyNumberOfTimes()
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    MockedAppConfig.featureSwitchConfig.returns(Configuration.empty).anyNumberOfTimes()
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }

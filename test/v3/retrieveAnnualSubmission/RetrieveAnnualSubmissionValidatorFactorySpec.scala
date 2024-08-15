@@ -18,7 +18,7 @@ package v3.retrieveAnnualSubmission
 
 import config.MockSeBusinessConfig
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.controllers.validators.Validator
 import shared.models.domain.{TaxYear, TaxYearPropertyCheckSupport}
 import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema.{Def1, Def2}

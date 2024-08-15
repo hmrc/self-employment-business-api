@@ -23,16 +23,21 @@ import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
-import v3.retrieveAnnualSubmission.def1.model.response.{Def1_RetrieveAnnualSubmissionResponse, Retrieve_Allowances, Retrieve_NonFinancials, Retrieve_Adjustments}
+import v3.retrieveAnnualSubmission.def1.model.response.{
+  Def1_RetrieveAnnualSubmissionResponse,
+  Retrieve_Allowances,
+  Retrieve_NonFinancials,
+  Retrieve_Adjustments
+}
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.concurrent.Future
 
 class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_RetrieveAnnualSubmissionFixture {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val taxYear: String                = "2019-20"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
+  val taxYear: String                         = "2019-20"
   override implicit val correlationId: String = "X-123"
 
   val response: RetrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(

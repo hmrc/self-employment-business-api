@@ -25,13 +25,13 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.domain.TaxYear
 import shared.models.errors._
-import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import support.IntegrationBaseSpec
 
 class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
-  override def servicesConfig: Map[String, String] = {
+  override def servicesConfig: Map[String, Any] = {
     super.servicesConfig ++ Map(
       "feature-switch.cl290.enabled" -> "false"
     )

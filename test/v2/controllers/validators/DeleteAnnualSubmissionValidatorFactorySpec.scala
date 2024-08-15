@@ -17,7 +17,7 @@
 package v2.controllers.validators
 
 import config.MockSeBusinessConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import v2.models.request.deleteAnnual.DeleteAnnualSubmissionRequestData
@@ -34,7 +34,7 @@ class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSeBus
   private val parsedBusinessId = BusinessId(validBusinessId)
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
-  private val validatorFactory = new DeleteAnnualSubmissionValidatorFactory
+  private val validatorFactory                                             = new DeleteAnnualSubmissionValidatorFactory
   private def validator(nino: String, businessId: String, taxYear: String) = validatorFactory.validator(nino, businessId, taxYear)
 
   "validator" should {

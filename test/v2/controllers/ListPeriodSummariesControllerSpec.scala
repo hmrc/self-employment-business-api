@@ -16,6 +16,7 @@
 
 package v2.controllers
 
+import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -173,7 +174,7 @@ class ListPeriodSummariesControllerSpec
     val hateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
       Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
 
-    private val controller = new ListPeriodSummariesController(
+    val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
@@ -182,6 +183,12 @@ class ListPeriodSummariesControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, None)(fakeGetRequest)
   }
@@ -197,7 +204,7 @@ class ListPeriodSummariesControllerSpec
     val tysHateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
       Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
 
-    private val controller = new ListPeriodSummariesController(
+    val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
@@ -206,6 +213,12 @@ class ListPeriodSummariesControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, Some(taxYear))(fakeGetRequest)
   }

@@ -20,7 +20,7 @@ import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino}
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v2.fixtures.RetrieveAnnualSubmissionFixture
 
 class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with RetrieveAnnualSubmissionFixture {
@@ -77,7 +77,7 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig w
           taxYear
         )
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(

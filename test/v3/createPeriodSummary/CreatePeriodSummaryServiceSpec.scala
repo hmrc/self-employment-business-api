@@ -32,8 +32,8 @@ import scala.concurrent.Future
 
 class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 
-  private val nino                           = Nino("AA123456A")
-  private val businessId                     = BusinessId("XAIS12345678910")
+  private val nino                            = Nino("AA123456A")
+  private val businessId                      = BusinessId("XAIS12345678910")
   override implicit val correlationId: String = "X-123"
 
   private val periodIncome = Def2_Create_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
@@ -109,7 +109,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
   }
 
   trait Test extends MockCreatePeriodSummaryConnector with MockAppConfig {
-    MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 

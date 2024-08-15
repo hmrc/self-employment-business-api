@@ -30,9 +30,9 @@ import scala.concurrent.Future
 
 class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with RetrieveAnnualSubmissionFixture {
 
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
-  val taxYear: String                = "2019-20"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
+  val taxYear: String                         = "2019-20"
   override implicit val correlationId: String = "X-123"
 
   val response: RetrieveAnnualSubmissionResponse = RetrieveAnnualSubmissionResponse(

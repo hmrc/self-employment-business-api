@@ -29,13 +29,16 @@ import java.time.LocalDate
 
 case class CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[CreatePeriodSummaryRequestData] {
 
-  private val minDate = LocalDate.of(1900, 4, 6)
+  private val minDate            = LocalDate.of(1900, 4, 6)
   private val maxDate: LocalDate = LocalDate.of(2025, 4, 5)
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
-  private val resolveDateRange = ResolveDateRange(startDateFormatError = RuleTaxYearNotSupportedError, endDateFormatError = RuleTaxYearNotSupportedError, endBeforeStartDateError = RuleEndBeforeStartDateError)
+  private val resolveDateRange = ResolveDateRange(
+    startDateFormatError = RuleTaxYearNotSupportedError,
+    endDateFormatError = RuleTaxYearNotSupportedError,
+    endBeforeStartDateError = RuleEndBeforeStartDateError)
 
   def validateBusinessRules(parsed: CreatePeriodSummaryRequestData): Validated[Seq[MtdError], CreatePeriodSummaryRequestData] = {
     import parsed.body._

@@ -36,8 +36,10 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
                                                   idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  val endpointName = "delete-annual-submission"
+
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "DeleteAnnualSubmissionController", endpointName = "deleteSelfEmploymentAnnualSubmission")
+    EndpointLogContext(controllerName = "DeleteAnnualSubmissionController", endpointName = endpointName)
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

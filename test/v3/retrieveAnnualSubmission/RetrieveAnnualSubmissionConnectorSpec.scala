@@ -27,10 +27,10 @@ import scala.concurrent.Future
 
 class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_RetrieveAnnualSubmissionFixture {
 
-  private val nino       = "AA123456A"
-  private val businessId = "XAIS12345678910"
-  private val nonTysRequest      = makeRequest("2019-20")
-  private val tysRequest         = makeRequest("2023-24")
+  private val nino          = "AA123456A"
+  private val businessId    = "XAIS12345678910"
+  private val nonTysRequest = makeRequest("2019-20")
+  private val tysRequest    = makeRequest("2023-24")
 
   private val response = Def1_RetrieveAnnualSubmissionResponse(
     adjustments = Some(adjustments),

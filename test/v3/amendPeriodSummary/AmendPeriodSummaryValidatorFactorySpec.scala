@@ -19,7 +19,7 @@ package v3.amendPeriodSummary
 import shared.controllers.validators.Validator
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v3.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
 import v3.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
 import v3.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData

@@ -19,7 +19,8 @@ package v3.amendPeriodSummary.model.response
 import shared.config.MockAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
@@ -32,7 +33,7 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
         val data: AmendPeriodSummaryHateoasData = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe List(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
@@ -51,7 +52,7 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
         val data = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(taxYear))
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe List(
           Link(

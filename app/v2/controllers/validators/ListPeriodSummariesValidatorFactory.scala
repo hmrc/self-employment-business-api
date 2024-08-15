@@ -19,8 +19,9 @@ package v2.controllers.validators
 import cats.data.Validated
 import cats.implicits._
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYearWithMax}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
 import shared.models.errors.MtdError
+import v2.controllers.validators.resolvers.ResolveTysTaxYearWithMax
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactory {

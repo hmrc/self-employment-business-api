@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit
-                                                                 hc: HeaderCarrier,
-                                                                 ec: ExecutionContext,
-                                                                 correlationId: String): Future[DownstreamOutcome[Unit]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 

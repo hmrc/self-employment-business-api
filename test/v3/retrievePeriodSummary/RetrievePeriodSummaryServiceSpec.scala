@@ -79,7 +79,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def1Response))))
 
-        MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
+        MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def1Response))
@@ -93,7 +93,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))))
 
-        MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
+        MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))
@@ -106,7 +106,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))))
 
-        MockAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true))
+        MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))

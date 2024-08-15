@@ -18,7 +18,7 @@ package v2.controllers.validators
 
 import api.models.errors.RuleBothExpensesSuppliedError
 import play.api.libs.json._
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
@@ -28,19 +28,17 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
 
-  private val validPeriodDates = Json.parse(
-    """
+  private val validPeriodDates = Json.parse("""
       |{
       |  "periodStartDate": "2019-08-24",
       |  "periodEndDate": "2020-08-24"
       |}
       |""".stripMargin)
 
-  private val validPeriodIncome = Json.parse(
-    """
+  private val validPeriodIncome = Json.parse("""
       |{
       |   "turnover": 1000.99,
       |   "other": 1001.99
@@ -50,8 +48,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
   private def validPeriodExpenses(withNegatives: Boolean = false) = {
     val maybeNegative = if (withNegatives) "-" else ""
 
-    Json.parse(
-      s"""
+    Json.parse(s"""
          |{
          |   "costOfGoods": ${maybeNegative}1002.99,
          |   "paymentsToSubcontractors": ${maybeNegative}1003.99,
@@ -75,8 +72,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
   private def validPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
     val maybeNegative = if (withNegatives) "-" else ""
 
-    Json.parse(
-      s"""
+    Json.parse(s"""
          |{
          |   "costOfGoodsDisallowable": ${maybeNegative}1017.99,
          |   "paymentsToSubcontractorsDisallowable": ${maybeNegative}1018.99,
@@ -102,9 +98,9 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
                         periodExpenses: JsValue = validPeriodExpenses(),
                         periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses()) =
     Json.obj(
-      "periodDates" -> periodDates,
-      "periodIncome" -> periodIncome,
-      "periodExpenses" -> periodExpenses,
+      "periodDates"                -> periodDates,
+      "periodIncome"               -> periodIncome,
+      "periodExpenses"             -> periodExpenses,
       "periodDisallowableExpenses" -> periodDisallowableExpenses
     )
 
@@ -116,10 +112,10 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with JsonErrorVal
     .replaceWithEmptyObject("/periodExpenses")
     .update("/periodExpenses", JsObject(List(("consolidatedExpenses", JsString("999999999.99")))))
 
-  private val parsedNino = Nino(validNino)
+  private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
 
-  private val parsedPeriodDates = PeriodDates("2019-08-24", "2020-08-24")
+  private val parsedPeriodDates  = PeriodDates("2019-08-24", "2020-08-24")
   private val parsedPeriodIncome = PeriodIncome(Some(1000.99), Some(1001.99))
 
   private def numericValue(isNegative: Boolean)(number: BigDecimal): BigDecimal =
