@@ -41,10 +41,10 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
                                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
-  val endpointName = "create-amend-annual-submission"
-
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendAnnualSubmissionController", endpointName = endpointName)
+    EndpointLogContext(controllerName = "AmendAnnualSubmissionController", endpointName = "amendSelfEmploymentAnnualSubmission")
+
+  val endpointName = "create-amend-annual-submission"
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>

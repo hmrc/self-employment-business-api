@@ -53,7 +53,9 @@ object ResolvePeriodId {
 object ResolveTysTaxYearWithMax extends ResolverSupport {
 
   val resolver: Resolver[String, TaxYear] =
-    ResolveTaxYear.resolver thenValidate satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate satisfiesMax(TaxYear.ending(2025), RuleTaxYearNotSupportedError)
+    ResolveTaxYear.resolver thenValidate satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate satisfiesMax(
+      TaxYear.ending(2025),
+      RuleTaxYearNotSupportedError)
 
   def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
 
@@ -62,4 +64,5 @@ object ResolveTysTaxYearWithMax extends ResolverSupport {
       case Some(value) => resolver(value).map(Some(_))
       case None        => Valid(None)
     }
+
 }

@@ -16,7 +16,12 @@
 
 package v2.endpoints
 
-import api.models.errors.{Class4ExemptionReasonFormatError, RuleAllowanceNotSupportedError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
+import api.models.errors.{
+  Class4ExemptionReasonFormatError,
+  RuleAllowanceNotSupportedError,
+  RuleBothAllowancesSuppliedError,
+  RuleBuildingNameNumberError
+}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._

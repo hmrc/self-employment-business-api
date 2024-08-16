@@ -39,10 +39,10 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
-  val endpointName = "retrieve-period-summary"
-
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "RetrievePeriodSummaryController", endpointName = endpointName)
+    EndpointLogContext(controllerName = "RetrievePeriodSummaryController", endpointName = "retrieveSelfEmploymentPeriodicSummary")
+
+  val endpointName = "retrieve-period-summary"
 
   def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

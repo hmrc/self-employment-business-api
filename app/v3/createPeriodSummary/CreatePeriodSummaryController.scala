@@ -42,10 +42,10 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
-  val endpointName = "create-period-summary"
-
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "CreatePeriodSummaryController", endpointName = endpointName)
+    EndpointLogContext(controllerName = "CreatePeriodSummaryController", endpointName = "createSelfEmploymentPeriodSummary")
+
+  val endpointName = "create-period-summary"
 
   private val featureSwitches = SeBusinessFeatureSwitches()
 

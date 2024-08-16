@@ -120,7 +120,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
                                          excludedHeaders: Seq[(String, String)] = Nil): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
       willPut(
         url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
-        body = JsObject.empty,
+        body = JsObject.empty
       ).returns(Future.successful(outcome))
     }
 

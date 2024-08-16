@@ -22,7 +22,7 @@ import shared.auth.AuthMainAgentsOnlyISpec
 import shared.services.DownstreamStub
 import v3.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionFixture
 
-class SelfEmploymentBusinessAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec  with Def1_CreateAmendAnnualSubmissionFixture{
+class SelfEmploymentBusinessAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec with Def1_CreateAmendAnnualSubmissionFixture {
 
   override val callingApiVersion = "3.0"
 

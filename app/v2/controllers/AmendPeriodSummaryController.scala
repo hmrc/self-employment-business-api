@@ -44,10 +44,10 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
-  val endpointName = "amend-period-summary"
-
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendPeriodSummaryController", endpointName = endpointName)
+    EndpointLogContext(controllerName = "AmendPeriodSummaryController", endpointName = "amendSelfEmploymentPeriodSummary")
+
+  val endpointName = "amend-period-summary"
 
   private val featureSwitches = SeBusinessFeatureSwitches()
 

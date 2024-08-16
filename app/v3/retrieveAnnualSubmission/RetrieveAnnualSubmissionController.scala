@@ -39,10 +39,10 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
                                                     idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
-  val endpointName = "retrieve-annual-submission"
-
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = endpointName)
+    EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = "retrieveSelfEmploymentAnnualSubmission")
+
+  val endpointName = "retrieve-annual-submission"
 
   implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches()
 
