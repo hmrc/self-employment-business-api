@@ -17,7 +17,7 @@
 package shared.models.audit
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class AuditErrorSpec extends UnitSpec {
 

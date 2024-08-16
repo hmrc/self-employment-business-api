@@ -19,7 +19,7 @@ package v2.controllers.validators.resolvers
 import api.models.domain.PeriodId
 import api.models.errors.PeriodIdFormatError
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class ResolvePeriodIdSpec extends UnitSpec {
 

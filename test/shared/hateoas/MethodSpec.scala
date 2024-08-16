@@ -16,8 +16,8 @@
 
 package shared.hateoas
 
-import shared.UnitSpec
 import shared.hateoas.Method.{DELETE, GET, POST, PUT}
+import shared.utils.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
 
 class MethodSpec extends UnitSpec with EnumJsonSpecSupport {

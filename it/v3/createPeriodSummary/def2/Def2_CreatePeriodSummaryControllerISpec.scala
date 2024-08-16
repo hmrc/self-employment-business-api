@@ -24,9 +24,9 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
-import shared.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
+import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import support.IntegrationBaseSpec
 
 class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
@@ -369,9 +369,9 @@ class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String       = "AA123456A"
-    val businessId: String = "XAIS12345678910"
-    private val periodId: String   = s"${periodStartDate}_$periodEndDate"
+    val nino: String             = "AA123456A"
+    val businessId: String       = "XAIS12345678910"
+    private val periodId: String = s"${periodStartDate}_$periodEndDate"
 
     private def mtdTaxYear: String = "2023-24"
 
@@ -385,7 +385,8 @@ class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     private def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
-    private def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    private def retrievePeriodSummaryHateoasUri: String =
+      s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
 
     private def listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 

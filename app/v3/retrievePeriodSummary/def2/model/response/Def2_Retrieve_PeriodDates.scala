@@ -23,4 +23,3 @@ case class Def2_Retrieve_PeriodDates(periodStartDate: String, periodEndDate: Str
 object Def2_Retrieve_PeriodDates {
   implicit val writes: OWrites[Def2_Retrieve_PeriodDates] = Json.writes
 }
-

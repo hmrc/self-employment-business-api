@@ -17,7 +17,7 @@
 package v3.deleteAnnualSubmission
 
 import config.MockSeBusinessConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.config.MockAppConfig
 import shared.controllers.validators.Validator
 import v3.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator

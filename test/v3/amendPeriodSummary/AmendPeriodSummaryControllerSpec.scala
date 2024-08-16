@@ -110,8 +110,8 @@ class AmendPeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
-    MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+    MockedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId = "XAIS12345678910"
 
@@ -132,6 +132,12 @@ class AmendPeriodSummaryControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -166,19 +172,19 @@ class AmendPeriodSummaryControllerSpec
          |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "PUT",
          |      "rel": "amend-self-employment-period-summary"
-         |     
+         |
          |    },
          |    {
          |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
          |      "method": "GET",
          |      "rel": "self"
-         |      
+         |
          |    },
          |    {
          |      "href": "/individuals/business/self-employment/$validNino/$businessId/period",
          |      "method": "GET",
          |      "rel": "list-self-employment-period-summaries"
-         |      
+         |
          |    }
          |    ]
          |  }
@@ -192,7 +198,7 @@ class AmendPeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, None)(fakeRequestWithBody(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, None)(fakePostRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -256,7 +262,7 @@ class AmendPeriodSummaryControllerSpec
     )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeRequestWithBody(requestBodyJson))
+      controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakePostRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super

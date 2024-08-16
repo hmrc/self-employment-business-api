@@ -18,9 +18,9 @@ package shared.connectors
 
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import shared.UnitSpec
 import shared.config.{DownstreamConfig, MockAppConfig}
 import shared.mocks.MockHttpClient
+import shared.utils.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -125,16 +125,14 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-    protected def willPut[BODY, T](url: String,
-                                   body: BODY,
-                                   excludedHeaders: Seq[(String, String)] = List("AnotherHeader" -> "HeaderValue")): CallHandler[Future[T]] = {
+    protected def willPut[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
       MockedHttpClient
         .put(
           url = url,
           config = dummyHeaderCarrierConfig,
           body = body,
           requiredHeaders = requiredHeaders ++ List("Content-Type" -> "application/json"),
-          excludedHeaders = excludedHeaders
+          excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
     }
 
@@ -154,12 +152,12 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders
 
-    MockAppConfig.desBaseUrl returns this.baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockedAppConfig.desBaseUrl returns this.baseUrl
+    MockedAppConfig.desToken returns "des-token"
+    MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
 
-    MockAppConfig.desDownstreamConfig
+    MockedAppConfig.desDownstreamConfig
       .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "des-environment", "des-token", Some(allowedDesHeaders))
 
   }
@@ -168,12 +166,12 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
 
-    MockAppConfig.ifsBaseUrl returns this.baseUrl
-    MockAppConfig.ifsToken returns "ifs-token"
-    MockAppConfig.ifsEnvironment returns "ifs-environment"
-    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
+    MockedAppConfig.ifsBaseUrl returns this.baseUrl
+    MockedAppConfig.ifsToken returns "ifs-token"
+    MockedAppConfig.ifsEnvironment returns "ifs-environment"
+    MockedAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
 
-    MockAppConfig.ifsDownstreamConfig
+    MockedAppConfig.ifsDownstreamConfig
       .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "ifs-environment", "ifs-token", Some(allowedIfsHeaders))
 
   }
@@ -182,12 +180,12 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
 
-    MockAppConfig.tysIfsBaseUrl returns this.baseUrl
-    MockAppConfig.tysIfsToken returns "TYS-IFS-token"
-    MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
-    MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
+    MockedAppConfig.tysIfsBaseUrl returns this.baseUrl
+    MockedAppConfig.tysIfsToken returns "TYS-IFS-token"
+    MockedAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
+    MockedAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
 
-    MockAppConfig.tysIfsDownstreamConfig
+    MockedAppConfig.tysIfsDownstreamConfig
       .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "TYS-IFS-environment", "TYS-IFS-token", Some(allowedTysIfsHeaders))
 
   }

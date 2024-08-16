@@ -19,7 +19,7 @@ package v3.retrieveAnnualSubmission.def2.model.response
 import config.SeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class Retrieve_AdjustmentsSpec extends UnitSpec {
 

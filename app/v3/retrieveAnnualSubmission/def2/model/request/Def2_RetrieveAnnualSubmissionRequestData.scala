@@ -21,6 +21,6 @@ import v3.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 case class Def2_RetrieveAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear)
-  extends RetrieveAnnualSubmissionRequestData {
+    extends RetrieveAnnualSubmissionRequestData {
   override val schema: RetrieveAnnualSubmissionSchema = RetrieveAnnualSubmissionSchema.Def2
 }

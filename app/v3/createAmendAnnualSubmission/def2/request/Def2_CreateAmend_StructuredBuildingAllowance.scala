@@ -18,7 +18,9 @@ package v3.createAmendAnnualSubmission.def2.request
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Def2_CreateAmend_StructuredBuildingAllowance(amount: BigDecimal, firstYear: Option[Def2_CreateAmend_FirstYear], building: Def2_CreateAmend_Building)
+case class Def2_CreateAmend_StructuredBuildingAllowance(amount: BigDecimal,
+                                                        firstYear: Option[Def2_CreateAmend_FirstYear],
+                                                        building: Def2_CreateAmend_Building)
 
 object Def2_CreateAmend_StructuredBuildingAllowance {
   implicit val format: OFormat[Def2_CreateAmend_StructuredBuildingAllowance] = Json.format[Def2_CreateAmend_StructuredBuildingAllowance]

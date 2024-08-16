@@ -19,9 +19,9 @@ package v3.retrieveAnnualSubmission.def2.model.response
 import play.api.libs.json.{Json, OFormat}
 
 case class Retrieve_StructuredBuildingAllowance(
-                                                 amount: BigDecimal,
-                                                 firstYear: Option[Retrieve_FirstYear],
-                                                 building: Retrieve_Building
+    amount: BigDecimal,
+    firstYear: Option[Retrieve_FirstYear],
+    building: Retrieve_Building
 )
 
 object Retrieve_StructuredBuildingAllowance {

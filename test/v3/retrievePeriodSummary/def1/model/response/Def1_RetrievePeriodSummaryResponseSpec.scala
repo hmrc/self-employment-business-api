@@ -19,7 +19,7 @@ package v3.retrievePeriodSummary.def1.model.response
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino}
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.config.MockAppConfig
 import v3.retrievePeriodSummary.def1.model.Def1_RetrievePeriodSummaryFixture
 import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData}
@@ -46,7 +46,7 @@ class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig
       "called" in {
         val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         Def1_RetrievePeriodSummaryResponse.Def1_RetrievePeriodSubmissionLinksFactory.links(mockAppConfig, data) shouldBe List(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),

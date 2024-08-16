@@ -23,7 +23,11 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.config.AppConfig
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
+import v3.createAmendAnnualSubmission.model.request.{
+  CreateAmendAnnualSubmissionRequestData,
+  Def1_CreateAmendAnnualSubmissionRequestData,
+  Def2_CreateAmendAnnualSubmissionRequestData
+}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

@@ -21,7 +21,8 @@ import shared.hateoas.Method._
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
   private val model = ListPeriodSummariesResponse(
@@ -100,7 +101,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
     "TYS feature switch is disabled" should {
       "return the correct top-level links" in {
-        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
@@ -109,7 +110,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       }
 
       "return the correct item-level links" in {
-        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(
           periodId,
@@ -126,7 +127,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 
     "TYS feature switch is enabled and tax year is TYS" should {
       "return the correct top-level links" in {
-        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
         ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasDataTys) shouldBe Seq(
           Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
@@ -135,7 +136,7 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
       }
 
       "return the correct item-level links" in {
-        MockAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
 
         val periodDetails = PeriodDetails(
           periodId,

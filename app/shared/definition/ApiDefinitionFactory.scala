@@ -56,6 +56,7 @@ trait ApiDefinitionFactory extends Logging {
 
   protected def buildAPIStatus(version: Version): APIStatus = {
     checkDeprecationConfigFor(version)
+
     APIStatus.parser
       .lift(appConfig.apiStatus(version))
       .getOrElse {
@@ -64,9 +65,10 @@ trait ApiDefinitionFactory extends Logging {
       }
   }
 
-  private def checkDeprecationConfigFor(version: Version): Unit = appConfig.deprecationFor(version) match {
-    case Invalid(error) => throw new Exception(error)
-    case _              => ()
-  }
+  private def checkDeprecationConfigFor(version: Version): Unit =
+    appConfig.deprecationFor(version) match {
+      case Invalid(error) => throw new Exception(error)
+      case _              => ()
+    }
 
 }

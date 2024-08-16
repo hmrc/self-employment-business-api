@@ -16,6 +16,7 @@
 
 package v2.controllers
 
+import play.api.Configuration
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
@@ -75,7 +76,7 @@ class DeleteAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    private val controller = new DeleteAnnualSubmissionController(
+    val controller = new DeleteAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockDeleteAnnualSubmissionValidatorFactory,
@@ -83,6 +84,12 @@ class DeleteAnnualSubmissionControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeRequest)
   }

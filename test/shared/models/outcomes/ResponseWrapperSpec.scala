@@ -17,7 +17,7 @@
 package shared.models.outcomes
 
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class ResponseWrapperSpec extends UnitSpec {
 

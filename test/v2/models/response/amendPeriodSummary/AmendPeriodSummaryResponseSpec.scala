@@ -19,7 +19,8 @@ package v2.models.response.amendPeriodSummary
 import shared.config.MockAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
   "LinksFactory" should {
@@ -30,7 +31,7 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val periodId                            = "periodId"
         val data: AmendPeriodSummaryHateoasData = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
@@ -48,7 +49,7 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val taxYear                             = TaxYear.fromMtd("2023-24")
         val data: AmendPeriodSummaryHateoasData = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(taxYear))
 
-        MockAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
         AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe Seq(
           Link(

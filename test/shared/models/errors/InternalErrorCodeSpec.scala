@@ -17,7 +17,7 @@
 package shared.models.errors
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class InternalErrorCodeSpec extends UnitSpec {
 
@@ -35,4 +35,5 @@ class InternalErrorCodeSpec extends UnitSpec {
       json.as[DownstreamErrorCode] shouldBe DownstreamErrorCode("CODE")
     }
   }
+
 }

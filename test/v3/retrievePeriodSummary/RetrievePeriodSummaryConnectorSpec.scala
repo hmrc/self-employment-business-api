@@ -22,7 +22,11 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v3.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
-import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import v3.retrievePeriodSummary.model.request.{
+  Def1_RetrievePeriodSummaryRequestData,
+  Def2_RetrievePeriodSummaryRequestData,
+  RetrievePeriodSummaryRequestData
+}
 import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future

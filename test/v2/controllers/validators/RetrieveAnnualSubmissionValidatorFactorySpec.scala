@@ -19,10 +19,10 @@ package v2.controllers.validators
 import config.MockSeBusinessConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v2.models.request.retrieveAnnual.RetrieveAnnualSubmissionRequestData
 
-class RetrieveAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSeBusinessConfig{
+class RetrieveAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSeBusinessConfig {
 
   private implicit val correlationId: String = "1234"
 

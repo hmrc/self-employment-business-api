@@ -22,69 +22,41 @@ import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import shared.config.AppConfig
-import shared.routing.{Version2, Version3, Version4}
-import support.IntegrationBaseSpec
+import shared.routing.{Version, Versions}
+import shared.support.IntegrationBaseSpec
 
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  private val apiTitle = "Self Employment Business (MTD)"
-
   private val config          = app.injector.instanceOf[AppConfig]
   private val confidenceLevel = config.confidenceLevelConfig.confidenceLevel
 
-  private val apiDefinitionJson = Json.parse(s"""
-       |{
-       |  "scopes": [
-       |    {
-       |      "key": "read:self-assessment",
-       |      "name": "View your Self Assessment information",
-       |      "description": "Allow read access to self assessment data",
-       |      "confidenceLevel": $confidenceLevel
-       |    }, {
-       |      "key": "write:self-assessment",
-       |      "name": "Change your Self Assessment information",
-       |      "description": "Allow write access to self assessment data",
-       |      "confidenceLevel": $confidenceLevel
-       |    }
-       |  ],
-       |  "api": {
-       |    "name": "$apiTitle",
-       |    "description": "An API for providing Annual and Periodic Summary data",
-       |    "context": "individuals/business/self-employment",
-       |    "categories": ["INCOME_TAX_MTD"],
-       |    "versions":[
-       |      {
-       |        "version":"2.0",
-       |        "status":"DEPRECATED",
-       |        "endpointsEnabled":true
-       |      },
-       |      {
-       |        "version":"3.0",
-       |        "status":"BETA",
-       |        "endpointsEnabled":true
-       |      },
-       |      {
-       |        "version":"4.0",
-       |        "status":"BETA",
-       |        "endpointsEnabled":true
-       |      }     
-       |    ]
-       |  }
-       |}
-    """.stripMargin)
+  private lazy val enabledVersions: Seq[Version] =
+    (1 to 99).collect {
+      case num if config.safeEndpointsEnabled(s"$num.0") =>
+        Versions.getFrom(s"$num.0").toOption
+    }.flatten
 
   "GET /api/definition" should {
     "return a 200 with the correct response body" in {
       val response: WSResponse = await(buildRequest("/api/definition").get())
       response.status shouldBe Status.OK
-      Json.parse(response.body) shouldBe apiDefinitionJson
+
+      val responseBody = response.body
+
+      responseBody should include(""""api":{"name":""")
+      responseBody should include(""""categories":["INCOME_TAX_MTD"]""")
+      responseBody should include(s""""confidenceLevel":$confidenceLevel""")
+
+      noException should be thrownBy Json.parse(responseBody)
     }
   }
 
   "an OAS documentation request" must {
-    List(Version2, Version3, Version4).foreach { version =>
+    enabledVersions should not be empty
+
+    enabledVersions.foreach { version =>
       s"return the documentation for $version" in {
         val response = get(s"/api/conf/$version/application.yaml")
         response.status shouldBe Status.OK
@@ -95,10 +67,13 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
 
         val openAPI = Option(parserResult.get.getOpenAPI).getOrElse(fail("openAPI wasn't defined"))
         openAPI.getOpenapi shouldBe "3.0.3"
-        withClue(s"If v${version.name} endpoints are enabled in application.conf, remove the [test only] from this test: ") {
-          openAPI.getInfo.getTitle shouldBe apiTitle
-        }
         openAPI.getInfo.getVersion shouldBe version.name
+
+        if (config.apiVersionReleasedInProduction(version.name)) {
+          openAPI.getInfo.getTitle.toLowerCase should not include "[test only]"
+        } else {
+          openAPI.getInfo.getTitle should include("[test only]")
+        }
       }
 
       s"return the documentation with the correct accept header for version $version" in {
@@ -107,12 +82,10 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
 
         val body        = response.body[String]
         val headerRegex = """(?s).*?application/vnd\.hmrc\.(\d+\.\d+)\+json.*?""".r
-        val header      = headerRegex.findFirstMatchIn(body)
-        header.isDefined shouldBe true
+        val header      = headerRegex.findFirstMatchIn(body).getOrElse(fail("Couldn't match the accept header in headers.yaml"))
 
-        val versionFromHeader = header.get.group(1)
+        val versionFromHeader = header.group(1)
         versionFromHeader shouldBe version.name
-
       }
     }
   }

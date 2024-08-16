@@ -1,4 +1,4 @@
-#V2 endpoints
+
 PUT        /:nino/:businessId/annual/:taxYear       v2.controllers.AmendAnnualSubmissionController.handleRequest(nino: String, businessId: String, taxYear: String)
 GET        /:nino/:businessId/annual/:taxYear       v2.controllers.RetrieveAnnualSubmissionController.handleRequest(nino: String, businessId: String, taxYear: String)
 DELETE     /:nino/:businessId/annual/:taxYear       v2.controllers.DeleteAnnualSubmissionController.handleRequest(nino: String, businessId: String, taxYear: String)

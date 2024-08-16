@@ -17,7 +17,7 @@
 package v3.createPeriodSummary.def2.model.request
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v3.createPeriodSummary.model.request.Def2_CreatePeriodSummaryRequestBody
 
 class Def2_CreatePeriodSummaryBodySpec extends UnitSpec with Def2_CreatePeriodSummaryFixture {

@@ -16,13 +16,13 @@
 
 package shared.controllers
 
+import cats.syntax.either._
+import play.api.libs.json.{JsValue, Writes}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails
 import shared.models.errors.ErrorWrapper
-import shared.services.AuditService
-import cats.syntax.either._
-import play.api.libs.json.{JsValue, Writes}
 import shared.routing.Version
+import shared.services.AuditService
 
 import scala.Function.const
 import scala.concurrent.ExecutionContext
@@ -58,7 +58,8 @@ object AuditHandler {
                         transactionName: String,
                         auditDetailCreator: AuditDetailCreator[A],
                         requestBody: Option[JsValue] = None,
-                        responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandler =
+                        responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandler = {
+    // $COVERAGE-OFF$
     new AuditHandlerImpl[A](
       auditService = auditService,
       auditType = auditType,
@@ -67,6 +68,8 @@ object AuditHandler {
       requestBody = requestBody,
       responseBodyMap = responseBodyMap
     )
+    // $COVERAGE-ON$
+  }
 
   trait AuditDetailCreator[A] {
     def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit ctx: RequestContext): A

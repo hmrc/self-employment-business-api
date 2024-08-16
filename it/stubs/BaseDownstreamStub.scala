@@ -18,7 +18,7 @@ package stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.JsValue
-import support.WireMockMethods
+import shared.support.WireMockMethods
 
 object BaseDownstreamStub extends WireMockMethods {
 

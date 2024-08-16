@@ -45,6 +45,8 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreatePeriodSummaryController", endpointName = "createSelfEmploymentPeriodSummary")
 
+  val endpointName = "create-period-summary"
+
   private val featureSwitches = SeBusinessFeatureSwitches()
 
   def handleRequest(nino: String, businessId: String): Action[JsValue] =

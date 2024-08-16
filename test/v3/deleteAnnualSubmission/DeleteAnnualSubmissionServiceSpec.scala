@@ -27,9 +27,9 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
 
-  val taxYear: String                = "2017-18"
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
+  val taxYear: String                         = "2017-18"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
   override implicit val correlationId: String = "X-123"
 
   private val requestData = Def1_DeleteAnnualSubmissionRequestData(
@@ -50,7 +50,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-          MockedDeleteAnnualSubmissionConnector
+        MockedDeleteAnnualSubmissionConnector
           .deleteAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
@@ -64,7 +64,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
       def serviceError(desErrorCode: String, error: MtdError): Unit =
         s"a $desErrorCode error is returned from the service" in new Test {
 
-            MockedDeleteAnnualSubmissionConnector
+          MockedDeleteAnnualSubmissionConnector
             .deleteAnnualSubmission(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 

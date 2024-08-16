@@ -42,6 +42,8 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = "retrieveSelfEmploymentAnnualSubmission")
 
+  val endpointName = "retrieve-annual-submission"
+
   implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches()
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =

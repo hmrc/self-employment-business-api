@@ -28,9 +28,9 @@ import scala.concurrent.Future
 
 class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
 
-  val taxYear: String                = "2017-18"
-  val nino: String                   = "AA123456A"
-  val businessId: String             = "XAIS12345678910"
+  val taxYear: String                         = "2017-18"
+  val nino: String                            = "AA123456A"
+  val businessId: String                      = "XAIS12345678910"
   override implicit val correlationId: String = "X-123"
 
   private val requestData = DeleteAnnualSubmissionRequestData(

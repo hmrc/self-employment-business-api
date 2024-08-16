@@ -16,8 +16,8 @@
 
 package shared.definition
 
-import shared.UnitSpec
 import shared.routing.Version3
+import shared.utils.UnitSpec
 
 class ApiDefinitionSpec extends UnitSpec {
 

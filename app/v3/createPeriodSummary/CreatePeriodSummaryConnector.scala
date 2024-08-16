@@ -28,11 +28,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
-                                                                   hc: HeaderCarrier,
-                                                                   ec: ExecutionContext,
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._

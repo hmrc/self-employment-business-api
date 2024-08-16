@@ -16,6 +16,7 @@
 
 package v2.controllers
 
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -133,9 +134,9 @@ class AmendAnnualSubmissionControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    private val controller = new AmendAnnualSubmissionController(
+    val controller = new AmendAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
@@ -145,6 +146,12 @@ class AmendAnnualSubmissionControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -162,7 +169,7 @@ class AmendAnnualSubmissionControllerSpec
       )
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, taxYear)(fakeRequestWithBody(requestJson))
+      controller.handleRequest(validNino, businessId, taxYear)(fakePostRequest(requestJson))
 
   }
 

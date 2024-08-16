@@ -46,10 +46,9 @@ class CreatePeriodSummaryControllerSpec
     with MockHateoasFactory
     with MockAuditService {
 
-  private val businessId = "XAIS12345678910"
-  private val periodId   = "2017-01-25_2017-01-25"
+  private val businessId           = "XAIS12345678910"
+  private val periodId             = "2017-01-25_2017-01-25"
   override val apiVersion: Version = Version2
-
 
   private val testHateoasLinks: Seq[Link] = List(
     Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
@@ -195,7 +194,8 @@ class CreatePeriodSummaryControllerSpec
         MockHateoasFactory
           .wrap(
             CreatePeriodSummaryResponse(periodId),
-            CreatePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20"))))
+            CreatePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20")))
+          )
           .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
         runOkTestWithAudit(
@@ -227,8 +227,8 @@ class CreatePeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
-    MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+    MockedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -240,6 +240,12 @@ class CreatePeriodSummaryControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -256,7 +262,7 @@ class CreatePeriodSummaryControllerSpec
         )
       )
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakeRequestWithBody(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakePostRequest(requestJson))
   }
 
 }

@@ -16,11 +16,11 @@
 
 package shared.connectors.httpparsers
 
+import play.api.http.Status._
+import play.api.libs.json.Reads
 import shared.connectors.DownstreamOutcome
 import shared.models.errors.{InternalError, OutboundError}
 import shared.models.outcomes.ResponseWrapper
-import play.api.http.Status._
-import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object StandardDownstreamHttpParser extends HttpParser {
@@ -61,8 +61,12 @@ object StandardDownstreamHttpParser extends HttpParser {
           "[StandardDownstreamHttpParser][read] - " +
             s"Success response received from downstream with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
-      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY | GONE => Left(ResponseWrapper(correlationId, parseErrors(response)))
-      case _ => Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
+
+      case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY | GONE =>
+        Left(ResponseWrapper(correlationId, parseErrors(response)))
+
+      case _ =>
+        Left(ResponseWrapper(correlationId, OutboundError(InternalError)))
     }
   }
 

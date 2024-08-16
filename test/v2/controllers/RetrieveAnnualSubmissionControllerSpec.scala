@@ -16,6 +16,7 @@
 
 package v2.controllers
 
+import play.api.Configuration
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.Method.{DELETE, GET, PUT}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
@@ -47,7 +48,8 @@ class RetrieveAnnualSubmissionControllerSpec
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
       method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"),
+      rel = "create-and-amend-self-employment-annual-submission"
+    ),
     Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
     Link(
       href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
@@ -100,7 +102,7 @@ class RetrieveAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest {
 
-    private val controller = new RetrieveAnnualSubmissionController(
+    val controller = new RetrieveAnnualSubmissionController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveAnnualSubmissionValidatorFactory,
@@ -109,6 +111,12 @@ class RetrieveAnnualSubmissionControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }

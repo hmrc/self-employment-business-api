@@ -17,103 +17,102 @@
 package shared.definition
 
 import cats.implicits.catsSyntaxValidatedId
-import shared.UnitSpec
 import shared.config.Deprecation.NotDeprecated
 import shared.config.{AppConfig, ConfidenceLevelConfig, MockAppConfig}
 import shared.definition.APIStatus.{ALPHA, BETA}
 import shared.mocks.MockHttpClient
-import shared.routing.{Version, Version1, Version3, Version4}
+import shared.routing._
+import shared.utils.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
-class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
+import scala.language.reflectiveCalls
 
-  private[definition] class MyApiDefinitionFactory extends ApiDefinitionFactory {
-    protected val appConfig: AppConfig = mockAppConfig
+class ApiDefinitionFactorySpec extends UnitSpec {
 
-    val definition: Definition = Definition(
-      Nil,
-      APIDefinition(
-        "test API definition",
-        "description",
-        "context",
-        List("category"),
-        List(APIVersion(Version1, APIStatus.BETA, endpointsEnabled = true)),
-        None)
-    )
+  "buildAPIStatus" when {
+    "the 'apiStatus' parameter is present and valid" should {
 
-    def checkBuildApiStatus(version: Version): APIStatus = buildAPIStatus(version)
-  }
+      s"return the expected status" in new Test {
+        setupMockConfig(Version9)
+        MockedAppConfig.apiStatus(Version9) returns "BETA"
 
-  class Test extends MockHttpClient with MockAppConfig {
-    MockAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
+        val result: APIStatus = apiDefinitionFactory.checkBuildApiStatus(Version9)
+        result shouldBe BETA
+      }
 
-    protected val apiDefinitionFactory = new MyApiDefinitionFactory
+    }
 
-    "confidenceLevel" when {
-      List(
-        (true, ConfidenceLevel.L250, ConfidenceLevel.L250),
-        (true, ConfidenceLevel.L200, ConfidenceLevel.L200),
-        (false, ConfidenceLevel.L200, ConfidenceLevel.L50)
-      ).foreach { case (definitionEnabled, configCL, expectedDefinitionCL) =>
-        s"confidence-level-check.definition.enabled is $definitionEnabled and confidence-level = $configCL" should {
-          s"return confidence level $expectedDefinitionCL" in new Test {
-            MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(
-              confidenceLevel = configCL,
-              definitionEnabled = definitionEnabled,
-              authValidationEnabled = true)
-            apiDefinitionFactory.confidenceLevel shouldBe expectedDefinitionCL
-          }
-        }
+    "the 'apiStatus' parameter is present but invalid" should {
+      s"default to alpha" in new Test {
+        setupMockConfig(Version9)
+        MockedAppConfig.apiStatus(Version9) returns "not-a-status"
+
+        apiDefinitionFactory.checkBuildApiStatus(Version9) shouldBe ALPHA
       }
     }
 
-    "buildAPIStatus" when {
-      "the 'apiStatus' parameter is present and valid" should {
-          List(
-            (Version3, BETA),
-            (Version4, BETA)
-          ).foreach { case (version, status) =>
-          s"return the correct $status for $version " in new Test {
-            MockAppConfig.apiStatus(version) returns status.toString
-            MockAppConfig
-              .deprecationFor(version)
-              .returns(NotDeprecated.valid)
-              .anyNumberOfTimes()
-            apiDefinitionFactory.checkBuildApiStatus(version) shouldBe status
-          }
+    "the 'deprecatedOn' parameter is missing for a deprecated version" should {
+      "throw an exception" in new Test {
+        MockedAppConfig.apiStatus(Version9) returns "DEPRECATED"
+
+        MockedAppConfig
+          .deprecationFor(Version9)
+          .returns("deprecatedOn date is required for a deprecated version".invalid)
+          .anyNumberOfTimes()
+
+        val exception: Exception = intercept[Exception] {
+          apiDefinitionFactory.checkBuildApiStatus(Version9)
+        }
+
+        val exceptionMessage: String = exception.getMessage
+        exceptionMessage shouldBe "deprecatedOn date is required for a deprecated version"
+      }
+    }
+  }
+
+  "confidenceLevel" when {
+    List(
+      (true, ConfidenceLevel.L250, ConfidenceLevel.L250),
+      (true, ConfidenceLevel.L200, ConfidenceLevel.L200),
+      (false, ConfidenceLevel.L200, ConfidenceLevel.L50)
+    ).foreach { case (definitionEnabled, configCL, expectedDefinitionCL) =>
+      s"confidence-level-check.definition.enabled is $definitionEnabled and confidence-level = $configCL" should {
+        s"return confidence level $expectedDefinitionCL" in new Test {
+          MockedAppConfig.confidenceLevelConfig returns ConfidenceLevelConfig(
+            confidenceLevel = configCL,
+            definitionEnabled = definitionEnabled,
+            authValidationEnabled = true)
+          apiDefinitionFactory.confidenceLevel shouldBe expectedDefinitionCL
         }
       }
+    }
+  }
 
-      "the 'apiStatus' parameter is present and invalid" should {
-          List(Version3, Version4).foreach { version =>
-            s"default to alpha for $version " in new Test {
-              MockAppConfig.apiStatus(version) returns "ALPHO"
-              MockAppConfig
-                .deprecationFor(version)
-                .returns(NotDeprecated.valid)
-                .anyNumberOfTimes()
-              apiDefinitionFactory.checkBuildApiStatus(version) shouldBe ALPHA
-            }
-          }
-      }
+  class Test extends MockHttpClient with MockAppConfig {
+    MockedAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
 
-      "the 'deprecatedOn' parameter is missing for a deprecated version" should {
-        "throw exception" in new Test {
-          MockAppConfig.apiStatus(Version3) returns "DEPRECATED"
-          MockAppConfig
-            .deprecationFor(Version3)
-            .returns("deprecatedOn date is required for a deprecated version".invalid)
-            .anyNumberOfTimes()
+    protected val apiDefinitionFactory = new ApiDefinitionFactory {
+      protected val appConfig: AppConfig = mockAppConfig
 
-          val exception: Exception = intercept[Exception] {
-            apiDefinitionFactory.checkBuildApiStatus(Version4)
-          }
+      val definition: Definition = Definition(
+        Nil,
+        APIDefinition(
+          "test API definition",
+          "description",
+          "context",
+          List("category"),
+          List(APIVersion(Version1, APIStatus.BETA, endpointsEnabled = true)),
+          None)
+      )
 
-          val exceptionMessage: String = exception.getMessage
-          exceptionMessage shouldBe "deprecatedOn date is required for a deprecated version"
-        }
-      }
+      def checkBuildApiStatus(version: Version): APIStatus = buildAPIStatus(version)
+    }
 
+    protected def setupMockConfig(version: Version): Unit = {
+      MockedAppConfig
+        .deprecationFor(version)
+        .returns(NotDeprecated.valid)
+        .anyNumberOfTimes()
     }
 
   }

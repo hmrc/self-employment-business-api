@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
                                                    endpointSummaryGroupRewriter: EndpointSummaryGroupRewriter,
                                                    oasFeatureRewriter: OasFeatureRewriter) {
 
-  val rewriteables: Seq[CheckAndRewrite] =
+  lazy val rewriteables: Seq[CheckAndRewrite] =
     List(
       apiVersionTitleRewriter.rewriteApiVersionTitle,
       endpointSummaryRewriter.rewriteEndpointSummary,

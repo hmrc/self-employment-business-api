@@ -19,8 +19,9 @@ package v3.retrievePeriodSummary.def2
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYearWithMax}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
 import shared.models.errors.MtdError
+import v2.controllers.validators.resolvers.ResolveTysTaxYearWithMax
 import v3.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 

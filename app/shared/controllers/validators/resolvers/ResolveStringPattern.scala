@@ -31,16 +31,12 @@ case class ResolveStringPattern(regexFormat: Regex, error: MtdError) extends Res
       Invalid(List(error))
 
   def apply(value: String): Validated[Seq[MtdError], String] = resolver(value)
-
-
-
 }
 
 object ResolveStringPattern {
 
   def apply(value: String, regexFormat: Regex, error: MtdError): Validated[Seq[MtdError], String] = {
     val resolver = ResolveStringPattern(regexFormat, error)
-
     resolver(value)
   }
 

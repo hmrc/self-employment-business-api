@@ -34,8 +34,7 @@ class DocumentationController @Inject() (
 ) extends BackendController(cc) {
 
   def definition(): Action[AnyContent] = Action {
-    val x = selfAssessmentApiDefinition.definition
-    Ok(Json.toJson(x))
+    Ok(Json.toJson(selfAssessmentApiDefinition.definition))
   }
 
   def asset(version: String, filename: String): Action[AnyContent] = {

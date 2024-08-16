@@ -20,7 +20,7 @@ import api.models.domain.ex.MtdNicExemption
 import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
 import config.MockSeBusinessConfig
 import play.api.libs.json.{JsNumber, JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators

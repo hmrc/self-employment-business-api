@@ -16,10 +16,10 @@
 
 package shared.hateoas
 
-import shared.hateoas.Method.GET
 import cats.Functor
-import shared.UnitSpec
 import shared.config.{AppConfig, MockAppConfig}
+import shared.hateoas.Method.GET
+import shared.utils.UnitSpec
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
 
@@ -37,7 +37,7 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   private case class Data2(id: String) extends HateoasData
 
   private class Test {
-    MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
+    MockedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
   }
 
   "wrap" should {

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package shared.stubs
+package shared.services
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.JsValue
-import support.WireMockMethods
+import shared.support.WireMockMethods
 
 object DownstreamStub extends WireMockMethods {
 
@@ -46,4 +46,5 @@ object DownstreamStub extends WireMockMethods {
     when(method = method, uri = uri, queryParams)
       .thenReturn(status = errorStatus, errorBody)
   }
+
 }

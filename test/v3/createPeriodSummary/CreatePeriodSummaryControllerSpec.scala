@@ -132,10 +132,10 @@ class CreatePeriodSummaryControllerSpec
     }
   }
 
-  private trait Test extends ControllerTest with AuditEventChecking {
-    MockAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+  private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+    MockedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
-    private val controller = new CreatePeriodSummaryController(
+    val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,
@@ -146,7 +146,13 @@ class CreatePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakeRequestWithBody(requestMtdBodyJson))
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakePostRequest(requestMtdBodyJson))
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(

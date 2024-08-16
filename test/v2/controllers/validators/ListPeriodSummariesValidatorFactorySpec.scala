@@ -18,7 +18,7 @@ package v2.controllers.validators
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v2.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactorySpec extends UnitSpec {

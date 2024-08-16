@@ -17,7 +17,8 @@
 package v3.retrievePeriodSummary.def1.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
+
 class Def1_Retrieve_PeriodIncomeSpec extends UnitSpec {
 
   val mtdJson: JsValue = Json.parse(
@@ -48,7 +49,7 @@ class Def1_Retrieve_PeriodIncomeSpec extends UnitSpec {
   "reads" should {
     "return the parsed object" when {
       "given a valid json" in {
-          val result = mtdJson.as[Def1_Retrieve_PeriodIncome]
+        val result = mtdJson.as[Def1_Retrieve_PeriodIncome]
         result shouldBe periodIncome
       }
     }
@@ -57,7 +58,7 @@ class Def1_Retrieve_PeriodIncomeSpec extends UnitSpec {
   "writes" should {
     "return json" when {
       "given a valid object" in {
-          val result = Json.toJson(periodIncome)
+        val result = Json.toJson(periodIncome)
         result shouldBe desJson
       }
     }

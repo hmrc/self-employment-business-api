@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package shared
+package shared.models.domain
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.EitherValues
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
+import java.time.{Clock, ZoneOffset}
 
-trait UnitSpec extends AnyWordSpecLike with MockFactory with EitherValues with Matchers with FutureAwaits with DefaultAwaitTimeout
+trait TaxYearTestSupport {
+
+  def clockAtTimeInTaxYear(taxYear: TaxYear): Clock =
+    Clock.fixed(taxYear.endDate.atStartOfDay().toInstant(ZoneOffset.UTC), ZoneOffset.UTC)
+
+}

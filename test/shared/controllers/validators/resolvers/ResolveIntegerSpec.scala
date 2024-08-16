@@ -18,8 +18,8 @@ package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import shared.UnitSpec
 import shared.models.errors.ValueFormatError
+import shared.utils.UnitSpec
 
 class ResolveIntegerSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks {
 

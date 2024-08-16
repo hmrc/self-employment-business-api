@@ -22,7 +22,7 @@ import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
 import shared.models.errors.MtdError
-import v2.controllers.validators.resolvers.ResolvePeriodId
+import v2.controllers.validators.resolvers.{ResolvePeriodId, ResolveTysTaxYearWithMax}
 import v2.models.request.amendPeriodSummary.{AmendPeriodSummaryBody, AmendPeriodSummaryRequestData}
 
 import javax.inject.Singleton

@@ -70,7 +70,6 @@ final case class TaxYear private (private val value: String) {
 object TaxYear {
 
   val tysTaxYear: TaxYear = TaxYear.ending(2024)
-  val tysTaxYearEnd: TaxYear = TaxYear.ending(2025)
 
   /** UK tax year starts on 6 April.
     */

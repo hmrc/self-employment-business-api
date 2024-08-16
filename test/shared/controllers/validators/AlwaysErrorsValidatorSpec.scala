@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package shared.stubs
+package shared.controllers.validators
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status.NO_CONTENT
-import support.WireMockMethods
+import cats.data.Validated.Invalid
+import play.api.http.Status
+import shared.models.errors.MtdError
+import shared.utils.UnitSpec
 
-object AuditStub extends WireMockMethods {
+class AlwaysErrorsValidatorSpec extends UnitSpec {
 
-  private val auditUri: String = s"/write/audit.*"
+  "AlwaysErrorsValidator" must {
+    "always return the errors that it is constructed with" in {
+      val errors = Seq(MtdError("E1", "", Status.BAD_REQUEST), MtdError("E2", "", Status.BAD_REQUEST))
 
-  def audit(): StubMapping = {
-    when(method = POST, uri = auditUri)
-      .thenReturn(status = NO_CONTENT)
+      AlwaysErrorsValidator(errors).validate shouldBe Invalid(errors)
+    }
   }
 
 }

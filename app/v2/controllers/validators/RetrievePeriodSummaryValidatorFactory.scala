@@ -19,9 +19,9 @@ package v2.controllers.validators
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTysTaxYearWithMax}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
 import shared.models.errors.MtdError
-import v2.controllers.validators.resolvers.ResolvePeriodId
+import v2.controllers.validators.resolvers.{ResolvePeriodId, ResolveTysTaxYearWithMax}
 import v2.models.request.retrievePeriodSummary.RetrievePeriodSummaryRequestData
 
 import javax.inject.Singleton

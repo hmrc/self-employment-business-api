@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission.def1
 
 import config.MockSeBusinessConfig
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import v3.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData

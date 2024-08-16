@@ -25,6 +25,7 @@ import java.io.{BufferedReader, InputStream, InputStreamReader}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
+import scala.util.{Failure, Success, Try}
 
 trait Rewriter {
   def apply(path: String, filename: String, contents: String): String
@@ -35,63 +36,87 @@ class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsM
     extends Assets(errorHandler, meta, env) {
   import meta._
 
-  /** If no rewriters, Play's own static Assets.assetAt() will be called.
+  /** Retrieves the requested asset and runs it through the rewriters if any..
     * @param path
     *   e.g. "/public/api/conf/1.0"
     * @param filename
     *   e.g. "schemas/retrieve_other_expenses_response.json" or "employment_expenses_delete.yaml"
     */
   def rewriteableAt(path: String, filename: String, rewriters: Seq[Rewriter]): Action[AnyContent] = {
-    if (rewriters.isEmpty)
-      at(path, filename)
-    else
-      Action.async { implicit request =>
-        assetAt(path, filename, rewriters)
-      }
+    Action.async { implicit request =>
+      assetAt(path, filename, rewriters)
+    }
   }
 
   // Mostly copied from the private method in Assets:
   private def assetAt(path: String, filename: String, rewrites: Seq[Rewriter])(implicit
       request: RequestHeader
   ): Future[Result] = {
-    val assetName: Option[String] = resourceNameAt(path, filename)
-    val assetInfoFuture: Future[Option[(AssetInfo, AcceptEncoding)]] = assetName
-      .map { name =>
-        assetInfoForRequest(request, name)
+
+    def serveAsset(assetName: Option[String]): Future[Result] = {
+
+      val assetInfoFuture: Future[Option[(AssetInfo, AcceptEncoding)]] = assetName
+        .map { name =>
+          assetInfoForRequest(request, name)
+        }
+        .getOrElse(Future.successful(None))
+
+      def notFound: Future[Result] =
+        errorHandler.onClientError(request, NOT_FOUND, "Resource not found by Assets controller")
+
+      val pendingResult: Future[Result] = assetInfoFuture.flatMap {
+        case Some((assetInfo, acceptEncoding)) =>
+          val connection = assetInfo.url(acceptEncoding).openConnection()
+          // Make sure it's not a directory
+          if (Resources.isUrlConnectionADirectory(getClass.getClassLoader, connection)) {
+            Resources.closeUrlConnection(connection)
+            notFound
+          } else
+            Future {
+              val stream    = connection.getInputStream
+              val text      = inputStreamToString(stream)
+              val rewritten = rewrites.foldLeft(text)((acc, op) => op(path, filename, acc))
+              val result    = Ok(rewritten)
+              asEncodedResult(result, acceptEncoding, assetInfo)
+            }
+
+        case None => notFound
       }
-      .getOrElse(Future.successful(None))
 
-    def notFound: Future[Result] =
-      errorHandler.onClientError(request, NOT_FOUND, "Resource not found by Assets controller")
-
-    val pendingResult: Future[Result] = assetInfoFuture.flatMap {
-      case Some((assetInfo, acceptEncoding)) =>
-        val connection = assetInfo.url(acceptEncoding).openConnection()
-        // Make sure it's not a directory
-        if (Resources.isUrlConnectionADirectory(getClass.getClassLoader, connection)) {
-          Resources.closeUrlConnection(connection)
-          notFound
-        } else
-          Future {
-            val stream    = connection.getInputStream
-            val text      = inputStreamToString(stream)
-            val rewritten = rewrites.foldLeft(text)((acc, op) => op(path, filename, acc))
-            val result    = Ok(rewritten)
-            asEncodedResult(result, acceptEncoding, assetInfo)
-          }
-
-      case None => notFound
+      pendingResult.recoverWith { case NonFatal(e) =>
+        // $COVERAGE-OFF$
+        recover(e)
+      // $COVERAGE-ON$
+      }
     }
 
-    pendingResult.recoverWith {
-      case e: InvalidUriEncodingException =>
-        errorHandler.onClientError(request, BAD_REQUEST, s"Invalid URI encoding for $filename at $path: " + e.getMessage)
-      case NonFatal(e) =>
-        // Add a bit more information to the exception for better error reporting later
-        errorHandler.onServerError(
-          request,
-          new RuntimeException(s"Unexpected error while serving rewriteable $filename at $path: " + e.getMessage, e)
-        )
+    def recover(e: Throwable): Future[Result] = {
+      e match {
+        case e: InvalidUriEncodingException =>
+          errorHandler
+            .onClientError(
+              request,
+              BAD_REQUEST,
+              s"Invalid URI encoding for rewriteable $filename at $path: " + e.getMessage
+            )
+
+        // $COVERAGE-OFF$
+        case _ =>
+          // Add a bit more information to the exception for better error reporting later
+          errorHandler.onServerError(
+            request,
+            new RuntimeException(s"Unexpected error while serving rewriteable $filename at $path: " + e.getMessage, e)
+          )
+        // $COVERAGE-ON$
+      }
+    }
+
+    Try(resourceNameAt(path, filename)) match {
+      case Success(assetName) =>
+        serveAsset(assetName)
+
+      case Failure(e) =>
+        recover(e)
     }
   }
 
@@ -101,11 +126,13 @@ class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsM
     (Iterator continually bufferedReader.readLine takeWhile (_ != null)).mkString("\n")
   }
 
-  private def asEncodedResult(response: Result, acceptEncoding: AcceptEncoding, assetInfo: AssetInfo): Result = {
+  protected def asEncodedResult(response: Result, acceptEncoding: AcceptEncoding, assetInfo: AssetInfo): Result = {
+    // $COVERAGE-OFF$
     assetInfo
       .bestEncoding(acceptEncoding)
       .map(enc => response.withHeaders(VARY -> ACCEPT_ENCODING, CONTENT_ENCODING -> enc))
       .getOrElse(if (assetInfo.varyEncoding) response.withHeaders(VARY -> ACCEPT_ENCODING) else response)
+    // $COVERAGE-ON$
   }
 
 }
