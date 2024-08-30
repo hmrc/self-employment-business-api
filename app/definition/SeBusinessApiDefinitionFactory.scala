@@ -18,7 +18,7 @@ package definition
 
 import shared.config.AppConfig
 import shared.definition._
-import shared.routing.{Version2, Version3, Version4}
+import shared.routing.{Version3, Version4}
 
 import javax.inject.{Inject, Singleton}
 
@@ -34,11 +34,6 @@ class SeBusinessApiDefinitionFactory @Inject() (protected val appConfig: AppConf
         context = appConfig.apiGatewayContext,
         categories = List(mtdCategory),
         versions = List(
-          APIVersion(
-            version = Version2,
-            status = buildAPIStatus(Version2),
-            endpointsEnabled = appConfig.endpointsEnabled(Version2)
-          ),
           APIVersion(
             version = Version3,
             status = buildAPIStatus(Version3),
