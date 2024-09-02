@@ -25,7 +25,7 @@ import shared.config.AppConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import v2.controllers.validators.resolvers.ResolveTysTaxYearWithMax
+import v3.listPeriodSummaries.controllers.validators.resolvers.ResolveTysTaxYearWithMax
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 

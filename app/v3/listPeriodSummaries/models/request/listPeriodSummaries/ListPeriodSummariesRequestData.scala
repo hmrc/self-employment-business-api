@@ -14,26 +14,8 @@
  * limitations under the License.
  */
 
-package routing
+package v3.listPeriodSummaries.models.request.listPeriodSummaries
 
-import play.api.routing.Router
-import shared.config.AppConfig
-import shared.routing._
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-import javax.inject.{Inject, Singleton}
-
-@Singleton case class SeBusinessVersionRoutingMap @Inject() (
-    appConfig: AppConfig,
-    defaultRouter: Router,
-    v3Router: v3.Routes,
-    v4Router: v4.Routes
-) extends VersionRoutingMap {
-
-  /** Routes corresponding to available versions.
-    */
-  val map: Map[Version, Router] = Map(
-    Version3 -> v3Router,
-    Version4 -> v4Router
-  )
-
-}
+case class ListPeriodSummariesRequestData(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear])
