@@ -12,7 +12,7 @@
 #  * pygit2 library - install via your choice of package manager e.g.
 #       - pip install pygit2
 #       - apt install python3-pygit2
-#    (on Mac, probably best to use pip)
+#       - brew install pygit2
 #
 
 import os
