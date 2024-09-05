@@ -27,7 +27,6 @@ class SeBusinessApiDefinitionFactory @Inject() (protected val appConfig: AppConf
 
   lazy val definition: Definition =
     Definition(
-      scopes = scopes,
       api = APIDefinition(
         name = "Self Employment Business (MTD)",
         description = "An API for providing Annual and Periodic Summary data",
