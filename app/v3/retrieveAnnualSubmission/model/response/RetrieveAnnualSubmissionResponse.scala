@@ -22,7 +22,7 @@ import shared.config.AppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.utils.JsonWritesUtil
-import v3.listPeriodSummaries.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
+import v3.listPeriodSummaries.model.response.amendSEAnnual.AmendAnnualSubmissionResponse._
 import v3.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v3.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
 

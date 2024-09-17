@@ -20,9 +20,9 @@ import api.models.domain.PeriodId
 import api.models.errors.PeriodIdFormatError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.controllers.validators.resolvers.ResolveDateRange
-import shared.models.domain.DateRange
-import shared.models.errors.MtdError
+import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveTaxYear, ResolverSupport}
+import shared.models.domain.{DateRange, TaxYear}
+import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 
 object ResolvePeriodId {
 
@@ -46,6 +46,23 @@ object ResolvePeriodId {
     result match {
       case Valid(dateRange) => Valid(PeriodId(dateRange.startDate.toString, dateRange.endDate.toString))
       case _                => Invalid(List(PeriodIdFormatError))
+    }
+
+}
+
+object ResolveTysTaxYearWithMax extends ResolverSupport {
+
+  val resolver: Resolver[String, TaxYear] =
+    ResolveTaxYear.resolver thenValidate satisfiesMin(TaxYear.tysTaxYear, InvalidTaxYearParameterError) thenValidate satisfiesMax(
+      TaxYear.ending(2025),
+      RuleTaxYearNotSupportedError)
+
+  def apply(value: String): Validated[Seq[MtdError], TaxYear] = resolver(value)
+
+  def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
+    value match {
+      case Some(value) => resolver(value).map(Some(_))
+      case None        => Valid(None)
     }
 
 }

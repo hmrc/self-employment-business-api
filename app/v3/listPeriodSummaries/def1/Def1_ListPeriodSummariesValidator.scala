@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package v3.retrievePeriodSummary.def2
+package v3.listPeriodSummaries.def1
 
 import cats.data.Validated
-import cats.implicits.catsSyntaxTuple4Semigroupal
+import cats.implicits._
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
 import shared.models.errors.MtdError
+import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
 import v3.validators.resolvers.ResolveTysTaxYearWithMax
-import v3.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
-import v3.validators.resolvers.ResolvePeriodId
 
-class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)
-    extends Validator[RetrievePeriodSummaryRequestData] {
+class Def1_ListPeriodSummariesValidator(
+    nino: String,
+    businessId: String,
+    taxYear: Option[String]
+) extends Validator[Def1_ListPeriodSummariesRequestData] {
 
-  def validate: Validated[Seq[MtdError], RetrievePeriodSummaryRequestData] = {
+  def validate: Validated[Seq[MtdError], Def1_ListPeriodSummariesRequestData] =
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
-      ResolvePeriodId(periodId, 1900, 2100),
       ResolveTysTaxYearWithMax(taxYear)
-    ).mapN(Def2_RetrievePeriodSummaryRequestData)
-  }
+    ).mapN(Def1_ListPeriodSummariesRequestData)
 
 }
