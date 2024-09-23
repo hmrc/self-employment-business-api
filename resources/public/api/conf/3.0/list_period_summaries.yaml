@@ -45,8 +45,7 @@ responses:
         schema:
           $ref: './schemas/listPeriodSummary/response.json'
         examples:
-          example-response:
-            description: Example Response
+          "Example response":
             value:
               $ref: './examples/listPeriodSummary/response.json'
 

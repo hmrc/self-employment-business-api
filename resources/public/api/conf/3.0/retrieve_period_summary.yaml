@@ -51,16 +51,16 @@ responses:
             - $ref: './schemas/retrievePeriodSummary/def1/response.json'
             - $ref: './schemas/retrievePeriodSummary/def2/response.json'
         examples:
-          Non-consolidated response for tax year 2023-24 or later:
+          "Non-consolidated response for TY 2023-24 or later":
             value:
               $ref: './examples/retrievePeriodSummary/def2/non_consolidated_response.json'
-          Consolidated response for TY 2023-24 or later:
+          "Consolidated response for TY 2023-24 or later":
             value:
               $ref: './examples/retrievePeriodSummary/def2/consolidated_response.json'
-          Nnon-consolidated response before tax year 2023-24:
+          "Non-consolidated response before TY 2023-24":
             value:
               $ref: './examples/retrievePeriodSummary/def1/non_consolidated_response.json'
-          Consolidated response before tax year 2023-24:
+          "Consolidated response before TY 2023-24":
             value:
               $ref: './examples/retrievePeriodSummary/def1/consolidated_response.json'
 

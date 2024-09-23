@@ -42,16 +42,16 @@ requestBody:
           - $ref: './schemas/def1/request.json'
           - $ref: './schemas/def2/request.json'
       examples:
-        Non consolidated request for tax year 2023-24 or later:
+        "Non-consolidated request for TY 2023-24 or later":
           value:
             $ref: './examples/amendPeriodSummary/def2/non_consolidated_request.json'
-        Consolidated request for tax year 2023-24 or later:
+        "Consolidated request for TY 2023-24 or later":
           value:
             $ref: './examples/amendPeriodSummary/def2/consolidated_request.json'
-        Non consolidated request before tax year 2023-24:
+        "Non-consolidated request before TY 2023-24":
           value:
             $ref: './examples/amendPeriodSummary/def1/non_consolidated_request.json'
-        Consolidated request before tax year 2023-24:
+        "Consolidated request before TY 2023-24":
           value:
             $ref: './examples/amendPeriodSummary/def1/consolidated_request.json'
 
@@ -73,7 +73,7 @@ responses:
         schema:
           $ref: './schemas/amendPeriodSummary/response.json'
         examples:
-          Example response for all tax years:
+          "Example response":
             value:
               $ref: './examples/amendPeriodSummary/response.json'
 

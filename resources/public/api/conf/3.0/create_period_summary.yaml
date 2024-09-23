@@ -53,16 +53,16 @@ requestBody:
           - $ref: './schemas/createPeriodSummary/def1/request.json'
           - $ref: './schemas/createPeriodSummary/def2/request.json'
       examples:
-        Without consolidated request for tax year 2023-24 or later:
+        "Without consolidated request for TY 2023-24 or later":
           value:
             $ref: './examples/createPeriodSummary/def2/non_consolidated_request.json'
-        With consolidated request for tax year 2023-24 or later:
+        "With consolidated request for TY 2023-24 or later":
           value:
             $ref: './examples/createPeriodSummary/def2/consolidated_request.json'
-        Without consolidated request before tax year 2023-24:
+        "Without consolidated request before TY 2023-24":
           value:
             $ref: './examples/createPeriodSummary/def1/non_consolidated_request.json'
-        With consolidated request before tax year 2023-24:
+        "With consolidated request before TY 2023-24":
           description: Create Period Summary Request
           value:
             $ref: './examples/createPeriodSummary/def1/consolidated_request.json'
@@ -87,7 +87,7 @@ responses:
         schema:
           $ref: './schemas/createPeriodSummary/response.json'
         examples:
-          Example response for all tax years:
+          "Example response":
             value:
               $ref: './examples/createPeriodSummary/response.json'
 
