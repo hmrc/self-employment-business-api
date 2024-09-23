@@ -43,11 +43,11 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/listPeriodSummary/response.json'
+          $ref: './schemas/listPeriodSummaries/response.json'
         examples:
           "Example response":
             value:
-              $ref: './examples/listPeriodSummary/response.json'
+              $ref: './examples/listPeriodSummaries/response.json'
 
   "400":
     description: Bad request

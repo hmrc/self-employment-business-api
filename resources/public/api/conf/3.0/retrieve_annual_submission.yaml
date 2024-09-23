@@ -47,16 +47,16 @@ responses:
             - $ref: './schemas/retrieveAnnualSubmission/def1/response.json'
             - $ref: './schemas/retrieveAnnualSubmission/def2/response.json'
         examples:
-          "With allowances response for TY 2023-24 or before":
+          "With allowances response for TY 2023-24 and before":
             value:
               $ref: './examples/retrieveAnnualSubmission/def1/full_response.json'
-          "With trading allowances response for TY 2023-24 or before":
+          "With trading allowances response for TY 2023-24 and before":
             value:
               $ref: './examples/retrieveAnnualSubmission/def1/trading_allowance_response.json'
-          "With allowances response for TY 2024-25 or later":
+          "With allowances response for TY 2024-25 onwards":
             value:
               $ref: './examples/retrieveAnnualSubmission/def2/full_response.json'
-          "With trading allowances response for TY 2024-25 or later":
+          "With trading allowances response for TY 2024-25 onwards":
             value:
               $ref: './examples/retrieveAnnualSubmission/def2/trading_allowance_response.json'
 
