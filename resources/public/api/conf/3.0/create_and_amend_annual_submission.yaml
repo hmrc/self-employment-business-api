@@ -35,25 +35,21 @@ requestBody:
     application/json:
       schema:
         oneOf:
-          - $ref: './schemas/def1/create_and_amend_annual_submission_request.json'
-          - $ref: './schemas/def2/create_and_amend_annual_submission_request.json'
+          - $ref: './schemas/createAmendAnnualSubmission/def1/request.json'
+          - $ref: './schemas/createAmendAnnualSubmission/def2/request.json'
       examples:
-        example-with-trading-allowance-request-TY-2023-24-or-before:
-          description: Example Request With Trading Income Allowance
+        With trading allowance request for tax year 2023-24 or before:
           value:
-            $ref: './examples/def1/create_and_amend_with_trading_income_allowance.json'
-        example-without-trading-allowance-request-TY-2023-24-or-before:
-          description: Example Request Without Trading Income Allowance
+            $ref: './examples/createAmendAnnualSubmission/def1/with_trading_income_allowance.json'
+        Without trading allowance request for tax year 2023-24 or before:
           value:
-            $ref: './examples/def1/create_and_amend_without_trading_income_allowance.json'
-        example-with-trading-allowance-request-TY-2024-25-or-later:
-          description: Example Request With Trading Income Allowance
+            $ref: './examples/createAmendAnnualSubmission/def1/without_trading_income_allowance.json'
+        With trading allowance request for tax year 2024-25 or later:
           value:
-            $ref: './examples/def2/create_and_amend_with_trading_income_allowance.json'
-        example-without-trading-allowance-request-TY-2024-25-or-later:
-          description: Example Request Without Trading Income Allowance
+            $ref: './examples/createAmendAnnualSubmission/def2/with_trading_income_allowance.json'
+        Without trading allowance request for tax year 2024-25 or later:
           value:
-            $ref: './examples/def2/create_and_amend_without_trading_income_allowance.json'
+            $ref: './examples/createAmendAnnualSubmission/def2/without_trading_income_allowance.json'
 
 responses:
   "200":
@@ -70,12 +66,11 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/create_and_amend_annual_submission_response.json'
+          $ref: './schemas/createAmendAnnualSubmission/response.json'
         examples:
-          example-response:
-            description: Example Response
+          Example response for all tax years:
             value:
-              $ref: './examples/create_and_amend_annual_submission_response.json'
+              $ref: './examples/createAmendAnnualSubmission/response.json'
 
   "400":
     description: Bad request

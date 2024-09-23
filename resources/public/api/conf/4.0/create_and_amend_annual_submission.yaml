@@ -36,16 +36,16 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/create_and_amend_annual_submission_request.json'
+        $ref: './schemas/request.json'
       examples:
         example-with-trading-allowance-request:
           description: Example Request With Trading Income Allowance
           value:
-            $ref: './examples/create_and_amend_with_trading_income_allowance.json'
+            $ref: './examples/with_trading_income_allowance.json'
         example-without-trading-allowance-request:
           description: Example Request Without Trading Income Allowance
           value:
-            $ref: './examples/create_and_amend_without_trading_income_allowance.json'
+            $ref: './examples/without_trading_income_allowance.json'
 
 responses:
   "200":
@@ -62,12 +62,12 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/create_and_amend_annual_submission_response.json'
+          $ref: './schemas/response.json'
         examples:
           example-response:
             description: Example Response
             value:
-              $ref: './examples/create_and_amend_annual_submission_response.json'
+              $ref: './examples/response.json'
 
   "400":
     description: Bad request

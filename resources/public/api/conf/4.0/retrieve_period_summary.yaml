@@ -48,25 +48,25 @@ responses:
       application/json:
         schema:
           oneOf:
-            - $ref: './schemas/def1/retrieve_period_summary_response.json'
-            - $ref: './schemas/def2/retrieve_period_summary_response.json'
+            - $ref: './schemas/def1/response.json'
+            - $ref: './schemas/def2/response.json'
         examples:
           example-non-consolidated-response-for-TY-2023-24-or-later:
             description: Example Non-Consolidated Response for TY 2023-24 or later
             value:
-              $ref: './examples/def2/retrieve_period_summary_non_consolidated_response.json'
+              $ref: './examples/def2/non_consolidated_response.json'
           example-consolidated-response-for-TY-2023-24-or-later:
             description: Example Consolidated Response for TY 2023-24 or later
             value:
-              $ref: './examples/def2/retrieve_period_summary_consolidated_response.json'
+              $ref: './examples/def2/consolidated_response.json'
           example-non-consolidated-response-before-TY-2023-24:
             description: Example Non-Consolidated Response before TY 2023-24
             value:
-              $ref: './examples/def1/retrieve_period_summary_non_consolidated_response.json'
+              $ref: './examples/def1/non_consolidated_response.json'
           example-consolidated-response-before-TY-2023-24:
             description: Example Consolidated Response before 2023-24
             value:
-              $ref: './examples/def1/retrieve_period_summary_consolidated_response.json'
+              $ref: './examples/def1/consolidated_response.json'
 
   "400":
     description: Bad request

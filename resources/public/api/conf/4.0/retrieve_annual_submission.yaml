@@ -43,16 +43,16 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/retrieve_annual_submission_response.json'
+          $ref: './schemas/response.json'
         examples:
           example-with-allowances-response:
             description: Example Response with Full Allowances
             value:
-              $ref: './examples/retrieve_annual_submission_full_response.json'
+              $ref: './examples/full_response.json'
           example-with-trading-allowances-response:
             description: Example Response with Trading Allowance
             value:
-              $ref: './examples/retrieve_annual_submission_trading_allowance_response.json'
+              $ref: './examples/trading_allowance_response.json'
 
   "400":
     description: Bad request

@@ -39,25 +39,25 @@ requestBody:
     application/json:
       schema:
         oneOf:
-          - $ref: './schemas/def1/amend_period_summary_request.json'
-          - $ref: './schemas/def2/amend_period_summary_request.json'
+          - $ref: './schemas/def1/request.json'
+          - $ref: './schemas/def2/request.json'
       examples:
         example-non-consolidated-request-2023-24-or-later:
           description: Amend Period Summary Non-Consolidated Request
           value:
-            $ref: './examples/def2/amend_period_summary_non_consolidated_request.json'
+            $ref: './examples/def2/non_consolidated_request.json'
         example-consolidated-request-2023-24-or-later:
           description: Amend Period Summary Consolidated Request
           value:
-            $ref: './examples/def2/amend_period_summary_consolidated_request.json'
+            $ref: './examples/def2/consolidated_request.json'
         example-non-consolidated-request-before-TY-2023-24:
           description: Amend Period Summary Non-Consolidated Request
           value:
-            $ref: './examples/def1/amend_period_summary_non_consolidated_request.json'
+            $ref: './examples/def1/non_consolidated_request.json'
         example-consolidated-request-before-TY-2023-24:
           description: Amend Period Summary Consolidated Request
           value:
-            $ref: './examples/def1/amend_period_summary_consolidated_request.json'
+            $ref: './examples/def1/consolidated_request.json'
 
 
 responses:
@@ -75,12 +75,12 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/amend_period_summary_response.json'
+          $ref: './schemas/response.json'
         examples:
           example-response:
             description: Example Response
             value:
-              $ref: './examples/amend_period_summary_response.json'
+              $ref: './examples/response.json'
 
   "400":
     description: Bad request
