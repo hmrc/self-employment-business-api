@@ -43,12 +43,12 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/response.json'
+          oneOf:
+            - $ref: './schemas/listPeriodSummaries/response.json'
         examples:
-          example-response:
-            description: Example Response
+          "Example response":
             value:
-              $ref: './examples/response.json'
+              $ref: './examples/listPeriodSummaries/response.json'
 
   "400":
     description: Bad request

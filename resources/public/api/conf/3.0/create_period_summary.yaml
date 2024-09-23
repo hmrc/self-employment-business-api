@@ -59,10 +59,10 @@ requestBody:
         "With consolidated request for TY 2023-24 onwards":
           value:
             $ref: './examples/createPeriodSummary/def2/consolidated_request.json'
-        "Without consolidated request for before TY 2023-24":
+        "Without consolidated request for TY 2022-23 and before":
           value:
             $ref: './examples/createPeriodSummary/def1/non_consolidated_request.json'
-        "With consolidated request for before TY 2023-24":
+        "With consolidated request for TY 2022-23 and before":
           description: Create Period Summary Request
           value:
             $ref: './examples/createPeriodSummary/def1/consolidated_request.json'

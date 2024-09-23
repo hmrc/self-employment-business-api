@@ -43,7 +43,8 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/listPeriodSummaries/response.json'
+          oneOf:
+            - $ref: './schemas/listPeriodSummaries/response.json'
         examples:
           "Example response":
             value:

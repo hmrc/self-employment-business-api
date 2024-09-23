@@ -48,10 +48,10 @@ requestBody:
         "Consolidated request for TY 2023-24 onwards":
           value:
             $ref: './examples/amendPeriodSummary/def2/consolidated_request.json'
-        "Non-consolidated request for before TY 2023-24":
+        "Non-consolidated request for TY 2022-23 and before":
           value:
             $ref: './examples/amendPeriodSummary/def1/non_consolidated_request.json'
-        "Consolidated request for before TY 2023-24":
+        "Consolidated request for TY 2022-23 and before":
           value:
             $ref: './examples/amendPeriodSummary/def1/consolidated_request.json'
 

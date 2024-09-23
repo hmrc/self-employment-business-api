@@ -42,22 +42,18 @@ requestBody:
           - $ref: './schemas/def1/request.json'
           - $ref: './schemas/def2/request.json'
       examples:
-        example-non-consolidated-request-2023-24-or-later:
-          description: Amend Period Summary Non-Consolidated Request
+        "Non-consolidated request for TY 2023-24 onwards":
           value:
-            $ref: './examples/def2/non_consolidated_request.json'
-        example-consolidated-request-2023-24-or-later:
-          description: Amend Period Summary Consolidated Request
+            $ref: './examples/amendPeriodSummary/def2/non_consolidated_request.json'
+        "Consolidated request for TY 2023-24 onwards":
           value:
-            $ref: './examples/def2/consolidated_request.json'
-        example-non-consolidated-request-before-TY-2023-24:
-          description: Amend Period Summary Non-Consolidated Request
+            $ref: './examples/amendPeriodSummary/def2/consolidated_request.json'
+        "Non-consolidated request for TY 2022-23 and before":
           value:
-            $ref: './examples/def1/non_consolidated_request.json'
-        example-consolidated-request-before-TY-2023-24:
-          description: Amend Period Summary Consolidated Request
+            $ref: './examples/amendPeriodSummary/def1/non_consolidated_request.json'
+        "Consolidated request for TY 2022-23 and before":
           value:
-            $ref: './examples/def1/consolidated_request.json'
+            $ref: './examples/amendPeriodSummary/def1/consolidated_request.json'
 
 
 responses:
@@ -75,12 +71,11 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/response.json'
+          $ref: './schemas/amendPeriodSummary/response.json'
         examples:
-          example-response:
-            description: Example Response
+          "Example response":
             value:
-              $ref: './examples/response.json'
+              $ref: './examples/amendPeriodSummary/response.json'
 
   "400":
     description: Bad request
