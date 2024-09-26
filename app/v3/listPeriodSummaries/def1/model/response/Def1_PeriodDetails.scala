@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package v3.listPeriodSummaries.model.response.listPeriodSummaries
+package v3.listPeriodSummaries.def1.model.response
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import v3.listPeriodSummaries.model.response.PeriodDetails
 
-case class PeriodDetails(
+case class Def1_PeriodDetails(
     periodId: String,
     periodStartDate: String,
     periodEndDate: String
 //    periodCreationDate: Option[String] // To be reinstated, see MTDSA-15595
-)
+) extends PeriodDetails
 
-object PeriodDetails {
+object Def1_PeriodDetails {
 
-  implicit val reads: Reads[PeriodDetails] = (
+  implicit val writes: OWrites[Def1_PeriodDetails] = Json.writes[Def1_PeriodDetails]
+
+  implicit val reads: Reads[Def1_PeriodDetails] = (
     (JsPath \ "from").read[String] and
       (JsPath \ "to").read[String]
-//      (JsPath \ "periodCreationDate").readNullable[String] // To be reinstated, see MTDSA-15595
   )((from, to) =>
-    PeriodDetails(
+    Def1_PeriodDetails(
       periodId = s"${from}_$to",
       periodStartDate = from,
       periodEndDate = to
-//      periodCreationDate = periodCreationDate // To be reinstated, see MTDSA-15595
     ))
 
-  implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
 }

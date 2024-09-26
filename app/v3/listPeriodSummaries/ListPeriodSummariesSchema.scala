@@ -16,13 +16,18 @@
 
 package v3.listPeriodSummaries
 
-import shared.controllers.validators.Validator
-import v3.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
-import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import play.api.libs.json.Reads
+import shared.schema.DownstreamReadable
+import v3.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
+import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
-class ListPeriodSummariesValidatorFactory {
+sealed trait ListPeriodSummariesSchema extends DownstreamReadable[ListPeriodSummariesResponse[PeriodDetails]]
 
-  def validator(nino: String, businessId: String, taxYear: Option[String]): Validator[ListPeriodSummariesRequestData] =
-    new Def1_ListPeriodSummariesValidator(nino, businessId, taxYear)
+object ListPeriodSummariesSchema {
+
+  case object Def1 extends ListPeriodSummariesSchema {
+    type DownstreamResp = Def1_ListPeriodSummariesResponse[Def1_PeriodDetails]
+    val connectorReads: Reads[DownstreamResp] = Def1_ListPeriodSummariesResponse.reads
+  }
 
 }

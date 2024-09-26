@@ -20,14 +20,20 @@ import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.model.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnector) extends BaseService {
+
+  def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
+    connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
+  }
 
   private val errorMap: Map[String, MtdError] = {
     val errors =
@@ -46,13 +52,6 @@ class ListPeriodSummariesService @Inject() (connector: ListPeriodSummariesConnec
       "TAX_YEAR_NOT_SUPPORTED"  -> RuleTaxYearNotSupportedError
     )
     errors ++ extraTysErrors
-  }
-
-  def listPeriodSummaries(request: Def1_ListPeriodSummariesRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
-
-    connector.listPeriodSummaries(request).map(_.leftMap(mapDownstreamErrors(errorMap)))
   }
 
 }

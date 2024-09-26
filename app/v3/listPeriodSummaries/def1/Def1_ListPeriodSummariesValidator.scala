@@ -21,16 +21,17 @@ import cats.implicits._
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
 import shared.models.errors.MtdError
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 import v3.validators.resolvers.ResolveTysTaxYearWithMax
 
 class Def1_ListPeriodSummariesValidator(
     nino: String,
     businessId: String,
     taxYear: Option[String]
-) extends Validator[Def1_ListPeriodSummariesRequestData] {
+) extends Validator[ListPeriodSummariesRequestData] {
 
-  def validate: Validated[Seq[MtdError], Def1_ListPeriodSummariesRequestData] =
+  def validate: Validated[Seq[MtdError], ListPeriodSummariesRequestData] =
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),

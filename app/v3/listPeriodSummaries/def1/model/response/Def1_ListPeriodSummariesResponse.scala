@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-package v3.listPeriodSummaries.model.listPeriodSummaries
+package v3.listPeriodSummaries.def1.model.response
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import play.api.libs.json.{Json, OWrites, Reads, Writes}
+import v3.listPeriodSummaries.model.response.ListPeriodSummariesResponse
 
-case class Def1_ListPeriodSummariesRequestData(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear])
+case class Def1_ListPeriodSummariesResponse[E](periods: Seq[E]) extends ListPeriodSummariesResponse[E]
+
+object Def1_ListPeriodSummariesResponse {
+
+  implicit def reads[E: Reads]: Reads[Def1_ListPeriodSummariesResponse[E]] = Json.reads[Def1_ListPeriodSummariesResponse[E]]
+
+  implicit def writes[E: Writes]: OWrites[Def1_ListPeriodSummariesResponse[E]] = Json.writes[Def1_ListPeriodSummariesResponse[E]]
+
+}

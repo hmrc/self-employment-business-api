@@ -22,8 +22,8 @@ import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.model.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,24 +32,24 @@ import scala.concurrent.{ExecutionContext, Future}
 class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: SeBusinessFeatureSwitches)
     extends BaseDownstreamConnector {
 
-  def listPeriodSummaries(request: Def1_ListPeriodSummariesRequestData)(implicit
+  def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
     import request._
+    import schema._
 
     val path = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     val downstreamUri =
       taxYear match {
         case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
-          TaxYearSpecificIfsUri[ListPeriodSummariesResponse[PeriodDetails]](
-            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+          TaxYearSpecificIfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         case _ if featureSwitches.isDesIf_MigrationEnabled =>
-          IfsUri[ListPeriodSummariesResponse[PeriodDetails]](path)
+          IfsUri[DownstreamResp](path)
         case _ =>
-          DesUri[ListPeriodSummariesResponse[PeriodDetails]](path)
+          DesUri[DownstreamResp](path)
       }
 
     get(downstreamUri)

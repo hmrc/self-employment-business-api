@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v3.listPeriodSummaries
+package v3.listPeriodSummaries.model.request
 
-import shared.controllers.validators.Validator
-import v3.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
-import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import v3.listPeriodSummaries.ListPeriodSummariesSchema
 
-class ListPeriodSummariesValidatorFactory {
+trait ListPeriodSummariesRequestData {
+  def nino: Nino
+  def businessId: BusinessId
+  def taxYear: Option[TaxYear]
 
-  def validator(nino: String, businessId: String, taxYear: Option[String]): Validator[ListPeriodSummariesRequestData] =
-    new Def1_ListPeriodSummariesValidator(nino, businessId, taxYear)
-
+  val schema: ListPeriodSummariesSchema
 }
