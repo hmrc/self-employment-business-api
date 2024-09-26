@@ -22,11 +22,9 @@ import play.api.mvc.{Action, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers._
 import shared.hateoas.HateoasFactory
-import shared.models.domain.{BusinessId, Nino}
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v4.createPeriodSummary.model.response.CreatePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -67,8 +65,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
           params = Map("nino" -> nino, "businessId" -> businessId),
           Some(request.body)
         ))
-        .withHateoasResultFrom(hateoasFactory)((parsedRequest, response) =>
-          CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), response.periodId, Some(parsedRequest.taxYear)))
+        .withPlainJsonResult()
 
       requestHandler.handleRequest()
     }

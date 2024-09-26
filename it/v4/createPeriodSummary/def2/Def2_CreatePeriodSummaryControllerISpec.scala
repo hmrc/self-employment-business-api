@@ -373,8 +373,6 @@ class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val businessId: String       = "XAIS12345678910"
     private val periodId: String = s"${periodStartDate}_$periodEndDate"
 
-    private def mtdTaxYear: String = "2023-24"
-
     private def downstreamTaxYear: String = "23-24"
 
     def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/periodic-summaries"
@@ -382,13 +380,6 @@ class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     private def periodStartDate: String = "2023-07-24"
 
     private def periodEndDate: String = "2023-08-24"
-
-    private def amendPeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-
-    private def retrievePeriodSummaryHateoasUri: String =
-      s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-
-    private def listPeriodSummariesHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
     private def uri: String = s"/$nino/$businessId/period"
 
@@ -456,24 +447,7 @@ class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val responseBody: JsValue = Json.parse(
       s"""
          |{
-         |   "periodId":"$periodId",
-         |   "links":[
-         |      {
-         |         "href":"$amendPeriodSummaryHateoasUri",
-         |         "method":"PUT",
-         |         "rel":"amend-self-employment-period-summary"
-         |      },
-         |      {
-         |         "href":"$retrievePeriodSummaryHateoasUri",
-         |         "method":"GET",
-         |         "rel":"self"
-         |      },
-         |      {
-         |         "href":"$listPeriodSummariesHateoasUri",
-         |         "method":"GET",
-         |         "rel":"list-self-employment-period-summaries"
-         |      }
-         |   ]
+         |   "periodId":"$periodId"
          |}
          |""".stripMargin
     )

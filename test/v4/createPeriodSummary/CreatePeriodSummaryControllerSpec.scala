@@ -21,17 +21,16 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method.{GET, PUT}
-import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
 import v4.createPeriodSummary.def1.model.request.Def1_CreatePeriodSummaryFixture
 import v4.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData}
-import v4.createPeriodSummary.model.response.{CreatePeriodSummaryHateoasData, CreatePeriodSummaryResponse}
+import v4.createPeriodSummary.model.response.CreatePeriodSummaryResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -50,36 +49,10 @@ class CreatePeriodSummaryControllerSpec
   private val periodId             = "2017-01-25_2017-01-25"
   override val apiVersion: Version = Version3
 
-  private val testHateoasLinks = List(
-    Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
-    Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "self"),
-    Link(s"/individuals/business/self-employment/$validNino/$businessId/period", GET, "list-self-employment-period-summaries")
-  )
-
   private val responseJson = Json.parse(
     s"""
        |{
-       |  "periodId": "$periodId",
-       |  "links": [
-       |    {
-       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
-       |      "method": "PUT",
-       |      "rel": "amend-self-employment-period-summary"
-       |
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
-       |      "method": "GET",
-       |      "rel": "self"
-       |
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$validNino/$businessId/period",
-       |      "method": "GET",
-       |      "rel": "list-self-employment-period-summaries"
-       |
-       |    }
-       |  ]
+       |  "periodId": "$periodId"
        |}
     """.stripMargin
   )
@@ -95,13 +68,6 @@ class CreatePeriodSummaryControllerSpec
         MockedCreatePeriodicService
           .createPeriodic(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, CreatePeriodSummaryResponse(periodId)))))
-
-        MockHateoasFactory
-          .wrap(
-            CreatePeriodSummaryResponse(periodId),
-            CreatePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(TaxYear.fromMtd("2019-20")))
-          )
-          .returns(HateoasWrapper(CreatePeriodSummaryResponse(periodId), testHateoasLinks))
 
         runOkTestWithAudit(
           expectedStatus = OK,

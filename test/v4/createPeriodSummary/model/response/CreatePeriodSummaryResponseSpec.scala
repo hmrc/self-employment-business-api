@@ -18,8 +18,6 @@ package v4.createPeriodSummary.model.response
 
 import play.api.libs.json.{JsValue, Json}
 import shared.config.MockAppConfig
-import shared.hateoas.{Link, Method}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.utils.UnitSpec
 
 class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
@@ -46,48 +44,6 @@ class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
     "return json" when {
       "passed a model" in {
         Json.toJson(model) shouldBe json
-      }
-    }
-  }
-
-  "LinksFactory" should {
-    "produce the correct links with TYS disabled" when {
-      "called" in {
-        val nino       = "AA111111A"
-        val businessId = "id"
-        val periodId   = "periodId"
-        val data       = CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
-
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-
-        CreatePeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe List(
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
-        )
-      }
-    }
-
-    "produce the correct links with TYS enabled and the tax year is TYS" when {
-      "called" in {
-        val nino       = "AA111111A"
-        val businessId = "id"
-        val periodId   = "periodId"
-        val taxYear    = TaxYear.fromMtd("2023-24")
-        val data       = CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(taxYear))
-
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-
-        val result: Seq[Link] = CreatePeriodSummaryResponse.LinksFactory.links(mockAppConfig, data)
-
-        result shouldBe List(
-          Link(
-            href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24",
-            method = Method.PUT,
-            rel = "amend-self-employment-period-summary"),
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/period?taxYear=2023-24", method = Method.GET, rel = "list-self-employment-period-summaries")
-        )
       }
     }
   }
