@@ -20,13 +20,11 @@ import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method.GET
-import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.model.response.listPeriodSummaries.{ListPeriodSummariesHateoasData, ListPeriodSummariesResponse, PeriodDetails}
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -35,13 +33,12 @@ class ListPeriodSummariesControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListPeriodSummariesService
-    with MockListPeriodSummariesValidatorFactory
-    with MockHateoasFactory {
+    with MockListPeriodSummariesValidatorFactory {
 
   private val businessId: String = "XAIS12345678910"
   private val from: String       = "2019-01-01"
   private val to: String         = "2020-01-01"
-//  private val creationDate: String = "2020-01-02" // To be reinstated, see MTDSA-15595
+  //  private val creationDate: String = "2020-01-02" // To be reinstated, see MTDSA-15595
   private val periodId: String = s"${from}_$to"
   private val taxYear: String  = "2024-25"
 
@@ -49,61 +46,33 @@ class ListPeriodSummariesControllerSpec
     periodId,
     from,
     to
-//    Some(creationDate) // To be reinstated, see MTDSA-15595
+    //    Some(creationDate) // To be reinstated, see MTDSA-15595
   )
 
   private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
 
   private val responseBody = Json.parse(s"""
-      |{
-      |  "periods": [
-      |    {
-      |      "periodId": "$periodId",
-      |      "periodStartDate": "$from",
-      |      "periodEndDate": "$to",
-      |      "links": [
-      |        {
-      |          "href": "test/href/$periodId",
-      |          "method": "GET",
-      |          "rel": "self"
-      |        }
-      |      ]
-      |    }
-      |  ],
-      |  "links": [
-      |    {
-      |      "href": "test/href",
-      |      "method": "GET",
-      |      "rel": "self"
-      |    }
-      |  ]
-      |}
-    """.stripMargin)
-
-  private val responseBodyTys = Json.parse(s"""
                                            |{
                                            |  "periods": [
                                            |    {
                                            |      "periodId": "$periodId",
                                            |      "periodStartDate": "$from",
-                                           |      "periodEndDate": "$to",
-                                           |      "links": [
-                                           |        {
-                                           |          "href": "test/href/$periodId?taxYear=$taxYear",
-                                           |          "method": "GET",
-                                           |          "rel": "self"
-                                           |        }
-                                           |      ]
-                                           |    }
-                                           |  ],
-                                           |  "links": [
-                                           |    {
-                                           |      "href": "test/href?taxYear=$taxYear",
-                                           |      "method": "GET",
-                                           |      "rel": "self"
+                                           |      "periodEndDate": "$to"
                                            |    }
                                            |  ]
                                            |}
+    """.stripMargin)
+
+  private val responseBodyTys = Json.parse(s"""
+                                              |{
+                                              |  "periods": [
+                                              |    {
+                                              |      "periodId": "$periodId",
+                                              |      "periodStartDate": "$from",
+                                              |      "periodEndDate": "$to",
+                                              |    }
+                                              |  ]
+                                              |}
     """.stripMargin)
 
   "handleRequest" should {
@@ -114,10 +83,6 @@ class ListPeriodSummariesControllerSpec
         MockListPeriodSummariesService
           .listPeriodSummaries(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrapList(response, ListPeriodSummariesHateoasData(Nino(validNino), BusinessId(businessId), None))
-          .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
 
         runOkTest(
           expectedStatus = OK,
@@ -131,10 +96,6 @@ class ListPeriodSummariesControllerSpec
         MockListPeriodSummariesService
           .listPeriodSummaries(tysRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrapList(response, ListPeriodSummariesHateoasData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper(tysHateoasResponse, Seq(testTysHateoasLink)))
 
         runOkTest(
           expectedStatus = OK,
@@ -164,20 +125,13 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val requestData: Def1_ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
-
-    val testHateoasLink: Link              = Link(href = "test/href", method = GET, rel = "self")
-    private val testInnerHateoasLink: Link = Link(href = s"test/href/$periodId", method = GET, rel = "self")
-
-    val hateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
-      Seq(HateoasWrapper(periodDetails, Seq(testInnerHateoasLink))))
+    val requestData: ListPeriodSummariesRequestData = ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
       service = mockListPeriodSummariesService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -193,22 +147,14 @@ class ListPeriodSummariesControllerSpec
 
   private trait TysTest extends ControllerTest {
 
-    val tysRequestData: Def1_ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
-
-    val testTysHateoasLink: Link              = Link(href = s"test/href?taxYear=$taxYear", method = GET, rel = "self")
-    private val testTysInnerHateoasLink: Link = Link(href = s"test/href/$periodId?taxYear=$taxYear", method = GET, rel = "self")
-
-    val tysHateoasResponse: ListPeriodSummariesResponse[HateoasWrapper[PeriodDetails]] = ListPeriodSummariesResponse(
-      Seq(HateoasWrapper(periodDetails, Seq(testTysInnerHateoasLink))))
+    val tysRequestData: ListPeriodSummariesRequestData =
+      ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
-      service = mockListPeriodSummariesService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
+      service = mockListPeriodSummariesService cc = cc,
       idGenerator = mockIdGenerator
     )
 

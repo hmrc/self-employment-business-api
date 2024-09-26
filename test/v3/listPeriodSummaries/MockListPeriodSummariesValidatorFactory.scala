@@ -22,7 +22,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
 trait MockListPeriodSummariesValidatorFactory extends MockFactory {
 
@@ -30,28 +30,28 @@ trait MockListPeriodSummariesValidatorFactory extends MockFactory {
 
   object MockListPeriodSummariesValidatorFactory {
 
-    def validator(): CallHandler[Validator[Def1_ListPeriodSummariesRequestData]] =
+    def validator(): CallHandler[Validator[ListPeriodSummariesRequestData]] =
       (mockListPeriodSummariesValidatorFactory.validator(_: String, _: String, _: Option[String])).expects(*, *, *)
 
   }
 
-  def willUseValidator(use: Validator[Def1_ListPeriodSummariesRequestData]): CallHandler[Validator[Def1_ListPeriodSummariesRequestData]] = {
+  def willUseValidator(use: Validator[ListPeriodSummariesRequestData]): CallHandler[Validator[ListPeriodSummariesRequestData]] = {
     MockListPeriodSummariesValidatorFactory
       .validator()
       .anyNumberOfTimes()
       .returns(use)
   }
 
-  def returningSuccess(result: Def1_ListPeriodSummariesRequestData): Validator[Def1_ListPeriodSummariesRequestData] =
-    new Validator[Def1_ListPeriodSummariesRequestData] {
-      def validate: Validated[Seq[MtdError], Def1_ListPeriodSummariesRequestData] = Valid(result)
+  def returningSuccess(result: ListPeriodSummariesRequestData): Validator[ListPeriodSummariesRequestData] =
+    new Validator[ListPeriodSummariesRequestData] {
+      def validate: Validated[Seq[MtdError], ListPeriodSummariesRequestData] = Valid(result)
     }
 
-  def returning(result: MtdError*): Validator[Def1_ListPeriodSummariesRequestData] = returningErrors(result)
+  def returning(result: MtdError*): Validator[ListPeriodSummariesRequestData] = returningErrors(result)
 
-  def returningErrors(result: Seq[MtdError]): Validator[Def1_ListPeriodSummariesRequestData] =
-    new Validator[Def1_ListPeriodSummariesRequestData] {
-      def validate: Validated[Seq[MtdError], Def1_ListPeriodSummariesRequestData] = Invalid(result)
+  def returningErrors(result: Seq[MtdError]): Validator[ListPeriodSummariesRequestData] =
+    new Validator[ListPeriodSummariesRequestData] {
+      def validate: Validated[Seq[MtdError], ListPeriodSummariesRequestData] = Invalid(result)
     }
 
 }

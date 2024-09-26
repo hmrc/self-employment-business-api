@@ -19,7 +19,7 @@ package v3.listPeriodSummaries.def1
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
 class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
@@ -39,24 +39,24 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
   "validator" should {
     "return the parsed domain object" when {
       "a valid request is made" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, Some(validTaxYear)).validateAndWrapResult()
         result shouldBe Right(
-          Def1_ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, parsedTaxYear)
+          ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, parsedTaxYear)
         )
       }
       "a valid request with no tax year supplied" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, None).validateAndWrapResult()
         result shouldBe Right(
-          Def1_ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, None)
+          ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, None)
         )
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator("A12344A", validBusinessId, Some(validTaxYear)).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
@@ -66,7 +66,7 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
     "return BusinessIdFormatError error" when {
       "an invalid nino is supplied" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, "Walruses", Some(validTaxYear)).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, BusinessIdFormatError)
@@ -76,7 +76,7 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
     "return TaxYearFormat" when {
       "an invalid tax year is supplied" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, Some("1234A")).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, TaxYearFormatError)
@@ -86,7 +86,7 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
     "return RuleTaxYearRangeInvalidError" when {
       "an invalid tax year is supplied" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, Some("2023-25")).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
@@ -96,7 +96,7 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
     "return RuleTaxYearNotSupportedError" when {
       "a tax year 2025 or over is passed" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, Some("2025-26")).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
@@ -106,7 +106,7 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
     "return InvalidTaxYearParameterError" when {
       "an invalid tax year is supplied" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, Some("2021-22")).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, InvalidTaxYearParameterError)
@@ -116,7 +116,7 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        val result: Either[ErrorWrapper, Def1_ListPeriodSummariesRequestData] =
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator("A12344A", "Baked Beans", Some("20178")).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, BadRequestError, Some(List(BusinessIdFormatError, NinoFormatError, TaxYearFormatError)))

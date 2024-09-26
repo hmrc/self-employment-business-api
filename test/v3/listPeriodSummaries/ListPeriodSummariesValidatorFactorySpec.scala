@@ -21,7 +21,7 @@ import shared.config.MockAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
 import v3.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactorySpec extends UnitSpec with MockAppConfig with MockSeBusinessConfig {
 
@@ -35,7 +35,7 @@ class ListPeriodSummariesValidatorFactorySpec extends UnitSpec with MockAppConfi
 
     "given any request regardless of tax year" should {
       "return the Validator for schema definition 1" in {
-        val result: Validator[Def1_ListPeriodSummariesRequestData] =
+        val result: Validator[ListPeriodSummariesRequestData] =
           validatorFactory.validator(validNino, validBusinessId, Some(validTaxYear))
 
         result shouldBe a[Def1_ListPeriodSummariesValidator]

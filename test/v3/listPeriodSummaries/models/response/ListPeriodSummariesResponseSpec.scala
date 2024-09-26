@@ -22,7 +22,6 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
 import shared.utils.UnitSpec
-import v3.listPeriodSummaries.model.response.listPeriodSummaries.{ListPeriodSummariesHateoasData, ListPeriodSummariesResponse, PeriodDetails}
 
 class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
 

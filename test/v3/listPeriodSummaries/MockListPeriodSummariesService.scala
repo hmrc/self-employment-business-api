@@ -20,8 +20,8 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.model.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.response.ListPeriodSummariesResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,10 +31,9 @@ trait MockListPeriodSummariesService extends MockFactory {
 
   object MockListPeriodSummariesService {
 
-    def listPeriodSummaries(
-        requestData: Def1_ListPeriodSummariesRequestData): CallHandler[Future[ServiceOutcome[ListPeriodSummariesResponse[PeriodDetails]]]] = {
+    def listPeriodSummaries(requestData: ListPeriodSummariesRequestData): CallHandler[Future[ServiceOutcome[ListPeriodSummariesResponse]]] = {
       (mockListPeriodSummariesService
-        .listPeriodSummaries(_: Def1_ListPeriodSummariesRequestData)(_: RequestContext, _: ExecutionContext))
+        .listPeriodSummaries(_: ListPeriodSummariesRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

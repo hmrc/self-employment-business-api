@@ -21,8 +21,8 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v3.listPeriodSummaries.model.listPeriodSummaries.Def1_ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.model.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
+import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.Future
 
@@ -43,13 +43,13 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
       ))
   )
 
-  private val requestData = Def1_ListPeriodSummariesRequestData(
+  private val requestData = ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     None
   )
 
-  private val requestDataForTys = Def1_ListPeriodSummariesRequestData(
+  private val requestDataForTys = ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = Some(TaxYear.fromMtd(taxYear))

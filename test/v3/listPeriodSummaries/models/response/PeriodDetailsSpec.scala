@@ -18,7 +18,7 @@ package v3.listPeriodSummaries.models.response
 
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import v3.listPeriodSummaries.model.response.listPeriodSummaries.PeriodDetails
+import v3.listPeriodSummaries.model.response.PeriodDetails
 
 class PeriodDetailsSpec extends UnitSpec {
 
@@ -27,7 +27,7 @@ class PeriodDetailsSpec extends UnitSpec {
       periodId = "2020-01-01_2020-02-02",
       periodStartDate = "2020-01-01",
       periodEndDate = "2020-02-02"
-//      periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
+      //      periodCreationDate = Some("2020-01-02") // To be reinstated, see MTDSA-15595
     )
 
   "reads" should {
@@ -36,12 +36,12 @@ class PeriodDetailsSpec extends UnitSpec {
       Json
         .parse(
           """
-          |{
-          |   "transactionReference": "1111111111",
-          |   "from": "2020-01-01",
-          |   "to": "2020-02-02"
-          |}
-          |""".stripMargin
+            |{
+            |   "transactionReference": "1111111111",
+            |   "from": "2020-01-01",
+            |   "to": "2020-02-02"
+            |}
+            |""".stripMargin
         )
         .as[PeriodDetails] shouldBe model
     }
