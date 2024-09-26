@@ -149,7 +149,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
          |    {
          |      "periodId": "$periodId",
          |      "periodStartDate": "$fromDate",
-         |      "periodEndDate": "$toDate",
+         |      "periodEndDate": "$toDate"
          |    }
          |  ]
          |}

@@ -21,8 +21,9 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
+import v3.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
+import v3.listPeriodSummaries.model.response.ListPeriodSummariesResponse
 
 import scala.concurrent.Future
 
@@ -33,9 +34,9 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
   val taxYear: String                         = "2024-25"
   override implicit val correlationId: String = "X-123"
 
-  val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
+  val response: ListPeriodSummariesResponse[Def1_PeriodDetails] = Def1_ListPeriodSummariesResponse(
     Seq(
-      PeriodDetails(
+      Def1_PeriodDetails(
         "2020-01-01_2020-01-01",
         "2020-01-01",
         "2020-01-01"
@@ -43,13 +44,13 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
       ))
   )
 
-  private val requestData = ListPeriodSummariesRequestData(
+  private val requestData = Def1_ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     None
   )
 
-  private val requestDataForTys = ListPeriodSummariesRequestData(
+  private val requestDataForTys = Def1_ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = Some(TaxYear.fromMtd(taxYear))

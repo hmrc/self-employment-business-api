@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.model.response.ListPeriodSummariesResponse
+import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +31,8 @@ trait MockListPeriodSummariesConnector extends MockFactory {
 
   object MockListPeriodSummariesConnector {
 
-    def listPeriodSummaries(requestData: ListPeriodSummariesRequestData): CallHandler[Future[DownstreamOutcome[ListPeriodSummariesResponse]]] = {
+    def listPeriodSummaries(
+        requestData: ListPeriodSummariesRequestData): CallHandler[Future[DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]]]] = {
       (mockListPeriodSummariesConnector
         .listPeriodSummaries(_: ListPeriodSummariesRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

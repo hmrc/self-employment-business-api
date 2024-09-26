@@ -19,6 +19,7 @@ package v3.listPeriodSummaries.def1
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
+import v3.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
 import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
 class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
@@ -42,14 +43,14 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
         val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, Some(validTaxYear)).validateAndWrapResult()
         result shouldBe Right(
-          ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, parsedTaxYear)
+          Def1_ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, parsedTaxYear)
         )
       }
       "a valid request with no tax year supplied" in {
         val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
           validator(validNino, validBusinessId, None).validateAndWrapResult()
         result shouldBe Right(
-          ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, None)
+          Def1_ListPeriodSummariesRequestData(parsedNino, parsedBusinessId, None)
         )
       }
     }

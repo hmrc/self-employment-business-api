@@ -20,10 +20,10 @@ import config.MockSeBusinessFeatureSwitches
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import v3.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
 import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
-import v3.listPeriodSummaries.models.request.ListPeriodSummariesRequestData
-import v3.listPeriodSummaries.models.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.Future
 
@@ -34,9 +34,9 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
   val tysTaxYear: String = "2024-25"
   val taxYear: String    = "2022-23"
 
-  val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(
+  val response: ListPeriodSummariesResponse[PeriodDetails] = Def1_ListPeriodSummariesResponse(
     Seq(
-      PeriodDetails(
+      Def1_PeriodDetails(
         "2020-01-01_2020-01-01",
         "2020-01-01",
         "2020-01-01"
@@ -52,7 +52,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
     )
 
     protected def request(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): ListPeriodSummariesRequestData =
-      ListPeriodSummariesRequestData(nino, businessId, taxYear)
+      Def1_ListPeriodSummariesRequestData(nino, businessId, taxYear)
 
   }
 

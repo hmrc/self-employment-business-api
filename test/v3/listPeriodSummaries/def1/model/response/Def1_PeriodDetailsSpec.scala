@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package v3.listPeriodSummaries.models.response
+package v3.listPeriodSummaries.def1.model.response
 
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import v3.listPeriodSummaries.model.response.PeriodDetails
 
-class PeriodDetailsSpec extends UnitSpec {
+class Def1_PeriodDetailsSpec extends UnitSpec {
 
   private val model =
-    PeriodDetails(
+    Def1_PeriodDetails(
       periodId = "2020-01-01_2020-02-02",
       periodStartDate = "2020-01-01",
       periodEndDate = "2020-02-02"
@@ -43,7 +42,7 @@ class PeriodDetailsSpec extends UnitSpec {
             |}
             |""".stripMargin
         )
-        .as[PeriodDetails] shouldBe model
+        .as[Def1_PeriodDetails] shouldBe model
     }
   }
 

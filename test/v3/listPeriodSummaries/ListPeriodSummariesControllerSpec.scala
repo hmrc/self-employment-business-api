@@ -19,10 +19,13 @@ package v3.listPeriodSummaries
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
+import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import v3.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
+import v3.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
 import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
@@ -33,7 +36,8 @@ class ListPeriodSummariesControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListPeriodSummariesService
-    with MockListPeriodSummariesValidatorFactory {
+    with MockListPeriodSummariesValidatorFactory
+    with MockAppConfig {
 
   private val businessId: String = "XAIS12345678910"
   private val from: String       = "2019-01-01"
@@ -42,14 +46,14 @@ class ListPeriodSummariesControllerSpec
   private val periodId: String = s"${from}_$to"
   private val taxYear: String  = "2024-25"
 
-  private val periodDetails: PeriodDetails = PeriodDetails(
+  private val periodDetails: PeriodDetails = Def1_PeriodDetails(
     periodId,
     from,
     to
     //    Some(creationDate) // To be reinstated, see MTDSA-15595
   )
 
-  private val response: ListPeriodSummariesResponse[PeriodDetails] = ListPeriodSummariesResponse(Seq(periodDetails))
+  private val response: ListPeriodSummariesResponse[PeriodDetails] = Def1_ListPeriodSummariesResponse(Seq(periodDetails))
 
   private val responseBody = Json.parse(s"""
                                            |{
@@ -69,7 +73,7 @@ class ListPeriodSummariesControllerSpec
                                               |    {
                                               |      "periodId": "$periodId",
                                               |      "periodStartDate": "$from",
-                                              |      "periodEndDate": "$to",
+                                              |      "periodEndDate": "$to"
                                               |    }
                                               |  ]
                                               |}
@@ -125,7 +129,7 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val requestData: ListPeriodSummariesRequestData = ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
+    val requestData: ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -148,13 +152,14 @@ class ListPeriodSummariesControllerSpec
   private trait TysTest extends ControllerTest {
 
     val tysRequestData: ListPeriodSummariesRequestData =
-      ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
-      service = mockListPeriodSummariesService cc = cc,
+      service = mockListPeriodSummariesService,
+      cc = cc,
       idGenerator = mockIdGenerator
     )
 
