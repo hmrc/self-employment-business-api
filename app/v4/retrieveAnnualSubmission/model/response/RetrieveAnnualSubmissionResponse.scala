@@ -18,11 +18,7 @@ package v4.retrieveAnnualSubmission.model.response
 
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.{Json, OWrites}
-import shared.config.AppConfig
-import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.utils.JsonWritesUtil
-import v4.listPeriodSummaries.models.response.amendSEAnnual.AmendAnnualSubmissionResponse._
 import v4.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v4.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
 
@@ -35,20 +31,4 @@ object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
     case response: Def2_RetrieveAnnualSubmissionResponse => Json.toJsObject(response)
   }
 
-  implicit object RetrieveAnnualSubmissionLinksFactory
-      extends HateoasLinksFactory[RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
-
-    override def links(appConfig: AppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
-      import data._
-      List(
-        amendAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
-        retrieveAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
-        deleteAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear))
-      )
-    }
-
-  }
-
 }
-
-case class RetrieveAnnualSubmissionHateoasData(nino: Nino, businessId: BusinessId, taxYear: String) extends HateoasData

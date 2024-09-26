@@ -17,7 +17,7 @@
 package v4.retrieveAnnualSubmission.def2.model
 
 import api.models.domain.ex.MtdNicExemption
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import v4.retrieveAnnualSubmission.def2.model.response._
 
 trait Def2_RetrieveAnnualSubmissionFixture {
@@ -224,33 +224,5 @@ trait Def2_RetrieveAnnualSubmissionFixture {
        |  "annualNonFinancials": $nonFinancialsDownstreamJson
        |}
        |""".stripMargin)
-
-  def mtdRetrieveAnnualSubmissionJsonWithHateoas(nino: String,
-                                                 businessId: String,
-                                                 taxYear: String,
-                                                 responseBody: JsValue = mtdRetrieveResponseJson): JsValue =
-    responseBody.as[JsObject] ++ Json
-      .parse(s"""
-         |{
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "method": "PUT",
-         |      "rel": "create-and-amend-self-employment-annual-submission"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "method": "DELETE",
-         |      "rel": "delete-self-employment-annual-submission"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin)
-      .as[JsObject]
 
 }

@@ -19,14 +19,13 @@ package v4.retrieveAnnualSubmission
 import play.api.Configuration
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method.{DELETE, GET, PUT}
-import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.MockHateoasFactory
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v4.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
-import v4.retrieveAnnualSubmission.model.response.{RetrieveAnnualSubmissionHateoasData, RetrieveAnnualSubmissionResponse}
+import v4.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -42,19 +41,6 @@ class RetrieveAnnualSubmissionControllerSpec
   private val businessId: String = "XAIS12345678910"
   private val taxYear: String    = "2020-21"
 
-  private val testHateoasLinks: Seq[Link] = Seq(
-    Link(
-      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
-      method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"
-    ),
-    Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
-    Link(
-      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
-      method = DELETE,
-      rel = "delete-self-employment-annual-submission")
-  )
-
   private val requestData = Def1_RetrieveAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
   private val responseBody: RetrieveAnnualSubmissionResponse = retrieveResponseModel
@@ -68,13 +54,9 @@ class RetrieveAnnualSubmissionControllerSpec
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
 
-        MockHateoasFactory
-          .wrap(responseBody, RetrieveAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
-          .returns(HateoasWrapper(responseBody, testHateoasLinks))
-
         runOkTest(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(mtdRetrieveAnnualSubmissionJsonWithHateoas(validNino, businessId, taxYear))
+          maybeExpectedResponseBody = Some(mtdRetrieveResponseJson)
         )
       }
     }

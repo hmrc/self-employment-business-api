@@ -21,10 +21,8 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers._
 import shared.hateoas.HateoasFactory
-import shared.models.domain.{BusinessId, Nino}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v4.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -55,7 +53,7 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.retrieveAnnualSubmission)
-        .withHateoasResult(hateoasFactory)(RetrieveAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear))
+        .withPlainJsonResult()
 
       requestHandler.handleRequest()
     }
