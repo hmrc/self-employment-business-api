@@ -24,8 +24,6 @@ import shared.hateoas.HateoasFactory
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v4.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
-import v4.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionResponse.LinksFactory
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -63,8 +61,7 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
           params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
           Some(request.body)
         ))
-        .withHateoasResultFrom(hateoasFactory)((parsedRequest, _) =>
-          CreateAmendAnnualSubmissionHateoasData(parsedRequest.nino, parsedRequest.businessId, parsedRequest.taxYear.asMtd))
+        .withNoContentResult(OK)
 
       requestHandler.handleRequest()
     }

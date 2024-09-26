@@ -52,10 +52,8 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.json shouldBe responseBody
         response.status shouldBe OK
         response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
       }
 
       "given a valid Def1 request for a Tax Year Specific tax year" in new TysIfsTest {
@@ -71,9 +69,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe OK
-        response.json shouldBe responseBody
         response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
@@ -250,28 +246,6 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
   private trait Test {
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
-
-    val responseBody: JsValue = Json.parse(s"""
-         |{
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "method": "PUT",
-         |      "rel": "create-and-amend-self-employment-annual-submission"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$nino/$businessId/annual/$taxYear",
-         |      "method": "DELETE",
-         |      "rel": "delete-self-employment-annual-submission"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin)
 
     val downstreamResponseBody: JsValue = Json.parse("""{
         |   "transactionReference": "ignored"

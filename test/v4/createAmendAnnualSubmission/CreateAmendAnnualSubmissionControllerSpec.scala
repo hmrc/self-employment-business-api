@@ -17,11 +17,10 @@
 package v4.createAmendAnnualSubmission
 
 import play.api.Configuration
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method.{DELETE, GET, PUT}
-import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -30,7 +29,6 @@ import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
 import v4.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
 import v4.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
-import v4.createAmendAnnualSubmission.model.response.CreateAmendAnnualSubmissionHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -48,46 +46,9 @@ class CreateAmendAnnualSubmissionControllerSpec
   private val taxYear: String      = "2019-20"
   override val apiVersion: Version = Version3
 
-  private val testHateoasLinks: Seq[Link] = Seq(
-    Link(
-      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
-      method = PUT,
-      rel = "create-and-amend-self-employment-annual-submission"
-    ),
-    Link(href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear", method = GET, rel = "self"),
-    Link(
-      href = s"/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
-      method = DELETE,
-      rel = "delete-self-employment-annual-submission")
-  )
-
   private val requestJson = createAmendAnnualSubmissionRequestBodyMtdJson(None, None, None)
 
   private val requestBody = Def1_CreateAmendAnnualSubmissionRequestBody(None, None, None)
-
-  private val responseJson: JsValue = Json.parse(
-    s"""
-       |{
-       |  "links": [
-       |    {
-       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
-       |      "rel": "create-and-amend-self-employment-annual-submission",
-       |      "method": "PUT"
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
-       |      "rel": "self",
-       |      "method": "GET"
-       |    },
-       |    {
-       |      "href": "/individuals/business/self-employment/$validNino/$businessId/annual/$taxYear",
-       |      "rel": "delete-self-employment-annual-submission",
-       |      "method": "DELETE"
-       |    }
-       |  ]
-       |}
-    """.stripMargin
-  )
 
   private val requestData =
     Def1_CreateAmendAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
@@ -101,14 +62,10 @@ class CreateAmendAnnualSubmissionControllerSpec
           .createAmendAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        MockHateoasFactory
-          .wrap((), CreateAmendAnnualSubmissionHateoasData(Nino(validNino), BusinessId(businessId), taxYear))
-          .returns(HateoasWrapper((), testHateoasLinks))
-
         runOkTestWithAudit(
           expectedStatus = OK,
           maybeAuditRequestBody = Some(requestJson),
-          maybeExpectedResponseBody = Some(responseJson),
+          maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None
         )
       }
