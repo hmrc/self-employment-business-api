@@ -209,24 +209,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       |      "professionalFeesDisallowable":2200.00,
       |      "depreciationDisallowable":1200.00,
       |      "otherExpensesDisallowable":2000.00
-      |   },
-      |   "links": [
-      |      {
-      |         "href": "$amendPeriodSummaryHateoasUri",
-      |         "rel": "amend-self-employment-period-summary",
-      |         "method": "PUT"
-      |      },
-      |      {
-      |         "href": "$retrievePeriodSummaryHateoasUri",
-      |         "rel": "self",
-      |         "method": "GET"
-      |      },
-      |      {
-      |         "href": "$listPeriodSummariesHateoasUri",
-      |         "rel": "list-self-employment-period-summaries",
-      |         "method": "GET"
-      |      }
-      |   ]
+      |   }
       |}
       |""".stripMargin)
 

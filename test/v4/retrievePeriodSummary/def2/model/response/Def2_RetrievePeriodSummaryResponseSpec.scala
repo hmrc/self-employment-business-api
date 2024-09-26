@@ -18,11 +18,9 @@ package v4.retrievePeriodSummary.def2.model.response
 
 import play.api.libs.json.{JsValue, Json}
 import shared.config.MockAppConfig
-import shared.hateoas.{Link, Method}
-import shared.models.domain.{BusinessId, Nino}
 import shared.utils.UnitSpec
 import v4.retrievePeriodSummary.def2.model.Def2_RetrievePeriodSummaryFixture
-import v4.retrievePeriodSummary.model.response.{Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData}
+import v4.retrievePeriodSummary.model.response.Def2_RetrievePeriodSummaryResponse
 
 class Def2_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def2_RetrievePeriodSummaryFixture {
 
@@ -40,27 +38,6 @@ class Def2_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig
         Json.toJson(def2_DownstreamMinimalJson.as[Def2_RetrievePeriodSummaryResponse]) shouldBe def2_MtdMinimalJson
       }
     }
-  }
-
-  "LinksFactory" should {
-
-    "produce the correct links" when {
-      "called" in {
-        val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(taxYear))
-
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
-
-        Def2_RetrievePeriodSummaryResponse.Def2_RetrievePeriodSubmissionLinksFactory.links(mockAppConfig, data) shouldBe List(
-          Link(
-            href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24",
-            method = Method.PUT,
-            rel = "amend-self-employment-period-summary"),
-          Link(href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = Method.GET, rel = "self"),
-          Link(href = s"/my/context/$nino/$businessId/period?taxYear=2023-24", method = Method.GET, rel = "list-self-employment-period-summaries")
-        )
-      }
-    }
-
   }
 
 }

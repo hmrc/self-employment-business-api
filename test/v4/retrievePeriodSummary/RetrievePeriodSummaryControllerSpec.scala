@@ -21,20 +21,14 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.Method.{GET, PUT}
-import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
+import shared.hateoas.MockHateoasFactory
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v4.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
 import v4.retrievePeriodSummary.def2.model.response.Def2_Retrieve_PeriodDates
 import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData}
-import v4.retrievePeriodSummary.model.response.{
-  Def1_RetrievePeriodSummaryResponse,
-  Def2_RetrievePeriodSummaryResponse,
-  RetrievePeriodSummaryHateoasData,
-  RetrievePeriodSummaryResponse
-}
+import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -46,9 +40,8 @@ class RetrievePeriodSummaryControllerSpec
     with MockRetrievePeriodSummaryValidatorFactory
     with MockHateoasFactory {
 
-  private val businessId    = "XAIS12345678910"
-  private val taxYear       = "2023-24"
-  private val parsedTaxYear = TaxYear.fromMtd(taxYear)
+  private val businessId = "XAIS12345678910"
+  private val taxYear    = "2023-24"
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -58,10 +51,6 @@ class RetrievePeriodSummaryControllerSpec
         MockRetrievePeriodSummaryService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
-
-        MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, None))
-          .returns(HateoasWrapper(responseBody, testHateoasLink))
 
         runOkTest(
           expectedStatus = OK,
@@ -74,10 +63,6 @@ class RetrievePeriodSummaryControllerSpec
         MockRetrievePeriodSummaryService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
-
-        MockHateoasFactory
-          .wrap(responseBody, RetrievePeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, Some(parsedTaxYear)))
-          .returns(HateoasWrapper(responseBody, testHateoasLink))
 
         runOkTest(
           expectedStatus = OK,
@@ -114,36 +99,13 @@ class RetrievePeriodSummaryControllerSpec
     val responseBody: RetrievePeriodSummaryResponse =
       Def1_RetrievePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2019-01-01", "2020-01-01"), None, None, None)
 
-    val testHateoasLink: Seq[Link] = List(
-      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
-      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "self"),
-      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "list-self-employment-period-summaries")
-    )
-
     val responseJson: JsValue = Json.parse(
       s"""
          |{
          |  "periodDates": {
          |    "periodStartDate": "2019-01-01",
          |    "periodEndDate": "2020-01-01"
-         |  },
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
-         |      "method": "PUT",
-         |      "rel": "amend-self-employment-period-summary"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
-         |      "method": "GET",
-         |      "rel": "list-self-employment-period-summaries"
-         |    }
-         |  ]
+         |  }
          |}
       """.stripMargin
     )
@@ -180,44 +142,13 @@ class RetrievePeriodSummaryControllerSpec
       periodDisallowableExpenses = None
     )
 
-    val testHateoasLink: Seq[Link] = Seq(
-      Link(
-        href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
-        method = PUT,
-        rel = "amend-self-employment-period-summary"
-      ),
-      Link(href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]", method = GET, rel = "self"),
-      Link(
-        href = s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
-        method = GET,
-        rel = "list-self-employment-period-summaries"
-      )
-    )
-
     val responseJson: JsValue = Json.parse(
       s"""
          |{
          |  "periodDates": {
          |    "periodStartDate": "2024-01-01",
          |    "periodEndDate": "2025-01-01"
-         |  },
-         |  "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
-         |      "method": "PUT",
-         |      "rel": "amend-self-employment-period-summary"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
-         |      "method": "GET",
-         |      "rel": "self"
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId[?taxYear=$taxYear]",
-         |      "method": "GET",
-         |      "rel": "list-self-employment-period-summaries"
-         |    }
-         |  ]
+         |  }
          |}
       """.stripMargin
     )

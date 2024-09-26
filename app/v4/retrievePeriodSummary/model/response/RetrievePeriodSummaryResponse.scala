@@ -16,47 +16,19 @@
 
 package v4.retrievePeriodSummary.model.response
 
-import api.hateoas.HateoasLinks
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import shared.config.AppConfig
-import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import v4.retrievePeriodSummary.def1.model.response.{
-  Def1_Retrieve_PeriodDates,
-  Def1_Retrieve_PeriodDisallowableExpenses,
-  Def1_Retrieve_PeriodExpenses,
-  Def1_Retrieve_PeriodIncome
-}
-import v4.retrievePeriodSummary.def2.model.response.{
-  Def2_Retrieve_PeriodDates,
-  Def2_Retrieve_PeriodDisallowableExpenses,
-  Def2_Retrieve_PeriodExpenses,
-  Def2_Retrieve_PeriodIncome
-}
-import v4.retrievePeriodSummary.model.response.Def1_RetrievePeriodSummaryResponse.Def1_RetrievePeriodSubmissionLinksFactory
-import v4.retrievePeriodSummary.model.response.Def2_RetrievePeriodSummaryResponse.Def2_RetrievePeriodSubmissionLinksFactory
+import v4.retrievePeriodSummary.def1.model.response._
+import v4.retrievePeriodSummary.def2.model.response._
 
 sealed trait RetrievePeriodSummaryResponse {
   def withoutTaxTakenOffTradingIncome: RetrievePeriodSummaryResponse
 }
 
-object RetrievePeriodSummaryResponse extends HateoasLinks {
+object RetrievePeriodSummaryResponse {
 
   implicit val writes: OWrites[RetrievePeriodSummaryResponse] = {
     case def1: Def1_RetrievePeriodSummaryResponse => Json.toJsObject(def1)
     case def2: Def2_RetrievePeriodSummaryResponse => Json.toJsObject(def2)
-  }
-
-  implicit object RetrieveAnnualSubmissionLinksFactory extends HateoasLinksFactory[RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
-
-    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] =
-      data.taxYear match {
-        case None =>
-          Def1_RetrievePeriodSubmissionLinksFactory.links(appConfig, data)
-        case Some(_) =>
-          Def2_RetrievePeriodSubmissionLinksFactory.links(appConfig, data)
-      }
-
   }
 
 }
@@ -71,7 +43,7 @@ case class Def1_RetrievePeriodSummaryResponse(
   def withoutTaxTakenOffTradingIncome: Def1_RetrievePeriodSummaryResponse = this
 }
 
-object Def1_RetrievePeriodSummaryResponse extends HateoasLinks {
+object Def1_RetrievePeriodSummaryResponse {
 
   implicit val reads: Reads[Def1_RetrievePeriodSummaryResponse] = for {
     periodStartDate <- (JsPath \ "from").read[String]
@@ -93,20 +65,6 @@ object Def1_RetrievePeriodSummaryResponse extends HateoasLinks {
 
   implicit val writes: OWrites[Def1_RetrievePeriodSummaryResponse] = Json.writes[Def1_RetrievePeriodSummaryResponse]
 
-  implicit object Def1_RetrievePeriodSubmissionLinksFactory
-      extends HateoasLinksFactory[Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
-
-    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
-      import data._
-      Seq(
-        amendPeriodSummary(appConfig, nino, businessId, periodId, None),
-        retrievePeriodSummary(appConfig, nino, businessId, periodId, None),
-        listPeriodSummaries(appConfig, nino, businessId, None, isSelf = false)
-      )
-    }
-
-  }
-
 }
 
 /** def2 response adds periodIncome.taxTakenOffTradingIncome for TYS tax years.
@@ -124,7 +82,7 @@ case class Def2_RetrievePeriodSummaryResponse(periodDates: Def2_Retrieve_PeriodD
 
 }
 
-object Def2_RetrievePeriodSummaryResponse extends HateoasLinks {
+object Def2_RetrievePeriodSummaryResponse {
 
   implicit val reads: Reads[Def2_RetrievePeriodSummaryResponse] = for {
     periodStartDate <- (JsPath \ "from").read[String]
@@ -146,20 +104,4 @@ object Def2_RetrievePeriodSummaryResponse extends HateoasLinks {
 
   implicit val writes: OWrites[Def2_RetrievePeriodSummaryResponse] = Json.writes[Def2_RetrievePeriodSummaryResponse]
 
-  implicit object Def2_RetrievePeriodSubmissionLinksFactory
-      extends HateoasLinksFactory[Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
-
-    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
-      import data._
-      Seq(
-        amendPeriodSummary(appConfig, nino, businessId, periodId, taxYear),
-        retrievePeriodSummary(appConfig, nino, businessId, periodId, taxYear),
-        listPeriodSummaries(appConfig, nino, businessId, taxYear, isSelf = false)
-      )
-    }
-
-  }
-
 }
-
-case class RetrievePeriodSummaryHateoasData(nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) extends HateoasData

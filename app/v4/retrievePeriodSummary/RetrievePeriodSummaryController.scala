@@ -20,14 +20,11 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.hateoas.HateoasFactory
-import shared.models.domain.TaxYear
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryHateoasData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-import scala.util.Try
 
 @Singleton
 class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
@@ -54,10 +51,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
         RequestHandler
           .withValidator(validator)
           .withService(service.retrievePeriodSummary)
-          .withHateoasResultFrom(hateoasFactory) { (parsedRequest, _) =>
-            val maybeTaxYear = taxYear.flatMap(t => Try(TaxYear.fromMtd(t)).toOption)
-            RetrievePeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, maybeTaxYear)
-          }
+          .withPlainJsonResult()
 
       requestHandler.handleRequest()
     }
