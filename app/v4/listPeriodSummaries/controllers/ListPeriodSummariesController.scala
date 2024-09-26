@@ -20,11 +20,9 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers._
 import shared.hateoas.HateoasFactory
-import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v4.listPeriodSummaries.controllers.validators.ListPeriodSummariesValidatorFactory
-import v4.listPeriodSummaries.models.response.listPeriodSummaries.ListPeriodSummariesHateoasData
 import v4.listPeriodSummaries.services.ListPeriodSummariesService
 
 import javax.inject.{Inject, Singleton}
@@ -54,8 +52,7 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.listPeriodSummaries)
-        .withResultCreator(ResultCreator.hateoasListWrapping(hateoasFactory)((_, _) =>
-          ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), taxYear.map(TaxYear.fromMtd))))
+        .withPlainJsonResult(OK)
 
       requestHandler.handleRequest()
     }

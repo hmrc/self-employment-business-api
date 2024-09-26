@@ -18,9 +18,6 @@ package v4.listPeriodSummaries.models.response.listPeriodSummaries
 
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
-import shared.hateoas.Link
-import shared.hateoas.Method._
-import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.utils.UnitSpec
 
 class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
@@ -89,66 +86,6 @@ class ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
           |}
     """.stripMargin
       )
-    }
-  }
-
-  "LinksFactory" when {
-    val nino           = "AA111111A"
-    val businessId     = "id"
-    val periodId       = "periodId"
-    val hateoasData    = ListPeriodSummariesHateoasData(Nino(nino), BusinessId(businessId), None)
-    val hateoasDataTys = hateoasData.copy(taxYear = Some(TaxYear.fromMtd("2023-24")))
-
-    "TYS feature switch is disabled" should {
-      "return the correct top-level links" in {
-        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-
-        ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasData) shouldBe Seq(
-          Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
-          Link(href = s"/test/context/$nino/$businessId/period", method = GET, rel = "self")
-        )
-      }
-
-      "return the correct item-level links" in {
-        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-
-        val periodDetails = PeriodDetails(
-          periodId,
-          "",
-          ""
-          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
-        )
-
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasData, periodDetails) shouldBe Seq(
-          Link(href = s"/test/context/$nino/$businessId/period/$periodId", method = GET, rel = "self")
-        )
-      }
-    }
-
-    "TYS feature switch is enabled and tax year is TYS" should {
-      "return the correct top-level links" in {
-        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-
-        ListPeriodSummariesResponse.LinksFactory.links(mockAppConfig, hateoasDataTys) shouldBe Seq(
-          Link(href = s"/test/context/$nino/$businessId/period", method = POST, rel = "create-self-employment-period-summary"),
-          Link(href = s"/test/context/$nino/$businessId/period?taxYear=2023-24", method = GET, rel = "self")
-        )
-      }
-
-      "return the correct item-level links" in {
-        MockedAppConfig.apiGatewayContext.returns("test/context").anyNumberOfTimes()
-
-        val periodDetails = PeriodDetails(
-          periodId,
-          "",
-          ""
-          //          Some("2020-01-02") // To be reinstated, see MTDSA-15595
-        )
-
-        ListPeriodSummariesResponse.LinksFactory.itemLinks(mockAppConfig, hateoasDataTys, periodDetails) shouldBe Seq(
-          Link(href = s"/test/context/$nino/$businessId/period/$periodId?taxYear=2023-24", method = GET, rel = "self")
-        )
-      }
     }
   }
 

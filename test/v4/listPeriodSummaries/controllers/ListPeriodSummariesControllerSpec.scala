@@ -27,7 +27,7 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v4.listPeriodSummaries.controllers.validators.MockListPeriodSummariesValidatorFactory
 import v4.listPeriodSummaries.models.request.listPeriodSummaries.ListPeriodSummariesRequestData
-import v4.listPeriodSummaries.models.response.listPeriodSummaries.{ListPeriodSummariesHateoasData, ListPeriodSummariesResponse, PeriodDetails}
+import v4.listPeriodSummaries.models.response.listPeriodSummaries.{ListPeriodSummariesResponse, PeriodDetails}
 import v4.listPeriodSummaries.services.MockListPeriodSummariesService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -62,21 +62,7 @@ class ListPeriodSummariesControllerSpec
       |    {
       |      "periodId": "$periodId",
       |      "periodStartDate": "$from",
-      |      "periodEndDate": "$to",
-      |      "links": [
-      |        {
-      |          "href": "test/href/$periodId",
-      |          "method": "GET",
-      |          "rel": "self"
-      |        }
-      |      ]
-      |    }
-      |  ],
-      |  "links": [
-      |    {
-      |      "href": "test/href",
-      |      "method": "GET",
-      |      "rel": "self"
+      |      "periodEndDate": "$to"
       |    }
       |  ]
       |}
@@ -88,21 +74,7 @@ class ListPeriodSummariesControllerSpec
                                            |    {
                                            |      "periodId": "$periodId",
                                            |      "periodStartDate": "$from",
-                                           |      "periodEndDate": "$to",
-                                           |      "links": [
-                                           |        {
-                                           |          "href": "test/href/$periodId?taxYear=$taxYear",
-                                           |          "method": "GET",
-                                           |          "rel": "self"
-                                           |        }
-                                           |      ]
-                                           |    }
-                                           |  ],
-                                           |  "links": [
-                                           |    {
-                                           |      "href": "test/href?taxYear=$taxYear",
-                                           |      "method": "GET",
-                                           |      "rel": "self"
+                                           |      "periodEndDate": "$to"
                                            |    }
                                            |  ]
                                            |}
@@ -117,10 +89,6 @@ class ListPeriodSummariesControllerSpec
           .listPeriodSummaries(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        MockHateoasFactory
-          .wrapList(response, ListPeriodSummariesHateoasData(Nino(validNino), BusinessId(businessId), None))
-          .returns(HateoasWrapper(hateoasResponse, Seq(testHateoasLink)))
-
         runOkTest(
           expectedStatus = OK,
           maybeExpectedResponseBody = Some(responseBody)
@@ -133,10 +101,6 @@ class ListPeriodSummariesControllerSpec
         MockListPeriodSummariesService
           .listPeriodSummaries(tysRequestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        MockHateoasFactory
-          .wrapList(response, ListPeriodSummariesHateoasData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear))))
-          .returns(HateoasWrapper(tysHateoasResponse, Seq(testTysHateoasLink)))
 
         runOkTest(
           expectedStatus = OK,
