@@ -25,8 +25,6 @@ import shared.hateoas.HateoasFactory
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v4.amendPeriodSummary.model.response.AmendPeriodSummaryHateoasData
-import v4.amendPeriodSummary.model.response.AmendPeriodSummaryResponse.LinksFactory
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -66,9 +64,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
             taxYear.map(year => Map("taxYear" -> year)).getOrElse(Map.empty),
           Some(request.body)
         ))
-        .withHateoasResultFrom(hateoasFactory) { (parsedRequest, _) =>
-          AmendPeriodSummaryHateoasData(parsedRequest.nino, parsedRequest.businessId, periodId, parsedRequest.maybeTaxYear)
-        }
+        .withNoContentResult(OK)
 
       requestHandler.handleRequest()
     }

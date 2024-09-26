@@ -51,7 +51,6 @@ class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe OK
-        response.json shouldBe responseJson
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
@@ -178,32 +177,6 @@ class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
     def mtdUri: String        = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
     def tysTaxYear: String    = "23-24"
     def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
-
-    def amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    def retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    def listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
-
-    val responseJson: JsValue = Json.parse(s"""
-         |{
-         |  "links": [
-         |    {
-         |      "href": "$amendPeriodSummaryHateoasUri",
-         |      "rel": "amend-self-employment-period-summary",
-         |      "method": "PUT"
-         |    },
-         |    {
-         |      "href": "$retrievePeriodSummaryHateoasUri",
-         |      "rel": "self",
-         |      "method": "GET"
-         |    },
-         |    {
-         |      "href": "$listPeriodSummariesHateoasUri",
-         |      "rel": "list-self-employment-period-summaries",
-         |      "method": "GET"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin)
 
     def setupStubs(): StubMapping
 
