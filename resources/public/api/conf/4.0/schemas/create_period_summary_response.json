@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create a Self-Employment Period Summary",
+  "description": "Create a Self-Employment Period Summary Response",
+  "type": "object",
+  "properties": {
+    "periodId": {
+      "type": "string",
+      "description": "An identifier for the update period, unique to the customer's self-employment business.",
+      "example": "2017-04-06_2017-07-04"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "periodId"
+  ]
+}

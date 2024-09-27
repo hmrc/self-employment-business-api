@@ -85,6 +85,15 @@ responses:
         $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
       Link:
         $ref: './common/headers.yaml#/components/parameters/linkHeader'
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/create_period_summary_response.json'
+        examples:
+          example-response:
+            description: Create Period Summary Response
+            value:
+              $ref: './examples/create_period_summary_response.json'
 
   "400":
     description: Bad request

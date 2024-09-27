@@ -52,7 +52,7 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
       val requestHandler = RequestHandler
         .withValidator(validator)
         .withService(service.listPeriodSummaries)
-        .withPlainJsonResult(OK)
+        .withPlainJsonResult()
 
       requestHandler.handleRequest()
     }
