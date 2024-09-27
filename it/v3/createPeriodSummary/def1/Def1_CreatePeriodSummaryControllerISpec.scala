@@ -298,12 +298,12 @@ class Def1_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
       s"given a body missing mandatory fields" in new Test {
         override val requestBodyJson: JsValue = Json.parse("""
-          | {
-          |     "periodDates": {
-          |           "periodEndDate": "2019-08-24"
-          |     }
-          |}
-          |""".stripMargin)
+                                                             | {
+                                                             |     "periodDates": {
+                                                             |           "periodEndDate": "2019-08-24"
+                                                             |     }
+                                                             |}
+                                                             |""".stripMargin)
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()

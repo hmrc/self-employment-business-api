@@ -28,11 +28,11 @@ class Def2_CreateAmend_FirstYearSpec extends UnitSpec {
     )
 
   val json: JsValue = Json.parse("""
-      |{
-      |  "qualifyingDate": "2020-01-01",
-      |  "qualifyingAmountExpenditure": 3000.40
-      |}
-      |""".stripMargin)
+                                   |{
+                                   |  "qualifyingDate": "2020-01-01",
+                                   |  "qualifyingAmountExpenditure": 3000.40
+                                   |}
+                                   |""".stripMargin)
 
   "reads" when {
     "passed a valid JSON" should {

@@ -59,15 +59,6 @@ responses:
         $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
       Link:
         $ref: './common/headers.yaml#/components/parameters/linkHeader'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/create_and_amend_annual_submission_response.json'
-        examples:
-          example-response:
-            description: Example Response
-            value:
-              $ref: './examples/create_and_amend_annual_submission_response.json'
 
   "400":
     description: Bad request
