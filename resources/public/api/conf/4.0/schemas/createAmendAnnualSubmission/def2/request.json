@@ -1,0 +1,289 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "TY 2024-25 or later",
+  "description": "Create and Amend Self-Employment Annual Submission Request",
+  "type": "object",
+  "properties": {
+    "adjustments": {
+      "type": "object",
+      "description": "Object containing the details about annual adjustments",
+      "properties": {
+        "includedNonTaxableProfits": {
+          "description": "Income, receipts and other profits included in business income or expenses but not taxable as business profits. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "basisAdjustment": {
+          "description": "If your basis period is not the same as your accounting period, enter the adjustment needed to arrive at the profit or loss for the basis period. If the adjustment needs to be taken off the profit figure, this should be negative. This value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "overlapReliefUsed": {
+          "description": "Overlap relief used this year. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "accountingAdjustment": {
+          "description": "Adjustment for change of accounting practice. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "averagingAdjustment": {
+          "description": "Averaging adjustment (only for farmers, market gardeners and creators of literary or artistic works) – if the adjustment needs to be taken off the profit figure, this should be negative. This value must be between -99999999999.99 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "outstandingBusinessIncome": {
+          "description": "Any other business income not included in other fields. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "balancingChargeBpra": {
+          "description": "Balancing charge on sale or cessation of business use (only where Business Premises Renovation Allowance has been claimed). This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "balancingChargeOther": {
+          "description": "Balancing charge on sale or cessation of business use (where you have disposed of assets for more than their tax value). This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "goodsAndServicesOwnUse": {
+          "description": "Value of the normal sale price of goods or stock have been taken out of the business. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        }
+        {{#if (enabled 'adjustmentsAdditionalFields')}},
+        "transitionProfitAmount": {
+          "description": "{{#unless (releasedInProduction 'adjustmentsAdditionalFields')}}[Test only] {{/unless}}Amount of transition profit arising in this tax year for this income source. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "transitionProfitAccelerationAmount": {
+          "description": "{{#unless (releasedInProduction 'adjustmentsAdditionalFields')}}[Test only] {{/unless}}Additional amount of transition profit elected to be treated as arising in this tax year for this income source. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        }
+        {{/if}}
+      }
+    },
+    "allowances": {
+      "type": "object",
+      "description": "Object containing the details about annual allowances",
+      "properties": {
+        "annualInvestmentAllowance": {
+          "description": "Annual investment allowance on items that qualify up to the AIA amount. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "capitalAllowanceMainPool": {
+          "description": "Capital allowances at 18% on equipment, including cars with lower CO2 emissions. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "capitalAllowanceSpecialRatePool": {
+          "description": "Capital allowances at 8% on equipment, including cars with higher CO2 emissions. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "zeroEmissionsGoodsVehicleAllowance": {
+          "description": "Zero emissions goods vehicle allowance for goods vehicles purchased for business use. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "2000.99"
+        },
+        "businessPremisesRenovationAllowance": {
+          "description": "Business Premises Renovation Allowance if converting or renovating unused qualifying business premises. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "1000.45"
+        },
+        "enhancedCapitalAllowance": {
+          "description": "Other enhanced capital allowances. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "1000.45"
+        },
+        "allowanceOnSales": {
+          "description": "Allowances on sale or cessation of business use (where you have disposed of assets for less than their tax value). The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "1000.45"
+        },
+        "capitalAllowanceSingleAssetPool": {
+          "description": "Claim to capital allowances in respect of all single asset pools. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "500.25"
+        },
+        "electricChargePointAllowance": {
+          "description": "The expenditure incurred on electric charge-point equipment. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "1000.45"
+        },
+        "zeroEmissionsCarAllowance": {
+          "description": "The amount of zero emissions car allowance. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "example": "5000.99"
+        },
+        "tradingIncomeAllowance": {
+          "description": "The amount of trading allowance (can not be supplied with any other allowances). The value must be between 0 and 1000 up to 2 decimal places.",
+          "type": "number",
+          "example": "500.99"
+        },
+        "structuredBuildingAllowance": {
+          "type": "array",
+          "description": "Details about structured building allowance",
+          "items": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "description": "The amount of structured building allowance. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                "type": "number",
+                "example": "5000.99"
+              },
+              "firstYear": {
+                "type": "object",
+                "description": "Object containing the details about structured building allowance",
+                "properties": {
+                  "qualifyingDate": {
+                    "description": "The date qualified for structured building allowance. Must conform to the format YYYY-MM-DD.",
+                    "type": "string",
+                    "example": "2020-01-01"
+                  },
+                  "qualifyingAmountExpenditure": {
+                    "description": "The amount of qualifying expenditure. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                    "type": "number",
+                    "example": "5000.99"
+                  }
+                },
+                "required": [
+                  "qualifyingDate",
+                  "qualifyingAmountExpenditure"
+                ]
+              },
+              "building": {
+                "type": "object",
+                "description": "Object holding structured building details.\nPostcode is mandatory and minimum one of name and number field must be supplied",
+                "properties": {
+                  "name": {
+                    "description": "The name of the building.",
+                    "type": "string",
+                    "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
+                    "example": "Green Oak’s"
+                  },
+                  "number": {
+                    "description": "The number of the building.",
+                    "type": "string",
+                    "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
+                    "example": "16D"
+                  },
+                  "postcode": {
+                    "description": "The postcode for the building.",
+                    "type": "string",
+                    "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
+                    "example": "SW1A 2AA"
+                  }
+                },
+                "required": [
+                  "postcode"
+                ]
+              }
+            },
+            "required": [
+              "amount",
+              "building"
+            ]
+          }
+        },
+        "enhancedStructuredBuildingAllowance": {
+          "type": "array",
+          "description": "Details about enhanced structured building allowance",
+          "items": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "description": "The amount of enhanced structured building allowance. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                "type": "number",
+                "example": "5000.99"
+              },
+              "firstYear": {
+                "type": "object",
+                "description": "Object containing the details about enhanced structured building allowance",
+                "properties": {
+                  "qualifyingDate": {
+                    "description": "The date qualified for enhanced structured building allowance. Must conform to the format YYYY-MM-DD.",
+                    "type": "string",
+                    "example": "2020-01-01"
+                  },
+                  "qualifyingAmountExpenditure": {
+                    "description": "The amount of qualifying expenditure. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
+                    "type": "number",
+                    "example": "5000.99"
+                  }
+                },
+                "required": [
+                  "qualifyingDate",
+                  "qualifyingAmountExpenditure"
+                ]
+              },
+              "building": {
+                "type": "object",
+                "description": "Object holding enhanced structured building details. Postcode is mandatory and minimum one of name and number field must be supplied",
+                "properties": {
+                  "name": {
+                    "description": "The name of the building.",
+                    "type": "string",
+                    "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
+                    "example": "Green Oak’s"
+                  },
+                  "number": {
+                    "description": "The number of the building.",
+                    "type": "string",
+                    "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
+                    "example": "16D"
+                  },
+                  "postcode": {
+                    "description": "The postcode for the building.",
+                    "type": "string",
+                    "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
+                    "example": "SW1A 2AA"
+                  }
+                },
+                "required": [
+                  "postcode"
+                ]
+              }
+            },
+            "required": [
+              "amount",
+              "building"
+            ]
+          }
+        }
+      }
+    },
+    "nonFinancials": {
+      "type": "object",
+      "description": "Object containing details about annual non financials",
+      "properties": {
+        "businessDetailsChangedRecently": {
+          "description": "A boolean to identify if business details have recently changed. The value must be true or false.",
+          "type": "boolean",
+          "example": "false"
+        },
+        "class4NicsExemptionReason": {
+          "description": "If exempt from paying Class 4 National Insurance, the reason for exemption.",
+          "type": "string",
+          "enum": [
+            "non-resident",
+            "trustee",
+            "diver",
+            "ITTOIA-2005",
+            "over-state-pension-age",
+            "under-16"
+          ],
+          "example": "non-resident"
+        }
+      },
+      "required": [
+        "businessDetailsChangedRecently"
+      ]
+    }
+  }
+}

@@ -50,25 +50,22 @@ requestBody:
     application/json:
       schema:
         oneOf:
-          - $ref: './schemas/def1/create_period_summary_request.json'
-          - $ref: './schemas/def2/create_period_summary_request.json'
+          - $ref: './schemas/createPeriodSummary/def1/request.json'
+          - $ref: './schemas/createPeriodSummary/def2/request.json'
       examples:
-        example-without-consolidated-request-2023-24-or-later:
-          description: Create Period Summary Non-Consolidated Request
+        "Without consolidated request for TY 2023-24 onwards":
           value:
-            $ref: './examples/def2/create_period_summary_non_consolidated_request.json'
-        example-with-consolidated-request-2023-24-or-later:
+            $ref: './examples/createPeriodSummary/def2/non_consolidated_request.json'
+        "With consolidated request for TY 2023-24 onwards":
+          value:
+            $ref: './examples/createPeriodSummary/def2/consolidated_request.json'
+        "Without consolidated request for TY 2022-23 and before":
+          value:
+            $ref: './examples/createPeriodSummary/def1/non_consolidated_request.json'
+        "With consolidated request for TY 2022-23 and before":
           description: Create Period Summary Request
           value:
-            $ref: './examples/def2/create_period_summary_consolidated_request.json'
-        example-without-consolidated-request-before-TY-2023-24:
-          description: Create Period Summary Non-Consolidated Request
-          value:
-            $ref: './examples/def1/create_period_summary_non_consolidated_request.json'
-        example-with-consolidated-request-before-TY-2023-24:
-          description: Create Period Summary Request
-          value:
-            $ref: './examples/def1/create_period_summary_consolidated_request.json'
+            $ref: './examples/createPeriodSummary/def1/consolidated_request.json'
 
 
 
@@ -88,12 +85,11 @@ responses:
     content:
       application/json:
         schema:
-          $ref: './schemas/create_period_summary_response.json'
+          $ref: './schemas/createPeriodSummary/response.json'
         examples:
-          example-response:
-            description: Create Period Summary Response
+          "Example response":
             value:
-              $ref: './examples/create_period_summary_response.json'
+              $ref: './examples/createPeriodSummary/response.json'
 
   "400":
     description: Bad request

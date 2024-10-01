@@ -44,25 +44,21 @@ responses:
       application/json:
         schema:
           oneOf:
-            - $ref: './schemas/def1/retrieve_annual_submission_response.json'
-            - $ref: './schemas/def2/retrieve_annual_submission_response.json'
+            - $ref: './schemas/retrieveAnnualSubmission/def1/response.json'
+            - $ref: './schemas/retrieveAnnualSubmission/def2/response.json'
         examples:
-          example-with-allowances-response-TY-2023-24-or-before:
-            description: Example Response with Full Allowances
+          "With allowances response for TY 2023-24 and before":
             value:
-              $ref: './examples/def1/retrieve_annual_submission_full_response.json'
-          example-with-trading-allowances-response-TY-2023-24-or-before:
-            description: Example Response with Trading Allowance
+              $ref: './examples/retrieveAnnualSubmission/def1/full_response.json'
+          "With trading allowances response for TY 2023-24 and before":
             value:
-              $ref: './examples/def1/retrieve_annual_submission_trading_allowance_response.json'
-          example-with-allowances-response-TY-2024-25-or-later:
-            description: Example Response with Full Allowances
+              $ref: './examples/retrieveAnnualSubmission/def1/trading_allowance_response.json'
+          "With allowances response for TY 2024-25 onwards":
             value:
-              $ref: './examples/def2/retrieve_annual_submission_full_response.json'
-          example-with-trading-allowances-response-TY-2024-25-or-later:
-            description: Example Response with Trading Allowance
+              $ref: './examples/retrieveAnnualSubmission/def2/full_response.json'
+          "With trading allowances response for TY 2024-25 onwards":
             value:
-              $ref: './examples/def2/retrieve_annual_submission_trading_allowance_response.json'
+              $ref: './examples/retrieveAnnualSubmission/def2/trading_allowance_response.json'
 
   "400":
     description: Bad request

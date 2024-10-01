@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Any tax year",
+  "description": "List Self-Employment Period Summaries Response",
+  "type": "object",
+  "properties": {
+    "periods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Details about Self-Employment periods.",
+        "properties": {
+          "periodId": {
+            "description": "Concatenated period start and end dates.",
+            "type": "string",
+            "example": "2017-04-06_2017-07-04"
+          },
+          "periodStartDate": {
+            "description": "The first day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
+            "type": "string",
+            "example": "2020-01-01"
+          },
+          "periodEndDate": {
+            "description": "The last day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
+            "type": "string",
+            "example": "2020-01-01"
+          }
+        },
+        "required": [
+          "periodId",
+          "periodStartDate",
+          "periodEndDate"
+        ]
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "periods"
+  ],
+  "additionalProperties": false
+}

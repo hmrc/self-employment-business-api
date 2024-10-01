@@ -23,15 +23,23 @@ import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import shared.config.AppConfig
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
-import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import v3.listPeriodSummaries.controllers.validators.resolvers.ResolveTysTaxYearWithMax
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinMax}
+import shared.models.domain.TaxYear
+import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 
 class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)(
     implicit appConfig: AppConfig)
     extends Validator[AmendPeriodSummaryRequestData] {
+
+  private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
+
+  private val resolveTaxYear = ResolveTaxYearMinMax(
+    minMaxTaxYears,
+    minError = InvalidTaxYearParameterError,
+    maxError = RuleTaxYearNotSupportedError
+  ).resolver
 
   lazy private val featureSwitches = SeBusinessFeatureSwitches()
 
@@ -44,7 +52,7 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId),
-      ResolveTysTaxYearWithMax(taxYear),
+      resolveTaxYear(taxYear),
       resolveJson(body)
     ).mapN(Def2_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
 
