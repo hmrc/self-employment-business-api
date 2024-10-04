@@ -107,7 +107,6 @@ class CreatePeriodSummaryControllerSpec
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
       auditService = mockAuditService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

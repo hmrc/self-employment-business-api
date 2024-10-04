@@ -115,7 +115,6 @@ class AmendPeriodSummaryControllerSpec
       validatorFactory = mockAmendPeriodSummaryValidatorFactory,
       service = mockAmendPeriodSummaryService,
       auditService = mockAuditService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

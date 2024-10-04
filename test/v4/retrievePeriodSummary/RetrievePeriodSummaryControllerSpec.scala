@@ -115,7 +115,6 @@ class RetrievePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -158,7 +157,6 @@ class RetrievePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

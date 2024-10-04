@@ -87,7 +87,6 @@ class RetrieveAnnualSubmissionControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveAnnualSubmissionValidatorFactory,
       service = mockRetrieveAnnualSubmissionService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

@@ -98,7 +98,6 @@ class CreateAmendAnnualSubmissionControllerSpec
       validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
       service = mockAmendAnnualSubmissionService,
       auditService = mockAuditService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
