@@ -22,7 +22,6 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -41,7 +40,6 @@ class AmendPeriodSummaryControllerSpec
     with ControllerTestRunner
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryValidatorFactory
-    with MockHateoasFactory
     with MockAuditService
     with MockAppConfig
     with Def1_AmendPeriodSummaryFixture
@@ -115,7 +113,6 @@ class AmendPeriodSummaryControllerSpec
       validatorFactory = mockAmendPeriodSummaryValidatorFactory,
       service = mockAmendPeriodSummaryService,
       auditService = mockAuditService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

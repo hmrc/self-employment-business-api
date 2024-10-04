@@ -21,7 +21,6 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -37,8 +36,7 @@ class RetrievePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrievePeriodSummaryService
-    with MockRetrievePeriodSummaryValidatorFactory
-    with MockHateoasFactory {
+    with MockRetrievePeriodSummaryValidatorFactory {
 
   private val businessId = "XAIS12345678910"
   private val taxYear    = "2023-24"
@@ -115,7 +113,6 @@ class RetrievePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -158,7 +155,6 @@ class RetrievePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
