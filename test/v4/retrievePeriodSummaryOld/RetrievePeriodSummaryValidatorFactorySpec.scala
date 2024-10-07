@@ -18,9 +18,9 @@ package v4.retrievePeriodSummaryOld
 
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
-import v4.retrievePeriodSummary.def1.Def1_RetrievePeriodSummaryValidator
-import v4.retrievePeriodSummary.def2.Def2_RetrievePeriodSummaryValidator
-import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
+import v4.retrievePeriodSummaryOld.def1.Def1_RetrievePeriodSummaryValidator
+import v4.retrievePeriodSummaryOld.def2.Def2_RetrievePeriodSummaryValidator
+import v4.retrievePeriodSummaryOld.model.request.RetrievePeriodSummaryRequestData
 
 class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
 

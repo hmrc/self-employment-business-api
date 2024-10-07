@@ -22,12 +22,16 @@ import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.retrievePeriodSummary.model.request.{
+import v4.retrievePeriodSummaryOld.model.request.{
   Def1_RetrievePeriodSummaryRequestData,
   Def2_RetrievePeriodSummaryRequestData,
   RetrievePeriodSummaryRequestData
 }
-import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
+import v4.retrievePeriodSummaryOld.model.response.{
+  Def1_RetrievePeriodSummaryResponse,
+  Def2_RetrievePeriodSummaryResponse,
+  RetrievePeriodSummaryResponse
+}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

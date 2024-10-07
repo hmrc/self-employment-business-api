@@ -20,8 +20,8 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
-import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
-import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
+import v4.retrievePeriodSummaryOld.model.request.RetrievePeriodSummaryRequestData
+import v4.retrievePeriodSummaryOld.model.response.RetrievePeriodSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 

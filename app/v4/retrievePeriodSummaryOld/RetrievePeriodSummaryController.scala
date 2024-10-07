@@ -35,7 +35,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "RetrievePeriodSummaryController", endpointName = "retrieveSelfEmploymentPeriodicSummary")
+    EndpointLogContext(controllerName = "RetrievePeriodSummaryControllerOld", endpointName = "retrieveSelfEmploymentPeriodicSummary")
 
   val endpointName = "retrieve-period-summary"
 

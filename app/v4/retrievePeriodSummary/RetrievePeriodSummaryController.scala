@@ -39,7 +39,7 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
 
   val endpointName = "retrieve-period-summary"
 
-  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[AnyContent] =
+  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 

@@ -21,7 +21,7 @@ import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
 import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
-import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import v4.retrievePeriodSummaryOld.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v4.validators.resolvers.ResolvePeriodId
 
 class Def1_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String) extends Validator[RetrievePeriodSummaryRequestData] {

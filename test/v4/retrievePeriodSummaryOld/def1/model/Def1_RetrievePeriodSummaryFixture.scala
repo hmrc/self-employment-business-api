@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummaryOld.model
+package v4.retrievePeriodSummaryOld.def1.model
 
 import play.api.libs.json.{JsValue, Json}
 

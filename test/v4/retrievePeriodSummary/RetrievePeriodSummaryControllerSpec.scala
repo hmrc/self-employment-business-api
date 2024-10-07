@@ -22,12 +22,10 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import v4.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
-import v4.retrievePeriodSummary.def2.model.response.Def2_Retrieve_PeriodDates
-import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData}
-import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
+import v4.retrievePeriodSummary.def2.model.response.{Def2_RetrievePeriodSummaryResponse, Def2_Retrieve_PeriodDates}
+import v4.retrievePeriodSummary.model.request.Def2_RetrievePeriodSummaryRequestData
+import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,18 +41,6 @@ class RetrievePeriodSummaryControllerSpec
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
-      "given a valid non-TYS request" in new NonTysTest {
-        willUseValidator(returningSuccess(requestData))
-
-        MockRetrievePeriodSummaryService
-          .retrieve(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, responseBody))))
-
-        runOkTest(
-          expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseJson)
-        )
-      }
       "given a valid TYS request" in new TysTest {
         willUseValidator(returningSuccess(requestData))
 
@@ -68,62 +54,6 @@ class RetrievePeriodSummaryControllerSpec
         )
       }
     }
-
-    "return the error as per spec" when {
-      "the parser validation fails" in new NonTysTest {
-        willUseValidator(returning(NinoFormatError))
-
-        runErrorTest(NinoFormatError)
-      }
-
-      "the service returns an error" in new NonTysTest {
-        willUseValidator(returningSuccess(requestData))
-
-        MockRetrievePeriodSummaryService
-          .retrieve(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-        runErrorTest(RuleTaxYearNotSupportedError)
-      }
-    }
-  }
-
-  private trait NonTysTest extends ControllerTest {
-    val periodId = "2019-01-01_2020-01-01"
-
-    val requestData: Def1_RetrievePeriodSummaryRequestData =
-      Def1_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId))
-
-    val responseBody: RetrievePeriodSummaryResponse =
-      Def1_RetrievePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2019-01-01", "2020-01-01"), None, None, None)
-
-    val responseJson: JsValue = Json.parse(
-      s"""
-         |{
-         |  "periodDates": {
-         |    "periodStartDate": "2019-01-01",
-         |    "periodEndDate": "2020-01-01"
-         |  }
-         |}
-      """.stripMargin
-    )
-
-    val controller = new RetrievePeriodSummaryController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
-      service = mockRetrievePeriodSummaryService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
-      "supporting-agents-access-control.enabled" -> true
-    )
-
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
-
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, None)(fakeGetRequest)
   }
 
   private trait TysTest extends ControllerTest {
@@ -165,7 +95,7 @@ class RetrievePeriodSummaryControllerSpec
 
     MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, taxYear)(fakeGetRequest)
   }
 
 }

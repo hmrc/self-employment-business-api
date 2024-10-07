@@ -152,10 +152,6 @@ class Def2_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationB
     val mtdTaxYear               = "2023-24"
     lazy val tysTaxYear: TaxYear = TaxYear.fromMtd(mtdTaxYear)
 
-    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
-
     def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {

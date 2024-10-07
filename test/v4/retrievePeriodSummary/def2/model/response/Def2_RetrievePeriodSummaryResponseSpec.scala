@@ -20,7 +20,6 @@ import play.api.libs.json.{JsValue, Json}
 import shared.config.MockAppConfig
 import shared.utils.UnitSpec
 import v4.retrievePeriodSummary.def2.model.Def2_RetrievePeriodSummaryFixture
-import v4.retrievePeriodSummary.model.response.Def2_RetrievePeriodSummaryResponse
 
 class Def2_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def2_RetrievePeriodSummaryFixture {
 

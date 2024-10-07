@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummaryOld.model.response
+package v4.retrievePeriodSummaryOld.def1.model.response
 
 import play.api.libs.json.Json
 import shared.config.MockAppConfig
 import shared.utils.UnitSpec
-import v4.retrievePeriodSummary.def1.model.Def1_RetrievePeriodSummaryFixture
-import v4.retrievePeriodSummary.model.response.Def1_RetrievePeriodSummaryResponse
+import v4.retrievePeriodSummaryOld.def1.model.Def1_RetrievePeriodSummaryFixture
+import v4.retrievePeriodSummaryOld.model.response.Def1_RetrievePeriodSummaryResponse
 
 class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrievePeriodSummaryFixture {
 

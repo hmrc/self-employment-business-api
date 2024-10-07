@@ -24,8 +24,8 @@ import shared.config.AppConfig
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
-import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
-import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
+import v4.retrievePeriodSummaryOld.model.request.RetrievePeriodSummaryRequestData
+import v4.retrievePeriodSummaryOld.model.response.RetrievePeriodSummaryResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

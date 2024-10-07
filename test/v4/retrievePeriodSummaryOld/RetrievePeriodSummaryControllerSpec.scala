@@ -24,10 +24,14 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import v4.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
-import v4.retrievePeriodSummary.def2.model.response.Def2_Retrieve_PeriodDates
-import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData}
-import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
+import v4.retrievePeriodSummaryOld.def1.model.response.Def1_Retrieve_PeriodDates
+import v4.retrievePeriodSummaryOld.def2.model.response.Def2_Retrieve_PeriodDates
+import v4.retrievePeriodSummaryOld.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData}
+import v4.retrievePeriodSummaryOld.model.response.{
+  Def1_RetrievePeriodSummaryResponse,
+  Def2_RetrievePeriodSummaryResponse,
+  RetrievePeriodSummaryResponse
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
