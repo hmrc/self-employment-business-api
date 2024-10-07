@@ -18,7 +18,7 @@ package v3.retrieveAnnualSubmission.model.response
 
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.{Json, OWrites}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.utils.JsonWritesUtil
@@ -38,7 +38,7 @@ object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
   implicit object RetrieveAnnualSubmissionLinksFactory
       extends HateoasLinksFactory[RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
 
-    override def links(appConfig: AppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
       import data._
       List(
         amendAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),

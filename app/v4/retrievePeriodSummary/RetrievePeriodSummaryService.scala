@@ -20,7 +20,7 @@ import api.models.errors.PeriodIdFormatError
 import cats.data.EitherT
 import cats.implicits._
 import config.SeBusinessFeatureSwitches
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrievePeriodSummaryService @Inject() (
     connector: RetrievePeriodSummaryConnector
-)(implicit appConfig: AppConfig)
+)(implicit appConfig: SharedAppConfig)
     extends BaseService {
 
   lazy private val featureSwitches = SeBusinessFeatureSwitches()

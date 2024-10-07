@@ -19,7 +19,7 @@ package v4.createPeriodSummary
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -41,7 +41,7 @@ class CreatePeriodSummaryControllerSpec
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryValidatorFactory
     with MockHateoasFactory
-    with MockAppConfig
+    with MockSharedAppConfig
     with MockAuditService
     with Def1_CreatePeriodSummaryFixture {
 
@@ -99,7 +99,7 @@ class CreatePeriodSummaryControllerSpec
   }
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -112,11 +112,11 @@ class CreatePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakePostRequest(requestMtdBodyJson))
 

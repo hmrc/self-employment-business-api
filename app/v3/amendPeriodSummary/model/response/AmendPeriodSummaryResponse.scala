@@ -17,7 +17,7 @@
 package v3.amendPeriodSummary.model.response
 
 import api.hateoas.HateoasLinks
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 
@@ -25,7 +25,7 @@ object AmendPeriodSummaryResponse extends HateoasLinks {
 
   implicit object LinksFactory extends HateoasLinksFactory[Unit, AmendPeriodSummaryHateoasData] {
 
-    override def links(appConfig: AppConfig, data: AmendPeriodSummaryHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: AmendPeriodSummaryHateoasData): Seq[Link] = {
       import data._
       List(
         amendPeriodSummary(appConfig, nino, businessId, periodId, taxYear),

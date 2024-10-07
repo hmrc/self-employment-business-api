@@ -17,7 +17,7 @@
 package v4.listPeriodSummaries
 
 import config.SeBusinessFeatureSwitches
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -29,7 +29,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: SeBusinessFeatureSwitches)
+class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)(implicit
+    featureSwitches: SeBusinessFeatureSwitches)
     extends BaseDownstreamConnector {
 
   def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit

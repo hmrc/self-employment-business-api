@@ -20,7 +20,7 @@ import api.models.domain.PeriodId
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
@@ -28,7 +28,7 @@ import shared.utils.UnitSpec
 import v4.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
 import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 
-class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -156,7 +156,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
     new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
 
   private def setupMocks(): Unit =
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {

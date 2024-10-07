@@ -20,7 +20,7 @@ import api.models.domain.PeriodId
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -43,7 +43,7 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryValidatorFactory
     with MockHateoasFactory
     with MockAuditService
-    with MockAppConfig
+    with MockSharedAppConfig
     with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
 
@@ -101,7 +101,7 @@ class AmendPeriodSummaryControllerSpec
   }
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val businessId = "XAIS12345678910"
 
@@ -120,11 +120,11 @@ class AmendPeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(

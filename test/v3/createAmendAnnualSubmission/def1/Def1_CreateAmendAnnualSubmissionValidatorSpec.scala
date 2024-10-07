@@ -22,7 +22,7 @@ import config.MockSeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.utils.UnitSpec
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
@@ -30,7 +30,11 @@ import v3.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactor
 import v3.createAmendAnnualSubmission.def1.model.request._
 import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
-class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig with MockSeBusinessFeatureSwitches {
+class Def1_CreateAmendAnnualSubmissionValidatorSpec
+    extends UnitSpec
+    with JsonErrorValidators
+    with MockSharedAppConfig
+    with MockSeBusinessFeatureSwitches {
 
   private implicit val correlationId: String = "1234"
 
@@ -175,7 +179,7 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     validatorFactory.validator(nino, businessId, taxYear, body)
 
   private def setupMocks(): Unit =
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {

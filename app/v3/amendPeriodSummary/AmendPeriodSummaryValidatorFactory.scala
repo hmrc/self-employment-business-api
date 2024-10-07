@@ -17,7 +17,7 @@
 package v3.amendPeriodSummary
 
 import shared.controllers.validators.Validator
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import play.api.libs.json.JsValue
 import v3.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
 import v3.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
@@ -26,7 +26,7 @@ import v3.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: AppConfig) {
+class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: SharedAppConfig) {
 
   def validator(nino: String,
                 businessId: String,

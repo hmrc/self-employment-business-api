@@ -19,7 +19,7 @@ package v4.createPeriodSummary
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers._
 import shared.hateoas.HateoasFactory
 import shared.routing.Version
@@ -37,7 +37,7 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
                                                auditService: AuditService,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
-                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
