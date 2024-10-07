@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def1
+package v4.retrievePeriodSummaryOld.def2
 
 import api.models.errors.PeriodIdFormatError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -23,16 +23,17 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
+class Def2_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] = {
     super.servicesConfig ++ Map(
-      "feature-switch.cl290.enabled" -> "false"
+      "feature-switch.cl290.enabled" -> "true"
     )
   }
 
@@ -40,39 +41,43 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     "return a 200 status code" when {
 
-      "given a valid non-TYS request" in new Test {
-
+      "given a valid TYS request" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
+          val queryParams = Map[String, String]("from" -> fromDate, "to" -> toDate)
+
           BaseDownstreamStub
-            .when(BaseDownstreamStub.GET, downstreamUri)
+            .when(BaseDownstreamStub.GET, tysDownstreamUri(), queryParams)
             .thenReturn(OK, downstreamResponseBody(fromDate, toDate))
         }
 
         val response: WSResponse = await(request().get())
         response.status shouldBe OK
-        response.json shouldBe responseBody(fromDate, toDate)
+        response.json shouldBe responseBody(fromDate, toDate, includeTaxTakenOffTradingIncome = true)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
+
       }
     }
 
     "return error according to spec" when {
 
-      "validation error" when {
-        def validationErrorTest(requestNino: String,
-                                requestBusinessId: String,
-                                requestPeriodId: String,
-                                expectedStatus: Int,
-                                expectedBody: MtdError): Unit = {
+      "TYS validation error" when {
+        def validationTysErrorTest(requestNino: String,
+                                   requestBusinessId: String,
+                                   requestPeriodId: String,
+                                   requestTaxYear: String,
+                                   expectedStatus: Int,
+                                   expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val periodId: String   = requestPeriodId
+            override val mtdTaxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -87,24 +92,26 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = List(
-          ("AA123", "XAIS12345678910", "2019-01-01_2020-01-01", BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", "2019-01-01_2020-01-01", BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2020", BAD_REQUEST, PeriodIdFormatError)
+          ("AA123", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-24", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2023-04-01_2024-01-01", "2023-24", BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2020", "2023-24", BAD_REQUEST, PeriodIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => (validationTysErrorTest _).tupled(args))
       }
 
       "downstream service error" when {
-
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-
           s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
+
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              BaseDownstreamStub.onError(BaseDownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
+              BaseDownstreamStub.onError(BaseDownstreamStub.GET, tysDownstreamUri(), downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().get())
@@ -137,35 +144,37 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino       = "AA123456A"
-    val businessId = "XAIS12345678910"
-    val periodId   = "2019-01-01_2020-01-01"
+    val nino                     = "AA123456A"
+    val businessId               = "XAIS12345678910"
+    val periodId                 = "2023-04-01_2024-01-01"
+    val fromDate                 = "2023-04-01"
+    val toDate                   = "2024-01-01"
+    val mtdTaxYear               = "2023-24"
+    lazy val tysTaxYear: TaxYear = TaxYear.fromMtd(mtdTaxYear)
 
-    val fromDate = "2019-01-01"
-    val toDate   = "2020-01-01"
+    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
 
-    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
+    def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"$uri?taxYear=$mtdTaxYear")
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
         )
     }
 
-    def responseBody(fromDate: String, toDate: String): JsValue = Json.parse(s"""
+    def responseBody(fromDate: String, toDate: String, includeTaxTakenOffTradingIncome: Boolean): JsValue = Json.parse(s"""
       |{
       |  "periodDates":{
       |      "periodStartDate": "$fromDate",
       |      "periodEndDate":"$toDate"
       |   },
       |   "periodIncome":{
+      |      ${if (includeTaxTakenOffTradingIncome) "\"taxTakenOffTradingIncome\": 3000.99," else ""}
       |      "turnover":3100.00,
       |      "other":3200.00
       |   },
@@ -288,10 +297,10 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         | {
-         |   "code": "$code",
-         |   "reason": "message"
-         | }
+         |      {
+         |        "code": "$code",
+         |        "reason": "message"
+         |      }
     """.stripMargin
 
   }
