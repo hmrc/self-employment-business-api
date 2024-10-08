@@ -20,7 +20,7 @@
       "method": "PUT"
     },
     {
-      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12/2023-24",
       "rel": "self",
       "method": "GET"
     },

@@ -1,4 +1,4 @@
-summary: Retrieve a Self-Employment Period Summary
+summary: Retrieve a Self-Employment Period Summary Old
 description: |
   This endpoint enables you to retrieve a single self-employment period summary for a given identifier.
   A National Insurance number, business ID and period ID must be provided.
@@ -23,7 +23,7 @@ parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
   - $ref: './common/pathParameters.yaml#/components/parameters/periodId'
-  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearTo2025'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
   - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
@@ -48,14 +48,21 @@ responses:
       application/json:
         schema:
           oneOf:
-            - $ref: './schemas/retrievePeriodSummary/def1/response.json'
+            - $ref: './schemas/retrievePeriodSummaryOld/def1/response.json'
+            - $ref: './schemas/retrievePeriodSummaryOld/def2/response.json'
         examples:
           "Non-consolidated response for TY 2023-24 onwards":
             value:
-              $ref: './examples/retrievePeriodSummary/def1/non_consolidated_response.json'
+              $ref: './examples/retrievePeriodSummaryOld/def2/non_consolidated_response.json'
           "Consolidated response for TY 2023-24 onwards":
             value:
-              $ref: './examples/retrievePeriodSummary/def1/consolidated_response.json'
+              $ref: './examples/retrievePeriodSummaryOld/def2/consolidated_response.json'
+          "Non-consolidated response for TY 2022-23 and before":
+            value:
+              $ref: './examples/retrievePeriodSummaryOld/def1/non_consolidated_response.json'
+          "Consolidated response for TY 2022-23 and before":
+            value:
+              $ref: './examples/retrievePeriodSummaryOld/def1/consolidated_response.json'
 
   "400":
     description: Bad request
