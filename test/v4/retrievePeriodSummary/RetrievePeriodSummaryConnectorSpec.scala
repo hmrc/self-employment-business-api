@@ -21,8 +21,8 @@ import config.MockSeBusinessFeatureSwitches
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v4.retrievePeriodSummary.def2.model.response.{Def2_RetrievePeriodSummaryResponse, Def2_Retrieve_PeriodDates}
-import v4.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import v4.retrievePeriodSummary.def1.model.response.{Def1_RetrievePeriodSummaryResponse, Retrieve_PeriodDates}
+import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
 import scala.concurrent.Future
@@ -36,8 +36,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
   private val fromDate   = "2019-01-25"
   private val toDate     = "2020-01-25"
 
-  private val def2Response: RetrievePeriodSummaryResponse = Def2_RetrievePeriodSummaryResponse(
-    Def2_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
+  private val def2Response: RetrievePeriodSummaryResponse = Def1_RetrievePeriodSummaryResponse(
+    Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
     None,
     None,
     None
@@ -53,7 +53,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
-        val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
+        val request: RetrievePeriodSummaryRequestData = Def1_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
 
         val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
           await(connector.retrievePeriodSummary(request))

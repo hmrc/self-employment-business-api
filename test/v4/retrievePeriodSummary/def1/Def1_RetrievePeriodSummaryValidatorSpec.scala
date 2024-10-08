@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2
+package v4.retrievePeriodSummary.def1
 
 import api.models.domain.PeriodId
 import api.models.errors.PeriodIdFormatError
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
-import v4.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 
-class Def2_RetrievePeriodSummaryValidatorSpec extends UnitSpec {
+class Def1_RetrievePeriodSummaryValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
@@ -38,7 +38,7 @@ class Def2_RetrievePeriodSummaryValidatorSpec extends UnitSpec {
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
   private def validator(nino: String, businessId: String, periodId: String, taxYear: String) =
-    new Def2_RetrievePeriodSummaryValidator(nino, businessId, periodId, taxYear)
+    new Def1_RetrievePeriodSummaryValidator(nino, businessId, periodId, taxYear)
 
   "validator()" should {
     "return the parsed domain object" when {
@@ -47,7 +47,7 @@ class Def2_RetrievePeriodSummaryValidatorSpec extends UnitSpec {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Right(Def2_RetrievePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear))
+        result shouldBe Right(Def1_RetrievePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear))
       }
     }
 

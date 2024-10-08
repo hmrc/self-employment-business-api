@@ -21,7 +21,7 @@ import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.retrievePeriodSummary.def2.model.response.Def2_RetrievePeriodSummaryResponse
+import v4.retrievePeriodSummary.def1.model.response.Def1_RetrievePeriodSummaryResponse
 import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
@@ -41,7 +41,7 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appCon
     val fromDate = periodId.from
     val toDate   = periodId.to
 
-    val downstreamUri = TaxYearSpecificIfsUri[Def2_RetrievePeriodSummaryResponse](
+    val downstreamUri = TaxYearSpecificIfsUri[Def1_RetrievePeriodSummaryResponse](
       s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
     val result = get(downstreamUri)
     result

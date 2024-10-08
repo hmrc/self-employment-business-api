@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2
+package v4.retrievePeriodSummary.def1
 
 import api.models.errors.PeriodIdFormatError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -29,11 +29,11 @@ import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
+class Def1_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] = {
     super.servicesConfig ++ Map(
-      "feature-switch.cl290.enabled" -> "false"
+      "feature-switch.cl290.enabled" -> "true"
     )
   }
 
@@ -41,7 +41,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     "return a 200 status code" when {
 
-      "given ay valid TYS request" in new Test {
+      "given a valid TYS request" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
@@ -56,7 +56,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().get())
         response.status shouldBe OK
-        response.json shouldBe responseBody(fromDate, toDate)
+        response.json shouldBe responseBody(fromDate, toDate, includeTaxTakenOffTradingIncome = true)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
 
@@ -143,6 +143,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
+
     val nino                     = "AA123456A"
     val businessId               = "XAIS12345678910"
     val periodId                 = "2023-04-01_2024-01-01"
@@ -162,13 +163,14 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         )
     }
 
-    def responseBody(fromDate: String, toDate: String): JsValue = Json.parse(s"""
+    def responseBody(fromDate: String, toDate: String, includeTaxTakenOffTradingIncome: Boolean): JsValue = Json.parse(s"""
       |{
       |  "periodDates":{
       |      "periodStartDate": "$fromDate",
       |      "periodEndDate":"$toDate"
       |   },
       |   "periodIncome":{
+      |      ${if (includeTaxTakenOffTradingIncome) "\"taxTakenOffTradingIncome\": 3000.99," else ""}
       |      "turnover":3100.00,
       |      "other":3200.00
       |   },

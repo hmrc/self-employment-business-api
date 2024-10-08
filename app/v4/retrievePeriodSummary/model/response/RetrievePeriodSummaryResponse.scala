@@ -17,7 +17,7 @@
 package v4.retrievePeriodSummary.model.response
 
 import play.api.libs.json.{Json, OWrites}
-import v4.retrievePeriodSummary.def2.model.response._
+import v4.retrievePeriodSummary.def1.model.response._
 
 trait RetrievePeriodSummaryResponse {
   def withoutTaxTakenOffTradingIncome: RetrievePeriodSummaryResponse
@@ -26,6 +26,6 @@ trait RetrievePeriodSummaryResponse {
 object RetrievePeriodSummaryResponse {
 
   implicit val writes: OWrites[RetrievePeriodSummaryResponse] =
-    (response: RetrievePeriodSummaryResponse) => Json.toJsObject(response.asInstanceOf[Def2_RetrievePeriodSummaryResponse])
+    (response: RetrievePeriodSummaryResponse) => Json.toJsObject(response.asInstanceOf[Def1_RetrievePeriodSummaryResponse])
 
 }

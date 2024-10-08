@@ -18,7 +18,7 @@ package v4.retrievePeriodSummary
 
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
-import v4.retrievePeriodSummary.def2.Def2_RetrievePeriodSummaryValidator
+import v4.retrievePeriodSummary.def1.Def1_RetrievePeriodSummaryValidator
 import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 
 class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
@@ -35,7 +35,7 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrievePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2023-24")
 
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
+        result shouldBe a[Def1_RetrievePeriodSummaryValidator]
       }
     }
 
@@ -44,7 +44,7 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrievePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2024-25")
 
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
+        result shouldBe a[Def1_RetrievePeriodSummaryValidator]
       }
     }
 
@@ -53,7 +53,7 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrievePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2022-23")
 
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
+        result shouldBe a[Def1_RetrievePeriodSummaryValidator]
       }
     }
 
@@ -62,7 +62,7 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrievePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "not-a-tax-year")
 
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
+        result shouldBe a[Def1_RetrievePeriodSummaryValidator]
       }
     }
   }

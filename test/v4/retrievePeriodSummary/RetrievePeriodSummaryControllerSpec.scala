@@ -23,8 +23,8 @@ import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v4.retrievePeriodSummary.def2.model.response.{Def2_RetrievePeriodSummaryResponse, Def2_Retrieve_PeriodDates}
-import v4.retrievePeriodSummary.model.request.Def2_RetrievePeriodSummaryRequestData
+import v4.retrievePeriodSummary.def1.model.response.{Def1_RetrievePeriodSummaryResponse, Retrieve_PeriodDates}
+import v4.retrievePeriodSummary.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -59,11 +59,11 @@ class RetrievePeriodSummaryControllerSpec
   private trait TysTest extends ControllerTest {
     val periodId = "2024-01-01_2025-01-01"
 
-    val requestData: Def2_RetrievePeriodSummaryRequestData =
-      Def2_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), TaxYear.fromMtd(taxYear))
+    val requestData: Def1_RetrievePeriodSummaryRequestData =
+      Def1_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), TaxYear.fromMtd(taxYear))
 
-    val responseBody: RetrievePeriodSummaryResponse = Def2_RetrievePeriodSummaryResponse(
-      periodDates = Def2_Retrieve_PeriodDates("2024-01-01", "2025-01-01"),
+    val responseBody: RetrievePeriodSummaryResponse = Def1_RetrievePeriodSummaryResponse(
+      periodDates = Retrieve_PeriodDates("2024-01-01", "2025-01-01"),
       periodIncome = None,
       periodExpenses = None,
       periodDisallowableExpenses = None

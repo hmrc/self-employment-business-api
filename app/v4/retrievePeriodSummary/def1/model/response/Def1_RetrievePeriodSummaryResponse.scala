@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2.model.response
+package v4.retrievePeriodSummary.def1.model.response
 
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
-case class Def2_RetrievePeriodSummaryResponse(periodDates: Def2_Retrieve_PeriodDates,
-                                              periodIncome: Option[Def2_Retrieve_PeriodIncome],
-                                              periodExpenses: Option[Def2_Retrieve_PeriodExpenses],
-                                              periodDisallowableExpenses: Option[Def2_Retrieve_PeriodDisallowableExpenses])
+case class Def1_RetrievePeriodSummaryResponse(periodDates: Retrieve_PeriodDates,
+                                              periodIncome: Option[Retrieve_PeriodIncome],
+                                              periodExpenses: Option[Retrieve_PeriodExpenses],
+                                              periodDisallowableExpenses: Option[Retrieve_PeriodDisallowableExpenses])
     extends RetrievePeriodSummaryResponse {
 
-  def withoutTaxTakenOffTradingIncome: Def2_RetrievePeriodSummaryResponse =
+  def withoutTaxTakenOffTradingIncome: Def1_RetrievePeriodSummaryResponse =
     periodIncome
       .map(pi => copy(periodIncome = Some(pi.copy(taxTakenOffTradingIncome = None))))
       .getOrElse(this)
 
 }
 
-object Def2_RetrievePeriodSummaryResponse {
+object Def1_RetrievePeriodSummaryResponse {
 
-  implicit val reads: Reads[Def2_RetrievePeriodSummaryResponse] = for {
+  implicit val reads: Reads[Def1_RetrievePeriodSummaryResponse] = for {
     periodStartDate <- (JsPath \ "from").read[String]
     periodEndDate   <- (JsPath \ "to").read[String]
 
-    periodDates = Def2_Retrieve_PeriodDates(periodStartDate = periodStartDate, periodEndDate = periodEndDate)
+    periodDates = Retrieve_PeriodDates(periodStartDate = periodStartDate, periodEndDate = periodEndDate)
 
-    periodIncome               <- (JsPath \ "financials" \ "incomes").readNullable[Def2_Retrieve_PeriodIncome]
-    periodExpenses             <- (JsPath \ "financials").readNullable[Def2_Retrieve_PeriodExpenses]
-    periodDisallowableExpenses <- (JsPath \ "financials").readNullable[Def2_Retrieve_PeriodDisallowableExpenses]
+    periodIncome               <- (JsPath \ "financials" \ "incomes").readNullable[Retrieve_PeriodIncome]
+    periodExpenses             <- (JsPath \ "financials").readNullable[Retrieve_PeriodExpenses]
+    periodDisallowableExpenses <- (JsPath \ "financials").readNullable[Retrieve_PeriodDisallowableExpenses]
   } yield {
-    Def2_RetrievePeriodSummaryResponse(
+    Def1_RetrievePeriodSummaryResponse(
       periodDates = periodDates,
       periodIncome = if (periodIncome.exists(_.isEmptyObject)) None else periodIncome,
       periodExpenses = if (periodExpenses.exists(_.isEmptyObject)) None else periodExpenses,
@@ -52,6 +52,6 @@ object Def2_RetrievePeriodSummaryResponse {
     )
   }
 
-  implicit val writes: OWrites[Def2_RetrievePeriodSummaryResponse] = Json.writes[Def2_RetrievePeriodSummaryResponse]
+  implicit val writes: OWrites[Def1_RetrievePeriodSummaryResponse] = Json.writes[Def1_RetrievePeriodSummaryResponse]
 
 }

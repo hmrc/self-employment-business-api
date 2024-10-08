@@ -26,5 +26,5 @@ trait RetrievePeriodSummaryRequestData {
   val taxYear: TaxYear
 }
 
-case class Def2_RetrievePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: TaxYear)
+case class Def1_RetrievePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: TaxYear)
     extends RetrievePeriodSummaryRequestData

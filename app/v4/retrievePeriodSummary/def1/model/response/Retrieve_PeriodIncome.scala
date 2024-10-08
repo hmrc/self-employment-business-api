@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2.model.response
+package v4.retrievePeriodSummary.def1.model.response
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Def2_Retrieve_PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal], taxTakenOffTradingIncome: Option[BigDecimal]) {
+case class Retrieve_PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal], taxTakenOffTradingIncome: Option[BigDecimal]) {
   def isEmptyObject: Boolean = turnover.isEmpty && other.isEmpty && taxTakenOffTradingIncome.isEmpty
 }
 
-object Def2_Retrieve_PeriodIncome {
-  implicit val format: OFormat[Def2_Retrieve_PeriodIncome] = Json.format
+object Retrieve_PeriodIncome {
+  implicit val format: OFormat[Retrieve_PeriodIncome] = Json.format
 }

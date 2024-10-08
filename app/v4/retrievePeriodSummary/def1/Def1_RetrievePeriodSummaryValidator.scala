@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2
+package v4.retrievePeriodSummary.def1
 
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
@@ -22,10 +22,10 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax}
 import shared.models.domain.TaxYear
 import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
-import v4.retrievePeriodSummary.model.request.{Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v4.validators.resolvers.ResolvePeriodId
 
-class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)
+class Def1_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)
     extends Validator[RetrievePeriodSummaryRequestData] {
 
   private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
@@ -42,7 +42,7 @@ class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, peri
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId, 1900, 2100),
       resolveTaxYear(taxYear)
-    ).mapN(Def2_RetrievePeriodSummaryRequestData)
+    ).mapN(Def1_RetrievePeriodSummaryRequestData)
   }
 
 }

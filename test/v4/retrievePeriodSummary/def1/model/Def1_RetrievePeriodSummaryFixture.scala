@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2.model
+package v4.retrievePeriodSummary.def1.model
 
 import play.api.libs.json.{JsValue, Json}
 import shared.models.domain.TaxYear
 
-trait Def2_RetrievePeriodSummaryFixture {
+trait Def1_RetrievePeriodSummaryFixture {
 
   val nino       = "AA111111A"
   val businessId = "id"
