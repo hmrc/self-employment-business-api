@@ -20,7 +20,6 @@ import api.models.domain.PeriodId
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v4.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodExpenses
 import v4.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodExpenses
 import v4.amendPeriodSummary.model.request._
 
@@ -31,17 +30,6 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
   val periodId: String   = "2020-01-01_2020-01-01"
-
-  val nonTysRequest: AmendPeriodSummaryRequestData = Def1_AmendPeriodSummaryRequestData(
-    nino = Nino(nino),
-    businessId = BusinessId(businessId),
-    periodId = PeriodId(periodId),
-    body = Def1_AmendPeriodSummaryRequestBody(
-      None,
-      Some(Def1_Amend_PeriodExpenses(Some(200.10), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)),
-      None
-    )
-  )
 
   val tysRequest: AmendPeriodSummaryRequestData = Def2_AmendPeriodSummaryRequestData(
     nino = Nino(nino),
@@ -86,19 +74,6 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "amendPeriodSummary" when {
-
-    "given a non-TYS request" should {
-      "call the non-TYS downstream URL and return 204" in new DesTest with Test {
-        val expectedDownstreamUrl =
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
-
-        willPut(expectedDownstreamUrl, nonTysRequest.body).returns(Future.successful(outcome))
-
-        val result: DownstreamOutcome[Unit] = await(connector.amendPeriodSummary(nonTysRequest))
-        result shouldBe outcome
-      }
-    }
-
     "given a TYS request" should {
       "call the TYS downstream URL and return 204" in new TysIfsTest with Test {
         val expectedDownstreamUrl =

@@ -16,13 +16,13 @@
 
 package v4.amendPeriodSummary
 
-import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import play.api.http.Status.OK
+import shared.config.AppConfig
+import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
-import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,21 +35,15 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import request._
-
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
-    request match {
-      case def1: Def1_AmendPeriodSummaryRequestData =>
-        val desUri = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
-        put(def1.body, desUri)
+    val def2 = request.asInstanceOf[Def2_AmendPeriodSummaryRequestData]
+    import def2._
+    val tysIfsUri = TaxYearSpecificIfsUri[Unit](
+      s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}"
+    )
 
-      case def2: Def2_AmendPeriodSummaryRequestData =>
-        import def2._
-        val tysIfsUri = TaxYearSpecificIfsUri[Unit](
-          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
-        put(def2.body, tysIfsUri)
-    }
+    put(def2.body, tysIfsUri)
   }
 
 }
