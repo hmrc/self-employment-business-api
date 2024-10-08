@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary
+package v4.amendPeriodSummaryOld
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
@@ -23,7 +23,7 @@ import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
+import v4.amendPeriodSummaryOld.model.request.AmendPeriodSummaryRequestData
 
 trait MockAmendPeriodSummaryValidatorFactory extends MockFactory {
 
@@ -34,7 +34,7 @@ trait MockAmendPeriodSummaryValidatorFactory extends MockFactory {
 
     def validator(): CallHandler[Validator[AmendPeriodSummaryRequestData]] =
       (mockAmendPeriodSummaryValidatorFactory
-        .validator(_: String, _: String, _: String, _: String, _: JsValue, _: Boolean))
+        .validator(_: String, _: String, _: String, _: Option[String], _: JsValue, _: Boolean))
         .expects(*, *, *, *, *, *)
 
   }

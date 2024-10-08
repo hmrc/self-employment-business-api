@@ -1,4 +1,4 @@
-summary: Amend a Self-Employment Period Summary
+summary: Amend a Self-Employment Period Summary Old
 description: |
   This endpoint allows a developer to amend a self-employment period summary.
   Submissions must include values for incomes, expenses and deductions, even if the values are zero.
@@ -24,7 +24,7 @@ parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
   - $ref: './common/pathParameters.yaml#/components/parameters/periodId'
-  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearTo2025'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
   - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
   - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
@@ -44,16 +44,16 @@ requestBody:
       examples:
         "Non-consolidated request for TY 2023-24 onwards":
           value:
-            $ref: './examples/amendPeriodSummary/def2/non_consolidated_request.json'
+            $ref: './examples/amendPeriodSummaryOld/def2/non_consolidated_request.json'
         "Consolidated request for TY 2023-24 onwards":
           value:
-            $ref: './examples/amendPeriodSummary/def2/consolidated_request.json'
+            $ref: './examples/amendPeriodSummaryOld/def2/consolidated_request.json'
         "Non-consolidated request for TY 2022-23 and before":
           value:
-            $ref: './examples/amendPeriodSummary/def1/non_consolidated_request.json'
+            $ref: './examples/amendPeriodSummaryOld/def1/non_consolidated_request.json'
         "Consolidated request for TY 2022-23 and before":
           value:
-            $ref: './examples/amendPeriodSummary/def1/consolidated_request.json'
+            $ref: './examples/amendPeriodSummaryOld/def1/consolidated_request.json'
 
 
 responses:

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary
+package v4.amendPeriodSummaryOld
 
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
@@ -43,7 +43,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
 
   val endpointName = "amend-period-summary"
 
-  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: String): Action[JsValue] =
+  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
@@ -58,7 +58,8 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
           auditType = "AmendPeriodicEmployment",
           transactionName = "self-employment-periodic-amend",
           apiVersion = Version(request),
-          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear),
+          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId) ++
+            taxYear.map(year => Map("taxYear" -> year)).getOrElse(Map.empty),
           Some(request.body)
         ))
         .withNoContentResult(OK)

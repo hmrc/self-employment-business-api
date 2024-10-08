@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary
+package v4.amendPeriodSummaryOld
 
 import api.models.domain.PeriodId
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
@@ -25,9 +25,9 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v4.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodIncome
-import v4.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodIncome
-import v4.amendPeriodSummary.model.request.{
+import v4.amendPeriodSummaryOld.def1.model.request.Def1_Amend_PeriodIncome
+import v4.amendPeriodSummaryOld.def2.model.request.Def2_Amend_PeriodIncome
+import v4.amendPeriodSummaryOld.model.request.{
   Def1_AmendPeriodSummaryRequestBody,
   Def1_AmendPeriodSummaryRequestData,
   Def2_AmendPeriodSummaryRequestBody,
@@ -52,8 +52,8 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
     nino = nino,
     businessId = businessId,
     periodId = periodId,
-    taxYear = taxYear,
-    body = Def2_AmendPeriodSummaryRequestBody(Some(periodIncomeWithCl290Enabled), None, None)
+    body = Def2_AmendPeriodSummaryRequestBody(Some(periodIncomeWithCl290Enabled), None, None),
+    taxYear = taxYear
   )
 
   private val requestDataWithCl290Disabled = Def1_AmendPeriodSummaryRequestData(

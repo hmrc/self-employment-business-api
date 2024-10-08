@@ -1,5 +1,5 @@
 put:
-  $ref: "./amend_period_summary.yaml"
+  $ref: "./amend_period_summary_Old.yaml"
   summary: Amend a Self-Employment Period Summary
   security:
     - User-Restricted:

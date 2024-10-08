@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary
+package v4.amendPeriodSummaryOld
 
-import play.api.libs.json.JsValue
-import shared.config.AppConfig
 import shared.controllers.validators.Validator
-import v4.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
-import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
+import shared.config.AppConfig
+import play.api.libs.json.JsValue
+import v4.amendPeriodSummaryOld.def1.Def1_AmendPeriodSummaryValidator
+import v4.amendPeriodSummaryOld.def2.Def2_AmendPeriodSummaryValidator
+import v4.amendPeriodSummaryOld.model.request.AmendPeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
 
@@ -30,12 +31,13 @@ class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: AppConfi
   def validator(nino: String,
                 businessId: String,
                 periodId: String,
-                taxYear: String,
+                maybeTaxYear: Option[String],
                 body: JsValue,
                 includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] = {
 
-    taxYear match {
-      case taxYearStr => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
+    maybeTaxYear match {
+      case None             => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, body, includeNegatives)
+      case Some(taxYearStr) => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
     }
   }
 
