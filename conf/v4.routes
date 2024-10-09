@@ -4,10 +4,7 @@ GET        /:nino/:businessId/annual/:taxYear                v4.retrieveAnnualSu
 DELETE     /:nino/:businessId/annual/:taxYear                v4.deleteAnnualSubmission.DeleteAnnualSubmissionController.handleRequest(nino: String, businessId: String, taxYear: String)
 
 POST       /:nino/:businessId/period                         v4.createPeriodSummary.CreatePeriodSummaryController.handleRequest(nino: String, businessId: String)
-PUT        /:nino/:businessId/period/:periodId               v4.amendPeriodSummaryOld.AmendPeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
 PUT        /:nino/:businessId/period/:periodId/:taxYear      v4.amendPeriodSummary.AmendPeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: String)
-GET        /:nino/:businessId/period/:periodId               v4.retrievePeriodSummaryOld.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
 GET        /:nino/:businessId/period/:periodId/:taxYear      v4.retrievePeriodSummary.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: String)
-GET        /:nino/:businessId/period                         v4.listPeriodSummariesOld.ListPeriodSummariesController.handleRequest(nino: String, businessId: String, taxYear: Option[String])
 GET        /:nino/:businessId/period/:taxYear                v4.listPeriodSummaries.ListPeriodSummariesController.handleRequest(nino: String, businessId: String, taxYear: String)
 
