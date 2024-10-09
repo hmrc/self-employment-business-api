@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries
+package v4.listPeriodSummariesOld
 
 import config.MockSeBusinessConfig
 import shared.config.MockAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
-import v4.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
-import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v4.listPeriodSummariesOld.def1.Def1_ListPeriodSummariesValidator
+import v4.listPeriodSummariesOld.model.request.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactorySpec extends UnitSpec with MockAppConfig with MockSeBusinessConfig {
 
@@ -36,7 +36,7 @@ class ListPeriodSummariesValidatorFactorySpec extends UnitSpec with MockAppConfi
     "given any request regardless of tax year" should {
       "return the Validator for schema definition 1" in {
         val result: Validator[ListPeriodSummariesRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validTaxYear)
+          validatorFactory.validator(validNino, validBusinessId, Some(validTaxYear))
 
         result shouldBe a[Def1_ListPeriodSummariesValidator]
       }

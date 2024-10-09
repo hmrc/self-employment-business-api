@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries
+package v4.listPeriodSummariesOld
 
+import config.SeBusinessFeatureSwitches
 import shared.config.AppConfig
-import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
-import v4.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
+import v4.listPeriodSummariesOld.model.request.ListPeriodSummariesRequestData
+import v4.listPeriodSummariesOld.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)(implicit featureSwitches: SeBusinessFeatureSwitches)
+    extends BaseDownstreamConnector {
 
   def listPeriodSummaries(request: ListPeriodSummariesRequestData)(implicit
       hc: HeaderCarrier,
@@ -38,11 +40,19 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
     import request._
     import schema._
 
-    val downstreamUri =
-      TaxYearSpecificIfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+    val path = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
-    val result = get(downstreamUri)
-    result
+    val downstreamUri =
+      taxYear match {
+        case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
+          TaxYearSpecificIfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+        case _ if featureSwitches.isDesIf_MigrationEnabled =>
+          IfsUri[DownstreamResp](path)
+        case _ =>
+          DesUri[DownstreamResp](path)
+      }
+
+    get(downstreamUri)
   }
 
 }

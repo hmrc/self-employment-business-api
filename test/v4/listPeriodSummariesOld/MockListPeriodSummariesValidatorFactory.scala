@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries
+package v4.listPeriodSummariesOld
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
@@ -22,7 +22,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v4.listPeriodSummariesOld.model.request.ListPeriodSummariesRequestData
 
 trait MockListPeriodSummariesValidatorFactory extends MockFactory {
 
@@ -31,7 +31,7 @@ trait MockListPeriodSummariesValidatorFactory extends MockFactory {
   object MockListPeriodSummariesValidatorFactory {
 
     def validator(): CallHandler[Validator[ListPeriodSummariesRequestData]] =
-      (mockListPeriodSummariesValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
+      (mockListPeriodSummariesValidatorFactory.validator(_: String, _: String, _: Option[String])).expects(*, *, *)
 
   }
 

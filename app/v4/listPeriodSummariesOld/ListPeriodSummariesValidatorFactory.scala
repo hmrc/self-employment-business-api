@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries
+package v4.listPeriodSummariesOld
 
 import shared.controllers.validators.Validator
-import v4.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
-import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import v4.listPeriodSummariesOld.def1.Def1_ListPeriodSummariesValidator
+import v4.listPeriodSummariesOld.model.request.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactory {
 
-  def validator(nino: String, businessId: String, taxYear: String): Validator[ListPeriodSummariesRequestData] =
+  def validator(nino: String, businessId: String, taxYear: Option[String]): Validator[ListPeriodSummariesRequestData] =
     new Def1_ListPeriodSummariesValidator(nino, businessId, taxYear)
 
 }

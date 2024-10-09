@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries
+package v4.listPeriodSummariesOld
 
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v4.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
-import v4.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
-import v4.listPeriodSummaries.model.response.ListPeriodSummariesResponse
+import v4.listPeriodSummariesOld.def1.model.request.Def1_ListPeriodSummariesRequestData
+import v4.listPeriodSummariesOld.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
+import v4.listPeriodSummariesOld.model.response.ListPeriodSummariesResponse
 
 import scala.concurrent.Future
 
@@ -47,7 +47,13 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
   private val requestData = Def1_ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    taxYear = TaxYear.fromMtd(taxYear)
+    None
+  )
+
+  private val requestDataForTys = Def1_ListPeriodSummariesRequestData(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = Some(TaxYear.fromMtd(taxYear))
   )
 
   trait Test extends MockListPeriodSummariesConnector {
@@ -67,6 +73,16 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.listPeriodSummaries(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+      }
+    }
+
+    "service call successful for TYS request" when {
+      "return mapped result" in new Test {
+        MockListPeriodSummariesConnector
+          .listPeriodSummaries(requestDataForTys)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        await(service.listPeriodSummaries(requestDataForTys)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
     }
   }

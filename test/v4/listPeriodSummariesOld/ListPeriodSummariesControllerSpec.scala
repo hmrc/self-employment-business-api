@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries
+package v4.listPeriodSummariesOld
 
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -24,10 +24,10 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import v4.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
-import v4.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
-import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
-import v4.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
+import v4.listPeriodSummariesOld.def1.model.request.Def1_ListPeriodSummariesRequestData
+import v4.listPeriodSummariesOld.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
+import v4.listPeriodSummariesOld.model.request.ListPeriodSummariesRequestData
+import v4.listPeriodSummariesOld.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -56,6 +56,18 @@ class ListPeriodSummariesControllerSpec
   private val response: ListPeriodSummariesResponse[PeriodDetails] = Def1_ListPeriodSummariesResponse(Seq(periodDetails))
 
   private val responseBody = Json.parse(s"""
+                                           |{
+                                           |  "periods": [
+                                           |    {
+                                           |      "periodId": "$periodId",
+                                           |      "periodStartDate": "$from",
+                                           |      "periodEndDate": "$to"
+                                           |    }
+                                           |  ]
+                                           |}
+    """.stripMargin)
+
+  private val responseBodyTys = Json.parse(s"""
                                               |{
                                               |  "periods": [
                                               |    {
@@ -81,6 +93,19 @@ class ListPeriodSummariesControllerSpec
           maybeExpectedResponseBody = Some(responseBody)
         )
       }
+
+      "the Tys request received is valid" in new TysTest {
+        willUseValidator(returningSuccess(tysRequestData))
+
+        MockListPeriodSummariesService
+          .listPeriodSummaries(tysRequestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        runOkTest(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(responseBodyTys)
+        )
+      }
     }
 
     "return the error as per spec" when {
@@ -104,8 +129,7 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val requestData: ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+    val requestData: ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -122,7 +146,30 @@ class ListPeriodSummariesControllerSpec
 
     MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, None)(fakeGetRequest)
+  }
+
+  private trait TysTest extends ControllerTest {
+
+    val tysRequestData: ListPeriodSummariesRequestData =
+      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+
+    val controller = new ListPeriodSummariesController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      validatorFactory = mockListPeriodSummariesValidatorFactory,
+      service = mockListPeriodSummariesService,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, Some(taxYear))(fakeGetRequest)
   }
 
 }

@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries
+package v4.listPeriodSummariesOld.def1.model.response
 
-import shared.controllers.validators.Validator
-import v4.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
-import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
+import play.api.libs.json.{Json, OWrites, Reads, Writes}
+import v4.listPeriodSummariesOld.model.response.ListPeriodSummariesResponse
 
-class ListPeriodSummariesValidatorFactory {
+case class Def1_ListPeriodSummariesResponse[E](periods: Seq[E]) extends ListPeriodSummariesResponse[E]
 
-  def validator(nino: String, businessId: String, taxYear: String): Validator[ListPeriodSummariesRequestData] =
-    new Def1_ListPeriodSummariesValidator(nino, businessId, taxYear)
+object Def1_ListPeriodSummariesResponse {
+
+  implicit def reads[E: Reads]: Reads[Def1_ListPeriodSummariesResponse[E]] = Json.reads[Def1_ListPeriodSummariesResponse[E]]
+
+  implicit def writes[E: Writes]: OWrites[Def1_ListPeriodSummariesResponse[E]] = Json.writes[Def1_ListPeriodSummariesResponse[E]]
 
 }

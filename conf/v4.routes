@@ -8,5 +8,6 @@ PUT        /:nino/:businessId/period/:periodId               v4.amendPeriodSumma
 PUT        /:nino/:businessId/period/:periodId/:taxYear      v4.amendPeriodSummary.AmendPeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: String)
 GET        /:nino/:businessId/period/:periodId               v4.retrievePeriodSummaryOld.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String])
 GET        /:nino/:businessId/period/:periodId/:taxYear      v4.retrievePeriodSummary.RetrievePeriodSummaryController.handleRequest(nino: String, businessId: String, periodId: String, taxYear: String)
-GET        /:nino/:businessId/period                         v4.listPeriodSummaries.ListPeriodSummariesController.handleRequest(nino: String, businessId: String, taxYear: Option[String])
+GET        /:nino/:businessId/period                         v4.listPeriodSummariesOld.ListPeriodSummariesController.handleRequest(nino: String, businessId: String, taxYear: Option[String])
+GET        /:nino/:businessId/period/:taxYear                v4.listPeriodSummaries.ListPeriodSummariesController.handleRequest(nino: String, businessId: String, taxYear: String)
 
