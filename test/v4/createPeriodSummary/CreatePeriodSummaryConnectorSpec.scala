@@ -70,7 +70,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
     protected val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
     val nino: String       = "AA123456A"

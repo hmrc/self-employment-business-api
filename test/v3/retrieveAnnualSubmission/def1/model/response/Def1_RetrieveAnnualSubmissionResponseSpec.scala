@@ -18,10 +18,10 @@ package v3.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import v3.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
-class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveAnnualSubmissionFixture {
+class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockSharedAppConfig with Def1_RetrieveAnnualSubmissionFixture {
 
   private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
     allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),

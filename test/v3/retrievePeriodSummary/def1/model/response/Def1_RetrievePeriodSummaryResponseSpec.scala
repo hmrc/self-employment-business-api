@@ -20,11 +20,11 @@ import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino}
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import v3.retrievePeriodSummary.def1.model.Def1_RetrievePeriodSummaryFixture
 import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData}
 
-class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrievePeriodSummaryFixture {
+class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig with Def1_RetrievePeriodSummaryFixture {
 
   "round trip" should {
     "return mtd json" when {
@@ -46,9 +46,9 @@ class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig
       "called" in {
         val data: RetrievePeriodSummaryHateoasData = RetrievePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        Def1_RetrievePeriodSummaryResponse.Def1_RetrievePeriodSubmissionLinksFactory.links(mockAppConfig, data) shouldBe List(
+        Def1_RetrievePeriodSummaryResponse.Def1_RetrievePeriodSubmissionLinksFactory.links(mockSharedAppConfig, data) shouldBe List(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")

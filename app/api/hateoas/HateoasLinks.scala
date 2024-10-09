@@ -17,31 +17,31 @@
 package api.hateoas
 
 import api.hateoas.RelType._
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, POST, PUT}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 trait HateoasLinks {
 
-  def retrieveAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
+  def retrieveAnnualSubmission(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = GET, rel = SELF)
 
-  def amendAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
+  def amendAnnualSubmission(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = PUT, rel = AMEND_ANNUAL_SUBMISSION_REL)
 
-  def deleteAnnualSubmission(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
+  def deleteAnnualSubmission(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear): Link =
     Link(href = annualSubmissionUri(appConfig, nino, businessId, taxYear), method = DELETE, rel = DELETE_ANNUAL_SUBMISSION_REL)
 
   // Domain URIs
-  private def annualSubmissionUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
+  private def annualSubmissionUri(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, taxYear: TaxYear) =
     s"/${appConfig.apiGatewayContext}/$nino/$businessId/annual/${taxYear.asMtd}"
 
-  def listPeriodSummaries(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
+  def listPeriodSummaries(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear], isSelf: Boolean): Link = {
     Link(href = periodSummaryUri(appConfig, nino, businessId, taxYear), method = GET, rel = if (isSelf) SELF else LIST_PERIOD_SUMMARIES_REL)
   }
 
-  private def periodSummaryUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String =
+  private def periodSummaryUri(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]): String =
     withTaxYearParameter(
       uri = s"/${appConfig.apiGatewayContext}/$nino/$businessId/period",
       taxYear
@@ -54,16 +54,16 @@ trait HateoasLinks {
     }
   }
 
-  def createPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId): Link =
+  def createPeriodSummary(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId): Link =
     Link(href = periodSummaryUri(appConfig, nino, businessId, None), method = POST, rel = CREATE_PERIOD_SUMMARY_REL)
 
-  def retrievePeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
+  def retrievePeriodSummary(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
     Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = GET, rel = SELF)
 
-  def amendPeriodSummary(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
+  def amendPeriodSummary(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]): Link =
     Link(href = periodSummaryItemUri(appConfig, nino, businessId, periodId, taxYear), method = PUT, rel = AMEND_PERIOD_SUMMARY_REL)
 
-  private def periodSummaryItemUri(appConfig: AppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) =
+  private def periodSummaryItemUri(appConfig: SharedAppConfig, nino: Nino, businessId: BusinessId, periodId: String, taxYear: Option[TaxYear]) =
     withTaxYearParameter(
       uri = s"/${appConfig.apiGatewayContext}/$nino/$businessId/period/$periodId",
       taxYear

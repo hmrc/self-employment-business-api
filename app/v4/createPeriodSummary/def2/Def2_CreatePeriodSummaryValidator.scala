@@ -24,7 +24,7 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.{catsSyntaxTuple3Semigroupal, toFoldableOps}
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import v4.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 
 class Def2_CreatePeriodSummaryValidator(
@@ -32,7 +32,7 @@ class Def2_CreatePeriodSummaryValidator(
     businessId: String,
     body: JsValue,
     includeNegatives: Boolean
-)(implicit appConfig: AppConfig)
+)(implicit appConfig: SharedAppConfig)
     extends Validator[CreatePeriodSummaryRequestData] {
 
   lazy private val featureSwitches = SeBusinessFeatureSwitches()

@@ -30,41 +30,19 @@ import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.time.temporal.ChronoField
 import javax.inject.{Inject, Singleton}
 
+/** Do not extend/sub-class this class, instead make your own api-specific config file and pass in separately. */
 @Singleton
-class AppConfig @Inject() (config: ServicesConfig, protected[config] val configuration: Configuration) {
+class SharedAppConfig @Inject() (val config: ServicesConfig, protected[config] val configuration: Configuration) extends AppConfigBase {
   // API name
   def appName: String = config.getString("appName")
 
   // MTD ID Lookup Config
   def mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 
-  // Des Config
-  def desBaseUrl: String                         = config.baseUrl("des")
-  def desEnv: String                             = config.getString("microservice.services.des.env")
-  def desToken: String                           = config.getString("microservice.services.des.token")
-  def desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
-
-  def desDownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = desBaseUrl, env = desEnv, token = desToken, environmentHeaders = desEnvironmentHeaders)
-
-  // IFS Config
-  def ifsBaseUrl: String                         = config.baseUrl("ifs")
-  def ifsEnv: String                             = config.getString("microservice.services.ifs.env")
-  def ifsToken: String                           = config.getString("microservice.services.ifs.token")
-  def ifsEnabled: Boolean                        = config.getBoolean("microservice.services.ifs.enabled")
-  def ifsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs.environmentHeaders")
-
-  def ifsDownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = ifsBaseUrl, env = ifsEnv, token = ifsToken, environmentHeaders = ifsEnvironmentHeaders)
-
-  // Tax Year Specific (TYS) IFS Config
-  def tysIfsBaseUrl: String                         = config.baseUrl("tys-ifs")
-  def tysIfsEnv: String                             = config.getString("microservice.services.tys-ifs.env")
-  def tysIfsToken: String                           = config.getString("microservice.services.tys-ifs.token")
-  def tysIfsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.tys-ifs.environmentHeaders")
-
-  def tysIfsDownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = tysIfsBaseUrl, env = tysIfsEnv, token = tysIfsToken, environmentHeaders = tysIfsEnvironmentHeaders)
+  def desDownstreamConfig: DownstreamConfig          = downstreamConfig("des")
+  def ifsDownstreamConfig: DownstreamConfig          = downstreamConfig("ifs")
+  def tysIfsDownstreamConfig: DownstreamConfig       = downstreamConfig("tys-ifs")
+  def hipDownstreamConfig: BasicAuthDownstreamConfig = basicAuthDownstreamConfig("hip")
 
   // API Config
   def apiGatewayContext: String                    = config.getString("api.gateway.context")

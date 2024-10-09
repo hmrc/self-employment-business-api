@@ -17,12 +17,12 @@
 package v3.retrieveAnnualSubmission.model.response
 
 import shared.utils.UnitSpec
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino}
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse.RetrieveAnnualSubmissionLinksFactory
 
-class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
+class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   "LinksFactory" should {
     "produce the correct links" when {
@@ -37,9 +37,9 @@ class RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
           taxYear
         )
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        val result = RetrieveAnnualSubmissionLinksFactory.links(mockAppConfig, data)
+        val result = RetrieveAnnualSubmissionLinksFactory.links(mockSharedAppConfig, data)
 
         result shouldBe List(
           Link(

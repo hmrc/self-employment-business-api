@@ -18,7 +18,7 @@ package v3.retrieveAnnualSubmission
 
 import config.SeBusinessFeatureSwitches
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers._
 import shared.hateoas.HateoasFactory
 import shared.models.domain.{BusinessId, Nino}
@@ -36,7 +36,7 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
                                                     service: RetrieveAnnualSubmissionService,
                                                     hateoasFactory: HateoasFactory,
                                                     cc: ControllerComponents,
-                                                    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                                    idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

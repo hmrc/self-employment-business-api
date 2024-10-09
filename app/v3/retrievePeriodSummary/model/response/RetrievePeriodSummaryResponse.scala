@@ -18,7 +18,7 @@ package v3.retrievePeriodSummary.model.response
 
 import api.hateoas.HateoasLinks
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import v3.retrievePeriodSummary.def1.model.response.{
@@ -49,7 +49,7 @@ object RetrievePeriodSummaryResponse extends HateoasLinks {
 
   implicit object RetrieveAnnualSubmissionLinksFactory extends HateoasLinksFactory[RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
-    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] =
+    override def links(appConfig: SharedAppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] =
       data.taxYear match {
         case None =>
           Def1_RetrievePeriodSubmissionLinksFactory.links(appConfig, data)
@@ -96,7 +96,7 @@ object Def1_RetrievePeriodSummaryResponse extends HateoasLinks {
   implicit object Def1_RetrievePeriodSubmissionLinksFactory
       extends HateoasLinksFactory[Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
-    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId, None),
@@ -149,7 +149,7 @@ object Def2_RetrievePeriodSummaryResponse extends HateoasLinks {
   implicit object Def2_RetrievePeriodSubmissionLinksFactory
       extends HateoasLinksFactory[Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
-    override def links(appConfig: AppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
       import data._
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId, taxYear),

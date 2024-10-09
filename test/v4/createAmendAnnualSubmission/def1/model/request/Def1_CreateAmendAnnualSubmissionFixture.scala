@@ -161,10 +161,10 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
                                    enhancedStructuredBuildingAllowances: Seq[JsValue] = List(structuredBuildingAllowanceDownstreamJson)): JsValue =
     Json.parse(s"""{
        |  "annualInvestmentAllowance": 1.12,
+       |  "businessPremisesRenovationAllowance": 5.12,
        |  "capitalAllowanceMainPool": 2.12,
        |  "capitalAllowanceSpecialRatePool": 3.12,
        |  "zeroEmissionGoodsVehicleAllowance": 4.12,
-       |  "businessPremisesRenovationAllowance": 5.12,
        |  "enhanceCapitalAllowance": 6.12,
        |  "allowanceOnSales": 7.12,
        |  "capitalAllowanceSingleAssetPool": 8.12,

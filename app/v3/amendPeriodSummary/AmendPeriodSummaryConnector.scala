@@ -19,7 +19,7 @@ package v3.amendPeriodSummary
 import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit
       hc: HeaderCarrier,
