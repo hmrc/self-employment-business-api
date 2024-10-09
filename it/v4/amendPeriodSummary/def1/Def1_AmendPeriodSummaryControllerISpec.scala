@@ -174,7 +174,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
     val to                 = "2020-01-01"
 
     def mtdTaxYear: String    = "2023-24"
-    def mtdUri: String        = s"/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
+    def mtdUri: String        = s"/$nino/$businessId/period/$periodId/$mtdTaxYear"
     def tysTaxYear: String    = "23-24"
     def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 
