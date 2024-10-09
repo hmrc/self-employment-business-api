@@ -22,7 +22,7 @@ import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,13 +37,13 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
-    val def2 = request.asInstanceOf[Def2_AmendPeriodSummaryRequestData]
-    import def2._
+    val def1 = request.asInstanceOf[Def1_AmendPeriodSummaryRequestData]
+    import def1._
     val tysIfsUri = TaxYearSpecificIfsUri[Unit](
       s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}"
     )
 
-    put(def2.body, tysIfsUri)
+    put(def1.body, tysIfsUri)
   }
 
 }

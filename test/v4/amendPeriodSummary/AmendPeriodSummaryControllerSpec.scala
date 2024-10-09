@@ -27,8 +27,8 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
-import v4.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -40,7 +40,7 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryValidatorFactory
     with MockAuditService
     with MockAppConfig
-    with Def2_AmendPeriodSummaryFixture {
+    with Def1_AmendPeriodSummaryFixture {
 
   override val apiVersion: Version = Version3
 
@@ -111,10 +111,10 @@ class AmendPeriodSummaryControllerSpec
     val taxYear: String                = "2023-24"
     private val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
 
-    val requestBodyJson: JsValue = def2_AmendPeriodSummaryBodyMtdJson
+    val requestBodyJson: JsValue = def1_AmendPeriodSummaryBodyMtdJson
 
-    val requestData: Def2_AmendPeriodSummaryRequestData =
-      Def2_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def2_AmendPeriodSummaryBody)
+    val requestData: Def1_AmendPeriodSummaryRequestData =
+      Def1_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def1_AmendPeriodSummaryBody)
 
     protected def callController(): Future[Result] =
       controller.handleRequest(validNino, businessId, periodId, taxYear)(fakePostRequest(requestBodyJson))

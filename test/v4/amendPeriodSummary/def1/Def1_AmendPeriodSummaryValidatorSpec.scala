@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary.def2
+package v4.amendPeriodSummary.def1
 
 import api.models.domain.PeriodId
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
@@ -25,10 +25,10 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
-import v4.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.def1.model.request.{Amend_PeriodDisallowableExpenses, Amend_PeriodExpenses, Amend_PeriodIncome}
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 
-class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -114,7 +114,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   private val parsedPeriodId   = PeriodId(validPeriodId)
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
-  private val parsedPeriodIncome = Def2_Amend_PeriodIncome(Some(200.00), Some(201.00), Some(202.00))
+  private val parsedPeriodIncome = Amend_PeriodIncome(Some(200.00), Some(201.00), Some(202.00))
 
   private def numericValue(isNegative: Boolean)(number: BigDecimal): BigDecimal =
     if (isNegative) -1 * number else number
@@ -122,7 +122,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   // @formatter:off
   private def parsedPeriodExpenses(withNegatives: Boolean = false) = {
     val number = numericValue(withNegatives)(_)
-    Def2_Amend_PeriodExpenses(
+    Amend_PeriodExpenses(
       None, Some(number(203.00)), Some(number(204.00)), Some(number(205.00)), Some(number(206.00)),
       Some(number(207.00)), Some(number(208.00)), Some(number(209.00)), Some(number(210.00)),
       Some(number(211.00)), Some(number(212.00)), Some(number(213.00)), Some(number(214.00)),
@@ -130,7 +130,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
     )
   }
 
-  private val parsedPeriodExpensesConsolidated = Def2_Amend_PeriodExpenses(
+  private val parsedPeriodExpensesConsolidated = Amend_PeriodExpenses(
     Some(1000.99), None, None, None, None, None, None, None,
     None, None, None, None, None, None, None, None
   )
@@ -138,7 +138,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   private def parsedPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
     val number = numericValue(withNegatives)(_)
 
-    Def2_Amend_PeriodDisallowableExpenses(
+    Amend_PeriodDisallowableExpenses(
       Some(number(218.00)), Some(number(219.00)), Some(number(220.00)), Some(number(221.00)), Some(number(222.00)),
       Some(number(223.00)), Some(number(224.00)), Some(number(225.00)), Some(number(226.00)), Some(number(227.00)),
       Some(number(228.00)), Some(number(229.00)), Some(number(230.00)), Some(number(231.00)), Some(number(232.00))
@@ -147,13 +147,13 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   // @formatter:on
 
   private val parsedBody =
-    Def2_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses()), Some(parsedPeriodDisallowableExpenses()))
+    Def1_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses()), Some(parsedPeriodDisallowableExpenses()))
 
   private val parsedBodyWithNegatives =
-    Def2_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses(true)), Some(parsedPeriodDisallowableExpenses(true)))
+    Def1_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses(true)), Some(parsedPeriodDisallowableExpenses(true)))
 
   private def validator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean = false) =
-    new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
+    new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
 
   private def setupMocks(): Unit =
     MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
@@ -167,7 +167,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBody()).validateAndWrapResult()
 
-        val expected = Def2_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBody)
+        val expected = Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBody)
         result shouldBe Right(expected)
       }
 
@@ -181,7 +181,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
           validator(validNino, validBusinessId, validPeriodId, validTaxYear, body).validateAndWrapResult()
 
         result shouldBe Right(
-          Def2_AmendPeriodSummaryRequestData(
+          Def1_AmendPeriodSummaryRequestData(
             parsedNino,
             parsedBusinessId,
             parsedPeriodId,
@@ -197,7 +197,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
           validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBodyWithNegatives, includeNegatives = true)
             .validateAndWrapResult()
 
-        val expected = Def2_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBodyWithNegatives)
+        val expected = Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBodyWithNegatives)
         result shouldBe Right(expected)
       }
 
@@ -213,7 +213,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
           validator(validNino, validBusinessId, validPeriodId, validTaxYear, body).validateAndWrapResult()
 
         result shouldBe Right(
-          Def2_AmendPeriodSummaryRequestData(
+          Def1_AmendPeriodSummaryRequestData(
             parsedNino,
             parsedBusinessId,
             parsedPeriodId,
@@ -233,7 +233,7 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
           validator(validNino, validBusinessId, validPeriodId, validTaxYear, body).validateAndWrapResult()
 
         result shouldBe Right(
-          Def2_AmendPeriodSummaryRequestData(
+          Def1_AmendPeriodSummaryRequestData(
             parsedNino,
             parsedBusinessId,
             parsedPeriodId,

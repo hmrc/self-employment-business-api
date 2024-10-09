@@ -19,7 +19,7 @@ package v4.amendPeriodSummary
 import play.api.libs.json.JsValue
 import shared.config.AppConfig
 import shared.controllers.validators.Validator
-import v4.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
+import v4.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
 import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
@@ -35,7 +35,7 @@ class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: AppConfi
                 includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] = {
 
     taxYear match {
-      case taxYearStr => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
+      case taxYearStr => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
     }
   }
 

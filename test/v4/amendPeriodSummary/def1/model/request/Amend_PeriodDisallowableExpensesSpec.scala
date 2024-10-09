@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary.def2.model.request
+package v4.amendPeriodSummary.def1.model.request
 
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 
-class Def2_Amend_PeriodDisallowableExpensesSpec extends UnitSpec {
+class Amend_PeriodDisallowableExpensesSpec extends UnitSpec {
 
   val json: JsValue = Json.parse(
     """
@@ -95,7 +95,7 @@ class Def2_Amend_PeriodDisallowableExpensesSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val model: Def2_Amend_PeriodDisallowableExpenses = Def2_Amend_PeriodDisallowableExpenses(
+  val model: Amend_PeriodDisallowableExpenses = Amend_PeriodDisallowableExpenses(
     costOfGoodsDisallowable = Some(102.12),
     paymentsToSubcontractorsDisallowable = Some(103.12),
     wagesAndStaffCostsDisallowable = Some(104.12),
@@ -116,7 +116,7 @@ class Def2_Amend_PeriodDisallowableExpensesSpec extends UnitSpec {
   "reads" should {
     "return a model" when {
       "passed a valid json" in {
-        json.as[Def2_Amend_PeriodDisallowableExpenses] shouldBe model
+        json.as[Amend_PeriodDisallowableExpenses] shouldBe model
       }
     }
   }

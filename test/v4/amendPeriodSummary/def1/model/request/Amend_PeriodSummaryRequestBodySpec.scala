@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary.def2.model.request
+package v4.amendPeriodSummary.def1.model.request
 
 import play.api.libs.json.{JsObject, JsValue, Json}
 import shared.utils.UnitSpec
-import v4.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
-import v4.amendPeriodSummary.model.request.Def2_AmendPeriodSummaryRequestBody
+import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
+import v4.amendPeriodSummary.model.request.Def1_AmendPeriodSummaryRequestBody
 
-class Def2_Amend_PeriodSummaryRequestBodySpec extends UnitSpec with Def2_AmendPeriodSummaryFixture {
+class Amend_PeriodSummaryRequestBodySpec extends UnitSpec with Def1_AmendPeriodSummaryFixture {
 
   val emptyJson: JsValue = JsObject.empty
 
-  val parsedEmptyMtd: Def2_AmendPeriodSummaryRequestBody = Def2_AmendPeriodSummaryRequestBody(None, None, None)
+  val parsedEmptyMtd: Def1_AmendPeriodSummaryRequestBody = Def1_AmendPeriodSummaryRequestBody(None, None, None)
 
   "reads" should {
     "return a model" when {
       "a valid request with all (non-consolidated) data is made" in {
-        val result = def2_AmendPeriodSummaryBodyMtdJson.as[Def2_AmendPeriodSummaryRequestBody]
-        result shouldBe def2_AmendPeriodSummaryBody
+        val result = def1_AmendPeriodSummaryBodyMtdJson.as[Def1_AmendPeriodSummaryRequestBody]
+        result shouldBe def1_AmendPeriodSummaryBody
       }
 
       "a valid request with some data is made" in {
-        val result = def2_AmendPeriodSummaryConsolidatedBodyMtdJson.as[Def2_AmendPeriodSummaryRequestBody]
-        result shouldBe def2_AmendPeriodSummaryConsolidatedBody
+        val result = def1_AmendPeriodSummaryConsolidatedBodyMtdJson.as[Def1_AmendPeriodSummaryRequestBody]
+        result shouldBe def1_AmendPeriodSummaryConsolidatedBody
       }
 
       "a valid request with no data is made" in {
-        val result: Def2_AmendPeriodSummaryRequestBody = emptyJson.as[Def2_AmendPeriodSummaryRequestBody]
+        val result: Def1_AmendPeriodSummaryRequestBody = emptyJson.as[Def1_AmendPeriodSummaryRequestBody]
         result shouldBe parsedEmptyMtd
       }
     }
@@ -49,13 +49,13 @@ class Def2_Amend_PeriodSummaryRequestBodySpec extends UnitSpec with Def2_AmendPe
   "writes" should {
     "return downstream json" when {
       "a valid request is made with full body" in {
-        val result: JsValue = Json.toJson(def2_AmendPeriodSummaryBody)
-        result shouldBe def2_AmendPeriodSummaryBodyDownstreamJson
+        val result: JsValue = Json.toJson(def1_AmendPeriodSummaryBody)
+        result shouldBe def1_AmendPeriodSummaryBodyDownstreamJson
       }
 
       "a valid request is made with partial body" in {
-        val result: JsValue = Json.toJson(def2_AmendPeriodSummaryConsolidatedBody)
-        result shouldBe def2_AmendPeriodSummaryConsolidatedBodyDownstreamJson
+        val result: JsValue = Json.toJson(def1_AmendPeriodSummaryConsolidatedBody)
+        result shouldBe def1_AmendPeriodSummaryConsolidatedBodyDownstreamJson
       }
 
       "a valid request is made with empty body" in {

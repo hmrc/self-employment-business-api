@@ -25,8 +25,8 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v4.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodIncome
-import v4.amendPeriodSummary.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.def1.model.request.Amend_PeriodIncome
+import v4.amendPeriodSummary.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 
 import scala.concurrent.Future
 
@@ -38,14 +38,14 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
   private val taxYear                         = TaxYear.fromMtd("2023-24")
   override implicit val correlationId: String = "X-123"
 
-  private val periodIncomeWithCl290Enabled = Def2_Amend_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val periodIncomeWithCl290Enabled = Amend_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
-  private val requestDataWithCl290Enabled = Def2_AmendPeriodSummaryRequestData(
+  private val requestDataWithCl290Enabled = Def1_AmendPeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
     taxYear = taxYear,
-    body = Def2_AmendPeriodSummaryRequestBody(Some(periodIncomeWithCl290Enabled), None, None)
+    body = Def1_AmendPeriodSummaryRequestBody(Some(periodIncomeWithCl290Enabled), None, None)
   )
 
   trait Test extends MockAmendPeriodSummaryConnector with MockAppConfig {

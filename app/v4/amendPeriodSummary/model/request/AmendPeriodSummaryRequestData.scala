@@ -29,12 +29,12 @@ sealed trait AmendPeriodSummaryRequestData {
 
 /** Applicable from 2023-24 onwards.
   */
-case class Def2_AmendPeriodSummaryRequestData(
+case class Def1_AmendPeriodSummaryRequestData(
     nino: Nino,
     businessId: BusinessId,
     periodId: PeriodId,
     taxYear: TaxYear,
-    body: Def2_AmendPeriodSummaryRequestBody
+    body: Def1_AmendPeriodSummaryRequestBody
 ) extends AmendPeriodSummaryRequestData {
 
 //  val taxYear: Option[TaxYear] = Some(taxYear)

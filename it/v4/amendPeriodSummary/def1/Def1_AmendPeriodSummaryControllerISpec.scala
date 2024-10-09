@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary.def2
+package v4.amendPeriodSummary.def1
 
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -28,11 +28,11 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v4.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
+import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 
-class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with Def2_AmendPeriodSummaryFixture {
+class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with Def1_AmendPeriodSummaryFixture {
 
-  val requestBodyJson: JsValue = def2_AmendPeriodSummaryBodyMtdJson
+  val requestBodyJson: JsValue = def1_AmendPeriodSummaryBodyMtdJson
 
   "The V4 Amend Period Summary endpoint" should {
 

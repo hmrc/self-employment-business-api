@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary.def2
+package v4.amendPeriodSummary.def1
 
 import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
@@ -25,18 +25,18 @@ import shared.config.AppConfig
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import v4.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
-import v4.amendPeriodSummary.model.request.Def2_AmendPeriodSummaryRequestData
+import v4.amendPeriodSummary.def1.model.request.{Amend_PeriodDisallowableExpenses, Amend_PeriodExpenses, Amend_PeriodIncome}
+import v4.amendPeriodSummary.model.request.Def1_AmendPeriodSummaryRequestData
 
-class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: AppConfig)
-    extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
+class Def1_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: AppConfig)
+    extends RulesValidator[Def1_AmendPeriodSummaryRequestData] {
 
   private lazy val featureSwitches = SeBusinessFeatureSwitches()
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
-  def validateBusinessRules(parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] = {
+  def validateBusinessRules(parsed: Def1_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def1_AmendPeriodSummaryRequestData] = {
 
     import parsed.body._
 
@@ -51,7 +51,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
 
   /** This can be removed once CL290 is released -- see Feature Release Roadmap page.
     */
-  private def validatePeriodIncomeCL290(periodIncome: Def2_Amend_PeriodIncome): Validated[Seq[MtdError], Unit] =
+  private def validatePeriodIncomeCL290(periodIncome: Amend_PeriodIncome): Validated[Seq[MtdError], Unit] =
     if (!featureSwitches.isCl290Enabled && periodIncome.taxTakenOffTradingIncome.isDefined)
       Invalid(
         List(
@@ -60,20 +60,20 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
     else
       valid
 
-  private def validateExpenses(allowableExpenses: Option[Def2_Amend_PeriodExpenses],
-                               periodDisallowableExpenses: Option[Def2_Amend_PeriodDisallowableExpenses]): Validated[Seq[MtdError], Unit] =
+  private def validateExpenses(allowableExpenses: Option[Amend_PeriodExpenses],
+                               periodDisallowableExpenses: Option[Amend_PeriodDisallowableExpenses]): Validated[Seq[MtdError], Unit] =
     (allowableExpenses, periodDisallowableExpenses) match {
       case (Some(allowable), Some(_)) if allowable.consolidatedExpenses.isDefined => Invalid(List(RuleBothExpensesSuppliedError))
       case (Some(allowable), None) if allowable.consolidatedExpenses.isDefined =>
         allowable match {
-          case Def2_Amend_PeriodExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) => valid
+          case Amend_PeriodExpenses(Some(_), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None) => valid
           case _ => Invalid(List(RuleBothExpensesSuppliedError))
         }
       case _ => valid
 
     }
 
-  private def validatePeriodIncome(income: Def2_Amend_PeriodIncome): Validated[Seq[MtdError], Unit] =
+  private def validatePeriodIncome(income: Amend_PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(
       (income.turnover, "/periodIncome/turnover"),
       (income.other, "/periodIncome/other")
@@ -81,7 +81,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
       resolveNonNegativeParsedNumber(value, path)
     }
 
-  private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: Def2_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val conditionalMaybeNegativeExpenses = List(
@@ -119,7 +119,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
   }
 
   private def validatePeriodDisallowableExpenses(includeNegatives: Boolean)(
-      expenses: Def2_Amend_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
+      expenses: Amend_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val conditionalMaybeNegativeExpenses = List(

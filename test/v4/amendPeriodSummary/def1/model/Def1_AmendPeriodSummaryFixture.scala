@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary.def2.model
+package v4.amendPeriodSummary.def1.model
 
 import play.api.libs.json.{JsValue, Json}
-import v4.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
-import v4.amendPeriodSummary.model.request.Def2_AmendPeriodSummaryRequestBody
+import v4.amendPeriodSummary.def1.model.request.{Amend_PeriodDisallowableExpenses, Amend_PeriodExpenses, Amend_PeriodIncome}
+import v4.amendPeriodSummary.model.request.Def1_AmendPeriodSummaryRequestBody
 
-trait Def2_AmendPeriodSummaryFixture {
+trait Def1_AmendPeriodSummaryFixture {
 
-  val def2_AmendPeriodSummaryBodyMtdJson: JsValue = Json.parse(
+  val def1_AmendPeriodSummaryBodyMtdJson: JsValue = Json.parse(
     """
       |{
       |    "periodIncome": {
@@ -68,10 +68,10 @@ trait Def2_AmendPeriodSummaryFixture {
     """.stripMargin
   )
 
-  val def2_AmendPeriodSummaryBody: Def2_AmendPeriodSummaryRequestBody = Def2_AmendPeriodSummaryRequestBody(
-    periodIncome = Some(Def2_Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
+  val def1_AmendPeriodSummaryBody: Def1_AmendPeriodSummaryRequestBody = Def1_AmendPeriodSummaryRequestBody(
+    periodIncome = Some(Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
     periodExpenses = Some(
-      Def2_Amend_PeriodExpenses(
+      Amend_PeriodExpenses(
         consolidatedExpenses = None,
         costOfGoods = Some(2.12),
         paymentsToSubcontractors = Some(3.12),
@@ -90,7 +90,7 @@ trait Def2_AmendPeriodSummaryFixture {
         otherExpenses = Some(16.12)
       )),
     periodDisallowableExpenses = Some(
-      Def2_Amend_PeriodDisallowableExpenses(
+      Amend_PeriodDisallowableExpenses(
         costOfGoodsDisallowable = Some(102.12),
         paymentsToSubcontractorsDisallowable = Some(103.12),
         wagesAndStaffCostsDisallowable = Some(104.12),
@@ -109,7 +109,7 @@ trait Def2_AmendPeriodSummaryFixture {
       ))
   )
 
-  val def2_AmendPeriodSummaryBodyDownstreamJson: JsValue = Json.parse(
+  val def1_AmendPeriodSummaryBodyDownstreamJson: JsValue = Json.parse(
     """
       |{
       |    "incomes": {
@@ -183,7 +183,7 @@ trait Def2_AmendPeriodSummaryFixture {
     """.stripMargin
   )
 
-  val def2_AmendPeriodSummaryConsolidatedBodyMtdJson: JsValue = Json.parse(
+  val def1_AmendPeriodSummaryConsolidatedBodyMtdJson: JsValue = Json.parse(
     """
       |{
       |    "periodIncome": {
@@ -198,10 +198,10 @@ trait Def2_AmendPeriodSummaryFixture {
     """.stripMargin
   )
 
-  val def2_AmendPeriodSummaryConsolidatedBody: Def2_AmendPeriodSummaryRequestBody = Def2_AmendPeriodSummaryRequestBody(
-    periodIncome = Some(Def2_Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
+  val def1_AmendPeriodSummaryConsolidatedBody: Def1_AmendPeriodSummaryRequestBody = Def1_AmendPeriodSummaryRequestBody(
+    periodIncome = Some(Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
     periodExpenses = Some(
-      Def2_Amend_PeriodExpenses(
+      Amend_PeriodExpenses(
         consolidatedExpenses = Some(1.12),
         None,
         None,
@@ -222,7 +222,7 @@ trait Def2_AmendPeriodSummaryFixture {
     periodDisallowableExpenses = None
   )
 
-  val def2_AmendPeriodSummaryConsolidatedBodyDownstreamJson: JsValue = Json.parse(
+  val def1_AmendPeriodSummaryConsolidatedBodyDownstreamJson: JsValue = Json.parse(
     """
       |{
       |    "incomes": {
