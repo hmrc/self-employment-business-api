@@ -26,7 +26,7 @@ trait Def1_RetrievePeriodSummaryFixture {
   val periodId   = "periodId"
   val taxYear    = TaxYear.fromMtd("2023-24")
 
-  val def2_DownstreamFullJson: JsValue = Json.parse(
+  val def1_DownstreamFullJson: JsValue = Json.parse(
     """
       |{
       |   "from": "2019-08-24",
@@ -104,7 +104,7 @@ trait Def1_RetrievePeriodSummaryFixture {
       |""".stripMargin
   )
 
-  val def2_MtdFullJson: JsValue = Json.parse(
+  val def1_MtdFullJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates":{
@@ -154,7 +154,7 @@ trait Def1_RetrievePeriodSummaryFixture {
       |""".stripMargin
   )
 
-  val def2_DownstreamConsolidatedJson: JsValue = Json.parse(
+  val def1_DownstreamConsolidatedJson: JsValue = Json.parse(
     """
       |{
       |   "from": "2019-08-24",
@@ -173,7 +173,7 @@ trait Def1_RetrievePeriodSummaryFixture {
       |""".stripMargin
   )
 
-  val def2_MtdConsolidatedJson: JsValue = Json.parse(
+  val def1_MtdConsolidatedJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates":{
@@ -192,7 +192,7 @@ trait Def1_RetrievePeriodSummaryFixture {
       |""".stripMargin
   )
 
-  val def2_DownstreamMinimalJson: JsValue = Json.parse(
+  val def1_DownstreamMinimalJson: JsValue = Json.parse(
     """
       |{
       |   "from": "2019-08-24",
@@ -204,7 +204,7 @@ trait Def1_RetrievePeriodSummaryFixture {
       |""".stripMargin
   )
 
-  val def2_MtdMinimalJson: JsValue = Json.parse(
+  val def1_MtdMinimalJson: JsValue = Json.parse(
     """
       |{
       |   "periodDates":{

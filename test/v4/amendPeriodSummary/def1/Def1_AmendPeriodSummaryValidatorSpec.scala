@@ -21,7 +21,6 @@ import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
@@ -170,7 +169,8 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBodyWithNegatives, includeNegatives = true).validateAndWrapResult()
 
-        result shouldBe Right(Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBodyWithNegatives))
+        result shouldBe Right(
+          Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBodyWithNegatives))
       }
 
       "given a valid request with consolidated expenses" in {
@@ -190,17 +190,6 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
             parsedTaxYear,
             parsedBody.copy(periodExpenses = Some(parsedPeriodExpensesConsolidated), periodDisallowableExpenses = None)
           ))
-      }
-
-      "given a valid request with negative expenses, includeNegatives is true" in {
-        setupMocks()
-
-        val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBodyWithNegatives, includeNegatives = true)
-            .validateAndWrapResult()
-
-        val expected = Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBodyWithNegatives)
-        result shouldBe Right(expected)
       }
 
       "given a valid request where only periodIncome" in {

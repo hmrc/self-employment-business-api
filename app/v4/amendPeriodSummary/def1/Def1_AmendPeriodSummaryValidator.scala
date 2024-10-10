@@ -21,7 +21,7 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinMax}
 import shared.models.domain.TaxYear
@@ -30,7 +30,7 @@ import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_
 import v4.validators.resolvers.ResolvePeriodId
 
 class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)(
-    implicit appConfig: AppConfig)
+    implicit appConfig: SharedAppConfig)
     extends Validator[AmendPeriodSummaryRequestData] {
 
   private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))

@@ -104,30 +104,8 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val requestData: ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
-
-    val controller = new ListPeriodSummariesController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      validatorFactory = mockListPeriodSummariesValidatorFactory,
-      service = mockListPeriodSummariesService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
-      "supporting-agents-access-control.enabled" -> true
-    )
-
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
-
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, None)(fakeGetRequest)
-  }
-
-  private trait TysTest extends ControllerTest {
-
-    val tysRequestData: ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+    val requestData: ListPeriodSummariesRequestData =
+      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,

@@ -21,14 +21,14 @@ import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import config.SeBusinessFeatureSwitches
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v4.amendPeriodSummary.def1.model.request.{Amend_PeriodDisallowableExpenses, Amend_PeriodExpenses, Amend_PeriodIncome}
 import v4.amendPeriodSummary.model.request.Def1_AmendPeriodSummaryRequestData
 
-class Def1_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: AppConfig)
+class Def1_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: SharedAppConfig)
     extends RulesValidator[Def1_AmendPeriodSummaryRequestData] {
 
   private lazy val featureSwitches = SeBusinessFeatureSwitches()

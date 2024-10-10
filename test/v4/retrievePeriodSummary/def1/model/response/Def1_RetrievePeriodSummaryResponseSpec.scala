@@ -16,7 +16,7 @@
 
 package v4.retrievePeriodSummary.def1.model.response
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v4.retrievePeriodSummary.def1.model.Def1_RetrievePeriodSummaryFixture
