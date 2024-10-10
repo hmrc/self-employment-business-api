@@ -68,7 +68,7 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
 
     protected val connector: AmendPeriodSummaryConnector = new AmendPeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
   }

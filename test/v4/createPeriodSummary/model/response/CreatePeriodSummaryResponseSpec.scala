@@ -17,10 +17,10 @@
 package v4.createPeriodSummary.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 
-class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
+class CreatePeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val json: JsValue = Json.parse(
     """

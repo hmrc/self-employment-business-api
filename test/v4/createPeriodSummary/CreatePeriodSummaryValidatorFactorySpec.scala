@@ -19,7 +19,7 @@ package v4.createPeriodSummary
 import api.controllers.validators.common.InvalidResultValidator
 import play.api.Configuration
 import play.api.libs.json._
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
 import shared.utils.UnitSpec
@@ -27,7 +27,7 @@ import v4.createPeriodSummary.def1.Def1_CreatePeriodSummaryValidator
 import v4.createPeriodSummary.def2.Def2_CreatePeriodSummaryValidator
 import v4.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
 
-class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockAppConfig {
+class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
@@ -48,7 +48,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockAppConfi
   private def validatorFactory = new CreatePeriodSummaryValidatorFactory()
 
   private def setupMocks(): Unit = {
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
   }
 
   "validator()" when {

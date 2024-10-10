@@ -19,10 +19,10 @@ package v3.createPeriodSummary.model.response
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 
-class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
+class CreatePeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   val json: JsValue = Json.parse(
     """
@@ -58,9 +58,9 @@ class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val periodId   = "periodId"
         val data       = CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        CreatePeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe List(
+        CreatePeriodSummaryResponse.LinksFactory.links(mockSharedAppConfig, data) shouldBe List(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
@@ -76,9 +76,9 @@ class CreatePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
         val taxYear    = TaxYear.fromMtd("2023-24")
         val data       = CreatePeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(taxYear))
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        val result: Seq[Link] = CreatePeriodSummaryResponse.LinksFactory.links(mockAppConfig, data)
+        val result: Seq[Link] = CreatePeriodSummaryResponse.LinksFactory.links(mockSharedAppConfig, data)
 
         result shouldBe List(
           Link(

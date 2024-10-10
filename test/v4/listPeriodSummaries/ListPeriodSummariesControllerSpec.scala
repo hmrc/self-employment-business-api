@@ -19,7 +19,7 @@ package v4.listPeriodSummaries
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -37,7 +37,7 @@ class ListPeriodSummariesControllerSpec
     with ControllerTestRunner
     with MockListPeriodSummariesService
     with MockListPeriodSummariesValidatorFactory
-    with MockAppConfig {
+    with MockSharedAppConfig {
 
   private val businessId: String = "XAIS12345678910"
   private val from: String       = "2019-01-01"
@@ -56,15 +56,15 @@ class ListPeriodSummariesControllerSpec
   private val response: ListPeriodSummariesResponse[PeriodDetails] = Def1_ListPeriodSummariesResponse(Seq(periodDetails))
 
   private val responseBody = Json.parse(s"""
-                                              |{
-                                              |  "periods": [
-                                              |    {
-                                              |      "periodId": "$periodId",
-                                              |      "periodStartDate": "$from",
-                                              |      "periodEndDate": "$to"
-                                              |    }
-                                              |  ]
-                                              |}
+                                           |{
+                                           |  "periods": [
+                                           |    {
+                                           |      "periodId": "$periodId",
+                                           |      "periodStartDate": "$from",
+                                           |      "periodEndDate": "$to"
+                                           |    }
+                                           |  ]
+                                           |}
     """.stripMargin)
 
   "handleRequest" should {
@@ -104,8 +104,7 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val requestData: ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+    val requestData: ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -116,11 +115,34 @@ class ListPeriodSummariesControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, None)(fakeGetRequest)
+  }
+
+  private trait TysTest extends ControllerTest {
+
+    val tysRequestData: ListPeriodSummariesRequestData =
+      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+
+    val controller = new ListPeriodSummariesController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      validatorFactory = mockListPeriodSummariesValidatorFactory,
+      service = mockListPeriodSummariesService,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }

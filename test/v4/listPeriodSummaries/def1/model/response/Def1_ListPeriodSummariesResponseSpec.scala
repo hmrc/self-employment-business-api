@@ -17,10 +17,10 @@
 package v4.listPeriodSummaries.def1.model.response
 
 import play.api.libs.json.Json
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 
-class Def1_ListPeriodSummariesResponseSpec extends UnitSpec with MockAppConfig {
+class Def1_ListPeriodSummariesResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   private val model = Def1_ListPeriodSummariesResponse(
     Seq(

@@ -48,7 +48,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
 
     protected val connector: ListPeriodSummariesConnector = new ListPeriodSummariesConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
     protected def request(nino: Nino, businessId: BusinessId, taxYear: TaxYear): ListPeriodSummariesRequestData =

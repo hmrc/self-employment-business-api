@@ -20,7 +20,8 @@ import api.models.domain.PeriodId
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
+import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
@@ -28,7 +29,7 @@ import shared.utils.UnitSpec
 import v4.amendPeriodSummary.def1.model.request.{Amend_PeriodDisallowableExpenses, Amend_PeriodExpenses, Amend_PeriodIncome}
 import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 
-class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
+class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -150,25 +151,26 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
     Def1_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses()), Some(parsedPeriodDisallowableExpenses()))
 
   private val parsedBodyWithNegatives =
-    Def1_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses(true)), Some(parsedPeriodDisallowableExpenses(true)))
+    Def1_AmendPeriodSummaryRequestBody(
+      Some(parsedPeriodIncome),
+      Some(parsedPeriodExpenses(withNegatives = true)),
+      Some(parsedPeriodDisallowableExpenses(withNegatives = true)))
 
   private def validator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean = false) =
     new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
 
   private def setupMocks(): Unit =
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validate()" should {
     "return the parsed domain object" when {
-
-      "given a valid TYS request" in {
+      "given a valid request with negative expenses, includeNegatives is true" in {
         setupMocks()
 
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBody()).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBodyWithNegatives, includeNegatives = true).validateAndWrapResult()
 
-        val expected = Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBody)
-        result shouldBe Right(expected)
+        result shouldBe Right(Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBodyWithNegatives))
       }
 
       "given a valid request with consolidated expenses" in {

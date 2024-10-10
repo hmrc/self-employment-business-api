@@ -42,7 +42,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
     protected val connector: CreateAmendAnnualSubmissionConnector = new CreateAmendAnnualSubmissionConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
     def taxYear: TaxYear

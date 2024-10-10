@@ -18,7 +18,7 @@ package v4.createAmendAnnualSubmission
 
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers._
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -34,7 +34,7 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
                                                        service: CreateAmendAnnualSubmissionService,
                                                        auditService: AuditService,
                                                        cc: ControllerComponents,
-                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

@@ -19,7 +19,7 @@ package v4.amendPeriodSummary
 import api.models.domain.PeriodId
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -48,18 +48,18 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
     body = Def1_AmendPeriodSummaryRequestBody(Some(periodIncomeWithCl290Enabled), None, None)
   )
 
-  trait Test extends MockAmendPeriodSummaryConnector with MockAppConfig {
+  trait Test extends MockAmendPeriodSummaryConnector with MockSharedAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendPeriodSummaryService(connector = mockAmendPeriodSummaryConnector)
   }
 
   trait Cl290Enabled extends Test {
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
   }
 
   trait Cl290Disabled extends Test {
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
   }
 
   "AmendPeriodSummaryService" should {

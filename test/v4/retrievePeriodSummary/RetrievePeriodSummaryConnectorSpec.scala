@@ -68,7 +68,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
 
     protected val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
   }

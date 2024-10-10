@@ -16,13 +16,13 @@
 
 package v3.createAmendAnnualSubmission.model.response
 
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.hateoas.Link
 import shared.hateoas.Method.{DELETE, GET, PUT}
 import shared.models.domain.{BusinessId, Nino}
 import shared.utils.UnitSpec
 
-class CreateAmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfig {
+class CreateAmendAnnualSubmissionResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   "LinksFactory" should {
     "return the correct links" in {
@@ -30,10 +30,10 @@ class CreateAmendAnnualSubmissionResponseSpec extends UnitSpec with MockAppConfi
       val businessId = "XAIS12345678910"
       val taxYear    = "2019-20"
 
-      MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+      MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
       CreateAmendAnnualSubmissionResponse.LinksFactory.links(
-        mockAppConfig,
+        mockSharedAppConfig,
         CreateAmendAnnualSubmissionHateoasData(Nino(nino), BusinessId(businessId), taxYear)) shouldBe
         List(
           Link(s"/my/context/$nino/$businessId/annual/$taxYear", PUT, "create-and-amend-self-employment-annual-submission"),

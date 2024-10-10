@@ -19,13 +19,13 @@ package v4.retrieveAnnualSubmission.def2.model.response
 import config.{MockSeBusinessFeatureSwitches, SeBusinessFeatureSwitches}
 import play.api.Configuration
 import play.api.libs.json.Json
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v4.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
 class Def2_RetrieveAnnualSubmissionResponseSpec
     extends UnitSpec
-    with MockAppConfig
+    with MockSharedAppConfig
     with Def2_RetrieveAnnualSubmissionFixture
     with MockSeBusinessFeatureSwitches {
 

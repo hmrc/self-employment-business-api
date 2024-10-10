@@ -17,24 +17,22 @@
 package v4.retrievePeriodSummary.def1.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v4.retrievePeriodSummary.def1.model.Def1_RetrievePeriodSummaryFixture
 
-class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrievePeriodSummaryFixture {
+class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig with Def1_RetrievePeriodSummaryFixture {
 
   "round trip" should {
     "return mtd json" when {
-      "given valid full downstream json" in {
-        val result = Json.toJson(def2_DownstreamFullJson.as[Def1_RetrievePeriodSummaryResponse])
-        result shouldBe def2_MtdFullJson
+      "passed valid full downstream json" in {
+        Json.toJson(def1_DownstreamFullJson.as[Def1_RetrievePeriodSummaryResponse]) shouldBe def1_MtdFullJson
       }
-      "given valid consolidated downstream json" in {
-        val result: JsValue = Json.toJson(def2_DownstreamConsolidatedJson.as[Def1_RetrievePeriodSummaryResponse])
-        result shouldBe def2_MtdConsolidatedJson
+      "passed valid consolidated downstream json" in {
+        Json.toJson(def1_DownstreamConsolidatedJson.as[Def1_RetrievePeriodSummaryResponse]) shouldBe def1_MtdConsolidatedJson
       }
-      "given valid minimal downstream json" in {
-        Json.toJson(def2_DownstreamMinimalJson.as[Def1_RetrievePeriodSummaryResponse]) shouldBe def2_MtdMinimalJson
+      "passed valid minimal downstream json" in {
+        Json.toJson(def1_DownstreamMinimalJson.as[Def1_RetrievePeriodSummaryResponse]) shouldBe def1_MtdMinimalJson
       }
     }
   }
