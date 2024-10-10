@@ -67,18 +67,6 @@ class ListPeriodSummariesControllerSpec
                                            |}
     """.stripMargin)
 
-  private val responseBodyTys = Json.parse(s"""
-                                              |{
-                                              |  "periods": [
-                                              |    {
-                                              |      "periodId": "$periodId",
-                                              |      "periodStartDate": "$from",
-                                              |      "periodEndDate": "$to"
-                                              |    }
-                                              |  ]
-                                              |}
-    """.stripMargin)
-
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
@@ -91,19 +79,6 @@ class ListPeriodSummariesControllerSpec
         runOkTest(
           expectedStatus = OK,
           maybeExpectedResponseBody = Some(responseBody)
-        )
-      }
-
-      "the Tys request received is valid" in new TysTest {
-        willUseValidator(returningSuccess(tysRequestData))
-
-        MockListPeriodSummariesService
-          .listPeriodSummaries(tysRequestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
-
-        runOkTest(
-          expectedStatus = OK,
-          maybeExpectedResponseBody = Some(responseBodyTys)
         )
       }
     }
@@ -129,7 +104,8 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val requestData: ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
+    val requestData: ListPeriodSummariesRequestData =
+      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -146,30 +122,7 @@ class ListPeriodSummariesControllerSpec
 
     MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, None)(fakeGetRequest)
-  }
-
-  private trait TysTest extends ControllerTest {
-
-    val tysRequestData: ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
-
-    val controller = new ListPeriodSummariesController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      validatorFactory = mockListPeriodSummariesValidatorFactory,
-      service = mockListPeriodSummariesService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
-      "supporting-agents-access-control.enabled" -> true
-    )
-
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
-
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, Some(taxYear))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }
 
 }

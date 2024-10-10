@@ -19,7 +19,7 @@ package v4.amendPeriodSummary.def1.model.request
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class Def1_Amend_PeriodDisallowableExpenses(
+case class Amend_PeriodDisallowableExpenses(
     costOfGoodsDisallowable: Option[BigDecimal],
     paymentsToSubcontractorsDisallowable: Option[BigDecimal],
     wagesAndStaffCostsDisallowable: Option[BigDecimal],
@@ -37,11 +37,11 @@ case class Def1_Amend_PeriodDisallowableExpenses(
     otherExpensesDisallowable: Option[BigDecimal]
 )
 
-object Def1_Amend_PeriodDisallowableExpenses {
+object Amend_PeriodDisallowableExpenses {
 
-  implicit val reads: Reads[Def1_Amend_PeriodDisallowableExpenses] = Json.reads[Def1_Amend_PeriodDisallowableExpenses]
+  implicit val reads: Reads[Amend_PeriodDisallowableExpenses] = Json.reads[Amend_PeriodDisallowableExpenses]
 
-  implicit val writes: OWrites[Def1_Amend_PeriodDisallowableExpenses] = (
+  implicit val writes: OWrites[Amend_PeriodDisallowableExpenses] = (
     (JsPath \ "costOfGoods" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "constructionIndustryScheme" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "staffCosts" \ "disallowableAmount").writeNullable[BigDecimal] and
@@ -57,6 +57,6 @@ object Def1_Amend_PeriodDisallowableExpenses {
       (JsPath \ "professionalFees" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "disallowableAmount").writeNullable[BigDecimal]
-  )(unlift(Def1_Amend_PeriodDisallowableExpenses.unapply))
+  )(unlift(Amend_PeriodDisallowableExpenses.unapply))
 
 }

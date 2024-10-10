@@ -19,28 +19,30 @@ package v4.amendPeriodSummary.def1.model.request
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class Def1_Amend_PeriodExpenses(consolidatedExpenses: Option[BigDecimal],
-                                     costOfGoods: Option[BigDecimal],
-                                     paymentsToSubcontractors: Option[BigDecimal],
-                                     wagesAndStaffCosts: Option[BigDecimal],
-                                     carVanTravelExpenses: Option[BigDecimal],
-                                     premisesRunningCosts: Option[BigDecimal],
-                                     maintenanceCosts: Option[BigDecimal],
-                                     adminCosts: Option[BigDecimal],
-                                     businessEntertainmentCosts: Option[BigDecimal],
-                                     advertisingCosts: Option[BigDecimal],
-                                     interestOnBankOtherLoans: Option[BigDecimal],
-                                     financeCharges: Option[BigDecimal],
-                                     irrecoverableDebts: Option[BigDecimal],
-                                     professionalFees: Option[BigDecimal],
-                                     depreciation: Option[BigDecimal],
-                                     otherExpenses: Option[BigDecimal])
+case class Amend_PeriodExpenses(
+    consolidatedExpenses: Option[BigDecimal],
+    costOfGoods: Option[BigDecimal],
+    paymentsToSubcontractors: Option[BigDecimal],
+    wagesAndStaffCosts: Option[BigDecimal],
+    carVanTravelExpenses: Option[BigDecimal],
+    premisesRunningCosts: Option[BigDecimal],
+    maintenanceCosts: Option[BigDecimal],
+    adminCosts: Option[BigDecimal],
+    businessEntertainmentCosts: Option[BigDecimal],
+    advertisingCosts: Option[BigDecimal],
+    interestOnBankOtherLoans: Option[BigDecimal],
+    financeCharges: Option[BigDecimal],
+    irrecoverableDebts: Option[BigDecimal],
+    professionalFees: Option[BigDecimal],
+    depreciation: Option[BigDecimal],
+    otherExpenses: Option[BigDecimal]
+)
 
-object Def1_Amend_PeriodExpenses {
+object Amend_PeriodExpenses {
 
-  implicit val reads: Reads[Def1_Amend_PeriodExpenses] = Json.reads[Def1_Amend_PeriodExpenses]
+  implicit val reads: Reads[Amend_PeriodExpenses] = Json.reads[Amend_PeriodExpenses]
 
-  implicit val writes: OWrites[Def1_Amend_PeriodExpenses] = (
+  implicit val writes: OWrites[Amend_PeriodExpenses] = (
     (JsPath \ "simplifiedExpenses").writeNullable[BigDecimal] and
       (JsPath \ "costOfGoods" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "constructionIndustryScheme" \ "amount").writeNullable[BigDecimal] and
@@ -57,6 +59,6 @@ object Def1_Amend_PeriodExpenses {
       (JsPath \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "amount").writeNullable[BigDecimal]
-  )(unlift(Def1_Amend_PeriodExpenses.unapply))
+  )(unlift(Amend_PeriodExpenses.unapply))
 
 }

@@ -19,7 +19,6 @@ package v4.listPeriodSummaries.def1
 import cats.data.Validated
 import cats.implicits._
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.ResolveIsoDate.ResolverOps
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax}
 import shared.models.domain.TaxYear
 import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
@@ -29,7 +28,7 @@ import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 class Def1_ListPeriodSummariesValidator(
     nino: String,
     businessId: String,
-    taxYear: Option[String]
+    taxYear: String
 ) extends Validator[ListPeriodSummariesRequestData] {
 
   private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
@@ -38,7 +37,7 @@ class Def1_ListPeriodSummariesValidator(
     minMaxTaxYears,
     minError = InvalidTaxYearParameterError,
     maxError = RuleTaxYearNotSupportedError
-  ).resolver.resolveOptionally
+  ).resolver
 
   def validate: Validated[Seq[MtdError], ListPeriodSummariesRequestData] =
     (

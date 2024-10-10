@@ -23,7 +23,7 @@ parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
   - $ref: './common/pathParameters.yaml#/components/parameters/periodId'
-  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearTo2025'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
   - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
@@ -49,18 +49,11 @@ responses:
         schema:
           oneOf:
             - $ref: './schemas/retrievePeriodSummary/def1/response.json'
-            - $ref: './schemas/retrievePeriodSummary/def2/response.json'
         examples:
           "Non-consolidated response for TY 2023-24 onwards":
             value:
-              $ref: './examples/retrievePeriodSummary/def2/non_consolidated_response.json'
-          "Consolidated response for TY 2023-24 onwards":
-            value:
-              $ref: './examples/retrievePeriodSummary/def2/consolidated_response.json'
-          "Non-consolidated response for TY 2022-23 and before":
-            value:
               $ref: './examples/retrievePeriodSummary/def1/non_consolidated_response.json'
-          "Consolidated response for TY 2022-23 and before":
+          "Consolidated response for TY 2023-24 onwards":
             value:
               $ref: './examples/retrievePeriodSummary/def1/consolidated_response.json'
 

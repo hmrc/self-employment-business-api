@@ -21,6 +21,6 @@ import v4.listPeriodSummaries.ListPeriodSummariesSchema
 import v4.listPeriodSummaries.ListPeriodSummariesSchema.Def1
 import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
-case class Def1_ListPeriodSummariesRequestData(nino: Nino, businessId: BusinessId, taxYear: Option[TaxYear]) extends ListPeriodSummariesRequestData {
+case class Def1_ListPeriodSummariesRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends ListPeriodSummariesRequestData {
   override val schema: ListPeriodSummariesSchema = Def1
 }

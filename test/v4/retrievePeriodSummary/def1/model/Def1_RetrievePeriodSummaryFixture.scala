@@ -17,12 +17,14 @@
 package v4.retrievePeriodSummary.def1.model
 
 import play.api.libs.json.{JsValue, Json}
+import shared.models.domain.TaxYear
 
 trait Def1_RetrievePeriodSummaryFixture {
 
   val nino       = "AA111111A"
   val businessId = "id"
   val periodId   = "periodId"
+  val taxYear    = TaxYear.fromMtd("2023-24")
 
   val def1_DownstreamFullJson: JsValue = Json.parse(
     """
@@ -94,7 +96,8 @@ trait Def1_RetrievePeriodSummaryFixture {
       |      },
       |      "incomes": {
       |         "turnover": 1000.00,
-      |         "other": 2000.00
+      |         "other": 2000.00,
+      |         "taxTakenOffTradingIncome": 3000.00
       |      }
       |   }
       |}
@@ -110,7 +113,8 @@ trait Def1_RetrievePeriodSummaryFixture {
       |   },
       |   "periodIncome":{
       |      "turnover":1000.00,
-      |      "other":2000.00
+      |      "other":2000.00,
+      |      "taxTakenOffTradingIncome": 3000.00
       |   },
       |   "periodExpenses":{
       |      "costOfGoods":900.00,
@@ -161,7 +165,8 @@ trait Def1_RetrievePeriodSummaryFixture {
       |      },
       |      "incomes": {
       |         "turnover": 100.00,
-      |         "other": 200.00
+      |         "other": 200.00,
+      |         "taxTakenOffTradingIncome": 300.00
       |      }
       |   }
       |}
@@ -177,7 +182,8 @@ trait Def1_RetrievePeriodSummaryFixture {
       |   },
       |   "periodIncome":{
       |      "turnover":100.00,
-      |      "other":200.00
+      |      "other":200.00,
+      |      "taxTakenOffTradingIncome": 300.00
       |   },
       |   "periodExpenses":{
       |      "consolidatedExpenses":666.66

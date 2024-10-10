@@ -32,7 +32,7 @@ trait MockRetrievePeriodSummaryValidatorFactory extends MockFactory {
   object MockedRetrievePeriodSummaryValidatorFactory {
 
     def validator(): CallHandler[Validator[RetrievePeriodSummaryRequestData]] =
-      (mockRetrievePeriodSummaryValidatorFactory.validator(_: String, _: String, _: String, _: Option[String])).expects(*, *, *, *)
+      (mockRetrievePeriodSummaryValidatorFactory.validator(_: String, _: String, _: String, _: String)).expects(*, *, *, *)
 
   }
 

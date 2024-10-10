@@ -21,7 +21,6 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
 import v4.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
-import v4.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
 import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
@@ -48,25 +47,12 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
   "validator()" when {
 
     "given no taxYear parameter" should {
-      "return the Validator for schema definition 1 (non-TYS)" in {
-        val requestBody = validBody("2019-08-24", "2020-08-24")
-        val result: Validator[AmendPeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validPeriodId, maybeTaxYear = None, requestBody, includeNegatives = true)
-        result shouldBe a[Def1_AmendPeriodSummaryValidator]
-      }
-
       "given a valid tax year parameter (2023-24, TYS)" should {
         "return the Validator for schema definition 2" in {
           val requestBody = validBody("2023-08-24", "2024-08-24")
           val result: Validator[AmendPeriodSummaryRequestData] =
-            validatorFactory.validator(
-              validNino,
-              validBusinessId,
-              validPeriodId,
-              maybeTaxYear = Some("2023-24"),
-              requestBody,
-              includeNegatives = true)
-          result shouldBe a[Def2_AmendPeriodSummaryValidator]
+            validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2023-24", requestBody, includeNegatives = true)
+          result shouldBe a[Def1_AmendPeriodSummaryValidator]
         }
       }
 
@@ -74,14 +60,8 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
         "return the Validator for schema definition 2" in {
           val requestBody = validBody("2025-08-24", "2026-08-24")
           val result: Validator[AmendPeriodSummaryRequestData] =
-            validatorFactory.validator(
-              validNino,
-              validBusinessId,
-              validPeriodId,
-              maybeTaxYear = Some("2025-26"),
-              requestBody,
-              includeNegatives = true)
-          result shouldBe a[Def2_AmendPeriodSummaryValidator]
+            validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2025-26", requestBody, includeNegatives = true)
+          result shouldBe a[Def1_AmendPeriodSummaryValidator]
         }
       }
 
@@ -89,14 +69,8 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
         "return the Validator for schema definition 2 (non-TYS ty param will then be validated and rejected)" in {
           val requestBody = validBody("2025-08-24", "2026-08-24")
           val result: Validator[AmendPeriodSummaryRequestData] =
-            validatorFactory.validator(
-              validNino,
-              validBusinessId,
-              validPeriodId,
-              maybeTaxYear = Some("2022-23"),
-              requestBody,
-              includeNegatives = true)
-          result shouldBe a[Def2_AmendPeriodSummaryValidator]
+            validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2022-23", requestBody, includeNegatives = true)
+          result shouldBe a[Def1_AmendPeriodSummaryValidator]
         }
       }
 
@@ -104,14 +78,8 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
         "return the Validator for schema definition 2 (ty param will then be validated and rejected)" in {
           val requestBody = validBody("2025-08-24", "2026-08-24")
           val result: Validator[AmendPeriodSummaryRequestData] =
-            validatorFactory.validator(
-              validNino,
-              validBusinessId,
-              validPeriodId,
-              maybeTaxYear = Some("not-a-tax-year"),
-              requestBody,
-              includeNegatives = true)
-          result shouldBe a[Def2_AmendPeriodSummaryValidator]
+            validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "not-a-tax-year", requestBody, includeNegatives = true)
+          result shouldBe a[Def1_AmendPeriodSummaryValidator]
         }
       }
 

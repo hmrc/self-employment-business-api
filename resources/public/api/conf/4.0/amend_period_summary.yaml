@@ -24,7 +24,7 @@ parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
   - $ref: './common/pathParameters.yaml#/components/parameters/periodId'
-  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearTo2025'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
   - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
   - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
@@ -39,7 +39,6 @@ requestBody:
     application/json:
       schema:
         oneOf:
-          - $ref: './schemas/def1/request.json'
           - $ref: './schemas/def2/request.json'
       examples:
         "Non-consolidated request for TY 2023-24 onwards":
@@ -48,13 +47,6 @@ requestBody:
         "Consolidated request for TY 2023-24 onwards":
           value:
             $ref: './examples/amendPeriodSummary/def2/consolidated_request.json'
-        "Non-consolidated request for TY 2022-23 and before":
-          value:
-            $ref: './examples/amendPeriodSummary/def1/non_consolidated_request.json'
-        "Consolidated request for TY 2022-23 and before":
-          value:
-            $ref: './examples/amendPeriodSummary/def1/consolidated_request.json'
-
 
 responses:
   "200":

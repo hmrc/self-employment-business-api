@@ -21,24 +21,27 @@ import shared.utils.UnitSpec
 import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v4.amendPeriodSummary.model.request.Def1_AmendPeriodSummaryRequestBody
 
-class Def1_Amend_PeriodSummaryRequestBodySpec extends UnitSpec with Def1_AmendPeriodSummaryFixture {
+class Amend_PeriodSummaryRequestBodySpec extends UnitSpec with Def1_AmendPeriodSummaryFixture {
 
   val emptyJson: JsValue = JsObject.empty
 
-  val emptyMtdModel: Def1_AmendPeriodSummaryRequestBody = Def1_AmendPeriodSummaryRequestBody(None, None, None)
+  val parsedEmptyMtd: Def1_AmendPeriodSummaryRequestBody = Def1_AmendPeriodSummaryRequestBody(None, None, None)
 
   "reads" should {
     "return a model" when {
       "a valid request with all (non-consolidated) data is made" in {
-        def1_AmendPeriodSummaryBodyMtdJson.as[Def1_AmendPeriodSummaryRequestBody] shouldBe def1_AmendPeriodSummaryBody
+        val result = def1_AmendPeriodSummaryBodyMtdJson.as[Def1_AmendPeriodSummaryRequestBody]
+        result shouldBe def1_AmendPeriodSummaryBody
       }
 
       "a valid request with some data is made" in {
-        def1_AmendPeriodSummaryConsolidatedBodyMtdJson.as[Def1_AmendPeriodSummaryRequestBody] shouldBe def1_AmendPeriodSummaryConsolidatedBody
+        val result = def1_AmendPeriodSummaryConsolidatedBodyMtdJson.as[Def1_AmendPeriodSummaryRequestBody]
+        result shouldBe def1_AmendPeriodSummaryConsolidatedBody
       }
 
       "a valid request with no data is made" in {
-        emptyJson.as[Def1_AmendPeriodSummaryRequestBody] shouldBe emptyMtdModel
+        val result: Def1_AmendPeriodSummaryRequestBody = emptyJson.as[Def1_AmendPeriodSummaryRequestBody]
+        result shouldBe parsedEmptyMtd
       }
     }
   }
@@ -46,15 +49,18 @@ class Def1_Amend_PeriodSummaryRequestBodySpec extends UnitSpec with Def1_AmendPe
   "writes" should {
     "return downstream json" when {
       "a valid request is made with full body" in {
-        Json.toJson(def1_AmendPeriodSummaryBody) shouldBe def1_AmendPeriodSummaryBodyDownstreamJson
+        val result: JsValue = Json.toJson(def1_AmendPeriodSummaryBody)
+        result shouldBe def1_AmendPeriodSummaryBodyDownstreamJson
       }
 
       "a valid request is made with partial body" in {
-        Json.toJson(def1_AmendPeriodSummaryConsolidatedBody) shouldBe def1_AmendPeriodSummaryConsolidatedBodyDownstreamJson
+        val result: JsValue = Json.toJson(def1_AmendPeriodSummaryConsolidatedBody)
+        result shouldBe def1_AmendPeriodSummaryConsolidatedBodyDownstreamJson
       }
 
       "a valid request is made with empty body" in {
-        Json.toJson(emptyMtdModel) shouldBe emptyJson
+        val result: JsValue = Json.toJson(parsedEmptyMtd)
+        result shouldBe emptyJson
       }
     }
   }

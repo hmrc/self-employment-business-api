@@ -31,7 +31,7 @@ trait MockListPeriodSummariesValidatorFactory extends MockFactory {
   object MockListPeriodSummariesValidatorFactory {
 
     def validator(): CallHandler[Validator[ListPeriodSummariesRequestData]] =
-      (mockListPeriodSummariesValidatorFactory.validator(_: String, _: String, _: Option[String])).expects(*, *, *)
+      (mockListPeriodSummariesValidatorFactory.validator(_: String, _: String, _: String)).expects(*, *, *)
 
   }
 

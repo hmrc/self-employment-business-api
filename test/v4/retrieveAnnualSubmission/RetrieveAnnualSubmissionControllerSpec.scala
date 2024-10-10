@@ -19,7 +19,6 @@ package v4.retrieveAnnualSubmission
 import play.api.Configuration
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -35,7 +34,6 @@ class RetrieveAnnualSubmissionControllerSpec
     with ControllerTestRunner
     with MockRetrieveAnnualSubmissionService
     with MockRetrieveAnnualSubmissionValidatorFactory
-    with MockHateoasFactory
     with Def1_RetrieveAnnualSubmissionFixture {
 
   private val businessId: String = "XAIS12345678910"
@@ -87,7 +85,6 @@ class RetrieveAnnualSubmissionControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveAnnualSubmissionValidatorFactory,
       service = mockRetrieveAnnualSubmissionService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

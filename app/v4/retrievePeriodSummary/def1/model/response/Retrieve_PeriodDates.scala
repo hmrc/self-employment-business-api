@@ -16,10 +16,10 @@
 
 package v4.retrievePeriodSummary.def1.model.response
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OWrites}
 
-case class Def1_Retrieve_PeriodDates(periodStartDate: String, periodEndDate: String)
+case class Retrieve_PeriodDates(periodStartDate: String, periodEndDate: String)
 
-object Def1_Retrieve_PeriodDates {
-  implicit val format: OFormat[Def1_Retrieve_PeriodDates] = Json.format
+object Retrieve_PeriodDates {
+  implicit val writes: OWrites[Retrieve_PeriodDates] = Json.writes
 }

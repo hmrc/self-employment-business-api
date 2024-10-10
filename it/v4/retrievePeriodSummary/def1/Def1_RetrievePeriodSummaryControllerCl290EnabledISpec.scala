@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2
+package v4.retrievePeriodSummary.def1
 
 import api.models.errors.PeriodIdFormatError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -29,7 +29,7 @@ import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def2_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationBaseSpec {
+class Def1_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] = {
     super.servicesConfig ++ Map(
@@ -152,15 +152,11 @@ class Def2_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationB
     val mtdTaxYear               = "2023-24"
     lazy val tysTaxYear: TaxYear = TaxYear.fromMtd(mtdTaxYear)
 
-    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
-
     def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=$mtdTaxYear")
+      buildRequest(uri)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -293,7 +289,7 @@ class Def2_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationB
 
     def setupStubs(): StubMapping
 
-    def uri: String = s"/$nino/$businessId/period/$periodId"
+    def uri: String = s"/$nino/$businessId/period/$periodId/$mtdTaxYear"
 
     def errorBody(code: String): String =
       s"""

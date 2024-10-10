@@ -20,7 +20,6 @@ import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -38,7 +37,6 @@ class CreateAmendAnnualSubmissionControllerSpec
     with ControllerTestRunner
     with MockCreateAmendAnnualSubmissionService
     with MockCreateAmendAnnualSubmissionValidatorFactory
-    with MockHateoasFactory
     with MockAuditService
     with Def1_CreateAmendAnnualSubmissionFixture {
 
@@ -98,7 +96,6 @@ class CreateAmendAnnualSubmissionControllerSpec
       validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
       service = mockAmendAnnualSubmissionService,
       auditService = mockAuditService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2.model.response
+package v4.retrievePeriodSummary.def1.model.response
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Def2_Retrieve_PeriodDisallowableExpenses(
+case class Retrieve_PeriodDisallowableExpenses(
     costOfGoodsDisallowable: Option[BigDecimal],
     paymentsToSubcontractorsDisallowable: Option[BigDecimal],
     wagesAndStaffCostsDisallowable: Option[BigDecimal],
@@ -56,9 +56,9 @@ case class Def2_Retrieve_PeriodDisallowableExpenses(
 
 }
 
-object Def2_Retrieve_PeriodDisallowableExpenses {
+object Retrieve_PeriodDisallowableExpenses {
 
-  implicit val reads: Reads[Def2_Retrieve_PeriodDisallowableExpenses] = (
+  implicit val reads: Reads[Retrieve_PeriodDisallowableExpenses] = (
     (JsPath \ "deductions" \ "costOfGoods" \ "disallowableAmount").readNullable[BigDecimal] and
       (JsPath \ "deductions" \ "constructionIndustryScheme" \ "disallowableAmount").readNullable[BigDecimal] and
       (JsPath \ "deductions" \ "staffCosts" \ "disallowableAmount").readNullable[BigDecimal] and
@@ -74,7 +74,7 @@ object Def2_Retrieve_PeriodDisallowableExpenses {
       (JsPath \ "deductions" \ "professionalFees" \ "disallowableAmount").readNullable[BigDecimal] and
       (JsPath \ "deductions" \ "depreciation" \ "disallowableAmount").readNullable[BigDecimal] and
       (JsPath \ "deductions" \ "other" \ "disallowableAmount").readNullable[BigDecimal]
-  )(Def2_Retrieve_PeriodDisallowableExpenses.apply _)
+  )(Retrieve_PeriodDisallowableExpenses.apply _)
 
-  implicit val writes: OWrites[Def2_Retrieve_PeriodDisallowableExpenses] = Json.writes
+  implicit val writes: OWrites[Retrieve_PeriodDisallowableExpenses] = Json.writes
 }

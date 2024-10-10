@@ -34,23 +34,6 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     "return a 200 status code" when {
 
-      s"any valid request is made" in new NonTysTest {
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          BaseDownstreamStub
-            .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
-        }
-
-        val response: WSResponse = await(request().get())
-        response.status shouldBe OK
-        response.json shouldBe responseBody(periodId, fromDate, toDate)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
       s"any valid request is made for a TYS specific year" in new TysIfsTest {
 
         override def setupStubs(): StubMapping = {
@@ -105,7 +88,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new TysIfsTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -141,6 +124,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
+    val mtdTaxYear = "2023-24"
 
     def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
       s"""
@@ -170,7 +154,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
        """.stripMargin
     )
 
-    def uri: String = s"/$nino/$businessId/period"
+    def uri: String = s"/$nino/$businessId/period/$mtdTaxYear"
 
     def setupStubs(): StubMapping
 
@@ -184,37 +168,18 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  private trait NonTysTest extends Test {
-    val periodId = "2019-01-01_2020-01-01"
-    val fromDate = "2019-01-01"
-    val toDate   = "2020-01-01"
-
-    def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.4.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
-  }
-
   private trait TysIfsTest extends Test {
 
     lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
     val periodId        = "2024-01-01_2024-01-02"
     val fromDate        = "2024-01-01"
     val toDate          = "2024-01-02"
-    val mtdTaxYear      = "2023-24"
 
     def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=$mtdTaxYear").withHttpHeaders(
+      buildRequest(uri).withHttpHeaders(
         (ACCEPT, s"application/vnd.hmrc.4.0+json"),
         (AUTHORIZATION, "Bearer 123")
       )

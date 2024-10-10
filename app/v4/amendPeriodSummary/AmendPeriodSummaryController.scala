@@ -21,7 +21,6 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers._
-import shared.hateoas.HateoasFactory
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -35,7 +34,6 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
                                               validatorFactory: AmendPeriodSummaryValidatorFactory,
                                               service: AmendPeriodSummaryService,
                                               auditService: AuditService,
-                                              hateoasFactory: HateoasFactory,
                                               cc: ControllerComponents,
                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
@@ -45,7 +43,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
 
   val endpointName = "amend-period-summary"
 
-  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[JsValue] =
+  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
@@ -60,8 +58,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
           auditType = "AmendPeriodicEmployment",
           transactionName = "self-employment-periodic-amend",
           apiVersion = Version(request),
-          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId) ++
-            taxYear.map(year => Map("taxYear" -> year)).getOrElse(Map.empty),
+          params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear),
           Some(request.body)
         ))
         .withNoContentResult(OK)

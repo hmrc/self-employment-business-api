@@ -21,7 +21,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors._
@@ -40,7 +39,6 @@ class CreatePeriodSummaryControllerSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryValidatorFactory
-    with MockHateoasFactory
     with MockSharedAppConfig
     with MockAuditService
     with Def1_CreatePeriodSummaryFixture {
@@ -107,7 +105,6 @@ class CreatePeriodSummaryControllerSpec
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,
       service = mockCreatePeriodicService,
       auditService = mockAuditService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

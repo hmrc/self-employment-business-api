@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package v4.retrievePeriodSummary.def2.model.response
+package v4.amendPeriodSummary.def1.model.request
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{Format, Json}
 
-case class Def2_Retrieve_PeriodDates(periodStartDate: String, periodEndDate: String)
+case class Amend_PeriodIncome(turnover: Option[BigDecimal], other: Option[BigDecimal], taxTakenOffTradingIncome: Option[BigDecimal])
 
-object Def2_Retrieve_PeriodDates {
-  implicit val writes: OWrites[Def2_Retrieve_PeriodDates] = Json.writes
+object Amend_PeriodIncome {
+
+  implicit val format: Format[Amend_PeriodIncome] = Json.format[Amend_PeriodIncome]
+
 }

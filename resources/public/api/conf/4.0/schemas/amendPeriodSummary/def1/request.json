@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Before TY 2023-24",
+  "title": "TY 2023-24 or later",
   "description": "Amend a Self-Employment Period Summary Request",
   "type": "object",
   "properties": {

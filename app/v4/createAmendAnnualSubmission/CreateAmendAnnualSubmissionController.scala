@@ -20,7 +20,6 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers._
-import shared.hateoas.HateoasFactory
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -33,7 +32,6 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
                                                        val lookupService: MtdIdLookupService,
                                                        validatorFactory: CreateAmendAnnualSubmissionValidatorFactory,
                                                        service: CreateAmendAnnualSubmissionService,
-                                                       hateoasFactory: HateoasFactory,
                                                        auditService: AuditService,
                                                        cc: ControllerComponents,
                                                        idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
