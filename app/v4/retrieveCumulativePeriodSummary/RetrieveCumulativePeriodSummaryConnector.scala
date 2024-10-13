@@ -39,7 +39,7 @@ class RetrieveCumulativePeriodSummaryConnector @Inject() (val http: HttpClient, 
     import schema._
 
     val downstreamUri =
-      IfsUri[DownstreamResp](s"income-tax/${taxYear.asMtd}/self-employments/periodic-summary-detail/$nino/$businessId")
+      IfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId")
 
     get(downstreamUri)
   }

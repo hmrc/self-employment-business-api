@@ -16,7 +16,6 @@
 
 package v4.retrieveCumulativePeriodSummary
 
-import api.models.errors.PeriodIdFormatError
 import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
@@ -45,8 +44,6 @@ class RetrieveCumulativePeriodSummaryService @Inject() (
       "INVALID_NINO"                 -> NinoFormatError,
       "INVALID_TAX_YEAR"             -> TaxYearFormatError,
       "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
-      "INVALID_DATE_FROM"            -> PeriodIdFormatError,
-      "INVALID_DATE_TO"              -> PeriodIdFormatError,
       "INVALID_CORRELATION_ID"       -> InternalError,
       "INCOME_DATA_SOURCE_NOT_FOUND" -> NotFoundError,
       "SUBMISSION_DATA_NOT_FOUND"    -> NotFoundError,
