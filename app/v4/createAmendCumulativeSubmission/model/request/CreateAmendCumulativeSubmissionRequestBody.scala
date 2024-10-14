@@ -1,0 +1,62 @@
+/*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package v4.createAmendCumulativeSubmission.model.request
+
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import v4.createAmendCumulativeSubmission.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
+
+sealed trait CreateAmendCumulativeSubmissionRequestBody {
+  val periodDates: Create_PeriodDates
+  val periodIncome: Option[Create_PeriodIncome]
+  val periodExpenses: Option[Create_PeriodExpenses]
+  val periodDisallowableExpenses: Option[Create_PeriodDisallowableExpenses]
+}
+
+trait Create_PeriodDates {
+  val periodStartDate: String
+  val periodEndDate: String
+}
+
+trait Create_PeriodExpenses
+
+trait Create_PeriodIncome {
+  val turnover: Option[BigDecimal]
+  val other: Option[BigDecimal]
+  val taxTakenOffTradingIncome: Option[BigDecimal]
+}
+
+trait Create_PeriodDisallowableExpenses
+
+case class Def1_CreateAmendCumulativeSubmissionRequestBody(periodDates: PeriodDates,
+                                                           periodIncome: Option[PeriodIncome],
+                                                           periodExpenses: Option[PeriodExpenses],
+                                                           periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
+    extends CreateAmendCumulativeSubmissionRequestBody
+
+object Def1_CreateAmendCumulativeSubmissionRequestBody {
+  implicit val reads: Reads[Def1_CreateAmendCumulativeSubmissionRequestBody] = Json.reads[Def1_CreateAmendCumulativeSubmissionRequestBody]
+
+  implicit val writes: OWrites[Def1_CreateAmendCumulativeSubmissionRequestBody] = (
+    JsPath.write[PeriodDates] and
+      (JsPath \ "financials" \ "incomes").writeNullable[PeriodIncome]
+      and
+      (JsPath \ "financials" \ "deductions").writeNullable[PeriodExpenses] and
+      (JsPath \ "financials" \ "deductions").writeNullable[PeriodDisallowableExpenses]
+  )(unlift(Def1_CreateAmendCumulativeSubmissionRequestBody.unapply))
+
+}
