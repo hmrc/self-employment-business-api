@@ -82,8 +82,7 @@ class CreateAmendCumulativeSubmissionConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/cumulative-summaries", body) returns Future
+        willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
           .successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.amendCumulativeSubmission(request))

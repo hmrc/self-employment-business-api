@@ -50,7 +50,7 @@ class CreateAmendCumulativeSubmissionConnector @Inject() (val http: HttpClient, 
 
   private def uriFactory(nino: Nino, businessId: BusinessId, taxYear: TaxYear) = {
     if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/cumulative-summaries")
+      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
     } else {
       IfsUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/cumulative-summaries/${taxYear.asDownstream}")
     }
