@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Any tax year",
+  "description": "Retrieves a self-employment cumulative period summary.",
+  "type": "object",
+  "properties": {
+    "periodDates": {
+      "$ref": "../../cumulativePeriodSummary/def1/period_dates.json"
+    },
+    "periodIncome": {
+      "$ref": "../../cumulativePeriodSummary/def1/period_income.json"
+    },
+    "periodExpenses": {
+      "$ref": "../../cumulativePeriodSummary/def1/period_expenses.json"
+    },
+    "periodDisallowableExpenses": {
+      "$ref": "../../cumulativePeriodSummary/def1/period_disallowable_expenses.json"
+    }
+  },
+  "required": [
+    "periodDates"
+  ],
+  "additionalProperties": false
+}
