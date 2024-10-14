@@ -16,7 +16,7 @@
 
 package v4.createAmendCumulativeSubmission
 
-import api.models.errors.{RuleAllowanceNotSupportedError, RuleWrongTpaAmountSubmittedError}
+import api.models.errors._
 import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
@@ -40,20 +40,29 @@ class CreateAmendCumulativeSubmissionService @Inject() (connector: CreateAmendCu
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(
-      "INVALID_NINO"                -> NinoFormatError,
-      "INVALID_TAX_YEAR"            -> TaxYearFormatError,
-      "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-      "INVALID_PAYLOAD"             -> InternalError,
-      "INVALID_CORRELATIONID"       -> InternalError,
-      "MISSING_EXEMPTION_REASON"    -> InternalError,
-      "MISSING_EXEMPTION_INDICATOR" -> InternalError,
-      "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
-      "NOT_FOUND"                   -> NotFoundError,
-      "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-      "GONE"                        -> InternalError,
-      "SERVER_ERROR"                -> InternalError,
-      "BAD_GATEWAY"                 -> InternalError,
-      "SERVICE_UNAVAILABLE"         -> InternalError
+      "INVALID_NINO"                       -> NinoFormatError,
+      "INVALID_TAX_YEAR"                   -> TaxYearFormatError,
+      "INVALID_INCOME_SOURCE"              -> BusinessIdFormatError,
+      "INVALID_PAYLOAD"                    -> InternalError,
+      "INVALID_CORRELATIONID"              -> InternalError,
+      "MISSING_EXEMPTION_REASON"           -> InternalError,
+      "MISSING_EXEMPTION_INDICATOR"        -> InternalError,
+      "ALLOWANCE_NOT_SUPPORTED"            -> RuleAllowanceNotSupportedError,
+      "NOT_FOUND"                          -> NotFoundError,
+      "NOT_FOUND_INCOME_SOURCE"            -> NotFoundError,
+      "GONE"                               -> InternalError,
+      "SERVER_ERROR"                       -> InternalError,
+      "BAD_GATEWAY"                        -> InternalError,
+      "SERVICE_UNAVAILABLE"                -> InternalError,
+      "EARLY_DATA_SUBMISSION_NOT_ACCEPTED" -> RuleEarlyDataSubmissionNotAcceptedError,
+      "INVALID_SUBMISSION_END_DATE"        -> RuleAdvanceSubmissionRequiresPeriodEndDateError,
+      "SUBMISSION_END_DATE_VALUE"          -> RuleSubmissionEndDateCannotMoveBackwardsError,
+      "INVALID_START_DATE"                 -> RuleStartDateNotAlignedWithReportingTypeError,
+      "START_DATE_NOT_ALIGNED"             -> RuleStartDateNotAlignedToCommencementDateError,
+      "END_DATE_NOT_ALIGNED"               -> RuleEndDateNotAlignedWithReportingTypeError,
+      "MISSING_SUBMISSION_DATES"           -> RuleMissingSubmissionDatesError,
+      "START_END_DATE_NOT_ACCEPTED"        -> RuleStartAndEndDateNotAllowedError,
+      "OUTSIDE_AMENDMENT_WINDOW"           -> RuleOutsideAmendmentWindowError
     )
 
     val extraTysErrors = Map(
