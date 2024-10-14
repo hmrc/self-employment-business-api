@@ -28,7 +28,7 @@ import v4.retrieveCumulativePeriodSummary.model.request.RetrieveCumulativePeriod
 class Def1_RetrieveCumulativePeriodSummaryValidator(nino: String, businessId: String, taxYear: String)
     extends Validator[RetrieveCumulativePeriodSummaryRequestData] {
 
-  private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.ending(2025))
+  private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.starting(2025))
 
   def validate: Validated[Seq[MtdError], RetrieveCumulativePeriodSummaryRequestData] = {
     (
