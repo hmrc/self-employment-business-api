@@ -16,12 +16,12 @@
 
 package v4.createAmendCumulativePeriodSummary
 
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import play.api.http.Status.NO_CONTENT
+import shared.config.SharedAppConfig
+import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.config.SharedAppConfig
-import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.createAmendCumulativePeriodSummary.model.request.{
   CreateAmendCumulativePeriodSummaryRequestData,
@@ -39,7 +39,7 @@ class CreateAmendCumulativePeriodSummaryConnector @Inject() (val http: HttpClien
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    implicit val successCode: SuccessCode = SuccessCode(OK)
+    implicit val successCode: SuccessCode = SuccessCode(NO_CONTENT)
 
     request match {
       case def1: Def1_CreateAmendCumulativePeriodSummaryRequestData =>
@@ -52,11 +52,7 @@ class CreateAmendCumulativePeriodSummaryConnector @Inject() (val http: HttpClien
   }
 
   private def uriFactory(nino: Nino, businessId: BusinessId, taxYear: TaxYear) = {
-    if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
-    } else {
-      IfsUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/cumulative-summaries/${taxYear.asDownstream}")
-    }
+    TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
   }
 
 }

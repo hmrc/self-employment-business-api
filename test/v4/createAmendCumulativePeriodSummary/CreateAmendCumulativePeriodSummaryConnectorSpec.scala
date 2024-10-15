@@ -59,23 +59,6 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   }
 
-  "AmendCumulativePeriodSummaryConnector" when {
-    "amendCumulativePeriodSummary called" must {
-      "return a 200 status for a success scenario" in
-        new IfsTest with Test {
-          def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-
-          val outcome = Right(ResponseWrapper(correlationId, ()))
-
-          willPut(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/cumulative-summaries/${taxYear.asDownstream}", body) returns Future
-            .successful(outcome)
-
-          val result: DownstreamOutcome[Unit] = await(connector.amendCumulativePeriodSummary(request))
-          result shouldBe outcome
-        }
-    }
-  }
-
   "AmendCumulativePeriodSummaryConnector for a Tax Year Specific tax year" must {
     "return a 200 status for a success scenario" in
       new TysIfsTest with Test {
