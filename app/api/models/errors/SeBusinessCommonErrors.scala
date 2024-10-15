@@ -91,22 +91,22 @@ object RuleWrongTpaAmountSubmittedError
       message = "Transition profit acceleration value cannot be submitted without a transition profit value",
       BAD_REQUEST)
 
-object RuleEarlyDataSubmissionNotAcceptedError
+object RuleEarlyDataPeriodSummaryNotAcceptedError
     extends MtdError(
       code = "RULE_EARLY_DATA_SUBMISSION_NOT_ACCEPTED",
       message = "Cannot submit data more than 10 days before end of Period.",
       NOT_FOUND)
 
-object RuleAdvanceSubmissionRequiresPeriodEndDateError
+object RuleAdvancePeriodSummaryRequiresPeriodEndDateError
     extends MtdError(
       code = "RULE_ADVANCE_SUBMISSION_REQUIRES_PERIOD_END_DATE",
       message = "For advance submission end date must be the end of the period",
       BAD_REQUEST)
 
-object RuleSubmissionEndDateCannotMoveBackwardsError
+object RulePeriodSummaryEndDateCannotMoveBackwardsError
     extends MtdError(
       code = "RULE_SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS",
-      message = "Submission end date cannot be earlier than existing submission",
+      message = "Period Summary end date cannot be earlier than existing submission",
       BAD_REQUEST)
 
 object RuleStartDateNotAlignedWithReportingTypeError
@@ -124,8 +124,8 @@ object RuleStartDateNotAlignedToCommencementDateError
 object RuleEndDateNotAlignedWithReportingTypeError
     extends MtdError(code = "RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE", message = "End date does not align to the reporting type.", BAD_REQUEST)
 
-object RuleMissingSubmissionDatesError
-    extends MtdError(code = "RULE_MISSING_SUBMISSION_DATES", message = "Submission start/end date not provided", BAD_REQUEST)
+object RuleMissingPeriodSummaryDatesError
+    extends MtdError(code = "RULE_MISSING_SUBMISSION_DATES", message = "PeriodSummary start/end date not provided", BAD_REQUEST)
 
 object RuleStartAndEndDateNotAllowedError
     extends MtdError(code = "RULE_START_AND_END_DATE_NOT_ALLOWED", message = "Start/end date not accepted for annual/latent submission.", BAD_REQUEST)
