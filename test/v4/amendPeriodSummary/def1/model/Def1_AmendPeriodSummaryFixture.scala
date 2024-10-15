@@ -17,7 +17,7 @@
 package v4.amendPeriodSummary.def1.model
 
 import play.api.libs.json.{JsValue, Json}
-import v4.amendPeriodSummary.def1.model.request.{Amend_PeriodDisallowableExpenses, Amend_PeriodExpenses, Amend_PeriodIncome}
+import v4.amendPeriodSummary.def1.model.request.{Def1_Amend_PeriodDisallowableExpenses, Def1_Amend_PeriodExpenses, Def1_Amend_PeriodIncome}
 import v4.amendPeriodSummary.model.request.Def1_AmendPeriodSummaryRequestBody
 
 trait Def1_AmendPeriodSummaryFixture {
@@ -27,8 +27,7 @@ trait Def1_AmendPeriodSummaryFixture {
       |{
       |    "periodIncome": {
       |        "turnover": 1.12,
-      |        "other": 2.12,
-      |        "taxTakenOffTradingIncome": 3.12
+      |        "other": 2.12
       |    },
       |    "periodExpenses": {
       |        "costOfGoods": 2.12,
@@ -69,9 +68,9 @@ trait Def1_AmendPeriodSummaryFixture {
   )
 
   val def1_AmendPeriodSummaryBody: Def1_AmendPeriodSummaryRequestBody = Def1_AmendPeriodSummaryRequestBody(
-    periodIncome = Some(Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
+    periodIncome = Some(Def1_Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
     periodExpenses = Some(
-      Amend_PeriodExpenses(
+      Def1_Amend_PeriodExpenses(
         consolidatedExpenses = None,
         costOfGoods = Some(2.12),
         paymentsToSubcontractors = Some(3.12),
@@ -90,7 +89,7 @@ trait Def1_AmendPeriodSummaryFixture {
         otherExpenses = Some(16.12)
       )),
     periodDisallowableExpenses = Some(
-      Amend_PeriodDisallowableExpenses(
+      Def1_Amend_PeriodDisallowableExpenses(
         costOfGoodsDisallowable = Some(102.12),
         paymentsToSubcontractorsDisallowable = Some(103.12),
         wagesAndStaffCostsDisallowable = Some(104.12),
@@ -114,8 +113,7 @@ trait Def1_AmendPeriodSummaryFixture {
       |{
       |    "incomes": {
       |        "turnover": 1.12,
-      |        "other": 2.12,
-      |        "taxTakenOffTradingIncome": 3.12
+      |        "other": 2.12
       |    },
       |    "deductions": {
       |        "costOfGoods": {
@@ -188,8 +186,7 @@ trait Def1_AmendPeriodSummaryFixture {
       |{
       |    "periodIncome": {
       |        "turnover": 1.12,
-      |        "other": 2.12,
-      |        "taxTakenOffTradingIncome": 3.12
+      |        "other": 2.12
       |    },
       |    "periodExpenses": {
       |        "consolidatedExpenses": 1.12
@@ -199,9 +196,9 @@ trait Def1_AmendPeriodSummaryFixture {
   )
 
   val def1_AmendPeriodSummaryConsolidatedBody: Def1_AmendPeriodSummaryRequestBody = Def1_AmendPeriodSummaryRequestBody(
-    periodIncome = Some(Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12), taxTakenOffTradingIncome = Some(3.12))),
+    periodIncome = Some(Def1_Amend_PeriodIncome(turnover = Some(1.12), other = Some(2.12))),
     periodExpenses = Some(
-      Amend_PeriodExpenses(
+      Def1_Amend_PeriodExpenses(
         consolidatedExpenses = Some(1.12),
         None,
         None,
@@ -227,8 +224,7 @@ trait Def1_AmendPeriodSummaryFixture {
       |{
       |    "incomes": {
       |        "turnover": 1.12,
-      |        "other": 2.12,
-      |        "taxTakenOffTradingIncome": 3.12
+      |        "other": 2.12
       |    },
       |    "deductions": {
       |        "simplifiedExpenses": 1.12

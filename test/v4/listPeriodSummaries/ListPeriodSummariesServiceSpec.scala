@@ -50,6 +50,12 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
+  private val requestDataForTys = Def1_ListPeriodSummariesRequestData(
+    nino = Nino(nino),
+    businessId = BusinessId(businessId),
+    taxYear = TaxYear.fromMtd(taxYear)
+  )
+
   trait Test extends MockListPeriodSummariesConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
@@ -67,6 +73,16 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
         await(service.listPeriodSummaries(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+      }
+    }
+
+    "service call successful for TYS request" when {
+      "return mapped result" in new Test {
+        MockListPeriodSummariesConnector
+          .listPeriodSummaries(requestDataForTys)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
+
+        await(service.listPeriodSummaries(requestDataForTys)) shouldBe Right(ResponseWrapper(correlationId, response))
       }
     }
   }

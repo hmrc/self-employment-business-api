@@ -76,6 +76,14 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
           ErrorWrapper(correlationId, TaxYearFormatError)
         )
       }
+      "no tax year is supplied" in {
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
+          validator(validNino, validBusinessId, "").validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(correlationId, TaxYearFormatError)
+        )
+      }
+
     }
 
     "return RuleTaxYearRangeInvalidError" when {

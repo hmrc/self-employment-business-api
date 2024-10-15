@@ -24,11 +24,13 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
 import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -40,12 +42,28 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryValidatorFactory
     with MockAuditService
     with MockSharedAppConfig
-    with Def1_AmendPeriodSummaryFixture {
+    with Def1_AmendPeriodSummaryFixture
+    with Def2_AmendPeriodSummaryFixture {
 
   override val apiVersion: Version = Version3
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
+      "given a valid non-TYS request" in new PreTysTest {
+        willUseValidator(returningSuccess(requestData))
+
+        MockAmendPeriodSummaryService
+          .amendPeriodSummary(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        runOkTestWithAudit(
+          expectedStatus = OK,
+          maybeAuditRequestBody = Some(requestBodyJson),
+          maybeExpectedResponseBody = None,
+          maybeAuditResponseBody = None
+        )
+      }
+
       "given a valid TYS request" in new TysTest {
         willUseValidator(returningSuccess(requestData))
 
@@ -59,6 +77,23 @@ class AmendPeriodSummaryControllerSpec
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None
         )
+      }
+
+      "return the error as per spec" when {
+        "the parser validation fails" in new PreTysTest {
+          willUseValidator(returning(NinoFormatError))
+          runErrorTest(NinoFormatError)
+        }
+
+        "the service returns an error" in new PreTysTest {
+          willUseValidator(returningSuccess(requestData))
+
+          MockAmendPeriodSummaryService
+            .amendPeriodSummary(requestData)
+            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+          runErrorTest(RuleTaxYearNotSupportedError)
+        }
       }
     }
   }
@@ -106,15 +141,42 @@ class AmendPeriodSummaryControllerSpec
 
   }
 
-  private trait TysTest extends Test {
-    val periodId: String               = "2024-01-01_2025-01-01"
-    val taxYear: String                = "2023-24"
-    private val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
+  private trait PreTysTest extends Test {
+    val periodId                         = "2019-01-01_2020-01-01"
+    val taxYear: String                  = "2019-20"
+    protected val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
 
     val requestBodyJson: JsValue = def1_AmendPeriodSummaryBodyMtdJson
 
-    val requestData: Def1_AmendPeriodSummaryRequestData =
+    val requestData: AmendPeriodSummaryRequestData =
       Def1_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def1_AmendPeriodSummaryBody)
+
+    protected def callController(): Future[Result] =
+      controller.handleRequest(validNino, businessId, periodId, taxYear)(fakePostRequest(requestBodyJson))
+
+    override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      super
+        .event(auditResponse, requestBody)
+        .copy(
+          detail = super
+            .event(auditResponse, requestBody)
+            .detail
+            .copy(
+              params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear)
+            )
+        )
+
+  }
+
+  private trait TysTest extends Test {
+    val periodId: String                 = "2024-01-01_2025-01-01"
+    val taxYear: String                  = "2023-24"
+    protected val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
+
+    val requestBodyJson: JsValue = def2_AmendPeriodSummaryBodyMtdJson
+
+    val requestData: Def2_AmendPeriodSummaryRequestData =
+      Def2_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def2_AmendPeriodSummaryBody)
 
     protected def callController(): Future[Result] =
       controller.handleRequest(validNino, businessId, periodId, taxYear)(fakePostRequest(requestBodyJson))

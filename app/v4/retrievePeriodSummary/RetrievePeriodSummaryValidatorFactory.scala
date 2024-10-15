@@ -16,8 +16,11 @@
 
 package v4.retrievePeriodSummary
 
+import cats.data.Validated.{Invalid, Valid}
 import shared.controllers.validators.Validator
+import v4.retrievePeriodSummary.RetrievePeriodSummarySchema.{Def1, Def2}
 import v4.retrievePeriodSummary.def1.Def1_RetrievePeriodSummaryValidator
+import v4.retrievePeriodSummary.def2.Def2_RetrievePeriodSummaryValidator
 import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 
 import javax.inject.Singleton
@@ -27,8 +30,10 @@ class RetrievePeriodSummaryValidatorFactory {
 
   def validator(nino: String, businessId: String, periodId: String, taxYear: String): Validator[RetrievePeriodSummaryRequestData] = {
 
-    taxYear match {
-      case taxYearStr => new Def1_RetrievePeriodSummaryValidator(nino, businessId, periodId, taxYearStr)
+    RetrievePeriodSummarySchema.schemaFor(taxYear) match {
+      case Valid(Def1)     => new Def1_RetrievePeriodSummaryValidator(nino, businessId, periodId, taxYear)
+      case Valid(Def2)     => new Def2_RetrievePeriodSummaryValidator(nino, businessId, periodId, taxYear)
+      case Invalid(errors) => Validator.returningErrors(errors)
     }
 
   }

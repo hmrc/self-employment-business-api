@@ -25,9 +25,10 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
-import v4.retrievePeriodSummary.def1.model.response.{Def1_RetrievePeriodSummaryResponse, Retrieve_PeriodDates, Retrieve_PeriodIncome}
+import v4.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodIncome}
+import v4.retrievePeriodSummary.def2.model.response.{Def2_Retrieve_PeriodDates, Def2_Retrieve_PeriodIncome}
 import v4.retrievePeriodSummary.model.request.Def1_RetrievePeriodSummaryRequestData
-import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
+import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
 
@@ -36,7 +37,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   private val nino                            = Nino("AA123456A")
   private val businessId                      = BusinessId("XAIS12345678910")
   private val periodId                        = PeriodId("2019-01-25_2020-01-25")
-  private val taxYear                         = TaxYear.fromMtd("2024-25")
+  private val taxYear                         = TaxYear.fromMtd("2019-20")
   override implicit val correlationId: String = "X-123"
 
   private val requestData = Def1_RetrievePeriodSummaryRequestData(
@@ -46,19 +47,23 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
     taxYear = taxYear
   )
 
-  private val def1PeriodIncomeWithCl290Disabled = Retrieve_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
-  private val def1PeriodIncomeWithCl290Enabled  = Retrieve_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val def1PeriodIncome                  = Def1_Retrieve_PeriodIncome(turnover = Some(2000.00), None)
+  private val def2PeriodIncomeWithCl290Disabled = Def2_Retrieve_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
+  private val def2PeriodIncomeWithCl290Enabled  = Def2_Retrieve_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
-  private val def1ResponseWithCl290Disabled = Def1_RetrievePeriodSummaryResponse(
-    Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
-    Some(def1PeriodIncomeWithCl290Disabled),
+  private val def1Response =
+    Def1_RetrievePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2019-01-25", "2020-01-25"), Some(def1PeriodIncome), None, None)
+
+  private val def2ResponseWithCl290Disabled = Def2_RetrievePeriodSummaryResponse(
+    Def2_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
+    Some(def2PeriodIncomeWithCl290Disabled),
     None,
     None
   )
 
-  private val def1ResponseWithCl290Enabled = Def1_RetrievePeriodSummaryResponse(
-    Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
-    Some(def1PeriodIncomeWithCl290Enabled),
+  private val def2ResponseWithCl290Enabled = Def2_RetrievePeriodSummaryResponse(
+    Def2_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
+    Some(def2PeriodIncomeWithCl290Enabled),
     None,
     None
   )
@@ -69,30 +74,43 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   }
 
   "retrievePeriodSummary()" when {
+    "given a def1 (non-TYS) request)" should {
 
-    "given a def1 (TYS) request and CL290 feature is disabled" should {
-      "return a def1 response without taxTakenOffTradingIncome" in new Test {
+      "return a def1 response" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, def1ResponseWithCl290Disabled))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, def1Response))))
 
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
-        result shouldBe Right(ResponseWrapper(correlationId, def1ResponseWithCl290Disabled))
+        result shouldBe Right(ResponseWrapper(correlationId, def1Response))
       }
     }
 
-    "given a def1 (TYS) request and CL290 feature is enabled" should {
-      "return a def1 response with taxTakenOffTradingIncome" in new Test {
+    "given a def2 (TYS) request and CL290 feature is disabled" should {
+      "return a def2 response without taxTakenOffTradingIncome" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, def1ResponseWithCl290Enabled))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))))
+
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
+
+        val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
+        result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))
+      }
+    }
+
+    "given a def2 (TYS) request and CL290 feature is enabled" should {
+      "return a def2 response with taxTakenOffTradingIncome" in new Test {
+        MockRetrievePeriodSummaryConnector
+          .retrievePeriodSummary(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))))
 
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
-        result shouldBe Right(ResponseWrapper(correlationId, def1ResponseWithCl290Enabled))
+        result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))
       }
     }
   }

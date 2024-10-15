@@ -27,7 +27,7 @@ sealed trait AmendPeriodSummaryRequestData {
   val body: AmendPeriodSummaryRequestBody
 }
 
-/** Applicable from 2023-24 onwards.
+/** Applicable from minimumTaxYear to 2022-23 (pre-TYS).
   */
 case class Def1_AmendPeriodSummaryRequestData(
     nino: Nino,
@@ -35,7 +35,14 @@ case class Def1_AmendPeriodSummaryRequestData(
     periodId: PeriodId,
     taxYear: TaxYear,
     body: Def1_AmendPeriodSummaryRequestBody
-) extends AmendPeriodSummaryRequestData {
+) extends AmendPeriodSummaryRequestData
 
-//  val taxYear: Option[TaxYear] = Some(taxYear)
-}
+/** Applicable from 2023-24 onwards.
+  */
+case class Def2_AmendPeriodSummaryRequestData(
+    nino: Nino,
+    businessId: BusinessId,
+    periodId: PeriodId,
+    taxYear: TaxYear,
+    body: Def2_AmendPeriodSummaryRequestBody
+) extends AmendPeriodSummaryRequestData

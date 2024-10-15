@@ -17,31 +17,21 @@
 package v4.amendPeriodSummary.def1
 
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
-import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
-import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinMax}
-import shared.models.domain.TaxYear
-import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYear, ResolverSupport}
+import shared.models.errors.MtdError
+import v4.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator.resolveTaxYear
 import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 import v4.validators.resolvers.ResolvePeriodId
 
-class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)(
-    implicit appConfig: SharedAppConfig)
+object Def1_AmendPeriodSummaryValidator extends ResolverSupport {
+  private val resolveTaxYear = ResolveTaxYear.resolver
+}
+
+class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)
     extends Validator[AmendPeriodSummaryRequestData] {
-
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
-
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    minMaxTaxYears,
-    minError = InvalidTaxYearParameterError,
-    maxError = RuleTaxYearNotSupportedError
-  ).resolver
-
-  lazy private val featureSwitches = SeBusinessFeatureSwitches()
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_AmendPeriodSummaryRequestBody]()
 
@@ -54,20 +44,6 @@ class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolvePeriodId(periodId),
       resolveTaxYear(taxYear),
       resolveJson(body)
-    ).mapN(Def1_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
-
-  /** Can be removed when CL290 is released.
-    */
-  private def validateTaxTakenOffTradingIncome(
-      parsed: Def1_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def1_AmendPeriodSummaryRequestData] =
-    (for {
-      income <- parsed.body.periodIncome if !featureSwitches.isCl290Enabled
-      _      <- income.taxTakenOffTradingIncome
-    } yield {
-      Invalid(
-        List(
-          RuleIncorrectOrEmptyBodyError.withPath("/periodIncome/taxTakenOffTradingIncome")
-        ))
-    }).getOrElse(Valid(parsed))
+    ).mapN(Def1_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
 
 }

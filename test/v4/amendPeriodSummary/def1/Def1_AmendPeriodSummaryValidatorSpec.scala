@@ -21,11 +21,12 @@ import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
 import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import shared.config.MockSharedAppConfig
+import shared.controllers.validators.Validator
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
-import v4.amendPeriodSummary.def1.model.request.{Amend_PeriodDisallowableExpenses, Amend_PeriodExpenses, Amend_PeriodIncome}
+import v4.amendPeriodSummary.def1.model.request.{Def1_Amend_PeriodDisallowableExpenses, Def1_Amend_PeriodExpenses, Def1_Amend_PeriodIncome}
 import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 
 class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
@@ -35,7 +36,7 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
   private val validPeriodId   = "2017-01-25_2017-02-28"
-  private val validTaxYear    = "2023-24"
+  private val validTaxYear    = "2019-20"
 
   private val validPeriodIncome = Json.parse("""
       | {
@@ -114,7 +115,7 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   private val parsedPeriodId   = PeriodId(validPeriodId)
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
-  private val parsedPeriodIncome = Amend_PeriodIncome(Some(200.00), Some(201.00), Some(202.00))
+  private val parsedPeriodIncome = Def1_Amend_PeriodIncome(Some(200.00), Some(201.00))
 
   private def numericValue(isNegative: Boolean)(number: BigDecimal): BigDecimal =
     if (isNegative) -1 * number else number
@@ -122,7 +123,7 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   // @formatter:off
   private def parsedPeriodExpenses(withNegatives: Boolean = false) = {
     val number = numericValue(withNegatives)(_)
-    Amend_PeriodExpenses(
+    Def1_Amend_PeriodExpenses(
       None, Some(number(203.00)), Some(number(204.00)), Some(number(205.00)), Some(number(206.00)),
       Some(number(207.00)), Some(number(208.00)), Some(number(209.00)), Some(number(210.00)),
       Some(number(211.00)), Some(number(212.00)), Some(number(213.00)), Some(number(214.00)),
@@ -130,7 +131,7 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
     )
   }
 
-  private val parsedPeriodExpensesConsolidated = Amend_PeriodExpenses(
+  private val parsedPeriodExpensesConsolidated = Def1_Amend_PeriodExpenses(
     Some(1000.99), None, None, None, None, None, None, None,
     None, None, None, None, None, None, None, None
   )
@@ -138,7 +139,7 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
   private def parsedPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
     val number = numericValue(withNegatives)(_)
 
-    Amend_PeriodDisallowableExpenses(
+    Def1_Amend_PeriodDisallowableExpenses(
       Some(number(218.00)), Some(number(219.00)), Some(number(220.00)), Some(number(221.00)), Some(number(222.00)),
       Some(number(223.00)), Some(number(224.00)), Some(number(225.00)), Some(number(226.00)), Some(number(227.00)),
       Some(number(228.00)), Some(number(229.00)), Some(number(230.00)), Some(number(231.00)), Some(number(232.00))
@@ -155,7 +156,12 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       Some(parsedPeriodExpenses(withNegatives = true)),
       Some(parsedPeriodDisallowableExpenses(withNegatives = true)))
 
-  private def validator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean = false) =
+  private def validator(nino: String,
+                        businessId: String,
+                        periodId: String,
+                        taxYear: String,
+                        body: JsValue,
+                        includeNegatives: Boolean = false): Validator[AmendPeriodSummaryRequestData] =
     new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
 
   private def setupMocks(): Unit =
@@ -214,8 +220,6 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       }
 
       "given a valid request where only expenses" in {
-        setupMocks()
-
         val body: JsValue =
           validBody()
             .removeProperty("/periodIncome")
@@ -263,32 +267,19 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
         result shouldBe Left(ErrorWrapper(correlationId, PeriodIdFormatError))
       }
 
-      "given an invalid tax year" in {
+      "given an invalid taxYear" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, "invalid tax year", validBody()).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
       }
 
-      "given an invalid tax year range" in {
+      "an invalid tax year range is supplied" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, "2023-25", validBody()).validateAndWrapResult()
-
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
-      }
-
-      "a tax year 2025 or over is passed" in {
-        val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, "2025-26", validBody()).validateAndWrapResult()
-
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
-      }
-
-      "given a non-TYS tax year" in {
-        val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, "2021-22", validBody()).validateAndWrapResult()
-
-        result shouldBe Left(ErrorWrapper(correlationId, InvalidTaxYearParameterError))
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
+        )
       }
 
       def test(error: MtdError)(body: JsValue, path: String, withNegatives: Boolean = false): Unit = {

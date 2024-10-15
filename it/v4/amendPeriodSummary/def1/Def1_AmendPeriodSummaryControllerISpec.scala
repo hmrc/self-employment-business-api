@@ -38,7 +38,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
 
     "return a 200 status code" when {
 
-      "given a valid TYS request" in new Test {
+      "given a valid request for a non-tys tax year" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
@@ -62,7 +62,6 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         def validationErrorTest(requestNino: String,
                                 requestBusinessId: String,
                                 requestPeriodId: String,
-                                requestTaxYear: String,
                                 requestBody: JsValue,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
@@ -72,7 +71,6 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val periodId: String   = requestPeriodId
-            override val mtdTaxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
@@ -86,15 +84,13 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val input = List(
-          ("BADNINO", "XAIS12345678910", "2019-01-01_2020-01-01", "2023-24", requestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "BAD_BUSINESS_ID", "2019-01-01_2020-01-01", "2023-24", requestBodyJson, BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2019-01-01_2020-01-01", "NOT_TAX_YEAR", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "BAD_PERIOD_ID", "2023-24", requestBodyJson, BAD_REQUEST, PeriodIdFormatError),
+          ("BADNINO", "XAIS12345678910", "2019-01-01_2020-01-01", requestBodyJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "BAD_BUSINESS_ID", "2019-01-01_2020-01-01", requestBodyJson, BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "BAD_PERIOD_ID", requestBodyJson, BAD_REQUEST, PeriodIdFormatError),
           (
             "AA123456A",
             "XAIS12345678910",
             "2019-01-01_2020-01-01",
-            "2023-24",
             requestBodyJson.update("/periodIncome/turnover", JsNumber(1.234)),
             BAD_REQUEST,
             ValueFormatError.copy(paths = Some(List("/periodIncome/turnover")))
@@ -103,7 +99,6 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
             "AA123456A",
             "XAIS12345678910",
             "2019-01-01_2020-01-01",
-            "2023-24",
             requestBodyJson.replaceWithEmptyObject("/periodExpenses"),
             BAD_REQUEST,
             RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/periodExpenses")))
@@ -149,18 +144,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        val extraTysErrors = List(
-          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
-          (NOT_FOUND, "PERIOD_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (NOT_FOUND, "INCOME_SOURCE_DATA_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (UNPROCESSABLE_ENTITY, "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError)
-        )
-
-        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+        errors.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
   }
@@ -172,11 +156,10 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
     val periodId: String   = "2019-01-01_2020-01-01"
     val from               = "2019-01-01"
     val to                 = "2020-01-01"
+    val taxYear            = "2019-20"
 
-    def mtdTaxYear: String    = "2023-24"
-    def mtdUri: String        = s"/$nino/$businessId/period/$periodId/$mtdTaxYear"
-    def tysTaxYear: String    = "23-24"
-    def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
+    def mtdUri: String        = s"/$nino/$businessId/period/$periodId/$taxYear"
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     def setupStubs(): StubMapping
 
@@ -196,10 +179,10 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "message"
-         |      }
+         | {
+         |   "code": "$code",
+         |   "reason": "message"
+         | }
     """.stripMargin
 
   }

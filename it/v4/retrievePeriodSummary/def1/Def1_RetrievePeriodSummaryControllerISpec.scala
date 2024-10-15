@@ -23,7 +23,6 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -41,16 +40,15 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     "return a 200 status code" when {
 
-      "given ay valid TYS request" in new Test {
+      "given a valid non-TYS request" in new Test {
+
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
 
-          val queryParams = Map[String, String]("from" -> fromDate, "to" -> toDate)
-
           BaseDownstreamStub
-            .when(BaseDownstreamStub.GET, tysDownstreamUri(), queryParams)
+            .when(BaseDownstreamStub.GET, downstreamUri)
             .thenReturn(OK, downstreamResponseBody(fromDate, toDate))
         }
 
@@ -59,25 +57,22 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe responseBody(fromDate, toDate)
         response.header("X-CorrelationId").nonEmpty shouldBe true
         response.header("Content-Type") shouldBe Some("application/json")
-
       }
     }
 
     "return error according to spec" when {
 
-      "TYS validation error" when {
-        def validationTysErrorTest(requestNino: String,
-                                   requestBusinessId: String,
-                                   requestPeriodId: String,
-                                   requestTaxYear: String,
-                                   expectedStatus: Int,
-                                   expectedBody: MtdError): Unit = {
+      "validation error" when {
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestPeriodId: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val periodId: String   = requestPeriodId
-            override val mtdTaxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -92,26 +87,24 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = List(
-          ("AA123", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-24", BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", "2023-04-01_2024-01-01", "2023-24", BAD_REQUEST, BusinessIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2020", "2023-24", BAD_REQUEST, PeriodIdFormatError),
-          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
+          ("AA123", "XAIS12345678910", "2019-01-01_2020-01-01", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2019-01-01_2020-01-01", BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "2020", BAD_REQUEST, PeriodIdFormatError)
         )
 
-        input.foreach(args => (validationTysErrorTest _).tupled(args))
+        input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
       "downstream service error" when {
-        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              BaseDownstreamStub.onError(BaseDownstreamStub.GET, tysDownstreamUri(), downstreamStatus, errorBody(downstreamCode))
+              BaseDownstreamStub.onError(BaseDownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().get())
@@ -143,15 +136,16 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
-    val nino                     = "AA123456A"
-    val businessId               = "XAIS12345678910"
-    val periodId                 = "2023-04-01_2024-01-01"
-    val fromDate                 = "2023-04-01"
-    val toDate                   = "2024-01-01"
-    val mtdTaxYear               = "2023-24"
-    lazy val tysTaxYear: TaxYear = TaxYear.fromMtd(mtdTaxYear)
 
-    def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
+    val nino       = "AA123456A"
+    val businessId = "XAIS12345678910"
+    val periodId   = "2019-01-01_2020-01-01"
+    val taxYear    = "2019-20"
+
+    val fromDate = "2019-01-01"
+    val toDate   = "2020-01-01"
+
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
@@ -287,14 +281,14 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def setupStubs(): StubMapping
 
-    def uri: String = s"/$nino/$businessId/period/$periodId/$mtdTaxYear"
+    def uri: String = s"/$nino/$businessId/period/$periodId/$taxYear"
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "message"
-         |      }
+         | {
+         |   "code": "$code",
+         |   "reason": "message"
+         | }
     """.stripMargin
 
   }

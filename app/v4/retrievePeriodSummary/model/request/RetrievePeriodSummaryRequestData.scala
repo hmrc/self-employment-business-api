@@ -19,7 +19,7 @@ package v4.retrievePeriodSummary.model.request
 import api.models.domain.PeriodId
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-trait RetrievePeriodSummaryRequestData {
+sealed trait RetrievePeriodSummaryRequestData {
   val nino: Nino
   val businessId: BusinessId
   val periodId: PeriodId
@@ -27,4 +27,7 @@ trait RetrievePeriodSummaryRequestData {
 }
 
 case class Def1_RetrievePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: TaxYear)
+    extends RetrievePeriodSummaryRequestData
+
+case class Def2_RetrievePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: TaxYear)
     extends RetrievePeriodSummaryRequestData
