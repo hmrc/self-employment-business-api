@@ -28,7 +28,7 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"
-  private val validTaxYear    = "2022-23"
+  private val validTaxYear    = "2024-25"
 
   private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
@@ -76,6 +76,14 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
           ErrorWrapper(correlationId, TaxYearFormatError)
         )
       }
+      "no tax year is supplied" in {
+        val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
+          validator(validNino, validBusinessId, "").validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(correlationId, TaxYearFormatError)
+        )
+      }
+
     }
 
     "return RuleTaxYearRangeInvalidError" when {

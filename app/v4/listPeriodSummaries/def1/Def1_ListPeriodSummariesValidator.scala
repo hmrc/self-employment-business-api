@@ -31,7 +31,7 @@ class Def1_ListPeriodSummariesValidator(
     taxYear: String
 ) extends Validator[ListPeriodSummariesRequestData] {
 
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2018), TaxYear.ending(2023))
+  private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2018), TaxYear.ending(2025))
 
   private val resolveTaxYear = ResolveTaxYearMinMax(
     minMaxTaxYears,
