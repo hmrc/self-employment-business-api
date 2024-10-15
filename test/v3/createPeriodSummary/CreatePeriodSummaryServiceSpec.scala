@@ -23,7 +23,7 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import v3.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDates, Def2_Create_PeriodIncome}
 import v3.createPeriodSummary.model.request.{Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 import v3.createPeriodSummary.model.response.CreatePeriodSummaryResponse
@@ -108,8 +108,8 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
     }
   }
 
-  trait Test extends MockCreatePeriodSummaryConnector with MockAppConfig {
-    MockedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+  trait Test extends MockCreatePeriodSummaryConnector with MockSharedAppConfig {
+    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 

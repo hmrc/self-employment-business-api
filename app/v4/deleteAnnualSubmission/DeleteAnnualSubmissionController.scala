@@ -17,7 +17,7 @@
 package v4.deleteAnnualSubmission
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -31,7 +31,7 @@ class DeleteAnnualSubmissionController @Inject() (val authService: EnrolmentsAut
                                                   validatorFactory: DeleteAnnualSubmissionValidatorFactory,
                                                   service: DeleteAnnualSubmissionService,
                                                   cc: ControllerComponents,
-                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

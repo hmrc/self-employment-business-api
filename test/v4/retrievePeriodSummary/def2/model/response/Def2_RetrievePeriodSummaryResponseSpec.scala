@@ -17,12 +17,12 @@
 package v4.retrievePeriodSummary.def2.model.response
 
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v4.retrievePeriodSummary.def2.model.Def2_RetrievePeriodSummaryFixture
 import v4.retrievePeriodSummary.model.response.Def2_RetrievePeriodSummaryResponse
 
-class Def2_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def2_RetrievePeriodSummaryFixture {
+class Def2_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig with Def2_RetrievePeriodSummaryFixture {
 
   "round trip" should {
     "return mtd json" when {

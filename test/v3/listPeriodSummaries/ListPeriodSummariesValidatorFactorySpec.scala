@@ -17,13 +17,13 @@
 package v3.listPeriodSummaries
 
 import config.MockSeBusinessConfig
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
 import v3.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
 import v3.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
-class ListPeriodSummariesValidatorFactorySpec extends UnitSpec with MockAppConfig with MockSeBusinessConfig {
+class ListPeriodSummariesValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSeBusinessConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"

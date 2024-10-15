@@ -17,13 +17,13 @@
 package v4.deleteAnnualSubmission
 
 import config.MockSeBusinessConfig
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
 import v4.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
 import v4.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
 
-class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppConfig with MockSeBusinessConfig {
+class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSeBusinessConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678910"

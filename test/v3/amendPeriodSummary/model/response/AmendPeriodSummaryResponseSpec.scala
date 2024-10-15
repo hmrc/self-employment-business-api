@@ -16,12 +16,12 @@
 
 package v3.amendPeriodSummary.model.response
 
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.hateoas.{Link, Method}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.utils.UnitSpec
 
-class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
+class AmendPeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig {
 
   "LinksFactory" should {
 
@@ -33,9 +33,9 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
         val data: AmendPeriodSummaryHateoasData = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, None)
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe List(
+        AmendPeriodSummaryResponse.LinksFactory.links(mockSharedAppConfig, data) shouldBe List(
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.PUT, rel = "amend-self-employment-period-summary"),
           Link(href = s"/my/context/$nino/$businessId/period/$periodId", method = Method.GET, rel = "self"),
           Link(href = s"/my/context/$nino/$businessId/period", method = Method.GET, rel = "list-self-employment-period-summaries")
@@ -52,9 +52,9 @@ class AmendPeriodSummaryResponseSpec extends UnitSpec with MockAppConfig {
 
         val data = AmendPeriodSummaryHateoasData(Nino(nino), BusinessId(businessId), periodId, Some(taxYear))
 
-        MockedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("my/context").anyNumberOfTimes()
 
-        AmendPeriodSummaryResponse.LinksFactory.links(mockAppConfig, data) shouldBe List(
+        AmendPeriodSummaryResponse.LinksFactory.links(mockSharedAppConfig, data) shouldBe List(
           Link(
             href = s"/my/context/$nino/$businessId/period/$periodId?taxYear=2023-24",
             method = Method.PUT,

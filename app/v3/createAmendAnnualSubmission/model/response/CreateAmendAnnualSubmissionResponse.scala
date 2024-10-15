@@ -17,7 +17,7 @@
 package v3.createAmendAnnualSubmission.model.response
 
 import api.hateoas.HateoasLinks
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 
@@ -25,7 +25,7 @@ object CreateAmendAnnualSubmissionResponse extends HateoasLinks {
 
   implicit object LinksFactory extends HateoasLinksFactory[Unit, CreateAmendAnnualSubmissionHateoasData] {
 
-    override def links(appConfig: AppConfig, data: CreateAmendAnnualSubmissionHateoasData): Seq[Link] = {
+    override def links(appConfig: SharedAppConfig, data: CreateAmendAnnualSubmissionHateoasData): Seq[Link] = {
       import data._
       List(
         amendAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),

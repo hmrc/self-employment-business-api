@@ -17,7 +17,7 @@
 package v3.listPeriodSummaries
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers._
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -31,7 +31,7 @@ class ListPeriodSummariesController @Inject() (val authService: EnrolmentsAuthSe
                                                validatorFactory: ListPeriodSummariesValidatorFactory,
                                                service: ListPeriodSummariesService,
                                                cc: ControllerComponents,
-                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                               idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

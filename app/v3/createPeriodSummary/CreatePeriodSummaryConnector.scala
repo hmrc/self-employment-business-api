@@ -19,7 +19,7 @@ package v3.createPeriodSummary
 import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import play.api.http.Status.{CREATED, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestData}
@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def createPeriodSummary(request: CreatePeriodSummaryRequestData)(implicit
       hc: HeaderCarrier,

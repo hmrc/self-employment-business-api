@@ -18,7 +18,7 @@ package v3.createPeriodSummary
 
 import api.controllers.validators.common.InvalidResultValidator
 import play.api.libs.json.{JsObject, JsValue}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.TaxYear
 import shared.models.domain.TaxYear.fromIso
@@ -32,7 +32,7 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 import scala.util.Try
 
 @Singleton
-class CreatePeriodSummaryValidatorFactory @Inject() (implicit appConfig: AppConfig) {
+class CreatePeriodSummaryValidatorFactory @Inject() (implicit appConfig: SharedAppConfig) {
 
   private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2023-24")
 
