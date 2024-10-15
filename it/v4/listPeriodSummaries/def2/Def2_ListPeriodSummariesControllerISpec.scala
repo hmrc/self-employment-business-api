@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.listPeriodSummaries.def1
+package v4.listPeriodSummaries.def2
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -22,25 +22,25 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
+class Def2_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   "calling the V4 list period summaries endpoint" should {
 
     "return a 200 status code" when {
 
-      s"any valid request is made for a non-TYS year" in new NonTysTest {
+      s"any valid request is made for a TYS specific year" in new TysIfsTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          BaseDownstreamStub
-            .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
+          BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
         }
 
         val response: WSResponse = await(request().get())
@@ -50,7 +50,6 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
-
     "return error according to spec" when {
 
       "validation error" when {
@@ -59,11 +58,11 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
                                 requestTaxYear: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
+          s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
-            override val taxYear: String    = requestTaxYear
+            override val mtdTaxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -78,10 +77,10 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA123", "XAIS12345678910", "2021-22", BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", "2021-22", BAD_REQUEST, BusinessIdFormatError),
+          ("AA123", "XAIS12345678910", "2023-24", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2023-24", BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2022-24", BAD_REQUEST, RuleTaxYearRangeInvalidError),
+          ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2024-25", BAD_REQUEST, InvalidTaxYearParameterError)
         )
         input.foreach(args => validationErrorTest(args._1, args._2, args._3, args._4, args._5))
@@ -89,7 +88,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new TysIfsTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -125,7 +124,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
-    val taxYear    = "2021-22"
+    val mtdTaxYear = "2023-24"
 
     def responseBody(periodId: String, fromDate: String, toDate: String): JsValue = Json.parse(
       s"""
@@ -155,7 +154,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
        """.stripMargin
     )
 
-    def uri: String = s"/$nino/$businessId/period/$taxYear"
+    def uri: String = s"/$nino/$businessId/period/$mtdTaxYear"
 
     def setupStubs(): StubMapping
 
@@ -169,20 +168,21 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  private trait NonTysTest extends Test {
-    val periodId = "2019-01-01_2020-01-01"
-    val fromDate = "2019-01-01"
-    val toDate   = "2020-01-01"
+  private trait TysIfsTest extends Test {
 
-    def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+    lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
+    val periodId        = "2024-01-01_2024-01-02"
+    val fromDate        = "2024-01-01"
+    val toDate          = "2024-01-02"
+
+    def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.4.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
+      buildRequest(uri).withHttpHeaders(
+        (ACCEPT, s"application/vnd.hmrc.4.0+json"),
+        (AUTHORIZATION, "Bearer 123")
+      )
     }
 
   }

@@ -1,20 +1,20 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Before TY 2023-24",
+  "title": "TY 2023-24 or later",
   "description": "Retrieves a self-employment period summary.",
   "type": "object",
   "properties": {
     "periodDates": {
-      "$ref": "../../periodSummaryOld/period_dates.json"
+      "$ref": "../../periodSummary/period_dates.json"
     },
     "periodIncome": {
-      "$ref": "../../periodSummaryOld/def1/period_income.json"
+      "$ref": "../../periodSummary/def2/period_income.json"
     },
     "periodExpenses": {
-      "$ref": "../../periodSummaryOld/def1/period_expenses.json"
+      "$ref": "../../periodSummary/def2/period_expenses.json"
     },
     "periodDisallowableExpenses": {
-      "$ref": "../../periodSummaryOld/def1/period_disallowable_expenses.json"
+      "$ref": "../../periodSummary/def2/period_disallowable_expenses.json"
     },
     "links": {
       "type": "array",

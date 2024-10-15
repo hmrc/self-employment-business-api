@@ -20,8 +20,8 @@ import config.MockSeBusinessFeatureSwitches
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v4.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
-import v4.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
+import v4.listPeriodSummaries.def2.model.request.Def2_ListPeriodSummariesRequestData
+import v4.listPeriodSummaries.def2.model.response.{Def2_ListPeriodSummariesResponse, Def2_PeriodDetails}
 import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 import v4.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
@@ -34,9 +34,9 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
   val tysTaxYear: String = "2024-25"
   val taxYear: String    = "2022-23"
 
-  val response: ListPeriodSummariesResponse[PeriodDetails] = Def1_ListPeriodSummariesResponse(
+  val response: ListPeriodSummariesResponse[PeriodDetails] = Def2_ListPeriodSummariesResponse(
     Seq(
-      Def1_PeriodDetails(
+      Def2_PeriodDetails(
         "2020-01-01_2020-01-01",
         "2020-01-01",
         "2020-01-01"
@@ -52,7 +52,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
     )
 
     protected def request(nino: Nino, businessId: BusinessId, taxYear: TaxYear): ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(nino, businessId, taxYear)
+      Def2_ListPeriodSummariesRequestData(nino, businessId, taxYear)
 
   }
 

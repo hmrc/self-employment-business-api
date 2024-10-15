@@ -24,8 +24,8 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import v4.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
-import v4.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
+import v4.listPeriodSummaries.def2.model.request.Def2_ListPeriodSummariesRequestData
+import v4.listPeriodSummaries.def2.model.response.{Def2_ListPeriodSummariesResponse, Def2_PeriodDetails}
 import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 import v4.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, PeriodDetails}
 
@@ -46,14 +46,14 @@ class ListPeriodSummariesControllerSpec
   private val periodId: String = s"${from}_$to"
   private val taxYear: String  = "2024-25"
 
-  private val periodDetails: PeriodDetails = Def1_PeriodDetails(
+  private val periodDetails: PeriodDetails = Def2_PeriodDetails(
     periodId,
     from,
     to
     //    Some(creationDate) // To be reinstated, see MTDSA-15595
   )
 
-  private val response: ListPeriodSummariesResponse[PeriodDetails] = Def1_ListPeriodSummariesResponse(Seq(periodDetails))
+  private val response: ListPeriodSummariesResponse[PeriodDetails] = Def2_ListPeriodSummariesResponse(Seq(periodDetails))
 
   private val responseBody = Json.parse(s"""
                                            |{
@@ -130,7 +130,7 @@ class ListPeriodSummariesControllerSpec
   private trait Test extends ControllerTest {
 
     val requestData: ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+      Def2_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -153,7 +153,7 @@ class ListPeriodSummariesControllerSpec
   private trait TysTest extends ControllerTest {
 
     val tysRequestData: ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
+      Def2_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,

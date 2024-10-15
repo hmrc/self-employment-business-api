@@ -16,13 +16,23 @@
 
 package v4.listPeriodSummaries
 
+import cats.data.Validated.{Invalid, Valid}
 import shared.controllers.validators.Validator
+import v4.listPeriodSummaries.ListPeriodSummariesSchema.{Def1, Def2}
 import v4.listPeriodSummaries.def1.Def1_ListPeriodSummariesValidator
+import v4.listPeriodSummaries.def2.Def2_ListPeriodSummariesValidator
 import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactory {
 
-  def validator(nino: String, businessId: String, taxYear: String): Validator[ListPeriodSummariesRequestData] =
-    new Def1_ListPeriodSummariesValidator(nino, businessId, taxYear)
+  def validator(nino: String, businessId: String, taxYear: String): Validator[ListPeriodSummariesRequestData] = {
+
+    ListPeriodSummariesSchema.schemaFor(taxYear) match {
+      case Valid(Def1)     => new Def1_ListPeriodSummariesValidator(nino, businessId, taxYear)
+      case Valid(Def2)     => new Def2_ListPeriodSummariesValidator(nino, businessId, taxYear)
+      case Invalid(errors) => Validator.returningErrors(errors)
+    }
+
+  }
 
 }

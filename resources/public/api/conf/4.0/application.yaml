@@ -62,7 +62,5 @@ paths:
     $ref: "./create_period_summary.yaml"
   /individuals/business/self-employment/{nino}/{businessId}/period/{taxYear}:
     $ref: "./list_period_summaries.yaml"
-  /individuals/business/self-employment/{nino}/{businessId}/period/{periodId}:
-    $ref: "./amend_and_retrieve_period_summary_Old.yaml"
   /individuals/business/self-employment/{nino}/{businessId}/period/{periodId}/{taxYear}:
     $ref: "./amend_and_retrieve_period_summary.yaml"
