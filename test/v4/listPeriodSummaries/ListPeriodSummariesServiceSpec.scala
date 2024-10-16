@@ -47,13 +47,13 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
   private val requestData = Def1_ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    None
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
   private val requestDataForTys = Def1_ListPeriodSummariesRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    taxYear = Some(TaxYear.fromMtd(taxYear))
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
   trait Test extends MockListPeriodSummariesConnector {

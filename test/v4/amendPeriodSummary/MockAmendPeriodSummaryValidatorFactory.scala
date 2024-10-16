@@ -34,7 +34,7 @@ trait MockAmendPeriodSummaryValidatorFactory extends MockFactory {
 
     def validator(): CallHandler[Validator[AmendPeriodSummaryRequestData]] =
       (mockAmendPeriodSummaryValidatorFactory
-        .validator(_: String, _: String, _: String, _: Option[String], _: JsValue, _: Boolean))
+        .validator(_: String, _: String, _: String, _: String, _: JsValue, _: Boolean))
         .expects(*, *, *, *, *, *)
 
   }

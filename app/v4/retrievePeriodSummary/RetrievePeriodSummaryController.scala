@@ -19,7 +19,6 @@ package v4.retrievePeriodSummary
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import shared.hateoas.HateoasFactory
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 
@@ -31,17 +30,16 @@ class RetrievePeriodSummaryController @Inject() (val authService: EnrolmentsAuth
                                                  val lookupService: MtdIdLookupService,
                                                  validatorFactory: RetrievePeriodSummaryValidatorFactory,
                                                  service: RetrievePeriodSummaryService,
-                                                 hateoasFactory: HateoasFactory,
                                                  cc: ControllerComponents,
                                                  idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "RetrievePeriodSummaryController", endpointName = "retrieveSelfEmploymentPeriodicSummary")
+    EndpointLogContext(controllerName = "RetrievePeriodSummaryControllerOld", endpointName = "retrieveSelfEmploymentPeriodicSummary")
 
   val endpointName = "retrieve-period-summary"
 
-  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: Option[String]): Action[AnyContent] =
+  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 

@@ -16,16 +16,22 @@
 
 package v4.amendPeriodSummary.def1
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject}
-import shared.models.errors.MtdError
 import cats.data.Validated
-import cats.implicits.catsSyntaxTuple4Semigroupal
+import cats.implicits.catsSyntaxTuple5Semigroupal
 import play.api.libs.json.JsValue
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYear, ResolverSupport}
+import shared.models.errors.MtdError
+import v4.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator.resolveTaxYear
+import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData}
 import v4.validators.resolvers.ResolvePeriodId
 
-class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, body: JsValue, includeNegatives: Boolean)
+object Def1_AmendPeriodSummaryValidator extends ResolverSupport {
+  private val resolveTaxYear = ResolveTaxYear.resolver
+}
+
+class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)
     extends Validator[AmendPeriodSummaryRequestData] {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_AmendPeriodSummaryRequestBody]()
@@ -37,6 +43,7 @@ class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId),
+      resolveTaxYear(taxYear),
       resolveJson(body)
     ).mapN(Def1_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
 

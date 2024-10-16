@@ -129,7 +129,8 @@ class ListPeriodSummariesControllerSpec
 
   private trait Test extends ControllerTest {
 
-    val requestData: ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
+    val requestData: ListPeriodSummariesRequestData =
+      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -146,13 +147,13 @@ class ListPeriodSummariesControllerSpec
 
     MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, None)(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }
 
   private trait TysTest extends ControllerTest {
 
     val tysRequestData: ListPeriodSummariesRequestData =
-      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
+      Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear))
 
     val controller = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
@@ -169,7 +170,7 @@ class ListPeriodSummariesControllerSpec
 
     MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, Some(taxYear))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeGetRequest)
   }
 
 }

@@ -21,13 +21,13 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import v4.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
+import v4.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.def2.model.response.Def2_Retrieve_PeriodDates
-import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData}
 import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,11 +37,11 @@ class RetrievePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrievePeriodSummaryService
-    with MockRetrievePeriodSummaryValidatorFactory
-    with MockHateoasFactory {
+    with MockRetrievePeriodSummaryValidatorFactory {
 
   private val businessId = "XAIS12345678910"
-  private val taxYear    = "2023-24"
+  private val tysTaxYear = "2023-24"
+  private val taxYear    = "2019-20"
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
@@ -94,7 +94,7 @@ class RetrievePeriodSummaryControllerSpec
     val periodId = "2019-01-01_2020-01-01"
 
     val requestData: Def1_RetrievePeriodSummaryRequestData =
-      Def1_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId))
+      Def1_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), TaxYear.fromMtd(taxYear))
 
     val responseBody: RetrievePeriodSummaryResponse =
       Def1_RetrievePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2019-01-01", "2020-01-01"), None, None, None)
@@ -115,7 +115,6 @@ class RetrievePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -126,14 +125,14 @@ class RetrievePeriodSummaryControllerSpec
 
     MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, None)(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, tysTaxYear)(fakeGetRequest)
   }
 
   private trait TysTest extends ControllerTest {
     val periodId = "2024-01-01_2025-01-01"
 
     val requestData: Def2_RetrievePeriodSummaryRequestData =
-      Def2_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), TaxYear.fromMtd(taxYear))
+      Def2_RetrievePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), TaxYear.fromMtd(tysTaxYear))
 
     val responseBody: RetrievePeriodSummaryResponse = Def2_RetrievePeriodSummaryResponse(
       periodDates = Def2_Retrieve_PeriodDates("2024-01-01", "2025-01-01"),
@@ -158,7 +157,6 @@ class RetrievePeriodSummaryControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
       service = mockRetrievePeriodSummaryService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -169,7 +167,7 @@ class RetrievePeriodSummaryControllerSpec
 
     MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, Some(taxYear))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, periodId, tysTaxYear)(fakeGetRequest)
   }
 
 }

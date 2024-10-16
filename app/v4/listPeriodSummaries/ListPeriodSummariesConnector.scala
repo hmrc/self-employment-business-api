@@ -44,13 +44,14 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
     val path = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     val downstreamUri =
-      taxYear match {
-        case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
-          TaxYearSpecificIfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
-        case _ if featureSwitches.isDesIf_MigrationEnabled =>
-          IfsUri[DownstreamResp](path)
-        case _ =>
-          DesUri[DownstreamResp](path)
+      if (taxYear.useTaxYearSpecificApi) {
+        TaxYearSpecificIfsUri[DownstreamResp](
+          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
+        )
+      } else if (featureSwitches.isDesIf_MigrationEnabled) {
+        IfsUri[DownstreamResp](path)
+      } else {
+        DesUri[DownstreamResp](path)
       }
 
     get(downstreamUri)

@@ -20,8 +20,8 @@ import api.models.domain.PeriodId
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v4.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodExpenses
-import v4.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodExpenses
+import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def1_Amend_PeriodExpenses}
+import v4.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodExpenses}
 import v4.amendPeriodSummary.model.request._
 
 import scala.concurrent.Future
@@ -36,6 +36,7 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     periodId = PeriodId(periodId),
+    taxYear = TaxYear.fromMtd("2019-20"),
     body = Def1_AmendPeriodSummaryRequestBody(
       None,
       Some(Def1_Amend_PeriodExpenses(Some(200.10), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)),
