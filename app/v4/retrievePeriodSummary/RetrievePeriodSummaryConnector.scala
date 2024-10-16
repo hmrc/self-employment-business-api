@@ -22,7 +22,6 @@ import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v4.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
@@ -47,18 +46,18 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appCon
     val path     = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
     request match {
-      case _: Def1_RetrievePeriodSummaryRequestData =>
+      case def2: Def2_RetrievePeriodSummaryRequestData =>
+        val downstreamUri = TaxYearSpecificIfsUri[Def2_RetrievePeriodSummaryResponse](
+          s"income-tax/${def2.taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        val result = get(downstreamUri)
+        result
+
+      case _ =>
         val downstreamUri =
           if (featureSwitches.isDesIf_MigrationEnabled)
             IfsUri[Def1_RetrievePeriodSummaryResponse](path)
           else
             DesUri[Def1_RetrievePeriodSummaryResponse](path)
-        val result = get(downstreamUri)
-        result
-
-      case def2: Def2_RetrievePeriodSummaryRequestData =>
-        val downstreamUri = TaxYearSpecificIfsUri[Def2_RetrievePeriodSummaryResponse](
-          s"income-tax/${def2.taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
         val result = get(downstreamUri)
         result
     }

@@ -25,9 +25,9 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
+import v4.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodIncome}
 import v4.retrievePeriodSummary.def2.model.response.{Def2_Retrieve_PeriodDates, Def2_Retrieve_PeriodIncome}
-import v4.retrievePeriodSummary.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future

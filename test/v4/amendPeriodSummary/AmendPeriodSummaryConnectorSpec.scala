@@ -20,8 +20,8 @@ import api.models.domain.PeriodId
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v4.amendPeriodSummary.def1.model.request.Def1_Amend_PeriodExpenses
-import v4.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodExpenses
+import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def1_Amend_PeriodExpenses}
+import v4.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodExpenses}
 import v4.amendPeriodSummary.model.request._
 
 import scala.concurrent.Future

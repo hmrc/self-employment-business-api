@@ -19,8 +19,8 @@ package v4.amendPeriodSummary.def1.model.request
 import api.models.domain.PeriodId
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import v4.amendPeriodSummary.AmendPeriodSummarySchema
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody}
-
+import v4.amendPeriodSummary.AmendPeriodSummarySchema.Def1
+import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 case class Def1_AmendPeriodSummaryRequestData(
     nino: Nino,
@@ -30,6 +30,6 @@ case class Def1_AmendPeriodSummaryRequestData(
     body: Def1_AmendPeriodSummaryRequestBody
 ) extends AmendPeriodSummaryRequestData {
 
-  override val schema: AmendPeriodSummarySchema = AmendPeriodSummarySchema.Def1
+  override val schema: AmendPeriodSummarySchema = Def1
 
 }

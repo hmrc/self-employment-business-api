@@ -25,8 +25,14 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
-import v4.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.def2.model.request.{
+  Def2_AmendPeriodSummaryRequestBody,
+  Def2_AmendPeriodSummaryRequestData,
+  Def2_Amend_PeriodDisallowableExpenses,
+  Def2_Amend_PeriodExpenses,
+  Def2_Amend_PeriodIncome
+}
+import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
 

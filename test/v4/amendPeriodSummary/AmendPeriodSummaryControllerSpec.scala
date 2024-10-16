@@ -29,8 +29,10 @@ import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
 import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
+import v4.amendPeriodSummary.def1.model.request.Def1_AmendPeriodSummaryRequestData
 import v4.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.def2.model.request.Def2_AmendPeriodSummaryRequestData
+import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

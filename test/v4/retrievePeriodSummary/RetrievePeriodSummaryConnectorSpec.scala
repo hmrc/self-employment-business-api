@@ -21,12 +21,10 @@ import config.MockSeBusinessFeatureSwitches
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import v4.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
-import v4.retrievePeriodSummary.model.request.{
-  Def1_RetrievePeriodSummaryRequestData,
-  Def2_RetrievePeriodSummaryRequestData,
-  RetrievePeriodSummaryRequestData
-}
+import v4.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
+import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future

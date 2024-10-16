@@ -16,43 +16,20 @@
 
 package v4.amendPeriodSummary.model.request
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v4.amendPeriodSummary.def1.model.request.{Def1_Amend_PeriodDisallowableExpenses, Def1_Amend_PeriodExpenses, Def1_Amend_PeriodIncome}
-import v4.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
+import play.api.libs.json.OWrites
+import shared.utils.JsonWritesUtil
+import v4.amendPeriodSummary.def1.model.request.Def1_AmendPeriodSummaryRequestBody
+import v4.amendPeriodSummary.def2.model.request.Def2_AmendPeriodSummaryRequestBody
 
-sealed trait AmendPeriodSummaryRequestBody
+trait AmendPeriodSummaryRequestBody
 
-case class Def1_AmendPeriodSummaryRequestBody(periodIncome: Option[Def1_Amend_PeriodIncome],
-                                              periodExpenses: Option[Def1_Amend_PeriodExpenses],
-                                              periodDisallowableExpenses: Option[Def1_Amend_PeriodDisallowableExpenses])
-    extends AmendPeriodSummaryRequestBody
+object AmendPeriodSummaryRequestBody extends JsonWritesUtil {
 
-object Def1_AmendPeriodSummaryRequestBody {
-
-  implicit val reads: Reads[Def1_AmendPeriodSummaryRequestBody] = Json.reads[Def1_AmendPeriodSummaryRequestBody]
-
-  implicit val writes: OWrites[Def1_AmendPeriodSummaryRequestBody] = (
-    (JsPath \ "incomes").writeNullable[Def1_Amend_PeriodIncome] and
-      (JsPath \ "deductions").writeNullable[Def1_Amend_PeriodExpenses] and
-      (JsPath \ "deductions").writeNullable[Def1_Amend_PeriodDisallowableExpenses]
-  )(unlift(Def1_AmendPeriodSummaryRequestBody.unapply))
-
-}
-
-case class Def2_AmendPeriodSummaryRequestBody(periodIncome: Option[Def2_Amend_PeriodIncome],
-                                              periodExpenses: Option[Def2_Amend_PeriodExpenses],
-                                              periodDisallowableExpenses: Option[Def2_Amend_PeriodDisallowableExpenses])
-    extends AmendPeriodSummaryRequestBody
-
-object Def2_AmendPeriodSummaryRequestBody {
-
-  implicit val reads: Reads[Def2_AmendPeriodSummaryRequestBody] = Json.reads[Def2_AmendPeriodSummaryRequestBody]
-
-  implicit val writes: OWrites[Def2_AmendPeriodSummaryRequestBody] = (
-    (JsPath \ "incomes").writeNullable[Def2_Amend_PeriodIncome] and
-      (JsPath \ "deductions").writeNullable[Def2_Amend_PeriodExpenses] and
-      (JsPath \ "deductions").writeNullable[Def2_Amend_PeriodDisallowableExpenses]
-  )(unlift(Def2_AmendPeriodSummaryRequestBody.unapply))
+  implicit val writes: OWrites[AmendPeriodSummaryRequestBody] = writesFrom {
+    case def1: Def1_AmendPeriodSummaryRequestBody =>
+      implicitly[OWrites[Def1_AmendPeriodSummaryRequestBody]].writes(def1)
+    case def2: Def2_AmendPeriodSummaryRequestBody =>
+      implicitly[OWrites[Def2_AmendPeriodSummaryRequestBody]].writes(def2)
+  }
 
 }

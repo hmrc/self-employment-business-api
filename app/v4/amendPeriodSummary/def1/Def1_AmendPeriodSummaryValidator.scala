@@ -23,8 +23,8 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYear, ResolverSupport}
 import shared.models.errors.MtdError
 import v4.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator.resolveTaxYear
-import v4.amendPeriodSummary.def1.model.request.Def1_AmendPeriodSummaryRequestData
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestBody}
+import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData}
 import v4.validators.resolvers.ResolvePeriodId
 
 object Def1_AmendPeriodSummaryValidator extends ResolverSupport {

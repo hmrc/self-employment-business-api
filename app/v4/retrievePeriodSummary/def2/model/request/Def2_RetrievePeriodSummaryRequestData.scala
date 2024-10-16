@@ -22,7 +22,7 @@ import v4.retrievePeriodSummary.RetrievePeriodSummarySchema
 import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 
 case class Def2_RetrievePeriodSummaryRequestData(nino: Nino, businessId: BusinessId, periodId: PeriodId, taxYear: TaxYear)
-    extends RetrievePeriodSummaryRequestData{
+    extends RetrievePeriodSummaryRequestData {
   override val schema: RetrievePeriodSummarySchema = RetrievePeriodSummarySchema.Def2
 
 }
