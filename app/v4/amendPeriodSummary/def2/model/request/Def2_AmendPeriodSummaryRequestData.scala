@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package v4.amendPeriodSummary.model.request
+package v4.amendPeriodSummary.def2.model.request
 
 import api.models.domain.PeriodId
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import v4.amendPeriodSummary.AmendPeriodSummarySchema
+import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody}
 
-trait AmendPeriodSummaryRequestData {
-  def nino: Nino
-  def businessId: BusinessId
-  def periodId: PeriodId
-  def taxYear: TaxYear
-  def body: AmendPeriodSummaryRequestBody
+case class Def2_AmendPeriodSummaryRequestData(
+    nino: Nino,
+    businessId: BusinessId,
+    periodId: PeriodId,
+    taxYear: TaxYear,
+    body: Def2_AmendPeriodSummaryRequestBody
+) extends AmendPeriodSummaryRequestData {
 
-  val schema: AmendPeriodSummarySchema
+  override val schema: AmendPeriodSummarySchema = AmendPeriodSummarySchema.Def2
+
 }

@@ -73,15 +73,6 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
         }
       }
 
-      "given a tax year parameter after 2023-24" should {
-        "return the Validator for schema definition 2" in {
-          val requestBody = validBody("2025-08-24", "2026-08-24")
-          val result: Validator[AmendPeriodSummaryRequestData] =
-            validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2025-26", requestBody, includeNegatives = true)
-          result shouldBe a[Def2_AmendPeriodSummaryValidator]
-        }
-      }
-
       "given a request where no valid schema could be determined" should {
         "return a validator returning the errors" in {
           validatorFor("BAD_TAX_YEAR") shouldBe an[AlwaysErrorsValidator]

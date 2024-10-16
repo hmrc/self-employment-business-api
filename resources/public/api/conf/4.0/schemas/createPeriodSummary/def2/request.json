@@ -8,13 +8,13 @@
       "$ref": "../../periodSummary/period_dates.json"
     },
     "periodIncome": {
-      "$ref": "../../periodSummary/def1/period_income.json"
+      "$ref": "../../periodSummary/def2/period_income.json"
     },
     "periodExpenses": {
-      "$ref": "../../periodSummary/def1/period_expenses.json"
+      "$ref": "../../periodSummary/def2/period_expenses.json"
     },
     "periodDisallowableExpenses": {
-      "$ref": "../../periodSummary/def1/period_disallowable_expenses.json"
+      "$ref": "../../periodSummary/def2/period_disallowable_expenses.json"
     }
   },
   "additionalProperties": false,
