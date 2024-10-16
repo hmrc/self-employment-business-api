@@ -66,7 +66,7 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec with Mo
 
     protected val connector: RetrieveCumulativePeriodSummaryConnector = new RetrieveCumulativePeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
   }

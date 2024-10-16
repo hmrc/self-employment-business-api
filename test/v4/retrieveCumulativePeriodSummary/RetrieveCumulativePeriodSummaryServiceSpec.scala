@@ -16,7 +16,7 @@
 
 package v4.retrieveCumulativePeriodSummary
 
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -44,7 +44,7 @@ class RetrieveCumulativePeriodSummaryServiceSpec extends ServiceSpec {
   private val def1Response =
     Def1_RetrieveCumulativePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2025-07-08", "2025-09-10"), None, None, None)
 
-  trait Test extends MockRetrieveCumulativePeriodSummaryConnector with MockAppConfig {
+  trait Test extends MockRetrieveCumulativePeriodSummaryConnector with MockSharedAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
     val service                                 = new RetrieveCumulativePeriodSummaryService(connector = mockRetrieveCumulativePeriodSummaryConnector)
   }

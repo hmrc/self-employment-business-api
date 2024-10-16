@@ -17,11 +17,11 @@
 package v4.retrieveCumulativePeriodSummary.def1.model.response
 
 import play.api.libs.json.Json
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v4.retrieveCumulativePeriodSummary.def1.model.Def1_RetrieveCumulativePeriodSummaryFixture
 
-class Def1_RetrieveCumulativePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveCumulativePeriodSummaryFixture {
+class Def1_RetrieveCumulativePeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig with Def1_RetrieveCumulativePeriodSummaryFixture {
 
   "round trip" should {
     "return mtd json" when {
