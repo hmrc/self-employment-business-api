@@ -39,10 +39,11 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
   private val validBusinessId = "XAIS12345678901"
   private val taxYear         = TaxYear.fromMtd("2025-26")
 
+//
   private val validPeriodDates = Json.parse("""
       |{
       |  "periodStartDate": "2025-08-24",
-      |  "periodEndDate": "2026-08-24"
+      |  "periodEndDate": "2025-09-24"
       |}
       |""".stripMargin)
 
@@ -126,7 +127,7 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
   private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
 
-  private val parsedPeriodDates  = PeriodDates("2025-08-24", "2026-08-24")
+  private val parsedPeriodDates  = PeriodDates("2025-08-24", "2025-09-24")
   private val parsedPeriodIncome = PeriodIncome(Some(1000.99), Some(1001.99), taxTakenOffTradingIncome = Some(1002.99))
 
   private def numericValue(isNegative: Boolean)(number: BigDecimal): BigDecimal =
@@ -372,6 +373,14 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
 
       "given a body with a period start date out of range" in {
         val invalidBody = validBody().update("/periodDates/periodStartDate", JsString("0010-01-01"))
+        val result =
+          validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+      }
+
+      "given a body with a period end date out of range" in {
+        val invalidBody = validBody().update("/periodDates/periodEndDate", JsString("2026-05-06"))
         val result =
           validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
 

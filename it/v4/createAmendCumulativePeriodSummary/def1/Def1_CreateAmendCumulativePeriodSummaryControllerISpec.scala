@@ -160,8 +160,8 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
           s"""
              |{
              |     "periodDates": {
-             |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-09-24"
+             |           "periodStartDate": "2025-08-24",
+             |           "periodEndDate": "2025-09-24"
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
@@ -221,8 +221,8 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
           s"""
              |{
              |     "periodDates": {
-             |           "periodStartDate": "2019-08-24",
-             |           "periodEndDate": "2019-09-24"
+             |           "periodStartDate": "2025-08-24",
+             |           "periodEndDate": "2025-09-24"
              |     },
              |     "periodIncome": {
              |          "turnover": 1000.99,
@@ -363,7 +363,7 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
 
     private def periodStartDate: String = "2025-07-24"
 
-    private def periodEndDate: String = "2026-08-24"
+    private def periodEndDate: String = "2026-02-24"
 
     private def uri: String = s"/$nino/$businessId/cumulative/$taxYear"
 

@@ -16,7 +16,6 @@
 
 package v4.createAmendCumulativePeriodSummary
 
-import play.api.http.Status.NO_CONTENT
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
@@ -38,8 +37,6 @@ class CreateAmendCumulativePeriodSummaryConnector @Inject() (val http: HttpClien
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
-
-    implicit val successCode: SuccessCode = SuccessCode(NO_CONTENT)
 
     request match {
       case def1: Def1_CreateAmendCumulativePeriodSummaryRequestData =>

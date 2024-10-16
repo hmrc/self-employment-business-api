@@ -22,16 +22,18 @@ import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import shared.models.domain.TaxYear
 import shared.models.errors.{MtdError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError}
 import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDisallowableExpenses, PeriodExpenses}
 import v4.createAmendCumulativePeriodSummary.model.request.{Create_PeriodIncome, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
 import java.time.LocalDate
 
-case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator() extends RulesValidator[Def1_CreateAmendCumulativePeriodSummaryRequestData] {
+case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYear)
+    extends RulesValidator[Def1_CreateAmendCumulativePeriodSummaryRequestData] {
 
-  private val minDate            = LocalDate.of(1900, 4, 6)
-  private val maxDate: LocalDate = LocalDate.of(3025, 4, 5)
+  private val minDate            = LocalDate.of(taxYear.startYear, 4, 6)
+  private val maxDate: LocalDate = LocalDate.of(taxYear.year, 4, 5)
 
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 

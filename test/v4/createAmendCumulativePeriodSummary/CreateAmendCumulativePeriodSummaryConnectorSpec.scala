@@ -62,7 +62,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
   "AmendCumulativePeriodSummaryConnector for a Tax Year Specific tax year" must {
     "return a 200 status for a success scenario" in
       new TysIfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
         willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future

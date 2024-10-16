@@ -35,7 +35,7 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendCumulativePeriodSummaryRequestBody]()
 
-  private val rulesValidator = Def1_CreateAmendCumulativePeriodSummaryRulesValidator()
+  private val rulesValidator = Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear)
 
   def validate: Validated[Seq[MtdError], CreateAmendCumulativePeriodSummaryRequestData] =
     validateJsonFields(body) andThen { parsedBody =>
