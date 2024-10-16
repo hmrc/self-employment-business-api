@@ -1,4 +1,4 @@
-summary: Amend a Self-Employment Period Summary Old
+summary: Amend a Self-Employment Period Summary
 description: |
   This endpoint allows a developer to amend a self-employment period summary.
   Submissions must include values for incomes, expenses and deductions, even if the values are zero.

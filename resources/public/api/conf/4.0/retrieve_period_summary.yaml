@@ -1,4 +1,4 @@
-summary: Retrieve a Self-Employment Period Summary Old
+summary: Retrieve a Self-Employment Period Summary
 description: |
   This endpoint enables you to retrieve a single self-employment period summary for a given identifier.
   A National Insurance number, business ID and period ID must be provided.
