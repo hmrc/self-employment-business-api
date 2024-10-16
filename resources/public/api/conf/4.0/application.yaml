@@ -54,6 +54,8 @@ tags:
     description: Resources relating to an individual's self-employment annual submission
   - name: Self-Employment Period Summaries
     description: Resources relating to an individual's self-employment period summaries
+  - name: Self-Employment Cumulative Submission
+    description: Resources relating to an individual's cumulative self-employment period summaries
 
 paths:
   /individuals/business/self-employment/{nino}/{businessId}/annual/{taxYear}:
@@ -64,3 +66,5 @@ paths:
     $ref: "./list_period_summaries.yaml"
   /individuals/business/self-employment/{nino}/{businessId}/period/{periodId}/{taxYear}:
     $ref: "./amend_and_retrieve_period_summary.yaml"
+  /individuals/business/self-employment/{nino}/{businessId}/cumulative/{taxYear}:
+    $ref: "./amend_and_retrieve_cumulative_period_summary.yaml"
