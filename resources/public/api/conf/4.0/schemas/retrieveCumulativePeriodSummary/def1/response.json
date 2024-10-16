@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Any tax year",
+  "title": "tax year 2025-26 onwards",
   "description": "Retrieves a self-employment cumulative period summary.",
   "type": "object",
   "properties": {
