@@ -8,43 +8,6 @@
       "type": "string",
       "description": "An identifier for the update period, unique to the customer's self-employment business.",
       "example": "2017-04-06_2017-07-04"
-    },
-    "links": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "description": "A list of endpoint links that indicate possible actions related to the current resource.",
-        "properties": {
-          "href": {
-            "description": "The relative url of the endpoint",
-            "type": "string",
-            "example": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12"
-          },
-          "method": {
-            "description": "The HTTP method type for the endpoint.",
-            "type": "string",
-            "enum": [
-              "PUT",
-              "GET",
-              "self"
-            ]
-          },
-          "rel": {
-            "description": "A label for the endpoint, which describes how it is related to the current resource. The rel will be self where the action is retrieval of the same resource.",
-            "type": "string",
-            "enum": [
-              "amend-self-employment-period-summary",
-              "list-self-employment-period-summaries",
-              "self"
-            ]
-          }
-        },
-        "required": [
-          "href",
-          "rel",
-          "method"
-        ]
-      }
     }
   },
   "additionalProperties": false,
