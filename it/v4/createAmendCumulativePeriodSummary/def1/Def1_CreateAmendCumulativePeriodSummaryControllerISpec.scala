@@ -16,19 +16,7 @@
 
 package v4.createAmendCumulativePeriodSummary.def1
 
-//import api.models.errors._
-import api.models.errors.{
-  RuleAdvancePeriodSummaryRequiresPeriodEndDateError,
-  RuleBothExpensesSuppliedError,
-  RuleEarlyDataPeriodSummaryNotAcceptedError,
-  RuleEndDateNotAlignedWithReportingTypeError,
-  RuleMissingPeriodSummaryDatesError,
-  RuleOutsideAmendmentWindowError,
-  RulePeriodSummaryEndDateCannotMoveBackwardsError,
-  RuleStartAndEndDateNotAllowedError,
-  RuleStartDateNotAlignedToCommencementDateError,
-  RuleStartDateNotAlignedWithReportingTypeError
-}
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -347,10 +335,14 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
 
       val errors = List(
         (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+        (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
         (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
         (BAD_REQUEST, "UNMATCHED_STUB_ERROR", BAD_REQUEST, RuleIncorrectGovTestScenarioError),
         (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
+        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
         (UNPROCESSABLE_ENTITY, "BOTH_EXPENSES_SUPPLIED", BAD_REQUEST, RuleBothExpensesSuppliedError),
+        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
         (UNPROCESSABLE_ENTITY, "EARLY_DATA_SUBMISSION_NOT_ACCEPTED", NOT_FOUND, RuleEarlyDataPeriodSummaryNotAcceptedError),
         (UNPROCESSABLE_ENTITY, "INVALID_SUBMISSION_END_DATE", BAD_REQUEST, RuleAdvancePeriodSummaryRequiresPeriodEndDateError),
         (UNPROCESSABLE_ENTITY, "SUBMISSION_END_DATE_VALUE", BAD_REQUEST, RulePeriodSummaryEndDateCannotMoveBackwardsError),
@@ -361,11 +353,7 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
         (UNPROCESSABLE_ENTITY, "START_END_DATE_NOT_ACCEPTED", BAD_REQUEST, RuleStartAndEndDateNotAllowedError),
         (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
-        (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
-        (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
-        (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-        (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+        (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
 
       errors.foreach { case (downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError) =>

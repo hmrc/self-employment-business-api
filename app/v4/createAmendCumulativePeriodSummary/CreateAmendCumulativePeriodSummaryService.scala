@@ -38,13 +38,17 @@ class CreateAmendCumulativePeriodSummaryService @Inject() (connector: CreateAmen
       .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private val downstreamErrorMap: Map[String, MtdError] = {
-    val errors = Map(
+  private val downstreamErrorMap: Map[String, MtdError] =
+    Map(
       "INVALID_NINO"                       -> NinoFormatError,
+      "INVALID_INCOME_SOURCE_ID"           -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"             -> InternalError,
       "INVALID_TAX_YEAR"                   -> TaxYearFormatError,
       "UNMATCHED_STUB_ERROR"               -> RuleIncorrectGovTestScenarioError,
       "INVALID_PAYLOAD"                    -> InternalError,
+      "INCOME_SOURCE_NOT_FOUND"            -> NotFoundError,
       "BOTH_EXPENSES_SUPPLIED"             -> RuleBothExpensesSuppliedError,
+      "TAX_YEAR_NOT_SUPPORTED"             -> RuleTaxYearNotSupportedError,
       "EARLY_DATA_SUBMISSION_NOT_ACCEPTED" -> RuleEarlyDataPeriodSummaryNotAcceptedError,
       "INVALID_SUBMISSION_END_DATE"        -> RuleAdvancePeriodSummaryRequiresPeriodEndDateError,
       "SUBMISSION_END_DATE_VALUE"          -> RulePeriodSummaryEndDateCannotMoveBackwardsError,
@@ -57,15 +61,5 @@ class CreateAmendCumulativePeriodSummaryService @Inject() (connector: CreateAmen
       "SERVER_ERROR"                       -> InternalError,
       "SERVICE_UNAVAILABLE"                -> InternalError
     )
-
-    val extraTysErrors = Map(
-      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID"   -> InternalError,
-      "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError
-    )
-
-    errors ++ extraTysErrors
-  }
 
 }
