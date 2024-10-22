@@ -97,8 +97,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
           ("AA123", "XAIS12345678910", "2023-24", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "203100", "2023-24", BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "XAIS12345678910", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
+          ("AA123456A", "XAIS12345678910", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
         input.foreach(args => validationErrorTest(args._1, args._2, args._3, args._4, args._5))
       }
@@ -188,12 +187,13 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val periodId = "2019-01-01_2020-01-01"
     val fromDate = "2019-01-01"
     val toDate   = "2020-01-01"
+    val taxYear  = "2019-20"
 
     def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(uri)
+      buildRequest(s"$uri/$taxYear")
         .withHttpHeaders(
           (ACCEPT, s"application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -214,7 +214,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=$mtdTaxYear").withHttpHeaders(
+      buildRequest(s"$uri/$mtdTaxYear").withHttpHeaders(
         (ACCEPT, s"application/vnd.hmrc.4.0+json"),
         (AUTHORIZATION, "Bearer 123")
       )

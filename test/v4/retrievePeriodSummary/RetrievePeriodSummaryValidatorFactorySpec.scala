@@ -16,7 +16,7 @@
 
 package v4.retrievePeriodSummary
 
-import shared.controllers.validators.Validator
+import shared.controllers.validators.{AlwaysErrorsValidator, Validator}
 import shared.utils.UnitSpec
 import v4.retrievePeriodSummary.def1.Def1_RetrievePeriodSummaryValidator
 import v4.retrievePeriodSummary.def2.Def2_RetrievePeriodSummaryValidator
@@ -30,12 +30,15 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
 
   private val validatorFactory = new RetrievePeriodSummaryValidatorFactory
 
+  private def validatorFor(taxYear: String) =
+    new RetrievePeriodSummaryValidatorFactory().validator(validNino, validBusinessId, validPeriodId, taxYear)
+
   "validator()" when {
 
-    "given no taxYear parameter" should {
+    "given a pre-TYS tax year param" should {
       "return the Validator for schema definition 1 (non-TYS)" in {
         val result: Validator[RetrievePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validPeriodId, maybeTaxYear = None)
+          validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2018-19")
 
         result shouldBe a[Def1_RetrievePeriodSummaryValidator]
       }
@@ -44,7 +47,7 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
     "given a valid tax year parameter (2023-24, TYS)" should {
       "return the Validator for schema definition 2" in {
         val result: Validator[RetrievePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validPeriodId, maybeTaxYear = Some("2023-24"))
+          validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2023-24")
 
         result shouldBe a[Def2_RetrievePeriodSummaryValidator]
       }
@@ -53,27 +56,15 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
     "given a tax year parameter after 2023-24" should {
       "return the Validator for schema definition 2" in {
         val result: Validator[RetrievePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validPeriodId, maybeTaxYear = Some("2024-25"))
+          validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2024-25")
 
         result shouldBe a[Def2_RetrievePeriodSummaryValidator]
       }
     }
 
-    "given a pre-TYS tax year param" should {
-      "return the Validator for schema definition 2 (non-TYS ty param will then be validated and rejected)" in {
-        val result: Validator[RetrievePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validPeriodId, maybeTaxYear = Some("2022-23"))
-
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
-      }
-    }
-
-    "given an invalid tax year param" should {
-      "return the Validator for schema definition 2 (ty param will then be validated and rejected)" in {
-        val result: Validator[RetrievePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validPeriodId, maybeTaxYear = Some("not-a-tax-year"))
-
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
+    "given a request where no valid schema could be determined" should {
+      "return a validator returning the errors" in {
+        validatorFor("BAD_TAX_YEAR") shouldBe an[AlwaysErrorsValidator]
       }
     }
   }

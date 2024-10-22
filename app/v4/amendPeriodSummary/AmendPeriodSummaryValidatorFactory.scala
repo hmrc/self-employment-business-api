@@ -16,9 +16,11 @@
 
 package v4.amendPeriodSummary
 
-import shared.controllers.validators.Validator
-import shared.config.SharedAppConfig
+import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.JsValue
+import shared.config.SharedAppConfig
+import shared.controllers.validators.Validator
+import v4.amendPeriodSummary.AmendPeriodSummarySchema.{Def1, Def2}
 import v4.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
 import v4.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
 import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
@@ -31,13 +33,14 @@ class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: SharedAp
   def validator(nino: String,
                 businessId: String,
                 periodId: String,
-                maybeTaxYear: Option[String],
+                taxYear: String,
                 body: JsValue,
                 includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] = {
 
-    maybeTaxYear match {
-      case None             => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, body, includeNegatives)
-      case Some(taxYearStr) => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
+    AmendPeriodSummarySchema.schemaFor(taxYear) match {
+      case Valid(Def1)     => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
+      case Valid(Def2)     => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
+      case Invalid(errors) => Validator.returningErrors(errors)
     }
   }
 

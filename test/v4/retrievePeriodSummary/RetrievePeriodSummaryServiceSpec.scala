@@ -21,13 +21,13 @@ import api.models.errors.PeriodIdFormatError
 import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
-import shared.models.domain.{BusinessId, Nino}
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
+import v4.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodIncome}
 import v4.retrievePeriodSummary.def2.model.response.{Def2_Retrieve_PeriodDates, Def2_Retrieve_PeriodIncome}
-import v4.retrievePeriodSummary.model.request.Def1_RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
@@ -37,12 +37,14 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
   private val nino                            = Nino("AA123456A")
   private val businessId                      = BusinessId("XAIS12345678910")
   private val periodId                        = PeriodId("2019-01-25_2020-01-25")
+  private val taxYear                         = TaxYear.fromMtd("2019-20")
   override implicit val correlationId: String = "X-123"
 
   private val requestData = Def1_RetrievePeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
-    periodId = periodId
+    periodId = periodId,
+    taxYear = taxYear
   )
 
   private val def1PeriodIncome                  = Def1_Retrieve_PeriodIncome(turnover = Some(2000.00), None)
@@ -87,7 +89,6 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
     }
 
     "given a def2 (TYS) request and CL290 feature is disabled" should {
-
       "return a def2 response without taxTakenOffTradingIncome" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)

@@ -140,13 +140,10 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
     val periodId   = "2019-01-01_2020-01-01"
+    val taxYear    = "2019-20"
 
     val fromDate = "2019-01-01"
     val toDate   = "2020-01-01"
-
-    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period"
 
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail"
 
@@ -284,7 +281,7 @@ class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def setupStubs(): StubMapping
 
-    def uri: String = s"/$nino/$businessId/period/$periodId"
+    def uri: String = s"/$nino/$businessId/period/$periodId/$taxYear"
 
     def errorBody(code: String): String =
       s"""

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Any tax year",
+  "title": "Before TY 2025-26",
   "description": "List Self-Employment Period Summaries Response",
   "type": "object",
   "properties": {

@@ -24,7 +24,7 @@ parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
   - $ref: './common/pathParameters.yaml#/components/parameters/periodId'
-  - $ref: './common/queryParameters.yaml#/components/parameters/taxYearTo2025'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
   - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
   - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
@@ -39,8 +39,8 @@ requestBody:
     application/json:
       schema:
         oneOf:
-          - $ref: './schemas/def1/request.json'
-          - $ref: './schemas/def2/request.json'
+          - $ref: './schemas/amendPeriodSummary/def1/request.json'
+          - $ref: './schemas/amendPeriodSummary/def2/request.json'
       examples:
         "Non-consolidated request for TY 2023-24 onwards":
           value:
@@ -119,4 +119,4 @@ responses:
           $ref: './schemas/error-response.yaml'
         examples:
           MATCHING_RESOURCE_NOT_FOUND:
-            $ref: './common/errors.yaml#/components/examples/notFoundEmployments'
+            $ref: './common/errors.yaml#/components/examples/notFound'

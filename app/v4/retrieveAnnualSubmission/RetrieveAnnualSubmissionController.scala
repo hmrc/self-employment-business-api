@@ -20,7 +20,6 @@ import config.SeBusinessFeatureSwitches
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers._
-import shared.hateoas.HateoasFactory
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 
@@ -32,7 +31,6 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
                                                     val lookupService: MtdIdLookupService,
                                                     validatorFactory: RetrieveAnnualSubmissionValidatorFactory,
                                                     service: RetrieveAnnualSubmissionService,
-                                                    hateoasFactory: HateoasFactory,
                                                     cc: ControllerComponents,
                                                     idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {

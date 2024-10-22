@@ -36,7 +36,7 @@ class ListPeriodSummariesValidatorFactorySpec extends UnitSpec with MockSharedAp
     "given any request regardless of tax year" should {
       "return the Validator for schema definition 1" in {
         val result: Validator[ListPeriodSummariesRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, Some(validTaxYear))
+          validatorFactory.validator(validNino, validBusinessId, validTaxYear)
 
         result shouldBe a[Def1_ListPeriodSummariesValidator]
       }

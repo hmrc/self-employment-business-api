@@ -22,7 +22,7 @@ import v4.listPeriodSummaries.ListPeriodSummariesSchema
 trait ListPeriodSummariesRequestData {
   def nino: Nino
   def businessId: BusinessId
-  def taxYear: Option[TaxYear]
+  def taxYear: TaxYear
 
   val schema: ListPeriodSummariesSchema
 }

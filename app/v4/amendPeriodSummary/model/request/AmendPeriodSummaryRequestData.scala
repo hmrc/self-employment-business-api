@@ -18,36 +18,14 @@ package v4.amendPeriodSummary.model.request
 
 import api.models.domain.PeriodId
 import shared.models.domain.{BusinessId, Nino, TaxYear}
+import v4.amendPeriodSummary.AmendPeriodSummarySchema
 
-sealed trait AmendPeriodSummaryRequestData {
-  val nino: Nino
-  val businessId: BusinessId
-  val periodId: PeriodId
-  val maybeTaxYear: Option[TaxYear]
-  val body: AmendPeriodSummaryRequestBody
-}
+trait AmendPeriodSummaryRequestData {
+  def nino: Nino
+  def businessId: BusinessId
+  def periodId: PeriodId
+  def taxYear: TaxYear
+  def body: AmendPeriodSummaryRequestBody
 
-/** Applicable from minimumTaxYear to 2022-23 (pre-TYS).
-  */
-case class Def1_AmendPeriodSummaryRequestData(
-    nino: Nino,
-    businessId: BusinessId,
-    periodId: PeriodId,
-    body: Def1_AmendPeriodSummaryRequestBody
-) extends AmendPeriodSummaryRequestData {
-
-  val maybeTaxYear: Option[TaxYear] = None
-}
-
-/** Applicable from 2023-24 onwards.
-  */
-case class Def2_AmendPeriodSummaryRequestData(
-    nino: Nino,
-    businessId: BusinessId,
-    periodId: PeriodId,
-    taxYear: TaxYear,
-    body: Def2_AmendPeriodSummaryRequestBody
-) extends AmendPeriodSummaryRequestData {
-
-  val maybeTaxYear: Option[TaxYear] = Some(taxYear)
+  val schema: AmendPeriodSummarySchema
 }

@@ -22,7 +22,7 @@ import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
 class ListPeriodSummariesValidatorFactory {
 
-  def validator(nino: String, businessId: String, taxYear: Option[String]): Validator[ListPeriodSummariesRequestData] =
+  def validator(nino: String, businessId: String, taxYear: String): Validator[ListPeriodSummariesRequestData] =
     new Def1_ListPeriodSummariesValidator(nino, businessId, taxYear)
 
 }

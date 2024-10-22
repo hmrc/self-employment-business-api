@@ -96,8 +96,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "203100", "2023-04-01_2024-01-01", "2023-24", BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "2020", "2023-24", BAD_REQUEST, PeriodIdFormatError),
           ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2021-22", BAD_REQUEST, InvalidTaxYearParameterError)
+          ("AA123456A", "XAIS12345678910", "2023-04-01_2024-01-01", "2023-25", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
 
         input.foreach(args => (validationTysErrorTest _).tupled(args))
@@ -151,15 +150,11 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val mtdTaxYear               = "2023-24"
     lazy val tysTaxYear: TaxYear = TaxYear.fromMtd(mtdTaxYear)
 
-    val amendPeriodSummaryHateoasUri: String    = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val retrievePeriodSummaryHateoasUri: String = s"/individuals/business/self-employment/$nino/$businessId/period/$periodId?taxYear=$mtdTaxYear"
-    val listPeriodSummariesHateoasUri: String   = s"/individuals/business/self-employment/$nino/$businessId/period?taxYear=$mtdTaxYear"
-
     def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
-      buildRequest(s"$uri?taxYear=$mtdTaxYear")
+      buildRequest(uri)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.4.0+json"),
           (AUTHORIZATION, "Bearer 123")
@@ -291,7 +286,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def setupStubs(): StubMapping
 
-    def uri: String = s"/$nino/$businessId/period/$periodId"
+    def uri: String = s"/$nino/$businessId/period/$periodId/$mtdTaxYear"
 
     def errorBody(code: String): String =
       s"""

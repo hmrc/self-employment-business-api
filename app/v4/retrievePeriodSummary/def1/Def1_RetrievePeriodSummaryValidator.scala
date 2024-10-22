@@ -16,21 +16,24 @@
 
 package v4.retrievePeriodSummary.def1
 
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
-import shared.models.errors.MtdError
 import cats.data.Validated
-import cats.implicits.catsSyntaxTuple3Semigroupal
-import v4.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import cats.implicits.catsSyntaxTuple4Semigroupal
+import shared.controllers.validators.Validator
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
+import shared.models.errors.MtdError
+import v4.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
+import v4.retrievePeriodSummary.model.request.{RetrievePeriodSummaryRequestData}
 import v4.validators.resolvers.ResolvePeriodId
 
-class Def1_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String) extends Validator[RetrievePeriodSummaryRequestData] {
+class Def1_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)
+    extends Validator[RetrievePeriodSummaryRequestData] {
 
   def validate: Validated[Seq[MtdError], RetrievePeriodSummaryRequestData] = {
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
-      ResolvePeriodId(periodId, 1900, 2100)
+      ResolvePeriodId(periodId, 1900, 2100),
+      ResolveTaxYear(taxYear)
     ).mapN(Def1_RetrievePeriodSummaryRequestData)
   }
 
