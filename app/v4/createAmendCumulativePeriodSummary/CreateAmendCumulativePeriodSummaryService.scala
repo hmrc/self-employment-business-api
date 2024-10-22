@@ -42,18 +42,9 @@ class CreateAmendCumulativePeriodSummaryService @Inject() (connector: CreateAmen
     val errors = Map(
       "INVALID_NINO"                       -> NinoFormatError,
       "INVALID_TAX_YEAR"                   -> TaxYearFormatError,
-      "INVALID_INCOME_SOURCE"              -> BusinessIdFormatError,
+      "UNMATCHED_STUB_ERROR"               -> RuleIncorrectGovTestScenarioError,
       "INVALID_PAYLOAD"                    -> InternalError,
-      "INVALID_CORRELATIONID"              -> InternalError,
-      "MISSING_EXEMPTION_REASON"           -> InternalError,
-      "MISSING_EXEMPTION_INDICATOR"        -> InternalError,
-      "ALLOWANCE_NOT_SUPPORTED"            -> RuleAllowanceNotSupportedError,
-      "NOT_FOUND"                          -> NotFoundError,
-      "NOT_FOUND_INCOME_SOURCE"            -> NotFoundError,
-      "GONE"                               -> InternalError,
-      "SERVER_ERROR"                       -> InternalError,
-      "BAD_GATEWAY"                        -> InternalError,
-      "SERVICE_UNAVAILABLE"                -> InternalError,
+      "BOTH_EXPENSES_SUPPLIED"             -> RuleBothExpensesSuppliedError,
       "EARLY_DATA_SUBMISSION_NOT_ACCEPTED" -> RuleEarlyDataPeriodSummaryNotAcceptedError,
       "INVALID_SUBMISSION_END_DATE"        -> RuleAdvancePeriodSummaryRequiresPeriodEndDateError,
       "SUBMISSION_END_DATE_VALUE"          -> RulePeriodSummaryEndDateCannotMoveBackwardsError,
@@ -62,15 +53,16 @@ class CreateAmendCumulativePeriodSummaryService @Inject() (connector: CreateAmen
       "END_DATE_NOT_ALIGNED"               -> RuleEndDateNotAlignedWithReportingTypeError,
       "MISSING_SUBMISSION_DATES"           -> RuleMissingPeriodSummaryDatesError,
       "START_END_DATE_NOT_ACCEPTED"        -> RuleStartAndEndDateNotAllowedError,
-      "OUTSIDE_AMENDMENT_WINDOW"           -> RuleOutsideAmendmentWindowError
+      "OUTSIDE_AMENDMENT_WINDOW"           -> RuleOutsideAmendmentWindowError,
+      "SERVER_ERROR"                       -> InternalError,
+      "SERVICE_UNAVAILABLE"                -> InternalError
     )
 
     val extraTysErrors = Map(
-      "INVALID_INCOME_SOURCE_ID"   -> BusinessIdFormatError,
-      "INVALID_CORRELATION_ID"     -> InternalError,
-      "INCOME_SOURCE_NOT_FOUND"    -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
-      "WRONG_TPA_AMOUNT_SUBMITTED" -> RuleWrongTpaAmountSubmittedError
+      "INVALID_INCOME_SOURCE_ID" -> BusinessIdFormatError,
+      "INVALID_CORRELATION_ID"   -> InternalError,
+      "INCOME_SOURCE_NOT_FOUND"  -> NotFoundError,
+      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError
     )
 
     errors ++ extraTysErrors
