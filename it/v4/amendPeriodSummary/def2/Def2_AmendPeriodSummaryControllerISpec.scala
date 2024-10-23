@@ -36,7 +36,7 @@ class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
 
   "The V4 Amend Period Summary endpoint" should {
 
-    "return a 200 status code" when {
+    "return a 204 status code" when {
 
       "given a valid TYS request" in new Test {
 
@@ -50,7 +50,7 @@ class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }

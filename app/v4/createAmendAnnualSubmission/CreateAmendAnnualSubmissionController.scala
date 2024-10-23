@@ -59,7 +59,7 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
           params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
           Some(request.body)
         ))
-        .withNoContentResult(OK)
+        .withNoContentResult()
 
       requestHandler.handleRequest()
     }
