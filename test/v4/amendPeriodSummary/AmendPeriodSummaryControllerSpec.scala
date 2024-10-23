@@ -59,7 +59,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(
-          expectedStatus = OK,
+          expectedStatus = NO_CONTENT,
           maybeAuditRequestBody = Some(requestBodyJson),
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None
@@ -74,7 +74,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(
-          expectedStatus = OK,
+          expectedStatus = NO_CONTENT,
           maybeAuditRequestBody = Some(requestBodyJson),
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None

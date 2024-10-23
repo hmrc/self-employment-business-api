@@ -50,7 +50,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }

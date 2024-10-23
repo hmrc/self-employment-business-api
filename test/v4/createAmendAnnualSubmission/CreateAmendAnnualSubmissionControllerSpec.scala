@@ -61,7 +61,7 @@ class CreateAmendAnnualSubmissionControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(
-          expectedStatus = OK,
+          expectedStatus = NO_CONTENT,
           maybeAuditRequestBody = Some(requestJson),
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None

@@ -52,7 +52,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
@@ -68,7 +68,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }

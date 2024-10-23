@@ -61,7 +61,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
           params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear),
           Some(request.body)
         ))
-        .withNoContentResult(OK)
+        .withNoContentResult()
 
       requestHandler.handleRequest()
     }
