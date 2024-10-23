@@ -50,7 +50,7 @@ class AmendPeriodSummaryControllerSpec
   override val apiVersion: Version = Version3
 
   "handleRequest" should {
-    "return a successful response with status 200 (OK)" when {
+    "return a successful response with status 204 (No Content)" when {
       "given a valid non-TYS request" in new PreTysTest {
         willUseValidator(returningSuccess(requestData))
 

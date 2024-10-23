@@ -52,7 +52,7 @@ class CreateAmendAnnualSubmissionControllerSpec
     Def1_CreateAmendAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
-    "return a successful response with status 200 (OK)" when {
+    "return a successful response with status 204 (No Content)" when {
       "the request received is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 

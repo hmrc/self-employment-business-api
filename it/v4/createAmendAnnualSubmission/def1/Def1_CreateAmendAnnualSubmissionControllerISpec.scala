@@ -39,7 +39,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
   val downstreamRequestBodyJson: JsValue = createAmendAnnualSubmissionRequestBodyDownstreamJson()
 
   "Calling the V4 amend endpoint" should {
-    "return a 200 status code" when {
+    "return a 204 status code" when {
       "given any valid Def1 request" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
