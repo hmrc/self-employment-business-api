@@ -158,7 +158,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
     val to                 = "2020-01-01"
     val taxYear            = "2019-20"
 
-    def mtdUri: String        = s"/$nino/$businessId/period/$periodId/$taxYear"
+    def mtdUri: String        = s"/$nino/$businessId/period/$taxYear/$periodId"
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     def setupStubs(): StubMapping
