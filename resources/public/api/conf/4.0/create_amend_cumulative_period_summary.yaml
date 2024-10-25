@@ -23,7 +23,7 @@ description: |
   | ALLOWANCE_NOT_SUPPORTED                     | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year. |
 
 tags:
-  - Self-Employment Annual Submission
+  - Self-Employment Cumulative Submission
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
