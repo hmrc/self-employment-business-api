@@ -60,8 +60,6 @@ tags:
 paths:
   /individuals/business/self-employment/{nino}/{businessId}/annual/{taxYear}:
     $ref: "./annual_submissions.yaml"
-  /individuals/business/self-employment/{nino}/{businessId}/cumulative/{taxYear}:
-    $ref: "./cumulative-submissions.yaml"
   /individuals/business/self-employment/{nino}/{businessId}/period:
     $ref: "./create_period_summary.yaml"
   /individuals/business/self-employment/{nino}/{businessId}/period/{taxYear}:
