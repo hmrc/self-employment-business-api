@@ -3,7 +3,7 @@ put:
   summary: Create and Amend a Self-Employment Cumulative Period Summary
   security:
     - User-Restricted:
-        - write:self-assessmemt
+        - write:self-assessment
 
 get:
   $ref: "./retrieve_cumulative_period_summary.yaml"
