@@ -1,0 +1,103 @@
+summary: Create and Amend Self-Employment Cumulative Period Summary
+description: |
+  This endpoint enables you to submit the cumulative period income and expenses for a self-employment business that occurred between two dates. A National Insurance number, tax year and business ID are required. Please note that this endpoint is only available for tax years starting from 2025-26.
+
+  Note: Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if there is no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero.
+  
+  ### Test Data
+  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+  
+  | Header Value (Gov-Test-Scenario)            | Scenario                                                                                                        |
+  |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+  | N/A - DEFAULT                               | Simulate success response.                                                                                      |
+  | NOT_FOUND                                   | Simulates the scenario where no data is found.                                                                  | 
+  | TAX_YEAR_NOT_SUPPORTED                      | Simulates the scenario where the tax year is not supported.                                                     |
+  | BOTH_EXPENSES_SUPPLIED                      | Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.               |
+  | STATEFUL                                    | Performs a stateful create or update.                                                                           |
+  | START_DATE_NOT_ALIGNED_TO_COMMENCEMENT_DATE | Simulates the scenario where Start Date does not align to the commencement date.                                |
+  | END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE    | Simulates the scenario where End date does not align to the reporting type.                                     |
+  | MISSING_SUBMISSION_DATES                    | Simulates the scenario where Submissoin start/end date not provided.                                            |
+  | START_AND_END_DATE_NOT_ALLOWED              | Simulates the scenario where Start/End Date not accepted for annual/latent submission.                          |
+  | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simultes the scenario where individuals cannot submit data more than 10 days before end of Period.              |
+  | OUTSIDE_AMMENDMENT_WINDOW                   | Simulates the scenario where request cannot be completed as it is outside the amendment window.                 | 
+  | ALLOWANCE_NOT_SUPPORTED                     | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year. |
+
+tags:
+  - Self-Employment Cumulative Submission
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - write:self-assessment
+
+requestBody:
+  content:
+    applicaton/json:
+      schema:
+        - $ref: './schemas/createAmendCumulativePeriodSummary/request.json'
+      examples:
+        "Consolidated request":
+          value:
+            $ref: './examples/createAmendCumulativePeriodSummary/consolidated_request.json'
+        "Non-consolidated request":
+          value:
+            $ref: './examples/createAmendCumulativePeriodSummary/non_consolidated_request.json'
+
+responses:
+  "200":
+    description: Success
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_TAX_YEAR:
+            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+          FORMAT_VALUE:
+            $ref: './common/errors.yaml#/components/examples/formatValue'
+          FORMAT_BUSINESS_ID:
+            $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+          FORMAT_PERIOD_ID:
+            $ref: './common/errors.yaml#/components/examples/formatPeriodId'
+          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_BOTH_EXPENSES_SUPPLIED:
+            $ref: './common/errors.yaml#/components/examples/ruleBothExpensesSupplied'
+          RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES:
+            $ref: './common/errors.yaml#/components/examples/ruleNotAllowedConsolidatedExpenses'
+          RULE_TAX_YEAR_RANGE_INVALID:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+          INVALID_TAX_YEAR_PARAMETER:
+            $ref: './common/errors.yaml#/components/examples/invalidTaxYearParameter'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFound'
+
+
+
