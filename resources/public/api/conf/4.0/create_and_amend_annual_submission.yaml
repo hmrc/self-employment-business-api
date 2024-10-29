@@ -52,8 +52,8 @@ requestBody:
             $ref: './examples/createAmendAnnualSubmission/def2/without_trading_income_allowance.json'
 
 responses:
-  "200":
-    description: Success
+  "204":
+    description: Success (No Content)
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
