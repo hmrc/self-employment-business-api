@@ -1,0 +1,14 @@
+{
+  "periodDates": {
+    "periodStartDate": "2025-04-25",
+    "periodEndDate": "2025-04-25"
+  },
+  "periodIncome": {
+    "turnover": 1000.99,
+    "other": 1000.09,
+    "taxTakenOffTradingIncome": 1000.99
+  },
+  "periodExpenses": {
+    "consolidatedExpenses": 1000.99
+  }
+}

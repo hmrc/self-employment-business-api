@@ -1,7 +1,0 @@
-get:
-  $ref: "./retrieve_cumulative_period_summary.yaml"
-  summary: Retrieve a Self-Employment Period Summary
-  security:
-    - User-Restricted:
-        - read:self-assessment
-
