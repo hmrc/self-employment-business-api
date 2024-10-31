@@ -154,7 +154,7 @@ class AmendPeriodSummaryControllerSpec
       Def1_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def1_AmendPeriodSummaryBody)
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, taxYear)(fakePostRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, taxYear, periodId)(fakePostRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -181,7 +181,7 @@ class AmendPeriodSummaryControllerSpec
       Def2_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def2_AmendPeriodSummaryBody)
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, taxYear)(fakePostRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, taxYear, periodId)(fakePostRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
