@@ -43,7 +43,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
 
   val endpointName = "amend-period-summary"
 
-  def handleRequest(nino: String, businessId: String, periodId: String, taxYear: String): Action[JsValue] =
+  def handleRequest(nino: String, businessId: String, taxYear: String, periodId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
@@ -61,7 +61,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
           params = Map("nino" -> nino, "businessId" -> businessId, "periodId" -> periodId, "taxYear" -> taxYear),
           Some(request.body)
         ))
-        .withNoContentResult(OK)
+        .withNoContentResult()
 
       requestHandler.handleRequest()
     }

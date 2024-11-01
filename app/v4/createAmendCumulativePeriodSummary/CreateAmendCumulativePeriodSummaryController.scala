@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.createAmendAnnualSubmission
+package v4.createAmendCumulativePeriodSummary
 
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
@@ -28,19 +28,19 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CreateAmendAnnualSubmissionController @Inject() (val authService: EnrolmentsAuthService,
-                                                       val lookupService: MtdIdLookupService,
-                                                       validatorFactory: CreateAmendAnnualSubmissionValidatorFactory,
-                                                       service: CreateAmendAnnualSubmissionService,
-                                                       auditService: AuditService,
-                                                       cc: ControllerComponents,
-                                                       idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+class CreateAmendCumulativePeriodSummaryController @Inject() (val authService: EnrolmentsAuthService,
+                                                              val lookupService: MtdIdLookupService,
+                                                              validatorFactory: CreateAmendCumulativePeriodSummaryValidatorFactory,
+                                                              service: CreateAmendCumulativePeriodSummaryService,
+                                                              auditService: AuditService,
+                                                              cc: ControllerComponents,
+                                                              idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "AmendAnnualSubmissionController", endpointName = "amendSelfEmploymentAnnualSubmission")
+    EndpointLogContext(controllerName = "AmendCumulativePeriodSummaryController", endpointName = "amendSelfEmploymentCumulativePeriodSummary")
 
-  val endpointName = "create-amend-annual-submission"
+  val endpointName = "create-amend-cumulative-period-summary"
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
@@ -50,16 +50,16 @@ class CreateAmendAnnualSubmissionController @Inject() (val authService: Enrolmen
 
       val requestHandler = RequestHandler
         .withValidator(validator)
-        .withService(service.createAmendAnnualSubmission)
+        .withService(service.createAmendCumulativePeriodSummary)
         .withAuditing(AuditHandler(
           auditService,
-          auditType = "UpdateAnnualEmployment",
-          transactionName = "self-employment-annual-summary-update",
+          auditType = "UpdateCumulativeEmployment",
+          transactionName = "self-employment-cumulative-summary-update",
           apiVersion = Version(request),
           params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
           Some(request.body)
         ))
-        .withNoContentResult()
+        .withNoContentResult(OK)
 
       requestHandler.handleRequest()
     }

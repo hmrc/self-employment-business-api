@@ -36,7 +36,7 @@ class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
 
   "The V4 Amend Period Summary endpoint" should {
 
-    "return a 200 status code" when {
+    "return a 204 status code" when {
 
       "given a valid TYS request" in new Test {
 
@@ -50,7 +50,7 @@ class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
@@ -175,7 +175,7 @@ class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
 
     def mtdTaxYear: String = "2023-24"
 
-    def mtdUri: String        = s"/$nino/$businessId/period/$periodId/$mtdTaxYear"
+    def mtdUri: String        = s"/$nino/$businessId/period/$mtdTaxYear/$periodId"
     def tysTaxYear: String    = "23-24"
     def downstreamUri: String = s"/income-tax/$tysTaxYear/$nino/self-employments/$businessId/periodic-summaries"
 

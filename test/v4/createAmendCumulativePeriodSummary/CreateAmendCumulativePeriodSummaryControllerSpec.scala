@@ -14,55 +14,59 @@
  * limitations under the License.
  */
 
-package v4.createAmendAnnualSubmission
+package v4.createAmendCumulativePeriodSummary
 
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
-import v4.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
-import v4.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
+import v4.createAmendCumulativePeriodSummary.def1.model.request.CumulativePeriodSummaryFixture
+import v4.createAmendCumulativePeriodSummary.model.request.{
+  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
+  Def1_CreateAmendCumulativePeriodSummaryRequestData
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CreateAmendAnnualSubmissionControllerSpec
+class CreateAmendCumulativePeriodSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockCreateAmendAnnualSubmissionService
-    with MockCreateAmendAnnualSubmissionValidatorFactory
+    with MockCreateAmendCumulativePeriodSummaryService
+    with MockCreateAmendCumulativePeriodSummaryValidatorFactory
+    with MockHateoasFactory
     with MockAuditService
-    with Def1_CreateAmendAnnualSubmissionFixture {
+    with CumulativePeriodSummaryFixture {
 
   private val businessId: String   = "XAIS12345678910"
-  private val taxYear: String      = "2019-20"
+  private val taxYear: String      = "2025-26"
   override val apiVersion: Version = Version3
 
-  private val requestJson = createAmendAnnualSubmissionRequestBodyMtdJson(None, None, None)
-
-  private val requestBody = Def1_CreateAmendAnnualSubmissionRequestBody(None, None, None)
+  private val requestBody: Def1_CreateAmendCumulativePeriodSummaryRequestBody =
+    requestMtdBodyJson.as[Def1_CreateAmendCumulativePeriodSummaryRequestBody]
 
   private val requestData =
-    Def1_CreateAmendAnnualSubmissionRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
+    Def1_CreateAmendCumulativePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
-    "return a successful response with status 204 (No Content)" when {
+    "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockedCreateAmendAnnualSubmissionService
-          .createAmendAnnualSubmission(requestData)
+        MockedCreateAmendCumulativePeriodSummaryService
+          .createAmendCumulativePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(
-          expectedStatus = NO_CONTENT,
-          maybeAuditRequestBody = Some(requestJson),
+          expectedStatus = OK,
+          maybeAuditRequestBody = Some(requestMtdBodyJson),
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None
         )
@@ -79,8 +83,8 @@ class CreateAmendAnnualSubmissionControllerSpec
       "the service returns an error" in new Test {
         willUseValidator(returningSuccess(requestData))
 
-        MockedCreateAmendAnnualSubmissionService
-          .createAmendAnnualSubmission(requestData)
+        MockedCreateAmendCumulativePeriodSummaryService
+          .createAmendCumulativePeriodSummary(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
         runErrorTest(RuleTaxYearNotSupportedError)
@@ -90,11 +94,11 @@ class CreateAmendAnnualSubmissionControllerSpec
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new CreateAmendAnnualSubmissionController(
+    val controller = new CreateAmendCumulativePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      validatorFactory = mockAmendAnnualSubmissionValidatorFactory,
-      service = mockAmendAnnualSubmissionService,
+      validatorFactory = mockAmendCumulativePeriodSummaryValidatorFactory,
+      service = mockAmendCumulativePeriodSummaryService,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -106,12 +110,12 @@ class CreateAmendAnnualSubmissionControllerSpec
 
     MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakePostRequest(requestJson))
+    protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakePostRequest(requestMtdBodyJson))
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
-        auditType = "UpdateAnnualEmployment",
-        transactionName = "self-employment-annual-summary-update",
+        auditType = "UpdateCumulativeEmployment",
+        transactionName = "self-employment-cumulative-summary-update",
         detail = GenericAuditDetail(
           versionNumber = apiVersion.name,
           userType = "Individual",

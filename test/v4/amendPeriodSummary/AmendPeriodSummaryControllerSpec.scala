@@ -50,7 +50,7 @@ class AmendPeriodSummaryControllerSpec
   override val apiVersion: Version = Version3
 
   "handleRequest" should {
-    "return a successful response with status 200 (OK)" when {
+    "return a successful response with status 204 (No Content)" when {
       "given a valid non-TYS request" in new PreTysTest {
         willUseValidator(returningSuccess(requestData))
 
@@ -59,7 +59,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(
-          expectedStatus = OK,
+          expectedStatus = NO_CONTENT,
           maybeAuditRequestBody = Some(requestBodyJson),
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None
@@ -74,7 +74,7 @@ class AmendPeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(
-          expectedStatus = OK,
+          expectedStatus = NO_CONTENT,
           maybeAuditRequestBody = Some(requestBodyJson),
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None
@@ -154,7 +154,7 @@ class AmendPeriodSummaryControllerSpec
       Def1_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def1_AmendPeriodSummaryBody)
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, taxYear)(fakePostRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, taxYear, periodId)(fakePostRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super
@@ -181,7 +181,7 @@ class AmendPeriodSummaryControllerSpec
       Def2_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), parsedTaxYear, def2_AmendPeriodSummaryBody)
 
     protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, taxYear)(fakePostRequest(requestBodyJson))
+      controller.handleRequest(validNino, businessId, taxYear, periodId)(fakePostRequest(requestBodyJson))
 
     override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       super

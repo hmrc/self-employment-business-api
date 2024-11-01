@@ -36,7 +36,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
 
   "The V4 Amend Period Summary endpoint" should {
 
-    "return a 200 status code" when {
+    "return a 204 status code" when {
 
       "given a valid request for a non-tys tax year" in new Test {
 
@@ -50,7 +50,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
@@ -158,7 +158,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
     val to                 = "2020-01-01"
     val taxYear            = "2019-20"
 
-    def mtdUri: String        = s"/$nino/$businessId/period/$periodId/$taxYear"
+    def mtdUri: String        = s"/$nino/$businessId/period/$taxYear/$periodId"
     def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
 
     def setupStubs(): StubMapping

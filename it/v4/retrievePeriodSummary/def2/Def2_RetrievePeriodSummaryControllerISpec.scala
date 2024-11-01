@@ -286,7 +286,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def setupStubs(): StubMapping
 
-    def uri: String = s"/$nino/$businessId/period/$periodId/$mtdTaxYear"
+    def uri: String = s"/$nino/$businessId/period/$mtdTaxYear/$periodId"
 
     def errorBody(code: String): String =
       s"""
