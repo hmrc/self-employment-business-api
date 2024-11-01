@@ -1,4 +1,4 @@
-summary: Retrieve a Self-Employment Period Summary
+summary: Retrieve a Self-Employment Cumulative Period Summary
 description: |
   This endpoint enables you to retrieve the periodic income and expenses for a self employment business that occurred between two dates.
   A National Insurance number, tax year and business ID are required. Please note that this endpoint is only available for tax years starting from 2025-26.

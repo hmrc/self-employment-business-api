@@ -88,6 +88,23 @@ responses:
             $ref: './common/errors.yaml#/components/examples/invalidTaxYearParameter'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          RULE_ADVANCE_SUBMISSION_REQUIRES_PERIOD_END_DATE:
+            $ref: './common/errors.yaml#/components/examples/ruleAdvanceSubmissionRequiresPeriodEndDate'
+          RULE_SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS:
+            $ref: './common/errors.yaml#/components/examples/ruleSubmissionEndDateCannotMoveBackwards'
+          RULE_START_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE:
+            $ref: './common/errors.yaml#/components/examples/ruleStartDateNotAlignedWithReportingType'
+          RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE:
+            $ref: './common/errors.yaml#/components/examples/ruleEndDateNotAlignedWithReportingType'
+          RULE_MISSING_SUBMISSION_DATES:
+            $ref: './common/errors.yaml#/components/examples/ruleMissingSubmissionDates'
+          RULE_START_AND_END_DATE_NOT_ALLOWED:
+            $ref: './common/errors.yaml#/components/examples/ruleStartAndEndDateNotAllowed'
+          RULE_OUTSIDE_AMENDMENT_WINDOW:
+            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
+          RULE_EARLY_DATA_SUBMISSION_NOT_ACCEPTED:
+            $ref: './common/errors.yaml#/components/examples/ruleEarlyDataSubmissionNotAccepted'
+
 
   "404":
     description: Not Found
