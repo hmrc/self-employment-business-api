@@ -39,8 +39,8 @@ requestBody:
     application/json:
       schema:
         oneOf:
-          - $ref: './schemas/def1/request.json'
-          - $ref: './schemas/def2/request.json'
+          - $ref: './schemas/amendPeriodSummary/def1/request.json'
+          - $ref: './schemas/amendPeriodSummary/def2/request.json'
       examples:
         "Non-consolidated request for TY 2023-24 onwards":
           value:
@@ -127,4 +127,4 @@ responses:
           $ref: './schemas/error-response.yaml'
         examples:
           MATCHING_RESOURCE_NOT_FOUND:
-            $ref: './common/errors.yaml#/components/examples/notFoundEmployments'
+            $ref: './common/errors.yaml#/components/examples/notFound'
