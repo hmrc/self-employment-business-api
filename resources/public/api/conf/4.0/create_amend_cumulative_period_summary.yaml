@@ -18,9 +18,8 @@ description: |
   | END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE    | Simulates the scenario where End date does not align to the reporting type.                                     |
   | MISSING_SUBMISSION_DATES                    | Simulates the scenario where Submissoin start/end date not provided.                                            |
   | START_AND_END_DATE_NOT_ALLOWED              | Simulates the scenario where Start/End Date not accepted for annual/latent submission.                          |
-  | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simultes the scenario where individuals cannot submit data more than 10 days before end of Period.              |
-  | OUTSIDE_AMMENDMENT_WINDOW                   | Simulates the scenario where request cannot be completed as it is outside the amendment window.                 | 
-  | ALLOWANCE_NOT_SUPPORTED                     | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year. |
+  | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simulates the scenario where individuals cannot submit data more than 10 days before end of Period.              |
+  | OUTSIDE_AMENDMENT_WINDOW                   | Simulates the scenario where request cannot be completed as it is outside the amendment window.                 |
 
 tags:
   - Self-Employment Cumulative Submission
@@ -88,6 +87,25 @@ responses:
             $ref: './common/errors.yaml#/components/examples/invalidTaxYearParameter'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          RULE_ADVANCE_SUBMISSION_REQUIRES_PERIOD_END_DATE:
+            $ref: './common/errors.yaml#/components/examples/ruleAdvanceSubmissionRequiresPeriodEndDate'
+          RULE_SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS:
+            $ref: './common/errors.yaml#/components/examples/ruleSubmissionEndDateCannotMoveBackwards'
+          RULE_START_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE:
+            $ref: './common/errors.yaml#/components/examples/ruleStartDateNotAlignedWithReportingType'
+          RULE_START_DATE_NOT_ALIGNED_TO_COMMENCEMENT_DATE:
+            $ref: './common/errors.yaml#/components/examples/ruleStartDateNotAlignedToCommencementDate'
+          RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE:
+            $ref: './common/errors.yaml#/components/examples/ruleEndDateNotAlignedWithReportingType'
+          RULE_MISSING_SUBMISSION_DATES:
+            $ref: './common/errors.yaml#/components/examples/ruleMissingSubmissionDates'
+          RULE_START_AND_END_DATE_NOT_ALLOWED:
+            $ref: './common/errors.yaml#/components/examples/ruleStartAndEndDateNotAllowed'
+          RULE_OUTSIDE_AMENDMENT_WINDOW:
+            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
+          RULE_EARLY_DATA_SUBMISSION_NOT_ACCEPTED:
+            $ref: './common/errors.yaml#/components/examples/ruleEarlyDataSubmissionNotAccepted'
+
 
   "404":
     description: Not Found
