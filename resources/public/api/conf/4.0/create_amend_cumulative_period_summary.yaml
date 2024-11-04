@@ -18,9 +18,8 @@ description: |
   | END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE    | Simulates the scenario where End date does not align to the reporting type.                                     |
   | MISSING_SUBMISSION_DATES                    | Simulates the scenario where Submissoin start/end date not provided.                                            |
   | START_AND_END_DATE_NOT_ALLOWED              | Simulates the scenario where Start/End Date not accepted for annual/latent submission.                          |
-  | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simultes the scenario where individuals cannot submit data more than 10 days before end of Period.              |
-  | OUTSIDE_AMMENDMENT_WINDOW                   | Simulates the scenario where request cannot be completed as it is outside the amendment window.                 | 
-  | ALLOWANCE_NOT_SUPPORTED                     | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year. |
+  | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simulates the scenario where individuals cannot submit data more than 10 days before end of Period.              |
+  | OUTSIDE_AMENDMENT_WINDOW                   | Simulates the scenario where request cannot be completed as it is outside the amendment window.                 |
 
 tags:
   - Self-Employment Cumulative Submission
