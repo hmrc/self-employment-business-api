@@ -16,12 +16,17 @@
 
 package v4.retrieveAnnualSubmission
 
+import cats.data.Validated
+import cats.data.Validated.Valid
+import config.SeBusinessConfig
 import play.api.libs.json.Reads
-import shared.controllers.validators.resolvers.ResolveTaxYear
+import shared.controllers.validators.resolvers.ResolveTaxYearMinimum
 import shared.models.domain.TaxYear
+import shared.models.errors.MtdError
 import shared.schema.DownstreamReadable
 import v4.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v4.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
+import v4.retrieveAnnualSubmission.def3.model.response.Def3_RetrieveAnnualSubmissionResponse
 import v4.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.math.Ordered.orderingToOrdered
@@ -40,16 +45,20 @@ object RetrieveAnnualSubmissionSchema {
     val connectorReads: Reads[DownstreamResp] = Def2_RetrieveAnnualSubmissionResponse.reads
   }
 
-  private val latestSchema = Def2
+  case object Def3 extends RetrieveAnnualSubmissionSchema {
+    type DownstreamResp = Def3_RetrieveAnnualSubmissionResponse
+    val connectorReads: Reads[DownstreamResp] = Def3_RetrieveAnnualSubmissionResponse.reads
+  }
 
-  def schemaFor(taxYear: String): RetrieveAnnualSubmissionSchema =
-    ResolveTaxYear(taxYear).toOption
-      .map(schemaFor)
-      .getOrElse(latestSchema)
+  private val resolveTaxYear =
+    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
-  def schemaFor(taxYear: TaxYear): RetrieveAnnualSubmissionSchema =
-    if (taxYear <= TaxYear.starting(2023)) Def1
-    else if (taxYear == TaxYear.starting(2024)) Def2
-    else latestSchema
+  def schemaFor(taxYear: String): Validated[Seq[MtdError], RetrieveAnnualSubmissionSchema] =
+    resolveTaxYear(taxYear) andThen schemaFor
+
+  def schemaFor(taxYear: TaxYear): Validated[Seq[MtdError], RetrieveAnnualSubmissionSchema] =
+    if (taxYear >= TaxYear.fromMtd("2025-26")) Valid(Def3)
+    else if (taxYear == TaxYear.fromMtd("2024-25")) Valid(Def2)
+    else Valid(Def1)
 
 }

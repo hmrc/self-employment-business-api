@@ -18,9 +18,8 @@ package v4.retrieveAnnualSubmission.def2
 
 import cats.data.Validated
 import cats.implicits._
-import config.SeBusinessConfig
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
 import shared.models.errors.MtdError
 import v4.retrieveAnnualSubmission.def2.model.request.Def2_RetrieveAnnualSubmissionRequestData
 import v4.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
@@ -28,14 +27,11 @@ import v4.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequest
 class Def2_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String)
     extends Validator[RetrieveAnnualSubmissionRequestData] {
 
-  private val resolveTaxYear =
-    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
-
   def validate: Validated[Seq[MtdError], RetrieveAnnualSubmissionRequestData] =
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
-      resolveTaxYear(taxYear)
+      ResolveTaxYear(taxYear)
     ).mapN(Def2_RetrieveAnnualSubmissionRequestData)
 
 }

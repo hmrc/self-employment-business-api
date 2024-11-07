@@ -17,18 +17,20 @@
 package v4.retrieveAnnualSubmission.model.response
 
 import config.SeBusinessFeatureSwitches
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.OWrites
 import shared.utils.JsonWritesUtil
 import v4.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v4.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
+import v4.retrieveAnnualSubmission.def3.model.response.Def3_RetrieveAnnualSubmissionResponse
 
 trait RetrieveAnnualSubmissionResponse
 
 object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
 
   implicit def writes(implicit seBusinessFeatureSwitches: SeBusinessFeatureSwitches): OWrites[RetrieveAnnualSubmissionResponse] = writesFrom {
-    case response: Def1_RetrieveAnnualSubmissionResponse => Json.toJsObject(response)
-    case response: Def2_RetrieveAnnualSubmissionResponse => Json.toJsObject(response)
+    case def1: Def1_RetrieveAnnualSubmissionResponse => implicitly[OWrites[Def1_RetrieveAnnualSubmissionResponse]].writes(def1)
+    case def2: Def2_RetrieveAnnualSubmissionResponse => implicitly[OWrites[Def2_RetrieveAnnualSubmissionResponse]].writes(def2)
+    case def3: Def3_RetrieveAnnualSubmissionResponse => implicitly[OWrites[Def3_RetrieveAnnualSubmissionResponse]].writes(def3)
   }
 
 }

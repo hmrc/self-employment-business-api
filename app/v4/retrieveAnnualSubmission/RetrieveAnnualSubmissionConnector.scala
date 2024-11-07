@@ -33,16 +33,20 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
   def retrieveAnnualSubmission(request: RetrieveAnnualSubmissionRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
+      correlationId: String
+  ): Future[DownstreamOutcome[RetrieveAnnualSubmissionResponse]] = {
 
     import request._
     import schema._
 
     val downstreamUri: DownstreamUri[DownstreamResp] =
-      if (taxYear.useTaxYearSpecificApi)
-        TaxYearSpecificIfsUri(s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
-      else
+      if (taxYear.useTaxYearSpecificApi) {
+        TaxYearSpecificIfsUri(
+          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+        )
+      } else {
         IfsUri(s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
+      }
 
     get(downstreamUri)
   }

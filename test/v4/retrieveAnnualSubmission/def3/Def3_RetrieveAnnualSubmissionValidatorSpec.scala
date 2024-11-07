@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def1
+package v4.retrieveAnnualSubmission.def3
 
-import config.MockSeBusinessConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
-import v4.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v4.retrieveAnnualSubmission.def3.model.request.Def3_RetrieveAnnualSubmissionRequestData
 import v4.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBusinessConfig {
+class Def3_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
 
   private implicit val correlationId: String = "1234"
 
@@ -36,7 +35,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
   private def validator(nino: String, businessId: String, taxYear: String) =
-    new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
+    new Def3_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
 
   "validator" should {
     "return the parsed domain object" when {
@@ -44,7 +43,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Right(Def1_RetrieveAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear))
+        result shouldBe Right(Def3_RetrieveAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear))
       }
     }
 

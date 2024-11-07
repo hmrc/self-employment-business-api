@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def1
+package v4.retrieveAnnualSubmission.def3
 
 import cats.data.Validated
 import cats.implicits._
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
 import shared.models.errors.MtdError
-import v4.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
+import v4.retrieveAnnualSubmission.def3.model.request.Def3_RetrieveAnnualSubmissionRequestData
 import v4.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-class Def1_RetrieveAnnualSubmissionValidator(
-    nino: String,
-    businessId: String,
-    taxYear: String
-) extends Validator[RetrieveAnnualSubmissionRequestData] {
+class Def3_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, taxYear: String)
+    extends Validator[RetrieveAnnualSubmissionRequestData] {
 
   def validate: Validated[Seq[MtdError], RetrieveAnnualSubmissionRequestData] =
     (
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolveTaxYear(taxYear)
-    ).mapN(Def1_RetrieveAnnualSubmissionRequestData)
+    ).mapN(Def3_RetrieveAnnualSubmissionRequestData)
 
 }
