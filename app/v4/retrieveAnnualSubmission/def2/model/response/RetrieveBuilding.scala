@@ -19,15 +19,15 @@ package v4.retrieveAnnualSubmission.def2.model.response
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Retrieve_Building(name: Option[String], number: Option[String], postcode: String)
+case class RetrieveBuilding(name: Option[String], number: Option[String], postcode: String)
 
-object Retrieve_Building {
-  implicit val writes: OWrites[Retrieve_Building] = Json.writes[Retrieve_Building]
+object RetrieveBuilding {
+  implicit val writes: OWrites[RetrieveBuilding] = Json.writes[RetrieveBuilding]
 
-  implicit val reads: Reads[Retrieve_Building] = (
+  implicit val reads: Reads[RetrieveBuilding] = (
     (JsPath \ "name").readNullable[String] and
       (JsPath \ "number").readNullable[String] and
       (JsPath \ "postCode").read[String]
-  )(Retrieve_Building.apply _)
+  )(RetrieveBuilding.apply _)
 
 }

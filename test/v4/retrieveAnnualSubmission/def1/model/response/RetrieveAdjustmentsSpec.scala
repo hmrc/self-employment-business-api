@@ -19,10 +19,10 @@ package v4.retrieveAnnualSubmission.def1.model.response
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
 
-class Retrieve_AdjustmentsSpec extends UnitSpec {
+class RetrieveAdjustmentsSpec extends UnitSpec {
 
-  val adjustments: Retrieve_Adjustments =
-    Retrieve_Adjustments(
+  val adjustments: RetrieveAdjustments =
+    RetrieveAdjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
       overlapReliefUsed = Some(3.12),
@@ -50,7 +50,7 @@ class Retrieve_AdjustmentsSpec extends UnitSpec {
              |  "goodsAndServicesOwnUse": 9.12
              |}
              |""".stripMargin)
-          .as[Retrieve_Adjustments]
+          .as[RetrieveAdjustments]
 
         result shouldBe adjustments
       }

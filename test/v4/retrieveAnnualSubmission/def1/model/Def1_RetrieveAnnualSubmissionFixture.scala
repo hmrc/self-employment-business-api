@@ -22,23 +22,23 @@ import v4.retrieveAnnualSubmission.def1.model.response._
 
 trait Def1_RetrieveAnnualSubmissionFixture {
 
-  val structuredBuildingAllowance: Retrieve_StructuredBuildingAllowance =
-    Retrieve_StructuredBuildingAllowance(
+  val structuredBuildingAllowance: RetrieveStructuredBuildingAllowance =
+    RetrieveStructuredBuildingAllowance(
       3000.30,
       Some(
-        Retrieve_FirstYear(
+        RetrieveFirstYear(
           "2020-01-01",
           3000.40
         )),
-      Retrieve_Building(
+      RetrieveBuilding(
         Some("house name"),
         Some("house number"),
         "GF49JH"
       )
     )
 
-  val buildingMtdModel: Retrieve_Building =
-    Retrieve_Building(
+  val buildingMtdModel: RetrieveBuilding =
+    RetrieveBuilding(
       Some("house name"),
       Some("house number"),
       "GF4 9JH"
@@ -90,8 +90,8 @@ trait Def1_RetrieveAnnualSubmissionFixture {
       |}
       |""".stripMargin)
 
-  val adjustments: Retrieve_Adjustments =
-    Retrieve_Adjustments(
+  val adjustments: RetrieveAdjustments =
+    RetrieveAdjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
       overlapReliefUsed = Some(3.12),
@@ -129,7 +129,7 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val allowances: Retrieve_Allowances = Retrieve_Allowances(
+  val allowances: RetrieveAllowances = RetrieveAllowances(
     annualInvestmentAllowance = Some(1.12),
     capitalAllowanceMainPool = Some(2.12),
     capitalAllowanceSpecialRatePool = Some(3.12),
@@ -177,8 +177,8 @@ trait Def1_RetrieveAnnualSubmissionFixture {
        |}
        |""".stripMargin)
 
-  val nonFinancials: Retrieve_NonFinancials =
-    Retrieve_NonFinancials(
+  val nonFinancials: RetrieveNonFinancials =
+    RetrieveNonFinancials(
       businessDetailsChangedRecently = true,
       class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
     )

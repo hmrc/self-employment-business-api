@@ -20,12 +20,12 @@ import play.api.libs.json.Json
 import shared.utils.UnitSpec
 import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
-class Retrieve_BuildingSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
+class RetrieveBuildingSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
 
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        buildingAllowanceDownstreamJson.as[Retrieve_Building] shouldBe buildingMtdModel
+        buildingAllowanceDownstreamJson.as[RetrieveBuilding] shouldBe buildingMtdModel
       }
     }
   }

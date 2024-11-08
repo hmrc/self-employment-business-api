@@ -24,9 +24,9 @@ import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixtu
 class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockSharedAppConfig with Def1_RetrieveAnnualSubmissionFixture {
 
   private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
-    allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
+    allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None, None)),
+    nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
   )
 
   "reads" should {

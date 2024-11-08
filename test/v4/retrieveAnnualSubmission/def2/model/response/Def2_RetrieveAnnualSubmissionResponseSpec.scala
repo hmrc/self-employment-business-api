@@ -32,9 +32,9 @@ class Def2_RetrieveAnnualSubmissionResponseSpec
   private implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(Configuration.empty)
 
   private val retrieveAnnualSubmissionResponse = Def2_RetrieveAnnualSubmissionResponse(
-    allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
+    allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None, None, None, None)),
+    nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
   )
 
   "reads" should {

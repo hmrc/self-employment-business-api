@@ -48,19 +48,15 @@ class RetrieveAnnualSubmissionSchemaSpec extends UnitSpec with ScalaCheckDrivenP
           schemaFor(taxYear.asMtd) shouldBe Invalid(Seq(RuleTaxYearNotSupportedError))
         }
       }
+
+      "disallow tax years with an invalid range and return RuleTaxYearRangeInvalidError" in {
+        schemaFor("2020-99") shouldBe Invalid(Seq(RuleTaxYearRangeInvalidError))
+      }
     }
 
     "a badly formatted tax year is supplied" must {
-      "the tax year format is invalid" must {
-        "return a TaxYearFormatError" in {
-          schemaFor("NotATaxYear") shouldBe Invalid(Seq(TaxYearFormatError))
-        }
-      }
-
-      "the tax year range is invalid" must {
-        "return a RuleTaxYearRangeInvalidError" in {
-          schemaFor("2020-99") shouldBe Invalid(Seq(RuleTaxYearRangeInvalidError))
-        }
+      "return a TaxYearFormatError" in {
+        schemaFor("NotATaxYear") shouldBe Invalid(Seq(TaxYearFormatError))
       }
     }
   }

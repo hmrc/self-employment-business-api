@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def1
+package v4.retrieveAnnualSubmission.def2
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -22,33 +22,19 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
+import v4.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def1_RetrieveAnnualSubmissionFixture {
+class Def2_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def2_RetrieveAnnualSubmissionFixture {
 
   "calling the V4 retrieve endpoint" should {
 
     "return a 200 status code" when {
-      s"any valid request is made" in new NonTysTest {
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
-        }
-
-        val response: WSResponse = await(request().get())
-        response.status shouldBe OK
-        response.json shouldBe mtdRetrieveResponseJson
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      s"any valid request is made with a TYS tax year" in new TysIfsTest {
+      s"any valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
 
           AuditStub.audit()
@@ -72,7 +58,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
                                 requestTaxYear: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
+          s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -103,7 +89,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -147,8 +133,8 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
 
-    def taxYear: String
-    def downstreamUri: String
+    def taxYear: String       = "2024-25"
+    def downstreamUri: String = s"/income-tax/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
 
     def setupStubs(): StubMapping
 
@@ -161,7 +147,7 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
         )
     }
 
-    def uri: String = s"/$nino/$businessId/annual/$taxYear"
+    private def uri: String = s"/$nino/$businessId/annual/$taxYear"
 
     def errorBody(code: String): String =
       s"""
@@ -171,19 +157,6 @@ class RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with D
          |      }
     """.stripMargin
 
-  }
-
-  private trait TysIfsTest extends Test {
-    def taxYear: String = "2023-24"
-
-    def downstreamUri: String = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
-
-  }
-
-  private trait NonTysTest extends Test {
-    def taxYear: String = "2022-23"
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2023"
   }
 
 }

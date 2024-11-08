@@ -19,10 +19,10 @@ package v4.retrieveAnnualSubmission.def2.model.response
 import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 
-class Retrieve_FirstYearSpec extends UnitSpec {
+class RetrieveFirstYearSpec extends UnitSpec {
 
-  val model: Retrieve_FirstYear =
-    Retrieve_FirstYear(
+  val model: RetrieveFirstYear =
+    RetrieveFirstYear(
       "2020-01-01",
       3000.40
     )
@@ -37,7 +37,7 @@ class Retrieve_FirstYearSpec extends UnitSpec {
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        json.as[Retrieve_FirstYear] shouldBe model
+        json.as[RetrieveFirstYear] shouldBe model
       }
     }
   }

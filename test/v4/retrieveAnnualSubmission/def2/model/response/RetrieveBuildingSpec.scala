@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def1.model.response
+package v4.retrieveAnnualSubmission.def2.model.response
 
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
+import v4.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def1_RetrieveAnnualSubmissionFixture {
+class RetrieveBuildingSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
 
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        val result = structuredBuildingAllowanceDownstreamJson.as[Retrieve_StructuredBuildingAllowance]
-        result shouldBe structuredBuildingAllowance
+        buildingAllowanceDownstreamJson.as[RetrieveBuilding] shouldBe buildingMtdModel
       }
     }
   }
@@ -34,8 +33,7 @@ class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def1_Retrie
   "writes" when {
     "passed a model" should {
       "return Mtd JSON" in {
-        val result = Json.toJson(structuredBuildingAllowance)
-        result shouldBe structuredBuildingAllowanceMtdJson
+        Json.toJson(buildingMtdModel) shouldBe buildingAllowanceMtdJson
       }
     }
   }

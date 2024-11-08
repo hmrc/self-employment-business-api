@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def2.model.response
+package v4.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Retrieve_FirstYear(qualifyingDate: String, qualifyingAmountExpenditure: BigDecimal)
+case class RetrieveFirstYear(qualifyingDate: String, qualifyingAmountExpenditure: BigDecimal)
 
-object Retrieve_FirstYear {
-  implicit val format: OFormat[Retrieve_FirstYear] = Json.format[Retrieve_FirstYear]
+object RetrieveFirstYear {
+  implicit val format: OFormat[RetrieveFirstYear] = Json.format[RetrieveFirstYear]
 }

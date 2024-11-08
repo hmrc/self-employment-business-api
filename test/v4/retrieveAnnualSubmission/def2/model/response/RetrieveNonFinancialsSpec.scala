@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
 import v4.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Retrieve_NonFinancialsSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
+class RetrieveNonFinancialsSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
 
   "reads" should {
     "passed a valid JSON" should {
@@ -33,7 +33,7 @@ class Retrieve_NonFinancialsSpec extends UnitSpec with Def2_RetrieveAnnualSubmis
              |}
              |""".stripMargin)
 
-        requestJson.as[Retrieve_NonFinancials] shouldBe Retrieve_NonFinancials(
+        requestJson.as[RetrieveNonFinancials] shouldBe RetrieveNonFinancials(
           businessDetailsChangedRecently = true,
           class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
         )
@@ -55,7 +55,7 @@ class Retrieve_NonFinancialsSpec extends UnitSpec with Def2_RetrieveAnnualSubmis
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-          Json.toJson(Retrieve_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+          Json.toJson(RetrieveNonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
             Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": true

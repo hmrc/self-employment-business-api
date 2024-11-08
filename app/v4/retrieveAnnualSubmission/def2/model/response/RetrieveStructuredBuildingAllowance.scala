@@ -16,26 +16,17 @@
 
 package v4.retrieveAnnualSubmission.def2.model.response
 
-import play.api.libs.json.Json
-import shared.utils.UnitSpec
-import v4.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
+import play.api.libs.json.{Json, OFormat}
 
-class Retrieve_BuildingSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
+case class RetrieveStructuredBuildingAllowance(
+    amount: BigDecimal,
+    firstYear: Option[RetrieveFirstYear],
+    building: RetrieveBuilding
+)
 
-  "reads" when {
-    "passed a valid JSON" should {
-      "return the model" in {
-        buildingAllowanceDownstreamJson.as[Retrieve_Building] shouldBe buildingMtdModel
-      }
-    }
-  }
+object RetrieveStructuredBuildingAllowance {
 
-  "writes" when {
-    "passed a model" should {
-      "return Mtd JSON" in {
-        Json.toJson(buildingMtdModel) shouldBe buildingAllowanceMtdJson
-      }
-    }
-  }
+  implicit val format: OFormat[RetrieveStructuredBuildingAllowance] =
+    Json.format[RetrieveStructuredBuildingAllowance]
 
 }

@@ -14,28 +14,38 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def2.model.response
+package v4.retrieveAnnualSubmission.def1.model.response
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import shared.utils.UnitSpec
-import v4.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Retrieve_StructuredBuildingAllowanceSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
+class RetrieveFirstYearSpec extends UnitSpec {
+
+  val model: RetrieveFirstYear =
+    RetrieveFirstYear(
+      "2020-01-01",
+      3000.40
+    )
+
+  val json: JsValue = Json.parse("""
+      |{
+      |  "qualifyingDate": "2020-01-01",
+      |  "qualifyingAmountExpenditure": 3000.40
+      |}
+      |""".stripMargin)
 
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        val result = structuredBuildingAllowanceDownstreamJson.as[Retrieve_StructuredBuildingAllowance]
-        result shouldBe structuredBuildingAllowance
+        json.as[RetrieveFirstYear] shouldBe model
       }
     }
   }
 
   "writes" when {
     "passed a model" should {
-      "return Mtd JSON" in {
-        val result = Json.toJson(structuredBuildingAllowance)
-        result shouldBe structuredBuildingAllowanceMtdJson
+      "return downstream JSON" in {
+        Json.toJson(model) shouldBe json
       }
     }
   }

@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def2.model.response
+package v4.retrieveAnnualSubmission.def1.model.response
 
 import api.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class Retrieve_NonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
+case class RetrieveNonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
 
-object Retrieve_NonFinancials {
-  implicit val writes: OWrites[Retrieve_NonFinancials] = Json.writes[Retrieve_NonFinancials]
+object RetrieveNonFinancials {
+  implicit val writes: OWrites[RetrieveNonFinancials] = Json.writes[RetrieveNonFinancials]
 
-  implicit val reads: Reads[Retrieve_NonFinancials] = (
+  implicit val reads: Reads[RetrieveNonFinancials] = (
     (JsPath \ "businessDetailsChangedRecently").read[Boolean] and
       (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd))
-  )(Retrieve_NonFinancials.apply _)
+  )(RetrieveNonFinancials.apply _)
 
 }

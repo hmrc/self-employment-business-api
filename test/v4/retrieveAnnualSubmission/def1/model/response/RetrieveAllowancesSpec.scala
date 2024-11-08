@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v4.retrieveAnnualSubmission.def2.model.response
+package v4.retrieveAnnualSubmission.def1.model.response
 
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
 
-class Retrieve_AllowancesSpec extends UnitSpec {
+class RetrieveAllowancesSpec extends UnitSpec {
 
-  val model: Retrieve_Allowances = Retrieve_Allowances(
+  val model: RetrieveAllowances = RetrieveAllowances(
     annualInvestmentAllowance = Some(1.12),
     capitalAllowanceMainPool = Some(2.12),
     capitalAllowanceSpecialRatePool = Some(3.12),
@@ -57,7 +57,7 @@ class Retrieve_AllowancesSpec extends UnitSpec {
              |  "enhancedStructuredBuildingAllowance": []
              |}
              |""".stripMargin)
-          .as[Retrieve_Allowances] shouldBe model
+          .as[RetrieveAllowances] shouldBe model
       }
     }
   }

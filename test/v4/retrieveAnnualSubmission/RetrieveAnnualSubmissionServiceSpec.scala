@@ -25,9 +25,9 @@ import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixtu
 import v4.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v4.retrieveAnnualSubmission.def1.model.response.{
   Def1_RetrieveAnnualSubmissionResponse,
-  Retrieve_Adjustments,
-  Retrieve_Allowances,
-  Retrieve_NonFinancials
+  RetrieveAdjustments,
+  RetrieveAllowances,
+  RetrieveNonFinancials
 }
 import v4.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
@@ -41,9 +41,9 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
   override implicit val correlationId: String = "X-123"
 
   val response: RetrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
-    allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(Retrieve_Adjustments(None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(Retrieve_NonFinancials(businessDetailsChangedRecently = true, None))
+    allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None, None)),
+    nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
   )
 
   private val requestData = Def1_RetrieveAnnualSubmissionRequestData(

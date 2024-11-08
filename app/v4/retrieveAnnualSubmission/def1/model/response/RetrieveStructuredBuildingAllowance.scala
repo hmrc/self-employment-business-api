@@ -16,18 +16,17 @@
 
 package v4.retrieveAnnualSubmission.def1.model.response
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
-case class Retrieve_Building(name: Option[String], number: Option[String], postcode: String)
+case class RetrieveStructuredBuildingAllowance(
+    amount: BigDecimal,
+    firstYear: Option[RetrieveFirstYear],
+    building: RetrieveBuilding
+)
 
-object Retrieve_Building {
-  implicit val writes: OWrites[Retrieve_Building] = Json.writes[Retrieve_Building]
+object RetrieveStructuredBuildingAllowance {
 
-  implicit val reads: Reads[Retrieve_Building] = (
-    (JsPath \ "name").readNullable[String] and
-      (JsPath \ "number").readNullable[String] and
-      (JsPath \ "postCode").read[String]
-  )(Retrieve_Building.apply _)
+  implicit val format: OFormat[RetrieveStructuredBuildingAllowance] =
+    Json.format[RetrieveStructuredBuildingAllowance]
 
 }
