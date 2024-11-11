@@ -23,6 +23,8 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
 import v4.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
+import v4.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
+import v4.createAmendAnnualSubmission.def3.Def3_CreateAmendAnnualSubmissionValidator
 import v4.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
 class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSeBusinessFeatureSwitches {
@@ -49,13 +51,33 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
     MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
 
   "validator()" when {
-    "given any tax year" should {
+    "given a tax year before 2024-25" should {
       "return the Validator for schema definition 1" in {
         setupMocks()
         val requestBody = validBody("2019-08-24", "2020-08-24")
         val result: Validator[CreateAmendAnnualSubmissionRequestData] =
           validatorFactory.validator(validNino, validBusinessId, "2022-23", requestBody)
         result shouldBe a[Def1_CreateAmendAnnualSubmissionValidator]
+      }
+    }
+
+    "given the tax year is 2024-25" should {
+      "return the Validator for schema definition 2" in {
+        setupMocks()
+        val requestBody = validBody("2019-08-24", "2020-08-24")
+        val result: Validator[CreateAmendAnnualSubmissionRequestData] =
+          validatorFactory.validator(validNino, validBusinessId, "2024-25", requestBody)
+        result shouldBe a[Def2_CreateAmendAnnualSubmissionValidator]
+      }
+    }
+
+    "given the tax year is after 2024-25" should {
+      "return the Validator for schema definition 3" in {
+        setupMocks()
+        val requestBody = validBody("2019-08-24", "2020-08-24")
+        val result: Validator[CreateAmendAnnualSubmissionRequestData] =
+          validatorFactory.validator(validNino, validBusinessId, "2025-26", requestBody)
+        result shouldBe a[Def3_CreateAmendAnnualSubmissionValidator]
       }
     }
   }

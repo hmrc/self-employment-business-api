@@ -26,7 +26,8 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.createAmendAnnualSubmission.model.request.{
   CreateAmendAnnualSubmissionRequestData,
   Def1_CreateAmendAnnualSubmissionRequestData,
-  Def2_CreateAmendAnnualSubmissionRequestData
+  Def2_CreateAmendAnnualSubmissionRequestData,
+  Def3_CreateAmendAnnualSubmissionRequestData
 }
 
 import javax.inject.{Inject, Singleton}
@@ -50,6 +51,11 @@ class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val 
         put(body, downstreamUri)
       case def2: Def2_CreateAmendAnnualSubmissionRequestData =>
         import def2._
+        val downstreamUri =
+          uriFactory(nino, businessId, taxYear)
+        put(body, downstreamUri)
+      case def3: Def3_CreateAmendAnnualSubmissionRequestData =>
+        import def3._
         val downstreamUri =
           uriFactory(nino, businessId, taxYear)
         put(body, downstreamUri)

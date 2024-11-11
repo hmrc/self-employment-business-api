@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "TY 2024-25",
+  "title": "TY 2025-26 or later",
   "description": "Create and Amend Self-Employment Annual Submission Request",
   "type": "object",
   "properties": {
@@ -110,11 +110,6 @@
           "description": "Claim to capital allowances in respect of all single asset pools. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "example": "500.25"
-        },
-        "electricChargePointAllowance": {
-          "description": "The expenditure incurred on electric charge-point equipment. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
-          "type": "number",
-          "example": "1000.45"
         },
         "zeroEmissionsCarAllowance": {
           "description": "The amount of zero emissions car allowance. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
