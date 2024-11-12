@@ -22,17 +22,17 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 case class Def2_RetrieveAnnualSubmissionResponse(
-    adjustments: Option[Retrieve_Adjustments],
-    allowances: Option[Retrieve_Allowances],
-    nonFinancials: Option[Retrieve_NonFinancials]
+    adjustments: Option[RetrieveAdjustments],
+    allowances: Option[RetrieveAllowances],
+    nonFinancials: Option[RetrieveNonFinancials]
 ) extends RetrieveAnnualSubmissionResponse
 
 object Def2_RetrieveAnnualSubmissionResponse {
 
   implicit val reads: Reads[Def2_RetrieveAnnualSubmissionResponse] = (
-    (JsPath \ "annualAdjustments").readNullable[Retrieve_Adjustments] and
-      (JsPath \ "annualAllowances").readNullable[Retrieve_Allowances] and
-      (JsPath \ "annualNonFinancials").readNullable[Retrieve_NonFinancials]
+    (JsPath \ "annualAdjustments").readNullable[RetrieveAdjustments] and
+      (JsPath \ "annualAllowances").readNullable[RetrieveAllowances] and
+      (JsPath \ "annualNonFinancials").readNullable[RetrieveNonFinancials]
   )(Def2_RetrieveAnnualSubmissionResponse.apply _)
 
   implicit def writes(implicit featureSwitches: SeBusinessFeatureSwitches): OWrites[Def2_RetrieveAnnualSubmissionResponse] =

@@ -82,15 +82,6 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
       }
     }
 
-    "return RuleTaxYearNotSupportedError" when {
-      "an invalid tax year is supplied" in {
-        val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
-          validator(validNino, validBusinessId, "2016-17").validateAndWrapResult()
-
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
-      }
-    }
-
     "return multiple errors" when {
       "request supplied has multiple errors" in {
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] = validator("A12344A", "Baked Beans", "20178").validateAndWrapResult()
