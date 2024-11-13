@@ -24,6 +24,7 @@ import shared.models.domain.TaxYear
 import shared.models.errors.{RuleIncorrectOrEmptyBodyError, TaxYearFormatError}
 import v4.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v4.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
+import v4.createAmendAnnualSubmission.def3.Def3_CreateAmendAnnualSubmissionValidator
 import v4.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
 import javax.inject.{Inject, Singleton}
@@ -46,10 +47,10 @@ class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit featureSwi
       TaxYear.maybeFromMtd(taxYear) match {
         case Some(ty) if ty < def2TaxYearApplicableFrom =>
           new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
-
+        case Some(ty) if ty > def2TaxYearApplicableFrom =>
+          new Def3_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
         case Some(_) =>
           new Def2_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
-
         case None =>
           invalidTaxYearValidator
       }
