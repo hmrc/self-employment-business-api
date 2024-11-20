@@ -12,10 +12,10 @@ description: |
   | ALLOWANCE_NOT_SUPPORTED              | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year.              |
   | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                               |
   | STATEFUL                             | Performs a stateful create or update.                                                                                        |
-  {{#if (enabled 'adjustmentsAdditionalFields')}}| WRONG_TPA_AMOUNT_SUBMITTED           | Simulates the scenario where the Transition Profit Acceleration Amount cannot be submitted without Transition Profit Amount. |{{/if}}
+  | WRONG_TPA_AMOUNT_SUBMITTED           | Simulates the scenario where the Transition Profit Acceleration Amount cannot be submitted without Transition Profit Amount. |
 
 tags:
-   - Self-Employment Annual Submission
+  - Self-Employment Annual Submission
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
@@ -27,8 +27,8 @@ parameters:
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 
 security:
-- User-Restricted:
-  - write:self-assessment
+  - User-Restricted:
+      - write:self-assessment
 
 requestBody:
   content:
@@ -107,10 +107,9 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleAllowanceNotSupported'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
-          {{#if (enabled 'adjustmentsAdditionalFields')}}
-            RULE_WRONG_TPA_AMOUNT_SUBMITTED:
-              $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
-              {{/if}}
+          RULE_WRONG_TPA_AMOUNT_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
+
 
   "403":
     description: Forbidden

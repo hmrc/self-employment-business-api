@@ -52,8 +52,7 @@
           "description": "Value of the normal sale price of goods or stock have been taken out of the business. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "example": "2000.99"
-        }
-        {{#if (enabled 'adjustmentsAdditionalFields')}},
+        },
         "transitionProfitAmount": {
           "description": "{{#unless (releasedInProduction 'adjustmentsAdditionalFields')}}[Test only] {{/unless}}Amount of transition profit arising in this tax year for this income source. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
@@ -64,7 +63,6 @@
           "type": "number",
           "example": "2000.99"
         }
-        {{/if}}
       }
     },
     "allowances": {
