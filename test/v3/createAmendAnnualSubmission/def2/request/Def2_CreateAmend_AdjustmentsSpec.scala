@@ -16,8 +16,6 @@
 
 package v3.createAmendAnnualSubmission.def2.request
 
-import config.SeBusinessFeatureSwitches
-import play.api.Configuration
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
 
@@ -38,84 +36,45 @@ class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
       transitionProfitAccelerationAmount = Some(9.12)
     )
 
-  "reads" when {
+  "reads" should {
     val json = Json
       .parse(s"""{
-           |  "includedNonTaxableProfits": 1.12,
-           |  "basisAdjustment": 2.12,
-           |  "overlapReliefUsed": 3.12,
-           |  "accountingAdjustment": 4.12,
-           |  "averagingAdjustment": 5.12,
-           |  "outstandingBusinessIncome": 6.12,
-           |  "balancingChargeBpra": 7.12,
-           |  "balancingChargeOther": 8.12,
-           |  "goodsAndServicesOwnUse": 9.12,
-           |  "transitionProfitAmount": 9.12,
-           |  "transitionProfitAccelerationAmount": 9.12
-           |}
-           |""".stripMargin)
+                |  "includedNonTaxableProfits": 1.12,
+                |  "basisAdjustment": 2.12,
+                |  "overlapReliefUsed": 3.12,
+                |  "accountingAdjustment": 4.12,
+                |  "averagingAdjustment": 5.12,
+                |  "outstandingBusinessIncome": 6.12,
+                |  "balancingChargeBpra": 7.12,
+                |  "balancingChargeOther": 8.12,
+                |  "goodsAndServicesOwnUse": 9.12,
+                |  "transitionProfitAmount": 9.12,
+                |  "transitionProfitAccelerationAmount": 9.12
+                |}
+                |""".stripMargin)
 
-    "additional fields are switched on" should {
-      "return the full model" in {
-        implicit val featureSwitches: SeBusinessFeatureSwitches =
-          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> true))
-
-        json
-          .as[Def2_CreateAmend_Adjustments] shouldBe model
-      }
-    }
-
-    "additional fields are switched off" should {
-      "return the model without the additional fields" in {
-        implicit val featureSwitches: SeBusinessFeatureSwitches =
-          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> false))
-
-        json
-          .as[Def2_CreateAmend_Adjustments] shouldBe model.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)
-      }
-
-      "ignore ill-typed additional fields" in {
-        implicit val featureSwitches: SeBusinessFeatureSwitches =
-          SeBusinessFeatureSwitches(Configuration("adjustmentsAdditionalFields.enabled" -> false))
-
-        Json
-          .parse(s"""{
-                    |  "includedNonTaxableProfits": 1.12,
-                    |  "basisAdjustment": 2.12,
-                    |  "overlapReliefUsed": 3.12,
-                    |  "accountingAdjustment": 4.12,
-                    |  "averagingAdjustment": 5.12,
-                    |  "outstandingBusinessIncome": 6.12,
-                    |  "balancingChargeBpra": 7.12,
-                    |  "balancingChargeOther": 8.12,
-                    |  "goodsAndServicesOwnUse": 9.12,
-                    |  "transitionProfitAmount": "XXX",
-                    |  "transitionProfitAccelerationAmount": true
-                    |}
-                    |""".stripMargin)
-          .as[Def2_CreateAmend_Adjustments] shouldBe model.copy(transitionProfitAmount = None, transitionProfitAccelerationAmount = None)
-      }
+    "parse valid downstream JSON correctly" in {
+      json
+        .as[Def2_CreateAmend_Adjustments] shouldBe model
     }
   }
 
-  "writes" when {
-    "passed a model" should {
-      "return downstream JSON" in {
-        Json.toJson(model) shouldBe Json.parse(s"""{
-             |  "includedNonTaxableProfits": 1.12,
-             |  "basisAdjustment": 2.12,
-             |  "overlapReliefUsed": 3.12,
-             |  "accountingAdjustment": 4.12,
-             |  "averagingAdjustment": 5.12,
-             |  "outstandingBusinessIncome": 6.12,
-             |  "balancingChargeBpra": 7.12,
-             |  "balancingChargeOther": 8.12,
-             |  "goodsAndServicesOwnUse": 9.12,
-             |  "transitionProfitAmount": 9.12,
-             |  "transitionProfitAccelerationAmount": 9.12
-             |}
-             |""".stripMargin)
-      }
+  "writes" should {
+    "return the full downstream JSON" in {
+      Json.toJson(model) shouldBe Json.parse(s"""{
+                                                |  "includedNonTaxableProfits": 1.12,
+                                                |  "basisAdjustment": 2.12,
+                                                |  "overlapReliefUsed": 3.12,
+                                                |  "accountingAdjustment": 4.12,
+                                                |  "averagingAdjustment": 5.12,
+                                                |  "outstandingBusinessIncome": 6.12,
+                                                |  "balancingChargeBpra": 7.12,
+                                                |  "balancingChargeOther": 8.12,
+                                                |  "goodsAndServicesOwnUse": 9.12,
+                                                |  "transitionProfitAmount": 9.12,
+                                                |  "transitionProfitAccelerationAmount": 9.12
+                                                |}
+                                                |""".stripMargin)
     }
   }
 
