@@ -16,7 +16,7 @@
 
 package v3.createAmendAnnualSubmission.def2.request
 
-import play.api.libs.json.OFormat
+import play.api.libs.json.{Json, OFormat}
 
 case class Def2_CreateAmend_Adjustments(
     includedNonTaxableProfits: Option[BigDecimal],
@@ -33,5 +33,5 @@ case class Def2_CreateAmend_Adjustments(
 )
 
 object Def2_CreateAmend_Adjustments {
-  implicit val format: OFormat[Def2_CreateAmend_Adjustments] = OFormat[Def2_CreateAmend_Adjustments]
+  implicit val format: OFormat[Def2_CreateAmend_Adjustments] = Json.format[Def2_CreateAmend_Adjustments]
 }
