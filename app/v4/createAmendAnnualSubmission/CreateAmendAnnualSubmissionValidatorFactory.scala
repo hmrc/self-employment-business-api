@@ -17,7 +17,6 @@
 package v4.createAmendAnnualSubmission
 
 import api.controllers.validators.common.InvalidResultValidator
-import config.SeBusinessFeatureSwitches
 import play.api.libs.json.{JsObject, JsValue}
 import shared.controllers.validators.Validator
 import shared.models.domain.TaxYear
@@ -31,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 @Singleton
-class CreateAmendAnnualSubmissionValidatorFactory @Inject() (implicit featureSwitches: SeBusinessFeatureSwitches) {
+class CreateAmendAnnualSubmissionValidatorFactory @Inject() {
 
   private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2024-25")
 

@@ -16,8 +16,7 @@
 
 package v3.retrieveAnnualSubmission.def2.model.response
 
-import config.SeBusinessFeatureSwitches
-import play.api.libs.json.{JsObject, Json, Reads, Writes}
+import play.api.libs.json.{Json, OFormat}
 
 case class Retrieve_Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                                 basisAdjustment: Option[BigDecimal],
@@ -32,14 +31,6 @@ case class Retrieve_Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                                 transitionProfitAccelerationAmount: Option[BigDecimal])
 
 object Retrieve_Adjustments {
-  implicit val reads: Reads[Retrieve_Adjustments] = Json.reads
-
-  implicit def writes(implicit featureSwitches: SeBusinessFeatureSwitches): Writes[Retrieve_Adjustments] = Json.writes.transform { json: JsObject =>
-    if (featureSwitches.isAdjustmentsAdditionalFieldsEnabled)
-      json
-    else
-      json - "transitionProfitAmount" - "transitionProfitAccelerationAmount"
-
-  }
+  implicit val format: OFormat[Retrieve_Adjustments] = Json.format[Retrieve_Adjustments]
 
 }

@@ -20,7 +20,7 @@ import api.models.domain.ex.MtdNicExemption
 import api.models.errors.Class4ExemptionReasonFormatError
 import cats.data.Validated
 import cats.implicits._
-import config.{SeBusinessConfig, SeBusinessFeatureSwitches}
+import config.SeBusinessConfig
 import play.api.libs.json._
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
@@ -33,8 +33,7 @@ class Def3_CreateAmendAnnualSubmissionValidator(
     businessId: String,
     taxYear: String,
     body: JsValue
-)(implicit featureSwitches: SeBusinessFeatureSwitches)
-    extends Validator[CreateAmendAnnualSubmissionRequestData] {
+) extends Validator[CreateAmendAnnualSubmissionRequestData] {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[request.Def3_CreateAmendAnnualSubmissionRequestBody]()
 

@@ -16,7 +16,6 @@
 
 package v4.retrieveAnnualSubmission.def3.model.response
 
-import config.SeBusinessFeatureSwitches
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
@@ -35,7 +34,7 @@ object Def3_RetrieveAnnualSubmissionResponse {
       (JsPath \ "annualNonFinancials").readNullable[RetrieveNonFinancials]
   )(Def3_RetrieveAnnualSubmissionResponse.apply _)
 
-  implicit def writes(implicit featureSwitches: SeBusinessFeatureSwitches): OWrites[Def3_RetrieveAnnualSubmissionResponse] =
+  implicit val writes: OWrites[Def3_RetrieveAnnualSubmissionResponse] =
     Json.writes[Def3_RetrieveAnnualSubmissionResponse]
 
 }
