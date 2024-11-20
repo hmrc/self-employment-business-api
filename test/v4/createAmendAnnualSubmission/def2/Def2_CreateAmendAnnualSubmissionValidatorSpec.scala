@@ -23,8 +23,6 @@ import api.models.errors.{
   RuleBuildingNameNumberError,
   RuleWrongTpaAmountSubmittedError
 }
-import config.{MockSeBusinessFeatureSwitches, SeBusinessFeatureSwitches}
-import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
@@ -35,11 +33,7 @@ import v4.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactor
 import v4.createAmendAnnualSubmission.def2.request._
 import v4.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
 
-class Def2_CreateAmendAnnualSubmissionValidatorSpec
-    extends UnitSpec
-    with JsonErrorValidators
-    with MockSharedAppConfig
-    with MockSeBusinessFeatureSwitches {
+class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -174,8 +168,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec
   private val parsedStructuredBuildingAllowance =
     Def2_CreateAmend_StructuredBuildingAllowance(amount = 1.23, firstYear = Some(parsedFirstYear), building = parsedBuilding)
 
-  private implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(Configuration.empty)
-
   private val parsedAllowances = Def2_CreateAmend_Allowances(
     annualInvestmentAllowance = Some(200.12),
     businessPremisesRenovationAllowance = Some(200.12),
@@ -206,13 +198,9 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec
   private def validator(nino: String, businessId: String, taxYear: String, body: JsValue) =
     validatorFactory.validator(nino, businessId, taxYear, body)
 
-  private def setupMocks(): Unit =
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("adjustmentsAdditionalFields.enabled" -> true)).anyNumberOfTimes()
-
   "validate()" should {
     "return the parsed domain object" when {
       "a valid request is made" in {
-        setupMocks()
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
 
@@ -222,7 +210,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec
       }
 
       "a minimal adjustments request is supplied" in {
-        setupMocks()
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(
             validNino,
@@ -253,7 +240,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec
       }
 
       "only adjustments is supplied" in {
-        setupMocks()
         val requestBody: JsValue = validRequestBody().removeProperty("/allowances").removeProperty("/nonFinancials")
 
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
@@ -300,7 +286,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec
     }
     "return a path parameter error" when {
       "an invalid nino is supplied" in {
-        setupMocks()
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator("A12344A", validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
 

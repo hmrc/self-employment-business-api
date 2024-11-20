@@ -16,13 +16,10 @@
 
 package v4.createAmendAnnualSubmission.def3.request
 
-import config.SeBusinessFeatureSwitches
-import play.api.Configuration
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
 
 class Def3_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def3_CreateAmendAnnualSubmissionFixture {
-  private implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(Configuration.empty)
 
   val model: Def3_CreateAmendAnnualSubmissionRequestBody = Def3_CreateAmendAnnualSubmissionRequestBody(
     allowances = Some(Def3_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None, None)),
