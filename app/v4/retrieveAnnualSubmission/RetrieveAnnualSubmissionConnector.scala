@@ -17,7 +17,7 @@
 package v4.retrieveAnnualSubmission
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{IfsUri, IfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}

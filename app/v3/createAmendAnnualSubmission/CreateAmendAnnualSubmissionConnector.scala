@@ -16,7 +16,7 @@
 
 package v3.createAmendAnnualSubmission
 
-import shared.connectors.DownstreamUri.{IfsUri, IfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
