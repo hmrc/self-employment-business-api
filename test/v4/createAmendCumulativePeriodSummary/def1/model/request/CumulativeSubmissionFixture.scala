@@ -290,75 +290,75 @@ trait CumulativePeriodSummaryFixture {
   val requestDownstreamBodyJson: JsValue = Json.parse(
     """
       |{
-      |   "from": "2025-08-24",
-      |   "to": "2026-08-24",
-      |   "financials": {
-      |      "incomes": {
-      |         "turnover": 1000.99,
-      |         "other": 2000.99,
-      |         "taxTakenOffTradingIncome": 3000.99
+      |   "selfEmploymentPeriodDates":{
+      |      "periodStartDate":"2025-08-24",
+      |      "periodEndDate":"2026-08-24"
+      |   },
+      |   "selfEmploymentPeriodIncome":{
+      |      "turnover":1000.99,
+      |      "other":2000.99,
+      |      "taxTakenOffTradingIncome":3000.99
+      |   },
+      |   "selfEmploymentPeriodDeductions":{
+      |      "costOfGoods":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
       |      },
-      |      "deductions": {
-      |         "costOfGoods": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |         },
-      |         "constructionIndustryScheme": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |         },
-      |         "staffCosts": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |         },
-      |         "travelCosts": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |         },
-      |         "premisesRunningCosts": {
-      |            "amount": -99999.99,
-      |            "disallowableAmount": -1000.99
-      |         },
-      |         "maintenanceCosts": {
-      |            "amount": -1000.99,
-      |            "disallowableAmount": -999.99
-      |         },
-      |         "adminCosts": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |         },
-      |        "businessEntertainmentCosts": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |        },
-      |         "advertisingCosts": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |         },
-      |         "interest": {
-      |            "amount": -1000.99,
-      |            "disallowableAmount": -1000.99
-      |         },
-      |         "financialCharges": {
-      |            "amount": -1000.99,
-      |            "disallowableAmount": -9999.99
-      |         },
-      |         "badDebt": {
-      |            "amount": -1000.99,
-      |            "disallowableAmount": 1000.99
-      |         },
-      |         "professionalFees": {
-      |            "amount": -99999999999.99,
-      |            "disallowableAmount": 9999999999.99
-      |         },
-      |         "depreciation": {
-      |            "amount": -1000.99,
-      |            "disallowableAmount": -99999999999.99
-      |         },
-      |         "other": {
-      |            "amount": 1000.99,
-      |            "disallowableAmount": 1000.99
-      |         }
+      |      "constructionIndustryScheme":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
+      |      },
+      |      "staffCosts":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
+      |      },
+      |      "travelCosts":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
+      |      },
+      |      "premisesRunningCosts":{
+      |         "amount":-99999.99,
+      |         "disallowableAmount":-1000.99
+      |      },
+      |      "maintenanceCosts":{
+      |         "amount":-1000.99,
+      |         "disallowableAmount":-999.99
+      |      },
+      |      "adminCosts":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
+      |      },
+      |      "businessEntertainmentCosts":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
+      |      },
+      |      "advertisingCosts":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
+      |      },
+      |      "interest":{
+      |         "amount":-1000.99,
+      |         "disallowableAmount":-1000.99
+      |      },
+      |      "financialCharges":{
+      |         "amount":-1000.99,
+      |         "disallowableAmount":-9999.99
+      |      },
+      |      "badDebt":{
+      |         "amount":-1000.99,
+      |         "disallowableAmount":1000.99
+      |      },
+      |      "professionalFees":{
+      |         "amount":-99999999999.99,
+      |         "disallowableAmount":9999999999.99
+      |      },
+      |      "depreciation":{
+      |         "amount":-1000.99,
+      |         "disallowableAmount":-99999999999.99
+      |      },
+      |      "other":{
+      |         "amount":1000.99,
+      |         "disallowableAmount":1000.99
       |      }
       |   }
       |}

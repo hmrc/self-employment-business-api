@@ -52,11 +52,10 @@ object Def1_CreateAmendCumulativePeriodSummaryRequestBody {
   implicit val reads: Reads[Def1_CreateAmendCumulativePeriodSummaryRequestBody] = Json.reads[Def1_CreateAmendCumulativePeriodSummaryRequestBody]
 
   implicit val writes: OWrites[Def1_CreateAmendCumulativePeriodSummaryRequestBody] = (
-    JsPath.write[PeriodDates] and
-      (JsPath \ "financials" \ "incomes").writeNullable[PeriodIncome]
-      and
-      (JsPath \ "financials" \ "deductions").writeNullable[PeriodExpenses] and
-      (JsPath \ "financials" \ "deductions").writeNullable[PeriodDisallowableExpenses]
+    (JsPath \ "selfEmploymentPeriodDates").write[PeriodDates] and
+      (JsPath \ "selfEmploymentPeriodIncome").writeNullable[PeriodIncome] and
+      (JsPath \ "selfEmploymentPeriodDeductions").writeNullable[PeriodExpenses] and
+      (JsPath \ "selfEmploymentPeriodDeductions").writeNullable[PeriodDisallowableExpenses]
   )(unlift(Def1_CreateAmendCumulativePeriodSummaryRequestBody.unapply))
 
 }

@@ -16,18 +16,13 @@
 
 package v4.createAmendCumulativePeriodSummary.def1.model.request
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OWrites, Reads}
 import v4.createAmendCumulativePeriodSummary.model.request.Create_PeriodDates
 
 object PeriodDates {
   implicit val reads: Reads[PeriodDates] = Json.reads[PeriodDates]
 
-  implicit val writes: OWrites[PeriodDates] = (
-    (JsPath \ "from").write[String] and
-      (JsPath \ "to").write[String]
-  )(unlift(PeriodDates.unapply))
-
+  implicit val writes: OWrites[PeriodDates] = Json.writes[PeriodDates]
 }
 
 case class PeriodDates(periodStartDate: String, periodEndDate: String) extends Create_PeriodDates
