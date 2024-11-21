@@ -16,7 +16,7 @@
 
 package v3.createPeriodSummary
 
-import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.config.SharedAppConfig
@@ -44,7 +44,7 @@ class CreatePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfi
         post(def1.body, desUri)
 
       case def2: Def2_CreatePeriodSummaryRequestData =>
-        val ifsUri = TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+        val ifsUri = IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         implicit val successCode: SuccessCode = SuccessCode(CREATED)
         post(def2.body, ifsUri)
     }

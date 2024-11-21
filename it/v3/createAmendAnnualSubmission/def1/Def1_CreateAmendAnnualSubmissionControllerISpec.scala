@@ -58,7 +58,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      "given a valid Def1 request for a Tax Year Specific tax year" in new TysIfsTest {
+      "given a valid Def1 request for a Tax Year Specific tax year" in new IfsTest {
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
@@ -312,7 +312,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
     def downstreamTaxYear: String = "2021"
   }
 
-  private trait TysIfsTest extends Test {
+  private trait IfsTest extends Test {
     def taxYear: String = "2023-24"
 
     def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/annual-summaries"

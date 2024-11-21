@@ -66,7 +66,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), None))) shouldBe outcome
     }
 
-    "send a request and return a body for a TYS year" in new TysIfsTest with Test {
+    "send a request and return a body for a TYS year" in new IfsTest with Test {
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))

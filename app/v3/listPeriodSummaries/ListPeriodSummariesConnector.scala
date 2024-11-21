@@ -18,7 +18,7 @@ package v3.listPeriodSummaries
 
 import config.SeBusinessFeatureSwitches
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{DesUri, IfsUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -46,7 +46,7 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
     val downstreamUri =
       taxYear match {
         case Some(taxYear) if taxYear.useTaxYearSpecificApi =>
-          TaxYearSpecificIfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+          IfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         case _ if featureSwitches.isDesIf_MigrationEnabled =>
           IfsUri[DownstreamResp](path)
         case _ =>

@@ -17,7 +17,7 @@
 package v4.retrieveAnnualSubmission
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{IfsUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -41,7 +41,7 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClient, val app
 
     val downstreamUri: DownstreamUri[DownstreamResp] =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri(
+        IfsUri(
           s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
         )
       } else {

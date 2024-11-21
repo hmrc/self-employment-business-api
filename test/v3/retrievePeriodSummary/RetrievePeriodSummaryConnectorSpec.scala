@@ -92,7 +92,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
     }
 
     "given a def2 (TYS) request" should {
-      "call the TYS URL and return a 200 status" in new TysIfsTest with Test {
+      "call the TYS URL and return a 200 status" in new IfsTest with Test {
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
         val expectedDownstreamUrl =

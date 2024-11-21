@@ -17,7 +17,7 @@
 package v4.createAmendCumulativePeriodSummary
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.TaxYearSpecificIfsUri
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
@@ -49,7 +49,7 @@ class CreateAmendCumulativePeriodSummaryConnector @Inject() (val http: HttpClien
   }
 
   private def uriFactory(nino: Nino, businessId: BusinessId, taxYear: TaxYear) = {
-    TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
+    IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
   }
 
 }
