@@ -127,7 +127,7 @@
         }
       }
     },
-    "periodDisallowableExpneses": {
+    "periodDisallowableExpenses": {
       "type": "object",
       "description": "Object containing the details about self-employment disallowable expenses,  that cannot be claimed for tax purposes.",
       "properties": {
