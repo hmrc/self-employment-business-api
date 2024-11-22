@@ -16,7 +16,6 @@
 
 package v3.listPeriodSummaries
 
-import config.MockSeBusinessFeatureSwitches
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -27,7 +26,7 @@ import v3.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, Perio
 
 import scala.concurrent.Future
 
-class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusinessFeatureSwitches {
+class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"

@@ -16,7 +16,6 @@
 
 package v4.createAmendAnnualSubmission
 
-import config.MockSeBusinessFeatureSwitches
 import play.api.Configuration
 import play.api.libs.json._
 import shared.config.MockSharedAppConfig
@@ -27,7 +26,7 @@ import v4.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValid
 import v4.createAmendAnnualSubmission.def3.Def3_CreateAmendAnnualSubmissionValidator
 import v4.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
-class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSeBusinessFeatureSwitches {
+class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
