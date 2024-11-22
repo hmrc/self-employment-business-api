@@ -17,7 +17,6 @@
 package v4.retrievePeriodSummary
 
 import api.models.domain.PeriodId
-import config.MockSeBusinessFeatureSwitches
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -29,7 +28,7 @@ import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryRespon
 
 import scala.concurrent.Future
 
-class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusinessFeatureSwitches {
+class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   private val nino       = Nino("AA123456A")
   private val businessId = BusinessId("XAIS12345678910")
@@ -56,7 +55,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
   "retrievePeriodSummary()" when {
 
     "given a def1 (non-TYS) request" should {
-      "call the IFS URL and return a 200 status" in new TysTest with Test {
+      "call the IFS URL and return a 200 status" in new IfsTest with Test {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
@@ -71,7 +70,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
     }
 
     "given a def2 (TYS) request" should {
-      "call the TYS URL and return a 200 status" in new TysTest with Test {
+      "call the TYS URL and return a 200 status" in new IfsTest with Test {
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
         val expectedDownstreamUrl =

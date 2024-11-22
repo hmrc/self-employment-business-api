@@ -16,7 +16,6 @@
 
 package v4.listPeriodSummaries
 
-import config.MockSeBusinessFeatureSwitches
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -27,7 +26,7 @@ import v4.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, Perio
 
 import scala.concurrent.Future
 
-class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusinessFeatureSwitches {
+class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -58,7 +57,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
 
   "connector" must {
 
-    "send a request and return a body for a TYS year" in new TysTest with Test {
+    "send a request and return a body for a TYS year" in new IfsTest with Test {
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))
@@ -66,7 +65,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(tysTaxYear)))) shouldBe outcome
     }
 
-    "send a request and return a body" in new TysTest with Test {
+    "send a request and return a body" in new IfsTest with Test {
 
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")

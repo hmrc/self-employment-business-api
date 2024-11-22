@@ -16,7 +16,6 @@
 
 package v3.retrievePeriodSummary
 
-import config.SeBusinessFeatureSwitches
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
@@ -33,8 +32,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)(implicit
-    featureSwitches: SeBusinessFeatureSwitches)
+class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)
     extends BaseDownstreamConnector {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
