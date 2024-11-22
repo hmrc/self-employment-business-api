@@ -45,7 +45,7 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec with Mo
   "retrieveCumulativePeriodSummary()" when {
 
     "given a def1 request" should {
-      "call the IFS URL and return a 200 status" in new IfsTest with Test {
+      "call the IFS URL and return a 200 status" in new TysTest with Test {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrieveCumulativePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 

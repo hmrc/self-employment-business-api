@@ -47,7 +47,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
       }
 
-      "return a 200 status for a success TYS scenario" in new IfsTest with Test {
+      "return a 200 status for a success TYS scenario" in new TysTest with Test {
         def request: CreatePeriodSummaryRequestData = Def2_CreatePeriodSummaryRequestData(
           nino = Nino(nino),
           businessId = BusinessId(businessId),

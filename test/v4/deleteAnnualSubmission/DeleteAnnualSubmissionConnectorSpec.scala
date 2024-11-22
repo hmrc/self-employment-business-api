@@ -66,7 +66,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
     }
 
     "deleteAnnualSubmission is called with a TYS tax year" must {
-      "send a request and return 204 no content" in new IfsTest with Test {
+      "send a request and return 204 no content" in new TysTest with Test {
         def taxYear: TaxYear = tysTaxYear
 
         stubTysHttpResponse(outcome)
@@ -90,7 +90,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
         result shouldBe outcome
       }
 
-      "return the error given a TYS tax year request" in new IfsTest with Test {
+      "return the error given a TYS tax year request" in new TysTest with Test {
         def taxYear: TaxYear = tysTaxYear
         stubTysHttpResponse(outcome)
 

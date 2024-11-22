@@ -76,7 +76,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
     }
 
     "given a def1 (non-TYS) request and 'isDesIf_MigrationEnabled' is on" should {
-      "call the non-TYS IFS URL and return a 200 status" in new IfsTest with Test {
+      "call the non-TYS IFS URL and return a 200 status" in new TysTest with Test {
 
         MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
@@ -92,7 +92,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
     }
 
     "given a def2 (TYS) request" should {
-      "call the TYS URL and return a 200 status" in new IfsTest with Test {
+      "call the TYS URL and return a 200 status" in new TysTest with Test {
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
         val expectedDownstreamUrl =

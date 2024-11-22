@@ -66,7 +66,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
     }
 
-    "send a request and return a body for a TYS year" in new IfsTest with Test {
+    "send a request and return a body for a TYS year" in new TysTest with Test {
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))
@@ -82,7 +82,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
 
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
     }
-    "send a request and return a body when 'isDesIf_MigrationEnabled' is on" in new IfsTest with Test {
+    "send a request and return a body when 'isDesIf_MigrationEnabled' is on" in new TysTest with Test {
       MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")

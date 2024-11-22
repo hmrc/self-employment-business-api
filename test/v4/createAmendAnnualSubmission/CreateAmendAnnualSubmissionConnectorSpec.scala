@@ -52,7 +52,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
   "AmendAnnualSubmissionConnector" when {
     "amendAnnualSubmission called" must {
       "return a 200 status for a success scenario" in
-        new IfsTest with Test {
+        new TysTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
           val outcome = Right(ResponseWrapper(correlationId, ()))
@@ -68,7 +68,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
   "AmendAnnualSubmissionConnector for a Tax Year Specific tax year" must {
     "return a 200 status for a success scenario" in
-      new IfsTest with Test {
+      new TysTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
