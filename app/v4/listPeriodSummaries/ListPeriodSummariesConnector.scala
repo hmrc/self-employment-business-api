@@ -18,7 +18,7 @@ package v4.listPeriodSummaries
 
 import config.SeBusinessFeatureSwitches
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -41,17 +41,13 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClient, val appConfi
     import request._
     import schema._
 
-    val path = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
         IfsUri[DownstreamResp](
           s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
         )
-      } else if (featureSwitches.isDesIf_MigrationEnabled) {
-        IfsUri[DownstreamResp](path)
       } else {
-        DesUri[DownstreamResp](path)
+        IfsUri[DownstreamResp](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
       }
 
     get(downstreamUri)

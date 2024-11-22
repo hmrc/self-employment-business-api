@@ -28,9 +28,6 @@ trait MockSeBusinessFeatureSwitches extends MockFactory {
     def isPassDeleteIntentEnabled: CallHandler[Boolean] =
       (() => mockSeBusinessFeatureSwitches.isPassDeleteIntentEnabled).expects()
 
-    def isDesIf_MigrationEnabled: CallHandler[Boolean] =
-      (() => mockSeBusinessFeatureSwitches.isDesIf_MigrationEnabled).expects()
-
   }
 
 }

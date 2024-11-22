@@ -57,14 +57,6 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
   }
 
   "connector" must {
-    "send a request and return a body when 'isDesIf_MigrationEnabled' is off" in new DesTest with Test {
-      MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-      val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
-      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-        .returns(Future.successful(outcome))
-
-      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
-    }
 
     "send a request and return a body for a TYS year" in new TysTest with Test {
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
@@ -74,16 +66,8 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(tysTaxYear)))) shouldBe outcome
     }
 
-    "send a request and return a body for a non TYS year when 'isDesIf_MigrationEnabled' is off" in new DesTest with Test {
-      MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-      val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
-      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-        .returns(Future.successful(outcome))
+    "send a request and return a body" in new TysTest with Test {
 
-      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
-    }
-    "send a request and return a body when 'isDesIf_MigrationEnabled' is on" in new TysTest with Test {
-      MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))

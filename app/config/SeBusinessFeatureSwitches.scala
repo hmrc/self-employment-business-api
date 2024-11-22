@@ -26,7 +26,6 @@ case class SeBusinessFeatureSwitches @Inject() (protected val featureSwitchConfi
   def isPassDeleteIntentEnabled: Boolean      = isEnabled("passDeleteIntentHeader")
   def isAllowNegativeExpensesEnabled: Boolean = isEnabled("allowNegativeExpenses")
   def isCl290Enabled: Boolean                 = isEnabled("cl290")
-  def isDesIf_MigrationEnabled: Boolean       = isEnabled("desIf_Migration")
 
 }
 

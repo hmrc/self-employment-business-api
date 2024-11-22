@@ -55,29 +55,9 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusine
 
   "retrievePeriodSummary()" when {
 
-    "given a def1 (non-TYS) request and 'isDesIf_MigrationEnabled' is off" should {
-      "call the non-TYS URL and return a 200 status" in new DesTest with Test {
+    "given a def1 (non-TYS) request" should {
+      "call the IFS URL and return a 200 status" in new TysTest with Test {
 
-        MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-        val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
-
-        val expectedDownstreamUrl = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
-
-        willGet(expectedDownstreamUrl)
-          .returns(Future.successful(outcome))
-
-        val request: RetrievePeriodSummaryRequestData = Def1_RetrievePeriodSummaryRequestData(nino, businessId, periodId, taxYear)
-
-        val result: DownstreamOutcome[RetrievePeriodSummaryResponse] = await(connector.retrievePeriodSummary(request))
-
-        result shouldBe outcome
-      }
-    }
-
-    "given a def1 (non-TYS) request and 'isDesIf_MigrationEnabled' is on" should {
-      "call the non-TYS IFS URL and return a 200 status" in new TysTest with Test {
-
-        MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
         val expectedDownstreamUrl = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
