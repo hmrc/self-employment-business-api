@@ -25,11 +25,11 @@ import v3.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValid
 import v3.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
 import v3.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 @Singleton
-class CreateAmendAnnualSubmissionValidatorFactory @Inject() {
+class CreateAmendAnnualSubmissionValidatorFactory {
 
   private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2024-25")
 
