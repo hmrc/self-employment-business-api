@@ -21,7 +21,7 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
 sealed trait CreateAmendCumulativePeriodSummaryRequestBody {
-  val periodDates: Create_PeriodDates
+  val periodDates: Option[Create_PeriodDates]
   val periodIncome: Option[Create_PeriodIncome]
   val periodExpenses: Option[Create_PeriodExpenses]
   val periodDisallowableExpenses: Option[Create_PeriodDisallowableExpenses]
@@ -42,7 +42,7 @@ trait Create_PeriodIncome {
 
 trait Create_PeriodDisallowableExpenses
 
-case class Def1_CreateAmendCumulativePeriodSummaryRequestBody(periodDates: PeriodDates,
+case class Def1_CreateAmendCumulativePeriodSummaryRequestBody(periodDates: Option[PeriodDates],
                                                               periodIncome: Option[PeriodIncome],
                                                               periodExpenses: Option[PeriodExpenses],
                                                               periodDisallowableExpenses: Option[PeriodDisallowableExpenses])
@@ -52,7 +52,7 @@ object Def1_CreateAmendCumulativePeriodSummaryRequestBody {
   implicit val reads: Reads[Def1_CreateAmendCumulativePeriodSummaryRequestBody] = Json.reads[Def1_CreateAmendCumulativePeriodSummaryRequestBody]
 
   implicit val writes: OWrites[Def1_CreateAmendCumulativePeriodSummaryRequestBody] = (
-    (JsPath \ "selfEmploymentPeriodDates").write[PeriodDates] and
+    (JsPath \ "selfEmploymentPeriodDates").writeNullable[PeriodDates] and
       (JsPath \ "selfEmploymentPeriodIncome").writeNullable[PeriodIncome] and
       (JsPath \ "selfEmploymentPeriodDeductions").writeNullable[PeriodExpenses] and
       (JsPath \ "selfEmploymentPeriodDeductions").writeNullable[PeriodDisallowableExpenses]

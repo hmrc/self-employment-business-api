@@ -432,7 +432,7 @@ trait CumulativePeriodSummaryFixture {
   )
 
   val fullMTDRequest: Def1_CreateAmendCumulativePeriodSummaryRequestBody = Def1_CreateAmendCumulativePeriodSummaryRequestBody(
-    periodDates = periodDatesMtd,
+    periodDates = Some(periodDatesMtd),
     periodIncome = Some(periodIncomeMtd),
     periodExpenses = Some(periodExpenses),
     periodDisallowableExpenses = Some(periodDisallowableExpenses)

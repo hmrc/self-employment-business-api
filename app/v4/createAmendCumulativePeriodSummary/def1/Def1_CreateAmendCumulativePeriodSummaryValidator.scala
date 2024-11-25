@@ -49,9 +49,11 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
 
   private def validateJsonFields(body: JsValue): Validated[Seq[MtdError], Def1_CreateAmendCumulativePeriodSummaryRequestBody] =
     resolveJson(body) andThen (parsedBody =>
-      List(
-        ResolveIsoDate(parsedBody.periodDates.periodStartDate, StartDateFormatError),
-        ResolveIsoDate(parsedBody.periodDates.periodEndDate, EndDateFormatError)
-      ).traverse_(identity).map(_ => parsedBody))
+      if (parsedBody.periodDates.isDefined) {
+        List(
+          ResolveIsoDate(parsedBody.periodDates.get.periodStartDate, StartDateFormatError),
+          ResolveIsoDate(parsedBody.periodDates.get.periodEndDate, EndDateFormatError)
+        ).traverse_(identity).map(_ => parsedBody)
+      } else Valid(parsedBody))
 
 }
