@@ -17,14 +17,8 @@
 package v4.createAmendAnnualSubmission.def3
 
 import api.models.domain.ex.MtdNicExemption
-import api.models.errors.{
-  Class4ExemptionReasonFormatError,
-  RuleBothAllowancesSuppliedError,
-  RuleBuildingNameNumberError,
-  RuleWrongTpaAmountSubmittedError
-}
+import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError, RuleWrongTpaAmountSubmittedError}
 import play.api.libs.json.{JsNumber, JsValue, Json}
-import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
@@ -33,7 +27,7 @@ import v4.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactor
 import v4.createAmendAnnualSubmission.def2.request._
 import v4.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
 
-class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
+class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators {
 
   private implicit val correlationId: String = "1234"
 

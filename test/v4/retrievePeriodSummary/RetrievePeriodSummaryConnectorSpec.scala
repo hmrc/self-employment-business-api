@@ -55,7 +55,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
   "retrievePeriodSummary()" when {
 
     "given a def1 (non-TYS) request" should {
-      "call the IFS URL and return a 200 status" in new IfsTest with Test {
+      "call the non-TYS URL and return a 200 status" in new IfsTest with Test {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 

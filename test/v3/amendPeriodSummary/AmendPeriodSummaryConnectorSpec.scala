@@ -100,7 +100,7 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
     }
 
     "given a TYS request" should {
-      "call the IFS downstream URL and return 204" in new IfsTest with Test {
+      "call the TYS downstream URL and return 204" in new IfsTest with Test {
         val expectedDownstreamUrl =
           s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 

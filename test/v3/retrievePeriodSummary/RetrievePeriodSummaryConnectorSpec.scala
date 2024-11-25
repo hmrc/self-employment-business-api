@@ -21,11 +21,7 @@ import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import v3.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
-import v3.retrievePeriodSummary.model.request.{
-  Def1_RetrievePeriodSummaryRequestData,
-  Def2_RetrievePeriodSummaryRequestData,
-  RetrievePeriodSummaryRequestData
-}
+import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import scala.concurrent.Future
@@ -56,7 +52,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
   "retrievePeriodSummary()" when {
 
     "given a def1 (non-TYS) request" should {
-      "call the IFS URL and return a 200 status" in new IfsTest with Test {
+      "call the non TYS URL and return a 200 status" in new IfsTest with Test {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
@@ -71,7 +67,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     }
 
     "given a def2 (TYS) request" should {
-      "call the IFS URL and return a 200 status" in new IfsTest with Test {
+      "call the TYS URL and return a 200 status" in new IfsTest with Test {
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
         val expectedDownstreamUrl =

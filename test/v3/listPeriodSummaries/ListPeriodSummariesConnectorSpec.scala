@@ -65,7 +65,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), Some(TaxYear.fromMtd(tysTaxYear))))) shouldBe outcome
     }
 
-    "send a request and return a body" in new IfsTest with Test {
+    "send a request and return a body for a non TYS year" in new IfsTest with Test {
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))
