@@ -16,12 +16,12 @@
 
 package v4.createAmendAnnualSubmission
 
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import play.api.http.Status.OK
+import shared.config.SharedAppConfig
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.config.SharedAppConfig
-import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v4.createAmendAnnualSubmission.model.request.{
   CreateAmendAnnualSubmissionRequestData,
@@ -65,7 +65,7 @@ class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val 
 
   private def uriFactory(nino: Nino, businessId: BusinessId, taxYear: TaxYear) = {
     if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+      IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
     } else {
       IfsUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
     }

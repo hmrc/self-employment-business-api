@@ -17,7 +17,7 @@
 package v3.deleteAnnualSubmission
 
 import config.SeBusinessFeatureSwitches
-import shared.connectors.DownstreamUri.{DesUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.config.SharedAppConfig
@@ -45,7 +45,7 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClient, val appCo
         import def1._
 
         if (taxYear.useTaxYearSpecificApi) {
-          delete(TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"))
+          delete(IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"))
         } else {
           put(
             JsObject.empty,

@@ -16,8 +16,7 @@
 
 package v3.createAmendAnnualSubmission.def2.request
 
-import config.SeBusinessFeatureSwitches
-import play.api.libs.json.{JsObject, Json, Reads, Writes}
+import play.api.libs.json.{Json, OFormat}
 
 case class Def2_CreateAmend_Adjustments(
     includedNonTaxableProfits: Option[BigDecimal],
@@ -34,18 +33,5 @@ case class Def2_CreateAmend_Adjustments(
 )
 
 object Def2_CreateAmend_Adjustments {
-
-  private val standardReads: Reads[Def2_CreateAmend_Adjustments] = Json.reads
-
-  implicit def reads(implicit featureSwitches: SeBusinessFeatureSwitches): Reads[Def2_CreateAmend_Adjustments] =
-    implicitly[Reads[JsObject]]
-      .map { json =>
-        if (featureSwitches.isAdjustmentsAdditionalFieldsEnabled)
-          json
-        else
-          json - "transitionProfitAmount" - "transitionProfitAccelerationAmount"
-      }
-      .andThen(standardReads)
-
-  implicit val writes: Writes[Def2_CreateAmend_Adjustments] = Json.writes
+  implicit val format: OFormat[Def2_CreateAmend_Adjustments] = Json.format[Def2_CreateAmend_Adjustments]
 }

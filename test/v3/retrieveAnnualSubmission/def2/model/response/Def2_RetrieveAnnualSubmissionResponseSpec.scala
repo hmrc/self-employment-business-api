@@ -16,20 +16,11 @@
 
 package v3.retrieveAnnualSubmission.def2.model.response
 
-import config.{MockSeBusinessFeatureSwitches, SeBusinessFeatureSwitches}
-import play.api.Configuration
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import shared.config.MockSharedAppConfig
 import v3.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Def2_RetrieveAnnualSubmissionResponseSpec
-    extends UnitSpec
-    with MockSharedAppConfig
-    with Def2_RetrieveAnnualSubmissionFixture
-    with MockSeBusinessFeatureSwitches {
-
-  private implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches(Configuration.empty)
+class Def2_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {
 
   private val retrieveAnnualSubmissionResponse = Def2_RetrieveAnnualSubmissionResponse(
     allowances = Some(Retrieve_Allowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),

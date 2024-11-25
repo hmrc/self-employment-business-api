@@ -55,7 +55,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     def downstreamUri: String    = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2022"
   }
 
-  private trait TysIfsTest extends Test {
+  private trait TysTest extends Test {
     override def taxYear: String = "2023-24"
     def downstreamUri: String    = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
   }
@@ -80,7 +80,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
-      s"any valid TYS request is made" in new TysIfsTest {
+      s"any valid TYS request is made" in new TysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()

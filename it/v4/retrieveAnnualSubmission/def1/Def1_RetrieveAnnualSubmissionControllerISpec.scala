@@ -48,7 +48,7 @@ class Def1_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      s"any valid request is made with a TYS tax year" in new TysIfsTest {
+      s"any valid request is made with a TYS tax year" in new TysTest {
         override def setupStubs(): StubMapping = {
 
           AuditStub.audit()
@@ -173,7 +173,7 @@ class Def1_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
 
   }
 
-  private trait TysIfsTest extends Test {
+  private trait TysTest extends Test {
     def taxYear: String = "2023-24"
 
     def downstreamUri: String = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"

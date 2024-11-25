@@ -16,7 +16,6 @@
 
 package v4.createAmendAnnualSubmission.def2.request
 
-import config.SeBusinessFeatureSwitches
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestBody
@@ -29,7 +28,7 @@ case class Def2_CreateAmendAnnualSubmissionRequestBody(
 
 object Def2_CreateAmendAnnualSubmissionRequestBody {
 
-  implicit def reads(implicit featureSwitches: SeBusinessFeatureSwitches): Reads[Def2_CreateAmendAnnualSubmissionRequestBody] =
+  implicit val reads: Reads[Def2_CreateAmendAnnualSubmissionRequestBody] =
     Json.reads[Def2_CreateAmendAnnualSubmissionRequestBody]
 
   implicit val writes: OWrites[Def2_CreateAmendAnnualSubmissionRequestBody] = (

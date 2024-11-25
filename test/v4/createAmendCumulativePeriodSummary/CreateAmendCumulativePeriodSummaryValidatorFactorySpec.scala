@@ -16,15 +16,13 @@
 
 package v4.createAmendCumulativePeriodSummary
 
-import config.MockSeBusinessFeatureSwitches
 import play.api.libs.json._
-import shared.config.MockSharedAppConfig
 import shared.controllers.validators.{AlwaysErrorsValidator, Validator}
 import shared.utils.UnitSpec
 import v4.createAmendCumulativePeriodSummary.def1.Def1_CreateAmendCumulativePeriodSummaryValidator
 import v4.createAmendCumulativePeriodSummary.model.request.CreateAmendCumulativePeriodSummaryRequestData
 
-class CreateAmendCumulativePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSeBusinessFeatureSwitches {
+class CreateAmendCumulativePeriodSummaryValidatorFactorySpec extends UnitSpec {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"

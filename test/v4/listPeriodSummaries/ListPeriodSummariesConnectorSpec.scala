@@ -16,7 +16,6 @@
 
 package v4.listPeriodSummaries
 
-import config.MockSeBusinessFeatureSwitches
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -27,7 +26,7 @@ import v4.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, Perio
 
 import scala.concurrent.Future
 
-class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusinessFeatureSwitches {
+class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
   val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
@@ -57,16 +56,8 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
   }
 
   "connector" must {
-    "send a request and return a body when 'isDesIf_MigrationEnabled' is off" in new DesTest with Test {
-      MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-      val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
-      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-        .returns(Future.successful(outcome))
 
-      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
-    }
-
-    "send a request and return a body for a TYS year" in new TysIfsTest with Test {
+    "send a request and return a body for a TYS year" in new IfsTest with Test {
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))
@@ -74,16 +65,8 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec with MockSeBusiness
       await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(tysTaxYear)))) shouldBe outcome
     }
 
-    "send a request and return a body for a non TYS year when 'isDesIf_MigrationEnabled' is off" in new DesTest with Test {
-      MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
-      val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
-      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-        .returns(Future.successful(outcome))
+    "send a request and return a body for a non TYS year" in new IfsTest with Test {
 
-      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
-    }
-    "send a request and return a body when 'isDesIf_MigrationEnabled' is on" in new IfsTest with Test {
-      MockedSeBusinessFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
       val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
       willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
         .returns(Future.successful(outcome))

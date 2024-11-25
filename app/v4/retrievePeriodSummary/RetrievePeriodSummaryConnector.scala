@@ -16,9 +16,8 @@
 
 package v4.retrievePeriodSummary
 
-import config.SeBusinessFeatureSwitches
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -30,9 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)(implicit
-    featureSwitches: SeBusinessFeatureSwitches)
-    extends BaseDownstreamConnector {
+class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
       hc: HeaderCarrier,
@@ -43,23 +40,17 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClient, val appCon
 
     val fromDate = periodId.from
     val toDate   = periodId.to
-    val path     = s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
     request match {
       case def2: Def2_RetrievePeriodSummaryRequestData =>
-        val downstreamUri = TaxYearSpecificIfsUri[Def2_RetrievePeriodSummaryResponse](
+        val downstreamUri = IfsUri[Def2_RetrievePeriodSummaryResponse](
           s"income-tax/${def2.taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-        val result = get(downstreamUri)
-        result
+        get(downstreamUri)
 
       case _ =>
-        val downstreamUri =
-          if (featureSwitches.isDesIf_MigrationEnabled)
-            IfsUri[Def1_RetrievePeriodSummaryResponse](path)
-          else
-            DesUri[Def1_RetrievePeriodSummaryResponse](path)
-        val result = get(downstreamUri)
-        result
+        val downstreamUri = IfsUri[Def1_RetrievePeriodSummaryResponse](
+          s"income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        get(downstreamUri)
     }
   }
 

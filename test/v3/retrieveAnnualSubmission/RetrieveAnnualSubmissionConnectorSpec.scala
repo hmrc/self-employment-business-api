@@ -64,7 +64,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
       await(connector.retrieveAnnualSubmission(nonTysRequest)) shouldBe outcome
     }
 
-    "send a request and return a body for a TYS tax year" in new TysIfsTest with Test {
+    "send a request and return a body for a TYS tax year" in new IfsTest with Test {
       val outcome = Right(ResponseWrapper(correlationId, response))
 
       willGet(s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries")

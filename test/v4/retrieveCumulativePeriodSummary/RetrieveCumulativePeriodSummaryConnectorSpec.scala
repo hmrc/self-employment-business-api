@@ -16,7 +16,6 @@
 
 package v4.retrieveCumulativePeriodSummary
 
-import config.MockSeBusinessFeatureSwitches
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -27,7 +26,7 @@ import v4.retrieveCumulativePeriodSummary.model.response.RetrieveCumulativePerio
 
 import scala.concurrent.Future
 
-class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec with MockSeBusinessFeatureSwitches {
+class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   private val nino       = Nino("AA123456A")
   private val businessId = BusinessId("XAIS12345678910")

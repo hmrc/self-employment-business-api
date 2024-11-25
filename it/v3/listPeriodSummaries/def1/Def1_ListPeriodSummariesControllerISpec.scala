@@ -51,7 +51,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
         response.header("Content-Type") shouldBe Some("application/json")
       }
 
-      s"any valid request is made for a TYS specific year" in new TysIfsTest {
+      s"any valid request is made for a TYS specific year" in new TysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -75,7 +75,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
                                 requestTaxYear: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new TysIfsTest {
+          s"validation fails with ${expectedBody.code} error" in new TysTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -203,7 +203,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  private trait TysIfsTest extends Test {
+  private trait TysTest extends Test {
 
     lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
     val periodId        = "2024-01-01_2024-01-02"
