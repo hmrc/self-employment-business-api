@@ -41,7 +41,7 @@ requestBody:
   content:
     applicaton/json:
       schema:
-        - $ref: './schemas/createAmendCumulativePeriodSummary/request.json'
+        $ref: './schemas/createAmendCumulativePeriodSummary/request.json'
       examples:
         "Consolidated request":
           value:

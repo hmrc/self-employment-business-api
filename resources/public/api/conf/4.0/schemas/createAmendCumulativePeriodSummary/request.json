@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "TY 20225-26 and after",
+  "title": "TY 2025-26 and after",
   "description": "Create and Amend a Self-Employment Cumulative Period Summary",
   "type": "object",
   "properties": {
@@ -18,7 +18,11 @@
           "type": "string",
           "example": "2025-07-05"
         }
-      }
+      },
+      "required": [
+        "periodStartDate",
+        "periodEndDate"
+      ]
     },
     "periodIncome": {
       "type": "object",
@@ -127,7 +131,7 @@
         }
       }
     },
-    "periodDisallowableExpneses": {
+    "periodDisallowableExpenses": {
       "type": "object",
       "description": "Object containing the details about self-employment disallowable expenses,  that cannot be claimed for tax purposes.",
       "properties": {

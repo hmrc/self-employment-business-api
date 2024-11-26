@@ -165,7 +165,7 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
   }
   // @formatter:on
 
-  private def parsedBody(periodDates: PeriodDates = parsedPeriodDates,
+  private def parsedBody(periodDates: Option[PeriodDates] = Some(parsedPeriodDates),
                          periodIncome: Option[PeriodIncome] = Some(parsedPeriodIncome),
                          periodExpenses: Option[PeriodExpenses] = Some(parsedPeriodExpenses()),
                          periodDisallowableExpenses: Option[PeriodDisallowableExpenses] = Some(parsedPeriodDisallowableExpenses())) =
@@ -293,6 +293,20 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
           Def1_CreateAmendCumulativePeriodSummaryRequestData(parsedNino, parsedBusinessId, taxYear, parsedBody(periodExpenses = None))
         )
       }
+
+      "given a valid request body without period Dates" in {
+        setupMocks()
+
+        val body = validBody()
+          .removeProperty("/periodDates")
+
+        val result =
+          validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
+
+        result shouldBe Right(
+          Def1_CreateAmendCumulativePeriodSummaryRequestData(parsedNino, parsedBusinessId, taxYear, parsedBody(periodDates = None))
+        )
+      }
     }
 
     "return a single error" when {
@@ -407,6 +421,44 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
           validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(EndDateFormatError, StartDateFormatError))))
+      }
+
+      "given a body with a missing periodStartDate" in {
+        val invalidBody = validBody()
+          .removeProperty("/periodDates/periodStartDate")
+
+        val result =
+          validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            "1234",
+            MtdError(
+              "RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED",
+              "An empty or non-matching body was submitted",
+              400,
+              Some(List("/periodDates/periodStartDate"))),
+            None
+          ))
+      }
+
+      "given a body with a missing periodEndDate" in {
+        val invalidBody = validBody()
+          .removeProperty("/periodDates/periodEndDate")
+
+        val result =
+          validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(
+            "1234",
+            MtdError(
+              "RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED",
+              "An empty or non-matching body was submitted",
+              400,
+              Some(List("/periodDates/periodEndDate"))),
+            None
+          ))
       }
 
       "given a body with expenses and consolidated expenses" in {

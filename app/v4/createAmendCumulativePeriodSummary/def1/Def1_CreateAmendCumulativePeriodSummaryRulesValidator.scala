@@ -24,7 +24,7 @@ import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
 import shared.models.domain.TaxYear
 import shared.models.errors.{MtdError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError}
-import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDisallowableExpenses, PeriodExpenses}
+import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses}
 import v4.createAmendCumulativePeriodSummary.model.request.{Create_PeriodIncome, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
 import java.time.LocalDate
@@ -44,7 +44,7 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
     import parsed.body._
 
     combine(
-      validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
+      validateDates(periodDates),
       validateExpenses(periodExpenses, periodDisallowableExpenses),
       periodIncome.map(validatePeriodIncomeNumericFields()).getOrElse(valid),
       periodExpenses.map(validateAllowableNumericFields()).getOrElse(valid),
@@ -71,6 +71,11 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
   private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] = {
     resolveDateRange.withDatesLimitedTo(minDate, maxDate)(periodStartDate -> periodEndDate).toUnit
   }
+
+  private def validateDates(periodDates: Option[PeriodDates]): Validated[Seq[MtdError], Unit] =
+    periodDates.fold(valid) { dates =>
+      validateDates(dates.periodStartDate, dates.periodEndDate)
+    }
 
   private def validatePeriodIncomeNumericFields()(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(

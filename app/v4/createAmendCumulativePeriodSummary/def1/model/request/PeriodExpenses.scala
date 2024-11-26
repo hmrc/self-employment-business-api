@@ -43,7 +43,7 @@ object PeriodExpenses {
   implicit val reads: Reads[PeriodExpenses] = Json.reads[PeriodExpenses]
 
   implicit val writes: OWrites[PeriodExpenses] = (
-    (JsPath \ "simplifiedExpenses").writeNullable[BigDecimal] and
+    (JsPath \ "consolidatedExpenses").writeNullable[BigDecimal] and
       (JsPath \ "costOfGoods" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "constructionIndustryScheme" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "staffCosts" \ "amount").writeNullable[BigDecimal] and
