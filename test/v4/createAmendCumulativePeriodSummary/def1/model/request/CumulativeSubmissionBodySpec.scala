@@ -25,7 +25,7 @@ class CumulativePeriodSummaryBodySpec extends UnitSpec with CumulativePeriodSumm
 
   val someOptionalFieldsMtdBody: Def1_CreateAmendCumulativePeriodSummaryRequestBody =
     Def1_CreateAmendCumulativePeriodSummaryRequestBody(
-      Some(PeriodDates("2025-08-24", "2026-08-24")),
+      Some(PeriodDates(Some("2025-08-24"), Some("2026-08-24"))),
       Some(PeriodIncome(Some(1000.99), Some(2000.99), Some(3000.99))),
       Some(
         PeriodExpenses(
@@ -50,7 +50,7 @@ class CumulativePeriodSummaryBodySpec extends UnitSpec with CumulativePeriodSumm
     )
 
   val noOptionalFieldsMtdBody: Def1_CreateAmendCumulativePeriodSummaryRequestBody =
-    Def1_CreateAmendCumulativePeriodSummaryRequestBody(Some(PeriodDates("2025-08-24", "2026-08-24")), None, None, None)
+    Def1_CreateAmendCumulativePeriodSummaryRequestBody(Some(PeriodDates(Some("2025-08-24"), Some("2026-08-24"))), None, None, None)
 
   "reads" should {
     "read from a JSON" when {

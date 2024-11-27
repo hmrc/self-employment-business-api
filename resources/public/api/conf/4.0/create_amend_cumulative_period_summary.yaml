@@ -16,7 +16,6 @@ description: |
   | STATEFUL                                    | Performs a stateful create or update.                                                                           |
   | START_DATE_NOT_ALIGNED_TO_COMMENCEMENT_DATE | Simulates the scenario where Start Date does not align to the commencement date.                                |
   | END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE    | Simulates the scenario where End date does not align to the reporting type.                                     |
-  | MISSING_SUBMISSION_DATES                    | Simulates the scenario where Submissoin start/end date not provided.                                            |
   | START_AND_END_DATE_NOT_ALLOWED              | Simulates the scenario where Start/End Date not accepted for annual/latent submission.                          |
   | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simulates the scenario where individuals cannot submit data more than 10 days before end of Period.              |
   | OUTSIDE_AMENDMENT_WINDOW                   | Simulates the scenario where request cannot be completed as it is outside the amendment window.                 |
@@ -97,8 +96,6 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleStartDateNotAlignedToCommencementDate'
           RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE:
             $ref: './common/errors.yaml#/components/examples/ruleEndDateNotAlignedWithReportingType'
-          RULE_MISSING_SUBMISSION_DATES:
-            $ref: './common/errors.yaml#/components/examples/ruleMissingSubmissionDates'
           RULE_START_AND_END_DATE_NOT_ALLOWED:
             $ref: './common/errors.yaml#/components/examples/ruleStartAndEndDateNotAllowed'
           RULE_OUTSIDE_AMENDMENT_WINDOW:

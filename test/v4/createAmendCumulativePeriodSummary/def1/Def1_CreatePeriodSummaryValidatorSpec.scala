@@ -127,7 +127,7 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
   private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
 
-  private val parsedPeriodDates  = PeriodDates("2025-08-24", "2025-09-24")
+  private val parsedPeriodDates  = PeriodDates(Some("2025-08-24"), Some("2025-09-24"))
   private val parsedPeriodIncome = PeriodIncome(Some(1000.99), Some(1001.99), taxTakenOffTradingIncome = Some(1002.99))
 
   private def numericValue(isNegative: Boolean)(number: BigDecimal): BigDecimal =
@@ -433,11 +433,7 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         result shouldBe Left(
           ErrorWrapper(
             "1234",
-            MtdError(
-              "RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED",
-              "An empty or non-matching body was submitted",
-              400,
-              Some(List("/periodDates/periodStartDate"))),
+            MtdError("RULE_MISSING_SUBMISSION_DATES", "Submission start/end date not provided", 400, None),
             None
           ))
       }
@@ -452,11 +448,7 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         result shouldBe Left(
           ErrorWrapper(
             "1234",
-            MtdError(
-              "RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED",
-              "An empty or non-matching body was submitted",
-              400,
-              Some(List("/periodDates/periodEndDate"))),
+            MtdError("RULE_MISSING_SUBMISSION_DATES", "Submission start/end date not provided", 400, None),
             None
           ))
       }

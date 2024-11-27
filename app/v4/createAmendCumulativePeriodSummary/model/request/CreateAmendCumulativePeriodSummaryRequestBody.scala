@@ -28,8 +28,8 @@ sealed trait CreateAmendCumulativePeriodSummaryRequestBody {
 }
 
 trait Create_PeriodDates {
-  val periodStartDate: String
-  val periodEndDate: String
+  val periodStartDate: Option[String]
+  val periodEndDate: Option[String]
 }
 
 trait Create_PeriodExpenses

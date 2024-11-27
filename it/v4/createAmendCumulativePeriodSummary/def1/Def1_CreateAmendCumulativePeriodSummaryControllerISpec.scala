@@ -313,7 +313,7 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/periodDates/periodStartDate"))))
+        response.json shouldBe Json.toJson(RuleMissingPeriodSummaryDatesError)
       }
     }
 
@@ -349,9 +349,9 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
         (UNPROCESSABLE_ENTITY, "INVALID_START_DATE", BAD_REQUEST, RuleStartDateNotAlignedWithReportingTypeError),
         (UNPROCESSABLE_ENTITY, "START_DATE_NOT_ALIGNED", BAD_REQUEST, RuleStartDateNotAlignedToCommencementDateError),
         (UNPROCESSABLE_ENTITY, "END_DATE_NOT_ALIGNED", BAD_REQUEST, RuleEndDateNotAlignedWithReportingTypeError),
-        (UNPROCESSABLE_ENTITY, "MISSING_SUBMISSION_DATES", BAD_REQUEST, RuleMissingPeriodSummaryDatesError),
         (UNPROCESSABLE_ENTITY, "START_END_DATE_NOT_ACCEPTED", BAD_REQUEST, RuleStartAndEndDateNotAllowedError),
         (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError),
+        (UNPROCESSABLE_ENTITY, "MISSING_SUBMISSION_DATES", INTERNAL_SERVER_ERROR, InternalError),
         (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
         (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
       )
