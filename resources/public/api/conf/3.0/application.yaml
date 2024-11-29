@@ -4,6 +4,10 @@ info:
   version: "3.0"
   title: Self Employment Business (MTD)
   description: |
+    The following groups of endpoints are stateful in the Sandbox:
+    * [Self-Employment Annual Submission](#tag/Self-Employment-Annual-Submission)
+    * [Self-Employment Period Summaries](#tag/Self-Employment-Period-Summaries)
+    
     # Send fraud prevention data
     HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
 

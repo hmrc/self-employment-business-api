@@ -17,7 +17,7 @@ description: |
 
 
 tags:
-  - Self-Employment Cumulative Submission
+  - Self-Employment Cumulative Period Summary
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
