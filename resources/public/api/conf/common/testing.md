@@ -1,33 +1,7 @@
-You can use the sandbox environment to <a href="/api-documentation/docs/testing">test this API</a>. You can use
-the <a href="/api-documentation/docs/api/service/api-platform-test-user/1.0">Create Test User API</a> or it's frontend
-service to create test users.
+You can use the Sandbox environment to [test this API](/api-documentation/docs/testing).
+You can test different scenarios in the Sandbox by passing the Gov-Test-Scenario header.
+The Sandbox also allows you to perform [stateful and dynamic testing](https://developer.service.hmrc.gov.uk/guides/income-tax-mtd-end-to-end-service-guide/documentation/how-to-integrate.html#sandbox-testing) for some APIs.
+The ‘Test data’ section under each endpoint explains the test scenarios that can be simulated.
 
-It may not be possible to test all scenarios in the sandbox. You can test some scenarios by passing the
-Gov-Test-Scenario header. Documentation for each endpoint includes a **Test data** section, which explains the scenarios
-that you can simulate using the Gov-Test-Scenario header.
-
-For versions 1.0 and later, Gov-Test-Scenario values that are not supported by the sandbox will result in a status code
-400 response with an error code of RULE_INCORRECT_GOV_TEST_SCENARIO.
-
-If you have a specific testing need that is not supported in the sandbox, contact <a href="/developer/support">our
-support team</a>.
-
-Some APIs may be marked \[test only\]. This means that they are not available for use in production and may change.
-
-### Stateful
-
-Some endpoints support STATEFUL gov test scenarios. Stateful scenarios work with groups of endpoints that represent
-particular types of submissions. For each type you can POST (or PUT) to submit or amend data, GET to retrieve or list
-data and DELETE to delete data. For example, with a STATEFUL gov test scenario a retrieval will return data based on
-what you submitted.
-
-The following groups are stateful in the sandbox:
-
-- Self-Employment Annual Submission V2.0
-- Self-Employement Period Summaries V2.0
-
-### Dynamic
-Some endpoints support DYNAMIC gov test scenarios. The response is dynamic based on the request parameters:
-
-- List Self-Employment Period Summaries V2.0
-- Retrieve a Self-Employment Period Summary V3.0
+If you have a specific testing need that is not supported in the Sandbox, [contact our Software Developers Support Team](/developer/support).
+Some endpoints may be marked ‘[test only]’, which means that they are not available for use in Production and may change.

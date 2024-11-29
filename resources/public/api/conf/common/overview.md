@@ -1,13 +1,10 @@
-This API allows developers to:
+Use the Self Employment Business API to submit, edit and retrieve information about a customer’s annual and quarterly self-employment summaries.
 
-- create or amend a self-employment annual summary for a tax year
-- retrieve a self-employment annual submission for a tax year
-- delete the self-employment annual submission for a tax year
-- create a self-employment period summary for submission of periodic data
-- amend a self-employment period summary
-- retrieve a single self-employment period summary for a given identifier
-- retrieve a list of all self-employment period summaries
+This API is related to the following customer journeys:
+* Submit business income and expenses
+* Submit quarterly updates
+* Submit annual updates
 
-### Mapping APIs to Self Assessment tax return forms
-
-Some parameters in this API map to box numbers in one or more Self Assessment tax return forms. To learn more and to download this mapping information as a CSV file, go to [income-tax-mtd-changelog/mapping](https://github.com/hmrc/income-tax-mtd-changelog?tab=readme-ov-file#mapping-apis-to-self-assessment-tax-return-forms) on GitHub.
+Some parameters in this API map to box numbers in one or more Self Assessment tax return forms.
+To learn more and to download this mapping information as a CSV file, go to [income-tax-mtd-changelog/mapping-csv-files.md](https://github.com/hmrc/income-tax-mtd-changelog/blob/main/mapping/mapping-csv-files.md) on GitHub.
+For information on how to connect to this API [see the Income Tax MTD end-to-end service guide](https://developer.service.hmrc.gov.uk/guides/income-tax-mtd-end-to-end-service-guide/).

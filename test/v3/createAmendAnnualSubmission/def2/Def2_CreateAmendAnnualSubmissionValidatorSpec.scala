@@ -17,7 +17,12 @@
 package v3.createAmendAnnualSubmission.def2
 
 import api.models.domain.ex.MtdNicExemption
-import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError, RuleWrongTpaAmountSubmittedError}
+import api.models.errors.{
+  Class4ExemptionReasonFormatError,
+  RuleBothAllowancesSuppliedError,
+  RuleBuildingNameNumberError,
+  RuleWrongTpaAmountSubmittedError
+}
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
