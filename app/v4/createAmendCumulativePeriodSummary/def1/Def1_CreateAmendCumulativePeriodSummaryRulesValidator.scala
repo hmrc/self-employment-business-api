@@ -16,14 +16,14 @@
 
 package v4.createAmendCumulativePeriodSummary.def1
 
-import api.models.errors.RuleBothExpensesSuppliedError
+import api.models.errors.{RuleBothExpensesSuppliedError, RuleMissingPeriodSummaryDatesError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
 import shared.models.domain.TaxYear
-import shared.models.errors.{MtdError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError}
+import shared.models.errors.{MtdError, RuleEndBeforeStartDateError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
 import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses}
 import v4.createAmendCumulativePeriodSummary.model.request.{Create_PeriodIncome, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
@@ -73,8 +73,12 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
   }
 
   private def validateDates(periodDates: Option[PeriodDates]): Validated[Seq[MtdError], Unit] =
-    periodDates.fold(valid) { dates =>
-      validateDates(dates.periodStartDate, dates.periodEndDate)
+    periodDates.fold(valid) { case PeriodDates(start, end: Option[String]) =>
+      (start, end) match {
+        case (Some(startDate), Some(endDate)) => validateDates(startDate, endDate)
+        case (None, None)                     => Invalid(List(RuleIncorrectOrEmptyBodyError))
+        case _                                => Invalid(List(RuleMissingPeriodSummaryDatesError))
+      }
     }
 
   private def validatePeriodIncomeNumericFields()(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =

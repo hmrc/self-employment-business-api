@@ -25,4 +25,4 @@ object PeriodDates {
   implicit val writes: OWrites[PeriodDates] = Json.writes[PeriodDates]
 }
 
-case class PeriodDates(periodStartDate: String, periodEndDate: String) extends Create_PeriodDates
+case class PeriodDates(periodStartDate: Option[String], periodEndDate: Option[String]) extends Create_PeriodDates

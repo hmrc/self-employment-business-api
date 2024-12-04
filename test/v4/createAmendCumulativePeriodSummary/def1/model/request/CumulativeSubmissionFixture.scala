@@ -384,8 +384,8 @@ trait CumulativePeriodSummaryFixture {
   )
 
   val periodDatesMtd: PeriodDates = PeriodDates(
-    periodStartDate = "2025-08-24",
-    periodEndDate = "2026-08-24"
+    periodStartDate = Some("2025-08-24"),
+    periodEndDate = Some("2026-08-24")
   )
 
   val periodIncomeMtd: PeriodIncome = PeriodIncome(

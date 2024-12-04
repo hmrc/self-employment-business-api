@@ -35,8 +35,8 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
   val periodDates: Option[PeriodDates] = Some(
     PeriodDates(
-      periodStartDate = "2025-08-24",
-      periodEndDate = "2026-08-24"
+      periodStartDate = Some("2025-08-24"),
+      periodEndDate = Some("2026-08-24")
     ))
 
   private val body = Def1_CreateAmendCumulativePeriodSummaryRequestBody(periodDates, None, None, None)

@@ -99,8 +99,6 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleStartDateNotAlignedToCommencementDate'
           RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE:
             $ref: './common/errors.yaml#/components/examples/ruleEndDateNotAlignedWithReportingType'
-          RULE_MISSING_SUBMISSION_DATES:
-            $ref: './common/errors.yaml#/components/examples/ruleMissingSubmissionDates'
           RULE_START_AND_END_DATE_NOT_ALLOWED:
             $ref: './common/errors.yaml#/components/examples/ruleStartAndEndDateNotAllowed'
           RULE_OUTSIDE_AMENDMENT_WINDOW:
