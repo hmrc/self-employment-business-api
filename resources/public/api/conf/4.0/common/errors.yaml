@@ -268,3 +268,13 @@ components:
       value:
         code: NO_BUSINESS_FOUND
         message: No business found for given NINO and Business ID
+
+    # 500
+
+    ruleBothPeriodDatesMissingError:
+      description: |
+        Submission start and end dates not provided.
+      value:
+        code: RULE_BOTH_MISSING_SUBMISSION_DATES
+        message: Submission start and end date not provided
+

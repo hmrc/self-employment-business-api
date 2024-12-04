@@ -124,8 +124,11 @@ object RuleStartDateNotAlignedToCommencementDateError
 object RuleEndDateNotAlignedWithReportingTypeError
     extends MtdError(code = "RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE", message = "End date does not align to the reporting type.", BAD_REQUEST)
 
-object RuleMissingPeriodSummaryDatesError
+object RuleOneMissingPeriodSummaryDateError
     extends MtdError(code = "RULE_MISSING_SUBMISSION_DATES", message = "Submission start/end date not provided", BAD_REQUEST)
+
+object RuleBothPeriodDatesMissingError
+    extends MtdError(code = "RULE_BOTH_MISSING_SUBMISSION_DATES", message = "Submission start and end date not provided", INTERNAL_SERVER_ERROR)
 
 object RuleStartAndEndDateNotAllowedError
     extends MtdError(code = "RULE_START_AND_END_DATE_NOT_ALLOWED", message = "Start/end date not accepted for annual/latent submission.", BAD_REQUEST)
