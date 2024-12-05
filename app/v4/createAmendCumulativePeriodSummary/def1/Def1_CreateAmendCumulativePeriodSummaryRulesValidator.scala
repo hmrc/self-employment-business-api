@@ -21,10 +21,10 @@ import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveIsoDate, ResolveParsedNumber}
 import shared.models.domain.TaxYear
-import shared.models.errors.{MtdError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError}
-import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses}
+import shared.models.errors.{EndDateFormatError, MtdError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError, StartDateFormatError}
+import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDisallowableExpenses, PeriodExpenses}
 import v4.createAmendCumulativePeriodSummary.model.request.{Create_PeriodIncome, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
 import java.time.LocalDate
@@ -32,9 +32,10 @@ import java.time.LocalDate
 case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYear)
     extends RulesValidator[Def1_CreateAmendCumulativePeriodSummaryRequestData] {
 
-  private val minDate            = LocalDate.of(taxYear.startYear, 4, 6)
-  private val maxDate: LocalDate = LocalDate.of(taxYear.year, 4, 5)
+  private val minDate: LocalDate = taxYear.startDate
+  private val maxDate: LocalDate = taxYear.endDate
 
+  private val resolveZeroPositiveParsedNumber  = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
   private val resolveDateRange = ResolveDateRange(RuleTaxYearNotSupportedError, RuleTaxYearNotSupportedError, RuleEndBeforeStartDateError)
@@ -44,11 +45,11 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
     import parsed.body._
 
     combine(
-      validateDates(periodDates),
+      periodDates.fold(valid)(dates => validateDates(dates.periodStartDate, dates.periodEndDate)),
       validateExpenses(periodExpenses, periodDisallowableExpenses),
-      periodIncome.map(validatePeriodIncomeNumericFields()).getOrElse(valid),
-      periodExpenses.map(validateAllowableNumericFields()).getOrElse(valid),
-      periodDisallowableExpenses.map(validateDisllowableNumericFields()).getOrElse(valid)
+      periodIncome.fold(valid)(validatePeriodIncomeNumericFields()),
+      periodExpenses.fold(valid)(validateAllowableNumericFields()),
+      periodDisallowableExpenses.fold(valid)(validateDisallowableNumericFields())
     ).onSuccess(parsed)
   }
 
@@ -68,21 +69,19 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
         valid
     }
 
-  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] = {
-    resolveDateRange.withDatesLimitedTo(minDate, maxDate)(periodStartDate -> periodEndDate).toUnit
-  }
-
-  private def validateDates(periodDates: Option[PeriodDates]): Validated[Seq[MtdError], Unit] =
-    periodDates.fold(valid) { dates =>
-      validateDates(dates.periodStartDate, dates.periodEndDate)
-    }
+  private def validateDates(periodStartDate: String, periodEndDate: String): Validated[Seq[MtdError], Unit] =
+    List(
+      ResolveIsoDate(periodStartDate, StartDateFormatError),
+      ResolveIsoDate(periodEndDate, EndDateFormatError)
+    ).traverse_(identity).andThen(_ => resolveDateRange.withDatesLimitedTo(minDate, maxDate)(periodStartDate -> periodEndDate).toUnit)
 
   private def validatePeriodIncomeNumericFields()(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(
       (periodIncome.other, "/periodIncome/other"),
-      (periodIncome.turnover, "/periodIncome/turnover")
+      (periodIncome.turnover, "/periodIncome/turnover"),
+      (periodIncome.taxTakenOffTradingIncome, "/periodIncome/taxTakenOffTradingIncome")
     ).traverse_ { case (value, path) =>
-      resolveMaybeNegativeParsedNumber(value, path)
+      resolveZeroPositiveParsedNumber(value, path)
     }
 
   private def validateAllowableNumericFields()(expenses: PeriodExpenses): Validated[Seq[MtdError], Unit] = {
@@ -116,7 +115,7 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
 
   }
 
-  private def validateDisllowableNumericFields()(expenses: PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validateDisallowableNumericFields()(expenses: PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val conditionalMaybeNegativeExpenses = List(

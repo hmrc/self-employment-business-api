@@ -336,8 +336,8 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
 
-      def test(error: MtdError)(invalidBody: JsValue, path: String): Unit =
-        s"return $error when given an invalid value for $path with negatives" in {
+      def test(error: MtdError)(invalidBody: JsValue, path: String, scenario: String): Unit =
+        s"given an invalid value for $path with a $scenario" in {
           val result =
             validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
 
@@ -347,6 +347,15 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       List(
         "/periodIncome/turnover",
         "/periodIncome/other",
+        "/periodIncome/taxTakenOffTradingIncome"
+      ).foreach(path =>
+        test(ValueFormatError.forPathAndRange(path, min = "0", max = "99999999999.99"))(
+          validBody().update(path, JsNumber(123.456)),
+          path,
+          "zero minimum"
+        ))
+
+      List(
         "/periodExpenses/adminCosts",
         "/periodExpenses/advertisingCosts",
         "/periodExpenses/businessEntertainmentCosts",
@@ -366,7 +375,8 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       ).foreach(path =>
         test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(
           bodyWithNegatives.update(path, JsNumber(123.456)),
-          path
+          path,
+          "negative minimum"
         ))
 
       "given a body with an invalid periodStartDate" in {

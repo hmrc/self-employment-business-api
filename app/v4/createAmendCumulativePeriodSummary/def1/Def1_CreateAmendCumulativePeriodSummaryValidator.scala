@@ -18,12 +18,12 @@ package v4.createAmendCumulativePeriodSummary.def1
 
 import cats.data.Validated
 import cats.data.Validated.Valid
-import cats.implicits.{catsSyntaxTuple4Semigroupal, toFoldableOps}
+import cats.implicits.catsSyntaxTuple4Semigroupal
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
 import shared.models.domain.TaxYear
-import shared.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
+import shared.models.errors.MtdError
 import v4.createAmendCumulativePeriodSummary.model.request._
 
 class Def1_CreateAmendCumulativePeriodSummaryValidator(
@@ -38,22 +38,11 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
   private val rulesValidator = Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear)
 
   def validate: Validated[Seq[MtdError], CreateAmendCumulativePeriodSummaryRequestData] =
-    validateJsonFields(body) andThen { parsedBody =>
-      (
-        ResolveNino(nino),
-        ResolveBusinessId(businessId),
-        Valid(taxYear),
-        Valid(parsedBody)
-      ).mapN(Def1_CreateAmendCumulativePeriodSummaryRequestData)
-    } andThen rulesValidator.validateBusinessRules
-
-  private def validateJsonFields(body: JsValue): Validated[Seq[MtdError], Def1_CreateAmendCumulativePeriodSummaryRequestBody] =
-    resolveJson(body) andThen (parsedBody =>
-      if (parsedBody.periodDates.isDefined) {
-        List(
-          ResolveIsoDate(parsedBody.periodDates.get.periodStartDate, StartDateFormatError),
-          ResolveIsoDate(parsedBody.periodDates.get.periodEndDate, EndDateFormatError)
-        ).traverse_(identity).map(_ => parsedBody)
-      } else Valid(parsedBody))
+    (
+      ResolveNino(nino),
+      ResolveBusinessId(businessId),
+      Valid(taxYear),
+      resolveJson(body)
+    ).mapN(Def1_CreateAmendCumulativePeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
 
 }
