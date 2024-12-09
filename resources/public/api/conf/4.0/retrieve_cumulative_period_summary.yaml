@@ -1,20 +1,18 @@
 summary: Retrieve a Self-Employment Cumulative Period Summary
 description: |
-  This endpoint enables you to retrieve the periodic income and expenses for a self employment business that occurred between two dates.
-  A National Insurance number, tax year and business ID are required. Please note that this endpoint is only available for tax years starting from 2025-26.
+  This endpoint enables you to retrieve the cumulative period income and expenses for a self-employment business that occurred between two dates.
+  A National Insurance number, tax year and business ID are required. <strong>Please note that this endpoint is only available for tax years starting from 2025-26</strong>.
   
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario)     | Scenario                                                                                                                                              |
-  |--------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-  | N/A - DEFAULT                        | Simulates success response.                                                                                                                           |
-  | CONSOLIDATED_EXPENSES                | Simulates success response with consolidatedExpenses.                                                                                                 |
-  | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                                                        |
-  | TAX_YEAR_NOT_SUPPORTED               | Simulates the scenario where the tax year is not supported.                                                                                           |
-  | STATEFUL                             | Performs a stateful retrieve.                                                                                                                         |
-  | DYNAMIC                              | The following response values will change to correspond to the values submitted in the request: <br/> • periodStartDate <br/> • periodEndDate         |
-
+  | Header Value (Gov-Test-Scenario)     | Scenario                                                    |
+  |--------------------------------------|-------------------------------------------------------------|
+  | N/A - DEFAULT                        | Simulates success response.                                 |
+  | CONSOLIDATED_EXPENSES                | Simulates success response with consolidatedExpenses.       |
+  | NOT_FOUND                            | Simulates the scenario where no data is found.              |
+  | TAX_YEAR_NOT_SUPPORTED               | Simulates the scenario where the tax year is not supported. |
+  | STATEFUL                             | Performs a stateful retrieve.                               |
 
 tags:
   - Self-Employment Cumulative Period Summary
@@ -22,7 +20,7 @@ tags:
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
-  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYearFrom2025'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
   - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
@@ -46,8 +44,7 @@ responses:
     content:
       application/json:
         schema:
-          oneOf:
-            - $ref: './schemas/retrieveCumulativePeriodSummary/def1/response.json'
+          $ref: './schemas/retrieveCumulativePeriodSummary/def1/response.json'
         examples:
           "Non-consolidated response":
             value:

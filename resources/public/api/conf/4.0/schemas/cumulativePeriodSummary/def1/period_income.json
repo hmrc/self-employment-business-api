@@ -6,17 +6,26 @@
     "turnover": {
       "description": "The takings, fees, sales or money earned by the business. Income associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
       "type": "number",
-      "example": "10000.00"
+      "multipleOf": 0.01,
+      "minimum": 0.00,
+      "maximum": 99999999999.99,
+      "example": 10000.00
     },
     "other": {
       "type": "number",
       "description": "Any other business income not included in turnover. Income associated with the running of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
-      "example": "10000.00"
+      "multipleOf": 0.01,
+      "minimum": 0.00,
+      "maximum": 99999999999.99,
+      "example": 10000.00
     },
     "taxTakenOffTradingIncome": {
       "type": "number",
       "description": "Other tax taken off trading income apart from CIS deductions. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
-      "example": "10000.00"
+      "multipleOf": 0.01,
+      "minimum": 0.00,
+      "maximum": 99999999999.99,
+      "example": 10000.00
     }
   },
   "additionalProperties": false
