@@ -4,24 +4,22 @@ components:
     # 400
 
     formatNino:
-      description: |
-        The format of the supplied NINO field is not valid.
+      description: The format of the supplied NINO field is not valid.
       value:
         code: FORMAT_NINO
-        message: The provided NINO is invalid
+        message: The NINO format is invalid
 
     formatBusinessId:
-      description: |
-        The format of the supplied Business ID field is not valid.
+      description: The format of the supplied Business ID field is not valid.
       value:
         code: FORMAT_BUSINESS_ID
-        message: The provided Business ID is invalid
+        message: The Business ID format is invalid
 
     formatTaxYear:
       description: The format of the supplied taxYear field is not valid.
       value:
         code: FORMAT_TAX_YEAR
-        message: The provided tax year is invalid
+        message: The taxYear format is invalid
 
     formatSource:
       description: The format of the supplied Source field is not valid.
@@ -33,7 +31,7 @@ components:
       description: One or more values have been added with the incorrect format.
       value:
         code: FORMAT_VALUE
-        message: The field should be between 0 and 99999999999.99
+        message: The value must be between 0 and 99999999999.99
 
     ruleIncorrectOrEmptyBody:
       description: An empty or non-matching body was submitted.
@@ -108,7 +106,7 @@ components:
       description: Tax year range invalid. A tax year range of one year is required.
       value:
         code: RULE_TAX_YEAR_RANGE_INVALID
-        message: Tax year range invalid. A tax year range of one year is required
+        message: A tax year range of one year is required
 
     ruleBildingNameNumber:
       description: One of building name or number must be supplied.
@@ -162,7 +160,7 @@ components:
       description: The End date is earlier than the Start date.
       value:
         code: RULE_END_DATE_BEFORE_START_DATE
-        message: The End date cannot be earlier than the Start date
+        message: The supplied accounting period end date is before the start date
 
     ruleBothExpensesSupplied:
       description: Both expenses and consolidatedExpenses can not be present at the same time.
@@ -257,7 +255,7 @@ components:
 
     notFound:
       description: |
-        The matching resource is not found.
+        The supplied income source could not be found.
       value:
         code: MATCHING_RESOURCE_NOT_FOUND
         message: Matching resource not found

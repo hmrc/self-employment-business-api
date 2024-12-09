@@ -4,16 +4,16 @@
   "description": "Object containing the details about self-employment period dates.",
   "properties": {
     "periodStartDate": {
-      "id": "full-date",
-      "description": "The first day that the income, expenses and deduction period summary covers.",
+      "description": "The first day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
       "type": "string",
-      "example": "2020-01-01"
+      "example": "2025-04-06",
+      "format": "date"
     },
     "periodEndDate": {
-      "id": "full-date",
-      "description": "The last day that the income, expenses and deduction period summary covers.",
+      "description": "The last day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
       "type": "string",
-      "example": "2020-01-01"
+      "example": "2025-07-05",
+      "format": "date"
     }
   },
   "additionalProperties": false,
