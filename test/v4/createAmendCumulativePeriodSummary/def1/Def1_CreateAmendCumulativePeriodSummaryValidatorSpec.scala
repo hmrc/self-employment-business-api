@@ -17,9 +17,7 @@
 package v4.createAmendCumulativePeriodSummary.def1
 
 import api.models.errors.RuleBothExpensesSuppliedError
-import play.api.Configuration
 import play.api.libs.json._
-import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
@@ -31,7 +29,7 @@ import v4.createAmendCumulativePeriodSummary.model.request.{
   Def1_CreateAmendCumulativePeriodSummaryRequestData
 }
 
-class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
+class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 
   private implicit val correlationId: String = "1234"
 
@@ -39,7 +37,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
   private val validBusinessId = "XAIS12345678901"
   private val taxYear         = TaxYear.fromMtd("2025-26")
 
-//
   private val validPeriodDates = Json.parse("""
       |{
       |  "periodStartDate": "2025-08-24",
@@ -174,13 +171,9 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
   private def validator(nino: String, businessId: String, taxYear: TaxYear, body: JsValue): Def1_CreateAmendCumulativePeriodSummaryValidator =
     new Def1_CreateAmendCumulativePeriodSummaryValidator(nino, businessId, taxYear, body)
 
-  private def setupMocks(): Unit =
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
-
   "validator" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        setupMocks()
 
         val result: Either[ErrorWrapper, CreateAmendCumulativePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, taxYear, validBody())
@@ -192,7 +185,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request with negative expenses" in {
-        setupMocks()
 
         val result: Either[ErrorWrapper, CreateAmendCumulativePeriodSummaryRequestData] = {
           validator(
@@ -215,7 +207,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request with consolidated expenses" in {
-        setupMocks()
 
         val result: Either[ErrorWrapper, CreateAmendCumulativePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, taxYear, validBodyConsolidated).validateAndWrapResult()
@@ -229,7 +220,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body containing the minimum fields" in {
-        setupMocks()
 
         val body = validBody()
           .removeProperty("/periodIncome")
@@ -248,7 +238,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body containing only period dates and period incomes" in {
-        setupMocks()
 
         val body = validBody()
           .removeProperty("/periodExpenses")
@@ -267,7 +256,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body without period disallowable expenses" in {
-        setupMocks()
 
         val body = validBody()
           .removeProperty("/periodDisallowableExpenses")
@@ -281,7 +269,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body without period allowable expenses" in {
-        setupMocks()
 
         val body = validBody()
           .removeProperty("/periodExpenses")
@@ -295,7 +282,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request body without period Dates" in {
-        setupMocks()
 
         val body = validBody()
           .removeProperty("/periodDates")
@@ -311,7 +297,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
 
     "return a single error" when {
       "given an invalid nino" in {
-        setupMocks()
 
         val result =
           validator("invalid", validBusinessId, taxYear, validBody()).validateAndWrapResult()
@@ -320,7 +305,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given an invalid business id" in {
-        setupMocks()
 
         val result =
           validator(validNino, "invalid", taxYear, validBody()).validateAndWrapResult()
@@ -395,22 +379,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         result shouldBe Left(ErrorWrapper(correlationId, EndDateFormatError))
       }
 
-      "given a body with a period start date out of range" in {
-        val invalidBody = validBody().update("/periodDates/periodStartDate", JsString("0010-01-01"))
-        val result =
-          validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
-
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
-      }
-
-      "given a body with a period end date out of range" in {
-        val invalidBody = validBody().update("/periodDates/periodEndDate", JsString("2026-05-06"))
-        val result =
-          validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
-
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
-      }
-
       "given a body with a period end date before period start date" in {
         val invalidBody = validBody()
           .update("/periodDates/periodStartDate", JsString("2020-08-25"))
@@ -441,15 +409,8 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
           validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(
-          ErrorWrapper(
-            "1234",
-            MtdError(
-              "RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED",
-              "An empty or non-matching body was submitted",
-              400,
-              Some(List("/periodDates/periodStartDate"))),
-            None
-          ))
+          ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/periodDates/periodStartDate"))
+        )
       }
 
       "given a body with a missing periodEndDate" in {
@@ -460,15 +421,8 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
           validator(validNino, validBusinessId, taxYear, invalidBody).validateAndWrapResult()
 
         result shouldBe Left(
-          ErrorWrapper(
-            "1234",
-            MtdError(
-              "RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED",
-              "An empty or non-matching body was submitted",
-              400,
-              Some(List("/periodDates/periodEndDate"))),
-            None
-          ))
+          ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPath("/periodDates/periodEndDate"))
+        )
       }
 
       "given a body with expenses and consolidated expenses" in {
