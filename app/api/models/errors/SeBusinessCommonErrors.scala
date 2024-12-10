@@ -94,8 +94,8 @@ object RuleWrongTpaAmountSubmittedError
 object RuleEarlyDataPeriodSummaryNotAcceptedError
     extends MtdError(
       code = "RULE_EARLY_DATA_SUBMISSION_NOT_ACCEPTED",
-      message = "Cannot submit data more than 10 days before end of Period.",
-      NOT_FOUND)
+      message = "Cannot submit data more than 10 days before end of Period",
+      BAD_REQUEST)
 
 object RuleAdvancePeriodSummaryRequiresPeriodEndDateError
     extends MtdError(
@@ -106,7 +106,7 @@ object RuleAdvancePeriodSummaryRequiresPeriodEndDateError
 object RulePeriodSummaryEndDateCannotMoveBackwardsError
     extends MtdError(
       code = "RULE_SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS",
-      message = "Period Summary end date cannot be earlier than existing submission",
+      message = "Submission end date cannot be earlier than existing submission",
       BAD_REQUEST)
 
 object RuleStartDateNotAlignedWithReportingTypeError
@@ -118,20 +118,17 @@ object RuleStartDateNotAlignedWithReportingTypeError
 object RuleStartDateNotAlignedToCommencementDateError
     extends MtdError(
       code = "RULE_START_DATE_NOT_ALIGNED_TO_COMMENCEMENT_DATE",
-      message = "Start date does not align to the commencement date.",
+      message = "Start date does not align to the commencement date",
       BAD_REQUEST)
 
 object RuleEndDateNotAlignedWithReportingTypeError
-    extends MtdError(code = "RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE", message = "End date does not align to the reporting type.", BAD_REQUEST)
+    extends MtdError(code = "RULE_END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE", message = "End date does not align to the reporting type", BAD_REQUEST)
 
 object RuleMissingPeriodSummaryDatesError
     extends MtdError(code = "RULE_MISSING_SUBMISSION_DATES", message = "Submission start/end date not provided", BAD_REQUEST)
 
 object RuleStartAndEndDateNotAllowedError
-    extends MtdError(code = "RULE_START_AND_END_DATE_NOT_ALLOWED", message = "Start/end date not accepted for annual/latent submission.", BAD_REQUEST)
+    extends MtdError(code = "RULE_START_AND_END_DATE_NOT_ALLOWED", message = "Start/end date not accepted for annual/latent submission", BAD_REQUEST)
 
 object RuleOutsideAmendmentWindowError
-    extends MtdError(
-      code = "RULE_OUTSIDE_AMENDMENT_WINDOW",
-      message = "Request cannot be completed as you are outside the amendment window",
-      BAD_REQUEST)
+    extends MtdError(code = "RULE_OUTSIDE_AMENDMENT_WINDOW", message = "You are outside the amendment window", BAD_REQUEST)
