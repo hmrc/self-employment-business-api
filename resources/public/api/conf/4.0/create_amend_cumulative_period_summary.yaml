@@ -1,27 +1,28 @@
-summary: Create and Amend Self-Employment Cumulative Period Summary
+summary: Create and Amend a Self-Employment Cumulative Period Summary
 description: |
-  This endpoint enables you to submit the cumulative period income and expenses for a self-employment business that occurred between two dates. A National Insurance number, tax year and business ID are required. Please note that this endpoint is only available for tax years starting from 2025-26.
+  This endpoint enables you to submit the cumulative period income and expenses for a self-employment business that occurred between two dates. A National Insurance number, tax year and business ID are required. <strong>Please note that this endpoint is only available for tax years starting from 2025-26</strong>.
 
-  Note: Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if there is no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero.
+  <strong>Note: Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if there is no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero</strong>.
   
   ### Test Data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario)            | Scenario                                                                                                        |
-  |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-  | N/A - DEFAULT                               | Simulate success response.                                                                                      |
-  | NOT_FOUND                                   | Simulates the scenario where no data is found.                                                                  | 
-  | TAX_YEAR_NOT_SUPPORTED                      | Simulates the scenario where the tax year is not supported.                                                     |
-  | BOTH_EXPENSES_SUPPLIED                      | Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.               |
-  | STATEFUL                                    | Performs a stateful create or update.                                                                           |
-  | START_DATE_NOT_ALIGNED_TO_COMMENCEMENT_DATE | Simulates the scenario where Start Date does not align to the commencement date.                                |
-  | END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE    | Simulates the scenario where End date does not align to the reporting type.                                     |
-  | START_AND_END_DATE_NOT_ALLOWED              | Simulates the scenario where Start/End Date not accepted for annual/latent submission.                          |
-  | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simulates the scenario where individuals cannot submit data more than 10 days before end of Period.             |
-  | OUTSIDE_AMENDMENT_WINDOW                    | Simulates the scenario where request cannot be completed as it is outside the amendment window.                 |
-  | ADVANCE_SUBMISSION_REQUIRES_PERIOD_END_DATE | Simulates the scenario for advance submission where the end date must be the end of the period                  |
-  | SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS   | Simulates the scenario where the submission end date cannot be earlier than existing submission                 |
-  | START_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE  | Simulates the scenario where the start date does not align with the reporting type                              |
+  | Header Value (Gov-Test-Scenario)            | Scenario                                                                                            |
+  |---------------------------------------------|-----------------------------------------------------------------------------------------------------|
+  | N/A - DEFAULT                               | Simulates success response.                                                                         |
+  | NOT_FOUND                                   | Simulates the scenario where no data is found.                                                      | 
+  | TAX_YEAR_NOT_SUPPORTED                      | Simulates the scenario where the tax year is not supported.                                         |
+  | BOTH_EXPENSES_SUPPLIED                      | Simulates the scenario where both expenses and consolidatedExpenses are present at the same time.   |
+  | STATEFUL                                    | Performs a stateful create or update.                                                               |
+  | START_DATE_NOT_ALIGNED_TO_COMMENCEMENT_DATE | Simulates the scenario where Start Date does not align to the commencement date.                    |
+  | END_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE    | Simulates the scenario where End date does not align to the reporting type.                         |
+  | MISSING_SUBMISSION_DATES                    | Simulates the scenario where Submission start/end date not provided.                                |
+  | START_AND_END_DATE_NOT_ALLOWED              | Simulates the scenario where Start/End Date not accepted for annual/latent submission.              |
+  | EARLY_DATA_SUBMISSION_NOT_ACCEPTED          | Simulates the scenario where individuals cannot submit data more than 10 days before end of Period. |
+  | OUTSIDE_AMENDMENT_WINDOW                    | Simulates the scenario where request cannot be completed as it is outside the amendment window.     |
+  | ADVANCE_SUBMISSION_REQUIRES_PERIOD_END_DATE | Simulates the scenario for advance submission where the end date must be the end of the period.     |
+  | SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS   | Simulates the scenario where the submission end date cannot be earlier than existing submission.    |
+  | START_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE  | Simulates the scenario where the start date does not align with the reporting type.                 |
 
 tags:
   - Self-Employment Cumulative Period Summary
@@ -29,10 +30,10 @@ tags:
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
-  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYearFrom2025'
   - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
   - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
-  - $ref: './common/headers.yaml#/components/parameters/authorizationReadScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 
 security:
@@ -45,12 +46,12 @@ requestBody:
       schema:
         $ref: './schemas/createAmendCumulativePeriodSummary/request.json'
       examples:
-        "Consolidated request":
-          value:
-            $ref: './examples/createAmendCumulativePeriodSummary/consolidated_request.json'
         "Non-consolidated request":
           value:
             $ref: './examples/createAmendCumulativePeriodSummary/non_consolidated_request.json'
+        "Consolidated request":
+          value:
+            $ref: './examples/createAmendCumulativePeriodSummary/consolidated_request.json'
 
 responses:
   "200":
@@ -69,30 +70,30 @@ responses:
             $ref: './common/errors.yaml#/components/examples/formatNino'
           FORMAT_TAX_YEAR:
             $ref: './common/errors.yaml#/components/examples/formatTaxYear'
-          FORMAT_VALUE:
-            $ref: './common/errors.yaml#/components/examples/formatValue'
           FORMAT_BUSINESS_ID:
             $ref: './common/errors.yaml#/components/examples/formatBusinessId'
-          FORMAT_PERIOD_ID:
-            $ref: './common/errors.yaml#/components/examples/formatPeriodId'
+          FORMAT_VALUE:
+            $ref: './common/errors.yaml#/components/examples/formatValue'
+          FORMAT_START_DATE:
+            $ref: './common/errors.yaml#/components/examples/formatStartDate'
+          FORMAT_END_DATE:
+            $ref: './common/errors.yaml#/components/examples/formatEndDate'
+          RULE_END_DATE_BEFORE_START_DATE:
+            $ref: './common/errors.yaml#/components/examples/ruleEndDateBeforeStartDate'
           RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
           RULE_TAX_YEAR_NOT_SUPPORTED:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
-          RULE_BOTH_EXPENSES_SUPPLIED:
-            $ref: './common/errors.yaml#/components/examples/ruleBothExpensesSupplied'
-          RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES:
-            $ref: './common/errors.yaml#/components/examples/ruleNotAllowedConsolidatedExpenses'
           RULE_TAX_YEAR_RANGE_INVALID:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
-          INVALID_TAX_YEAR_PARAMETER:
-            $ref: './common/errors.yaml#/components/examples/invalidTaxYearParameter'
+          RULE_BOTH_EXPENSES_SUPPLIED:
+            $ref: './common/errors.yaml#/components/examples/ruleBothExpensesSupplied'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          RULE_EARLY_DATA_SUBMISSION_NOT_ACCEPTED:
+            $ref: './common/errors.yaml#/components/examples/ruleEarlyDataSubmissionNotAccepted'
           RULE_ADVANCE_SUBMISSION_REQUIRES_PERIOD_END_DATE:
             $ref: './common/errors.yaml#/components/examples/ruleAdvanceSubmissionRequiresPeriodEndDate'
-          RULE_SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS:
-            $ref: './common/errors.yaml#/components/examples/ruleSubmissionEndDateCannotMoveBackwards'
           RULE_START_DATE_NOT_ALIGNED_WITH_REPORTING_TYPE:
             $ref: './common/errors.yaml#/components/examples/ruleStartDateNotAlignedWithReportingType'
           RULE_START_DATE_NOT_ALIGNED_TO_COMMENCEMENT_DATE:
@@ -105,9 +106,18 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleStartAndEndDateNotAllowed'
           RULE_OUTSIDE_AMENDMENT_WINDOW:
             $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
-          RULE_EARLY_DATA_SUBMISSION_NOT_ACCEPTED:
-            $ref: './common/errors.yaml#/components/examples/ruleEarlyDataSubmissionNotAccepted'
+          RULE_SUBMISSION_END_DATE_CANNOT_MOVE_BACKWARDS:
+            $ref: './common/errors.yaml#/components/examples/ruleSubmissionEndDateCannotMoveBackwards'
 
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
 
   "404":
     description: Not Found
