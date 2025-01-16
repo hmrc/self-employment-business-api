@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Object containing the details about self-employment period dates.",
+  "properties": {
+    "periodStartDate": {
+      "description": "The first day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
+      "type": "string",
+      "example": "2025-04-06",
+      "format": "date"
+    },
+    "periodEndDate": {
+      "description": "The last day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
+      "type": "string",
+      "example": "2025-07-05",
+      "format": "date"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "periodStartDate",
+    "periodEndDate"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "periodId": "2019-07-05_2020-10-05",
+  "links": [
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "amend-self-employment-period-summary",
+      "method": "PUT"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910}/period/2019-06-12_2020-06-12",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period",
+      "rel": "list-self-employment-period-summaries",
+      "method": "GET"
+    }
+  ]
+}

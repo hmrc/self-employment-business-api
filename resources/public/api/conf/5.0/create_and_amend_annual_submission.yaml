@@ -1,0 +1,130 @@
+summary: Create and Amend Self-Employment Annual Submission
+description: |
+  This endpoint allows a developer to create or amend a self-employment annual summary for a tax year.
+  A National Insurance number, Business ID and tax year must be provided.
+
+  ### Test data
+  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+  
+  | Header Value (Gov-Test-Scenario)     | Scenario                                                                                                                     |
+  |--------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+  | N/A - DEFAULT                        | Simulate success response.                                                                                                   |
+  | ALLOWANCE_NOT_SUPPORTED              | Simulates the scenario where one or more of the supplied allowances is not supported for the supplied tax year.              |
+  | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                               |
+  | STATEFUL                             | Performs a stateful create or update.                                                                                        |
+  | WRONG_TPA_AMOUNT_SUBMITTED           | Simulates the scenario where the Transition Profit Acceleration Amount cannot be submitted without Transition Profit Amount. |
+
+tags:
+  - Self-Employment Annual Submission
+
+parameters:
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/businessId'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+  - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+  - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+security:
+  - User-Restricted:
+      - write:self-assessment
+
+requestBody:
+  content:
+    application/json:
+      schema:
+        oneOf:
+          - $ref: './schemas/createAmendAnnualSubmission/def1/request.json'
+          - $ref: './schemas/createAmendAnnualSubmission/def2/request.json'
+          - $ref: './schemas/createAmendAnnualSubmission/def3/request.json'
+      examples:
+        "With trading allowance request for TY 2023-24 and before":
+          value:
+            $ref: './examples/createAmendAnnualSubmission/def1/with_trading_income_allowance.json'
+        "Without trading allowance request for TY 2023-24 and before":
+          value:
+            $ref: './examples/createAmendAnnualSubmission/def1/without_trading_income_allowance.json'
+        "With trading allowance request for TY 2024-25":
+          value:
+            $ref: './examples/createAmendAnnualSubmission/def2/with_trading_income_allowance.json'
+        "Without trading allowance request for TY 2024-25":
+          value:
+            $ref: './examples/createAmendAnnualSubmission/def2/without_trading_income_allowance.json'
+        "With trading allowance request for TY 2025-26 onwards":
+          "value":
+            "$ref": './examples/createAmendAnnualSubmission/def3/with_trading_income_allowance.json'
+        "Without trading allowance request for TY 2025-26 onwards":
+          "value":
+            "$ref": './examples/createAmendAnnualSubmission/def3/without_trading_income_allowance.json'
+
+responses:
+  "204":
+    description: Success (No Content)
+    headers:
+      X-CorrelationId:
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
+
+  "400":
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          FORMAT_NINO:
+            $ref: './common/errors.yaml#/components/examples/formatNino'
+          FORMAT_TAX_YEAR:
+            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
+          FORMAT_VALUE:
+            $ref: './common/errors.yaml#/components/examples/formatValue'
+          FORMAT_BUSINESS_ID:
+            $ref: './common/errors.yaml#/components/examples/formatBusinessId'
+          FORMAT_STRING:
+            $ref: './common/errors.yaml#/components/examples/formatString'
+          FORMAT_DATE:
+            $ref: './common/errors.yaml#/components/examples/formatDate'
+          FORMAT_CLASS_4_EXEMPTION_REASON:
+            $ref: './common/errors.yaml#/components/examples/formatClass4Exemption'
+          RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+          RULE_TAX_YEAR_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_TAX_YEAR_RANGE_INVALID:
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+          RULE_BUILDING_NAME_NUMBER:
+            $ref: './common/errors.yaml#/components/examples/ruleBildingNameNumber'
+          RULE_BOTH_ALLOWANCES_SUPPLIED:
+            $ref: './common/errors.yaml#/components/examples/ruleBothAllowancesSupplied'
+          RULE_ALLOWANCE_NOT_SUPPORTED:
+            $ref: './common/errors.yaml#/components/examples/ruleAllowanceNotSupported'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+          RULE_WRONG_TPA_AMOUNT_SUBMITTED:
+            $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
+
+  "403":
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          CLIENT_OR_AGENT_NOT_AUTHORISED:
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+  "404":
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/error-response.yaml'
+        examples:
+          MATCHING_RESOURCE_NOT_FOUND:
+            $ref: './common/errors.yaml#/components/examples/notFound'

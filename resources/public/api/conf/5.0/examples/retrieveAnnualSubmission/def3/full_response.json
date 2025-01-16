@@ -1,0 +1,58 @@
+{
+  "adjustments": {
+    "includedNonTaxableProfits": 210,
+    "basisAdjustment": 178.23,
+    "overlapReliefUsed": 123.78,
+    "accountingAdjustment": 678.9,
+    "averagingAdjustment": 674.98,
+    "outstandingBusinessIncome": 342.67,
+    "balancingChargeBpra": 145.98,
+    "balancingChargeOther": 457.23,
+    "goodsAndServicesOwnUse": 432.9,
+    "transitionProfitAmount": 435.9,
+    "transitionProfitAccelerationAmount": 439.9
+  },
+  "allowances": {
+    "annualInvestmentAllowance": 564.76,
+    "capitalAllowanceMainPool": 456.98,
+    "capitalAllowanceSpecialRatePool": 352.87,
+    "zeroEmissionsGoodsVehicleAllowance": 653.9,
+    "businessPremisesRenovationAllowance": 452.98,
+    "enhancedCapitalAllowance": 563.23,
+    "allowanceOnSales": 678.9,
+    "capitalAllowanceSingleAssetPool": 563.89,
+    "structuredBuildingAllowance": [
+      {
+        "amount": 564.89,
+        "firstYear": {
+          "qualifyingDate": "2019-05-29",
+          "qualifyingAmountExpenditure": 567.67
+        },
+        "building": {
+          "name": "Victoria Building",
+          "number": "23",
+          "postcode": "TF3 5GH"
+        }
+      }
+    ],
+    "enhancedStructuredBuildingAllowance": [
+      {
+        "amount": 445.56,
+        "firstYear": {
+          "qualifyingDate": "2019-09-29",
+          "qualifyingAmountExpenditure": 565.56
+        },
+        "building": {
+          "name": "Trinity House",
+          "number": "20",
+          "postcode": "TF4 7HJ"
+        }
+      }
+    ],
+    "zeroEmissionsCarAllowance": 678.78
+  },
+  "nonFinancials": {
+    "businessDetailsChangedRecently": true,
+    "class4NicsExemptionReason": "non-resident"
+  }
+}
