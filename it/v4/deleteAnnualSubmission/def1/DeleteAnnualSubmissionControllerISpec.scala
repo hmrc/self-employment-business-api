@@ -60,7 +60,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     def downstreamUri: String    = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
   }
 
-  "calling the V3 deleteAnnualSubmission endpoint" should {
+  "calling the V4 deleteAnnualSubmission endpoint" should {
     "return a 204 status" when {
       s"any valid non-TYS request is made" in new NonTysTest {
 
