@@ -28,7 +28,7 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
+import v5.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 
 class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with Def1_AmendPeriodSummaryFixture {
 

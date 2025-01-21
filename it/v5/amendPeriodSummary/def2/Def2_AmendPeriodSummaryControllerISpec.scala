@@ -28,13 +28,13 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v4.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
+import v5.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
 
 class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with Def2_AmendPeriodSummaryFixture {
 
   val requestBodyJson: JsValue = def2_AmendPeriodSummaryBodyMtdJson
 
-  "The V4 Amend Period Summary endpoint" should {
+  "The V5 Amend Period Summary endpoint" should {
 
     "return a 204 status code" when {
 

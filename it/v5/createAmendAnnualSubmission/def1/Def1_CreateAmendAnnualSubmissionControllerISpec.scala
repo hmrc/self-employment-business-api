@@ -28,7 +28,7 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v4.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionFixture
+import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionFixture
 
 class Def1_CreateAmendAnnualSubmissionControllerISpec
     extends IntegrationBaseSpec
@@ -38,7 +38,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
   val requestBodyJson: JsValue           = createAmendAnnualSubmissionRequestBodyMtdJson()
   val downstreamRequestBodyJson: JsValue = createAmendAnnualSubmissionRequestBodyDownstreamJson()
 
-  "Calling the V4 amend endpoint" should {
+  "Calling the V5 amend endpoint" should {
     "return a 204 status code" when {
       "given any valid Def1 request" in new NonTysTest {
 

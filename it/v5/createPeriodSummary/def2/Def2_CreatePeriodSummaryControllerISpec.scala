@@ -30,7 +30,7 @@ import stubs.BaseDownstreamStub
 
 class Def2_CreatePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
-  "The V4 create endpoint" should {
+  "The V5 create endpoint" should {
 
     "return a 200 status code" when {
       "given a valid TYS request" in new Test {

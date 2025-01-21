@@ -29,7 +29,7 @@ import stubs.BaseDownstreamStub
 
 class Def1_RetrieveCumulativePeriodSummaryISpec extends IntegrationBaseSpec {
 
-  "The V4 retrieve cumulative endpoint" should {
+  "The V5 retrieve cumulative endpoint" should {
 
     "return a 200 status code" when {
 

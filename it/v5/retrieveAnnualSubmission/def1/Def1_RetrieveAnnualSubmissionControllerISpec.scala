@@ -26,11 +26,11 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
+import v5.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 
 class Def1_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def1_RetrieveAnnualSubmissionFixture {
 
-  "calling the V4 retrieve endpoint" should {
+  "calling the V5 retrieve endpoint" should {
 
     "return a 200 status code" when {
       s"any valid request is made" in new NonTysTest {

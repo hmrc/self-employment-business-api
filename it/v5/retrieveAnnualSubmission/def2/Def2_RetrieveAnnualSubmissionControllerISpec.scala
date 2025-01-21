@@ -27,11 +27,11 @@ import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v4.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
+import v5.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
 class Def2_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def2_RetrieveAnnualSubmissionFixture {
 
-  "calling the V4 retrieve endpoint" should {
+  "calling the V5 retrieve endpoint" should {
 
     "return a 200 status code" when {
       s"any valid request is made" in new Test {

@@ -30,7 +30,7 @@ import stubs.BaseDownstreamStub
 
 class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
-  "calling the V4 list period summaries endpoint" should {
+  "calling the V5 list period summaries endpoint" should {
 
     "return a 200 status code" when {
 

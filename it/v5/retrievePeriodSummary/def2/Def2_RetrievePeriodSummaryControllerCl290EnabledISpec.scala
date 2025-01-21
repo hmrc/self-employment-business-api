@@ -37,7 +37,7 @@ class Def2_RetrievePeriodSummaryControllerCl290EnabledISpec extends IntegrationB
     )
   }
 
-  "The V4 retrieve endpoint" should {
+  "The V5 retrieve endpoint" should {
 
     "return a 200 status code" when {
 
