@@ -1,0 +1,64 @@
+{
+  "periodDates": {
+    "periodStartDate": "2019-04-06",
+    "periodEndDate": "2019-07-05"
+  },
+  "periodIncome": {
+    "turnover": 200.00,
+    "other": 200.00
+    {{#if (enabled "cl290")}}
+    ,"taxTakenOffTradingIncome": 1000.99
+    {{/if}}
+  },
+  "periodExpenses": {
+    "costOfGoods": 200.00,
+    "paymentsToSubcontractors": -200.00,
+    "wagesAndStaffCosts": -200.00,
+    "carVanTravelExpenses": -200.00,
+    "premisesRunningCosts": 200.00,
+    "maintenanceCosts": 200.00,
+    "adminCosts": -200.00,
+    "businessEntertainmentCosts": -200.00,
+    "advertisingCosts": -200.00,
+    "interestOnBankOtherLoans": 200.00,
+    "financeCharges": 200.00,
+    "irrecoverableDebts": 200.00,
+    "professionalFees": 200.00,
+    "depreciation": 200.00,
+    "otherExpenses": -200.00
+  },
+  "periodDisallowableExpenses": {
+    "costOfGoodsDisallowable": 200.00,
+    "paymentsToSubcontractorsDisallowable": -200.00,
+    "wagesAndStaffCostsDisallowable": -200.00,
+    "carVanTravelExpensesDisallowable": -200.00,
+    "premisesRunningCostsDisallowable": 200.00,
+    "maintenanceCostsDisallowable": 200.00,
+    "adminCostsDisallowable": -200.00,
+    "businessEntertainmentCostsDisallowable": -200.00,
+    "advertisingCostsDisallowable": -200.00,
+    "interestOnBankOtherLoansDisallowable": 200.00,
+    "financeChargesDisallowable": 200.00,
+    "irrecoverableDebtsDisallowable": 200.00,
+    "professionalFeesDisallowable": 200.00,
+    "depreciationDisallowable": 200.00,
+    "otherExpensesDisallowable": -200.00
+  },
+  "links": [
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "amend-self-employment-period-summary",
+      "method": "PUT"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period/2019-06-12_2020-06-12",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "/individuals/business/self-employment/TC663795B/XAIS12345678910/period",
+      "rel": "list-self-employment-period-summaries",
+      "method": "GET"
+    }
+  ]
+}
