@@ -59,7 +59,6 @@ class CreateAmendCumulativePeriodSummaryController @Inject() (val authService: E
           params = Map("nino" -> nino, "businessId" -> businessId, "taxYear" -> taxYear),
           Some(request.body)
         ))
-        .withNoContentResult(OK)
 
       requestHandler.handleRequest()
     }
