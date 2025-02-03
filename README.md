@@ -41,7 +41,7 @@ To view documentation locally ensure the Self-Employment Business API is running
 Then go to http://localhost:9680/api-documentation/docs/openapi/preview and use this port and version:
 
 ```
-http://localhost:7801/api/conf/3.0/application.yaml
+http://localhost:7801/api/conf/5.0/application.yaml
 ```
 
 ## Changelog
