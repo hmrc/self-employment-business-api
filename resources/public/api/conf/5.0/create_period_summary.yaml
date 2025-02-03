@@ -1,8 +1,13 @@
 post:
   summary: Create a Self-Employment Period Summary
   description: |
-    This endpoint allows a developer to create a self-employment period summary for submission of periodic data. Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if you have no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero.
-    A National Insurance number and business must be provided.
+    This endpoint enables you to create a self-employment period summary for submission of periodic data.
+    Submissions must include values for incomes, expenses and deductions, even if the values are zero.
+    For example, if there is no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero.
+    A National Insurance number and business ID must be provided.
+    
+    <strong>Note: This endpoint can only be used for submissions for tax year 2024-25 or earlier.
+    New endpoints which support cumulative submission will be provided for tax year 2025-26 onwards</strong>.
   
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
@@ -54,22 +59,18 @@ post:
             - $ref: './schemas/createPeriodSummary/def1/request.json'
             - $ref: './schemas/createPeriodSummary/def2/request.json'
         examples:
-          "Without consolidated request for TY 2023-24 onwards":
+          "Non-consolidated request for TY 2023-24 and 2024-25":
             value:
               $ref: './examples/createPeriodSummary/def2/non_consolidated_request.json'
-          "With consolidated request for TY 2023-24 onwards":
+          "Consolidated request for TY 2023-24 and 2024-25":
             value:
               $ref: './examples/createPeriodSummary/def2/consolidated_request.json'
-          "Without consolidated request for TY 2022-23 and before":
+          "Non-consolidated request for TY 2022-23 and before":
             value:
               $ref: './examples/createPeriodSummary/def1/non_consolidated_request.json'
-          "With consolidated request for TY 2022-23 and before":
-            description: Create Period Summary Request
+          "Consolidated request for TY 2022-23 and before":
             value:
               $ref: './examples/createPeriodSummary/def1/consolidated_request.json'
-
-
-
 
   responses:
     "200":

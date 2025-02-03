@@ -4,6 +4,9 @@ get:
     This endpoint enables you to retrieve a list of all self-employment update period summaries.
     A National Insurance number and business ID must be provided.
     
+    <strong>Note: This endpoint can only be used for submissions for tax year 2024-25 or earlier.
+    New endpoints which support cumulative submission will be provided for tax year 2025-26 onwards</strong>.
+    
     ### Test data
     Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
@@ -44,8 +47,7 @@ get:
       content:
         application/json:
           schema:
-            oneOf:
-              - $ref: './schemas/listPeriodSummaries/response.json'
+            $ref: './schemas/listPeriodSummaries/response.json'
           examples:
             "Example response":
               value:

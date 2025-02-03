@@ -1,9 +1,12 @@
 summary: Amend a Self-Employment Period Summary
 description: |
-  This endpoint allows a developer to amend a self-employment period summary.
+  This endpoint enables you to amend a self-employment period summary.
   Submissions must include values for incomes, expenses and deductions, even if the values are zero.
   The periodExpenses object may contain either a consolidatedExpenses element, or a mixture of the other expenses elements.
   A National Insurance number, business ID and period ID must be provided.
+  
+  <strong>Note: This endpoint can only be used for submissions for tax year 2024-25 or earlier.
+  New endpoints which support cumulative submission will be provided for tax year 2025-26 onwards</strong>.
 
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
@@ -42,10 +45,10 @@ requestBody:
           - $ref: './schemas/amendPeriodSummary/def1/request.json'
           - $ref: './schemas/amendPeriodSummary/def2/request.json'
       examples:
-        "Non-consolidated request for TY 2023-24 onwards":
+        "Non-consolidated request for TY 2023-24 and 2024-25":
           value:
             $ref: './examples/amendPeriodSummary/def2/non_consolidated_request.json'
-        "Consolidated request for TY 2023-24 onwards":
+        "Consolidated request for TY 2023-24 and 2024-25":
           value:
             $ref: './examples/amendPeriodSummary/def2/consolidated_request.json'
         "Non-consolidated request for TY 2022-23 and before":
@@ -54,7 +57,6 @@ requestBody:
         "Consolidated request for TY 2022-23 and before":
           value:
             $ref: './examples/amendPeriodSummary/def1/consolidated_request.json'
-
 
 responses:
   "204":

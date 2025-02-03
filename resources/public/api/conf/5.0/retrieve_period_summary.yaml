@@ -3,6 +3,9 @@ description: |
   This endpoint enables you to retrieve a single self-employment period summary for a given identifier.
   A National Insurance number, business ID and period ID must be provided.
   
+  <strong>Note: This endpoint can only be used for submissions for tax year 2024-25 or earlier.
+  New endpoints which support cumulative submission will be provided for tax year 2025-26 onwards</strong>.
+  
   ### Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
@@ -51,10 +54,10 @@ responses:
             - $ref: './schemas/retrievePeriodSummary/def1/response.json'
             - $ref: './schemas/retrievePeriodSummary/def2/response.json'
         examples:
-          "Non-consolidated response for TY 2023-24 onwards":
+          "Non-consolidated response for TY 2023-24 and 2024-25":
             value:
               $ref: './examples/retrievePeriodSummary/def2/non_consolidated_response.json'
-          "Consolidated response for TY 2023-24 onwards":
+          "Consolidated response for TY 2023-24 and 2024-25":
             value:
               $ref: './examples/retrievePeriodSummary/def2/consolidated_response.json'
           "Non-consolidated response for TY 2022-23 and before":

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "TY 2023-24 or later",
+  "title": "TY 2023-24 and 2024-25",
   "description": "Retrieves a self-employment period summary.",
   "type": "object",
   "properties": {
