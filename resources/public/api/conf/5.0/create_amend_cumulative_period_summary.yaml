@@ -54,11 +54,18 @@ requestBody:
             $ref: './examples/createAmendCumulativePeriodSummary/consolidated_request.json'
 
 responses:
-  "200":
-    description: Success
+  "204":
+    description: Success (No Content)
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: './common/headers.yaml#/components/parameters/deprecationHeader'
+      Sunset:
+        $ref: './common/headers.yaml#/components/parameters/sunsetHeader'
+      Link:
+        $ref: './common/headers.yaml#/components/parameters/linkHeader'
+
   "400":
     description: Bad request
     content:

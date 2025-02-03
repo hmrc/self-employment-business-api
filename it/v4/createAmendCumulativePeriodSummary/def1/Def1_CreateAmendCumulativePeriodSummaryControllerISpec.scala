@@ -19,10 +19,9 @@ package v4.createAmendCumulativePeriodSummary.def1
 import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers._
 import shared.models.domain.TaxYear
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
@@ -31,9 +30,9 @@ import stubs.BaseDownstreamStub
 
 class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
-  "The V4 create endpoint" should {
+  "The V4 create and amend endpoint" should {
 
-    "return a 200 status code" when {
+    "return a 204 status code" when {
       "given a valid TYS request" in new Test {
 
         override def setupStubs(): StubMapping = {
@@ -44,7 +43,7 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends Integration
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
