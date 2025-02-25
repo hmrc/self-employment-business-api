@@ -16,6 +16,7 @@
 
 package v5.deleteAnnualSubmission.def1
 
+import api.models.errors.RuleOutsideAmendmentWindowError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
@@ -167,6 +168,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         (Status.BAD_REQUEST, "INVALID_NINO", Status.BAD_REQUEST, NinoFormatError),
         (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE", Status.BAD_REQUEST, BusinessIdFormatError),
         (Status.BAD_REQUEST, "INVALID_TAX_YEAR", Status.BAD_REQUEST, TaxYearFormatError),
+        (Status.UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", Status.BAD_REQUEST, RuleOutsideAmendmentWindowError),
         (Status.FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", Status.INTERNAL_SERVER_ERROR, InternalError),
         (Status.NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", Status.NOT_FOUND, NotFoundError),
         (Status.NOT_FOUND, "NOT_FOUND", Status.NOT_FOUND, NotFoundError),

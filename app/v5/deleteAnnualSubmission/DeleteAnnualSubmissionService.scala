@@ -16,6 +16,7 @@
 
 package v5.deleteAnnualSubmission
 
+import api.models.errors.RuleOutsideAmendmentWindowError
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -40,6 +41,7 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
         "INVALID_NINO"                -> NinoFormatError,
         "INVALID_TAX_YEAR"            -> TaxYearFormatError,
         "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
+        "OUTSIDE_AMENDMENT_WINDOW"    -> RuleOutsideAmendmentWindowError,
         "INVALID_CORRELATIONID"       -> InternalError,
         "INVALID_PAYLOAD"             -> InternalError,
         "MISSING_EXEMPTION_REASON"    -> InternalError,
