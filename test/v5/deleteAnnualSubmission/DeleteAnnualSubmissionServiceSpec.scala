@@ -16,6 +16,7 @@
 
 package v5.deleteAnnualSubmission
 
+import api.models.errors.RuleOutsideAmendmentWindowError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors._
@@ -75,6 +76,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
         "INVALID_NINO"                -> NinoFormatError,
         "INVALID_TAX_YEAR"            -> TaxYearFormatError,
         "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
+        "OUTSIDE_AMENDMENT_WINDOW"    -> RuleOutsideAmendmentWindowError,
         "INVALID_CORRELATIONID"       -> InternalError,
         "INVALID_PAYLOAD"             -> InternalError,
         "MISSING_EXEMPTION_REASON"    -> InternalError,
