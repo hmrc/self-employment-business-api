@@ -13,6 +13,7 @@ description: |
   | NOT_FOUND                            | Simulates the scenario where no data is found.                                                                               |
   | STATEFUL                             | Performs a stateful create or update.                                                                                        |
   | WRONG_TPA_AMOUNT_SUBMITTED           | Simulates the scenario where the Transition Profit Acceleration Amount cannot be submitted without Transition Profit Amount. |
+  | OUTSIDE_AMENDMENT_WINDOW             | Simulates the scenario where request cannot be completed as it is outside the amendment window.                              |
 
 tags:
   - Self-Employment Annual Submission
@@ -117,6 +118,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
           RULE_WRONG_TPA_AMOUNT_SUBMITTED:
             $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
+          RULE_OUTSIDE_AMENDMENT_WINDOW:
+            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
 
   "403":
     description: Forbidden

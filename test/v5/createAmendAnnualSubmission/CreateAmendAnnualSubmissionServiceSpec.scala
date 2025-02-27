@@ -14,37 +14,42 @@
  * limitations under the License.
  */
 
-package v5.deleteAnnualSubmission
+package v5.createAmendAnnualSubmission
 
-import api.models.errors.RuleOutsideAmendmentWindowError
+import api.models.errors.{RuleAllowanceNotSupportedError, RuleOutsideAmendmentWindowError}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.DownstreamErrors.single
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v5.deleteAnnualSubmission.model.Def1_DeleteAnnualSubmissionRequestData
+import v5.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
+import v5.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
 
 import scala.concurrent.Future.successful
 
-class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
-
+class CreateAmendAnnualSubmissionServiceSpec extends ServiceSpec with Def1_CreateAmendAnnualSubmissionFixture {
+  val nino: String                            = "AA987654A"
+  val businessId: String                      = "XAIS10987654321"
   val taxYear: String                         = "2017-18"
-  val nino: String                            = "AA123456A"
-  val businessId: String                      = "XAIS12345678910"
   override implicit val correlationId: String = "X-123"
 
-  private val requestData = Def1_DeleteAnnualSubmissionRequestData(
+  private val requestData = Def1_CreateAmendAnnualSubmissionRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
-    taxYear = TaxYear.fromMtd(taxYear)
+    taxYear = TaxYear.fromMtd(taxYear),
+    body = Def1_CreateAmendAnnualSubmissionRequestBody(
+      adjustments = Some(adjustments),
+      allowances = Some(allowances),
+      nonFinancials = Some(nonFinancials)
+    )
   )
 
-  trait Test extends MockDeleteAnnualSubmissionConnector {
+  trait Test extends MockCreateAmendAnnualSubmissionConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
-    val service = new DeleteAnnualSubmissionService(
-      connector = mockDeleteAnnualSubmissionConnector
+    val service = new CreateAmendAnnualSubmissionService(
+      connector = mockAmendAnnualSubmissionConnector
     )
 
   }
@@ -52,11 +57,13 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
   "service" should {
     "service call successful" when {
       "return mapped result" in new Test {
-        MockedDeleteAnnualSubmissionConnector
-          .deleteAnnualSubmission(requestData)
-          .returns(successful(Right(ResponseWrapper(correlationId, ()))))
+        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        await(service.deleteAnnualSubmission(requestData)) shouldBe Right(ResponseWrapper(correlationId, ()))
+        MockAmendAnnualSubmissionConnector
+          .amendAnnualSubmission(requestData)
+          .returns(successful(outcome))
+
+        await(service.createAmendAnnualSubmission(requestData)) shouldBe outcome
       }
     }
   }
@@ -65,27 +72,26 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
         s"a $downstreamErrorCode error is returned from the service" in new Test {
-
-          MockedDeleteAnnualSubmissionConnector
-            .deleteAnnualSubmission(requestData)
+          MockAmendAnnualSubmissionConnector
+            .amendAnnualSubmission(requestData)
             .returns(successful(Left(ResponseWrapper(correlationId, single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          await(service.deleteAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.createAmendAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
+      val input: Seq[(String, MtdError)] = Seq(
         "INVALID_NINO"                -> NinoFormatError,
         "INVALID_TAX_YEAR"            -> TaxYearFormatError,
         "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
         "OUTSIDE_AMENDMENT_WINDOW"    -> RuleOutsideAmendmentWindowError,
+        "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
         "INVALID_CORRELATIONID"       -> InternalError,
         "INVALID_PAYLOAD"             -> InternalError,
         "MISSING_EXEMPTION_REASON"    -> InternalError,
         "MISSING_EXEMPTION_INDICATOR" -> InternalError,
-        "ALLOWANCE_NOT_SUPPORTED"     -> InternalError,
         "NOT_FOUND"                   -> NotFoundError,
         "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-        "GONE"                        -> NotFoundError,
+        "GONE"                        -> InternalError,
         "SERVER_ERROR"                -> InternalError,
         "BAD_GATEWAY"                 -> InternalError,
         "SERVICE_UNAVAILABLE"         -> InternalError

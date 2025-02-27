@@ -41,7 +41,6 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
         "INVALID_NINO"                -> NinoFormatError,
         "INVALID_TAX_YEAR"            -> TaxYearFormatError,
         "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-        "OUTSIDE_AMENDMENT_WINDOW"    -> RuleOutsideAmendmentWindowError,
         "INVALID_CORRELATIONID"       -> InternalError,
         "INVALID_PAYLOAD"             -> InternalError,
         "MISSING_EXEMPTION_REASON"    -> InternalError,
@@ -61,7 +60,8 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
       "PERIOD_NOT_FOUND"             -> NotFoundError,
       "INCOME_SOURCE_DATA_NOT_FOUND" -> NotFoundError,
       "PERIOD_ALREADY_DELETED"       -> NotFoundError,
-      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError
+      "TAX_YEAR_NOT_SUPPORTED"       -> RuleTaxYearNotSupportedError,
+      "OUTSIDE_AMENDMENT_WINDOW"     -> RuleOutsideAmendmentWindowError
     )
 
     errors ++ extraTysErrors

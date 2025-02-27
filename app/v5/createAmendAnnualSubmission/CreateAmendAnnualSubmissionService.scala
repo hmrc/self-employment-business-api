@@ -16,7 +16,7 @@
 
 package v5.createAmendAnnualSubmission
 
-import api.models.errors.{RuleAllowanceNotSupportedError, RuleWrongTpaAmountSubmittedError}
+import api.models.errors.{RuleAllowanceNotSupportedError, RuleOutsideAmendmentWindowError, RuleWrongTpaAmountSubmittedError}
 import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
@@ -61,7 +61,8 @@ class CreateAmendAnnualSubmissionService @Inject() (connector: CreateAmendAnnual
       "INVALID_CORRELATION_ID"     -> InternalError,
       "INCOME_SOURCE_NOT_FOUND"    -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
-      "WRONG_TPA_AMOUNT_SUBMITTED" -> RuleWrongTpaAmountSubmittedError
+      "WRONG_TPA_AMOUNT_SUBMITTED" -> RuleWrongTpaAmountSubmittedError,
+      "OUTSIDE_AMENDMENT_WINDOW"   -> RuleOutsideAmendmentWindowError
     )
 
     errors ++ extraTysErrors
