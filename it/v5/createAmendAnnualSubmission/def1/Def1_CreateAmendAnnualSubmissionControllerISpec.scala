@@ -235,7 +235,8 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-          (UNPROCESSABLE_ENTITY, "WRONG_TPA_AMOUNT_SUBMITTED", BAD_REQUEST, RuleWrongTpaAmountSubmittedError)
+          (UNPROCESSABLE_ENTITY, "WRONG_TPA_AMOUNT_SUBMITTED", BAD_REQUEST, RuleWrongTpaAmountSubmittedError),
+          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError)
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
