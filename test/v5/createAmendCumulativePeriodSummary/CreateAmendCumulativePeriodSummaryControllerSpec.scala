@@ -56,7 +56,7 @@ class CreateAmendCumulativePeriodSummaryControllerSpec
     Def1_CreateAmendCumulativePeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), TaxYear.fromMtd(taxYear), requestBody)
 
   "handleRequest" should {
-    "return a successful response with status 200 (OK)" when {
+    "return a successful response with status 204 (No Content)" when {
       "the request received is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 
@@ -65,7 +65,7 @@ class CreateAmendCumulativePeriodSummaryControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         runOkTestWithAudit(
-          expectedStatus = OK,
+          expectedStatus = NO_CONTENT,
           maybeAuditRequestBody = Some(requestMtdBodyJson),
           maybeExpectedResponseBody = None,
           maybeAuditResponseBody = None
