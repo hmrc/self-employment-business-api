@@ -69,7 +69,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
-      "when downstream returns an different error code" in new Test {
+      "when downstream returns a different error code" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
