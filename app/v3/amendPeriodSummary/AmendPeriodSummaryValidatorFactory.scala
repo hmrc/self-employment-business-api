@@ -19,7 +19,7 @@ package v3.amendPeriodSummary
 import shared.controllers.validators.Validator
 import shared.config.SharedAppConfig
 import play.api.libs.json.JsValue
-import v3.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
+import shared.models.errors.NotFoundError
 import v3.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
 import v3.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
@@ -36,7 +36,7 @@ class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: SharedAp
                 includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] = {
 
     maybeTaxYear match {
-      case None             => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, body, includeNegatives)
+      case None             => Validator.returningErrors(Seq(NotFoundError))
       case Some(taxYearStr) => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYearStr, body, includeNegatives)
     }
   }

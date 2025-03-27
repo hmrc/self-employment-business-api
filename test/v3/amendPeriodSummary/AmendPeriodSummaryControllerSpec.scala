@@ -22,7 +22,6 @@ import shared.hateoas.Method.{GET, PUT}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import play.api.Configuration
@@ -30,9 +29,8 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.routing.{Version, Version3}
-import v3.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v3.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
-import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
+import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
 import v3.amendPeriodSummary.model.response.AmendPeriodSummaryHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -46,32 +44,12 @@ class AmendPeriodSummaryControllerSpec
     with MockHateoasFactory
     with MockAuditService
     with MockSharedAppConfig
-    with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
 
   override val apiVersion: Version = Version3
 
   "handleRequest" should {
     "return a successful response with status 200 (OK)" when {
-      "given a valid non-TYS request" in new PreTysTest {
-        willUseValidator(returningSuccess(requestData))
-
-        MockAmendPeriodSummaryService
-          .amendPeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        MockHateoasFactory
-          .wrap((), AmendPeriodSummaryHateoasData(Nino(validNino), BusinessId(businessId), periodId, taxYear = None))
-          .returns(HateoasWrapper((), testHateoasLinks))
-
-        runOkTestWithAudit(
-          expectedStatus = OK,
-          maybeAuditRequestBody = Some(requestBodyJson),
-          maybeExpectedResponseBody = Some(responseJson),
-          maybeAuditResponseBody = None
-        )
-      }
-
       "given a valid TYS request" in new TysTest {
         willUseValidator(returningSuccess(requestData))
 
@@ -89,23 +67,6 @@ class AmendPeriodSummaryControllerSpec
           maybeExpectedResponseBody = Some(responseJson),
           maybeAuditResponseBody = None
         )
-      }
-
-      "return the error as per spec" when {
-        "the parser validation fails" in new PreTysTest {
-          willUseValidator(returning(NinoFormatError))
-          runErrorTest(NinoFormatError)
-        }
-
-        "the service returns an error" in new PreTysTest {
-          willUseValidator(returningSuccess(requestData))
-
-          MockAmendPeriodSummaryService
-            .amendPeriodSummary(requestData)
-            .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-          runErrorTest(RuleTaxYearNotSupportedError)
-        }
       }
     }
   }
@@ -153,64 +114,6 @@ class AmendPeriodSummaryControllerSpec
           auditResponse = auditResponse
         )
       )
-
-  }
-
-  private trait PreTysTest extends Test {
-    val periodId = "2019-01-01_2020-01-01"
-
-    val requestBodyJson: JsValue = def1_AmendPeriodSummaryBodyMtdJson
-
-    val requestData: AmendPeriodSummaryRequestData =
-      Def1_AmendPeriodSummaryRequestData(Nino(validNino), BusinessId(businessId), PeriodId(periodId), def1_AmendPeriodSummaryBody)
-
-    val responseJson: JsValue = Json.parse(
-      s"""
-         |{
-         |    "links": [
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
-         |      "method": "PUT",
-         |      "rel": "amend-self-employment-period-summary"
-         |
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period/$periodId",
-         |      "method": "GET",
-         |      "rel": "self"
-         |
-         |    },
-         |    {
-         |      "href": "/individuals/business/self-employment/$validNino/$businessId/period",
-         |      "method": "GET",
-         |      "rel": "list-self-employment-period-summaries"
-         |
-         |    }
-         |    ]
-         |  }
-    """.stripMargin
-    )
-
-    val testHateoasLinks: Seq[Link] = List(
-      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", PUT, "amend-self-employment-period-summary"),
-      Link(s"/individuals/business/self-employment/$validNino/$businessId/period/$periodId", GET, "self"),
-      Link(s"/individuals/business/self-employment/$validNino/$businessId/period", GET, "list-self-employment-period-summaries")
-    )
-
-    protected def callController(): Future[Result] =
-      controller.handleRequest(validNino, businessId, periodId, None)(fakePostRequest(requestBodyJson))
-
-    override protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
-      super
-        .event(auditResponse, requestBody)
-        .copy(
-          detail = super
-            .event(auditResponse, requestBody)
-            .detail
-            .copy(
-              params = Map("nino" -> validNino, "businessId" -> businessId, "periodId" -> periodId)
-            )
-        )
 
   }
 
