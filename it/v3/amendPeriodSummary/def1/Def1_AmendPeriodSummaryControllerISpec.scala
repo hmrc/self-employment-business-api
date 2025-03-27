@@ -27,11 +27,8 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v3.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 
-class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with Def1_AmendPeriodSummaryFixture {
-
-  val requestBodyJson: JsValue = def1_AmendPeriodSummaryBodyMtdJson
+class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators {
 
   "The V3 Amend Period Summary endpoint" should {
 
@@ -117,6 +114,51 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
          |   "reason": "message"
          | }
     """.stripMargin
+
+    val requestBodyJson: JsValue = Json.parse(
+      """
+        |{
+        |    "periodIncome": {
+        |        "turnover": 1.12,
+        |        "other": 2.12
+        |    },
+        |    "periodExpenses": {
+        |        "costOfGoods": 2.12,
+        |        "paymentsToSubcontractors": 3.12,
+        |        "wagesAndStaffCosts": 4.12,
+        |        "carVanTravelExpenses": 5.12,
+        |        "premisesRunningCosts": 6.12,
+        |        "maintenanceCosts": 7.12,
+        |        "adminCosts": 8.12,
+        |        "businessEntertainmentCosts": 9.12,
+        |        "advertisingCosts": 10.12,
+        |        "interestOnBankOtherLoans": 11.12,
+        |        "financeCharges": 12.12,
+        |        "irrecoverableDebts": 13.12,
+        |        "professionalFees": 14.12,
+        |        "depreciation": 15.12,
+        |        "otherExpenses": 16.12
+        |    },
+        |    "periodDisallowableExpenses": {
+        |        "costOfGoodsDisallowable": 102.12,
+        |        "paymentsToSubcontractorsDisallowable": 103.12,
+        |        "wagesAndStaffCostsDisallowable": 104.12,
+        |        "carVanTravelExpensesDisallowable": 105.12,
+        |        "premisesRunningCostsDisallowable": 106.12,
+        |        "maintenanceCostsDisallowable": 107.12,
+        |        "adminCostsDisallowable": 108.12,
+        |        "businessEntertainmentCostsDisallowable": 109.12,
+        |        "advertisingCostsDisallowable": 110.12,
+        |        "interestOnBankOtherLoansDisallowable": 111.12,
+        |        "financeChargesDisallowable": 112.12,
+        |        "irrecoverableDebtsDisallowable": 113.12,
+        |        "professionalFeesDisallowable": 114.12,
+        |        "depreciationDisallowable": 115.12,
+        |        "otherExpensesDisallowable": 116.12
+        |    }
+        |}
+    """.stripMargin
+    )
 
   }
 

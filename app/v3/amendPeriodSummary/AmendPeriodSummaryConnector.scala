@@ -18,11 +18,11 @@ package v3.amendPeriodSummary
 
 import play.api.http.Status.OK
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def1_AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
+import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestData}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,22 +34,14 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClient, val appConfig
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
-
-    import request._
-
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
-    request match {
-      case def1: Def1_AmendPeriodSummaryRequestData =>
-        val desUri = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
-        put(def1.body, desUri)
+    val amendPeriodSummaryRequestData: Def2_AmendPeriodSummaryRequestData = request.asInstanceOf[Def2_AmendPeriodSummaryRequestData]
+    import amendPeriodSummaryRequestData._
 
-      case def2: Def2_AmendPeriodSummaryRequestData =>
-        import def2._
-        val ifsUri = IfsUri[Unit](
-          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
-        put(def2.body, ifsUri)
-    }
+    val ifsUri = IfsUri[Unit](
+      s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
+    put(amendPeriodSummaryRequestData.body, ifsUri)
   }
 
 }
