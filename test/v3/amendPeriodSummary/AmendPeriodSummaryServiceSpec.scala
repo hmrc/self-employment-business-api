@@ -17,10 +17,12 @@
 package v3.amendPeriodSummary
 
 import api.models.domain.PeriodId
+import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v3.amendPeriodSummary.def2.model.request.Def2_Amend_PeriodIncome
@@ -38,11 +40,21 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
   private val periodIncomeWithCl290Enabled = Def2_Amend_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
+  private val periodIncomeWithCl290Disabled = Def2_Amend_PeriodIncome(turnover = Some(2000.00), None, None)
+
   private val requestDataWithCl290Enabled = Def2_AmendPeriodSummaryRequestData(
     nino = nino,
     businessId = businessId,
     periodId = periodId,
     body = Def2_AmendPeriodSummaryRequestBody(Some(periodIncomeWithCl290Enabled), None, None),
+    taxYear = taxYear
+  )
+
+  private val requestDataWithCl290Disabled = Def2_AmendPeriodSummaryRequestData(
+    nino = nino,
+    businessId = businessId,
+    periodId = periodId,
+    body = Def2_AmendPeriodSummaryRequestBody(Some(periodIncomeWithCl290Disabled), None, None),
     taxYear = taxYear
   )
 
@@ -70,6 +82,53 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
         await(service.amendPeriodSummary(requestDataWithCl290Enabled)) shouldBe Right(ResponseWrapper(correlationId, ()))
       }
+
+      "a valid request is supplied with cl290 feature switch disabled" in new Cl290Disabled {
+        MockAmendPeriodSummaryConnector
+          .amendPeriodSummary(requestDataWithCl290Disabled)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        await(service.amendPeriodSummary(requestDataWithCl290Disabled)) shouldBe Right(ResponseWrapper(correlationId, ()))
+      }
+    }
+
+    "map errors according to spec" when {
+      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+        s"a $downstreamErrorCode error is returned from the service" in new Cl290Disabled {
+
+          MockAmendPeriodSummaryConnector
+            .amendPeriodSummary(requestDataWithCl290Disabled)
+            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
+
+          await(service.amendPeriodSummary(requestDataWithCl290Disabled)) shouldBe Left(ErrorWrapper(correlationId, error))
+        }
+
+      val errors = List(
+        "INVALID_NINO"                    -> NinoFormatError,
+        "INVALID_INCOME_SOURCE"           -> BusinessIdFormatError,
+        "INVALID_DATE_FROM"               -> PeriodIdFormatError,
+        "INVALID_DATE_TO"                 -> PeriodIdFormatError,
+        "INVALID_PAYLOAD"                 -> InternalError,
+        "NOT_FOUND_INCOME_SOURCE"         -> NotFoundError,
+        "NOT_FOUND_PERIOD"                -> NotFoundError,
+        "BOTH_EXPENSES_SUPPLIED"          -> RuleBothExpensesSuppliedError,
+        "NOT_ALLOWED_SIMPLIFIED_EXPENSES" -> RuleNotAllowedConsolidatedExpenses,
+        "SERVER_ERROR"                    -> InternalError,
+        "SERVICE_UNAVAILABLE"             -> InternalError
+      )
+
+      val extraTysErrors = List(
+        "INVALID_TAX_YEAR"                      -> TaxYearFormatError,
+        "TAX_YEAR_NOT_SUPPORTED"                -> RuleTaxYearNotSupportedError,
+        "INVALID_CORRELATION_ID"                -> InternalError,
+        "INVALID_INCOMESOURCE_ID"               -> BusinessIdFormatError,
+        "PERIOD_NOT_FOUND"                      -> NotFoundError,
+        "INCOME_SOURCE_NOT_FOUND"               -> NotFoundError,
+        "INCOME_SOURCE_DATA_NOT_FOUND"          -> NotFoundError,
+        "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError
+      )
+
+      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 
