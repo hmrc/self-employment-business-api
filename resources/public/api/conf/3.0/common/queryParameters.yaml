@@ -34,6 +34,18 @@ components:
         type: string
         example: 2023-24
       required: false
+    taxYearTo2025AmendPeriod:
+      in: query
+      name: taxYear
+      description: |
+        The tax year to which the data applies in the format YYYY-YY. The range must not be greater than a single year. For example, 2023-25 is not valid.
+        It must not be provided for a periodId relating to an earlier tax year.
+
+        <p style="font-weight:bold"> Maximum tax year supported is 2024-25.</p>
+      schema:
+        type: string
+        example: 2023-24
+      required: true
     taxYearTo2025List:
       in: query
       name: taxYear
