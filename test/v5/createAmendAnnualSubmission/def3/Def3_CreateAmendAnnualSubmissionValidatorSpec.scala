@@ -29,8 +29,8 @@ import shared.models.errors._
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v5.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
-import v5.createAmendAnnualSubmission.def2.request._
-import v5.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
+import v5.createAmendAnnualSubmission.def3.request._
+import v5.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def3_CreateAmendAnnualSubmissionRequestData}
 
 class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators {
 
@@ -38,7 +38,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validTaxYear    = "2024-25"
+  private val validTaxYear    = "2025-26"
 
   private val validAdjustments = Json.parse(
     """
@@ -65,7 +65,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |    "businessPremisesRenovationAllowance": 200.12,
       |    "capitalAllowanceMainPool": 200.12,
       |    "capitalAllowanceSpecialRatePool": 200.12,
-      |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
       |    "enhancedCapitalAllowance": 200.12,
       |    "allowanceOnSales": 200.12,
       |    "capitalAllowanceSingleAssetPool": 200.12,
@@ -147,7 +146,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
   private val parsedBusinessId = BusinessId(validBusinessId)
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
 
-  private val parsedAdjustments = Def2_CreateAmend_Adjustments(
+  private val parsedAdjustments = Def3_CreateAmend_Adjustments(
     includedNonTaxableProfits = Some(200.12),
     basisAdjustment = Some(200.12),
     overlapReliefUsed = Some(200.12),
@@ -161,36 +160,34 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     transitionProfitAccelerationAmount = Some(200.12)
   )
 
-  private val parsedFirstYear = Def2_CreateAmend_FirstYear(qualifyingDate = "2021-11-11", qualifyingAmountExpenditure = 1.23)
-  private val parsedBuilding  = Def2_CreateAmend_Building(name = Some("Plaza 2"), number = None, postcode = "TF3 4NT")
+  private val parsedFirstYear = Def3_CreateAmend_FirstYear(qualifyingDate = "2021-11-11", qualifyingAmountExpenditure = 1.23)
+  private val parsedBuilding  = Def3_CreateAmend_Building(name = Some("Plaza 2"), number = None, postcode = "TF3 4NT")
 
   private val parsedStructuredBuildingAllowance =
-    Def2_CreateAmend_StructuredBuildingAllowance(amount = 1.23, firstYear = Some(parsedFirstYear), building = parsedBuilding)
+    Def3_CreateAmend_StructuredBuildingAllowance(amount = 1.23, firstYear = Some(parsedFirstYear), building = parsedBuilding)
 
-  private val parsedAllowances = Def2_CreateAmend_Allowances(
+  private val parsedAllowances = Def3_CreateAmend_Allowances(
     annualInvestmentAllowance = Some(200.12),
     businessPremisesRenovationAllowance = Some(200.12),
     capitalAllowanceMainPool = Some(200.12),
     capitalAllowanceSpecialRatePool = Some(200.12),
-    zeroEmissionsGoodsVehicleAllowance = Some(200.12),
     enhancedCapitalAllowance = Some(200.12),
     allowanceOnSales = Some(200.12),
     capitalAllowanceSingleAssetPool = Some(200.12),
     tradingIncomeAllowance = None,
-    electricChargePointAllowance = Some(200.12),
     zeroEmissionsCarAllowance = Some(200.12),
     structuredBuildingAllowance = Some(Seq(parsedStructuredBuildingAllowance)),
     enhancedStructuredBuildingAllowance = Some(Seq(parsedStructuredBuildingAllowance))
   )
 
   private val parsedAllowancesWithOnlyTradingIncomeAllowance =
-    Def2_CreateAmend_Allowances(None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None, None)
+    Def3_CreateAmend_Allowances(None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None)
 
   private val parsedNonFinancials =
-    Def2_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
+    Def3_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
 
   private val parsedRequestBody =
-    Def2_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))
+    Def3_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))
 
   private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory
 
@@ -204,7 +201,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           validator(validNino, validBusinessId, validTaxYear, validRequestBody()).validateAndWrapResult()
 
         result shouldBe Right(
-          Def2_CreateAmendAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear, parsedRequestBody)
+          Def3_CreateAmendAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear, parsedRequestBody)
         )
       }
 
@@ -225,7 +222,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
             )
           ).validateAndWrapResult()
 
-        val expected = Def2_CreateAmendAnnualSubmissionRequestData(
+        val expected = Def3_CreateAmendAnnualSubmissionRequestData(
           parsedNino,
           parsedBusinessId,
           parsedTaxYear,
@@ -244,7 +241,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
 
-        val expected = Def2_CreateAmendAnnualSubmissionRequestData(
+        val expected = Def3_CreateAmendAnnualSubmissionRequestData(
           parsedNino,
           parsedBusinessId,
           parsedTaxYear,
@@ -259,7 +256,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
         result shouldBe Right(
-          Def2_CreateAmendAnnualSubmissionRequestData(
+          Def3_CreateAmendAnnualSubmissionRequestData(
             parsedNino,
             parsedBusinessId,
             parsedTaxYear,
@@ -274,7 +271,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
         result shouldBe Right(
-          Def2_CreateAmendAnnualSubmissionRequestData(
+          Def3_CreateAmendAnnualSubmissionRequestData(
             parsedNino,
             parsedBusinessId,
             parsedTaxYear,
@@ -506,11 +503,9 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       "/allowances/businessPremisesRenovationAllowance",
       "/allowances/capitalAllowanceMainPool",
       "/allowances/capitalAllowanceSpecialRatePool",
-      "/allowances/zeroEmissionsGoodsVehicleAllowance",
       "/allowances/enhancedCapitalAllowance",
       "/allowances/allowanceOnSales",
       "/allowances/capitalAllowanceSingleAssetPool",
-      "/allowances/electricChargePointAllowance",
       "/allowances/zeroEmissionsCarAllowance"
     ).foreach(path => test(ValueFormatError.withPath(path))(validRequestBody().update(path, badNumber), path))
 
@@ -710,7 +705,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               |    "annualInvestmentAllowance": 200.12,
               |    "capitalAllowanceMainPool": 200.12,
               |    "capitalAllowanceSpecialRatePool": 200.12,
-              |    "zeroEmissionsGoodsVehicleAllowance": 200.12,
               |    "businessPremisesRenovationAllowance": 200.12,
               |    "enhancedCapitalAllowance": 200.12,
               |    "allowanceOnSales": 200.12,
@@ -819,12 +813,10 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               |    "annualInvestmentAllowance": 200.132,
               |    "capitalAllowanceMainPool": 200.132,
               |    "capitalAllowanceSpecialRatePool": 200.132,
-              |    "zeroEmissionsGoodsVehicleAllowance": 200.123,
               |    "businessPremisesRenovationAllowance": 200.132,
               |    "enhancedCapitalAllowance": 200.132,
               |    "allowanceOnSales": 200.132,
               |    "capitalAllowanceSingleAssetPool": 200.312,
-              |    "electricChargePointAllowance": -200.132,
               |    "zeroEmissionsCarAllowance": 200.132,
               |    "structuredBuildingAllowance": [
               |      {
@@ -892,11 +884,9 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
                 "/allowances/businessPremisesRenovationAllowance",
                 "/allowances/capitalAllowanceMainPool",
                 "/allowances/capitalAllowanceSpecialRatePool",
-                "/allowances/zeroEmissionsGoodsVehicleAllowance",
                 "/allowances/enhancedCapitalAllowance",
                 "/allowances/allowanceOnSales",
                 "/allowances/capitalAllowanceSingleAssetPool",
-                "/allowances/electricChargePointAllowance",
                 "/allowances/zeroEmissionsCarAllowance",
                 "/allowances/structuredBuildingAllowance/0/amount",
                 "/allowances/structuredBuildingAllowance/0/firstYear/qualifyingAmountExpenditure",

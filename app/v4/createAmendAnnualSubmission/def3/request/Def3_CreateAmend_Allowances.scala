@@ -23,7 +23,6 @@ case class Def3_CreateAmend_Allowances(annualInvestmentAllowance: Option[BigDeci
                                        businessPremisesRenovationAllowance: Option[BigDecimal],
                                        capitalAllowanceMainPool: Option[BigDecimal],
                                        capitalAllowanceSpecialRatePool: Option[BigDecimal],
-                                       zeroEmissionsGoodsVehicleAllowance: Option[BigDecimal],
                                        enhancedCapitalAllowance: Option[BigDecimal],
                                        allowanceOnSales: Option[BigDecimal],
                                        capitalAllowanceSingleAssetPool: Option[BigDecimal],
@@ -40,7 +39,6 @@ object Def3_CreateAmend_Allowances {
       (JsPath \ "businessPremisesRenovationAllowance").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceMainPool").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceSpecialRatePool").writeNullable[BigDecimal] and
-      (JsPath \ "zeroEmissionGoodsVehicleAllowance").writeNullable[BigDecimal] and
       (JsPath \ "enhanceCapitalAllowance").writeNullable[BigDecimal] and
       (JsPath \ "allowanceOnSales").writeNullable[BigDecimal] and
       (JsPath \ "capitalAllowanceSingleAssetPool").writeNullable[BigDecimal] and

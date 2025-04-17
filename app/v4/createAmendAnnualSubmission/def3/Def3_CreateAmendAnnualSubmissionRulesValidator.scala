@@ -80,7 +80,6 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       (businessPremisesRenovationAllowance, "/allowances/businessPremisesRenovationAllowance"),
       (capitalAllowanceMainPool, "/allowances/capitalAllowanceMainPool"),
       (capitalAllowanceSpecialRatePool, "/allowances/capitalAllowanceSpecialRatePool"),
-      (zeroEmissionsGoodsVehicleAllowance, "/allowances/zeroEmissionsGoodsVehicleAllowance"),
       (enhancedCapitalAllowance, "/allowances/enhancedCapitalAllowance"),
       (allowanceOnSales, "/allowances/allowanceOnSales"),
       (capitalAllowanceSingleAssetPool, "/allowances/capitalAllowanceSingleAssetPool"),
@@ -114,7 +113,7 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   private def validateBothAllowancesSupplied(allowances: request.Def3_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
     if (allowances.tradingIncomeAllowance.isDefined) {
       allowances match {
-        case request.Def3_CreateAmend_Allowances(None, None, None, None, None, None, None, None, Some(_), None, None, None) => valid
+        case request.Def3_CreateAmend_Allowances(None, None, None, None, None, None, None, Some(_), None, None, None) => valid
         case _ => Invalid(List(RuleBothAllowancesSuppliedError))
       }
     } else {
