@@ -19,12 +19,13 @@ package shared.config.rewriters
 import shared.config.SharedAppConfig
 import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
 
+import java.util.regex.Pattern
 import javax.inject.{Inject, Singleton}
 
-@Singleton class EndpointSummaryRewriter @Inject() (appConfig: SharedAppConfig) {
+@Singleton class EndpointSummaryRewriter @Inject()(appConfig: SharedAppConfig) {
 
   private val rewriteSummaryRegex = "([\\s]*)(summary: [\"]?)(.*)".r
-  private val yamlLength          = ".yaml".length
+  private val yamlLength = ".yaml".length
 
   val rewriteEndpointSummary: CheckAndRewrite = CheckAndRewrite(
     check = (version, filename) => {
@@ -47,11 +48,12 @@ import javax.inject.{Inject, Singleton}
             case line if !line.toLowerCase.contains("[test only]") =>
               val components = line.split("summary: ")
               val whitespace = components(0)
-              val summary    = components(1).replace("\"", "")
+              val summary = components(1).replace("\"", "")
 
               val replacement = s"""${whitespace}summary: "$summary [test only]""""
+              val literalString: String = Pattern.quote(line)
 
-              yaml.replaceFirst(line, replacement)
+              yaml.replaceFirst(literalString, replacement)
           }
 
         rewritten.getOrElse(yaml)

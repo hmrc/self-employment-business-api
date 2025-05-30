@@ -60,6 +60,16 @@ class EndpointSummaryRewriterSpec extends UnitSpec with MockSharedAppConfig {
         val result = rewrite("", "", "  summary: Create and Amend employment expenses")
         result shouldBe """  summary: "Create and Amend employment expenses [test only]""""
       }
+
+      "return the rewritten summary when it contains parentheses" in {
+        val result = rewrite("", "", "summary: Create and Amend employment expenses (parentheses test)")
+        result shouldBe """summary: "Create and Amend employment expenses (parentheses test) [test only]""""
+      }
+
+      "return the rewritten summary when it contains square brackets" in {
+        val result = rewrite("", "", "summary: Create and Amend employment expenses [square brackets test]")
+        result shouldBe """summary: "Create and Amend employment expenses [square brackets test] [test only]""""
+      }
     }
 
     "the yaml summary is already in quotes" should {
@@ -71,9 +81,10 @@ class EndpointSummaryRewriterSpec extends UnitSpec with MockSharedAppConfig {
 
     "the yaml is not for a single endpoint" should {
       "return the yaml unchanged" in {
-        val yaml = """
-                     |summary: "Create and Amend employment expenses"
-                     |summary: "Create and Amend employment expenses"""".stripMargin
+        val yaml =
+          """
+            |summary: "Create and Amend employment expenses"
+            |summary: "Create and Amend employment expenses"""".stripMargin
         val result = rewrite("", "", yaml)
         result shouldBe yaml
 
