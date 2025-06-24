@@ -20,7 +20,7 @@ import api.models.domain.PeriodId
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import v4.amendPeriodSummary.AmendPeriodSummarySchema
 import v4.amendPeriodSummary.AmendPeriodSummarySchema.Def2
-import v4.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData}
+import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 case class Def2_AmendPeriodSummaryRequestData(
     nino: Nino,

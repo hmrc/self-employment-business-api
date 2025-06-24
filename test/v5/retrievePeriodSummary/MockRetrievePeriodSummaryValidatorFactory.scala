@@ -20,11 +20,12 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
 import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 
-trait MockRetrievePeriodSummaryValidatorFactory extends MockFactory {
+trait MockRetrievePeriodSummaryValidatorFactory extends TestSuite with MockFactory {
 
   val mockRetrievePeriodSummaryValidatorFactory: RetrievePeriodSummaryValidatorFactory =
     mock[RetrievePeriodSummaryValidatorFactory]

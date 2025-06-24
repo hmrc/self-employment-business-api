@@ -26,6 +26,7 @@ import v4.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryReq
 import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v4.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
+import java.net.URL
 import scala.concurrent.Future
 
 class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
@@ -59,7 +60,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
-        val expectedDownstreamUrl = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+        val expectedDownstreamUrl: URL = new URL(
+          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
@@ -73,8 +75,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       "call the TYS URL and return a 200 status" in new IfsTest with Test {
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
-        val expectedDownstreamUrl =
-          s"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+        val expectedDownstreamUrl: URL = new URL(
+          s"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 

@@ -18,6 +18,7 @@ package v5.listPeriodSummaries
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v5.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
@@ -25,7 +26,7 @@ import v5.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, Perio
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListPeriodSummariesConnector extends MockFactory {
+trait MockListPeriodSummariesConnector extends TestSuite with MockFactory {
 
   val mockListPeriodSummariesConnector: ListPeriodSummariesConnector = mock[ListPeriodSummariesConnector]
 

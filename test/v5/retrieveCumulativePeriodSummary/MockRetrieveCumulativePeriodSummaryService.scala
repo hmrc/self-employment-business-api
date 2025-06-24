@@ -18,6 +18,7 @@ package v5.retrieveCumulativePeriodSummary
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v5.retrieveCumulativePeriodSummary.model.request.RetrieveCumulativePeriodSummaryRequestData
@@ -25,7 +26,7 @@ import v5.retrieveCumulativePeriodSummary.model.response.RetrieveCumulativePerio
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveCumulativePeriodSummaryService extends MockFactory {
+trait MockRetrieveCumulativePeriodSummaryService extends TestSuite with MockFactory {
 
   val mockRetrieveCumulativePeriodSummaryService: RetrieveCumulativePeriodSummaryService = mock[RetrieveCumulativePeriodSummaryService]
 

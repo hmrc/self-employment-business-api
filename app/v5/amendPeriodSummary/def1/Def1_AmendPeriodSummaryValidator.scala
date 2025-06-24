@@ -20,11 +20,11 @@ import cats.data.Validated
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYear, ResolverSupport}
+import shared.controllers.validators.resolvers._
 import shared.models.errors.MtdError
 import v5.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator.resolveTaxYear
 import v5.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
-import v5.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData}
+import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 import v5.validators.resolvers.ResolvePeriodId
 
 object Def1_AmendPeriodSummaryValidator extends ResolverSupport {

@@ -16,24 +16,21 @@
 
 package v3.createAmendAnnualSubmission
 
+import play.api.http.Status.OK
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.config.SharedAppConfig
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v3.createAmendAnnualSubmission.model.request.{
-  CreateAmendAnnualSubmissionRequestData,
-  Def1_CreateAmendAnnualSubmissionRequestData,
-  Def2_CreateAmendAnnualSubmissionRequestData
-}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
+import v3.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def amendAnnualSubmission(request: CreateAmendAnnualSubmissionRequestData)(implicit
       hc: HeaderCarrier,

@@ -18,6 +18,7 @@ package v4.retrievePeriodSummary
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v4.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
@@ -25,7 +26,7 @@ import v4.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrievePeriodSummaryService extends MockFactory {
+trait MockRetrievePeriodSummaryService extends TestSuite with MockFactory {
 
   val mockRetrievePeriodSummaryService: RetrievePeriodSummaryService = mock[RetrievePeriodSummaryService]
 

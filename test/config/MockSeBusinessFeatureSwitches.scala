@@ -18,8 +18,9 @@ package config
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 
-trait MockSeBusinessFeatureSwitches extends MockFactory {
+trait MockSeBusinessFeatureSwitches extends TestSuite with MockFactory {
 
   implicit val mockSeBusinessFeatureSwitches: SeBusinessFeatureSwitches = mock[SeBusinessFeatureSwitches]
 

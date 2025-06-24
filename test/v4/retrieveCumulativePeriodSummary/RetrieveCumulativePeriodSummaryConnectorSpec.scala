@@ -19,6 +19,7 @@ package v4.retrieveCumulativePeriodSummary
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v4.retrieveCumulativePeriodSummary.def1.model.request.Def1_RetrieveCumulativePeriodSummaryRequestData
 import v4.retrieveCumulativePeriodSummary.def1.model.response.{Def1_RetrieveCumulativePeriodSummaryResponse, Def1_Retrieve_PeriodDates}
 import v4.retrieveCumulativePeriodSummary.model.request.RetrieveCumulativePeriodSummaryRequestData
@@ -48,7 +49,7 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrieveCumulativePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
-        val expectedDownstreamUrl = s"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId"
+        val expectedDownstreamUrl = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId"
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 

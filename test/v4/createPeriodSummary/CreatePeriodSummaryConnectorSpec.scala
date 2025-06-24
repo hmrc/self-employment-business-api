@@ -19,6 +19,7 @@ package v4.createPeriodSummary
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v4.createPeriodSummary.def1.model.request.Def1_Create_PeriodDates
 import v4.createPeriodSummary.def2.model.request.Def2_Create_PeriodDates
 import v4.createPeriodSummary.model.request._
@@ -31,7 +32,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
   "CreatePeriodSummaryConnectorSpec" when {
     "createPeriodSummary" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
-        def request: CreatePeriodSummaryRequestData = Def1_CreatePeriodSummaryRequestData(
+        def request: Def1_CreatePeriodSummaryRequestData = Def1_CreatePeriodSummaryRequestData(
           nino = Nino(nino),
           businessId = BusinessId(businessId),
           body = Def1_CreatePeriodSummaryRequestBody(Def1_Create_PeriodDates("2019-08-24", "2019-08-24"), None, None, None)
@@ -40,7 +41,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
         val url =
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
+          url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
         willPost(url, request.body).returns(Future.successful(outcome))
 
         await(connector.createPeriodSummary(request)) shouldBe outcome
@@ -48,7 +49,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
       }
 
       "return a 200 status for a success TYS scenario" in new IfsTest with Test {
-        def request: CreatePeriodSummaryRequestData = Def2_CreatePeriodSummaryRequestData(
+        def request: Def2_CreatePeriodSummaryRequestData = Def2_CreatePeriodSummaryRequestData(
           nino = Nino(nino),
           businessId = BusinessId(businessId),
           body = Def2_CreatePeriodSummaryRequestBody(Def2_Create_PeriodDates("2023-04-05", "2024-04-05"), None, None, None)
@@ -57,7 +58,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
         val outcome: Right[Nothing, ResponseWrapper[CreatePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, response))
 
         val url =
-          s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries"
+          url"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries"
         willPost(url, request.body).returns(Future.successful(outcome))
 
         await(connector.createPeriodSummary(request)) shouldBe outcome

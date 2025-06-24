@@ -20,11 +20,12 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v3.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteAnnualSubmissionService extends MockFactory {
+trait MockDeleteAnnualSubmissionService extends TestSuite with MockFactory {
 
   val mockDeleteAnnualSubmissionService: DeleteAnnualSubmissionService = mock[DeleteAnnualSubmissionService]
 

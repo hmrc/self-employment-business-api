@@ -18,13 +18,14 @@ package v4.createAmendCumulativePeriodSummary
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v4.createAmendCumulativePeriodSummary.model.request.CreateAmendCumulativePeriodSummaryRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateAmendCumulativePeriodSummaryService extends MockFactory {
+trait MockCreateAmendCumulativePeriodSummaryService extends TestSuite with MockFactory {
 
   val mockAmendCumulativePeriodSummaryService: CreateAmendCumulativePeriodSummaryService = mock[CreateAmendCumulativePeriodSummaryService]
 

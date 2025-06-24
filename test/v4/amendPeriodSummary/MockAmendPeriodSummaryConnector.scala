@@ -18,13 +18,14 @@ package v4.amendPeriodSummary
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendPeriodSummaryConnector extends MockFactory {
+trait MockAmendPeriodSummaryConnector extends TestSuite with MockFactory {
 
   val mockAmendPeriodSummaryConnector: AmendPeriodSummaryConnector = mock[AmendPeriodSummaryConnector]
 

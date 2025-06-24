@@ -22,10 +22,11 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
 import v3.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
-trait MockAmendPeriodSummaryValidatorFactory extends MockFactory {
+trait MockAmendPeriodSummaryValidatorFactory extends TestSuite with MockFactory {
 
   val mockAmendPeriodSummaryValidatorFactory: AmendPeriodSummaryValidatorFactory =
     mock[AmendPeriodSummaryValidatorFactory]

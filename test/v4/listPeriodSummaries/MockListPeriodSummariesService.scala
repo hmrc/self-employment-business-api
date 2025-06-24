@@ -18,6 +18,7 @@ package v4.listPeriodSummaries
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
@@ -25,7 +26,7 @@ import v4.listPeriodSummaries.model.response.{ListPeriodSummariesResponse, Perio
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockListPeriodSummariesService extends MockFactory {
+trait MockListPeriodSummariesService extends TestSuite with MockFactory {
 
   val mockListPeriodSummariesService: ListPeriodSummariesService = mock[ListPeriodSummariesService]
 

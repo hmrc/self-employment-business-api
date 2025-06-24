@@ -19,13 +19,14 @@ package v3.retrieveAnnualSubmission
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveAnnualSubmissionConnector extends MockFactory {
+trait MockRetrieveAnnualSubmissionConnector extends TestSuite with MockFactory {
 
   val mockRetrieveAnnualSubmissionConnector: RetrieveAnnualSubmissionConnector = mock[RetrieveAnnualSubmissionConnector]
 

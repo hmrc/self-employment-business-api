@@ -25,12 +25,7 @@ import shared.config.SharedAppConfig
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import v4.amendPeriodSummary.def2.model.request.{
-  Def2_AmendPeriodSummaryRequestData,
-  Def2_Amend_PeriodDisallowableExpenses,
-  Def2_Amend_PeriodExpenses,
-  Def2_Amend_PeriodIncome
-}
+import v4.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
 
 class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: SharedAppConfig)
     extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
