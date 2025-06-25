@@ -20,6 +20,7 @@ import api.models.domain.PeriodId
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v5.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
 import v5.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
@@ -60,8 +61,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
-        val expectedDownstreamUrl: URL = new URL(
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        val expectedDownstreamUrl: URL = url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
@@ -75,8 +75,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       "call the TYS URL and return a 200 status" in new IfsTest with Test {
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
-        val expectedDownstreamUrl: URL = new URL(
-          s"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        val expectedDownstreamUrl: URL =
+          url"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 

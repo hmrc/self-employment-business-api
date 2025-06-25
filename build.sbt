@@ -51,5 +51,3 @@ lazy val it = project
     Test / fork := true,
     Test / javaOptions += "-Dlogger.resource=logback-test.xml")
   .settings(libraryDependencies ++= AppDependencies.itDependencies)
-
-dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-30")

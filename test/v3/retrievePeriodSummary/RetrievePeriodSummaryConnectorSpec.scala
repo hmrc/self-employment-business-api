@@ -58,8 +58,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
-        val expectedDownstreamUrl: URL = new URL(
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
+        val expectedDownstreamUrl: URL = url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
