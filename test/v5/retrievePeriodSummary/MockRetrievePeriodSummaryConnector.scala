@@ -18,6 +18,7 @@ package v5.retrievePeriodSummary
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
@@ -25,7 +26,7 @@ import v5.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrievePeriodSummaryConnector extends MockFactory {
+trait MockRetrievePeriodSummaryConnector extends TestSuite with MockFactory {
 
   val mockRetrievePeriodSummaryConnector: RetrievePeriodSummaryConnector = mock[RetrievePeriodSummaryConnector]
 

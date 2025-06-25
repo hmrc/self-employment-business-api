@@ -23,6 +23,7 @@ import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import shared.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsObject
+import uk.gov.hmrc.http.StringContextOps
 import v3.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
 
 import scala.concurrent.Future
@@ -118,14 +119,14 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
     protected def stubPreTysHttpResponse(outcome: DownstreamOutcome[Unit],
                                          excludedHeaders: Seq[(String, String)] = Nil): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
       willPut(
-        url = s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
+        url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
         body = JsObject.empty
       ).returns(Future.successful(outcome))
     }
 
     protected def stubTysHttpResponse(outcome: DownstreamOutcome[Unit]): CallHandler[Future[DownstreamOutcome[Unit]]]#Derived = {
       willDelete(
-        url = s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+        url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
       ).returns(Future.successful(outcome))
     }
 

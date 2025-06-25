@@ -23,9 +23,10 @@ import cats.data.Validated.{Invalid, Valid}
 import config.MockSeBusinessConfig
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
-trait MockRetrieveAnnualSubmissionValidatorFactory extends MockFactory with MockSeBusinessConfig {
+trait MockRetrieveAnnualSubmissionValidatorFactory extends TestSuite with MockFactory with MockSeBusinessConfig {
 
   val mockRetrieveAnnualSubmissionValidatorFactory: RetrieveAnnualSubmissionValidatorFactory = mock[RetrieveAnnualSubmissionValidatorFactory]
 

@@ -16,11 +16,11 @@
 
 package v3.retrievePeriodSummary.def1
 
+import cats.data.Validated
+import cats.implicits.catsSyntaxTuple3Semigroupal
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino}
 import shared.models.errors.MtdError
-import cats.data.Validated
-import cats.implicits.catsSyntaxTuple3Semigroupal
 import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 import v3.validators.resolvers.ResolvePeriodId
 

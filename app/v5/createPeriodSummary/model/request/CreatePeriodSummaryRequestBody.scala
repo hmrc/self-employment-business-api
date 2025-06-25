@@ -18,18 +18,8 @@ package v5.createPeriodSummary.model.request
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v5.createPeriodSummary.def1.model.request.{
-  Def1_Create_PeriodDates,
-  Def1_Create_PeriodDisallowableExpenses,
-  Def1_Create_PeriodExpenses,
-  Def1_Create_PeriodIncome
-}
-import v5.createPeriodSummary.def2.model.request.{
-  Def2_Create_PeriodDates,
-  Def2_Create_PeriodDisallowableExpenses,
-  Def2_Create_PeriodExpenses,
-  Def2_Create_PeriodIncome
-}
+import v5.createPeriodSummary.def1.model.request.{Def1_Create_PeriodDates, Def1_Create_PeriodDisallowableExpenses, Def1_Create_PeriodExpenses, Def1_Create_PeriodIncome}
+import v5.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDates, Def2_Create_PeriodDisallowableExpenses, Def2_Create_PeriodExpenses, Def2_Create_PeriodIncome}
 
 sealed trait CreatePeriodSummaryRequestBody {
   val periodDates: Create_PeriodDates

@@ -16,8 +16,8 @@
 
 package v5.createPeriodSummary.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
 import play.api.libs.json.JsValue
+import shared.models.domain.{BusinessId, Nino, TaxYear}
 
 sealed trait CreatePeriodSummaryRequestData {
   val nino: Nino

@@ -17,8 +17,9 @@
 package config
 
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 
-trait MockSeBusinessConfig extends MockFactory {
+trait MockSeBusinessConfig extends TestSuite with MockFactory {
 
   implicit val mockSeBusinessConfig: SeBusinessConfig = mock[SeBusinessConfig]
 

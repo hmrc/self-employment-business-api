@@ -20,12 +20,13 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v3.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 import v3.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveAnnualSubmissionService extends MockFactory {
+trait MockRetrieveAnnualSubmissionService extends TestSuite with MockFactory {
 
   val mockRetrieveAnnualSubmissionService: RetrieveAnnualSubmissionService = mock[RetrieveAnnualSubmissionService]
 

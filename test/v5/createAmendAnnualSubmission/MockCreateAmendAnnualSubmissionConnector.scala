@@ -18,13 +18,14 @@ package v5.createAmendAnnualSubmission
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v5.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateAmendAnnualSubmissionConnector extends MockFactory {
+trait MockCreateAmendAnnualSubmissionConnector extends TestSuite with MockFactory {
 
   val mockAmendAnnualSubmissionConnector: CreateAmendAnnualSubmissionConnector = mock[CreateAmendAnnualSubmissionConnector]
 

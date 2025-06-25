@@ -19,12 +19,13 @@ package v3.createPeriodSummary
 import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v3.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreatePeriodSummaryConnector extends MockFactory {
+trait MockCreatePeriodSummaryConnector extends TestSuite with MockFactory {
 
   val mockCreatePeriodSummaryConnector: CreatePeriodSummaryConnector = mock[CreatePeriodSummaryConnector]
 

@@ -16,10 +16,10 @@
 
 package v5.retrieveAnnualSubmission
 
+import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
-import cats.implicits._
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 import v5.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 

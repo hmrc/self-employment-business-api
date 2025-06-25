@@ -18,13 +18,14 @@ package v4.createAmendAnnualSubmission
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v4.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateAmendAnnualSubmissionService extends MockFactory {
+trait MockCreateAmendAnnualSubmissionService extends TestSuite with MockFactory {
 
   val mockAmendAnnualSubmissionService: CreateAmendAnnualSubmissionService = mock[CreateAmendAnnualSubmissionService]
 

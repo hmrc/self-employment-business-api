@@ -17,19 +17,20 @@
 package v4.deleteAnnualSubmission
 
 import config.SeBusinessFeatureSwitches
+import play.api.libs.json.JsObject
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.config.SharedAppConfig
-import play.api.libs.json.JsObject
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v4.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)(implicit
+class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig)(implicit
     featureSwitches: SeBusinessFeatureSwitches)
     extends BaseDownstreamConnector {
 

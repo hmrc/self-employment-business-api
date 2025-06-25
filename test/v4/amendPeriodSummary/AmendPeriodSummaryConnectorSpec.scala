@@ -20,6 +20,7 @@ import api.models.domain.PeriodId
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def1_Amend_PeriodExpenses}
 import v4.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodExpenses}
 import v4.amendPeriodSummary.model.request._
@@ -91,7 +92,7 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
     "given a non-TYS request" should {
       "call the non-TYS downstream URL and return 204" in new DesTest with Test {
         val expectedDownstreamUrl =
-          s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
+          url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
         willPut(expectedDownstreamUrl, nonTysRequest.body).returns(Future.successful(outcome))
 
@@ -103,7 +104,7 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
     "given a TYS request" should {
       "call the TYS downstream URL and return 204" in new IfsTest with Test {
         val expectedDownstreamUrl =
-          s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
+          url"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/periodic-summaries?from=2020-01-01&to=2020-01-01"
 
         willPut(expectedDownstreamUrl, tysRequest.body).returns(Future.successful(outcome))
 

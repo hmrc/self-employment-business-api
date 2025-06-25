@@ -19,6 +19,7 @@ package v5.createAmendAnnualSubmission
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v5.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
@@ -57,7 +58,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
           val outcome = Right(ResponseWrapper(correlationId, ()))
 
-          willPut(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}", body) returns Future
+          willPut(url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}", body) returns Future
             .successful(outcome)
 
           val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
@@ -73,7 +74,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
+        willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
           .successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))

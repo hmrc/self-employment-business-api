@@ -18,13 +18,14 @@ package v5.createAmendCumulativePeriodSummary
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v5.createAmendCumulativePeriodSummary.model.request.CreateAmendCumulativePeriodSummaryRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateAmendCumulativePeriodSummaryConnector extends MockFactory {
+trait MockCreateAmendCumulativePeriodSummaryConnector extends TestSuite with MockFactory {
 
   val mockAmendCumulativePeriodSummaryConnector: CreateAmendCumulativePeriodSummaryConnector = mock[CreateAmendCumulativePeriodSummaryConnector]
 

@@ -23,7 +23,7 @@ import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, 
 import shared.models.domain.TaxYear
 import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 import v5.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
-import v5.retrievePeriodSummary.model.request.{RetrievePeriodSummaryRequestData}
+import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v5.validators.resolvers.ResolvePeriodId
 
 class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)

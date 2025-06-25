@@ -20,11 +20,12 @@ import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v3.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendPeriodSummaryService extends MockFactory {
+trait MockAmendPeriodSummaryService extends TestSuite with MockFactory {
 
   val mockAmendPeriodSummaryService: AmendPeriodSummaryService = mock[AmendPeriodSummaryService]
 

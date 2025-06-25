@@ -19,12 +19,9 @@ package v4.createAmendCumulativePeriodSummary
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v4.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
-import v4.createAmendCumulativePeriodSummary.model.request.{
-  CreateAmendCumulativePeriodSummaryRequestData,
-  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
-  Def1_CreateAmendCumulativePeriodSummaryRequestData
-}
+import v4.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
 import scala.concurrent.Future
 
@@ -66,7 +63,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
         val outcome = Right(ResponseWrapper(correlationId, ()))
-        willPut(s"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
+        willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
           .successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.amendCumulativePeriodSummary(request))

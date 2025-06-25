@@ -27,7 +27,7 @@ To start the service manager profile: `sm2 --start MTDFB_SELF_EMPLOYMENT_BUSINES
 
 ```
 sbt test
-sbt it:test
+sbt it/test
 ```
 
 ## To view the OAS

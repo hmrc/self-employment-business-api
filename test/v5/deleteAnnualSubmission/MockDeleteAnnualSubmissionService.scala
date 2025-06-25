@@ -18,13 +18,14 @@ package v5.deleteAnnualSubmission
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v5.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteAnnualSubmissionService extends MockFactory {
+trait MockDeleteAnnualSubmissionService extends TestSuite with MockFactory {
 
   val mockDeleteAnnualSubmissionService: DeleteAnnualSubmissionService = mock[DeleteAnnualSubmissionService]
 

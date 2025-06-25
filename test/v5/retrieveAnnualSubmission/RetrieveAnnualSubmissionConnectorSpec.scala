@@ -19,6 +19,7 @@ package v5.retrieveAnnualSubmission
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v5.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v5.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v5.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
@@ -58,7 +59,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
     "send a request and return a body" in new IfsTest with Test {
       val outcome = Right(ResponseWrapper(correlationId, response))
 
-      willGet(s"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2020")
+      willGet(url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2020")
         .returns(Future.successful(outcome))
 
       await(connector.retrieveAnnualSubmission(nonTysRequest)) shouldBe outcome
@@ -67,7 +68,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
     "send a request and return a body for a TYS tax year" in new IfsTest with Test {
       val outcome = Right(ResponseWrapper(correlationId, response))
 
-      willGet(s"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries")
+      willGet(url"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries")
         .returns(Future.successful(outcome))
 
       await(connector.retrieveAnnualSubmission(tysRequest)) shouldBe outcome
