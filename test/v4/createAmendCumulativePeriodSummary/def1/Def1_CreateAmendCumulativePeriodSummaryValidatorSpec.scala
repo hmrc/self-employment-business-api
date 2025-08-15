@@ -219,7 +219,7 @@ class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with
             parsedBody(periodExpenses = Some(parsedPeriodExpensesConsolidated), periodDisallowableExpenses = None)))
       }
 
-      "given a valid request a body containing the minimum fields" in {
+      "given a valid request a body containing the minimum fields" in { // this should now fail
 
         val body = validBody()
           .removeProperty("/periodIncome")
