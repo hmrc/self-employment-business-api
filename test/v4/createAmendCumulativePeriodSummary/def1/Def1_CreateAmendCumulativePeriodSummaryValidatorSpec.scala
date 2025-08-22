@@ -325,7 +325,8 @@ class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with
           validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(
-          message = "At least two of periodDates, periodIncome, and expenses (periodExpenses and periodDisallowableExpenses) must be supplied. " +
+          message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+            "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
             "Zero values can be submitted when there is no income or expenses"
         )))
       }
@@ -341,9 +342,9 @@ class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with
           validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(
-          message = "At least two of periodDates, periodIncome, and expenses (periodExpenses and periodDisallowableExpenses) must be supplied. " +
-            "Zero values can be submitted when there is no income or expenses"
-        )))
+          message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+            "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
+            "Zero values can be submitted when there is no income or expenses")))
       }
 
       "given a request a body containing only expenses (periodExpenses and periodDisallowableExpenses)" in {
@@ -356,7 +357,8 @@ class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with
           validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(
-          message = "At least two of periodDates, periodIncome, and expenses (periodExpenses and periodDisallowableExpenses) must be supplied. " +
+          message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+            "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
             "Zero values can be submitted when there is no income or expenses"
         )))
       }

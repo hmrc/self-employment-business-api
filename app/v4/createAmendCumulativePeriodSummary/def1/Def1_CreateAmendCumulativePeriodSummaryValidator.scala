@@ -43,7 +43,8 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
     val nonEmptyFieldsCount: Int = List(hasDates, hasIncome, hasExpenses).count(identity)
 
     if (nonEmptyFieldsCount >= 2) Valid(()) else Invalid(List(RuleIncorrectOrEmptyBodyError.copy(
-      message = "At least two of periodDates, periodIncome, and expenses (periodExpenses and periodDisallowableExpenses) must be supplied. " +
+      message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+        "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
         "Zero values can be submitted when there is no income or expenses"
     )))
   }
