@@ -17,13 +17,13 @@
 package v5.createAmendCumulativePeriodSummary.def1
 
 import cats.data.Validated
-import cats.data.Validated.Valid
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
 import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
+import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v5.createAmendCumulativePeriodSummary.model.request._
 
 class Def1_CreateAmendCumulativePeriodSummaryValidator(
@@ -35,6 +35,19 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendCumulativePeriodSummaryRequestBody]()
 
+  private def validateMinimumFields(body: Def1_CreateAmendCumulativePeriodSummaryRequestBody): Validated[Seq[MtdError], Unit] = {
+    val hasDates: Boolean = body.periodDates.isDefined
+    val hasIncome: Boolean = body.periodIncome.isDefined
+    val hasExpenses: Boolean = body.periodExpenses.isDefined || body.periodDisallowableExpenses.isDefined
+
+    val nonEmptyFieldsCount: Int = List(hasDates, hasIncome, hasExpenses).count(identity)
+
+    if (nonEmptyFieldsCount >= 2) Valid(()) else Invalid(List(RuleIncorrectOrEmptyBodyError.copy(
+      message = "At least two of periodDates, periodIncome, and expenses (periodExpenses and periodDisallowableExpenses) must be supplied. " +
+        "Zero values can be submitted when there is no income or expenses"
+    )))
+  }
+
   private val rulesValidator = Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear)
 
   def validate: Validated[Seq[MtdError], CreateAmendCumulativePeriodSummaryRequestData] =
@@ -43,6 +56,7 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
       ResolveBusinessId(businessId),
       Valid(taxYear),
       resolveJson(body)
-    ).mapN(Def1_CreateAmendCumulativePeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
-
+    ).mapN(Def1_CreateAmendCumulativePeriodSummaryRequestData).andThen { parsedRequestData =>
+      validateMinimumFields(parsedRequestData.body).andThen(_ => rulesValidator.validateBusinessRules(parsedRequestData))
+    }
 }
