@@ -2,7 +2,7 @@ summary: Create or Amend a Self-Employment Cumulative Period Summary
 description: |
   This endpoint enables you to submit the cumulative period income and expenses for a self-employment business that occurred between two dates. A National Insurance number, tax year and business ID are required. <strong>Please note that this endpoint is only available for tax years starting from 2025-26</strong>.
 
-  <strong>Note: Submissions must include values for incomes, expenses and deductions, even if the values are zero. For example, if there is no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero</strong>.
+  <strong>Note: Submissions must include values for income and expenses, even if the values are zero. For example, if there is no income for the period, submit a periodIncome object with 'turnover' and 'other' values of zero.</strong>.
   
   ### Test Data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
