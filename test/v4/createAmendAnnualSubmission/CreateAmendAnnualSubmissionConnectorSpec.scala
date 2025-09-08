@@ -32,7 +32,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
   private val body       = Def1_CreateAmendAnnualSubmissionRequestBody(None, None, None)
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val request: CreateAmendAnnualSubmissionRequestData = Def1_CreateAmendAnnualSubmissionRequestData(
       nino = Nino(nino),

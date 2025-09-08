@@ -20,7 +20,7 @@ import api.models.errors.{RuleAllowanceNotSupportedError, RuleOutsideAmendmentWi
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.DownstreamErrors.single
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
@@ -97,7 +97,7 @@ class CreateAmendAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Creat
         "SERVICE_UNAVAILABLE"         -> InternalError
       )
 
-      input.foreach(args => (serviceError _).tupled(args))
+      input.foreach(args => serviceError.tupled(args))
     }
   }
 

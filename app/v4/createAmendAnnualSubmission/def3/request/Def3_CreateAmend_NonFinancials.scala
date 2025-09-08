@@ -16,9 +16,9 @@
 
 package v4.createAmendAnnualSubmission.def3.request
 
-import api.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import api.models.domain.ex.MtdNicExemption
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.*
 
 case class Def3_CreateAmend_NonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
 
@@ -28,9 +28,10 @@ object Def3_CreateAmend_NonFinancials {
   implicit val writes: Writes[Def3_CreateAmend_NonFinancials] = (
     (JsPath \ "businessDetailsChangedRecently").write[Boolean] and
       (JsPath \ "exemptFromPayingClass4Nics").write[Boolean] and
-      (JsPath \ "class4NicsExemptionReason").writeNullable[DownstreamNicExemption]
-  )(unlift(Def3_CreateAmend_NonFinancials.unapply(_: Def3_CreateAmend_NonFinancials).map { case (changed, exemption) =>
-    (changed, exemption.isDefined, exemption.map(_.toDownstream))
-  }))
+      (JsPath \ "class4NicsExemptionReason").writeNullable[String]
+  ) { nonFinancials =>
+    val exemption: Option[MtdNicExemption] = nonFinancials.class4NicsExemptionReason
+    (nonFinancials.businessDetailsChangedRecently, exemption.isDefined, exemption.map(_.toDownstream))
+  }
 
 }

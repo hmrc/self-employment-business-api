@@ -16,7 +16,6 @@
 
 package v5.retrieveAnnualSubmission
 
-import config.SeBusinessFeatureSwitches
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.SharedAppConfig
 import shared.controllers._
@@ -39,8 +38,6 @@ class RetrieveAnnualSubmissionController @Inject() (val authService: EnrolmentsA
     EndpointLogContext(controllerName = "RetrieveAnnualSubmissionController", endpointName = "retrieveSelfEmploymentAnnualSubmission")
 
   val endpointName = "retrieve-annual-submission"
-
-  implicit val featureSwitches: SeBusinessFeatureSwitches = SeBusinessFeatureSwitches()
 
   def handleRequest(nino: String, businessId: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

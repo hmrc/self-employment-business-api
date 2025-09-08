@@ -16,10 +16,10 @@
 
 package v3.createPeriodSummary
 
-import api.models.errors._
+import api.models.errors.*
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
 import play.api.Configuration
@@ -103,7 +103,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
 //          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+        (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
       }
     }
   }

@@ -62,7 +62,7 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val connector: RetrieveCumulativePeriodSummaryConnector = new RetrieveCumulativePeriodSummaryConnector(
       http = mockHttpClient,

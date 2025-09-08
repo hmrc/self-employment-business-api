@@ -16,7 +16,7 @@
 
 package v5.createPeriodSummary.def2.model.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v5.createPeriodSummary.model.request.Create_PeriodDates
 
@@ -26,7 +26,7 @@ object Def2_Create_PeriodDates {
   implicit val writes: OWrites[Def2_Create_PeriodDates] = (
     (JsPath \ "from").write[String] and
       (JsPath \ "to").write[String]
-  )(unlift(Def2_Create_PeriodDates.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }
 

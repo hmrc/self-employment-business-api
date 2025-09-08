@@ -22,9 +22,9 @@ import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTyp
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}
 import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import shared.config.rewriters._
+import shared.config.rewriters.*
 import shared.config.{SharedAppConfig, MockSharedAppConfig, RealAppConfig}
-import shared.definition._
+import shared.definition.*
 import shared.routing.{Version, Versions}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -178,7 +178,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockSharedAppC
     private val apiFactory = new ApiDefinitionFactory {
       protected val appConfig: SharedAppConfig = mockSharedAppConfig
 
-      val definition: Definition = Definition(
+      lazy val definition: Definition = Definition(
         APIDefinition(
           "test API definition",
           "description",

@@ -18,7 +18,7 @@ package v5.retrieveAnnualSubmission.def1
 
 import config.MockSeBusinessConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v5.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
@@ -44,7 +44,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Right(Def1_RetrieveAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear))
+        result.shouldBe(Right(Def1_RetrieveAnnualSubmissionRequestData(parsedNino, parsedBusinessId, parsedTaxYear)))
       }
     }
 
@@ -53,7 +53,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
           validator("A12344A", validBusinessId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, NinoFormatError)))
       }
     }
 
@@ -61,7 +61,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
       "an invalid nino is supplied" in {
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] = validator(validNino, "Walruses", validTaxYear).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, BusinessIdFormatError)))
       }
     }
 
@@ -69,7 +69,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
       "an invalid tax year is supplied" in {
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] = validator(validNino, validBusinessId, "20178").validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, TaxYearFormatError)))
       }
     }
 
@@ -78,7 +78,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, "2017-19").validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)))
       }
     }
 
@@ -86,7 +86,7 @@ class Def1_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBus
       "request supplied has multiple errors" in {
         val result: Either[ErrorWrapper, RetrieveAnnualSubmissionRequestData] = validator("A12344A", "Baked Beans", "20178").validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(BusinessIdFormatError, NinoFormatError, TaxYearFormatError))))
+        result.shouldBe(Left(ErrorWrapper(correlationId, BadRequestError, Some(List(BusinessIdFormatError, NinoFormatError, TaxYearFormatError)))))
       }
     }
   }

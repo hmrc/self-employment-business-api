@@ -19,7 +19,7 @@ package v3.retrieveAnnualSubmission
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import shared.models.domain.{TaxYear, TaxYearPropertyCheckSupport}
 import shared.utils.UnitSpec
-import RetrieveAnnualSubmissionSchema._
+import RetrieveAnnualSubmissionSchema.*
 
 class RetrieveAnnualSubmissionSchemaSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks with TaxYearPropertyCheckSupport {
 

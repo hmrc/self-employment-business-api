@@ -17,7 +17,7 @@
 package v4.listPeriodSummaries.def1
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMaximum}
 import shared.models.domain.TaxYear
@@ -38,6 +38,6 @@ class Def1_ListPeriodSummariesValidator(
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolveTaxYearMax(taxYear)
-    ).mapN(Def1_ListPeriodSummariesRequestData)
+    ).mapN(Def1_ListPeriodSummariesRequestData.apply)
 
 }

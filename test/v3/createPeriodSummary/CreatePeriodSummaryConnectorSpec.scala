@@ -22,7 +22,7 @@ import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v3.createPeriodSummary.def1.model.request.Def1_Create_PeriodDates
 import v3.createPeriodSummary.def2.model.request.Def2_Create_PeriodDates
-import v3.createPeriodSummary.model.request._
+import v3.createPeriodSummary.model.request.*
 import v3.createPeriodSummary.model.response.CreatePeriodSummaryResponse
 
 import scala.concurrent.Future
@@ -67,7 +67,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
       http = mockHttpClient,

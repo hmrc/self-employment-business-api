@@ -33,10 +33,13 @@ class RetrieveNonFinancialsSpec extends UnitSpec with Def3_RetrieveAnnualSubmiss
              |}
              |""".stripMargin)
 
-        requestJson.as[RetrieveNonFinancials] shouldBe RetrieveNonFinancials(
-          businessDetailsChangedRecently = true,
-          class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
-        )
+        requestJson
+          .as[RetrieveNonFinancials]
+          .shouldBe(
+            RetrieveNonFinancials(
+              businessDetailsChangedRecently = true,
+              class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
+            ))
       }
     }
 

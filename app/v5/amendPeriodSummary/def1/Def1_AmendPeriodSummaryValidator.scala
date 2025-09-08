@@ -45,6 +45,6 @@ class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolvePeriodId(periodId),
       resolveTaxYear(taxYear),
       resolveJson(body)
-    ).mapN(Def1_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
+    ).mapN(Def1_AmendPeriodSummaryRequestData.apply) andThen rulesValidator.validateBusinessRules
 
 }

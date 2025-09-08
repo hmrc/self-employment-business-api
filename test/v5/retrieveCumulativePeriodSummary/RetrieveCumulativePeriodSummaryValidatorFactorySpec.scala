@@ -36,7 +36,7 @@ class RetrieveCumulativePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrieveCumulativePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validTaxYear)
 
-        result shouldBe a[Def1_RetrieveCumulativePeriodSummaryValidator]
+        result.shouldBe(a[Def1_RetrieveCumulativePeriodSummaryValidator])
       }
     }
   }

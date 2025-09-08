@@ -16,7 +16,7 @@
 
 package v4.amendPeriodSummary.def1.model.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestBody
 
@@ -33,6 +33,6 @@ object Def1_AmendPeriodSummaryRequestBody {
     (JsPath \ "incomes").writeNullable[Def1_Amend_PeriodIncome] and
       (JsPath \ "deductions").writeNullable[Def1_Amend_PeriodExpenses] and
       (JsPath \ "deductions").writeNullable[Def1_Amend_PeriodDisallowableExpenses]
-  )(unlift(Def1_AmendPeriodSummaryRequestBody.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

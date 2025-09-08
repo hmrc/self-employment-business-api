@@ -19,12 +19,17 @@ package v4.createAmendAnnualSubmission
 import play.api.http.Status.OK
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v4.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData, Def3_CreateAmendAnnualSubmissionRequestData}
+import v4.createAmendAnnualSubmission.model.request.{
+  CreateAmendAnnualSubmissionRequestData,
+  Def1_CreateAmendAnnualSubmissionRequestData,
+  Def2_CreateAmendAnnualSubmissionRequestData,
+  Def3_CreateAmendAnnualSubmissionRequestData
+}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,17 +46,17 @@ class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClientV2, va
 
     request match {
       case def1: Def1_CreateAmendAnnualSubmissionRequestData =>
-        import def1._
+        import def1.*
         val downstreamUri =
           uriFactory(nino, businessId, taxYear)
         put(body, downstreamUri)
       case def2: Def2_CreateAmendAnnualSubmissionRequestData =>
-        import def2._
+        import def2.*
         val downstreamUri =
           uriFactory(nino, businessId, taxYear)
         put(body, downstreamUri)
       case def3: Def3_CreateAmendAnnualSubmissionRequestData =>
-        import def3._
+        import def3.*
         val downstreamUri =
           uriFactory(nino, businessId, taxYear)
         put(body, downstreamUri)

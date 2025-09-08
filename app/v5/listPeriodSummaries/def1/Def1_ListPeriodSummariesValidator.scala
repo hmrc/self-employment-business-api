@@ -38,6 +38,6 @@ class Def1_ListPeriodSummariesValidator(
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolveTaxYearMax(taxYear)
-    ).mapN(Def1_ListPeriodSummariesRequestData)
+    ).mapN(Def1_ListPeriodSummariesRequestData.apply)
 
 }

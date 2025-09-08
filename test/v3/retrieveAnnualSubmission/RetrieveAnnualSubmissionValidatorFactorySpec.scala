@@ -40,7 +40,7 @@ class RetrieveAnnualSubmissionValidatorFactorySpec
   "ValidatorFactory" when {
 
     "given a tax year" should {
-      "return the Validator corresponding to the schema for that tax year" in forTaxYearsFrom(TaxYear.starting(2020)) { taxYear: TaxYear =>
+      "return the Validator corresponding to the schema for that tax year" in forTaxYearsFrom(TaxYear.starting(2020)) { (taxYear: TaxYear) =>
         val result: Validator[RetrieveAnnualSubmissionRequestData] =
           validatorFactory.validator(nino, businessId, taxYear = taxYear.asMtd)
 

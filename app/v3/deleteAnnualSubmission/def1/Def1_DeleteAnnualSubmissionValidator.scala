@@ -17,7 +17,7 @@
 package v3.deleteAnnualSubmission.def1
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import config.SeBusinessConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
@@ -38,6 +38,6 @@ class Def1_DeleteAnnualSubmissionValidator(
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolveTaxYear(taxYear)
-    ).mapN(Def1_DeleteAnnualSubmissionRequestData)
+    ).mapN(Def1_DeleteAnnualSubmissionRequestData.apply)
 
 }

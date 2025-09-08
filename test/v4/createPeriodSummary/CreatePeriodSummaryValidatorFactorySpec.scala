@@ -18,7 +18,7 @@ package v4.createPeriodSummary
 
 import api.controllers.validators.common.InvalidResultValidator
 import play.api.Configuration
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}

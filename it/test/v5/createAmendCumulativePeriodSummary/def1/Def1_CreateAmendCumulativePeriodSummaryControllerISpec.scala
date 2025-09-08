@@ -16,17 +16,17 @@
 
 package v5.createAmendCumulativePeriodSummary.def1
 
-import api.models.errors._
+import api.models.errors.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import shared.models.domain.TaxYear
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 

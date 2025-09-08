@@ -23,7 +23,12 @@ import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
 import shared.models.errors.MtdError
-import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestData, Def1_Amend_PeriodDisallowableExpenses, Def1_Amend_PeriodExpenses, Def1_Amend_PeriodIncome}
+import v4.amendPeriodSummary.def1.model.request.{
+  Def1_AmendPeriodSummaryRequestData,
+  Def1_Amend_PeriodDisallowableExpenses,
+  Def1_Amend_PeriodExpenses,
+  Def1_Amend_PeriodIncome
+}
 
 class Def1_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[Def1_AmendPeriodSummaryRequestData] {
 
@@ -32,7 +37,7 @@ class Def1_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
 
   def validateBusinessRules(parsed: Def1_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def1_AmendPeriodSummaryRequestData] = {
 
-    import parsed.body._
+    import parsed.body.*
 
     combine(
       validateExpenses(periodExpenses, periodDisallowableExpenses),
@@ -64,7 +69,7 @@ class Def1_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
     }
 
   private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: Def1_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (consolidatedExpenses, "/periodExpenses/consolidatedExpenses"),
@@ -102,7 +107,7 @@ class Def1_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean) extends R
 
   private def validatePeriodDisallowableExpenses(includeNegatives: Boolean)(
       expenses: Def1_Amend_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (paymentsToSubcontractorsDisallowable, "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"),

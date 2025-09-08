@@ -16,8 +16,8 @@
 
 package shared.models.audit
 
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json.{JsPath, JsValue, OWrites}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.*
 import shared.models.auth.UserDetails
 
 import scala.util.Try
@@ -48,7 +48,7 @@ object FlattenedGenericAuditDetail {
       (JsPath \ "outcome").write[String] and
       (JsPath \ "httpStatusCode").write[Int] and
       (JsPath \ "errorCodes").writeNullable[Seq[String]]
-  )(unlift(FlattenedGenericAuditDetail.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
   def apply(versionNumber: Option[String] = None,
             userDetails: UserDetails,

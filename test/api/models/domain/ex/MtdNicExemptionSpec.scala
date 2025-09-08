@@ -16,7 +16,7 @@
 
 package api.models.domain.ex
 
-import api.models.domain.ex.MtdNicExemption._
+import api.models.domain.ex.MtdNicExemption.*
 import play.api.libs.json.{JsError, JsValue, Json}
 import shared.utils.enums.EnumJsonSpecSupport
 import shared.utils.UnitSpec
@@ -43,12 +43,12 @@ class MtdNicExemptionSpec extends UnitSpec with EnumJsonSpecSupport {
 
     "toDownstream" should {
       "produce the correct DesExemptionCode object" in {
-        `non-resident`.toDownstream shouldBe DownstreamNicExemption.`001`
-        trustee.toDownstream shouldBe DownstreamNicExemption.`002`
-        diver.toDownstream shouldBe DownstreamNicExemption.`003`
-        `ITTOIA-2005`.toDownstream shouldBe DownstreamNicExemption.`004`
-        `over-state-pension-age`.toDownstream shouldBe DownstreamNicExemption.`005`
-        `under-16`.toDownstream shouldBe DownstreamNicExemption.`006`
+        `non-resident`.toDownstream shouldBe "001"
+        trustee.toDownstream shouldBe "002"
+        diver.toDownstream shouldBe "003"
+        `ITTOIA-2005`.toDownstream shouldBe "004"
+        `over-state-pension-age`.toDownstream shouldBe "005"
+        `under-16`.toDownstream shouldBe "006"
       }
     }
   }

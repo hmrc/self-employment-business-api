@@ -16,8 +16,8 @@
 
 package v5.amendPeriodSummary.def1.model.request
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 case class Def1_Amend_PeriodExpenses(consolidatedExpenses: Option[BigDecimal],
                                      costOfGoods: Option[BigDecimal],
@@ -57,6 +57,6 @@ object Def1_Amend_PeriodExpenses {
       (JsPath \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "amount").writeNullable[BigDecimal]
-  )(unlift(Def1_Amend_PeriodExpenses.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

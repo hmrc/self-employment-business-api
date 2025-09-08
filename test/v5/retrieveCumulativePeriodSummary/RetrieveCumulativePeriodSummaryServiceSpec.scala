@@ -19,7 +19,7 @@ package v5.retrieveCumulativePeriodSummary
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
 import v5.retrieveCumulativePeriodSummary.def1.model.request.Def1_RetrieveCumulativePeriodSummaryRequestData
@@ -58,7 +58,7 @@ class RetrieveCumulativePeriodSummaryServiceSpec extends ServiceSpec {
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def1Response))))
 
         val result: ServiceOutcome[RetrieveCumulativePeriodSummaryResponse] = await(service.retrieveCumulativePeriodSummary(requestData))
-        result shouldBe Right(ResponseWrapper(correlationId, def1Response))
+        result.shouldBe(Right(ResponseWrapper(correlationId, def1Response)))
       }
     }
   }
@@ -72,7 +72,7 @@ class RetrieveCumulativePeriodSummaryServiceSpec extends ServiceSpec {
             .retrieveCumulativePeriodSummary(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
 
-          await(service.retrieveCumulativePeriodSummary(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.retrieveCumulativePeriodSummary(requestData)).shouldBe(Left(ErrorWrapper(correlationId, error)))
         }
 
       val input: Seq[(String, MtdError)] = {
@@ -88,7 +88,7 @@ class RetrieveCumulativePeriodSummaryServiceSpec extends ServiceSpec {
         )
         errors
       }
-      input.foreach(args => (serviceError _).tupled(args))
+      input.foreach(args => serviceError.tupled(args))
     }
   }
 

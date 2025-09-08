@@ -16,7 +16,7 @@
 
 package api.models.domain.ex
 
-import api.models.domain.ex.DownstreamNicExemption._
+import api.models.domain.ex.DownstreamNicExemption.*
 import play.api.libs.json.{JsError, JsValue, Json}
 import shared.utils.enums.EnumJsonSpecSupport
 import shared.utils.UnitSpec

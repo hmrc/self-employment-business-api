@@ -52,7 +52,7 @@ class RetrieveAdjustmentsSpec extends UnitSpec {
              |""".stripMargin)
           .as[RetrieveAdjustments]
 
-        result shouldBe adjustments
+        result.shouldBe(adjustments)
       }
     }
   }
@@ -62,7 +62,7 @@ class RetrieveAdjustmentsSpec extends UnitSpec {
       "return downstream JSON" in {
         val result = Json.toJson(adjustments)
 
-        result shouldBe Json.parse(s"""{
+        result.shouldBe(Json.parse(s"""{
              |  "includedNonTaxableProfits": 1.12,
              |  "basisAdjustment": 2.12,
              |  "overlapReliefUsed": 3.12,
@@ -73,7 +73,7 @@ class RetrieveAdjustmentsSpec extends UnitSpec {
              |  "balancingChargeOther": 8.12,
              |  "goodsAndServicesOwnUse": 9.12
              |}
-             |""".stripMargin)
+             |""".stripMargin))
       }
     }
   }

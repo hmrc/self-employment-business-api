@@ -16,7 +16,7 @@
 
 package v4.createAmendCumulativePeriodSummary.model.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 
@@ -56,6 +56,6 @@ object Def1_CreateAmendCumulativePeriodSummaryRequestBody {
       (JsPath \ "selfEmploymentPeriodIncome").writeNullable[PeriodIncome] and
       (JsPath \ "selfEmploymentPeriodDeductions").writeNullable[PeriodExpenses] and
       (JsPath \ "selfEmploymentPeriodDeductions").writeNullable[PeriodDisallowableExpenses]
-  )(unlift(Def1_CreateAmendCumulativePeriodSummaryRequestBody.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

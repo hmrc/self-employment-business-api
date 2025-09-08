@@ -17,8 +17,8 @@
 package v4.retrievePeriodSummary.model.response
 
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v4.retrievePeriodSummary.def1.model.response._
-import v4.retrievePeriodSummary.def2.model.response._
+import v4.retrievePeriodSummary.def1.model.response.*
+import v4.retrievePeriodSummary.def2.model.response.*
 
 sealed trait RetrievePeriodSummaryResponse {
   def withoutTaxTakenOffTradingIncome: RetrievePeriodSummaryResponse

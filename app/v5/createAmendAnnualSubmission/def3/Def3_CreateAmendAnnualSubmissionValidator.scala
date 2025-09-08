@@ -21,7 +21,7 @@ import api.models.errors.Class4ExemptionReasonFormatError
 import cats.data.Validated
 import cats.implicits._
 import config.SeBusinessConfig
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
 import shared.models.errors.MtdError
@@ -47,7 +47,7 @@ class Def3_CreateAmendAnnualSubmissionValidator(
         ResolveBusinessId(businessId),
         resolveTaxYear(taxYear),
         resolveJson(body)
-      ).mapN(Def3_CreateAmendAnnualSubmissionRequestData) andThen validateBusinessRules
+      ).mapN(Def3_CreateAmendAnnualSubmissionRequestData.apply) andThen validateBusinessRules
     }
 
   private def validateClass4ExemptionReasonEnum: Validated[Seq[MtdError], Unit] = {

@@ -16,7 +16,7 @@
 
 package v4.retrieveAnnualSubmission.def3.model.response
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class RetrieveAllowances(
@@ -47,7 +47,7 @@ object RetrieveAllowances {
       (JsPath \ "zeroEmissionsCarAllowance").readNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").readNullable[Seq[RetrieveStructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").readNullable[Seq[RetrieveStructuredBuildingAllowance]]
-  )(RetrieveAllowances.apply _)
+  )(RetrieveAllowances.apply)
 
   implicit val writes: OWrites[RetrieveAllowances] = Json.writes[RetrieveAllowances]
 

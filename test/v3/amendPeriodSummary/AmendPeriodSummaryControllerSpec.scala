@@ -83,7 +83,7 @@ class AmendPeriodSummaryControllerSpec
 
     val testHateoasLinks: Seq[Link]
 
-    val controller = new AmendPeriodSummaryController(
+    val controller: AmendPeriodSummaryController = new AmendPeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendPeriodSummaryValidatorFactory,

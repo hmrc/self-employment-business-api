@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v5.createAmendCumulativePeriodSummary.def1.model.request
+package v4.createAmendCumulativePeriodSummary.def1.model.request
 
 import play.api.libs.json.Json
 import shared.utils.UnitSpec
-import v5.createAmendCumulativePeriodSummary.model.request.Def1_CreateAmendCumulativePeriodSummaryRequestBody
-import v5.createAmendCumulativePeriodSummary.model.request.Def1_CreateAmendCumulativePeriodSummaryRequestBody._
+import v4.createAmendCumulativePeriodSummary.model.request.Def1_CreateAmendCumulativePeriodSummaryRequestBody
+import v4.createAmendCumulativePeriodSummary.model.request.Def1_CreateAmendCumulativePeriodSummaryRequestBody.*
 
 class CumulativePeriodSummaryBodySpec extends UnitSpec with CumulativePeriodSummaryFixture {
 

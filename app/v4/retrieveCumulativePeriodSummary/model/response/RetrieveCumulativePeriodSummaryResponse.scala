@@ -16,9 +16,9 @@
 
 package v4.retrieveCumulativePeriodSummary.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.JsonWritesUtil
-import v4.retrieveCumulativePeriodSummary.def1.model.response._
+import v4.retrieveCumulativePeriodSummary.def1.model.response.*
 
 trait RetrieveCumulativePeriodSummaryResponse
 

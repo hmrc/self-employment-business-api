@@ -16,7 +16,7 @@
 
 package v4.createAmendAnnualSubmission.def3.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestBody
 
@@ -35,6 +35,6 @@ object Def3_CreateAmendAnnualSubmissionRequestBody {
     (JsPath \ "annualAdjustments").writeNullable[Def3_CreateAmend_Adjustments] and
       (JsPath \ "annualAllowances").writeNullable[Def3_CreateAmend_Allowances] and
       (JsPath \ "annualNonFinancials").writeNullable[Def3_CreateAmend_NonFinancials]
-  )(unlift(Def3_CreateAmendAnnualSubmissionRequestBody.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

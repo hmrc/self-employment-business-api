@@ -53,7 +53,8 @@ class RetrieveAllowancesSpec extends UnitSpec {
              |  "enhancedStructuredBuildingAllowance": []
              |}
              |""".stripMargin)
-          .as[RetrieveAllowances] shouldBe model
+          .as[RetrieveAllowances]
+          .shouldBe(model)
       }
     }
   }
@@ -61,7 +62,9 @@ class RetrieveAllowancesSpec extends UnitSpec {
   "writes" when {
     "passed a model" should {
       "return downstream JSON" in {
-        Json.toJson(model) shouldBe Json.parse(s"""{
+        Json
+          .toJson(model)
+          .shouldBe(Json.parse(s"""{
              |  "annualInvestmentAllowance": 1.12,
              |  "capitalAllowanceMainPool": 2.12,
              |  "capitalAllowanceSpecialRatePool": 3.12,
@@ -74,7 +77,7 @@ class RetrieveAllowancesSpec extends UnitSpec {
              |  "structuredBuildingAllowance": [],
              |  "enhancedStructuredBuildingAllowance": []
              |}
-             |""".stripMargin)
+             |""".stripMargin))
       }
     }
   }

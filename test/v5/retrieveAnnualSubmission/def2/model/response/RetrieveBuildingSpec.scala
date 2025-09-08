@@ -25,7 +25,7 @@ class RetrieveBuildingSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFi
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        buildingAllowanceDownstreamJson.as[RetrieveBuilding] shouldBe buildingMtdModel
+        buildingAllowanceDownstreamJson.as[RetrieveBuilding].shouldBe(buildingMtdModel)
       }
     }
   }
@@ -33,7 +33,7 @@ class RetrieveBuildingSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFi
   "writes" when {
     "passed a model" should {
       "return Mtd JSON" in {
-        Json.toJson(buildingMtdModel) shouldBe buildingAllowanceMtdJson
+        Json.toJson(buildingMtdModel).shouldBe(buildingAllowanceMtdJson)
       }
     }
   }

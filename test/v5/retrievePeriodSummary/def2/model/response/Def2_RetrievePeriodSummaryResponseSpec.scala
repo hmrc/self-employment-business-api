@@ -28,14 +28,14 @@ class Def2_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockSharedApp
     "return mtd json" when {
       "given valid full downstream json" in {
         val result = Json.toJson(def2_DownstreamFullJson.as[Def2_RetrievePeriodSummaryResponse])
-        result shouldBe def2_MtdFullJson
+        result.shouldBe(def2_MtdFullJson)
       }
       "given valid consolidated downstream json" in {
         val result: JsValue = Json.toJson(def2_DownstreamConsolidatedJson.as[Def2_RetrievePeriodSummaryResponse])
-        result shouldBe def2_MtdConsolidatedJson
+        result.shouldBe(def2_MtdConsolidatedJson)
       }
       "given valid minimal downstream json" in {
-        Json.toJson(def2_DownstreamMinimalJson.as[Def2_RetrievePeriodSummaryResponse]) shouldBe def2_MtdMinimalJson
+        Json.toJson(def2_DownstreamMinimalJson.as[Def2_RetrievePeriodSummaryResponse]).shouldBe(def2_MtdMinimalJson)
       }
     }
   }

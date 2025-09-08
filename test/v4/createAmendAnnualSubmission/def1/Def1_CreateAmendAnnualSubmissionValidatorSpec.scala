@@ -20,11 +20,11 @@ import api.models.domain.ex.MtdNicExemption
 import api.models.errors.{Class4ExemptionReasonFormatError, RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v4.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
-import v4.createAmendAnnualSubmission.def1.model.request._
+import v4.createAmendAnnualSubmission.def1.model.request.*
 import v4.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
 
 class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators {

@@ -44,7 +44,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
       ))
   )
 
-  trait Test { _: ConnectorTest =>
+  trait Test { self: ConnectorTest =>
 
     protected val connector: ListPeriodSummariesConnector = new ListPeriodSummariesConnector(
       http = mockHttpClient,

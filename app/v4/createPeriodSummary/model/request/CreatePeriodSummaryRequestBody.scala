@@ -16,10 +16,20 @@
 
 package v4.createPeriodSummary.model.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v4.createPeriodSummary.def1.model.request.{Def1_Create_PeriodDates, Def1_Create_PeriodDisallowableExpenses, Def1_Create_PeriodExpenses, Def1_Create_PeriodIncome}
-import v4.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDates, Def2_Create_PeriodDisallowableExpenses, Def2_Create_PeriodExpenses, Def2_Create_PeriodIncome}
+import v4.createPeriodSummary.def1.model.request.{
+  Def1_Create_PeriodDates,
+  Def1_Create_PeriodDisallowableExpenses,
+  Def1_Create_PeriodExpenses,
+  Def1_Create_PeriodIncome
+}
+import v4.createPeriodSummary.def2.model.request.{
+  Def2_Create_PeriodDates,
+  Def2_Create_PeriodDisallowableExpenses,
+  Def2_Create_PeriodExpenses,
+  Def2_Create_PeriodIncome
+}
 
 sealed trait CreatePeriodSummaryRequestBody {
   val periodDates: Create_PeriodDates
@@ -56,7 +66,7 @@ object Def1_CreatePeriodSummaryRequestBody {
       (JsPath \ "financials" \ "incomes").writeNullable[Def1_Create_PeriodIncome] and
       (JsPath \ "financials" \ "deductions").writeNullable[Def1_Create_PeriodExpenses] and
       (JsPath \ "financials" \ "deductions").writeNullable[Def1_Create_PeriodDisallowableExpenses]
-  )(unlift(Def1_CreatePeriodSummaryRequestBody.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }
 
@@ -74,6 +84,6 @@ object Def2_CreatePeriodSummaryRequestBody {
       (JsPath \ "financials" \ "incomes").writeNullable[Def2_Create_PeriodIncome] and
       (JsPath \ "financials" \ "deductions").writeNullable[Def2_Create_PeriodExpenses] and
       (JsPath \ "financials" \ "deductions").writeNullable[Def2_Create_PeriodDisallowableExpenses]
-  )(unlift(Def2_CreatePeriodSummaryRequestBody.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

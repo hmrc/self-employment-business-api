@@ -38,26 +38,26 @@ class RetrieveAnnualSubmissionValidatorFactorySpec
 
   "RetrieveAnnualSubmissionValidatorFactory" when {
     "given a request corresponding to a Def1 schema" should {
-      "return a Def1 validator" in forTaxYearsInRange(TaxYear.fromMtd("2017-18"), TaxYear.fromMtd("2023-24")) { taxYear: TaxYear =>
-        validatorFor(taxYear.asMtd) shouldBe a[Def1_RetrieveAnnualSubmissionValidator]
+      "return a Def1 validator" in forTaxYearsInRange(TaxYear.fromMtd("2017-18"), TaxYear.fromMtd("2023-24")) { (taxYear: TaxYear) =>
+        validatorFor(taxYear.asMtd).shouldBe(a[Def1_RetrieveAnnualSubmissionValidator])
       }
     }
 
     "given a request corresponding to a Def2 schema" should {
       "return a Def2 validator" in {
-        validatorFor("2024-25") shouldBe a[Def2_RetrieveAnnualSubmissionValidator]
+        validatorFor("2024-25").shouldBe(a[Def2_RetrieveAnnualSubmissionValidator])
       }
     }
 
     "given a request corresponding to a Def3 schema" should {
       "return a Def3 validator" in {
-        validatorFor("2025-26") shouldBe a[Def3_RetrieveAnnualSubmissionValidator]
+        validatorFor("2025-26").shouldBe(a[Def3_RetrieveAnnualSubmissionValidator])
       }
     }
 
     "given a request where no valid schema could be determined" should {
       "return a validator returning the errors" in {
-        validatorFor("BAD_TAX_YEAR") shouldBe an[AlwaysErrorsValidator]
+        validatorFor("BAD_TAX_YEAR").shouldBe(an[AlwaysErrorsValidator])
       }
     }
   }

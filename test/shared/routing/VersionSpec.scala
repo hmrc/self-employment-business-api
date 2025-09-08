@@ -18,7 +18,7 @@ package shared.routing
 
 import org.scalamock.scalatest.MockFactory
 import play.api.http.HeaderNames.ACCEPT
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.mvc.{Headers, RequestHeader}
 import play.api.test.FakeRequest
 import shared.routing.Version.VersionReads
@@ -54,6 +54,20 @@ class VersionSpec extends UnitSpec with MockFactory {
         val result = Json.toJson(version)
         result shouldBe JsString("3.0")
       }
+    }
+  }
+
+  "deserialized from Json" must {
+    "return Version2 for '2.0'" in {
+      val json   = Json.parse(""""2.0"""")
+      val result = Json.fromJson[Version](json)
+      result shouldBe JsSuccess(Version2)
+    }
+
+    "fail with JsError if not a string" in {
+      val json   = Json.parse("123")
+      val result = Json.fromJson[Version](json)
+      result shouldBe a[JsError]
     }
   }
 

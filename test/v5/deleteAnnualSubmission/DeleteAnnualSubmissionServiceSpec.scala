@@ -20,7 +20,7 @@ import api.models.errors.RuleOutsideAmendmentWindowError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.DownstreamErrors.single
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.deleteAnnualSubmission.model.Def1_DeleteAnnualSubmissionRequestData
@@ -91,7 +91,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
         "SERVICE_UNAVAILABLE"         -> InternalError
       )
 
-      input.foreach(args => (serviceError _).tupled(args))
+      input.foreach(args => serviceError.tupled(args))
     }
   }
 

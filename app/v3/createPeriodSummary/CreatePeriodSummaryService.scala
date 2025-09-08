@@ -16,10 +16,10 @@
 
 package v3.createPeriodSummary
 
-import api.models.errors._
-import cats.implicits._
+import api.models.errors.*
+import cats.implicits.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{BaseService, ServiceOutcome}
 import v3.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
@@ -36,7 +36,7 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
 
     def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
-      import request.body.periodDates._
+      import request.body.periodDates.*
       wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
     }
 

@@ -16,7 +16,7 @@
 
 package v4.createAmendCumulativePeriodSummary
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.controllers.validators.{AlwaysErrorsValidator, Validator}
 import shared.utils.UnitSpec
 import v4.createAmendCumulativePeriodSummary.def1.Def1_CreateAmendCumulativePeriodSummaryValidator

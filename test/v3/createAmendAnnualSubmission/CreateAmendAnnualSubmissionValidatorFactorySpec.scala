@@ -17,7 +17,7 @@
 package v3.createAmendAnnualSubmission
 
 import play.api.Configuration
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec

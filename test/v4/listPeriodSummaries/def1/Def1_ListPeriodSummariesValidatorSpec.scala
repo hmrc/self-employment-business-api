@@ -17,7 +17,7 @@
 package v4.listPeriodSummaries.def1
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v4.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
 import v4.listPeriodSummaries.model.request.ListPeriodSummariesRequestData

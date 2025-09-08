@@ -16,12 +16,14 @@
 
 package shared.utils
 
-import shared.utils.EmptinessChecker._
-import shared.utils.EmptyPathsResult._
+import shared.utils.EmptinessChecker.*
+import shared.utils.EmptyPathsResult.*
 
 class EmptinessCheckerSpec extends UnitSpec {
 
-  sealed trait SomeEnum
+  enum SomeEnum {
+    case E1, E2
+  }
 
   case class Baz(a: Option[Int] = None, e: Option[SomeEnum] = None)
 
@@ -34,11 +36,7 @@ class EmptinessCheckerSpec extends UnitSpec {
                  bar2: Option[Bar] = None)
 
   object SomeEnum {
-    case object E1 extends SomeEnum
-
-    case object E2 extends SomeEnum
-
-    implicit val ckr: EmptinessChecker[SomeEnum] = EmptinessChecker.primitive
+    given EmptinessChecker[SomeEnum] = EmptinessChecker.primitive
   }
 
   "EmptinessChecker" when {
@@ -97,6 +95,21 @@ class EmptinessCheckerSpec extends UnitSpec {
             bar2 = Some(Bar()))) shouldBe
           EmptyPaths(List("/bar/baz", "/arr1", "/arr2/0", "/arr3/0/baz", "/bar2"))
       }
+    }
+  }
+
+  "given primitives, Options, Seq and List with no emptiness" must {
+    "return NoEmptyPaths" in {
+      EmptinessChecker[String].findEmptyPaths("test") shouldBe NoEmptyPaths
+      EmptinessChecker[Int].findEmptyPaths(1) shouldBe NoEmptyPaths
+      EmptinessChecker[Double].findEmptyPaths(1.00) shouldBe NoEmptyPaths
+      EmptinessChecker[Boolean].findEmptyPaths(true) shouldBe NoEmptyPaths
+      EmptinessChecker[BigInt].findEmptyPaths(BigInt(1)) shouldBe NoEmptyPaths
+      EmptinessChecker[BigDecimal].findEmptyPaths(BigDecimal(1)) shouldBe NoEmptyPaths
+      EmptinessChecker[Option[String]].findEmptyPaths(Some("test")) shouldBe NoEmptyPaths
+      EmptinessChecker[Option[String]].findEmptyPaths(None) shouldBe NoEmptyPaths
+      EmptinessChecker[List[Int]].findEmptyPaths(List(1, 2)) shouldBe NoEmptyPaths
+      EmptinessChecker[Seq[String]].findEmptyPaths(Vector("test", "test")) shouldBe NoEmptyPaths
     }
   }
 

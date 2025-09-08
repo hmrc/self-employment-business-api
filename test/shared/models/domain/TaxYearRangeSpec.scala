@@ -16,6 +16,7 @@
 
 package shared.models.domain
 
+import shared.models.domain.TaxYear.currentTaxYear
 import shared.utils.UnitSpec
 
 import java.time.{Clock, LocalDate, ZoneOffset}
@@ -49,6 +50,14 @@ class TaxYearRangeSpec extends UnitSpec {
 
       TaxYearRange.todayMinus(years = 4) shouldBe TaxYearRange(TaxYear.fromMtd("2018-19"), TaxYear.fromMtd("2022-23"))
     }
+  }
+
+  "return a TaxYearRange using the default systemUTC clock when no implicit clock is provided" in {
+    val expectedRange: TaxYearRange = TaxYearRange(TaxYear.fromDownstreamInt(currentTaxYear.year - 1), currentTaxYear)
+
+    val actualRange: TaxYearRange = TaxYearRange.todayMinus(1)
+
+    actualRange shouldBe expectedRange
   }
 
 }

@@ -16,42 +16,22 @@
 
 package api.models.domain.ex
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.EmptinessChecker
 import shared.utils.enums.Enums
 
-sealed trait MtdNicExemption {
-  def toDownstream: DownstreamNicExemption
+enum MtdNicExemption(val toDownstream: String) {
+  case `non-resident`           extends MtdNicExemption("001")
+  case trustee                  extends MtdNicExemption("002")
+  case diver                    extends MtdNicExemption("003")
+  case `ITTOIA-2005`            extends MtdNicExemption("004")
+  case `over-state-pension-age` extends MtdNicExemption("005")
+  case `under-16`               extends MtdNicExemption("006")
 }
 
 object MtdNicExemption {
-  val parser: PartialFunction[String, MtdNicExemption] = Enums.parser[MtdNicExemption]
+  val parser: PartialFunction[String, MtdNicExemption] = Enums.parser(values)
 
-  case object `non-resident` extends MtdNicExemption {
-    override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`001`
-  }
-
-  case object trustee extends MtdNicExemption {
-    override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`002`
-  }
-
-  case object diver extends MtdNicExemption {
-    override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`003`
-  }
-
-  case object `ITTOIA-2005` extends MtdNicExemption {
-    override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`004`
-  }
-
-  case object `over-state-pension-age` extends MtdNicExemption {
-    override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`005`
-  }
-
-  implicit val format: Format[MtdNicExemption]                     = Enums.format[MtdNicExemption]
-  implicit val emptinessChecker: EmptinessChecker[MtdNicExemption] = EmptinessChecker.primitive
-
-  case object `under-16` extends MtdNicExemption {
-    override def toDownstream: DownstreamNicExemption = DownstreamNicExemption.`006`
-  }
-
+  given Format[MtdNicExemption]           = Enums.format(values)
+  given EmptinessChecker[MtdNicExemption] = EmptinessChecker.primitive
 }

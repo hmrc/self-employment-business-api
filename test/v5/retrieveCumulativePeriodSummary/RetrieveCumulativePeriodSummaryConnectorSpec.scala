@@ -54,14 +54,14 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val request: RetrieveCumulativePeriodSummaryRequestData = Def1_RetrieveCumulativePeriodSummaryRequestData(nino, businessId, taxYear)
         val result: DownstreamOutcome[RetrieveCumulativePeriodSummaryResponse] = await(connector.retrieveCumulativePeriodSummary(request))
-        result shouldBe outcome
+        result.shouldBe(outcome)
       }
     }
 
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val connector: RetrieveCumulativePeriodSummaryConnector = new RetrieveCumulativePeriodSummaryConnector(
       http = mockHttpClient,

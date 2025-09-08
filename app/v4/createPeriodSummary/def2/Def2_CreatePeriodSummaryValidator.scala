@@ -23,7 +23,7 @@ import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.errors.{EndDateFormatError, MtdError, RuleIncorrectOrEmptyBodyError, StartDateFormatError}
 import v4.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 
@@ -47,7 +47,7 @@ class Def2_CreatePeriodSummaryValidator(
         ResolveNino(nino),
         ResolveBusinessId(businessId),
         Valid(parsedBody)
-      ).mapN(Def2_CreatePeriodSummaryRequestData)
+      ).mapN(Def2_CreatePeriodSummaryRequestData.apply)
     } andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
 
   /** Can be removed when CL290 is released.

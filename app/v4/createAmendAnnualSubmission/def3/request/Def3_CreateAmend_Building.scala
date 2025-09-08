@@ -16,7 +16,7 @@
 
 package v4.createAmendAnnualSubmission.def3.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
 case class Def3_CreateAmend_Building(name: Option[String], number: Option[String], postcode: String)
@@ -28,6 +28,6 @@ object Def3_CreateAmend_Building {
     (JsPath \ "name").writeNullable[String] and
       (JsPath \ "number").writeNullable[String] and
       (JsPath \ "postCode").write[String]
-  )(unlift(Def3_CreateAmend_Building.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

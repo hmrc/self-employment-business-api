@@ -59,6 +59,6 @@ object PeriodExpenses {
       (JsPath \ "professionalFees" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "amount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "amount").writeNullable[BigDecimal]
-  )(unlift(PeriodExpenses.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

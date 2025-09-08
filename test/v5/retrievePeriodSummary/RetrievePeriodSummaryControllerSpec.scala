@@ -22,7 +22,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import v5.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
@@ -110,7 +110,7 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    val controller: RetrievePeriodSummaryController = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,
@@ -152,7 +152,7 @@ class RetrievePeriodSummaryControllerSpec
       """.stripMargin
     )
 
-    val controller = new RetrievePeriodSummaryController(
+    val controller: RetrievePeriodSummaryController = new RetrievePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrievePeriodSummaryValidatorFactory,

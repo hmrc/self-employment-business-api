@@ -74,7 +74,7 @@ object Def1_Retrieve_PeriodDisallowableExpenses {
       (JsPath \ "professionalFees" \ "disallowableAmount").readNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "disallowableAmount").readNullable[BigDecimal] and
       (JsPath \ "other" \ "disallowableAmount").readNullable[BigDecimal]
-  )(Def1_Retrieve_PeriodDisallowableExpenses.apply _)
+  )(Def1_Retrieve_PeriodDisallowableExpenses.apply)
 
   implicit val writes: OWrites[Def1_Retrieve_PeriodDisallowableExpenses] = Json.writes
 }

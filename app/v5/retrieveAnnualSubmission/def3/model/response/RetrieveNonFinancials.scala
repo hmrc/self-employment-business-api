@@ -28,6 +28,6 @@ object RetrieveNonFinancials {
   implicit val reads: Reads[RetrieveNonFinancials] = (
     (JsPath \ "businessDetailsChangedRecently").read[Boolean] and
       (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd))
-  )(RetrieveNonFinancials.apply _)
+  )(RetrieveNonFinancials.apply)
 
 }

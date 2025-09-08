@@ -20,7 +20,7 @@ import cats.data.Validated
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.errors.MtdError
 import v4.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator.resolveTaxYear
 import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
@@ -45,6 +45,6 @@ class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolvePeriodId(periodId),
       resolveTaxYear(taxYear),
       resolveJson(body)
-    ).mapN(Def1_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules
+    ).mapN(Def1_AmendPeriodSummaryRequestData.apply) andThen rulesValidator.validateBusinessRules
 
 }

@@ -27,13 +27,13 @@ class Def1_RetrievePeriodSummaryResponseSpec extends UnitSpec with MockSharedApp
   "round trip" should {
     "return mtd json" when {
       "passed valid full downstream json" in {
-        Json.toJson(def1_DownstreamFullJson.as[Def1_RetrievePeriodSummaryResponse]) shouldBe def1_MtdFullJson
+        Json.toJson(def1_DownstreamFullJson.as[Def1_RetrievePeriodSummaryResponse]).shouldBe(def1_MtdFullJson)
       }
       "passed valid consolidated downstream json" in {
-        Json.toJson(def1_DownstreamConsolidatedJson.as[Def1_RetrievePeriodSummaryResponse]) shouldBe def1_MtdConsolidatedJson
+        Json.toJson(def1_DownstreamConsolidatedJson.as[Def1_RetrievePeriodSummaryResponse]).shouldBe(def1_MtdConsolidatedJson)
       }
       "passed valid minimal downstream json" in {
-        Json.toJson(def1_DownstreamMinimalJson.as[Def1_RetrievePeriodSummaryResponse]) shouldBe def1_MtdMinimalJson
+        Json.toJson(def1_DownstreamMinimalJson.as[Def1_RetrievePeriodSummaryResponse]).shouldBe(def1_MtdMinimalJson)
       }
     }
   }

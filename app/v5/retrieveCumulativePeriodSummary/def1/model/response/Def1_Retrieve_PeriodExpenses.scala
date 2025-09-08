@@ -77,7 +77,7 @@ object Def1_Retrieve_PeriodExpenses {
       (JsPath \ "professionalFees" \ "amount").readNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "amount").readNullable[BigDecimal] and
       (JsPath \ "other" \ "amount").readNullable[BigDecimal]
-  )(Def1_Retrieve_PeriodExpenses.apply _)
+  )(Def1_Retrieve_PeriodExpenses.apply)
 
   implicit val writes: OWrites[Def1_Retrieve_PeriodExpenses] = Json.writes
 }

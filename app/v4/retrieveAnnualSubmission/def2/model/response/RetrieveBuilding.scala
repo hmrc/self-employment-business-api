@@ -16,7 +16,7 @@
 
 package v4.retrieveAnnualSubmission.def2.model.response
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class RetrieveBuilding(name: Option[String], number: Option[String], postcode: String)
@@ -28,6 +28,6 @@ object RetrieveBuilding {
     (JsPath \ "name").readNullable[String] and
       (JsPath \ "number").readNullable[String] and
       (JsPath \ "postCode").read[String]
-  )(RetrieveBuilding.apply _)
+  )(RetrieveBuilding.apply)
 
 }

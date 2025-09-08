@@ -42,22 +42,26 @@ class Def1_PeriodDetailsSpec extends UnitSpec {
             |}
             |""".stripMargin
         )
-        .as[Def1_PeriodDetails] shouldBe model
+        .as[Def1_PeriodDetails]
+        .shouldBe(model)
     }
   }
 
   "writes" should {
 
     "write to mtd json" in {
-      Json.toJson(model) shouldBe Json.parse(
-        """
+      Json
+        .toJson(model)
+        .shouldBe(
+          Json.parse(
+            """
           |{
           |   "periodId": "2020-01-01_2020-02-02",
           |   "periodStartDate": "2020-01-01",
           |   "periodEndDate": "2020-02-02"
           |}
           |""".stripMargin
-      )
+          ))
     }
   }
 

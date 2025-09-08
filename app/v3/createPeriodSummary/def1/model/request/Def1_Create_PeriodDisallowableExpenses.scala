@@ -16,7 +16,7 @@
 
 package v3.createPeriodSummary.def1.model.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.createPeriodSummary.model.request.Create_PeriodDisallowableExpenses
 
@@ -57,6 +57,6 @@ object Def1_Create_PeriodDisallowableExpenses {
       (JsPath \ "professionalFees" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "depreciation" \ "disallowableAmount").writeNullable[BigDecimal] and
       (JsPath \ "other" \ "disallowableAmount").writeNullable[BigDecimal]
-  )(unlift(Def1_Create_PeriodDisallowableExpenses.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

@@ -16,7 +16,7 @@
 
 package shared.utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 trait JsonWritesUtil {
 
@@ -34,7 +34,6 @@ trait JsonWritesUtil {
 
   def writesFrom[A](pf: PartialFunction[A, JsObject]): OWrites[A] = {
     val f: A => JsObject = pf.orElse(a => throw new IllegalArgumentException(s"No writes defined for type ${a.getClass.getName}"))
-
     OWrites.apply(f)
   }
 

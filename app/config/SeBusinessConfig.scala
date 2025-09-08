@@ -16,16 +16,14 @@
 
 package config
 
-import play.api.Configuration
 import shared.models.domain.TaxYear
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 /** Put API-specific config here...
   */
 @Singleton
-class SeBusinessConfig @Inject() (config: ServicesConfig, configuration: Configuration)
+class SeBusinessConfig
 
 object SeBusinessConfig {
   val minimumTaxYear: TaxYear = TaxYear.ending(2018)

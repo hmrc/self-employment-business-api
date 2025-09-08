@@ -35,7 +35,7 @@ class Def1_RetrieveCumulativePeriodSummaryValidator(nino: String, businessId: St
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolveTaxYear(taxYear)
-    ).mapN(Def1_RetrieveCumulativePeriodSummaryRequestData)
+    ).mapN(Def1_RetrieveCumulativePeriodSummaryRequestData.apply)
   }
 
 }

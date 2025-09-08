@@ -21,8 +21,18 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import shared.config.SharedAppConfig
 import shared.hateoas.{HateoasData, HateoasLinksFactory, Link}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import v3.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodDisallowableExpenses, Def1_Retrieve_PeriodExpenses, Def1_Retrieve_PeriodIncome}
-import v3.retrievePeriodSummary.def2.model.response.{Def2_Retrieve_PeriodDates, Def2_Retrieve_PeriodDisallowableExpenses, Def2_Retrieve_PeriodExpenses, Def2_Retrieve_PeriodIncome}
+import v3.retrievePeriodSummary.def1.model.response.{
+  Def1_Retrieve_PeriodDates,
+  Def1_Retrieve_PeriodDisallowableExpenses,
+  Def1_Retrieve_PeriodExpenses,
+  Def1_Retrieve_PeriodIncome
+}
+import v3.retrievePeriodSummary.def2.model.response.{
+  Def2_Retrieve_PeriodDates,
+  Def2_Retrieve_PeriodDisallowableExpenses,
+  Def2_Retrieve_PeriodExpenses,
+  Def2_Retrieve_PeriodIncome
+}
 import v3.retrievePeriodSummary.model.response.Def1_RetrievePeriodSummaryResponse.Def1_RetrievePeriodSubmissionLinksFactory
 import v3.retrievePeriodSummary.model.response.Def2_RetrievePeriodSummaryResponse.Def2_RetrievePeriodSubmissionLinksFactory
 
@@ -87,7 +97,7 @@ object Def1_RetrievePeriodSummaryResponse extends HateoasLinks {
       extends HateoasLinksFactory[Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId, None),
         retrievePeriodSummary(appConfig, nino, businessId, periodId, None),
@@ -140,7 +150,7 @@ object Def2_RetrievePeriodSummaryResponse extends HateoasLinks {
       extends HateoasLinksFactory[Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: RetrievePeriodSummaryHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       Seq(
         amendPeriodSummary(appConfig, nino, businessId, periodId, taxYear),
         retrievePeriodSummary(appConfig, nino, businessId, periodId, taxYear),

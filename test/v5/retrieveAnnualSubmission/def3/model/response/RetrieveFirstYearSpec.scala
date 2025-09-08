@@ -37,7 +37,7 @@ class RetrieveFirstYearSpec extends UnitSpec {
   "reads" when {
     "passed a valid JSON" should {
       "return the model" in {
-        json.as[RetrieveFirstYear] shouldBe model
+        json.as[RetrieveFirstYear].shouldBe(model)
       }
     }
   }
@@ -45,7 +45,7 @@ class RetrieveFirstYearSpec extends UnitSpec {
   "writes" when {
     "passed a model" should {
       "return downstream JSON" in {
-        Json.toJson(model) shouldBe json
+        Json.toJson(model).shouldBe(json)
       }
     }
   }

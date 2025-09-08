@@ -38,7 +38,7 @@ class RetrieveAnnualSubmissionValidatorFactorySpec
 
   "RetrieveAnnualSubmissionValidatorFactory" when {
     "given a request corresponding to a Def1 schema" should {
-      "return a Def1 validator" in forTaxYearsInRange(TaxYear.fromMtd("2017-18"), TaxYear.fromMtd("2023-24")) { taxYear: TaxYear =>
+      "return a Def1 validator" in forTaxYearsInRange(TaxYear.fromMtd("2017-18"), TaxYear.fromMtd("2023-24")) { (taxYear: TaxYear) =>
         validatorFor(taxYear.asMtd) shouldBe a[Def1_RetrieveAnnualSubmissionValidator]
       }
     }

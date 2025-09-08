@@ -17,7 +17,7 @@
 package api.support
 
 import shared.controllers.EndpointLogContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.utils.Logging
 

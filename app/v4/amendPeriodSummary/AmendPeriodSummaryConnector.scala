@@ -19,7 +19,7 @@ package v4.amendPeriodSummary
 import play.api.http.Status.OK
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -41,13 +41,13 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClientV2, val appConf
 
     request match {
       case def2: Def2_AmendPeriodSummaryRequestData =>
-        import def2._
+        import def2.*
         val ifsUri = IfsUri[Unit](
           s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
         put(def2.body, ifsUri)
 
       case _ @def1 =>
-        import def1._
+        import def1.*
         val desUri = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
         put(def1.body, desUri)
 

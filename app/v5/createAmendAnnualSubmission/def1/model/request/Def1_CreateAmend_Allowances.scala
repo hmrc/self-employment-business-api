@@ -50,6 +50,6 @@ object Def1_CreateAmend_Allowances {
       (JsPath \ "zeroEmissionsCarAllowance").writeNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").writeNullable[Seq[Def1_CreateAmend_StructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").writeNullable[Seq[Def1_CreateAmend_StructuredBuildingAllowance]]
-  )(unlift(Def1_CreateAmend_Allowances.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }
