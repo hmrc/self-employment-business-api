@@ -16,7 +16,7 @@
 
 package v5.listPeriodSummaries.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.JsonWritesUtil
 import shared.utils.JsonWritesUtil.writesFrom
 import v5.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
@@ -25,7 +25,7 @@ trait ListPeriodSummariesResponse[+E]
 
 object ListPeriodSummariesResponse extends JsonWritesUtil {
 
-  implicit def writes[E: Writes]: OWrites[ListPeriodSummariesResponse[E]] = writesFrom { case a: Def1_ListPeriodSummariesResponse[E] =>
+  given writes[E: Writes]: OWrites[ListPeriodSummariesResponse[E]] = writesFrom { case a: Def1_ListPeriodSummariesResponse[E @unchecked] =>
     Json.toJson(a).as[JsObject]
   }
 
@@ -35,7 +35,7 @@ trait PeriodDetails
 
 object PeriodDetails {
 
-  implicit val writes: OWrites[PeriodDetails] = writesFrom { case a: Def1_PeriodDetails =>
+  given writes: OWrites[PeriodDetails] = writesFrom { case a: Def1_PeriodDetails =>
     Json.toJson(a).as[JsObject]
 
   }

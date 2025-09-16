@@ -32,6 +32,6 @@ class Def2_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, t
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolveTaxYear(taxYear)
-    ).mapN(Def2_RetrieveAnnualSubmissionRequestData)
+    ).mapN(Def2_RetrieveAnnualSubmissionRequestData.apply)
 
 }

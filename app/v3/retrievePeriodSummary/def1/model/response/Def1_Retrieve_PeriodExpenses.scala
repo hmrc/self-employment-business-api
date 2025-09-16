@@ -16,7 +16,7 @@
 
 package v3.retrievePeriodSummary.def1.model.response
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class Def1_Retrieve_PeriodExpenses(
@@ -77,7 +77,7 @@ object Def1_Retrieve_PeriodExpenses {
       (JsPath \ "deductions" \ "professionalFees" \ "amount").readNullable[BigDecimal] and
       (JsPath \ "deductions" \ "depreciation" \ "amount").readNullable[BigDecimal] and
       (JsPath \ "deductions" \ "other" \ "amount").readNullable[BigDecimal]
-  )(Def1_Retrieve_PeriodExpenses.apply _)
+  )(Def1_Retrieve_PeriodExpenses.apply)
 
   implicit val writes: OWrites[Def1_Retrieve_PeriodExpenses] = Json.writes
 }

@@ -17,7 +17,7 @@
 package v4.retrieveAnnualSubmission.def3
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v4.retrieveAnnualSubmission.def3.model.request.Def3_RetrieveAnnualSubmissionRequestData
 import v4.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData

@@ -21,7 +21,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import shared.models.domain.{TaxYear, TaxYearPropertyCheckSupport}
 import shared.models.errors.{RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
 import shared.utils.UnitSpec
-import v4.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema._
+import v4.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema.*
 
 class RetrieveAnnualSubmissionSchemaSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks with TaxYearPropertyCheckSupport {
 

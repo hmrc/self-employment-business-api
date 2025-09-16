@@ -17,13 +17,17 @@
 package v4.createAmendCumulativePeriodSummary.def1
 
 import api.models.errors.RuleBothExpensesSuppliedError
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v4.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
-import v4.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
+import v4.createAmendCumulativePeriodSummary.model.request.{
+  CreateAmendCumulativePeriodSummaryRequestData,
+  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
+  Def1_CreateAmendCumulativePeriodSummaryRequestData
+}
 
 class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 
@@ -324,13 +328,17 @@ class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with
         val result =
           validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(
-          message = "You must provide information for at least 2 of periodDates, periodIncome, " +
-            "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
-            "Zero values can be submitted when there is no income or expenses"
-        )))
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleIncorrectOrEmptyBodyError.copy(
+              message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+                "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
+                "Zero values can be submitted when there is no income or expenses"
+            )
+          ))
       }
-      
+
       "given a request a body containing only income" in {
 
         val body = validBody()
@@ -341,10 +349,14 @@ class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with
         val result =
           validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(
-          message = "You must provide information for at least 2 of periodDates, periodIncome, " +
-            "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
-            "Zero values can be submitted when there is no income or expenses")))
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleIncorrectOrEmptyBodyError.copy(
+              message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+                "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
+                "Zero values can be submitted when there is no income or expenses")
+          ))
       }
 
       "given a request a body containing only expenses (periodExpenses and periodDisallowableExpenses)" in {
@@ -356,22 +368,28 @@ class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with
         val result =
           validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(
-          message = "You must provide information for at least 2 of periodDates, periodIncome, " +
-            "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
-            "Zero values can be submitted when there is no income or expenses"
-        )))
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleIncorrectOrEmptyBodyError.copy(
+              message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+                "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
+                "Zero values can be submitted when there is no income or expenses"
+            )
+          ))
       }
 
       "given a request where expenses are empty" in {
 
-        val body = validBody(periodExpenses = parsedPeriodExpensesEmpty.toJson, periodDisallowableExpenses = parsedPeriodDisallowableExpensesEmpty.toJson)
-          .removeProperty("/periodIncome")
+        val body =
+          validBody(periodExpenses = parsedPeriodExpensesEmpty.toJson, periodDisallowableExpenses = parsedPeriodDisallowableExpensesEmpty.toJson)
+            .removeProperty("/periodIncome")
 
         val result =
           validator(validNino, validBusinessId, taxYear, body).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPaths(Seq("/periodExpenses", "/periodDisallowableExpenses"))))
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.withPaths(Seq("/periodExpenses", "/periodDisallowableExpenses"))))
       }
 
       def test(error: MtdError)(invalidBody: JsValue, path: String, scenario: String): Unit =

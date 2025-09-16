@@ -24,7 +24,7 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
@@ -110,7 +110,7 @@ class AmendPeriodSummaryControllerSpec
     val requestData: AmendPeriodSummaryRequestData
     val requestBodyJson: JsValue
 
-    val controller = new AmendPeriodSummaryController(
+    val controller: AmendPeriodSummaryController = new AmendPeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendPeriodSummaryValidatorFactory,

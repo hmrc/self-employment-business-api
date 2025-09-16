@@ -19,7 +19,7 @@ package v5.retrievePeriodSummary.def2
 import api.models.domain.PeriodId
 import api.models.errors.PeriodIdFormatError
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v5.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
@@ -48,7 +48,7 @@ class Def2_RetrievePeriodSummaryValidatorSpec extends UnitSpec {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Right(Def2_RetrievePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear))
+        result.shouldBe(Right(Def2_RetrievePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear)))
       }
     }
 
@@ -57,56 +57,56 @@ class Def2_RetrievePeriodSummaryValidatorSpec extends UnitSpec {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator("invalid nino", validBusinessId, validPeriodId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, NinoFormatError)))
       }
 
       "given an invalid business id" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, "invalid business id", validPeriodId, validTaxYear).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, BusinessIdFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, BusinessIdFormatError)))
       }
 
       "given an invalid period id" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, "invalid period id", validTaxYear).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, PeriodIdFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, PeriodIdFormatError)))
       }
 
       "given a period id outside of range" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, "0010-01-01_2017-02-31", validTaxYear).validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, PeriodIdFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, PeriodIdFormatError)))
       }
 
       "given an invalid tax year" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, "invalid tax year").validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, TaxYearFormatError)))
       }
 
       "given an invalid tax year range" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, "2023-25").validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)))
       }
 
       "a tax year 2025 or over is passed" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, "2025-26").validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)))
       }
 
       "given a non-TYS tax year" in {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validPeriodId, "2021-22").validateAndWrapResult()
 
-        result shouldBe Left(ErrorWrapper(correlationId, InvalidTaxYearParameterError))
+        result.shouldBe(Left(ErrorWrapper(correlationId, InvalidTaxYearParameterError)))
       }
     }
 
@@ -115,13 +115,14 @@ class Def2_RetrievePeriodSummaryValidatorSpec extends UnitSpec {
         val result: Either[ErrorWrapper, RetrievePeriodSummaryRequestData] =
           validator("invalid", "invalid", "invalid", "invalid").validateAndWrapResult()
 
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            BadRequestError,
-            Some(List(BusinessIdFormatError, NinoFormatError, PeriodIdFormatError, TaxYearFormatError))
-          )
-        )
+        result.shouldBe(
+          Left(
+            ErrorWrapper(
+              correlationId,
+              BadRequestError,
+              Some(List(BusinessIdFormatError, NinoFormatError, PeriodIdFormatError, TaxYearFormatError))
+            )
+          ))
       }
     }
   }

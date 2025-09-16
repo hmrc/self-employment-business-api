@@ -49,7 +49,7 @@ object RetrieveAllowances {
       (JsPath \ "zeroEmissionsCarAllowance").readNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").readNullable[Seq[RetrieveStructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").readNullable[Seq[RetrieveStructuredBuildingAllowance]]
-  )(RetrieveAllowances.apply _)
+  )(RetrieveAllowances.apply)
 
   implicit val writes: OWrites[RetrieveAllowances] = Json.writes[RetrieveAllowances]
 

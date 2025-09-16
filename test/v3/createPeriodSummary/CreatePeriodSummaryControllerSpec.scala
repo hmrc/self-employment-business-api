@@ -25,7 +25,7 @@ import shared.hateoas.Method.{GET, PUT}
 import shared.hateoas.{HateoasWrapper, Link, MockHateoasFactory}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version3}
 import shared.services.MockAuditService
@@ -135,7 +135,7 @@ class CreatePeriodSummaryControllerSpec
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
     MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
-    val controller = new CreatePeriodSummaryController(
+    val controller: CreatePeriodSummaryController = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockCreatePeriodSummaryValidatorFactory,

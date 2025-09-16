@@ -19,7 +19,7 @@ package v3.amendPeriodSummary
 import play.api.http.Status.OK
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -38,7 +38,7 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClientV2, val appConf
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
     val amendPeriodSummaryRequestData: Def2_AmendPeriodSummaryRequestData = request.asInstanceOf[Def2_AmendPeriodSummaryRequestData]
-    import amendPeriodSummaryRequestData._
+    import amendPeriodSummaryRequestData.*
 
     val ifsUri = IfsUri[Unit](
       s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")

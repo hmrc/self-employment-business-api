@@ -17,7 +17,7 @@
 package v4.retrieveCumulativePeriodSummary.def1
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v4.retrieveCumulativePeriodSummary.def1.model.request.Def1_RetrieveCumulativePeriodSummaryRequestData
 import v4.retrieveCumulativePeriodSummary.model.request.RetrieveCumulativePeriodSummaryRequestData

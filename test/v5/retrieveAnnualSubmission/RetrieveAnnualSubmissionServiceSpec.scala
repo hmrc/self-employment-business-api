@@ -18,7 +18,7 @@ package v5.retrieveAnnualSubmission
 
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
@@ -68,7 +68,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
           .retrieveAnnualSubmission(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, response))))
 
-        await(service.retrieveAnnualSubmission(requestData)) shouldBe Right(ResponseWrapper(correlationId, response))
+        await(service.retrieveAnnualSubmission(requestData)).shouldBe(Right(ResponseWrapper(correlationId, response)))
       }
     }
   }
@@ -82,7 +82,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
             .retrieveAnnualSubmission(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          await(service.retrieveAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.retrieveAnnualSubmission(requestData)).shouldBe(Left(ErrorWrapper(correlationId, error)))
         }
 
       val errors = List(
@@ -105,7 +105,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
         "TAX_YEAR_NOT_SUPPORTED"        -> RuleTaxYearNotSupportedError
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
     }
   }
 

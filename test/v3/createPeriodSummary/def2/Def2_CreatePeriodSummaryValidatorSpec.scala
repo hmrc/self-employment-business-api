@@ -18,13 +18,13 @@ package v3.createPeriodSummary.def2
 
 import api.models.errors.RuleBothExpensesSuppliedError
 import play.api.Configuration
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.UnitSpec
 import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
-import v3.createPeriodSummary.def2.model.request._
+import v3.createPeriodSummary.def2.model.request.*
 import v3.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 
 class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {

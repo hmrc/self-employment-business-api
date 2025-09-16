@@ -16,7 +16,7 @@
 
 package v4.retrieveAnnualSubmission.def3.model.response
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v4.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
@@ -32,7 +32,7 @@ object Def3_RetrieveAnnualSubmissionResponse {
     (JsPath \ "annualAdjustments").readNullable[RetrieveAdjustments] and
       (JsPath \ "annualAllowances").readNullable[RetrieveAllowances] and
       (JsPath \ "annualNonFinancials").readNullable[RetrieveNonFinancials]
-  )(Def3_RetrieveAnnualSubmissionResponse.apply _)
+  )(Def3_RetrieveAnnualSubmissionResponse.apply)
 
   implicit val writes: OWrites[Def3_RetrieveAnnualSubmissionResponse] =
     Json.writes[Def3_RetrieveAnnualSubmissionResponse]

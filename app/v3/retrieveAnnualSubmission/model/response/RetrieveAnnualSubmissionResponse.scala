@@ -38,7 +38,7 @@ object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
       extends HateoasLinksFactory[RetrieveAnnualSubmissionResponse, RetrieveAnnualSubmissionHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: RetrieveAnnualSubmissionHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       List(
         amendAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),
         retrieveAnnualSubmission(appConfig, nino, businessId, TaxYear.fromMtd(taxYear)),

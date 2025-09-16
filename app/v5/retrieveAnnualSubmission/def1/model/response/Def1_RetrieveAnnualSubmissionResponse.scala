@@ -32,7 +32,7 @@ object Def1_RetrieveAnnualSubmissionResponse {
     (JsPath \ "annualAdjustments").readNullable[RetrieveAdjustments] and
       (JsPath \ "annualAllowances").readNullable[RetrieveAllowances] and
       (JsPath \ "annualNonFinancials").readNullable[RetrieveNonFinancials]
-  )(Def1_RetrieveAnnualSubmissionResponse.apply _)
+  )(Def1_RetrieveAnnualSubmissionResponse.apply)
 
   implicit val writes: OWrites[Def1_RetrieveAnnualSubmissionResponse] = Json.writes[Def1_RetrieveAnnualSubmissionResponse]
 

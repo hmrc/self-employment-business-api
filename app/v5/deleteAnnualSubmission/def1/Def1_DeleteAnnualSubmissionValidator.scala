@@ -38,6 +38,6 @@ class Def1_DeleteAnnualSubmissionValidator(
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolveTaxYear(taxYear)
-    ).mapN(Def1_DeleteAnnualSubmissionRequestData)
+    ).mapN(Def1_DeleteAnnualSubmissionRequestData.apply)
 
 }

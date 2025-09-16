@@ -43,7 +43,7 @@ class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, peri
       ResolveBusinessId(businessId),
       ResolvePeriodId(periodId, 1900, 2100),
       resolveTaxYear(taxYear)
-    ).mapN(Def2_RetrievePeriodSummaryRequestData)
+    ).mapN(Def2_RetrievePeriodSummaryRequestData.apply)
   }
 
 }

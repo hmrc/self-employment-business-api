@@ -36,8 +36,8 @@ class RetrieveCumulativePeriodSummaryConnector @Inject() (val http: HttpClientV2
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveCumulativePeriodSummaryResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     val downstreamUri =
       IfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId")

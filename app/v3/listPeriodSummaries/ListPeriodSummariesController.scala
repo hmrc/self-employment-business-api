@@ -18,7 +18,7 @@ package v3.listPeriodSummaries
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.SharedAppConfig
-import shared.controllers._
+import shared.controllers.*
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 

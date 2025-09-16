@@ -17,7 +17,7 @@
 package v3.retrieveAnnualSubmission.def2
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import config.SeBusinessConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
@@ -36,6 +36,6 @@ class Def2_RetrieveAnnualSubmissionValidator(nino: String, businessId: String, t
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       resolveTaxYear(taxYear)
-    ).mapN(Def2_RetrieveAnnualSubmissionRequestData)
+    ).mapN(Def2_RetrieveAnnualSubmissionRequestData.apply)
 
 }

@@ -18,11 +18,12 @@ package v3.amendPeriodSummary.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -46,9 +47,9 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe NOT_FOUND
-        response.json shouldBe Json.toJson(NotFoundError)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.status.shouldBe(NOT_FOUND)
+        response.json.shouldBe(Json.toJson(NotFoundError))
+        response.header("X-CorrelationId").nonEmpty.shouldBe(true)
       }
 
       "given an invalid request for a non-tys tax year" in new Test {
@@ -61,9 +62,9 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe NOT_FOUND
-        response.json shouldBe Json.toJson(NotFoundError)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.status.shouldBe(NOT_FOUND)
+        response.json.shouldBe(Json.toJson(NotFoundError))
+        response.header("X-CorrelationId").nonEmpty.shouldBe(true)
       }
 
       "when downstream returns a different error code" in new Test {
@@ -75,9 +76,9 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe NOT_FOUND
-        response.json shouldBe Json.toJson(NotFoundError)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
+        response.status.shouldBe(NOT_FOUND)
+        response.json.shouldBe(Json.toJson(NotFoundError))
+        response.header("X-CorrelationId").nonEmpty.shouldBe(true)
       }
     }
   }

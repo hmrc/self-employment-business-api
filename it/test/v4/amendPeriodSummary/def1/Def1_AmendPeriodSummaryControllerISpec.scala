@@ -19,11 +19,12 @@ package v4.amendPeriodSummary.def1
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -105,7 +106,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
           )
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
 
       "downstream service error" when {
@@ -144,7 +145,7 @@ class Def1_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with Js
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        errors.foreach(args => (serviceErrorTest _).tupled(args))
+        errors.foreach(args => serviceErrorTest.tupled(args))
       }
     }
   }

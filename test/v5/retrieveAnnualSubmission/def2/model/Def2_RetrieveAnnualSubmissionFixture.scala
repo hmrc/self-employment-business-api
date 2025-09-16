@@ -18,7 +18,7 @@ package v5.retrieveAnnualSubmission.def2.model
 
 import api.models.domain.ex.MtdNicExemption
 import play.api.libs.json.{JsValue, Json}
-import v5.retrieveAnnualSubmission.def2.model.response._
+import v5.retrieveAnnualSubmission.def2.model.response.*
 
 trait Def2_RetrieveAnnualSubmissionFixture {
 

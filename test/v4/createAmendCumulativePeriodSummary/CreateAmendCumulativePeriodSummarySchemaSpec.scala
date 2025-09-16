@@ -31,7 +31,7 @@ class CreateAmendCumulativePeriodSummarySchemaSpec extends UnitSpec {
 
         val result = CreateAmendCumulativePeriodSummarySchema.schemaFor(validTaxYear)
 
-        result shouldBe a[Validated.Valid[_]]
+        result shouldBe a[Validated.Valid[?]]
         result.map(_.year) shouldBe Validated.Valid(TaxYear.fromMtd(validTaxYear).year)
       }
     }
@@ -41,7 +41,7 @@ class CreateAmendCumulativePeriodSummarySchemaSpec extends UnitSpec {
 
         val result = CreateAmendCumulativePeriodSummarySchema.schemaFor(validTaxYear)
 
-        result shouldBe a[Validated.Valid[_]]
+        result shouldBe a[Validated.Valid[?]]
         result.map(_.year) shouldBe Validated.Valid(TaxYear.fromMtd(validTaxYear).year)
       }
     }
@@ -52,7 +52,7 @@ class CreateAmendCumulativePeriodSummarySchemaSpec extends UnitSpec {
 
         val result = CreateAmendCumulativePeriodSummarySchema.schemaFor(invalidTaxYear)
 
-        result shouldBe a[Validated.Invalid[_]]
+        result shouldBe a[Validated.Invalid[?]]
         result shouldBe Validated.Invalid(Seq(RuleTaxYearNotSupportedError))
       }
     }
@@ -62,7 +62,7 @@ class CreateAmendCumulativePeriodSummarySchemaSpec extends UnitSpec {
 
         val result = CreateAmendCumulativePeriodSummarySchema.schemaFor(invalidTaxYear)
 
-        result shouldBe a[Validated.Invalid[_]]
+        result shouldBe a[Validated.Invalid[?]]
         result shouldBe Validated.Invalid(Seq(RuleTaxYearNotSupportedError))
       }
     }
@@ -73,7 +73,7 @@ class CreateAmendCumulativePeriodSummarySchemaSpec extends UnitSpec {
 
         val result = CreateAmendCumulativePeriodSummarySchema.schemaFor(malformedTaxYear)
 
-        result shouldBe a[Validated.Invalid[_]]
+        result shouldBe a[Validated.Invalid[?]]
         result shouldBe Validated.Invalid(Seq(TaxYearFormatError))
       }
     }

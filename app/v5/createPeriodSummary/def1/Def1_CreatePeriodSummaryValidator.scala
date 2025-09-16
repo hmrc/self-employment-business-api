@@ -38,7 +38,7 @@ class Def1_CreatePeriodSummaryValidator(nino: String, businessId: String, body: 
         ResolveNino(nino),
         ResolveBusinessId(businessId),
         Valid(parsedBody)
-      ).mapN(Def1_CreatePeriodSummaryRequestData)
+      ).mapN(Def1_CreatePeriodSummaryRequestData.apply)
     } andThen rulesValidator.validateBusinessRules
   }
 

@@ -19,35 +19,15 @@ package api.models.domain.ex
 import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-sealed trait DownstreamNicExemption {
-  def toMtd: MtdNicExemption
+enum DownstreamNicExemption(val toMtd: MtdNicExemption) {
+  case `001` extends DownstreamNicExemption(MtdNicExemption.`non-resident`)
+  case `002` extends DownstreamNicExemption(MtdNicExemption.trustee)
+  case `003` extends DownstreamNicExemption(MtdNicExemption.diver)
+  case `004` extends DownstreamNicExemption(MtdNicExemption.`ITTOIA-2005`)
+  case `005` extends DownstreamNicExemption(MtdNicExemption.`over-state-pension-age`)
+  case `006` extends DownstreamNicExemption(MtdNicExemption.`under-16`)
 }
 
 object DownstreamNicExemption {
-
-  case object `001` extends DownstreamNicExemption {
-    override def toMtd: MtdNicExemption = MtdNicExemption.`non-resident`
-  }
-
-  case object `002` extends DownstreamNicExemption {
-    override def toMtd: MtdNicExemption = MtdNicExemption.trustee
-  }
-
-  case object `003` extends DownstreamNicExemption {
-    override def toMtd: MtdNicExemption = MtdNicExemption.diver
-  }
-
-  case object `004` extends DownstreamNicExemption {
-    override def toMtd: MtdNicExemption = MtdNicExemption.`ITTOIA-2005`
-  }
-
-  case object `005` extends DownstreamNicExemption {
-    override def toMtd: MtdNicExemption = MtdNicExemption.`over-state-pension-age`
-  }
-
-  case object `006` extends DownstreamNicExemption {
-    override def toMtd: MtdNicExemption = MtdNicExemption.`under-16`
-  }
-
-  implicit val format: Format[DownstreamNicExemption] = Enums.format[DownstreamNicExemption]
+  given Format[DownstreamNicExemption] = Enums.format(values)
 }

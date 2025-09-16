@@ -30,7 +30,7 @@ object CreatePeriodSummaryResponse extends HateoasLinks {
   implicit object LinksFactory extends HateoasLinksFactory[CreatePeriodSummaryResponse, CreatePeriodSummaryHateoasData] {
 
     override def links(appConfig: SharedAppConfig, data: CreatePeriodSummaryHateoasData): Seq[Link] = {
-      import data._
+      import data.*
       List(
         amendPeriodSummary(appConfig, nino, businessId, periodId, taxYear),
         retrievePeriodSummary(appConfig, nino, businessId, periodId, taxYear),

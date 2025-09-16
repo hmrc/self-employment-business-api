@@ -23,7 +23,7 @@ import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v4.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def1_Amend_PeriodExpenses}
 import v4.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodExpenses}
-import v4.amendPeriodSummary.model.request._
+import v4.amendPeriodSummary.model.request.*
 
 import scala.concurrent.Future
 
@@ -78,7 +78,7 @@ class AmendPeriodSummaryConnectorSpec extends ConnectorSpec {
   private val outcome = Right(ResponseWrapper(correlationId, ()))
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val connector: AmendPeriodSummaryConnector = new AmendPeriodSummaryConnector(
       http = mockHttpClient,

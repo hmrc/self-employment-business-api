@@ -16,7 +16,7 @@
 
 package v3.listPeriodSummaries.def1.model.response
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v3.listPeriodSummaries.model.response.PeriodDetails
 

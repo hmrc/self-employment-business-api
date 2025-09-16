@@ -55,7 +55,7 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolvePeriodId(periodId),
       resolveTaxYear(taxYear),
       resolveJson(body)
-    ).mapN(Def2_AmendPeriodSummaryRequestData) andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
+    ).mapN(Def2_AmendPeriodSummaryRequestData.apply) andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
 
   /** Can be removed when CL290 is released.
     */

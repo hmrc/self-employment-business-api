@@ -21,7 +21,11 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
-import v5.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
+import v5.createAmendCumulativePeriodSummary.model.request.{
+  CreateAmendCumulativePeriodSummaryRequestData,
+  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
+  Def1_CreateAmendCumulativePeriodSummaryRequestData
+}
 
 import scala.concurrent.Future
 
@@ -39,7 +43,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
   private val body = Def1_CreateAmendCumulativePeriodSummaryRequestBody(periodDates, None, None, None)
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val request: CreateAmendCumulativePeriodSummaryRequestData = Def1_CreateAmendCumulativePeriodSummaryRequestData(
       nino = Nino(nino),

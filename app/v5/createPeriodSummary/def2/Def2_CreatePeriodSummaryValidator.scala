@@ -47,7 +47,7 @@ class Def2_CreatePeriodSummaryValidator(
         ResolveNino(nino),
         ResolveBusinessId(businessId),
         Valid(parsedBody)
-      ).mapN(Def2_CreatePeriodSummaryRequestData)
+      ).mapN(Def2_CreatePeriodSummaryRequestData.apply)
     } andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
 
   /** Can be removed when CL290 is released.

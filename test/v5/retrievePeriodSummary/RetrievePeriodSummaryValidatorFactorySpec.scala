@@ -40,7 +40,7 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrievePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2018-19")
 
-        result shouldBe a[Def1_RetrievePeriodSummaryValidator]
+        result.shouldBe(a[Def1_RetrievePeriodSummaryValidator])
       }
     }
 
@@ -49,7 +49,7 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrievePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2023-24")
 
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
+        result.shouldBe(a[Def2_RetrievePeriodSummaryValidator])
       }
     }
 
@@ -58,13 +58,13 @@ class RetrievePeriodSummaryValidatorFactorySpec extends UnitSpec {
         val result: Validator[RetrievePeriodSummaryRequestData] =
           validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2024-25")
 
-        result shouldBe a[Def2_RetrievePeriodSummaryValidator]
+        result.shouldBe(a[Def2_RetrievePeriodSummaryValidator])
       }
     }
 
     "given a request where no valid schema could be determined" should {
       "return a validator returning the errors" in {
-        validatorFor("BAD_TAX_YEAR") shouldBe an[AlwaysErrorsValidator]
+        validatorFor("BAD_TAX_YEAR").shouldBe(an[AlwaysErrorsValidator])
       }
     }
   }

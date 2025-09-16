@@ -19,10 +19,10 @@ package v3.createAmendAnnualSubmission.def2
 import api.models.errors.{RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError, RuleWrongTpaAmountSubmittedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNumber, ResolveStringPattern}
-import shared.models.errors._
+import shared.models.errors.*
 import v3.createAmendAnnualSubmission.model.request.Def2_CreateAmendAnnualSubmissionRequestData
 
 import scala.util.matching.Regex
@@ -36,7 +36,7 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
 
   def validateBusinessRules(
       parsed: Def2_CreateAmendAnnualSubmissionRequestData): Validated[Seq[MtdError], Def2_CreateAmendAnnualSubmissionRequestData] = {
-    import parsed.body._
+    import parsed.body.*
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
       adjustments.map(validateTPAAmount).getOrElse(valid),
@@ -46,7 +46,7 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   }
 
   private def validateAdjustments(adjustments: request.Def2_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
-    import adjustments._
+    import adjustments.*
 
     val validatedNonNegatives = List(
       (includedNonTaxableProfits, "/adjustments/includedNonTaxableProfits"),
@@ -73,7 +73,7 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   }
 
   private def validateAllowances(allowances: request.Def2_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
-    import allowances._
+    import allowances.*
 
     val validatedNonNegatives = List(
       (annualInvestmentAllowance, "/allowances/annualInvestmentAllowance"),
@@ -126,7 +126,7 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   private def validateStructuredBuildingAllowance(structuredBuildingAllowance: request.Def2_CreateAmend_StructuredBuildingAllowance,
                                                   index: Int,
                                                   typeOfBuildingAllowance: String): Validated[Seq[MtdError], Unit] = {
-    import structuredBuildingAllowance._
+    import structuredBuildingAllowance.*
 
     val validatedAmount = resolveNonNegativeParsedNumber(amount, s"/allowances/$typeOfBuildingAllowance/$index/amount").toUnit
 

@@ -16,7 +16,7 @@
 
 package v4.createAmendAnnualSubmission.def2.request
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class Def2_CreateAmend_Allowances(annualInvestmentAllowance: Option[BigDecimal],
@@ -50,6 +50,6 @@ object Def2_CreateAmend_Allowances {
       (JsPath \ "zeroEmissionsCarAllowance").writeNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").writeNullable[Seq[Def2_CreateAmend_StructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").writeNullable[Seq[Def2_CreateAmend_StructuredBuildingAllowance]]
-  )(unlift(Def2_CreateAmend_Allowances.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

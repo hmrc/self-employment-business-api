@@ -17,7 +17,7 @@
 package v4.retrieveAnnualSubmission.def1
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
 import shared.models.errors.MtdError
@@ -35,6 +35,6 @@ class Def1_RetrieveAnnualSubmissionValidator(
       ResolveNino(nino),
       ResolveBusinessId(businessId),
       ResolveTaxYear(taxYear)
-    ).mapN(Def1_RetrieveAnnualSubmissionRequestData)
+    ).mapN(Def1_RetrieveAnnualSubmissionRequestData.apply)
 
 }

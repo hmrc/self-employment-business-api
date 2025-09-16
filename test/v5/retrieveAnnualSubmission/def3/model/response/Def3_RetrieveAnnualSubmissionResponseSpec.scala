@@ -42,7 +42,7 @@ class Def3_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def3_Retri
              |""".stripMargin)
           .as[Def3_RetrieveAnnualSubmissionResponse]
 
-        result shouldBe retrieveAnnualSubmissionResponse
+        result.shouldBe(retrieveAnnualSubmissionResponse)
       }
     }
   }

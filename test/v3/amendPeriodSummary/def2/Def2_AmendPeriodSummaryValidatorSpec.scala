@@ -23,7 +23,7 @@ import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import shared.utils.UnitSpec
 import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import v3.amendPeriodSummary.def2.model.request.{Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
 import v3.amendPeriodSummary.model.request.{AmendPeriodSummaryRequestData, Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}

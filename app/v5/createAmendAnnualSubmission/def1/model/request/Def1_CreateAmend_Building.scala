@@ -28,6 +28,6 @@ object Def1_CreateAmend_Building {
     (JsPath \ "name").writeNullable[String] and
       (JsPath \ "number").writeNullable[String] and
       (JsPath \ "postCode").write[String]
-  )(unlift(Def1_CreateAmend_Building.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

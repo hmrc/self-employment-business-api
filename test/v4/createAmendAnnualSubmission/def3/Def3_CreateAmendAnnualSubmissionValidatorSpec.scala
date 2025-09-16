@@ -25,11 +25,11 @@ import api.models.errors.{
 }
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v4.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
-import v4.createAmendAnnualSubmission.def3.request._
+import v4.createAmendAnnualSubmission.def3.request.*
 import v4.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def3_CreateAmendAnnualSubmissionRequestData}
 
 class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators {

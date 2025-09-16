@@ -18,7 +18,7 @@ package v4.listPeriodSummaries
 
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -36,8 +36,8 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClientV2, val appCon
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListPeriodSummariesResponse[PeriodDetails]]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {

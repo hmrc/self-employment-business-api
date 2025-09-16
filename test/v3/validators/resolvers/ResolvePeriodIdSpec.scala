@@ -30,14 +30,14 @@ class ResolvePeriodIdSpec extends UnitSpec {
     "return no errors" when {
       "given a valid period id for an unlimited range" in {
         val result = ResolvePeriodId(validPeriodId)
-        result shouldBe Valid(parsedPeriodId)
+        result.shouldBe(Valid(parsedPeriodId))
       }
 
       "given a valid period id for a limited range" in {
         val minYear = 1900
         val maxYear = 2100
         val result  = ResolvePeriodId(validPeriodId, minYear, maxYear)
-        result shouldBe Valid(parsedPeriodId)
+        result.shouldBe(Valid(parsedPeriodId))
       }
     }
 
@@ -45,13 +45,13 @@ class ResolvePeriodIdSpec extends UnitSpec {
       "given an invalidly format period ID" in {
         val invalidPeriodId = "2017-01-25__2017-02-31"
         val result          = ResolvePeriodId(invalidPeriodId)
-        result shouldBe Invalid(List(PeriodIdFormatError))
+        result.shouldBe(Invalid(List(PeriodIdFormatError)))
       }
 
       "given a period ID where the toDate predates the fromDate" in {
         val invalidPeriodId = "2018-01-25_2017-02-31"
         val result          = ResolvePeriodId(invalidPeriodId)
-        result shouldBe Invalid(List(PeriodIdFormatError))
+        result.shouldBe(Invalid(List(PeriodIdFormatError)))
       }
 
       "given a period ID before the minimum year supplied" in {
@@ -59,7 +59,7 @@ class ResolvePeriodIdSpec extends UnitSpec {
         val minYear         = 2018
         val maxYear         = 2019
         val result          = ResolvePeriodId(invalidPeriodId, minYear, maxYear)
-        result shouldBe Invalid(List(PeriodIdFormatError))
+        result.shouldBe(Invalid(List(PeriodIdFormatError)))
       }
     }
   }

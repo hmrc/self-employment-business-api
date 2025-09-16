@@ -38,7 +38,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
 
   def validateBusinessRules(parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] = {
 
-    import parsed.body._
+    import parsed.body.*
 
     combine(
       validateExpenses(periodExpenses, periodDisallowableExpenses),
@@ -82,7 +82,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
     }
 
   private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: Def2_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (consolidatedExpenses, "/periodExpenses/consolidatedExpenses"),
@@ -120,7 +120,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
 
   private def validatePeriodDisallowableExpenses(includeNegatives: Boolean)(
       expenses: Def2_Amend_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (paymentsToSubcontractorsDisallowable, "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"),

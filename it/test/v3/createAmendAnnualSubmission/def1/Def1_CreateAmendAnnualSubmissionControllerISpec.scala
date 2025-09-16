@@ -16,14 +16,16 @@
 
 package v3.createAmendAnnualSubmission.def1
 
-import api.models.errors._
+import api.models.errors.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
+import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -196,7 +198,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
             Class4ExemptionReasonFormatError)
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
 
       "downstream service error" when {
@@ -242,7 +244,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
           (UNPROCESSABLE_ENTITY, "WRONG_TPA_AMOUNT_SUBMITTED", BAD_REQUEST, RuleWrongTpaAmountSubmittedError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+        (errors ++ extraTysErrors).foreach(args => serviceErrorTest.tupled(args))
       }
     }
   }

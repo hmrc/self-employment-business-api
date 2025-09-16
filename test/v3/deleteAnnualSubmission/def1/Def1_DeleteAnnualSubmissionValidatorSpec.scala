@@ -19,7 +19,7 @@ package v3.deleteAnnualSubmission.def1
 import config.MockSeBusinessConfig
 import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import v3.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
 
 class Def1_DeleteAnnualSubmissionValidatorSpec extends UnitSpec with MockSeBusinessConfig {

@@ -46,7 +46,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
   )
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val connector: RetrieveAnnualSubmissionConnector = new RetrieveAnnualSubmissionConnector(
       http = mockHttpClient,

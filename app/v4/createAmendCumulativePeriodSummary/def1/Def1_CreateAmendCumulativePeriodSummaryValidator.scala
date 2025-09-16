@@ -24,7 +24,7 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers._
 import shared.models.domain.TaxYear
 import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
-import v4.createAmendCumulativePeriodSummary.model.request._
+import v4.createAmendCumulativePeriodSummary.model.request.*
 
 class Def1_CreateAmendCumulativePeriodSummaryValidator(
     nino: String,
@@ -36,17 +36,21 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreateAmendCumulativePeriodSummaryRequestBody]()
 
   private def validateMinimumFields(body: CreateAmendCumulativePeriodSummaryRequestBody): Validated[Seq[MtdError], Unit] = {
-    val hasDates: Boolean = body.periodDates.isDefined
-    val hasIncome: Boolean = body.periodIncome.isDefined
+    val hasDates: Boolean    = body.periodDates.isDefined
+    val hasIncome: Boolean   = body.periodIncome.isDefined
     val hasExpenses: Boolean = body.periodExpenses.isDefined || body.periodDisallowableExpenses.isDefined
 
     val nonEmptyFieldsCount: Int = List(hasDates, hasIncome, hasExpenses).count(identity)
 
-    if (nonEmptyFieldsCount >= 2) Valid(()) else Invalid(List(RuleIncorrectOrEmptyBodyError.copy(
-      message = "You must provide information for at least 2 of periodDates, periodIncome, " +
-        "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
-        "Zero values can be submitted when there is no income or expenses"
-    )))
+    if (nonEmptyFieldsCount >= 2) Valid(())
+    else
+      Invalid(
+        List(
+          RuleIncorrectOrEmptyBodyError.copy(
+            message = "You must provide information for at least 2 of periodDates, periodIncome, " +
+              "and expenses (periodExpenses and/or periodDisallowableExpenses). " +
+              "Zero values can be submitted when there is no income or expenses"
+          )))
   }
 
   private val rulesValidator = Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear)
@@ -57,7 +61,8 @@ class Def1_CreateAmendCumulativePeriodSummaryValidator(
       ResolveBusinessId(businessId),
       Valid(taxYear),
       resolveJson(body)
-    ).mapN(Def1_CreateAmendCumulativePeriodSummaryRequestData).andThen { parsedRequestData =>
+    ).mapN(Def1_CreateAmendCumulativePeriodSummaryRequestData.apply).andThen { parsedRequestData =>
       validateMinimumFields(parsedRequestData.body).andThen(_ => rulesValidator.validateBusinessRules(parsedRequestData))
     }
+
 }

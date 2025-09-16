@@ -18,7 +18,7 @@ package v4.retrieveAnnualSubmission
 
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v4.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
@@ -105,7 +105,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
         "TAX_YEAR_NOT_SUPPORTED"        -> RuleTaxYearNotSupportedError
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
     }
   }
 

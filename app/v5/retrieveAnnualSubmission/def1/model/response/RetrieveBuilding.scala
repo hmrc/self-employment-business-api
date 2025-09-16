@@ -28,6 +28,6 @@ object RetrieveBuilding {
     (JsPath \ "name").readNullable[String] and
       (JsPath \ "number").readNullable[String] and
       (JsPath \ "postCode").read[String]
-  )(RetrieveBuilding.apply _)
+  )(RetrieveBuilding.apply)
 
 }

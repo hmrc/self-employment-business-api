@@ -18,11 +18,11 @@ package v3.retrievePeriodSummary
 
 import api.models.errors.PeriodIdFormatError
 import cats.data.EitherT
-import cats.implicits._
+import cats.implicits.*
 import config.SeBusinessFeatureSwitches
 import shared.config.SharedAppConfig
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v3.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v3.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse

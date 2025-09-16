@@ -19,11 +19,11 @@ package v4.createAmendAnnualSubmission.def1
 import api.models.errors.{RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNumber, ResolveStringPattern}
-import shared.models.errors._
-import v4.createAmendAnnualSubmission.def1.model.request._
+import shared.models.errors.*
+import v4.createAmendAnnualSubmission.def1.model.request.*
 import v4.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
 
 import scala.util.matching.Regex
@@ -37,7 +37,7 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
 
   def validateBusinessRules(
       parsed: Def1_CreateAmendAnnualSubmissionRequestData): Validated[Seq[MtdError], Def1_CreateAmendAnnualSubmissionRequestData] = {
-    import parsed.body._
+    import parsed.body.*
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
       allowances.map(validateBothAllowancesSupplied).getOrElse(valid),
@@ -46,7 +46,7 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   }
 
   private def validateAdjustments(adjustments: Def1_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
-    import adjustments._
+    import adjustments.*
 
     val validatedNonNegatives = List(
       (includedNonTaxableProfits, "/adjustments/includedNonTaxableProfits"),
@@ -71,7 +71,7 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   }
 
   private def validateAllowances(allowances: Def1_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
-    import allowances._
+    import allowances.*
 
     val validatedNonNegatives = List(
       (annualInvestmentAllowance, "/allowances/annualInvestmentAllowance"),
@@ -124,7 +124,7 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   private def validateStructuredBuildingAllowance(structuredBuildingAllowance: Def1_CreateAmend_StructuredBuildingAllowance,
                                                   index: Int,
                                                   typeOfBuildingAllowance: String): Validated[Seq[MtdError], Unit] = {
-    import structuredBuildingAllowance._
+    import structuredBuildingAllowance.*
 
     val validatedAmount = resolveNonNegativeParsedNumber(amount, s"/allowances/$typeOfBuildingAllowance/$index/amount").toUnit
 

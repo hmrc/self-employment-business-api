@@ -28,7 +28,7 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
   val nino  = "test-nino"
   val mtdId = "test-mtdId"
 
-  class Test extends MockHttpClient with MockSharedAppConfig {
+  trait Test extends ConnectorSpec with MockHttpClient with MockSharedAppConfig {
 
     val connector = new MtdIdLookupConnector(
       http = mockHttpClient,
@@ -42,7 +42,8 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
     "return an MtdId" when {
       "the http client returns a mtd id" in new Test {
         MockedHttpClient
-          .get[MtdIdLookupConnector.Outcome](url"$baseUrl/mtd-identifier-lookup/nino/$nino", dummyHeaderCarrierConfig)          .returns(Future.successful(Right(mtdId)))
+          .get[MtdIdLookupConnector.Outcome](url"$baseUrl/mtd-identifier-lookup/nino/$nino", dummyHeaderCarrierConfig)
+          .returns(Future.successful(Right(mtdId)))
 
         val result: Outcome = await(connector.getMtdId(nino))
 

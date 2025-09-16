@@ -21,6 +21,7 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}

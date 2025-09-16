@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package v5.retrieveCumulativePeriodSummary.model.response
+package shared.utils
 
-import play.api.libs.json.*
-import shared.utils.JsonWritesUtil
-import v5.retrieveCumulativePeriodSummary.def1.model.response._
+class IdGeneratorSpec extends UnitSpec {
 
-trait RetrieveCumulativePeriodSummaryResponse
+  val generator        = new IdGenerator
+  val correlationRegex = "^[A-Za-z0-9\\-]{36}$"
 
-object RetrieveCumulativePeriodSummaryResponse extends JsonWritesUtil {
-
-  implicit val writes: OWrites[RetrieveCumulativePeriodSummaryResponse] = writesFrom { case def1: Def1_RetrieveCumulativePeriodSummaryResponse =>
-    Json.toJson(def1).as[JsObject]
+  "IdGenerator" should {
+    "generate a correlation id" when {
+      "getCorrelationId is called" in {
+        generator.generateCorrelationId.matches(correlationRegex) shouldBe true
+      }
+    }
   }
 
 }

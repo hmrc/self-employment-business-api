@@ -17,7 +17,7 @@
 package v4.retrieveAnnualSubmission.def1.model.response
 
 import api.models.domain.ex.{DownstreamNicExemption, MtdNicExemption}
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class RetrieveNonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
@@ -28,6 +28,6 @@ object RetrieveNonFinancials {
   implicit val reads: Reads[RetrieveNonFinancials] = (
     (JsPath \ "businessDetailsChangedRecently").read[Boolean] and
       (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd))
-  )(RetrieveNonFinancials.apply _)
+  )(RetrieveNonFinancials.apply)
 
 }

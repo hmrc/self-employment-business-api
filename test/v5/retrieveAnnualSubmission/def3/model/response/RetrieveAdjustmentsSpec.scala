@@ -53,14 +53,17 @@ class RetrieveAdjustmentsSpec extends UnitSpec {
                   |  "transitionProfitAccelerationAmount": 11.13
                   |}
                   |""".stripMargin)
-        .as[RetrieveAdjustments] shouldBe adjustments
+        .as[RetrieveAdjustments]
+        .shouldBe(adjustments)
     }
   }
 
   "writes" should {
     "return the full downstream JSON" in {
 
-      Json.toJson(adjustments) shouldBe Json.parse(s"""{
+      Json
+        .toJson(adjustments)
+        .shouldBe(Json.parse(s"""{
                                                       |  "includedNonTaxableProfits": 1.12,
                                                       |  "basisAdjustment": 2.12,
                                                       |  "overlapReliefUsed": 3.12,
@@ -73,7 +76,7 @@ class RetrieveAdjustmentsSpec extends UnitSpec {
                                                       |  "transitionProfitAmount": 10.12,
                                                       |  "transitionProfitAccelerationAmount": 11.13
                                                       |}
-                                                      |""".stripMargin)
+                                                      |""".stripMargin))
     }
   }
 

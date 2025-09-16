@@ -22,7 +22,7 @@ import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import v3.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
 import v3.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
@@ -131,7 +131,7 @@ class ListPeriodSummariesControllerSpec
 
     val requestData: ListPeriodSummariesRequestData = Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), None)
 
-    val controller = new ListPeriodSummariesController(
+    val controller: ListPeriodSummariesController = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,
@@ -154,7 +154,7 @@ class ListPeriodSummariesControllerSpec
     val tysRequestData: ListPeriodSummariesRequestData =
       Def1_ListPeriodSummariesRequestData(Nino(validNino), BusinessId(businessId), Some(TaxYear.fromMtd(taxYear)))
 
-    val controller = new ListPeriodSummariesController(
+    val controller: ListPeriodSummariesController = new ListPeriodSummariesController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListPeriodSummariesValidatorFactory,

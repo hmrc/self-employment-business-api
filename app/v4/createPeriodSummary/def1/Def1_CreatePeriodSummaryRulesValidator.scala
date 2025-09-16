@@ -37,7 +37,7 @@ case class Def1_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
   private val resolveDateRange = ResolveDateRange()
 
   def validateBusinessRules(parsed: Def1_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def1_CreatePeriodSummaryRequestData] = {
-    import parsed.body._
+    import parsed.body.*
     combine(
       validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
       validateExpenses(periodExpenses, periodDisallowableExpenses),
@@ -79,7 +79,7 @@ case class Def1_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     }
 
   private def validateAllowableNumericFields(includeNegatives: Boolean)(expenses: Def1_Create_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (consolidatedExpenses, "/periodExpenses/consolidatedExpenses"),
@@ -117,7 +117,7 @@ case class Def1_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
 
   private def validateDisllowableNumericFields(includeNegatives: Boolean)(
       expenses: Def1_Create_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (paymentsToSubcontractorsDisallowable, "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"),

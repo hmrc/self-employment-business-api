@@ -19,7 +19,7 @@ package v4.retrieveCumulativePeriodSummary
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
 import v4.retrieveCumulativePeriodSummary.def1.model.request.Def1_RetrieveCumulativePeriodSummaryRequestData
@@ -88,7 +88,7 @@ class RetrieveCumulativePeriodSummaryServiceSpec extends ServiceSpec {
         )
         errors
       }
-      input.foreach(args => (serviceError _).tupled(args))
+      input.foreach(args => serviceError.tupled(args))
     }
   }
 

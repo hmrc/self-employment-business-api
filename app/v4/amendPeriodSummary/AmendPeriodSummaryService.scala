@@ -17,9 +17,9 @@
 package v4.amendPeriodSummary
 
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v4.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 

@@ -26,13 +26,13 @@ class Def1_RetrieveCumulativePeriodSummaryResponseSpec extends UnitSpec with Moc
   "round trip" should {
     "return mtd json" when {
       "passed valid full downstream json" in {
-        Json.toJson(def1_DownstreamFullJson.as[Def1_RetrieveCumulativePeriodSummaryResponse]) shouldBe def1_MtdFullJson
+        Json.toJson(def1_DownstreamFullJson.as[Def1_RetrieveCumulativePeriodSummaryResponse]).shouldBe(def1_MtdFullJson)
       }
       "passed valid consolidated downstream json" in {
-        Json.toJson(def1_DownstreamConsolidatedJson.as[Def1_RetrieveCumulativePeriodSummaryResponse]) shouldBe def1_MtdConsolidatedJson
+        Json.toJson(def1_DownstreamConsolidatedJson.as[Def1_RetrieveCumulativePeriodSummaryResponse]).shouldBe(def1_MtdConsolidatedJson)
       }
       "passed valid minimal downstream json" in {
-        Json.toJson(def1_DownstreamMinimalJson.as[Def1_RetrieveCumulativePeriodSummaryResponse]) shouldBe def1_MtdMinimalJson
+        Json.toJson(def1_DownstreamMinimalJson.as[Def1_RetrieveCumulativePeriodSummaryResponse]).shouldBe(def1_MtdMinimalJson)
       }
     }
   }

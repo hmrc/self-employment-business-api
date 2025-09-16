@@ -22,7 +22,7 @@ import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v5.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData, Def1_Amend_PeriodIncome}
@@ -128,7 +128,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
         "BOTH_CONS_BREAKDOWN_EXPENSES_SUPPLIED" -> RuleBothExpensesSuppliedError
       )
 
-      (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+      (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
     }
   }
 

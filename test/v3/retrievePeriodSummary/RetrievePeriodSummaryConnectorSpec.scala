@@ -22,7 +22,11 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v3.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
-import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, Def2_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
+import v3.retrievePeriodSummary.model.request.{
+  Def1_RetrievePeriodSummaryRequestData,
+  Def2_RetrievePeriodSummaryRequestData,
+  RetrievePeriodSummaryRequestData
+}
 import v3.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import java.net.URL
@@ -58,7 +62,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
         val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
-        val expectedDownstreamUrl: URL = url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+        val expectedDownstreamUrl: URL =
+          url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
         willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
@@ -88,7 +93,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
       http = mockHttpClient,

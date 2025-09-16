@@ -43,7 +43,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockShared
              |""".stripMargin)
           .as[Def1_RetrieveAnnualSubmissionResponse]
 
-        result shouldBe retrieveAnnualSubmissionResponse
+        result.shouldBe(retrieveAnnualSubmissionResponse)
       }
     }
   }

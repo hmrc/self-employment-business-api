@@ -24,7 +24,12 @@ import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v5.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData, Def2_CreateAmendAnnualSubmissionRequestData, Def3_CreateAmendAnnualSubmissionRequestData}
+import v5.createAmendAnnualSubmission.model.request.{
+  CreateAmendAnnualSubmissionRequestData,
+  Def1_CreateAmendAnnualSubmissionRequestData,
+  Def2_CreateAmendAnnualSubmissionRequestData,
+  Def3_CreateAmendAnnualSubmissionRequestData
+}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

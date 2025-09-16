@@ -21,7 +21,7 @@ import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple3Semigroupal, toFoldableOps}
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
+import shared.controllers.validators.resolvers.*
 import shared.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
 import v4.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestBody, Def1_CreatePeriodSummaryRequestData}
 
@@ -38,7 +38,7 @@ class Def1_CreatePeriodSummaryValidator(nino: String, businessId: String, body: 
         ResolveNino(nino),
         ResolveBusinessId(businessId),
         Valid(parsedBody)
-      ).mapN(Def1_CreatePeriodSummaryRequestData)
+      ).mapN(Def1_CreatePeriodSummaryRequestData.apply)
     } andThen rulesValidator.validateBusinessRules
   }
 

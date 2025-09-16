@@ -20,7 +20,7 @@ import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsObject
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -43,7 +43,7 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val app
 
     request match {
       case def1: Def1_DeleteAnnualSubmissionRequestData =>
-        import def1._
+        import def1.*
 
         if (taxYear.useTaxYearSpecificApi) {
           delete(IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"))

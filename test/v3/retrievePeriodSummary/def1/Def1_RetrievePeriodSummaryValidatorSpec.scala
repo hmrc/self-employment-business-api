@@ -20,7 +20,7 @@ import api.models.domain.PeriodId
 import api.models.errors.PeriodIdFormatError
 import shared.utils.UnitSpec
 import shared.models.domain.{BusinessId, Nino}
-import shared.models.errors._
+import shared.models.errors.*
 import v3.retrievePeriodSummary.model.request.{Def1_RetrievePeriodSummaryRequestData, RetrievePeriodSummaryRequestData}
 
 class Def1_RetrievePeriodSummaryValidatorSpec extends UnitSpec {

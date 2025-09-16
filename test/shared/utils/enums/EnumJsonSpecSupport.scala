@@ -16,7 +16,7 @@
 
 package shared.utils.enums
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import shared.utils.UnitSpec
 
 trait EnumJsonSpecSupport {

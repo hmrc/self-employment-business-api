@@ -18,7 +18,7 @@ package v3.listPeriodSummaries
 
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v3.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
@@ -120,7 +120,7 @@ class ListPeriodSummariesServiceSpec extends ServiceSpec {
         errors ++ tysSpecificErrors
       }
 
-      input.foreach(args => (serviceError _).tupled(args))
+      input.foreach(args => serviceError.tupled(args))
     }
   }
 

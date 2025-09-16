@@ -16,9 +16,9 @@
 
 package v4.retrieveCumulativePeriodSummary
 
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v4.retrieveCumulativePeriodSummary.model.request.RetrieveCumulativePeriodSummaryRequestData
 import v4.retrieveCumulativePeriodSummary.model.response.RetrieveCumulativePeriodSummaryResponse
