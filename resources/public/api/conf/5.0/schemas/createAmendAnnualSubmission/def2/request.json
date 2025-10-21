@@ -75,14 +75,20 @@
           "example": "2000.99"
         },
         "capitalAllowanceMainPool": {
-          "description": "Capital allowances at 18% on equipment, including cars with lower CO2 emissions. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "description": "Capital allowances on equipment, including cars with lower CO2 emissions. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
-          "example": "2000.99"
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "example": 2000.99
         },
         "capitalAllowanceSpecialRatePool": {
-          "description": "Capital allowances at 8% on equipment, including cars with higher CO2 emissions. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "description": "Capital allowances on equipment at the special rate, including cars with higher CO2 emissions. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
-          "example": "2000.99"
+          "multipleOf": 0.01,
+          "minimum": 0.00,
+          "maximum": 99999999999.99,
+          "example": 2000.99
         },
         "zeroEmissionsGoodsVehicleAllowance": {
           "description": "Zero emissions goods vehicle allowance for goods vehicles purchased for business use. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
