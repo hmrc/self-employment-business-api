@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConfig with MockEnrolmentsAuthService with MockMtdIdLookupService {
+class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConfig {
 
   private val nino  = "AA123456A"
   private val mtdId = "X123567890"
@@ -58,7 +58,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConf
 
         MockedEnrolmentsAuthService
           .authoriseAgent(mtdId)
-          .returns(Future.successful(Right(UserDetails("", "Agent", Some("arn")))))
+          .returns(Future.successful(Right(UserDetails(mtdId, "Agent", Some("arn")))))
 
         val result: Future[Result] = controller.action(nino)(fakeGetRequest)
         status(result) shouldBe OK
@@ -71,7 +71,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConf
 
         MockedEnrolmentsAuthService
           .authoriseAgent(mtdId, supportingAgentAccessAllowed = true)
-          .returns(Future.successful(Right(UserDetails("", "Agent", Some("arn")))))
+          .returns(Future.successful(Right(UserDetails(mtdId, "Agent", Some("arn")))))
 
         val result: Future[Result] = controller.action(nino)(fakeGetRequest)
         status(result) shouldBe OK
@@ -161,7 +161,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec with MockSharedAppConf
     }
   }
 
-  trait Test {
+  trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
     val hc: HeaderCarrier = HeaderCarrier()
 
     class TestController extends AuthorisedController(cc) {
