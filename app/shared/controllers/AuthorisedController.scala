@@ -17,7 +17,7 @@
 package shared.controllers
 
 import play.api.mvc.*
-import shared.config.{SharedAppConfig, ConfigFeatureSwitches}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.models.auth.UserDetails
 import shared.models.errors.MtdError
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -59,7 +59,7 @@ abstract class AuthorisedController(
 
       authService.authorised(mtdId, endpointAllowsSupportingAgents).flatMap[Result] {
         case Right(userDetails) =>
-          block(UserRequest(userDetails.copy(mtdId = mtdId), request))
+          block(UserRequest(userDetails, request))
         case Left(mtdError) =>
           errorResponse(mtdError)
       }
