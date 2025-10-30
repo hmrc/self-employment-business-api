@@ -28,7 +28,7 @@ object GenericAuditDetailFixture {
   val pathParams: Map[String, String]      = Map("nino" -> nino, "calculationId" -> calculationId)
   val requestBody: Option[JsValue]         = Some(Json.obj("field1" -> "value1"))
   val xCorrId                              = "a1e8057e-fbbc-47a8-a8b478d9f015c253"
-  val versionNumber: String                = "3.0"
+  val versionNumber: String                = "5.0"
 
   val genericAuditDetailModelSuccess: GenericAuditDetail =
     GenericAuditDetail(

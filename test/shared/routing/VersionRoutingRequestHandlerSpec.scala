@@ -39,15 +39,10 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
   import play.api.routing.sird.*
 
   object DefaultHandler extends Handler
-  object V3Handler      extends Handler
   object V4Handler      extends Handler
 
   private val defaultRouter = Router.from { case GET(p"") =>
     DefaultHandler
-  }
-
-  private val v3Router = Router.from { case GET(p"/v3") =>
-    V3Handler
   }
 
   private val v4Router = Router.from { case GET(p"/v4") =>
@@ -56,7 +51,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
 
   private val routingMap = new VersionRoutingMap {
     override val defaultRouter: Router     = test.defaultRouter
-    override val map: Map[Version, Router] = Map(Version3 -> v3Router, Version4 -> v4Router)
+    override val map: Map[Version, Router] = Map(Version4 -> v4Router)
   }
 
   "Given a request that end with a trailing slash, and no version header" when {
@@ -66,7 +61,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
         val maybeAcceptHeader: Option[String] = None
 
         MockedSharedAppConfig
-          .endpointsEnabled(Version3)
+          .endpointsEnabled(Version4)
           .returns(true)
           .anyNumberOfTimes()
 
@@ -78,7 +73,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
     "the handler isn't found" should {
       "try without the trailing slash" in new Test {
         val maybeAcceptHeader: Option[String] = None
-        MockedSharedAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
+        MockedSharedAppConfig.endpointsEnabled(Version4).returns(true).anyNumberOfTimes()
 
         val result: Option[Handler] = requestHandler.routeRequest(buildRequest(""))
         result shouldBe Some(DefaultHandler)
@@ -87,10 +82,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockSha
   }
 
   "Routing request with a valid version header" should {
-    handleWithVersionRoutes("/v3", V3Handler, Version3)
-  }
-
-  "Routing request with another valid version header" should {
     handleWithVersionRoutes("/v4", V4Handler, Version4)
   }
 

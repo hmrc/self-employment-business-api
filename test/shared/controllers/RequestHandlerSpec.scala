@@ -32,7 +32,7 @@ import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditD
 import shared.models.auth.UserDetails
 import shared.models.errors.{ErrorWrapper, InternalError, MtdError, NinoFormatError}
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version3}
+import shared.routing.{Version, Version5}
 import shared.services.{MockAuditService, ServiceOutcome}
 import shared.utils.{MockIdGenerator, UnitSpec}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -65,7 +65,7 @@ class RequestHandlerSpec
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "SomeController", endpointName = "someEndpoint")
 
-  private val versionHeader = HeaderNames.ACCEPT -> "application/vnd.hmrc.3.0+json"
+  private val versionHeader = HeaderNames.ACCEPT -> "application/vnd.hmrc.5.0+json"
 
   implicit val hc: HeaderCarrier   = HeaderCarrier()
   implicit val ctx: RequestContext = RequestContext.from(mockIdGenerator, endpointLogContext)
@@ -175,7 +175,7 @@ class RequestHandlerSpec
         "return RuleRequestCannotBeFulfilled error" in {
           val requestHandler = successRequestHandler.withNoContentResult()
 
-          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(true).anyNumberOfTimes()
+          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version5).returns(true).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val expectedContent = Json.parse(
@@ -205,7 +205,7 @@ class RequestHandlerSpec
 
           service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
 
-          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(false).anyNumberOfTimes()
+          MockedSharedAppConfig.allowRequestCannotBeFulfilledHeader(Version5).returns(false).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
@@ -317,7 +317,7 @@ class RequestHandlerSpec
         mockAuditService,
         auditType = auditType,
         transactionName = txName,
-        apiVersion = Version3,
+        apiVersion = Version5,
         params = params,
         requestBody = requestBody,
         includeResponse = includeResponse
@@ -338,7 +338,7 @@ class RequestHandlerSpec
             GenericAuditDetail(
               userDetails,
               params = params,
-              apiVersion = Version3.name,
+              apiVersion = Version5.name,
               requestBody = requestBody,
               `X-CorrelationId` = correlationId,
               auditResponse = auditResponse)
