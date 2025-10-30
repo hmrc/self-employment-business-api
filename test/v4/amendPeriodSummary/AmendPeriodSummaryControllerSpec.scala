@@ -26,7 +26,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version5}
+import shared.routing.{Version, Version4}
 import shared.services.MockAuditService
 import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v4.amendPeriodSummary.def1.model.request.Def1_AmendPeriodSummaryRequestData
@@ -47,7 +47,7 @@ class AmendPeriodSummaryControllerSpec
     with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
 
-  override val apiVersion: Version = Version5
+  override val apiVersion: Version = Version4
 
   "handleRequest" should {
     "return a successful response with status 204 (No Content)" when {
