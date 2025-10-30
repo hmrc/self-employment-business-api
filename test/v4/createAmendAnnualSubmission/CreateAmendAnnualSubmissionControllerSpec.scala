@@ -24,7 +24,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version3}
+import shared.routing.{Version, Version4}
 import shared.services.MockAuditService
 import v4.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
 import v4.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
@@ -42,7 +42,7 @@ class CreateAmendAnnualSubmissionControllerSpec
 
   private val businessId: String   = "XAIS12345678910"
   private val taxYear: String      = "2019-20"
-  override val apiVersion: Version = Version3
+  override val apiVersion: Version = Version4
 
   private val requestJson = createAmendAnnualSubmissionRequestBodyMtdJson(None, None, None)
 

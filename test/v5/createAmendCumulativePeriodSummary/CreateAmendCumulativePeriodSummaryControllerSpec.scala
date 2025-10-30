@@ -25,7 +25,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version3}
+import shared.routing.{Version, Version5}
 import shared.services.MockAuditService
 import v5.createAmendCumulativePeriodSummary.def1.model.request.CumulativePeriodSummaryFixture
 import v5.createAmendCumulativePeriodSummary.model.request.{
@@ -47,7 +47,7 @@ class CreateAmendCumulativePeriodSummaryControllerSpec
 
   private val businessId: String   = "XAIS12345678910"
   private val taxYear: String      = "2025-26"
-  override val apiVersion: Version = Version3
+  override val apiVersion: Version = Version5
 
   private val requestBody: Def1_CreateAmendCumulativePeriodSummaryRequestBody =
     requestMtdBodyJson.as[Def1_CreateAmendCumulativePeriodSummaryRequestBody]
