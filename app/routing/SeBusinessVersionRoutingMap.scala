@@ -25,7 +25,6 @@ import javax.inject.{Inject, Singleton}
 @Singleton case class SeBusinessVersionRoutingMap @Inject() (
     appConfig: SharedAppConfig,
     defaultRouter: Router,
-    v3Router: v3.Routes,
     v4Router: v4.Routes,
     v5Router: v5.Routes
 ) extends VersionRoutingMap {
@@ -33,7 +32,6 @@ import javax.inject.{Inject, Singleton}
   /** Routes corresponding to available versions.
     */
   val map: Map[Version, Router] = Map(
-    Version3 -> v3Router,
     Version4 -> v4Router,
     Version5 -> v5Router
   )

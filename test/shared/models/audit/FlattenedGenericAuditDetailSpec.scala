@@ -32,7 +32,7 @@ class FlattenedGenericAuditDetailSpec extends UnitSpec {
   private val pathParams: Map[String, String]      = Map("nino" -> nino, "calculationId" -> calculationId)
   private val itsaStatuses: Option[JsValue]        = Some(Json.obj("field1" -> "value1"))
   private val xCorrId                              = "a1e8057e-fbbc-47a8-a8b478d9f015c253"
-  private val versionNumber: String                = "3.0"
+  private val versionNumber: String                = "5.0"
 
   private val flattenedGenericAuditDetailSuccess: FlattenedGenericAuditDetail =
     FlattenedGenericAuditDetail(

@@ -25,7 +25,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version3}
+import shared.routing.{Version, Version4}
 import shared.services.MockAuditService
 import v4.createPeriodSummary.def1.model.request.Def1_CreatePeriodSummaryFixture
 import v4.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData}
@@ -45,7 +45,7 @@ class CreatePeriodSummaryControllerSpec
 
   private val businessId           = "XAIS12345678910"
   private val periodId             = "2017-01-25_2017-01-25"
-  override val apiVersion: Version = Version3
+  override val apiVersion: Version = Version4
 
   private val responseJson = Json.parse(
     s"""

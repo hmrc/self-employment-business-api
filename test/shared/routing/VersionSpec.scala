@@ -49,10 +49,10 @@ class VersionSpec extends UnitSpec with MockFactory {
   "Version" when {
     "serialized to Json" should {
       "return the expected Json output" in {
-        val version: Version = Version3
+        val version: Version = Version5
 
         val result = Json.toJson(version)
-        result shouldBe JsString("3.0")
+        result shouldBe JsString("5.0")
       }
     }
   }
@@ -99,18 +99,18 @@ class VersionSpec extends UnitSpec with MockFactory {
   }
 
   "VersionReads" should {
-    "successfully read Version3" in {
-      val versionJson: JsValue      = JsString(Version3.name)
-      val result: JsResult[Version] = VersionReads.reads(versionJson)
-
-      result shouldEqual JsSuccess(Version3)
-    }
-
     "successfully read Version4" in {
       val versionJson: JsValue      = JsString(Version4.name)
       val result: JsResult[Version] = VersionReads.reads(versionJson)
 
       result shouldEqual JsSuccess(Version4)
+    }
+
+    "successfully read Version5" in {
+      val versionJson: JsValue      = JsString(Version5.name)
+      val result: JsResult[Version] = VersionReads.reads(versionJson)
+
+      result shouldEqual JsSuccess(Version5)
     }
 
     "return error for unrecognised version" in {
@@ -123,8 +123,8 @@ class VersionSpec extends UnitSpec with MockFactory {
 
   "toString" should {
     "return the version name" in {
-      val result = Version3.toString
-      result shouldBe Version3.name
+      val result = Version5.toString
+      result shouldBe Version5.name
     }
   }
 

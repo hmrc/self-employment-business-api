@@ -26,7 +26,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version3}
+import shared.routing.{Version, Version4}
 import shared.services.MockAuditService
 import v4.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v4.amendPeriodSummary.def1.model.request.Def1_AmendPeriodSummaryRequestData
@@ -47,7 +47,7 @@ class AmendPeriodSummaryControllerSpec
     with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
 
-  override val apiVersion: Version = Version3
+  override val apiVersion: Version = Version4
 
   "handleRequest" should {
     "return a successful response with status 204 (No Content)" when {
@@ -144,9 +144,9 @@ class AmendPeriodSummaryControllerSpec
   }
 
   private trait PreTysTest extends Test {
-    val periodId                         = "2019-01-01_2020-01-01"
-    val taxYear: String                  = "2019-20"
-    protected val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
+    val periodId                       = "2019-01-01_2020-01-01"
+    val taxYear: String                = "2019-20"
+    private val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
 
     val requestBodyJson: JsValue = def1_AmendPeriodSummaryBodyMtdJson
 
@@ -171,9 +171,9 @@ class AmendPeriodSummaryControllerSpec
   }
 
   private trait TysTest extends Test {
-    val periodId: String                 = "2024-01-01_2025-01-01"
-    val taxYear: String                  = "2023-24"
-    protected val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
+    val periodId: String               = "2024-01-01_2025-01-01"
+    val taxYear: String                = "2023-24"
+    private val parsedTaxYear: TaxYear = TaxYear.fromMtd(taxYear)
 
     val requestBodyJson: JsValue = def2_AmendPeriodSummaryBodyMtdJson
 
