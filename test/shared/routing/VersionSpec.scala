@@ -99,18 +99,18 @@ class VersionSpec extends UnitSpec with MockFactory {
   }
 
   "VersionReads" should {
-    "successfully read Version3" in {
-      val versionJson: JsValue      = JsString(Version5.name)
-      val result: JsResult[Version] = VersionReads.reads(versionJson)
-
-      result shouldEqual JsSuccess(Version5)
-    }
-
     "successfully read Version4" in {
       val versionJson: JsValue      = JsString(Version4.name)
       val result: JsResult[Version] = VersionReads.reads(versionJson)
 
       result shouldEqual JsSuccess(Version4)
+    }
+
+    "successfully read Version5" in {
+      val versionJson: JsValue      = JsString(Version5.name)
+      val result: JsResult[Version] = VersionReads.reads(versionJson)
+
+      result shouldEqual JsSuccess(Version5)
     }
 
     "return error for unrecognised version" in {
