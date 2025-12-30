@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,6 +155,18 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
 
         status(result) shouldBe INTERNAL_SERVER_ERROR
         contentAsJson(result) shouldBe InternalError.asJson
+      }
+    }
+
+    "return GATEWAY_TIMEOUT with error body" when {
+      Seq(499, GATEWAY_TIMEOUT).foreach { statusCode =>
+        s"a $statusCode UpstreamErrorResponse is returned" in new Test {
+          val errorResponse: UpstreamErrorResponse = UpstreamErrorResponse("request timeout", statusCode, statusCode, Map.empty)
+          val result: Future[Result]               = handler.onServerError(requestHeader, errorResponse)
+
+          status(result) shouldBe GATEWAY_TIMEOUT
+          contentAsJson(result) shouldBe GatewayTimeoutError.asJson
+        }
       }
     }
   }

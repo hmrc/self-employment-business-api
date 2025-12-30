@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,11 +97,15 @@ class ErrorHandler @Inject() (
       ex
     )
 
+    val NGINX_TIMEOUT                = 499
+    val timeoutStatusCodes: Set[Int] = Set(NGINX_TIMEOUT, GATEWAY_TIMEOUT)
+
     val (errorCode, eventType) = ex match {
-      case _: NotFoundException      => (NotFoundError, "ResourceNotFound")
-      case _: AuthorisationException => (ClientOrAgentNotAuthorisedError.withStatus401, "ClientError")
-      case _: JsValidationException  => (BadRequestError, "ServerValidationError")
-      case e: HttpException          => (BadRequestError, "ServerValidationError")
+      case _: NotFoundException                                                  => (NotFoundError, "ResourceNotFound")
+      case _: AuthorisationException                                             => (ClientOrAgentNotAuthorisedError.withStatus401, "ClientError")
+      case _: JsValidationException                                              => (BadRequestError, "ServerValidationError")
+      case e: HttpException                                                      => (BadRequestError, "ServerValidationError")
+      case e: UpstreamErrorResponse if timeoutStatusCodes.contains(e.statusCode) => (GatewayTimeoutError, "ServerTimeoutError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
         (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
