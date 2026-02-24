@@ -9,13 +9,13 @@
       "description": "Object containing the details about self-employment period dates.",
       "properties": {
         "periodStartDate": {
-          "description": "The first day that the income, expenses and deduction summary covers. Must conform to the format: YYYY-MM-DD.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required. Endpoint will default the start and end dates to the tax year start and end dates. Default value: 06/04/TY -> 05/04/TY+1",
+          "description": "The first day that the income, expenses and deduction summary covers. Must conform to the format: YYYY-MM-DD.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required.",
           "type": "string",
           "example": "2025-04-06",
           "format": "date"
         },
         "periodEndDate": {
-          "description": "The last day that the income, expenses and deduction summary covers. Must conform to the format: YYYY-MM-DD.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required. Endpoint will default the start and end dates to the tax year start and end dates. Default value: 06/04/TY -> 05/04/TY+1",
+          "description": "The last day that the income, expenses and deduction summary covers. Must conform to the format: YYYY-MM-DD.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required.",
           "type": "string",
           "example": "2025-07-05",
           "format": "date"
