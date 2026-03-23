@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package v5.createPeriodSummary.def2
 
 import api.models.errors.RuleBothExpensesSuppliedError
-import play.api.Configuration
 import play.api.libs.json.*
 import shared.config.MockSharedAppConfig
 import shared.models.domain.{BusinessId, Nino}
@@ -108,11 +107,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       "periodDisallowableExpenses" -> periodDisallowableExpenses
     )
 
-  private val validBodyWithNegatives =
-    validBody(
-      periodExpenses = validPeriodExpenses(withNegatives = true),
-      periodDisallowableExpenses = validPeriodDisallowableExpenses(withNegatives = true))
-
   private val validBodyConsolidated = validBody()
     .removeProperty("/periodDisallowableExpenses")
     .replaceWithEmptyObject("/periodExpenses")
@@ -165,34 +159,26 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
                          periodDisallowableExpenses: Option[Def2_Create_PeriodDisallowableExpenses] = Some(parsedPeriodDisallowableExpenses())) =
     Def2_CreatePeriodSummaryRequestBody(periodDates, periodIncome, periodExpenses, periodDisallowableExpenses)
 
-  private def validator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean = false) =
-    new Def2_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)(mockSharedAppConfig)
-
-  private def setupMocks(): Unit =
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+  private def validator(nino: String, businessId: String, body: JsValue) =
+    new Def2_CreatePeriodSummaryValidator(nino, businessId, body)
 
   "validator" should {
     "return the parsed domain object" when {
       "given a valid request" in {
-        setupMocks()
-
         val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validBody()).validateAndWrapResult()
 
         result shouldBe Right(Def2_CreatePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedBody()))
       }
 
-      "given a valid request with negative expenses and includeNegatives is enabled" in {
-        setupMocks()
-
+      "given a valid request with negative expenses" in {
         val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] = {
           validator(
             validNino,
             validBusinessId,
             validBody(
               periodExpenses = validPeriodExpenses(withNegatives = true),
-              periodDisallowableExpenses = validPeriodDisallowableExpenses(withNegatives = true)),
-            includeNegatives = true
+              periodDisallowableExpenses = validPeriodDisallowableExpenses(withNegatives = true))
           ).validateAndWrapResult()
         }
 
@@ -207,8 +193,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request with consolidated expenses" in {
-        setupMocks()
-
         val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, validBusinessId, validBodyConsolidated).validateAndWrapResult()
 
@@ -220,8 +204,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body containing the minimum fields" in {
-        setupMocks()
-
         val body = validBody()
           .removeProperty("/periodIncome")
           .removeProperty("/periodExpenses")
@@ -238,8 +220,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body containing only period dates and period incomes" in {
-        setupMocks()
-
         val body = validBody()
           .removeProperty("/periodExpenses")
           .removeProperty("/periodDisallowableExpenses")
@@ -252,8 +232,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body without period disallowable expenses" in {
-        setupMocks()
-
         val body = validBody()
           .removeProperty("/periodDisallowableExpenses")
 
@@ -264,8 +242,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given a valid request a body without period allowable expenses" in {
-        setupMocks()
-
         val body = validBody()
           .removeProperty("/periodExpenses")
 
@@ -278,8 +254,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
 
     "return a single error" when {
       "given an invalid nino" in {
-        setupMocks()
-
         val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator("invalid", validBusinessId, validBody()).validateAndWrapResult()
 
@@ -287,7 +261,6 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       }
 
       "given an invalid business id" in {
-        setupMocks()
 
         val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
           validator(validNino, "invalid", validBody()).validateAndWrapResult()
@@ -303,10 +276,10 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
 
-      def test(error: MtdError)(invalidBody: JsValue, path: String, withNegatives: Boolean = false): Unit =
-        s"return $error when given an invalid value for $path with negatives ${if (withNegatives) "enabled" else "disabled"}" in {
+      def test(error: MtdError)(invalidBody: JsValue, path: String): Unit =
+        s"return $error when given an invalid value for $path" in {
           val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
-            validator(validNino, validBusinessId, invalidBody, withNegatives).validateAndWrapResult()
+            validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -342,7 +315,7 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         "/periodDisallowableExpenses/advertisingCostsDisallowable",
         "/periodDisallowableExpenses/otherExpensesDisallowable"
       ).foreach(path =>
-        test(ValueFormatError.forPathAndRange(path, min = "0", max = "99999999999.99"))(
+        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(
           validBody().update(path, JsNumber(99999999999.99 + 0.01)),
           path))
 
@@ -368,32 +341,7 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
           validBody().update(path, JsNumber(99999999999.99 + 0.01)),
           path))
 
-      List(
-        "/periodIncome/turnover",
-        "/periodIncome/other",
-        "/periodExpenses/adminCosts",
-        "/periodExpenses/advertisingCosts",
-        "/periodExpenses/businessEntertainmentCosts",
-        "/periodExpenses/carVanTravelExpenses",
-        "/periodExpenses/costOfGoods",
-        "/periodExpenses/paymentsToSubcontractors",
-        "/periodExpenses/wagesAndStaffCosts",
-        "/periodDisallowableExpenses/adminCostsDisallowable",
-        "/periodDisallowableExpenses/advertisingCostsDisallowable",
-        "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
-        "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
-        "/periodDisallowableExpenses/costOfGoodsDisallowable",
-        "/periodDisallowableExpenses/otherExpensesDisallowable",
-        "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
-        "/periodDisallowableExpenses/professionalFeesDisallowable",
-        "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"
-      ).foreach(path =>
-        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(
-          validBodyWithNegatives.update(path, JsNumber(123.456)),
-          path,
-          withNegatives = true))
-
-      test(ValueFormatError.forPathAndRange("/periodExpenses/consolidatedExpenses", min = "0", max = "99999999999.99"))(
+      test(ValueFormatError.forPathAndRange("/periodExpenses/consolidatedExpenses", min = "-99999999999.99", max = "99999999999.99"))(
         validBodyConsolidated.update("/periodExpenses/consolidatedExpenses", JsNumber(99999999999.99 + 0.01)),
         "/periodExpenses/consolidatedExpenses"
       )

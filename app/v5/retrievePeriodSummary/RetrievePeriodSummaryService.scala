@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package v5.retrievePeriodSummary
 import api.models.errors.PeriodIdFormatError
 import cats.data.EitherT
 import cats.implicits._
-import config.SeBusinessFeatureSwitches
-import shared.config.SharedAppConfig
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -33,10 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrievePeriodSummaryService @Inject() (
     connector: RetrievePeriodSummaryConnector
-)(implicit appConfig: SharedAppConfig)
-    extends BaseService {
-
-  lazy private val featureSwitches = SeBusinessFeatureSwitches()
+) extends BaseService {
 
   def retrievePeriodSummary(request: RetrievePeriodSummaryRequestData)(implicit
       ctx: RequestContext,
@@ -50,10 +45,7 @@ class RetrievePeriodSummaryService @Inject() (
   }
 
   private def maybeWithoutTaxTakenOffTradingIncome(response: RetrievePeriodSummaryResponse): RetrievePeriodSummaryResponse =
-    if (featureSwitches.isCl290Enabled)
-      response
-    else
-      response.withoutTaxTakenOffTradingIncome
+    response
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(

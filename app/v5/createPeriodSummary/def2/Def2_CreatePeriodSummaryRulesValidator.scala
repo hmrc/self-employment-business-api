@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import v5.createPeriodSummary.model.request.{Create_PeriodIncome, Def2_CreatePer
 
 import java.time.LocalDate
 
-case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[Def2_CreatePeriodSummaryRequestData] {
+case class Def2_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def2_CreatePeriodSummaryRequestData] {
 
   private val minDate            = LocalDate.of(1900, 4, 6)
   private val maxDate: LocalDate = LocalDate.of(2025, 4, 5)
@@ -44,9 +44,9 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     combine(
       validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
       validateExpenses(periodExpenses, periodDisallowableExpenses),
-      periodIncome.map(validatePeriodIncomeNumericFields(includeNegatives)).getOrElse(valid),
-      periodExpenses.map(validateAllowableNumericFields(includeNegatives)).getOrElse(valid),
-      periodDisallowableExpenses.map(validateDisllowableNumericFields(includeNegatives)).getOrElse(valid)
+      periodIncome.map(validatePeriodIncomeNumericFields(true)).getOrElse(valid),
+      periodExpenses.map(validateAllowableNumericFields(true)).getOrElse(valid),
+      periodDisallowableExpenses.map(validateDisllowableNumericFields(true)).getOrElse(valid)
     ).onSuccess(parsed)
   }
 

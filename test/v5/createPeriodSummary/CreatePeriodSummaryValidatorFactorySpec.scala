@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAp
         setupMocks()
         val requestBody = validBody("2019-08-24", "2020-08-24")
         val result: Validator[CreatePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, requestBody, includeNegatives = true)
+          validatorFactory.validator(validNino, validBusinessId, requestBody)
         result shouldBe a[Def1_CreatePeriodSummaryValidator]
       }
     }
@@ -67,7 +67,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAp
         setupMocks()
         val requestBody = validBody("2023-08-24", "2024-08-24")
         val result: Validator[CreatePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, requestBody, includeNegatives = true)
+          validatorFactory.validator(validNino, validBusinessId, requestBody)
         result shouldBe a[Def2_CreatePeriodSummaryValidator]
       }
     }
@@ -77,7 +77,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAp
         setupMocks()
         val requestBody = validBody("2025-08-24", "2026-08-24")
         val result: Validator[CreatePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, requestBody, includeNegatives = true)
+          validatorFactory.validator(validNino, validBusinessId, requestBody)
         result shouldBe a[Def2_CreatePeriodSummaryValidator]
       }
     }
@@ -87,7 +87,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAp
         setupMocks()
         val requestBody = validBody("2025-08-24", "not-an-iso-year")
         val result: Validator[CreatePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, requestBody, includeNegatives = true)
+          validatorFactory.validator(validNino, validBusinessId, requestBody)
         result shouldBe InvalidResultValidator(EndDateFormatError.withPath("periodDates/periodEndDate"))
       }
     }
@@ -96,7 +96,7 @@ class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAp
         setupMocks()
         val requestBody = JsObject.empty
         val result: Validator[CreatePeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, requestBody, includeNegatives = true)
+          validatorFactory.validator(validNino, validBusinessId, requestBody)
         result shouldBe InvalidResultValidator(RuleIncorrectOrEmptyBodyError)
       }
     }

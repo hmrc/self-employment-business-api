@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package v5.amendPeriodSummary
 
-import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
@@ -47,7 +46,7 @@ class AmendPeriodSummaryController @Inject() (val authService: EnrolmentsAuthSer
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = SeBusinessFeatureSwitches().isAllowNegativeExpensesEnabled
+      val includeNegatives = true
       val validator        = validatorFactory.validator(nino, businessId, periodId, taxYear, request.body, includeNegatives)
 
       val requestHandler = RequestHandler

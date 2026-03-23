@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package v5.amendPeriodSummary
 
 import api.models.domain.PeriodId
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
-import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
@@ -65,36 +64,20 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
 
   }
 
-  trait Cl290Enabled extends Test {
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
-  }
-
-  trait Cl290Disabled extends Test {
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false)).anyNumberOfTimes()
-  }
-
   "AmendPeriodSummaryService" should {
     "return a valid response" when {
-      "a valid request is supplied with cl290 feature switch enabled" in new Cl290Enabled {
+      "a valid request is supplied" in new Test {
         MockAmendPeriodSummaryConnector
           .amendPeriodSummary(requestDataWithCl290Enabled)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         await(service.amendPeriodSummary(requestDataWithCl290Enabled)) shouldBe Right(ResponseWrapper(correlationId, ()))
       }
-
-      "a valid request is supplied with cl290 feature switch disabled" in new Cl290Disabled {
-        MockAmendPeriodSummaryConnector
-          .amendPeriodSummary(requestDataWithCl290Disabled)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        await(service.amendPeriodSummary(requestDataWithCl290Disabled)) shouldBe Right(ResponseWrapper(correlationId, ()))
-      }
     }
 
     "map errors according to spec" when {
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-        s"a $downstreamErrorCode error is returned from the service" in new Cl290Disabled {
+        s"a $downstreamErrorCode error is returned from the service" in new Test {
 
           MockAmendPeriodSummaryConnector
             .amendPeriodSummary(requestDataWithCl290Disabled)

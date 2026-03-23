@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,7 @@ import javax.inject.Inject
 
 case class SeBusinessFeatureSwitches @Inject() (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
 
-  def isPassDeleteIntentEnabled: Boolean      = isEnabled("passDeleteIntentHeader")
-  def isAllowNegativeExpensesEnabled: Boolean = isEnabled("allowNegativeExpenses")
-  def isCl290Enabled: Boolean                 = isEnabled("cl290")
-
+  def isPassDeleteIntentEnabled: Boolean = isEnabled("passDeleteIntentHeader")
 }
 
 object SeBusinessFeatureSwitches {

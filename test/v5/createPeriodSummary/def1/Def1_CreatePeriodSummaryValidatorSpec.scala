@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,11 +106,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
       "periodDisallowableExpenses" -> periodDisallowableExpenses
     )
 
-  private val validBodyWithNegatives =
-    validBody(
-      periodExpenses = validPeriodExpenses(withNegatives = true),
-      periodDisallowableExpenses = validPeriodDisallowableExpenses(withNegatives = true))
-
   private val validBodyConsolidated = validBody()
     .removeProperty("/periodDisallowableExpenses")
     .replaceWithEmptyObject("/periodExpenses")
@@ -165,8 +160,8 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
 
   // private val validatorFactory = new CreatePeriodSummaryValidatorFactory(appConfig)
 
-  private def validator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean = false) = {
-    new Def1_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)
+  private def validator(nino: String, businessId: String, body: JsValue) = {
+    new Def1_CreatePeriodSummaryValidator(nino, businessId, body)
   }
 
   "validate()" should {
@@ -178,15 +173,14 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         result shouldBe Right(Def1_CreatePeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedBody()))
       }
 
-      "given a valid request with negative expenses and includeNegatives is enabled" in {
+      "given a valid request with negative expenses" in {
         val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] = {
           validator(
             validNino,
             validBusinessId,
             validBody(
               periodExpenses = validPeriodExpenses(withNegatives = true),
-              periodDisallowableExpenses = validPeriodDisallowableExpenses(withNegatives = true)),
-            includeNegatives = true
+              periodDisallowableExpenses = validPeriodDisallowableExpenses(withNegatives = true))
           ).validateAndWrapResult()
         }
 
@@ -283,10 +277,10 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
 
-      def test(error: MtdError)(invalidBody: JsValue, path: String, withNegatives: Boolean = false): Unit =
-        s"return $error when given an invalid value for $path with negatives ${if (withNegatives) "enabled" else "disabled"}" in {
+      def test(error: MtdError)(invalidBody: JsValue, path: String): Unit =
+        s"return $error when given an invalid value for $path" in {
           val result: Either[ErrorWrapper, CreatePeriodSummaryRequestData] =
-            validator(validNino, validBusinessId, invalidBody, withNegatives).validateAndWrapResult()
+            validator(validNino, validBusinessId, invalidBody).validateAndWrapResult()
 
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -322,7 +316,7 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
         "/periodDisallowableExpenses/advertisingCostsDisallowable",
         "/periodDisallowableExpenses/otherExpensesDisallowable"
       ).foreach(path =>
-        test(ValueFormatError.forPathAndRange(path, min = "0", max = "99999999999.99"))(
+        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(
           validBody().update(path, JsNumber(99999999999.99 + 0.01)),
           path))
 
@@ -348,32 +342,7 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
           validBody().update(path, JsNumber(99999999999.99 + 0.01)),
           path))
 
-      List(
-        "/periodIncome/turnover",
-        "/periodIncome/other",
-        "/periodExpenses/adminCosts",
-        "/periodExpenses/advertisingCosts",
-        "/periodExpenses/businessEntertainmentCosts",
-        "/periodExpenses/carVanTravelExpenses",
-        "/periodExpenses/costOfGoods",
-        "/periodExpenses/paymentsToSubcontractors",
-        "/periodExpenses/wagesAndStaffCosts",
-        "/periodDisallowableExpenses/adminCostsDisallowable",
-        "/periodDisallowableExpenses/advertisingCostsDisallowable",
-        "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
-        "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
-        "/periodDisallowableExpenses/costOfGoodsDisallowable",
-        "/periodDisallowableExpenses/otherExpensesDisallowable",
-        "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
-        "/periodDisallowableExpenses/professionalFeesDisallowable",
-        "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable"
-      ).foreach(path =>
-        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(
-          validBodyWithNegatives.update(path, JsNumber(123.456)),
-          path,
-          withNegatives = true))
-
-      test(ValueFormatError.forPathAndRange("/periodExpenses/consolidatedExpenses", min = "0", max = "99999999999.99"))(
+      test(ValueFormatError.forPathAndRange("/periodExpenses/consolidatedExpenses", min = "-99999999999.99", max = "99999999999.99"))(
         validBodyConsolidated.update("/periodExpenses/consolidatedExpenses", JsNumber(99999999999.99 + 0.01)),
         "/periodExpenses/consolidatedExpenses"
       )

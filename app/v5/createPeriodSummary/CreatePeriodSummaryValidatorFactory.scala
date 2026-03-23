@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package v5.createPeriodSummary
 
 import api.controllers.validators.common.InvalidResultValidator
 import play.api.libs.json.{JsObject, JsValue}
-import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import shared.models.domain.TaxYear
 import shared.models.domain.TaxYear.fromIso
@@ -32,7 +31,7 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 import scala.util.Try
 
 @Singleton
-class CreatePeriodSummaryValidatorFactory @Inject() (implicit appConfig: SharedAppConfig) {
+class CreatePeriodSummaryValidatorFactory @Inject() {
 
   private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2023-24")
 
@@ -41,16 +40,16 @@ class CreatePeriodSummaryValidatorFactory @Inject() (implicit appConfig: SharedA
   private val invalidEndDateValidator =
     InvalidResultValidator[CreatePeriodSummaryRequestData](EndDateFormatError.withPath("periodDates/periodEndDate"))
 
-  def validator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean): Validator[CreatePeriodSummaryRequestData] = {
+  def validator(nino: String, businessId: String, body: JsValue): Validator[CreatePeriodSummaryRequestData] = {
 
     if (body == JsObject.empty) emptyBodyValidator
     else {
       maybeTaxYear(body) match {
         case Some(taxYear) if taxYear < def2TaxYearApplicableFrom =>
-          new Def1_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)
+          new Def1_CreatePeriodSummaryValidator(nino, businessId, body)
 
         case Some(_) =>
-          new Def2_CreatePeriodSummaryValidator(nino, businessId, body, includeNegatives)
+          new Def2_CreatePeriodSummaryValidator(nino, businessId, body)
 
         case None =>
           invalidEndDateValidator
