@@ -17,7 +17,6 @@
 package v5.retrievePeriodSummary
 
 import api.models.errors.PeriodIdFormatError
-import cats.data.EitherT
 import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
@@ -37,15 +36,8 @@ class RetrievePeriodSummaryService @Inject() (
       ctx: RequestContext,
       ec: ExecutionContext
   ): Future[ServiceOutcome[RetrievePeriodSummaryResponse]] = {
-
-    EitherT(connector.retrievePeriodSummary(request))
-      .map(_.map(maybeWithoutTaxTakenOffTradingIncome))
-      .leftMap(mapDownstreamErrors(downstreamErrorMap))
-      .value
+    connector.retrievePeriodSummary(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
-
-  private def maybeWithoutTaxTakenOffTradingIncome(response: RetrievePeriodSummaryResponse): RetrievePeriodSummaryResponse =
-    response
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val errors = Map(

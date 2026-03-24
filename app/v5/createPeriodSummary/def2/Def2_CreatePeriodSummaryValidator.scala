@@ -40,20 +40,6 @@ class Def2_CreatePeriodSummaryValidator(nino: String, businessId: String, body: 
       ).mapN(Def2_CreatePeriodSummaryRequestData.apply)
     } andThen rulesValidator.validateBusinessRules
 
-//  /** Can be removed when CL290 is released.
-//    */
-//  private def validateTaxTakenOffTradingIncome(
-//      parsed: Def2_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def2_CreatePeriodSummaryRequestData] =
-//    (for {
-//      income <- parsed.body.periodIncome if !featureSwitches.isCl290Enabled
-//      _      <- income.taxTakenOffTradingIncome
-//    } yield {
-//      Invalid(
-//        List(
-//          RuleIncorrectOrEmptyBodyError.withPath("/periodIncome/taxTakenOffTradingIncome")
-//        ))
-//    }).getOrElse(Valid(parsed))
-
   private def validateJsonFields(body: JsValue): Validated[Seq[MtdError], Def2_CreatePeriodSummaryRequestBody] =
     resolveJson(body) andThen (parsedBody =>
       List(
