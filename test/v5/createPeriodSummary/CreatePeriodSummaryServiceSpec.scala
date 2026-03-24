@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package v5.createPeriodSummary
 
 import api.models.errors.*
-import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino}
@@ -109,8 +108,6 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
   }
 
   trait Test extends MockCreatePeriodSummaryConnector with MockSharedAppConfig {
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
-
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new CreatePeriodSummaryService(connector = mockCreatePeriodSummaryConnector)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,6 @@ import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
 class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
-
-  override def servicesConfig: Map[String, Any] = {
-    super.servicesConfig ++ Map(
-      "feature-switch.cl290.enabled" -> "false"
-    )
-  }
 
   "The V5 retrieve endpoint" should {
 

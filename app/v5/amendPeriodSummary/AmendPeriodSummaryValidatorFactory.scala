@@ -29,16 +29,11 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AmendPeriodSummaryValidatorFactory @Inject() {
 
-  def validator(nino: String,
-                businessId: String,
-                periodId: String,
-                taxYear: String,
-                body: JsValue,
-                includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] = {
+  def validator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue): Validator[AmendPeriodSummaryRequestData] = {
 
     AmendPeriodSummarySchema.schemaFor(taxYear) match {
-      case Valid(Def1)     => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
-      case Valid(Def2)     => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
+      case Valid(Def1)     => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body)
+      case Valid(Def2)     => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body)
       case Invalid(errors) => Validator.returningErrors(errors)
     }
   }

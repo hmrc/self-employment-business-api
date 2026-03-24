@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package v5.amendPeriodSummary.def1
 
 import api.models.domain.PeriodId
 import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
-import play.api.Configuration
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
@@ -52,52 +51,47 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       | }
       |""".stripMargin)
 
-  private def validPeriodExpenses(withNegatives: Boolean = false) = {
-    val maybeNegative = if (withNegatives) "-" else ""
-
+  private def validPeriodExpenses =
     Json.parse(s"""
          |{
-         |   "costOfGoods": ${maybeNegative}203.00,
-         |   "paymentsToSubcontractors": ${maybeNegative}204.00,
-         |   "wagesAndStaffCosts": ${maybeNegative}205.00,
-         |   "carVanTravelExpenses": ${maybeNegative}206.00,
-         |   "premisesRunningCosts": ${maybeNegative}207.00,
-         |   "maintenanceCosts": ${maybeNegative}208.00,
-         |   "adminCosts": ${maybeNegative}209.00,
-         |   "businessEntertainmentCosts": ${maybeNegative}210.00,
-         |   "advertisingCosts": ${maybeNegative}211.00,
-         |   "interestOnBankOtherLoans": ${maybeNegative}212.00,
-         |   "financeCharges": ${maybeNegative}213.00,
-         |   "irrecoverableDebts": ${maybeNegative}214.00,
-         |   "professionalFees": ${maybeNegative}215.00,
-         |   "depreciation": ${maybeNegative}216.00,
-         |   "otherExpenses": ${maybeNegative}217.00
+         |   "costOfGoods": 203.00,
+         |   "paymentsToSubcontractors": 204.00,
+         |   "wagesAndStaffCosts": 205.00,
+         |   "carVanTravelExpenses": 206.00,
+         |   "premisesRunningCosts": 207.00,
+         |   "maintenanceCosts": 208.00,
+         |   "adminCosts": 209.00,
+         |   "businessEntertainmentCosts": 210.00,
+         |   "advertisingCosts": 211.00,
+         |   "interestOnBankOtherLoans": 212.00,
+         |   "financeCharges": 213.00,
+         |   "irrecoverableDebts": 214.00,
+         |   "professionalFees": 215.00,
+         |   "depreciation": 216.00,
+         |   "otherExpenses": 217.00
          | }
          |""".stripMargin)
-  }
 
-  private def validPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
-    val maybeNegative = if (withNegatives) "-" else ""
+  private def validPeriodDisallowableExpenses =
     Json.parse(s"""
          | {
-         |   "costOfGoodsDisallowable": ${maybeNegative}218.00,
-         |   "paymentsToSubcontractorsDisallowable": ${maybeNegative}219.00,
-         |   "wagesAndStaffCostsDisallowable": ${maybeNegative}220.00,
-         |   "carVanTravelExpensesDisallowable": ${maybeNegative}221.00,
-         |   "premisesRunningCostsDisallowable": ${maybeNegative}222.00,
-         |   "maintenanceCostsDisallowable": ${maybeNegative}223.00,
-         |   "adminCostsDisallowable": ${maybeNegative}224.00,
-         |   "businessEntertainmentCostsDisallowable": ${maybeNegative}225.00,
-         |   "advertisingCostsDisallowable": ${maybeNegative}226.00,
-         |   "interestOnBankOtherLoansDisallowable": ${maybeNegative}227.00,
-         |   "financeChargesDisallowable": ${maybeNegative}228.00,
-         |   "irrecoverableDebtsDisallowable": ${maybeNegative}229.00,
-         |   "professionalFeesDisallowable": ${maybeNegative}230.00,
-         |   "depreciationDisallowable": ${maybeNegative}231.00,
-         |   "otherExpensesDisallowable": ${maybeNegative}232.00
+         |   "costOfGoodsDisallowable": 218.00,
+         |   "paymentsToSubcontractorsDisallowable": 219.00,
+         |   "wagesAndStaffCostsDisallowable": 220.00,
+         |   "carVanTravelExpensesDisallowable": 221.00,
+         |   "premisesRunningCostsDisallowable": 222.00,
+         |   "maintenanceCostsDisallowable": 223.00,
+         |   "adminCostsDisallowable": 224.00,
+         |   "businessEntertainmentCostsDisallowable": 225.00,
+         |   "advertisingCostsDisallowable": 226.00,
+         |   "interestOnBankOtherLoansDisallowable": 227.00,
+         |   "financeChargesDisallowable": 228.00,
+         |   "irrecoverableDebtsDisallowable": 229.00,
+         |   "professionalFeesDisallowable": 230.00,
+         |   "depreciationDisallowable": 231.00,
+         |   "otherExpensesDisallowable": 232.00
          | }
          |""".stripMargin)
-  }
 
   private val validPeriodExpensesConsolidated = Json.parse("""
       |{
@@ -106,15 +100,12 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       |""".stripMargin)
 
   private def validBody(periodIncome: JsValue = validPeriodIncome,
-                        periodExpenses: JsValue = validPeriodExpenses(),
-                        periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses()) = Json.obj(
+                        periodExpenses: JsValue = validPeriodExpenses,
+                        periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses) = Json.obj(
     "periodIncome"               -> periodIncome,
     "periodExpenses"             -> periodExpenses,
     "periodDisallowableExpenses" -> periodDisallowableExpenses
   )
-
-  private val validBodyWithNegatives =
-    validBody(periodExpenses = validPeriodExpenses(true), periodDisallowableExpenses = validPeriodDisallowableExpenses(true))
 
   private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
@@ -123,71 +114,52 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
 
   private val parsedPeriodIncome = Def1_Amend_PeriodIncome(Some(200.00), Some(201.00))
 
-  private def numericValue(isNegative: Boolean)(number: BigDecimal): BigDecimal =
-    if (isNegative) -1 * number else number
-
   // @formatter:off
-  private def parsedPeriodExpenses(withNegatives: Boolean = false) = {
-    val number = numericValue(withNegatives)(_)
+  private def parsedPeriodExpenses =
     Def1_Amend_PeriodExpenses(
-      None, Some(number(203.00)), Some(number(204.00)), Some(number(205.00)), Some(number(206.00)),
-      Some(number(207.00)), Some(number(208.00)), Some(number(209.00)), Some(number(210.00)),
-      Some(number(211.00)), Some(number(212.00)), Some(number(213.00)), Some(number(214.00)),
-      Some(number(215.00)), Some(number(216.00)), Some(number(217.00))
+      None, Some(203.00), Some(204.00), Some(205.00), Some(206.00),
+      Some(207.00), Some(208.00), Some(209.00), Some(210.00),
+      Some(211.00), Some(212.00), Some(213.00), Some(214.00),
+      Some(215.00), Some(216.00), Some(217.00)
     )
-  }
 
   private val parsedPeriodExpensesConsolidated = Def1_Amend_PeriodExpenses(
     Some(1000.99), None, None, None, None, None, None, None,
     None, None, None, None, None, None, None, None
   )
 
-  private def parsedPeriodDisallowableExpenses(withNegatives: Boolean = false) = {
-    val number = numericValue(withNegatives)(_)
-
+  private def parsedPeriodDisallowableExpenses =
     Def1_Amend_PeriodDisallowableExpenses(
-      Some(number(218.00)), Some(number(219.00)), Some(number(220.00)), Some(number(221.00)), Some(number(222.00)),
-      Some(number(223.00)), Some(number(224.00)), Some(number(225.00)), Some(number(226.00)), Some(number(227.00)),
-      Some(number(228.00)), Some(number(229.00)), Some(number(230.00)), Some(number(231.00)), Some(number(232.00))
+      Some(218.00), Some(219.00), Some(220.00), Some(221.00), Some(222.00),
+      Some(223.00), Some(224.00), Some(225.00), Some(226.00), Some(227.00),
+      Some(228.00), Some(229.00), Some(230.00), Some(231.00), Some(232.00)
     )
-  }
   // @formatter:on
 
   private val parsedBody =
-    Def1_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses()), Some(parsedPeriodDisallowableExpenses()))
+    Def1_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses), Some(parsedPeriodDisallowableExpenses))
 
   private val parsedBodyWithNegatives =
-    Def1_AmendPeriodSummaryRequestBody(
-      Some(parsedPeriodIncome),
-      Some(parsedPeriodExpenses(withNegatives = true)),
-      Some(parsedPeriodDisallowableExpenses(withNegatives = true)))
+    Def1_AmendPeriodSummaryRequestBody(Some(parsedPeriodIncome), Some(parsedPeriodExpenses), Some(parsedPeriodDisallowableExpenses))
 
   private def validator(nino: String,
                         businessId: String,
                         periodId: String,
                         taxYear: String,
-                        body: JsValue,
-                        includeNegatives: Boolean = false): Validator[AmendPeriodSummaryRequestData] =
-    new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
-
-  private def setupMocks(): Unit =
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
+                        body: JsValue): Validator[AmendPeriodSummaryRequestData] =
+    new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body)
 
   "validate()" should {
     "return the parsed domain object" when {
-      "given a valid request with negative expenses, includeNegatives is true" in {
-        setupMocks()
-
+      "given a valid request with negative expenses" in {
         val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBodyWithNegatives, includeNegatives = true).validateAndWrapResult()
+          validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBody()).validateAndWrapResult()
 
         result shouldBe Right(
           Def1_AmendPeriodSummaryRequestData(parsedNino, parsedBusinessId, parsedPeriodId, parsedTaxYear, parsedBodyWithNegatives))
       }
 
       "given a valid request with consolidated expenses" in {
-        setupMocks()
-
         val body: JsValue =
           validBody(periodExpenses = validPeriodExpensesConsolidated).removeProperty("/periodDisallowableExpenses")
 
@@ -205,8 +177,6 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       }
 
       "given a valid request where only periodIncome" in {
-        setupMocks()
-
         val body: JsValue =
           validBody()
             .removeProperty("/periodExpenses")
@@ -288,61 +258,17 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
         )
       }
 
-      def test(error: MtdError)(body: JsValue, path: String, withNegatives: Boolean = false): Unit = {
-        s"given a bad value at $path returning $error with negatives ${if (withNegatives) "enabled" else "disabled"}" in {
-          setupMocks()
+      def test(error: MtdError)(body: JsValue, path: String): Unit = {
+        s"given a bad value at $path returning $error" in {
 
           val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-            validator(validNino, validBusinessId, validPeriodId, validTaxYear, body, withNegatives).validateAndWrapResult()
+            validator(validNino, validBusinessId, validPeriodId, validTaxYear, body).validateAndWrapResult()
 
           result shouldBe Left(ErrorWrapper(correlationId, error))
         }
       }
 
       val badNumber = JsNumber(123.123)
-
-      List(
-        "/periodExpenses/paymentsToSubcontractors",
-        "/periodExpenses/wagesAndStaffCosts",
-        "/periodExpenses/carVanTravelExpenses",
-        "/periodExpenses/adminCosts",
-        "/periodExpenses/businessEntertainmentCosts",
-        "/periodExpenses/advertisingCosts",
-        "/periodExpenses/otherExpenses",
-        "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
-        "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
-        "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
-        "/periodDisallowableExpenses/adminCostsDisallowable",
-        "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
-        "/periodDisallowableExpenses/advertisingCostsDisallowable",
-        "/periodDisallowableExpenses/professionalFeesDisallowable",
-        "/periodDisallowableExpenses/otherExpensesDisallowable"
-      ).foreach(path => test(ValueFormatError.withPath(path))(validBody().update(path, badNumber), path))
-
-      List(
-        "/periodExpenses/costOfGoods",
-        "/periodExpenses/premisesRunningCosts",
-        "/periodExpenses/maintenanceCosts",
-        "/periodExpenses/interestOnBankOtherLoans",
-        "/periodExpenses/financeCharges",
-        "/periodExpenses/irrecoverableDebts",
-        "/periodExpenses/professionalFees",
-        "/periodExpenses/depreciation",
-        "/periodDisallowableExpenses/costOfGoodsDisallowable",
-        "/periodDisallowableExpenses/premisesRunningCostsDisallowable",
-        "/periodDisallowableExpenses/maintenanceCostsDisallowable",
-        "/periodDisallowableExpenses/interestOnBankOtherLoansDisallowable",
-        "/periodDisallowableExpenses/financeChargesDisallowable",
-        "/periodDisallowableExpenses/irrecoverableDebtsDisallowable",
-        "/periodDisallowableExpenses/depreciationDisallowable"
-      ).foreach(path =>
-        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(validBody().update(path, badNumber), path))
-
-      test(ValueFormatError.withPath("/periodExpenses/consolidatedExpenses"))(
-        validBody(periodExpenses = Json.obj("consolidatedExpenses" -> badNumber)).removeProperty("/periodDisallowableExpenses"),
-        "/PeriodExpenses/consolidatedExpenses"
-      )
-
       List(
         "/periodExpenses/costOfGoods",
         "/periodExpenses/premisesRunningCosts",
@@ -375,54 +301,19 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
         "/periodDisallowableExpenses/professionalFeesDisallowable",
         "/periodDisallowableExpenses/otherExpensesDisallowable"
       ).foreach(path =>
-        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(
-          validBodyWithNegatives.update(path, badNumber),
-          path,
-          withNegatives = true))
+        test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(validBody().update(path, badNumber), path))
 
       test(
         ValueFormatError.forPathAndRange("/periodExpenses/consolidatedExpenses", min = "-99999999999.99", max = "99999999999.99")
       )(
-        validBodyWithNegatives
+        validBody()
           .removeProperty("/periodDisallowableExpenses")
           .removeProperty("/periodExpenses")
           .update("/periodExpenses/consolidatedExpenses", badNumber),
-        "/periodExpenses/consolidatedExpenses",
-        withNegatives = true
+        "/periodExpenses/consolidatedExpenses"
       )
 
-      "given a body with negative expenses without negative expenses enabled" in {
-        setupMocks()
-
-        val result: Either[ErrorWrapper, AmendPeriodSummaryRequestData] =
-          validator(validNino, validBusinessId, validPeriodId, validTaxYear, validBodyWithNegatives).validateAndWrapResult()
-
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            ValueFormatError.withPaths(List(
-              "/periodExpenses/paymentsToSubcontractors",
-              "/periodExpenses/wagesAndStaffCosts",
-              "/periodExpenses/carVanTravelExpenses",
-              "/periodExpenses/adminCosts",
-              "/periodExpenses/businessEntertainmentCosts",
-              "/periodExpenses/advertisingCosts",
-              "/periodExpenses/otherExpenses",
-              "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable",
-              "/periodDisallowableExpenses/wagesAndStaffCostsDisallowable",
-              "/periodDisallowableExpenses/carVanTravelExpensesDisallowable",
-              "/periodDisallowableExpenses/adminCostsDisallowable",
-              "/periodDisallowableExpenses/businessEntertainmentCostsDisallowable",
-              "/periodDisallowableExpenses/advertisingCostsDisallowable",
-              "/periodDisallowableExpenses/professionalFeesDisallowable",
-              "/periodDisallowableExpenses/otherExpensesDisallowable"
-            ))
-          ))
-      }
-
       "given a body with expenses and consolidated expenses" in {
-        setupMocks()
-
         val invalidBody = validBody()
           .update("/periodExpenses/consolidatedExpenses", JsNumber(1000.99))
 
@@ -433,7 +324,6 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       }
 
       "given a body with disallowable expenses and consolidated expenses" in {
-        setupMocks()
 
         val invalidBody = validBody()
           .removeProperty("/periodExpenses")
@@ -446,7 +336,6 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       }
 
       "given a body with allowable expenses and consolidated expenses" in {
-        setupMocks()
 
         val invalidBody = validBody()
           .removeProperty("/periodDisallowableExpenses")

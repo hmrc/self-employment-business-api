@@ -97,7 +97,6 @@ class CreatePeriodSummaryControllerSpec
   }
 
   private trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("allowNegativeExpenses.enabled" -> false)).anyNumberOfTimes()
 
     val controller: CreatePeriodSummaryController = new CreatePeriodSummaryController(
       authService = mockEnrolmentsAuthService,

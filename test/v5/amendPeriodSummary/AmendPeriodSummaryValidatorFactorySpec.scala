@@ -46,13 +46,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
   private val validatorFactory = new AmendPeriodSummaryValidatorFactory
 
   private def validatorFor(taxYear: String) =
-    new AmendPeriodSummaryValidatorFactory().validator(
-      validNino,
-      validBusinessId,
-      validPeriodId,
-      taxYear,
-      validBody("2019-08-24", "2020-08-24"),
-      includeNegatives = true)
+    new AmendPeriodSummaryValidatorFactory().validator(validNino, validBusinessId, validPeriodId, taxYear, validBody("2019-08-24", "2020-08-24"))
 
   "validator()" when {
 
@@ -60,7 +54,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
       "return the Validator for schema definition 1 (non-TYS)" in {
         val requestBody = validBody("2019-08-24", "2020-08-24")
         val result: Validator[AmendPeriodSummaryRequestData] =
-          validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2019-20", requestBody, includeNegatives = true)
+          validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2019-20", requestBody)
         result shouldBe a[Def1_AmendPeriodSummaryValidator]
       }
 
@@ -68,7 +62,7 @@ class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedApp
         "return the Validator for schema definition 2" in {
           val requestBody = validBody("2023-08-24", "2024-08-24")
           val result: Validator[AmendPeriodSummaryRequestData] =
-            validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2023-24", requestBody, includeNegatives = true)
+            validatorFactory.validator(validNino, validBusinessId, validPeriodId, taxYear = "2023-24", requestBody)
           result shouldBe a[Def2_AmendPeriodSummaryValidator]
         }
       }

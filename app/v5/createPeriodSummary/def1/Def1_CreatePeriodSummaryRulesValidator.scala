@@ -31,7 +31,6 @@ case class Def1_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def1_
   private val minYear = 1900
   private val maxYear = 2100
 
-  private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
   private val resolveDateRange = ResolveDateRange()
@@ -99,17 +98,10 @@ case class Def1_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def1_
       (depreciation, "/periodExpenses/depreciation"),
       (otherExpenses, "/periodExpenses/otherExpenses")
     )
-
-    val validatedNonNegatives = (if (true) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path)
+    val allExpenses = conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses
+    allExpenses.traverse_ { case (value, path) =>
+      resolveMaybeNegativeParsedNumber(value, path)
     }
-
-    val validatedMaybeNegatives =
-      (if (true) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path)
-      }
-
-    combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
   private def validateDisllowableNumericFields()(expenses: Def1_Create_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
@@ -136,16 +128,11 @@ case class Def1_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def1_
       (depreciationDisallowable, "/periodDisallowableExpenses/depreciationDisallowable")
     )
 
-    val validatedNonNegatives = (if (true) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path)
+    val allExpenses = conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses
+    allExpenses.traverse_ { case (value, path) =>
+      resolveMaybeNegativeParsedNumber(value, path)
     }
 
-    val validatedMaybeNegatives =
-      (if (true) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path)
-      }
-
-    combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
 }

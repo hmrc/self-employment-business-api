@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@ object Def1_AmendPeriodSummaryValidator extends ResolverSupport {
   private val resolveTaxYear = ResolveTaxYear.resolver
 }
 
-class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)
+class Def1_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue)
     extends Validator[AmendPeriodSummaryRequestData] {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_AmendPeriodSummaryRequestBody]()
 
-  private val rulesValidator = new Def1_AmendPeriodSummaryRulesValidator(includeNegatives)
+  private val rulesValidator = new Def1_AmendPeriodSummaryRulesValidator()
 
   def validate: Validated[Seq[MtdError], AmendPeriodSummaryRequestData] =
     (

@@ -27,7 +27,7 @@ import v5.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestB
 import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 import v5.validators.resolvers.ResolvePeriodId
 
-class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)
+class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue)
     extends Validator[AmendPeriodSummaryRequestData] {
 
   private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
@@ -40,7 +40,7 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_AmendPeriodSummaryRequestBody]()
 
-  private val rulesValidator = new Def2_AmendPeriodSummaryRulesValidator(includeNegatives)
+  private val rulesValidator = new Def2_AmendPeriodSummaryRulesValidator()
 
   def validate: Validated[Seq[MtdError], AmendPeriodSummaryRequestData] =
     (
