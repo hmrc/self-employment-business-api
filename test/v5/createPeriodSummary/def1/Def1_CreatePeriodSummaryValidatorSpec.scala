@@ -158,8 +158,6 @@ class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
                          periodDisallowableExpenses: Option[Def1_Create_PeriodDisallowableExpenses] = Some(parsedPeriodDisallowableExpenses())) =
     Def1_CreatePeriodSummaryRequestBody(periodDates, periodIncome, periodExpenses, periodDisallowableExpenses)
 
-  // private val validatorFactory = new CreatePeriodSummaryValidatorFactory(appConfig)
-
   private def validator(nino: String, businessId: String, body: JsValue) = {
     new Def1_CreatePeriodSummaryValidator(nino, businessId, body)
   }
