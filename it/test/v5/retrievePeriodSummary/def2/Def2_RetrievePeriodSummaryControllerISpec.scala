@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,17 +31,11 @@ import stubs.BaseDownstreamStub
 
 class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
-  override def servicesConfig: Map[String, Any] = {
-    super.servicesConfig ++ Map(
-      "feature-switch.cl290.enabled" -> "false"
-    )
-  }
-
   "The V5 retrieve endpoint" should {
 
     "return a 200 status code" when {
 
-      "given ay valid TYS request" in new Test {
+      "given a valid TYS request" in new Test {
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
@@ -142,6 +136,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
   }
 
   private trait Test {
+
     val nino                     = "AA123456A"
     val businessId               = "XAIS12345678910"
     val periodId                 = "2023-04-01_2024-01-01"
@@ -168,6 +163,7 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
       |      "periodEndDate":"$toDate"
       |   },
       |   "periodIncome":{
+      |      "taxTakenOffTradingIncome": 3000.99,
       |      "turnover":3100.00,
       |      "other":3200.00
       |   },

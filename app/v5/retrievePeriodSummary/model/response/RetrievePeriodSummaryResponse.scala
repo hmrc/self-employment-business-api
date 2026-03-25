@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v5.retrievePeriodSummary.def1.model.response._
 import v5.retrievePeriodSummary.def2.model.response._
 
-sealed trait RetrievePeriodSummaryResponse {
-  def withoutTaxTakenOffTradingIncome: RetrievePeriodSummaryResponse
-}
+trait RetrievePeriodSummaryResponse
 
 object RetrievePeriodSummaryResponse {
 
@@ -38,10 +36,7 @@ case class Def1_RetrievePeriodSummaryResponse(
     periodIncome: Option[Def1_Retrieve_PeriodIncome],
     periodExpenses: Option[Def1_Retrieve_PeriodExpenses],
     periodDisallowableExpenses: Option[Def1_Retrieve_PeriodDisallowableExpenses]
-) extends RetrievePeriodSummaryResponse {
-
-  def withoutTaxTakenOffTradingIncome: Def1_RetrievePeriodSummaryResponse = this
-}
+) extends RetrievePeriodSummaryResponse
 
 object Def1_RetrievePeriodSummaryResponse {
 
@@ -73,14 +68,7 @@ case class Def2_RetrievePeriodSummaryResponse(periodDates: Def2_Retrieve_PeriodD
                                               periodIncome: Option[Def2_Retrieve_PeriodIncome],
                                               periodExpenses: Option[Def2_Retrieve_PeriodExpenses],
                                               periodDisallowableExpenses: Option[Def2_Retrieve_PeriodDisallowableExpenses])
-    extends RetrievePeriodSummaryResponse {
-
-  def withoutTaxTakenOffTradingIncome: Def2_RetrievePeriodSummaryResponse =
-    periodIncome
-      .map(pi => copy(periodIncome = Some(pi.copy(taxTakenOffTradingIncome = None))))
-      .getOrElse(this)
-
-}
+    extends RetrievePeriodSummaryResponse
 
 object Def2_RetrievePeriodSummaryResponse {
 

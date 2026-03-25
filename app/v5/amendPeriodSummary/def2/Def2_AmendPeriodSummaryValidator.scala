@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,17 @@
 package v5.amendPeriodSummary.def2
 
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple5Semigroupal
-import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
-import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinMax}
 import shared.models.domain.TaxYear
-import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
+import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 import v5.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 import v5.validators.resolvers.ResolvePeriodId
 
-class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue, includeNegatives: Boolean)(
-    implicit appConfig: SharedAppConfig)
+class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue)
     extends Validator[AmendPeriodSummaryRequestData] {
 
   private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
@@ -42,11 +38,9 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
     maxError = RuleTaxYearNotSupportedError
   ).resolver
 
-  lazy private val featureSwitches = SeBusinessFeatureSwitches()
-
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_AmendPeriodSummaryRequestBody]()
 
-  private val rulesValidator = new Def2_AmendPeriodSummaryRulesValidator(includeNegatives)
+  private val rulesValidator = new Def2_AmendPeriodSummaryRulesValidator()
 
   def validate: Validated[Seq[MtdError], AmendPeriodSummaryRequestData] =
     (
@@ -55,20 +49,6 @@ class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodI
       ResolvePeriodId(periodId),
       resolveTaxYear(taxYear),
       resolveJson(body)
-    ).mapN(Def2_AmendPeriodSummaryRequestData.apply) andThen rulesValidator.validateBusinessRules andThen validateTaxTakenOffTradingIncome
-
-  /** Can be removed when CL290 is released.
-    */
-  private def validateTaxTakenOffTradingIncome(
-      parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] =
-    (for {
-      income <- parsed.body.periodIncome if !featureSwitches.isCl290Enabled
-      _      <- income.taxTakenOffTradingIncome
-    } yield {
-      Invalid(
-        List(
-          RuleIncorrectOrEmptyBodyError.withPath("/periodIncome/taxTakenOffTradingIncome")
-        ))
-    }).getOrElse(Valid(parsed))
+    ).mapN(Def2_AmendPeriodSummaryRequestData.apply) andThen rulesValidator.validateBusinessRules
 
 }

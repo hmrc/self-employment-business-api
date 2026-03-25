@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package v5.createPeriodSummary
 
-import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
@@ -43,14 +42,11 @@ class CreatePeriodSummaryController @Inject() (val authService: EnrolmentsAuthSe
 
   val endpointName = "create-period-summary"
 
-  private val featureSwitches = SeBusinessFeatureSwitches()
-
   def handleRequest(nino: String, businessId: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val includeNegatives = featureSwitches.isAllowNegativeExpensesEnabled
-      val validator        = validatorFactory.validator(nino, businessId, request.body, includeNegatives)
+      val validator = validatorFactory.validator(nino, businessId, request.body)
 
       val requestHandler = RequestHandler
         .withValidator(validator)

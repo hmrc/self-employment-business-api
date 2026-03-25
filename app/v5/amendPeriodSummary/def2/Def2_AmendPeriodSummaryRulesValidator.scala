@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,9 @@ import api.models.errors.RuleBothExpensesSuppliedError
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import config.SeBusinessFeatureSwitches
-import shared.config.SharedAppConfig
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveParsedNumber
-import shared.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import shared.models.errors.MtdError
 import v5.amendPeriodSummary.def2.model.request.{
   Def2_AmendPeriodSummaryRequestData,
   Def2_Amend_PeriodDisallowableExpenses,
@@ -32,10 +30,7 @@ import v5.amendPeriodSummary.def2.model.request.{
   Def2_Amend_PeriodIncome
 }
 
-class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit appConfig: SharedAppConfig)
-    extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
-
-  private lazy val featureSwitches = SeBusinessFeatureSwitches()
+class Def2_AmendPeriodSummaryRulesValidator() extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
 
   private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
@@ -47,22 +42,10 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
     combine(
       validateExpenses(periodExpenses, periodDisallowableExpenses),
       periodIncome.map(validatePeriodIncome).getOrElse(valid),
-      periodIncome.map(validatePeriodIncomeCL290).getOrElse(valid),
-      periodExpenses.map(validatePeriodExpenses(includeNegatives)).getOrElse(valid),
-      periodDisallowableExpenses.map(validatePeriodDisallowableExpenses(includeNegatives)).getOrElse(valid)
+      periodExpenses.map(validatePeriodExpenses).getOrElse(valid),
+      periodDisallowableExpenses.map(validatePeriodDisallowableExpenses).getOrElse(valid)
     ).onSuccess(parsed)
   }
-
-  /** This can be removed once CL290 is released -- see Feature Release Roadmap page.
-    */
-  private def validatePeriodIncomeCL290(periodIncome: Def2_Amend_PeriodIncome): Validated[Seq[MtdError], Unit] =
-    if (!featureSwitches.isCl290Enabled && periodIncome.taxTakenOffTradingIncome.isDefined)
-      Invalid(
-        List(
-          RuleIncorrectOrEmptyBodyError.withPath("/periodIncome/taxTakenOffTradingIncome")
-        ))
-    else
-      valid
 
   private def validateExpenses(allowableExpenses: Option[Def2_Amend_PeriodExpenses],
                                periodDisallowableExpenses: Option[Def2_Amend_PeriodDisallowableExpenses]): Validated[Seq[MtdError], Unit] =
@@ -85,7 +68,7 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
       resolveNonNegativeParsedNumber(value, path)
     }
 
-  private def validatePeriodExpenses(includeNegatives: Boolean)(expenses: Def2_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validatePeriodExpenses(expenses: Def2_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val conditionalMaybeNegativeExpenses = List(
@@ -110,20 +93,13 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
       (depreciation, "/periodExpenses/depreciation")
     )
 
-    val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path)
+    val allExpenses = conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses
+    allExpenses.traverse_ { case (value, path) =>
+      resolveMaybeNegativeParsedNumber(value, path)
     }
-
-    val validatedMaybeNegatives =
-      (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path)
-      }
-
-    combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
-  private def validatePeriodDisallowableExpenses(includeNegatives: Boolean)(
-      expenses: Def2_Amend_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validatePeriodDisallowableExpenses(expenses: Def2_Amend_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val conditionalMaybeNegativeExpenses = List(
@@ -147,16 +123,10 @@ class Def2_AmendPeriodSummaryRulesValidator(includeNegatives: Boolean)(implicit 
       (depreciationDisallowable, "/periodDisallowableExpenses/depreciationDisallowable")
     )
 
-    val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path)
+    val allExpenses = conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses
+    allExpenses.traverse_ { case (value, path) =>
+      resolveMaybeNegativeParsedNumber(value, path)
     }
-
-    val validatedMaybeNegatives =
-      (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path)
-      }
-
-    combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
 }

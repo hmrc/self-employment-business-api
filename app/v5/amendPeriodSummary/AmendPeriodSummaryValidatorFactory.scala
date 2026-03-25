@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package v5.amendPeriodSummary
 
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.JsValue
-import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import v5.amendPeriodSummary.AmendPeriodSummarySchema.{Def1, Def2}
 import v5.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
@@ -28,18 +27,13 @@ import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AmendPeriodSummaryValidatorFactory @Inject() (implicit appConfig: SharedAppConfig) {
+class AmendPeriodSummaryValidatorFactory @Inject() {
 
-  def validator(nino: String,
-                businessId: String,
-                periodId: String,
-                taxYear: String,
-                body: JsValue,
-                includeNegatives: Boolean): Validator[AmendPeriodSummaryRequestData] = {
+  def validator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue): Validator[AmendPeriodSummaryRequestData] = {
 
     AmendPeriodSummarySchema.schemaFor(taxYear) match {
-      case Valid(Def1)     => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
-      case Valid(Def2)     => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body, includeNegatives)
+      case Valid(Def1)     => new Def1_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body)
+      case Valid(Def2)     => new Def2_AmendPeriodSummaryValidator(nino, businessId, periodId, taxYear, body)
       case Invalid(errors) => Validator.returningErrors(errors)
     }
   }

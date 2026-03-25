@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,11 @@ import v5.createPeriodSummary.model.request.{Create_PeriodIncome, Def2_CreatePer
 
 import java.time.LocalDate
 
-case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) extends RulesValidator[Def2_CreatePeriodSummaryRequestData] {
+case class Def2_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def2_CreatePeriodSummaryRequestData] {
 
   private val minDate            = LocalDate.of(1900, 4, 6)
   private val maxDate: LocalDate = LocalDate.of(2025, 4, 5)
 
-  private val resolveNonNegativeParsedNumber   = ResolveParsedNumber()
   private val resolveMaybeNegativeParsedNumber = ResolveParsedNumber(min = -99999999999.99)
 
   private val resolveDateRange = ResolveDateRange(RuleTaxYearNotSupportedError, RuleTaxYearNotSupportedError, RuleEndBeforeStartDateError)
@@ -44,9 +43,9 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     combine(
       validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
       validateExpenses(periodExpenses, periodDisallowableExpenses),
-      periodIncome.map(validatePeriodIncomeNumericFields(includeNegatives)).getOrElse(valid),
-      periodExpenses.map(validateAllowableNumericFields(includeNegatives)).getOrElse(valid),
-      periodDisallowableExpenses.map(validateDisllowableNumericFields(includeNegatives)).getOrElse(valid)
+      periodIncome.map(validatePeriodIncomeNumericFields).getOrElse(valid),
+      periodExpenses.map(validateAllowableNumericFields).getOrElse(valid),
+      periodDisallowableExpenses.map(validateDisllowableNumericFields).getOrElse(valid)
     ).onSuccess(parsed)
   }
 
@@ -70,18 +69,15 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
     resolveDateRange.withDatesLimitedTo(minDate, maxDate)(periodStartDate -> periodEndDate).toUnit
   }
 
-  private def validatePeriodIncomeNumericFields(includeNegatives: Boolean)(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =
+  private def validatePeriodIncomeNumericFields(periodIncome: Create_PeriodIncome): Validated[Seq[MtdError], Unit] =
     List(
       (periodIncome.other, "/periodIncome/other"),
       (periodIncome.turnover, "/periodIncome/turnover")
     ).traverse_ { case (value, path) =>
-      if (includeNegatives)
-        resolveMaybeNegativeParsedNumber(value, path)
-      else
-        resolveNonNegativeParsedNumber(value, path)
+      resolveMaybeNegativeParsedNumber(value, path)
     }
 
-  private def validateAllowableNumericFields(includeNegatives: Boolean)(expenses: Def2_Create_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validateAllowableNumericFields(expenses: Def2_Create_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val conditionalMaybeNegativeExpenses = List(
@@ -106,20 +102,13 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
       (otherExpenses, "/periodExpenses/otherExpenses")
     )
 
-    val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path)
+    val allExpenses = conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses
+    allExpenses.traverse_ { case (value, path) =>
+      resolveMaybeNegativeParsedNumber(value, path)
     }
-
-    val validatedMaybeNegatives =
-      (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path)
-      }
-
-    combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
-  private def validateDisllowableNumericFields(includeNegatives: Boolean)(
-      expenses: Def2_Create_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
+  private def validateDisllowableNumericFields(expenses: Def2_Create_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
     import expenses._
 
     val conditionalMaybeNegativeExpenses = List(
@@ -143,16 +132,10 @@ case class Def2_CreatePeriodSummaryRulesValidator(includeNegatives: Boolean) ext
       (depreciationDisallowable, "/periodDisallowableExpenses/depreciationDisallowable")
     )
 
-    val validatedNonNegatives = (if (includeNegatives) Nil else conditionalMaybeNegativeExpenses).traverse_ { case (value, path) =>
-      resolveNonNegativeParsedNumber(value, path)
+    val allExpenses = conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses
+    allExpenses.traverse_ { case (value, path) =>
+      resolveMaybeNegativeParsedNumber(value, path)
     }
-
-    val validatedMaybeNegatives =
-      (if (includeNegatives) conditionalMaybeNegativeExpenses ++ maybeNegativeExpenses else maybeNegativeExpenses).traverse_ { case (value, path) =>
-        resolveMaybeNegativeParsedNumber(value, path)
-      }
-
-    combine(validatedNonNegatives, validatedMaybeNegatives)
   }
 
 }

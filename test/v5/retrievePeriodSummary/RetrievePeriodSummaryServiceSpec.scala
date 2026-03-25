@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package v5.retrievePeriodSummary
 
 import api.models.domain.PeriodId
 import api.models.errors.PeriodIdFormatError
-import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
@@ -47,23 +46,15 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
     taxYear = taxYear
   )
 
-  private val def1PeriodIncome                  = Def1_Retrieve_PeriodIncome(turnover = Some(2000.00), None)
-  private val def2PeriodIncomeWithCl290Disabled = Def2_Retrieve_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = None)
-  private val def2PeriodIncomeWithCl290Enabled  = Def2_Retrieve_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
+  private val def1PeriodIncome = Def1_Retrieve_PeriodIncome(turnover = Some(2000.00), None)
+  private val def2PeriodIncome = Def2_Retrieve_PeriodIncome(turnover = Some(2000.00), None, taxTakenOffTradingIncome = Some(2000.00))
 
   private val def1Response =
     Def1_RetrievePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2019-01-25", "2020-01-25"), Some(def1PeriodIncome), None, None)
 
-  private val def2ResponseWithCl290Disabled = Def2_RetrievePeriodSummaryResponse(
+  private val def2Response = Def2_RetrievePeriodSummaryResponse(
     Def2_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
-    Some(def2PeriodIncomeWithCl290Disabled),
-    None,
-    None
-  )
-
-  private val def2ResponseWithCl290Enabled = Def2_RetrievePeriodSummaryResponse(
-    Def2_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
-    Some(def2PeriodIncomeWithCl290Enabled),
+    Some(def2PeriodIncome),
     None,
     None
   )
@@ -80,37 +71,19 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, def1Response))))
-
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
-
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
         result shouldBe Right(ResponseWrapper(correlationId, def1Response))
       }
     }
 
-    "given a def2 (TYS) request and CL290 feature is disabled" should {
-      "return a def2 response without taxTakenOffTradingIncome" in new Test {
-        MockRetrievePeriodSummaryConnector
-          .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))))
-
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> false))
-
-        val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
-        result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Disabled))
-      }
-    }
-
-    "given a def2 (TYS) request and CL290 feature is enabled" should {
+    "given a def2 (TYS) request" should {
       "return a def2 response with taxTakenOffTradingIncome" in new Test {
         MockRetrievePeriodSummaryConnector
           .retrievePeriodSummary(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))))
-
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, def2Response))))
 
         val result: ServiceOutcome[RetrievePeriodSummaryResponse] = await(service.retrievePeriodSummary(requestData))
-        result shouldBe Right(ResponseWrapper(correlationId, def2ResponseWithCl290Enabled))
+        result shouldBe Right(ResponseWrapper(correlationId, def2Response))
       }
     }
   }

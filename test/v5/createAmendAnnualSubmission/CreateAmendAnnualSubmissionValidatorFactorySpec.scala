@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package v5.createAmendAnnualSubmission
 
-import play.api.Configuration
 import play.api.libs.json.*
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
@@ -46,13 +45,9 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
 
   private val validatorFactory = new CreateAmendAnnualSubmissionValidatorFactory
 
-  private def setupMocks(): Unit =
-    MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("cl290.enabled" -> true)).anyNumberOfTimes()
-
   "validator()" when {
     "given a tax year before 2024-25" should {
       "return the Validator for schema definition 1" in {
-        setupMocks()
         val requestBody = validBody("2019-08-24", "2020-08-24")
         val result: Validator[CreateAmendAnnualSubmissionRequestData] =
           validatorFactory.validator(validNino, validBusinessId, "2022-23", requestBody)
@@ -62,7 +57,6 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
 
     "given the tax year is 2024-25" should {
       "return the Validator for schema definition 2" in {
-        setupMocks()
         val requestBody = validBody("2019-08-24", "2020-08-24")
         val result: Validator[CreateAmendAnnualSubmissionRequestData] =
           validatorFactory.validator(validNino, validBusinessId, "2024-25", requestBody)
@@ -72,7 +66,6 @@ class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with Mock
 
     "given the tax year is after 2024-25" should {
       "return the Validator for schema definition 3" in {
-        setupMocks()
         val requestBody = validBody("2019-08-24", "2020-08-24")
         val result: Validator[CreateAmendAnnualSubmissionRequestData] =
           validatorFactory.validator(validNino, validBusinessId, "2025-26", requestBody)

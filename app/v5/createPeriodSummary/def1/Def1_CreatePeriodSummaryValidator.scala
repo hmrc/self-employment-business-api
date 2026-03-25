@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,11 @@ import shared.controllers.validators.resolvers._
 import shared.models.errors.{EndDateFormatError, MtdError, StartDateFormatError}
 import v5.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestBody, Def1_CreatePeriodSummaryRequestData}
 
-class Def1_CreatePeriodSummaryValidator(nino: String, businessId: String, body: JsValue, includeNegatives: Boolean)
-    extends Validator[CreatePeriodSummaryRequestData] {
+class Def1_CreatePeriodSummaryValidator(nino: String, businessId: String, body: JsValue) extends Validator[CreatePeriodSummaryRequestData] {
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_CreatePeriodSummaryRequestBody]()
 
-  private val rulesValidator = Def1_CreatePeriodSummaryRulesValidator(includeNegatives)
+  private val rulesValidator = Def1_CreatePeriodSummaryRulesValidator()
 
   def validate: Validated[Seq[MtdError], CreatePeriodSummaryRequestData] = {
     validateJsonFields(body) andThen { parsedBody =>
