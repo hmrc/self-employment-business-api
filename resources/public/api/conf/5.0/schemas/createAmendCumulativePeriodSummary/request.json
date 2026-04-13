@@ -9,16 +9,16 @@
       "description": "Object containing the details about self-employment period dates.",
       "properties": {
         "periodStartDate": {
-          "description": "The first day that the income, expenses and deduction summary covers. Must conform to the format: YYYY-MM-DD.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required.",
+          "description": "The first day that the income, expenses and deduction summary covers. Must conform to the format: `YYYY-MM-DD`.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required.",
           "type": "string",
-          "example": "2025-04-06",
-          "format": "date"
+          "format": "date",
+          "example": "2025-04-06"
         },
         "periodEndDate": {
-          "description": "The last day that the income, expenses and deduction summary covers. Must conform to the format: YYYY-MM-DD.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required.",
+          "description": "The last day that the income, expenses and deduction summary covers. Must conform to the format: `YYYY-MM-DD`.\n\nFor users with ITSA status of 'annual' or a latent income source, these dates are not required.",
           "type": "string",
-          "example": "2025-07-05",
-          "format": "date"
+          "format": "date",
+          "example": "2025-07-05"
         }
       },
       "required": [

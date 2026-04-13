@@ -9,7 +9,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.45"
+      "example": 2000.99
     },
     "paymentsToSubcontractorsDisallowable": {
       "type": "number",
@@ -17,7 +17,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "wagesAndStaffCostsDisallowable": {
       "type": "number",
@@ -25,7 +25,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "carVanTravelExpensesDisallowable": {
       "type": "number",
@@ -33,7 +33,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "premisesRunningCostsDisallowable": {
       "type": "number",
@@ -41,7 +41,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "maintenanceCostsDisallowable": {
       "type": "number",
@@ -49,7 +49,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "adminCostsDisallowable": {
       "type": "number",
@@ -57,7 +57,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "businessEntertainmentCostsDisallowable": {
       "type": "number",
@@ -65,7 +65,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "advertisingCostsDisallowable": {
       "type": "number",
@@ -73,7 +73,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "interestOnBankOtherLoansDisallowable": {
       "type": "number",
@@ -81,7 +81,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "financeChargesDisallowable": {
       "type": "number",
@@ -89,7 +89,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "irrecoverableDebtsDisallowable": {
       "type": "number",
@@ -97,7 +97,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "professionalFeesDisallowable": {
       "type": "number",
@@ -105,7 +105,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "depreciationDisallowable": {
       "type": "number",
@@ -113,7 +113,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     },
     "otherExpensesDisallowable": {
       "type": "number",
@@ -121,7 +121,7 @@
       "multipleOf": 0.01,
       "minimum": -99999999999.99,
       "maximum": 99999999999.99,
-      "example": "10000.89"
+      "example": 2000.99
     }
   },
   "additionalProperties": false
