@@ -12,7 +12,7 @@
           "description": "Income, receipts and other profits included in business income or expenses but not taxable as business profits. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -28,7 +28,7 @@
           "description": "Overlap relief used this year. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -36,7 +36,7 @@
           "description": "Adjustment for change of accounting practice. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -52,7 +52,7 @@
           "description": "Any other business income not included in other fields. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -60,7 +60,7 @@
           "description": "Balancing charge on sale or cessation of business use (only where Business Premises Renovation Allowance has been claimed). The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -68,7 +68,7 @@
           "description": "Balancing charge on sale or cessation of business use (where you have disposed of assets for more than their tax value). The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -76,7 +76,7 @@
           "description": "Value of the normal sale price of goods or stock have been taken out of the business. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -84,7 +84,7 @@
           "description": "Amount of transition profit arising in this tax year for this income source. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -92,7 +92,7 @@
           "description": "Additional amount of transition profit elected to be treated as arising in this tax year for this income source. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         }
@@ -107,7 +107,7 @@
           "description": "Annual investment allowance on items that qualify up to the AIA amount. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -115,7 +115,7 @@
           "description": "Capital allowances on equipment, including cars with lower CO2 emissions. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -123,7 +123,7 @@
           "description": "Capital allowances on equipment at the special rate, including cars with higher CO2 emissions. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -131,7 +131,7 @@
           "description": "Zero emissions goods vehicle allowance for goods vehicles purchased for business use.\n\nThe value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -139,7 +139,7 @@
           "description": "Business Premises Renovation Allowance if converting or renovating unused qualifying business premises. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -147,7 +147,7 @@
           "description": "Other enhanced capital allowances.\n\nThe value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -155,7 +155,7 @@
           "description": "Allowances on sale or cessation of business use (where you have disposed of assets for less than their tax value). The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -163,7 +163,7 @@
           "description": "Claim to capital allowances in respect of all single asset pools. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -171,7 +171,7 @@
           "description": "The expenditure incurred on electric charge-point equipment. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -179,7 +179,7 @@
           "description": "The amount of zero emissions car allowance. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 99999999999.99,
           "example": 2000.99
         },
@@ -187,7 +187,7 @@
           "description": "The amount of trading allowance (can not be supplied with any other allowances). The value must be between 0 and 1000.00 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
-          "minimum": 0.00,
+          "minimum": 0,
           "maximum": 1000.00,
           "example": 100.99
         },
@@ -201,7 +201,7 @@
                 "description": "The amount of structured building allowance.\n\nThe value must be between 0 and 99999999999.99 up to 2 decimal places.",
                 "type": "number",
                 "multipleOf": 0.01,
-                "minimum": 0.00,
+                "minimum": 0,
                 "maximum": 99999999999.99,
                 "example": 2000.99
               },
@@ -219,7 +219,7 @@
                     "description": "The amount of qualifying expenditure. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
                     "type": "number",
                     "multipleOf": 0.01,
-                    "minimum": 0.00,
+                    "minimum": 0,
                     "maximum": 99999999999.99,
                     "example": 2000.99
                   }
@@ -273,7 +273,7 @@
                 "description": "The amount of enhanced structured building allowance. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
                 "type": "number",
                 "multipleOf": 0.01,
-                "minimum": 0.00,
+                "minimum": 0,
                 "maximum": 99999999999.99,
                 "example": 2000.99
               },
@@ -291,7 +291,7 @@
                     "description": "The amount of qualifying expenditure. The value must be between 0 and 99999999999.99 up to 2 decimal places.",
                     "type": "number",
                     "multipleOf": 0.01,
-                    "minimum": 0.00,
+                    "minimum": 0,
                     "maximum": 99999999999.99,
                     "example": 2000.99
                   }
