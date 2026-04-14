@@ -16,13 +16,15 @@
             "example": "2017-04-06_2017-07-04"
           },
           "periodStartDate": {
-            "description": "The first day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
+            "description": "The first day that the income, expenses and deduction period summary covers. Must conform to the format: `YYYY-MM-DD`",
             "type": "string",
+            "format": "date",
             "example": "2020-01-01"
           },
           "periodEndDate": {
-            "description": "The last day that the income, expenses and deduction period summary covers. Must conform to the format: YYYY-MM-DD",
+            "description": "The last day that the income, expenses and deduction period summary covers. Must conform to the format: `YYYY-MM-DD`",
             "type": "string",
+            "format": "date",
             "example": "2020-01-01"
           }
         },

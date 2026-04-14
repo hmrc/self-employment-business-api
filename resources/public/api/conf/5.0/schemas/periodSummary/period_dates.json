@@ -7,12 +7,14 @@
       "id": "full-date",
       "description": "The first day that the income, expenses and deduction period summary covers.",
       "type": "string",
+      "format": "date",
       "example": "2020-01-01"
     },
     "periodEndDate": {
       "id": "full-date",
       "description": "The last day that the income, expenses and deduction period summary covers.",
       "type": "string",
+      "format": "date",
       "example": "2020-01-01"
     }
   },
