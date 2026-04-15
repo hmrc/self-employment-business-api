@@ -20,10 +20,10 @@ import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.hateoas.MockHateoasFactory
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
+import shared.models.errors
+import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleTaxYearNotSupportedError}
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version5}
 import shared.services.MockAuditService
@@ -41,7 +41,6 @@ class CreateAmendCumulativePeriodSummaryControllerSpec
     with ControllerTestRunner
     with MockCreateAmendCumulativePeriodSummaryService
     with MockCreateAmendCumulativePeriodSummaryValidatorFactory
-    with MockHateoasFactory
     with MockAuditService
     with CumulativePeriodSummaryFixture {
 

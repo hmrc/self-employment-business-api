@@ -41,7 +41,6 @@ abstract class ControllerBaseSpec
     with HeaderNames
     with ResultExtractors
     with MockAuditService
-    with ControllerSpecHateoasSupport
     with MockSharedAppConfig {
 
   protected val apiVersion: Version = Version9

@@ -23,10 +23,9 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
-import shared.config.SharedAppConfig
 import shared.config.Deprecation.Deprecated
+import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
-import shared.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
 import shared.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version
@@ -91,27 +90,6 @@ object RequestHandler {
 
     def withResultCreator(resultCreator: ResultCreator[Input, Output]): RequestHandlerBuilder[Input, Output] =
       copy(resultCreator = resultCreator)
-
-    /** Shorthand for
-      * {{{
-      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
-      * }}}
-      */
-    def withHateoasResultFrom[HData <: HateoasData](
-        hateoasFactory: HateoasFactory)(data: (Input, Output) => HData, successStatus: Int = Status.OK)(implicit
-        linksFactory: HateoasLinksFactory[Output, HData],
-        writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
-      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
-
-    /** Shorthand for
-      * {{{
-      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_,_) => data))
-      * }}}
-      */
-    def withHateoasResult[HData <: HateoasData](hateoasFactory: HateoasFactory)(data: HData, successStatus: Int = Status.OK)(implicit
-        linksFactory: HateoasLinksFactory[Output, HData],
-        writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
-      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_, _) => data))
 
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {
