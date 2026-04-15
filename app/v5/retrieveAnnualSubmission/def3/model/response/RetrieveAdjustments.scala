@@ -18,19 +18,16 @@ package v5.retrieveAnnualSubmission.def3.model.response
 
 import play.api.libs.json.{Json, OFormat}
 
-case class RetrieveAdjustments(
-    includedNonTaxableProfits: Option[BigDecimal],
-    basisAdjustment: Option[BigDecimal],
-    overlapReliefUsed: Option[BigDecimal],
-    accountingAdjustment: Option[BigDecimal],
-    averagingAdjustment: Option[BigDecimal],
-    outstandingBusinessIncome: Option[BigDecimal],
-    balancingChargeBpra: Option[BigDecimal],
-    balancingChargeOther: Option[BigDecimal],
-    goodsAndServicesOwnUse: Option[BigDecimal],
-    transitionProfitAmount: Option[BigDecimal],
-    transitionProfitAccelerationAmount: Option[BigDecimal]
-)
+case class RetrieveAdjustments(includedNonTaxableProfits: Option[BigDecimal],
+                               basisAdjustment: Option[BigDecimal],
+                               overlapReliefUsed: Option[BigDecimal],
+                               accountingAdjustment: Option[BigDecimal],
+                               outstandingBusinessIncome: Option[BigDecimal],
+                               balancingChargeBpra: Option[BigDecimal],
+                               balancingChargeOther: Option[BigDecimal],
+                               goodsAndServicesOwnUse: Option[BigDecimal],
+                               transitionProfitAmount: Option[BigDecimal],
+                               transitionProfitAccelerationAmount: Option[BigDecimal])
 
 object RetrieveAdjustments {
   implicit val format: OFormat[RetrieveAdjustments] = Json.format[RetrieveAdjustments]
