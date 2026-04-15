@@ -60,11 +60,8 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       resolveNonNegativeParsedNumber(value, path)
     }
 
-    val validatedMaybeNegatives = List(
-      (basisAdjustment, "/adjustments/basisAdjustment")
-    ).traverse_ { case (value, path) =>
-      resolveMaybeNegativeParsedNumber(value, path)
-    }
+    val validatedMaybeNegatives =
+      resolveMaybeNegativeParsedNumber(basisAdjustment, "/adjustments/basisAdjustment")
 
     combine(validatedNonNegatives, validatedMaybeNegatives)
   }

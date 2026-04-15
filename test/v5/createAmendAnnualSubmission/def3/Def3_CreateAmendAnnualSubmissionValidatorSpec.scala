@@ -506,10 +506,9 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       "/allowances/zeroEmissionsCarAllowance"
     ).foreach(path => test(ValueFormatError.withPath(path))(validRequestBody().update(path, badNumber), path))
 
-    List(
-      "/adjustments/basisAdjustment"
-    ).foreach(path =>
-      test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(validRequestBody().update(path, badNumber), path))
+    test(ValueFormatError.forPathAndRange("/adjustments/basisAdjustment", min = "-99999999999.99", max = "99999999999.99"))(
+      validRequestBody().update("/adjustments/basisAdjustment", badNumber),
+      "/adjustments/basisAdjustment")
 
     test(ValueFormatError.forPathAndRange("/allowances/tradingIncomeAllowance", min = "0", max = "1000"))(
       validRequestBody(allowances = Json.obj("tradingIncomeAllowance" -> badNumber)),
@@ -864,7 +863,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               )),
               ValueFormatError
                 .forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99")
-                .withPaths(Seq("/adjustments/basisAdjustment")),
+                .withPath("/adjustments/basisAdjustment"),
               ValueFormatError.withPaths(Seq(
                 "/adjustments/includedNonTaxableProfits",
                 "/adjustments/overlapReliefUsed",
