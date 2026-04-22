@@ -47,7 +47,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
      |    "basisAdjustment": 200.12,
      |    "overlapReliefUsed": 200.12,
      |    "accountingAdjustment": 200.12,
-     |    "averagingAdjustment": 200.12,
      |    "outstandingBusinessIncome": 200.12,
      |    "balancingChargeBpra": 200.12,
      |    "balancingChargeOther": 200.12,
@@ -116,7 +115,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |    "basisAdjustment": 200.12,
       |    "overlapReliefUsed": 200.12,
       |    "accountingAdjustment": 200.12,
-      |    "averagingAdjustment": 200.12,
       |    "outstandingBusinessIncome": 200.12,
       |    "balancingChargeBpra": 200.12,
       |    "balancingChargeOther": 200.12,
@@ -152,7 +150,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     basisAdjustment = Some(200.12),
     overlapReliefUsed = Some(200.12),
     accountingAdjustment = Some(200.12),
-    averagingAdjustment = Some(200.12),
     outstandingBusinessIncome = Some(200.12),
     balancingChargeBpra = Some(200.12),
     balancingChargeOther = Some(200.12),
@@ -230,7 +227,7 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           parsedBusinessId,
           parsedTaxYear,
           parsedRequestBody.copy(
-            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None, None, None)),
+            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None, None)),
             None,
             None)
         )
@@ -514,11 +511,9 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       "/allowances/zeroEmissionsCarAllowance"
     ).foreach(path => test(ValueFormatError.withPath(path))(validRequestBody().update(path, badNumber), path))
 
-    List(
-      "/adjustments/basisAdjustment",
-      "/adjustments/averagingAdjustment"
-    ).foreach(path =>
-      test(ValueFormatError.forPathAndRange(path, min = "-99999999999.99", max = "99999999999.99"))(validRequestBody().update(path, badNumber), path))
+    test(ValueFormatError.forPathAndRange("/adjustments/basisAdjustment", min = "-99999999999.99", max = "99999999999.99"))(
+      validRequestBody().update("/adjustments/basisAdjustment", badNumber),
+      "/adjustments/basisAdjustment")
 
     test(ValueFormatError.forPathAndRange("/allowances/tradingIncomeAllowance", min = "0", max = "1000"))(
       validRequestBody(allowances = Json.obj("tradingIncomeAllowance" -> badNumber)),
@@ -807,7 +802,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               |    "basisAdjustment": 200.123,
               |    "overlapReliefUsed": 200.132,
               |    "accountingAdjustment": 200.132,
-              |    "averagingAdjustment": 200.132,
               |    "outstandingBusinessIncome": 200.123,
               |    "balancingChargeBpra": 200.123,
               |    "balancingChargeOther": 200.132,
@@ -877,7 +871,7 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               )),
               ValueFormatError
                 .forPathAndRange(path = "", min = "-99999999999.99", max = "99999999999.99")
-                .withPaths(Seq("/adjustments/basisAdjustment", "/adjustments/averagingAdjustment")),
+                .withPath("/adjustments/basisAdjustment"),
               ValueFormatError.withPaths(Seq(
                 "/adjustments/includedNonTaxableProfits",
                 "/adjustments/overlapReliefUsed",

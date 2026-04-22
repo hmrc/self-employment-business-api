@@ -18,19 +18,16 @@ package v5.createAmendAnnualSubmission.def3.request
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Def3_CreateAmend_Adjustments(
-    includedNonTaxableProfits: Option[BigDecimal],
-    basisAdjustment: Option[BigDecimal],
-    overlapReliefUsed: Option[BigDecimal],
-    accountingAdjustment: Option[BigDecimal],
-    averagingAdjustment: Option[BigDecimal],
-    outstandingBusinessIncome: Option[BigDecimal],
-    balancingChargeBpra: Option[BigDecimal],
-    balancingChargeOther: Option[BigDecimal],
-    goodsAndServicesOwnUse: Option[BigDecimal],
-    transitionProfitAmount: Option[BigDecimal],
-    transitionProfitAccelerationAmount: Option[BigDecimal]
-)
+case class Def3_CreateAmend_Adjustments(includedNonTaxableProfits: Option[BigDecimal],
+                                        basisAdjustment: Option[BigDecimal],
+                                        overlapReliefUsed: Option[BigDecimal],
+                                        accountingAdjustment: Option[BigDecimal],
+                                        outstandingBusinessIncome: Option[BigDecimal],
+                                        balancingChargeBpra: Option[BigDecimal],
+                                        balancingChargeOther: Option[BigDecimal],
+                                        goodsAndServicesOwnUse: Option[BigDecimal],
+                                        transitionProfitAmount: Option[BigDecimal],
+                                        transitionProfitAccelerationAmount: Option[BigDecimal])
 
 object Def3_CreateAmend_Adjustments {
 

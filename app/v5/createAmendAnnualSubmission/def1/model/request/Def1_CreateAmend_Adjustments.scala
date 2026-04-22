@@ -18,17 +18,14 @@ package v5.createAmendAnnualSubmission.def1.model.request
 
 import play.api.libs.json.{Format, Json}
 
-case class Def1_CreateAmend_Adjustments(
-    includedNonTaxableProfits: Option[BigDecimal],
-    basisAdjustment: Option[BigDecimal],
-    overlapReliefUsed: Option[BigDecimal],
-    accountingAdjustment: Option[BigDecimal],
-    averagingAdjustment: Option[BigDecimal],
-    outstandingBusinessIncome: Option[BigDecimal],
-    balancingChargeBpra: Option[BigDecimal],
-    balancingChargeOther: Option[BigDecimal],
-    goodsAndServicesOwnUse: Option[BigDecimal]
-)
+case class Def1_CreateAmend_Adjustments(includedNonTaxableProfits: Option[BigDecimal],
+                                        basisAdjustment: Option[BigDecimal],
+                                        overlapReliefUsed: Option[BigDecimal],
+                                        accountingAdjustment: Option[BigDecimal],
+                                        outstandingBusinessIncome: Option[BigDecimal],
+                                        balancingChargeBpra: Option[BigDecimal],
+                                        balancingChargeOther: Option[BigDecimal],
+                                        goodsAndServicesOwnUse: Option[BigDecimal])
 
 object Def1_CreateAmend_Adjustments {
   implicit val format: Format[Def1_CreateAmend_Adjustments] = Json.format[Def1_CreateAmend_Adjustments]

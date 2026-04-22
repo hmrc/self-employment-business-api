@@ -24,7 +24,7 @@ class Def3_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def3_Retri
 
   private val retrieveAnnualSubmissionResponse = Def3_RetrieveAnnualSubmissionResponse(
     allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None, None, None, None)),
+    adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None, None, None)),
     nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
   )
 
