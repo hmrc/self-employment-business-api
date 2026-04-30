@@ -120,6 +120,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleWrongTpaAmountSubmitted'
           RULE_OUTSIDE_AMENDMENT_WINDOW:
             $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
+          RULE_OVERLAP_RELIEF_USED_NOT_ALLOWED:
+            $ref: './common/errors.yaml#/components/examples/ruleOverlapReliefUsedNotAllowed'
 
   "403":
     description: Forbidden
