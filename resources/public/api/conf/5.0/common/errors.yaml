@@ -192,6 +192,12 @@ components:
         code: RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES
         message: Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold
 
+    ruleOverlapReliefUsedNotAllowed:
+      description: The final tax year for the utilisation of overlap relief was 2023–24 as part of the basis period reform. Therefore, the overlapReliefUsed field is not applicable for tax years 2024–25 and later.
+      value:
+        code: RULE_OVERLAP_RELIEF_USED_NOT_ALLOWED
+        message: The overlapReliefUsed field is not applicable for this tax year
+
     ruleDuplicateSubmission:
       description: A summary has already been submitted for the period specified.
       value:
