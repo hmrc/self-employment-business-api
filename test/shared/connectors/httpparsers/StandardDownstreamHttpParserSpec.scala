@@ -65,11 +65,6 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
         httpReads.read(method, url, httpResponse) shouldBe Left(expected)
       }
-
-      handleErrorsCorrectly(httpReads)
-      handleInternalErrorsCorrectly(httpReads)
-      handleUnexpectedResponse(httpReads)
-      handleBvrsCorrectly(httpReads)
     }
 
     "a success code is specified" should {
@@ -82,6 +77,12 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         httpReads.read(method, url, httpResponse) shouldBe Right(downstreamResponse)
       }
     }
+
+    handleErrorsCorrectly(httpReads)
+    handleInternalErrorsCorrectly(httpReads)
+    handleUnexpectedResponse(httpReads)
+    handleBvrsCorrectly(httpReads)
+    handleHipErrorsCorrectly(httpReads)
   }
 
   "The generic HTTP parser for empty response" when {
@@ -95,11 +96,6 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
           httpReads.read(method, url, httpResponse) shouldBe Right(ResponseWrapper(correlationId, ()))
         }
       }
-
-      handleErrorsCorrectly(httpReads)
-      handleInternalErrorsCorrectly(httpReads)
-      handleUnexpectedResponse(httpReads)
-      handleBvrsCorrectly(httpReads)
     }
 
     "a success code is specified" should {
@@ -112,6 +108,12 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         httpReads.read(method, url, httpResponse) shouldBe Right(ResponseWrapper(correlationId, ()))
       }
     }
+
+    handleErrorsCorrectly(httpReads)
+    handleInternalErrorsCorrectly(httpReads)
+    handleUnexpectedResponse(httpReads)
+    handleBvrsCorrectly(httpReads)
+    handleHipErrorsCorrectly(httpReads)
   }
 
   "validateJson" when {
@@ -255,22 +257,24 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   private def handleBvrsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
 
-    val singleBvrJson = Json.parse("""
+    val singleBvrJson = Json.parse(
+      """
         |{
-        |   "bvrfailureResponseElement": {
-        |     "validationRuleFailures": [
-        |       {
-        |         "id": "BVR1"
-        |       },
-        |       {
-        |         "id": "BVR2"
-        |       }
-        |     ]
-        |   }
+        |  "bvrfailureResponseElement": {
+        |    "validationRuleFailures": [
+        |      {
+        |        "id": "BVR1"
+        |      },
+        |      {
+        |        "id": "BVR2"
+        |      }
+        |    ]
+        |  }
         |}
-      """.stripMargin)
+      """.stripMargin
+    )
 
-    s"receiving a response with BVR errors" should {
+    "receiving a response with BVR errors" should {
       "return an outbound BUSINESS_ERROR error containing the BVR ids" in {
         val httpResponse = HttpResponse(BAD_REQUEST, singleBvrJson, Map("CorrelationId" -> List(correlationId)))
         val result       = httpReads.read(method, url, httpResponse)
@@ -287,6 +291,44 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
                 )))
           )
         )
+      }
+    }
+  }
+
+  val multipleFailureErrorTypesJson: JsValue = Json.parse(
+    """
+      |{
+      |  "origin": "HIP",
+      |  "response": {
+      |    "failures": [
+      |      {
+      |        "type": "INVALID_NINO",
+      |        "reason": "Submission has not passed validation. Invalid parameter nino."
+      |      },
+      |      {
+      |        "type": "INVALID_TAX_YEAR",
+      |        "reason": "Submission has not passed validation. Invalid parameter taxYear."
+      |      }
+      |    ]
+      |  }
+      |}
+    """.stripMargin
+  )
+
+  private def handleHipErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
+    List(BAD_REQUEST, NOT_FOUND, UNPROCESSABLE_ENTITY).foreach { responseStatus =>
+      s"receiving a $responseStatus response with multiple HIP errors containing types in failures array" should {
+        "return a Left ResponseWrapper containing the extracted error types" in {
+          val httpResponse = HttpResponse(
+            responseStatus,
+            multipleFailureErrorTypesJson,
+            Map("CorrelationId" -> List(correlationId))
+          )
+
+          httpReads.read(method, url, httpResponse) shouldBe Left(
+            ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("INVALID_NINO"), DownstreamErrorCode("INVALID_TAX_YEAR"))))
+          )
+        }
       }
     }
   }
