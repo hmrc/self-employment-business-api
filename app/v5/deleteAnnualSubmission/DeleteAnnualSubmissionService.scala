@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package v5.deleteAnnualSubmission
 
 import api.models.errors.RuleOutsideAmendmentWindowError
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
-import v5.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
+import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,7 +56,7 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
 
     val extraTysErrors: Map[String, MtdError] = Map(
       "INVALID_CORRELATION_ID"       -> InternalError,
-      "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
       "PERIOD_NOT_FOUND"             -> NotFoundError,
       "INCOME_SOURCE_DATA_NOT_FOUND" -> NotFoundError,
       "PERIOD_ALREADY_DELETED"       -> NotFoundError,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@
 package v5.deleteAnnualSubmission.def1
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import config.SeBusinessConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
 import shared.models.errors.MtdError
-import v5.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
+import v5.deleteAnnualSubmission.def1.model.request.Def1_DeleteAnnualSubmissionRequestData
+import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 
 class Def1_DeleteAnnualSubmissionValidator(
     nino: String,

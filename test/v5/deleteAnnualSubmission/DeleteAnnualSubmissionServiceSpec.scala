@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package v5.deleteAnnualSubmission
 import api.models.errors.RuleOutsideAmendmentWindowError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.DownstreamErrors.single
 import shared.models.errors.*
+import shared.models.errors.DownstreamErrors.single
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v5.deleteAnnualSubmission.model.Def1_DeleteAnnualSubmissionRequestData
+import v5.deleteAnnualSubmission.def1.model.request.Def1_DeleteAnnualSubmissionRequestData
 
 import scala.concurrent.Future.successful
 
@@ -74,21 +74,26 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
         }
 
       val input = Seq(
-        "INVALID_NINO"                -> NinoFormatError,
-        "INVALID_TAX_YEAR"            -> TaxYearFormatError,
-        "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-        "OUTSIDE_AMENDMENT_WINDOW"    -> RuleOutsideAmendmentWindowError,
-        "INVALID_CORRELATIONID"       -> InternalError,
-        "INVALID_PAYLOAD"             -> InternalError,
-        "MISSING_EXEMPTION_REASON"    -> InternalError,
-        "MISSING_EXEMPTION_INDICATOR" -> InternalError,
-        "ALLOWANCE_NOT_SUPPORTED"     -> InternalError,
-        "NOT_FOUND"                   -> NotFoundError,
-        "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-        "GONE"                        -> NotFoundError,
-        "SERVER_ERROR"                -> InternalError,
-        "BAD_GATEWAY"                 -> InternalError,
-        "SERVICE_UNAVAILABLE"         -> InternalError
+        "INVALID_NINO"                 -> NinoFormatError,
+        "INVALID_TAX_YEAR"             -> TaxYearFormatError,
+        "INVALID_INCOME_SOURCE"        -> BusinessIdFormatError,
+        "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
+        "INVALID_CORRELATIONID"        -> InternalError,
+        "INVALID_CORRELATION_ID"       -> InternalError,
+        "INVALID_PAYLOAD"              -> InternalError,
+        "OUTSIDE_AMENDMENT_WINDOW"     -> RuleOutsideAmendmentWindowError,
+        "MISSING_EXEMPTION_REASON"     -> InternalError,
+        "MISSING_EXEMPTION_INDICATOR"  -> InternalError,
+        "ALLOWANCE_NOT_SUPPORTED"      -> InternalError,
+        "NOT_FOUND"                    -> NotFoundError,
+        "NOT_FOUND_INCOME_SOURCE"      -> NotFoundError,
+        "PERIOD_NOT_FOUND"             -> NotFoundError,
+        "INCOME_SOURCE_DATA_NOT_FOUND" -> NotFoundError,
+        "PERIOD_ALREADY_DELETED"       -> NotFoundError,
+        "GONE"                         -> NotFoundError,
+        "SERVER_ERROR"                 -> InternalError,
+        "BAD_GATEWAY"                  -> InternalError,
+        "SERVICE_UNAVAILABLE"          -> InternalError
       )
 
       input.foreach(args => serviceError.tupled(args))

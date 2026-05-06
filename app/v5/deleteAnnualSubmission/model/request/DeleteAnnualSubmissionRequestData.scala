@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package v5.deleteAnnualSubmission.model
+package v5.deleteAnnualSubmission.model.request
 
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 
-sealed trait DeleteAnnualSubmissionRequestData {
-  val nino: Nino
-  val businessId: BusinessId
-  val taxYear: TaxYear
-}
+trait DeleteAnnualSubmissionRequestData {
+  def nino: Nino
 
-case class Def1_DeleteAnnualSubmissionRequestData(
-    nino: Nino,
-    businessId: BusinessId,
-    taxYear: TaxYear
-) extends DeleteAnnualSubmissionRequestData
+  def businessId: BusinessId
+
+  def taxYear: TaxYear
+}

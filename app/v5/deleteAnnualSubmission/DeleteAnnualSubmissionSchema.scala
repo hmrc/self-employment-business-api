@@ -16,23 +16,12 @@
 
 package v5.deleteAnnualSubmission
 
-import shared.controllers.validators.Validator
-import v5.deleteAnnualSubmission.DeleteAnnualSubmissionSchema.Def1
-import v5.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
-import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
+sealed trait DeleteAnnualSubmissionSchema
 
-import javax.inject.Singleton
+object DeleteAnnualSubmissionSchema {
 
-@Singleton
-class DeleteAnnualSubmissionValidatorFactory {
+  case object Def1 extends DeleteAnnualSubmissionSchema
 
-  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteAnnualSubmissionRequestData] = {
-
-    val schema = DeleteAnnualSubmissionSchema.schema
-
-    schema match {
-      case Def1 => new Def1_DeleteAnnualSubmissionValidator(nino, businessId, taxYear)
-    }
-  }
+  val schema: DeleteAnnualSubmissionSchema = Def1
 
 }
