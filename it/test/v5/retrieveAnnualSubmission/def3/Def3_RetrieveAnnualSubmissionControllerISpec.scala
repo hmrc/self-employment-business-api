@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,8 +143,8 @@ class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
 
-    def taxYear: String       = "2025-26"
-    def downstreamUri: String = s"/income-tax/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+    def taxYear: String       = "2024-25"
+    def downstreamUri: String = s"/itsa/income-tax/v1/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
 
     def setupStubs(): StubMapping
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package v5.retrieveAnnualSubmission
 
+import config.MockSeBusinessFeatureSwitches
+import play.api.Configuration
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -26,7 +28,7 @@ import v5.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmis
 
 import scala.concurrent.Future
 
-class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_RetrieveAnnualSubmissionFixture {
+class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_RetrieveAnnualSubmissionFixture with MockSeBusinessFeatureSwitches {
 
   private val nino          = "AA123456A"
   private val businessId    = "XAIS12345678910"
@@ -65,13 +67,27 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
       await(connector.retrieveAnnualSubmission(nonTysRequest)) shouldBe outcome
     }
 
-    "send a request and return a body for a TYS tax year" in new IfsTest with Test {
-      val outcome = Right(ResponseWrapper(correlationId, response))
+    "send a request and return a body for a TYS tax year 2023-24 onwards" when {
+      "feature switch is disabled (IFS enabled)" in new IfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1803.enabled" -> false))
+        val outcome = Right(ResponseWrapper(correlationId, response))
 
-      willGet(url"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries")
-        .returns(Future.successful(outcome))
+        willGet(url"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries")
+          .returns(Future.successful(outcome))
 
-      await(connector.retrieveAnnualSubmission(tysRequest)) shouldBe outcome
+        await(connector.retrieveAnnualSubmission(tysRequest)) shouldBe outcome
+      }
+
+      "feature switch is enabled (HIP enabled)" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1803.enabled" -> true))
+        val outcome = Right(ResponseWrapper(correlationId, response))
+
+        willGet(
+          url"$baseUrl/itsa/income-tax/v1/23-24/$nino/self-employments/$businessId/annual-summaries"
+        ).returns(Future.successful(outcome))
+
+        await(connector.retrieveAnnualSubmission(tysRequest)) shouldBe outcome
+      }
     }
   }
 

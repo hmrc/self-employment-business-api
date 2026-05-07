@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import play.api.http.Status.*
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
+import shared.models.domain.TaxYear
 import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
@@ -174,9 +175,9 @@ class Def1_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
   }
 
   private trait TysTest extends Test {
-    def taxYear: String = "2023-24"
+    def taxYear: String = "2024-25"
 
-    def downstreamUri: String = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
+    def downstreamUri: String = s"/itsa/income-tax/v1/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
 
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,16 @@
 package v5.retrieveAnnualSubmission
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.IfsUri
+import shared.config.ConfigFeatureSwitches
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 import v5.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
+import shared.models.domain.TaxYear
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,9 +45,15 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val a
 
     val downstreamUri: DownstreamUri[DownstreamResp] =
       if (taxYear.useTaxYearSpecificApi) {
-        IfsUri(
-          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
-        )
+        if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1803") && taxYear >= TaxYear.fromMtd("2023-24")) {
+          HipUri(
+            s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+          )
+        } else {
+          IfsUri(
+            s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+          )
+        }
       } else {
         IfsUri(s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
       }

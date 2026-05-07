@@ -25,7 +25,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockShared
 
   private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
     allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
-    adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None)),
+    adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None)),
     nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
   )
 

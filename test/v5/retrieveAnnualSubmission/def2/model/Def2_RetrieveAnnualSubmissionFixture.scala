@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,6 @@ trait Def2_RetrieveAnnualSubmissionFixture {
     RetrieveAdjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
-      overlapReliefUsed = Some(3.12),
       accountingAdjustment = Some(4.12),
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
@@ -107,7 +106,6 @@ trait Def2_RetrieveAnnualSubmissionFixture {
   val adjustmentsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
@@ -121,7 +119,6 @@ trait Def2_RetrieveAnnualSubmissionFixture {
   val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
