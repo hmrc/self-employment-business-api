@@ -175,7 +175,7 @@ class Def1_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
   }
 
   private trait TysTest extends Test {
-    def taxYear: String = "2024-25"
+    def taxYear: String = "2023-24"
 
     def downstreamUri: String = s"/itsa/income-tax/v1/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
 

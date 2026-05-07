@@ -143,7 +143,7 @@ class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
 
-    def taxYear: String       = "2024-25"
+    def taxYear: String       = "2025-26"
     def downstreamUri: String = s"/itsa/income-tax/v1/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
 
     def setupStubs(): StubMapping
