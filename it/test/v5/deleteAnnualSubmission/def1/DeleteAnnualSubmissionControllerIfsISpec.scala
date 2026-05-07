@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,18 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import play.api.libs.ws.DefaultBodyReadables.readableAsString
 
-class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
+class DeleteAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1787.enabled" -> false) ++ super.servicesConfig
 
   private trait Test {
     def taxYear: String
@@ -62,9 +65,9 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
     def downstreamUri: String    = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
   }
 
-  "calling the V5 deleteAnnualSubmission endpoint" should {
+  "calling the 'Delete Self-Employment Annual Submission' endpoint" should {
     "return a 204 status" when {
-      s"any valid non-TYS request is made" in new NonTysTest {
+      "any valid non-TYS request is made" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -82,7 +85,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
-      s"any valid TYS request is made" in new TysTest {
+      "any valid TYS request is made" in new TysTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -183,7 +186,7 @@ class DeleteAnnualSubmissionControllerISpec extends IntegrationBaseSpec {
       )
 
       val extraTysErrors = Seq(
-        (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
+        (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
         (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
         (Status.NOT_FOUND, "PERIOD_NOT_FOUND", Status.NOT_FOUND, NotFoundError),
         (Status.NOT_FOUND, "INCOME_SOURCE_DATA_NOT_FOUND", Status.NOT_FOUND, NotFoundError),

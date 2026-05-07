@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
 import shared.utils.UnitSpec
 import v5.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
-import v5.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
+import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 
 class DeleteAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSeBusinessConfig {
 

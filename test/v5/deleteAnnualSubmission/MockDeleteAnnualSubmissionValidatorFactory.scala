@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v5.deleteAnnualSubmission.model.DeleteAnnualSubmissionRequestData
+import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 
 trait MockDeleteAnnualSubmissionValidatorFactory extends TestSuite with MockFactory {
 

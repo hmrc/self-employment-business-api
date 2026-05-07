@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package v5.deleteAnnualSubmission
+package v5.deleteAnnualSubmission.def1.model.request
 
-import shared.controllers.validators.Validator
-import v5.deleteAnnualSubmission.DeleteAnnualSubmissionSchema.Def1
-import v5.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
+import shared.models.domain.{BusinessId, Nino, TaxYear}
+import v5.deleteAnnualSubmission.DeleteAnnualSubmissionSchema
 import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 
-import javax.inject.Singleton
-
-@Singleton
-class DeleteAnnualSubmissionValidatorFactory {
-
-  def validator(nino: String, businessId: String, taxYear: String): Validator[DeleteAnnualSubmissionRequestData] = {
-
-    val schema = DeleteAnnualSubmissionSchema.schema
-
-    schema match {
-      case Def1 => new Def1_DeleteAnnualSubmissionValidator(nino, businessId, taxYear)
-    }
-  }
-
+case class Def1_DeleteAnnualSubmissionRequestData(nino: Nino, businessId: BusinessId, taxYear: TaxYear) extends DeleteAnnualSubmissionRequestData {
+  val schema: DeleteAnnualSubmissionSchema = DeleteAnnualSubmissionSchema.Def1
 }

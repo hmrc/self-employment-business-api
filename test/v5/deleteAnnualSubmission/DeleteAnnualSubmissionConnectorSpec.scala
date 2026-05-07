@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@ package v5.deleteAnnualSubmission
 
 import config.MockSeBusinessFeatureSwitches
 import org.scalamock.handlers.CallHandler
+import play.api.Configuration
 import play.api.libs.json.JsObject
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v5.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
+import v5.deleteAnnualSubmission.def1.model.request.Def1_DeleteAnnualSubmissionRequestData
+import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 
 import scala.concurrent.Future
 
@@ -36,13 +38,12 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
   private val preTysTaxYear = TaxYear.fromMtd("2017-18")
   private val tysTaxYear    = TaxYear.fromMtd("2023-24")
 
-  "deleteAnnualSubmissionConnector" when {
+  "deleteAnnualSubmission" when {
     val outcome = Right(ResponseWrapper(correlationId, ()))
 
-    "deleteAnnualSubmission is called with a valid request and a non-TYS tax year" when {
+    "given a valid request for a pre-TYS tax year" when {
       "`isPassDeleteIntentEnabled` feature switch is on" must {
-        "send a request and return 204 no content" in new DesTest with Test {
-
+        "return a success response" in new DesTest with Test {
           def taxYear: TaxYear = preTysTaxYear
 
           stubPreTysHttpResponse(outcome)
@@ -54,7 +55,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
       }
 
       "`isPassDeleteIntentEnabled` feature switch is off" must {
-        "send a request and return 204 no content" in new DesTest with Test {
+        "return a success response" in new DesTest with Test {
           def taxYear: TaxYear = preTysTaxYear
 
           stubPreTysHttpResponse(outcome, List("intent" -> "DELETE"))
@@ -66,11 +67,37 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
       }
     }
 
-    "deleteAnnualSubmission is called with a TYS tax year" must {
-      "send a request and return 204 no content" in new IfsTest with Test {
+    "given a valid request for a TYS tax year before 2025-26" must {
+      "return a success response" in new IfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1787.enabled" -> true))
         def taxYear: TaxYear = tysTaxYear
 
         stubTysHttpResponse(outcome)
+
+        private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
+        result shouldBe outcome
+      }
+    }
+
+    "given a valid request for a TYS tax year 2025-26 onwards" must {
+      "return a success response when feature switch is disabled (IFS enabled)" in new IfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1787.enabled" -> false))
+        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
+
+        stubTysHttpResponse(outcome)
+
+        private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
+        result shouldBe outcome
+      }
+
+      "return a success response when feature switch is enabled (HIP enabled)" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1787.enabled" -> true))
+
+        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
+
+        willDelete(
+          url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+        ).returns(Future.successful(outcome))
 
         private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
         result shouldBe outcome
@@ -82,18 +109,13 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
 
       val outcome = Left(ResponseWrapper(correlationId, downstreamErrorResponse))
 
-      "return the error" in new DesTest with Test {
-        def taxYear: TaxYear = preTysTaxYear
-        stubPreTysHttpResponse(outcome)
-        MockedSeBusinessFeatureSwitches.isPassDeleteIntentEnabled.returns(false)
+      "return the error" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1767.enabled" -> true))
+        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
-        val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
-        result shouldBe outcome
-      }
-
-      "return the error given a TYS tax year request" in new IfsTest with Test {
-        def taxYear: TaxYear = tysTaxYear
-        stubTysHttpResponse(outcome)
+        willDelete(
+          url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+        ).returns(Future.successful(outcome))
 
         val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
         result shouldBe outcome

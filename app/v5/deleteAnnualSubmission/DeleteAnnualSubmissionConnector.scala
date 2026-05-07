@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,18 @@ package v5.deleteAnnualSubmission
 
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsObject
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{DesUri, HipUri, IfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v5.deleteAnnualSubmission.model.{Def1_DeleteAnnualSubmissionRequestData, DeleteAnnualSubmissionRequestData}
+import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 @Singleton
 class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig)(implicit
@@ -41,20 +43,20 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val app
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    request match {
-      case def1: Def1_DeleteAnnualSubmissionRequestData =>
-        import def1._
+    import request.*
 
-        if (taxYear.useTaxYearSpecificApi) {
-          delete(IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"))
-        } else {
-          put(
-            JsObject.empty,
-            DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}"),
-            intent
-          )
-        }
+    lazy val downstream1787Uri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1787") && taxYear >= TaxYear.fromMtd("2025-26")) {
+      HipUri[Unit](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+    } else {
+      IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+    }
 
+    lazy val downstream1403Uri = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
+
+    if (taxYear.useTaxYearSpecificApi) {
+      delete(downstream1787Uri)
+    } else {
+      put(JsObject.empty, downstream1403Uri, intent)
     }
 
   }
