@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.createAmendAnnualSubmission.def1
+package v5.createAmendAnnualSubmission.def2
 
 import api.models.errors.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -28,21 +28,21 @@ import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionFixture
+import v5.createAmendAnnualSubmission.def2.request.Def2_CreateAmendAnnualSubmissionFixture
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
 
-class Def1_CreateAmendAnnualSubmissionControllerISpec
+class Def2_CreateAmendAnnualSubmissionControllerISpec
     extends IntegrationBaseSpec
-    with Def1_CreateAmendAnnualSubmissionFixture
+    with Def2_CreateAmendAnnualSubmissionFixture
     with JsonErrorValidators {
 
   val requestBodyJson: JsValue           = createAmendAnnualSubmissionRequestBodyMtdJson()
   val downstreamRequestBodyJson: JsValue = createAmendAnnualSubmissionRequestBodyDownstreamJson()
 
-  "Calling the V5 amend endpoint" should {
+  "Calling the Create and Amend Self-Employment Annual Submission endpoint" should {
     "return a 204 status code" when {
-      "given any valid Def1 request" in new NonTysTest {
+      "given any valid Def3 request" in new NonTysTest {
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
@@ -58,7 +58,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
 
-      "given a valid Def1 request for a Tax Year Specific tax year" in new TysTest {
+      "given a valid Def3 request for a Tax Year Specific tax year" in new TysTest {
 
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
@@ -113,7 +113,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
             response.status shouldBe expectedStatus
           }
         }
-
+        //
         val input = List(
           ("AA1123A", "XAIS12345678910", "2017-18", requestBodyJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
@@ -251,8 +251,8 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
     val businessId: String = "XAIS12345678910"
 
     val downstreamResponseBody: JsValue = Json.parse("""{
-        |   "transactionReference": "ignored"
-        |}""".stripMargin)
+                                                       |   "transactionReference": "ignored"
+                                                       |}""".stripMargin)
 
     def taxYear: String
 
@@ -277,7 +277,7 @@ class Def1_CreateAmendAnnualSubmissionControllerISpec
          |        "code": "$code",
          |        "reason": "downstream message"
          |      }
-    """.stripMargin
+      """.stripMargin
 
   }
 

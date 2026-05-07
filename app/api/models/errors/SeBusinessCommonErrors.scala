@@ -132,3 +132,9 @@ object RuleStartAndEndDateNotAllowedError
 
 object RuleOutsideAmendmentWindowError
     extends MtdError(code = "RULE_OUTSIDE_AMENDMENT_WINDOW", message = "You are outside the amendment window", BAD_REQUEST)
+
+object RuleOverlapReliefUsedNotAllowedError
+    extends MtdError(
+      code = "RULE_OVERLAP_RELIEF_USED_NOT_ALLOWED",
+      message = "The overlapReliefUsed field is not applicable for this tax year",
+      BAD_REQUEST)

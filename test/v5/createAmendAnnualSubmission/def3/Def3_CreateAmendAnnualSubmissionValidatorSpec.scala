@@ -17,12 +17,7 @@
 package v5.createAmendAnnualSubmission.def3
 
 import api.models.domain.ex.MtdNicExemption
-import api.models.errors.{
-  Class4ExemptionReasonFormatError,
-  RuleBothAllowancesSuppliedError,
-  RuleBuildingNameNumberError,
-  RuleWrongTpaAmountSubmittedError
-}
+import api.models.errors.*
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.*
@@ -45,7 +40,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
      |  {
      |    "includedNonTaxableProfits": 200.12,
      |    "basisAdjustment": 200.12,
-     |    "overlapReliefUsed": 200.12,
      |    "accountingAdjustment": 200.12,
      |    "outstandingBusinessIncome": 200.12,
      |    "balancingChargeBpra": 200.12,
@@ -112,12 +106,28 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |  {
       |    "includedNonTaxableProfits": 200.12,
       |    "basisAdjustment": 200.12,
+      |    "accountingAdjustment": 200.12,
+      |    "outstandingBusinessIncome": 200.12,
+      |    "balancingChargeBpra": 200.12,
+      |    "balancingChargeOther": 200.12,
+      |    "goodsAndServicesOwnUse": 200.12,
+      |    "transitionProfitAccelerationAmount": 200.12
+      |  }
+      |""".stripMargin
+  )
+
+  private val adjustmentsWithOverlapReliefUsed = Json.parse(
+    """
+      |  {
+      |    "includedNonTaxableProfits": 200.12,
+      |    "basisAdjustment": 200.12,
       |    "overlapReliefUsed": 200.12,
       |    "accountingAdjustment": 200.12,
       |    "outstandingBusinessIncome": 200.12,
       |    "balancingChargeBpra": 200.12,
       |    "balancingChargeOther": 200.12,
       |    "goodsAndServicesOwnUse": 200.12,
+      |    "transitionProfitAmount": 200.12,
       |    "transitionProfitAccelerationAmount": 200.12
       |  }
       |""".stripMargin
@@ -147,7 +157,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
   private val parsedAdjustments = Def3_CreateAmend_Adjustments(
     includedNonTaxableProfits = Some(200.12),
     basisAdjustment = Some(200.12),
-    overlapReliefUsed = Some(200.12),
+    overlapReliefUsed = None,
     accountingAdjustment = Some(200.12),
     outstandingBusinessIncome = Some(200.12),
     balancingChargeBpra = Some(200.12),
@@ -475,6 +485,21 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
         )
       }
     }
+
+    "return RuleOverlapReliefUsedNotAllowedError" when {
+      "an otherwise valid body containing the overlapReliefUsed field is submitted" in {
+        val requestBody: JsValue =
+          validRequestBody(adjustments = adjustmentsWithOverlapReliefUsed)
+
+        val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
+          validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
+
+        result shouldBe Left(
+          ErrorWrapper(correlationId, RuleOverlapReliefUsedNotAllowedError.withPaths(Seq("/adjustments/overlapReliefUsed")))
+        )
+      }
+    }
+
     def test(error: MtdError)(body: JsValue, path: String): Unit = {
       s"passed an invalid value at $path returns $error" in {
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
@@ -488,7 +513,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
 
     List(
       "/adjustments/includedNonTaxableProfits",
-      "/adjustments/overlapReliefUsed",
       "/adjustments/accountingAdjustment",
       "/adjustments/outstandingBusinessIncome",
       "/adjustments/balancingChargeBpra",
@@ -794,7 +818,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               |  "adjustments": {
               |    "includedNonTaxableProfits": 200.132,
               |    "basisAdjustment": 200.123,
-              |    "overlapReliefUsed": 200.132,
               |    "accountingAdjustment": 200.132,
               |    "outstandingBusinessIncome": 200.123,
               |    "balancingChargeBpra": 200.123,
@@ -866,7 +889,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
                 .withPath("/adjustments/basisAdjustment"),
               ValueFormatError.withPaths(Seq(
                 "/adjustments/includedNonTaxableProfits",
-                "/adjustments/overlapReliefUsed",
                 "/adjustments/accountingAdjustment",
                 "/adjustments/outstandingBusinessIncome",
                 "/adjustments/balancingChargeBpra",

@@ -25,7 +25,7 @@ trait Def3_CreateAmendAnnualSubmissionFixture extends Def3_CreateAmend_Structure
     Def3_CreateAmend_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
-      overlapReliefUsed = Some(3.12),
+      overlapReliefUsed = None,
       accountingAdjustment = Some(4.12),
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
@@ -38,7 +38,6 @@ trait Def3_CreateAmendAnnualSubmissionFixture extends Def3_CreateAmend_Structure
   val adjustmentsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
@@ -50,7 +49,6 @@ trait Def3_CreateAmendAnnualSubmissionFixture extends Def3_CreateAmend_Structure
   val adjustmentsWithAdditionalFieldsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
@@ -64,7 +62,6 @@ trait Def3_CreateAmendAnnualSubmissionFixture extends Def3_CreateAmend_Structure
   val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
@@ -145,7 +142,6 @@ trait Def3_CreateAmendAnnualSubmissionFixture extends Def3_CreateAmend_Structure
        |  "enhancedCapitalAllowance": 6.12,
        |  "allowanceOnSales": 7.12,
        |  "capitalAllowanceSingleAssetPool": 8.12,
-       |  "electricChargePointAllowance": 9.12,
        |  "zeroEmissionsCarAllowance": 11.12,
        |  "structuredBuildingAllowance": ${JsArray(structuredBuildingAllowances)},
        |  "enhancedStructuredBuildingAllowance": ${JsArray(enhancedStructuredBuildingAllowances)}
@@ -162,7 +158,6 @@ trait Def3_CreateAmendAnnualSubmissionFixture extends Def3_CreateAmend_Structure
        |  "enhanceCapitalAllowance": 6.12,
        |  "allowanceOnSales": 7.12,
        |  "capitalAllowanceSingleAssetPool": 8.12,
-       |  "electricChargePointAllowance": 9.12,
        |  "zeroEmissionsCarAllowance": 11.12,
        |  "structuredBuildingAllowance": ${JsArray(structuredBuildingAllowances)},
        |  "enhancedStructuredBuildingAllowance": ${JsArray(enhancedStructuredBuildingAllowances)}

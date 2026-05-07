@@ -16,7 +16,12 @@
 
 package v5.createAmendAnnualSubmission.def2
 
-import api.models.errors.{RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError, RuleWrongTpaAmountSubmittedError}
+import api.models.errors.{
+  RuleBothAllowancesSuppliedError,
+  RuleBuildingNameNumberError,
+  RuleOverlapReliefUsedNotAllowedError,
+  RuleWrongTpaAmountSubmittedError
+}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.*
@@ -40,6 +45,7 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
       adjustments.map(validateTPAAmount).getOrElse(valid),
+      adjustments.map(validateNoOverlapReliefUsed).getOrElse(valid),
       allowances.map(validateBothAllowancesSupplied).getOrElse(valid),
       allowances.map(validateAllowances).getOrElse(valid)
     ).onSuccess(parsed)
@@ -50,7 +56,6 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
 
     val validatedNonNegatives = List(
       (includedNonTaxableProfits, "/adjustments/includedNonTaxableProfits"),
-      (overlapReliefUsed, "/adjustments/overlapReliefUsed"),
       (accountingAdjustment, "/adjustments/accountingAdjustment"),
       (outstandingBusinessIncome, "/adjustments/outstandingBusinessIncome"),
       (balancingChargeBpra, "/adjustments/balancingChargeBpra"),
@@ -175,6 +180,10 @@ object Def2_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     } else {
       valid
     }
+  }
+
+  private def validateNoOverlapReliefUsed(adjustments: request.Def2_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
+    adjustments.overlapReliefUsed.fold(valid)(_ => Invalid(List(RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed"))))
   }
 
   private def resolveStringPattern(regex: Regex, path: String, value: String): Validated[Seq[MtdError], String] = {
