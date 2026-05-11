@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "TY 2025-26",
+  "title": "{{#unless (releasedInProduction "r21_winter_fuel_payment_docs")}}[Test only] {{/unless}}TY 2026-27 onwards",
   "description": "Create and Amend Self-Employment Annual Submission Request",
   "type": "object",
   "properties": {
@@ -92,6 +92,14 @@
         },
         "transitionProfitAccelerationAmount": {
           "description": "Additional amount of transition profit elected to be treated as arising in this tax year for this income source. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
+          "type": "number",
+          "multipleOf": 0.01,
+          "minimum": 0,
+          "maximum": 99999999999.99,
+          "example": 2000.99
+        },
+        "adjustmentToProfitsForClass4": {
+          "description": "This field represents the total of all applicable adjustments to profit, including income disregarded for Class 4 NICs, accounting practice changes, excluded interest, and employment earnings already accounted for elsewhere. This value must be between  0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
           "minimum": 0,
