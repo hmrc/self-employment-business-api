@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package v5.createAmendAnnualSubmission.def3
 
-import api.models.errors.{RuleBothAllowancesSuppliedError, RuleBuildingNameNumberError, RuleWrongTpaAmountSubmittedError}
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.*
@@ -40,6 +40,7 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
       adjustments.map(validateTPAAmount).getOrElse(valid),
+      adjustments.map(validateNoOverlapReliefUsed).getOrElse(valid),
       allowances.map(validateBothAllowancesSupplied).getOrElse(valid),
       allowances.map(validateAllowances).getOrElse(valid)
     ).onSuccess(parsed)
@@ -50,7 +51,6 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
 
     val validatedNonNegatives = List(
       (includedNonTaxableProfits, "/adjustments/includedNonTaxableProfits"),
-      (overlapReliefUsed, "/adjustments/overlapReliefUsed"),
       (accountingAdjustment, "/adjustments/accountingAdjustment"),
       (outstandingBusinessIncome, "/adjustments/outstandingBusinessIncome"),
       (balancingChargeBpra, "/adjustments/balancingChargeBpra"),
@@ -173,6 +173,10 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     } else {
       valid
     }
+  }
+
+  private def validateNoOverlapReliefUsed(adjustments: request.Def3_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
+    adjustments.overlapReliefUsed.fold(valid)(_ => Invalid(List(RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed"))))
   }
 
   private def resolveStringPattern(regex: Regex, path: String, value: String): Validated[Seq[MtdError], String] = {

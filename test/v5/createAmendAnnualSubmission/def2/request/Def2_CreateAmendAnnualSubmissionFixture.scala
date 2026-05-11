@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ trait Def2_CreateAmendAnnualSubmissionFixture extends Def2_CreateAmend_Structure
     Def2_CreateAmend_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
-      overlapReliefUsed = Some(3.12),
+      overlapReliefUsed = None,
       accountingAdjustment = Some(4.12),
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
@@ -38,7 +38,6 @@ trait Def2_CreateAmendAnnualSubmissionFixture extends Def2_CreateAmend_Structure
   val adjustmentsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
@@ -50,7 +49,6 @@ trait Def2_CreateAmendAnnualSubmissionFixture extends Def2_CreateAmend_Structure
   val adjustmentsWithAdditionalFieldsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
@@ -64,7 +62,6 @@ trait Def2_CreateAmendAnnualSubmissionFixture extends Def2_CreateAmend_Structure
   val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
-       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,

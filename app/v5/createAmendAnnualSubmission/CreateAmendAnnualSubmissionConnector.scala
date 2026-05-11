@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,13 @@
 package v5.createAmendAnnualSubmission
 
 import play.api.http.Status.OK
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v5.createAmendAnnualSubmission.model.request.{
-  CreateAmendAnnualSubmissionRequestData,
-  Def1_CreateAmendAnnualSubmissionRequestData,
-  Def2_CreateAmendAnnualSubmissionRequestData,
-  Def3_CreateAmendAnnualSubmissionRequestData
-}
+import v5.createAmendAnnualSubmission.model.request.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,31 +38,24 @@ class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClientV2, va
 
     implicit val successCode: SuccessCode = SuccessCode(OK)
 
-    request match {
-      case def1: Def1_CreateAmendAnnualSubmissionRequestData =>
-        import def1._
-        val downstreamUri =
-          uriFactory(nino, businessId, taxYear)
-        put(body, downstreamUri)
-      case def2: Def2_CreateAmendAnnualSubmissionRequestData =>
-        import def2._
-        val downstreamUri =
-          uriFactory(nino, businessId, taxYear)
-        put(body, downstreamUri)
-      case def3: Def3_CreateAmendAnnualSubmissionRequestData =>
-        import def3._
-        val downstreamUri =
-          uriFactory(nino, businessId, taxYear)
-        put(body, downstreamUri)
-    }
+    import request.*
 
-  }
+    lazy val downstreamUri1802: DownstreamUri[Unit] =
+      if (taxYear.year >= 2026 && ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1802")) {
+        HipUri[Unit](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+      } else {
+        IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
+      }
 
-  private def uriFactory(nino: Nino, businessId: BusinessId, taxYear: TaxYear) = {
-    if (taxYear.useTaxYearSpecificApi) {
-      IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
-    } else {
+    lazy val downstreamUri1403: DownstreamUri[Unit] =
       IfsUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
+
+    val downstreamUri: DownstreamUri[Unit] = if (taxYear.useTaxYearSpecificApi) downstreamUri1802 else downstreamUri1403
+
+    request match {
+      case def1: Def1_CreateAmendAnnualSubmissionRequestData => put(def1.body, downstreamUri)
+      case def2: Def2_CreateAmendAnnualSubmissionRequestData => put(def2.body, downstreamUri)
+      case def3: Def3_CreateAmendAnnualSubmissionRequestData => put(def3.body, downstreamUri)
     }
   }
 

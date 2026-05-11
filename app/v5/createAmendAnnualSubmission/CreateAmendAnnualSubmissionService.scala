@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package v5.createAmendAnnualSubmission
 
-import api.models.errors.{RuleAllowanceNotSupportedError, RuleOutsideAmendmentWindowError, RuleWrongTpaAmountSubmittedError}
-import cats.implicits._
+import api.models.errors.*
+import cats.implicits.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v5.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
@@ -57,7 +57,7 @@ class CreateAmendAnnualSubmissionService @Inject() (connector: CreateAmendAnnual
     )
 
     val extraTysErrors = Map(
-      "INVALID_INCOME_SOURCE_ID"   -> BusinessIdFormatError,
+      "INVALID_INCOMESOURCE_ID"    -> BusinessIdFormatError,
       "INVALID_CORRELATION_ID"     -> InternalError,
       "INCOME_SOURCE_NOT_FOUND"    -> NotFoundError,
       "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
