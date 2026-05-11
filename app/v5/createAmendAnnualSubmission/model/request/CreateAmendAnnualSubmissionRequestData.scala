@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v5.createAmendAnnualSubmission.def2.request.Def2_CreateAmendAnnualSubmissionRequestBody
 import v5.createAmendAnnualSubmission.def3.request.Def3_CreateAmendAnnualSubmissionRequestBody
+import v5.createAmendAnnualSubmission.def4.request.Def4_CreateAmendAnnualSubmissionRequestBody
 
 sealed trait CreateAmendAnnualSubmissionRequestData {
   val nino: Nino
@@ -47,4 +48,11 @@ case class Def3_CreateAmendAnnualSubmissionRequestData(
     businessId: BusinessId,
     taxYear: TaxYear,
     body: Def3_CreateAmendAnnualSubmissionRequestBody
+) extends CreateAmendAnnualSubmissionRequestData
+
+case class Def4_CreateAmendAnnualSubmissionRequestData(
+    nino: Nino,
+    businessId: BusinessId,
+    taxYear: TaxYear,
+    body: Def4_CreateAmendAnnualSubmissionRequestBody
 ) extends CreateAmendAnnualSubmissionRequestData

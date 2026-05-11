@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import shared.models.errors.{RuleIncorrectOrEmptyBodyError, TaxYearFormatError}
 import v5.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.def3.Def3_CreateAmendAnnualSubmissionValidator
+import v5.createAmendAnnualSubmission.def4.Def4_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
 import javax.inject.Singleton
@@ -33,6 +34,8 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 class CreateAmendAnnualSubmissionValidatorFactory {
 
   private val def2TaxYearApplicableFrom = TaxYear.fromMtd("2024-25")
+
+  private val def3TaxYearApplicableFrom = TaxYear.fromMtd("2025-26")
 
   private val emptyBodyValidator = InvalidResultValidator[CreateAmendAnnualSubmissionRequestData](RuleIncorrectOrEmptyBodyError)
 
@@ -46,8 +49,10 @@ class CreateAmendAnnualSubmissionValidatorFactory {
       TaxYear.maybeFromMtd(taxYear) match {
         case Some(ty) if ty < def2TaxYearApplicableFrom =>
           new Def1_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
-        case Some(ty) if ty > def2TaxYearApplicableFrom =>
+        case Some(ty) if ty == def3TaxYearApplicableFrom =>
           new Def3_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
+        case Some(ty) if ty > def3TaxYearApplicableFrom =>
+          new Def4_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
         case Some(_) =>
           new Def2_CreateAmendAnnualSubmissionValidator(nino, businessId, taxYear, body)
         case None =>

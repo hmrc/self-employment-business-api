@@ -56,6 +56,7 @@ class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClientV2, va
       case def1: Def1_CreateAmendAnnualSubmissionRequestData => put(def1.body, downstreamUri)
       case def2: Def2_CreateAmendAnnualSubmissionRequestData => put(def2.body, downstreamUri)
       case def3: Def3_CreateAmendAnnualSubmissionRequestData => put(def3.body, downstreamUri)
+      case def4: Def4_CreateAmendAnnualSubmissionRequestData => put(def4.body, downstreamUri)
     }
   }
 
