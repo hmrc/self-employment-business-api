@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ class Def3_RetrieveAnnualSubmissionValidatorSpec extends UnitSpec {
   private val validNino        = "AA123456A"
   private val validBusinessId  = "XAIS12345678910"
   private val validTaxYear     = "2017-18"
+
   private val parsedNino       = Nino(validNino)
   private val parsedBusinessId = BusinessId(validBusinessId)
   private val parsedTaxYear    = TaxYear.fromMtd(validTaxYear)
