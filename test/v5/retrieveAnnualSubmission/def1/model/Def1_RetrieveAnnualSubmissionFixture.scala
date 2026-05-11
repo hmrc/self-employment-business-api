@@ -94,6 +94,7 @@ trait Def1_RetrieveAnnualSubmissionFixture {
     RetrieveAdjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
+      overlapReliefUsed = Some(3.12),
       accountingAdjustment = Some(4.12),
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),
@@ -104,6 +105,7 @@ trait Def1_RetrieveAnnualSubmissionFixture {
   val adjustmentsMtdJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
+       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
@@ -115,6 +117,7 @@ trait Def1_RetrieveAnnualSubmissionFixture {
   val adjustmentsDownstreamJson: JsValue = Json.parse(s"""{
        |  "includedNonTaxableProfits": 1.12,
        |  "basisAdjustment": 2.12,
+       |  "overlapReliefUsed": 3.12,
        |  "accountingAdjustment": 4.12,
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,

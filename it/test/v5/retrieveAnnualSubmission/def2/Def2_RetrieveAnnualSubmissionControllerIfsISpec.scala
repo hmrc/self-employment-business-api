@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.retrieveAnnualSubmission.def3
+package v5.retrieveAnnualSubmission.def2
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -27,9 +27,12 @@ import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
-import v5.retrieveAnnualSubmission.def3.model.Def3_RetrieveAnnualSubmissionFixture
+import v5.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def3_RetrieveAnnualSubmissionFixture {
+class Def2_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpec with Def2_RetrieveAnnualSubmissionFixture {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1803.enabled" -> false) ++ super.servicesConfig
 
   "calling the V5 retrieve endpoint" should {
 
@@ -53,13 +56,11 @@ class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
 
     "return error according to spec" when {
       "validation error" when {
-        def validationErrorTest(
-            requestNino: String,
-            requestBusinessId: String,
-            requestTaxYear: String,
-            expectedStatus: Int,
-            expectedBody: MtdError
-        ): Unit =
+        def validationErrorTest(requestNino: String,
+                                requestBusinessId: String,
+                                requestTaxYear: String,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String       = requestNino
@@ -76,6 +77,7 @@ class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
+        }
 
         val input = Seq(
           ("AA123", "XAIS12345678910", "2021-22", BAD_REQUEST, NinoFormatError),
@@ -89,30 +91,21 @@ class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
       }
 
       "downstream service error" when {
-        def serviceErrorTest(
-            downstreamStatus: Int,
-            downstreamCode: String,
-            expectedStatus: Int,
-            expectedBody: MtdError
-        ): Unit =
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              BaseDownstreamStub.onError(
-                BaseDownstreamStub.GET,
-                downstreamUri,
-                downstreamStatus,
-                errorBody(downstreamCode)
-              )
+              BaseDownstreamStub.onError(BaseDownstreamStub.GET, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
+        }
 
         val errors = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
@@ -143,9 +136,9 @@ class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec w
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
 
-    def taxYear: String       = "2025-26"
-    def downstreamUri: String = s"/itsa/income-tax/v1/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
+    def taxYear: String = "2024-25"
 
+    def downstreamUri: String = s"/income-tax/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
     def setupStubs(): StubMapping
 
     def request(): WSRequest = {

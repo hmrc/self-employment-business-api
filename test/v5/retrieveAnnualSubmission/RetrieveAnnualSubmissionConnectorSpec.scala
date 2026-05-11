@@ -58,7 +58,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
   }
 
   "connector" must {
-    "send a request and return a body" in new IfsTest with Test {
+    "send a request and return a body for a pre-TYS tax year" in new IfsTest with Test {
       val outcome = Right(ResponseWrapper(correlationId, response))
 
       willGet(url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2020")
@@ -67,7 +67,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
       await(connector.retrieveAnnualSubmission(nonTysRequest)) shouldBe outcome
     }
 
-    "send a request and return a body for a TYS tax year 2023-24 onwards" when {
+    "send a request and return a body for a TYS tax year" when {
       "feature switch is disabled (IFS enabled)" in new IfsTest with Test {
         MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1803.enabled" -> false))
         val outcome = Right(ResponseWrapper(correlationId, response))
