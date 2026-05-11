@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import shared.models.utils.JsonErrorValidators
 import shared.utils.UnitSpec
 import v5.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
 import v5.createAmendAnnualSubmission.def3.request.*
-import v5.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def3_CreateAmendAnnualSubmissionRequestData}
+import v5.createAmendAnnualSubmission.model.request.*
 
 class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonErrorValidators {
 
@@ -111,23 +111,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |    "balancingChargeBpra": 200.12,
       |    "balancingChargeOther": 200.12,
       |    "goodsAndServicesOwnUse": 200.12,
-      |    "transitionProfitAccelerationAmount": 200.12
-      |  }
-      |""".stripMargin
-  )
-
-  private val adjustmentsWithOverlapReliefUsed = Json.parse(
-    """
-      |  {
-      |    "includedNonTaxableProfits": 200.12,
-      |    "basisAdjustment": 200.12,
-      |    "overlapReliefUsed": 200.12,
-      |    "accountingAdjustment": 200.12,
-      |    "outstandingBusinessIncome": 200.12,
-      |    "balancingChargeBpra": 200.12,
-      |    "balancingChargeOther": 200.12,
-      |    "goodsAndServicesOwnUse": 200.12,
-      |    "transitionProfitAmount": 200.12,
       |    "transitionProfitAccelerationAmount": 200.12
       |  }
       |""".stripMargin
@@ -487,15 +470,14 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     }
 
     "return RuleOverlapReliefUsedNotAllowedError" when {
-      "an otherwise valid body containing the overlapReliefUsed field is submitted" in {
-        val requestBody: JsValue =
-          validRequestBody(adjustments = adjustmentsWithOverlapReliefUsed)
+      "a body containing overlapReliefUsed is submitted" in {
+        val requestBody: JsValue = validRequestBody().update("/adjustments/overlapReliefUsed", JsNumber(200.12))
 
         val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
           validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
 
         result shouldBe Left(
-          ErrorWrapper(correlationId, RuleOverlapReliefUsedNotAllowedError.withPaths(Seq("/adjustments/overlapReliefUsed")))
+          ErrorWrapper(correlationId, RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed"))
         )
       }
     }

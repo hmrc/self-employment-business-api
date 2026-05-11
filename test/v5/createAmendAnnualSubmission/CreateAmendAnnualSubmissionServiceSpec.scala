@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,38 @@
 
 package v5.createAmendAnnualSubmission
 
-import api.models.errors.{RuleAllowanceNotSupportedError, RuleOutsideAmendmentWindowError}
-import shared.controllers.EndpointLogContext
+import api.models.errors.*
+import shared.connectors.DownstreamOutcome
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.errors.DownstreamErrors.single
 import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v5.createAmendAnnualSubmission.def1.model.request.{Def1_CreateAmendAnnualSubmissionFixture, Def1_CreateAmendAnnualSubmissionRequestBody}
+import v5.createAmendAnnualSubmission.def1.model.request.*
 import v5.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
 
 import scala.concurrent.Future.successful
 
 class CreateAmendAnnualSubmissionServiceSpec extends ServiceSpec with Def1_CreateAmendAnnualSubmissionFixture {
-  val nino: String                            = "AA987654A"
-  val businessId: String                      = "XAIS10987654321"
-  val taxYear: String                         = "2017-18"
-  override implicit val correlationId: String = "X-123"
+  val nino: String       = "AA987654A"
+  val businessId: String = "XAIS10987654321"
+  val taxYear: String    = "2017-18"
 
   private val requestData = Def1_CreateAmendAnnualSubmissionRequestData(
     nino = Nino(nino),
     businessId = BusinessId(businessId),
     taxYear = TaxYear.fromMtd(taxYear),
-    body = Def1_CreateAmendAnnualSubmissionRequestBody(
-      adjustments = Some(adjustments),
-      allowances = Some(allowances),
-      nonFinancials = Some(nonFinancials)
-    )
+    body = createAmendAnnualSubmissionRequestBody()
   )
 
-  trait Test extends MockCreateAmendAnnualSubmissionConnector {
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-
-    val service = new CreateAmendAnnualSubmissionService(
-      connector = mockAmendAnnualSubmissionConnector
-    )
-
+  private trait Test extends MockCreateAmendAnnualSubmissionConnector {
+    val service = new CreateAmendAnnualSubmissionService(connector = mockAmendAnnualSubmissionConnector)
   }
 
-  "service" should {
-    "service call successful" when {
-      "return mapped result" in new Test {
-        val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+  "CreateAmendAnnualSubmissionService" when {
+    "the connector call is successful" should {
+      "return Right" in new Test {
+        val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
 
         MockAmendAnnualSubmissionConnector
           .amendAnnualSubmission(requestData)
@@ -66,38 +56,46 @@ class CreateAmendAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Creat
         await(service.createAmendAnnualSubmission(requestData)) shouldBe outcome
       }
     }
-  }
 
-  "unsuccessful" should {
-    "map errors according to spec" when {
-      def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
-        s"a $downstreamErrorCode error is returned from the service" in new Test {
-          MockAmendAnnualSubmissionConnector
-            .amendAnnualSubmission(requestData)
-            .returns(successful(Left(ResponseWrapper(correlationId, single(DownstreamErrorCode(downstreamErrorCode))))))
+    "the connector call is unsuccessful" should {
+      "map errors according to spec" when {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a code $downstreamErrorCode error is returned from the service" in new Test {
+            MockAmendAnnualSubmissionConnector
+              .amendAnnualSubmission(requestData)
+              .returns(successful(Left(ResponseWrapper(correlationId, single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          await(service.createAmendAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
-        }
+            await(service.createAmendAnnualSubmission(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
+          }
 
-      val input: Seq[(String, MtdError)] = Seq(
-        "INVALID_NINO"                -> NinoFormatError,
-        "INVALID_TAX_YEAR"            -> TaxYearFormatError,
-        "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
-        "OUTSIDE_AMENDMENT_WINDOW"    -> RuleOutsideAmendmentWindowError,
-        "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
-        "INVALID_CORRELATIONID"       -> InternalError,
-        "INVALID_PAYLOAD"             -> InternalError,
-        "MISSING_EXEMPTION_REASON"    -> InternalError,
-        "MISSING_EXEMPTION_INDICATOR" -> InternalError,
-        "NOT_FOUND"                   -> NotFoundError,
-        "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
-        "GONE"                        -> InternalError,
-        "SERVER_ERROR"                -> InternalError,
-        "BAD_GATEWAY"                 -> InternalError,
-        "SERVICE_UNAVAILABLE"         -> InternalError
-      )
+        val errors: Seq[(String, MtdError)] = Seq(
+          "INVALID_NINO"                -> NinoFormatError,
+          "INVALID_TAX_YEAR"            -> TaxYearFormatError,
+          "INVALID_INCOME_SOURCE"       -> BusinessIdFormatError,
+          "INVALID_PAYLOAD"             -> InternalError,
+          "INVALID_CORRELATIONID"       -> InternalError,
+          "MISSING_EXEMPTION_REASON"    -> InternalError,
+          "MISSING_EXEMPTION_INDICATOR" -> InternalError,
+          "ALLOWANCE_NOT_SUPPORTED"     -> RuleAllowanceNotSupportedError,
+          "NOT_FOUND"                   -> NotFoundError,
+          "NOT_FOUND_INCOME_SOURCE"     -> NotFoundError,
+          "GONE"                        -> InternalError,
+          "SERVER_ERROR"                -> InternalError,
+          "BAD_GATEWAY"                 -> InternalError,
+          "SERVICE_UNAVAILABLE"         -> InternalError
+        )
 
-      input.foreach(args => serviceError.tupled(args))
+        val extraTysErrors: Seq[(String, MtdError)] = Seq(
+          "INVALID_INCOMESOURCE_ID"    -> BusinessIdFormatError,
+          "INVALID_CORRELATION_ID"     -> InternalError,
+          "INCOME_SOURCE_NOT_FOUND"    -> NotFoundError,
+          "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+          "WRONG_TPA_AMOUNT_SUBMITTED" -> RuleWrongTpaAmountSubmittedError,
+          "OUTSIDE_AMENDMENT_WINDOW"   -> RuleOutsideAmendmentWindowError
+        )
+
+        (errors ++ extraTysErrors).foreach(serviceError.tupled)
+      }
     }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,7 @@
 
 package v5.createAmendAnnualSubmission.def2
 
-import api.models.errors.{
-  RuleBothAllowancesSuppliedError,
-  RuleBuildingNameNumberError,
-  RuleOverlapReliefUsedNotAllowedError,
-  RuleWrongTpaAmountSubmittedError
-}
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.*

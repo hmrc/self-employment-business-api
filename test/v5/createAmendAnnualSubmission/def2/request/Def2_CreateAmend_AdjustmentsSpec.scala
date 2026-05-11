@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,64 +16,30 @@
 
 package v5.createAmendAnnualSubmission.def2.request
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import shared.utils.UnitSpec
 
-class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec {
+class Def2_CreateAmend_AdjustmentsSpec extends UnitSpec with Def2_CreateAmendAnnualSubmissionFixture {
 
-  val model: Def2_CreateAmend_Adjustments =
-    Def2_CreateAmend_Adjustments(
-      includedNonTaxableProfits = Some(1.12),
-      basisAdjustment = Some(2.12),
-      overlapReliefUsed = Some(3.12),
-      accountingAdjustment = Some(4.12),
-      outstandingBusinessIncome = Some(6.12),
-      balancingChargeBpra = Some(7.12),
-      balancingChargeOther = Some(8.12),
-      goodsAndServicesOwnUse = Some(9.12),
-      transitionProfitAmount = Some(9.12),
-      transitionProfitAccelerationAmount = Some(9.12)
-    )
+  private val downstreamJson: JsObject = adjustmentsDownstreamJson.as[JsObject] ++ Json.obj(
+    "transitionProfitAmount"             -> 9.12,
+    "transitionProfitAccelerationAmount" -> 9.12
+  )
 
-  "reads" should {
-    val json = Json
-      .parse(s"""{
-                |  "includedNonTaxableProfits": 1.12,
-                |  "basisAdjustment": 2.12,
-                |  "overlapReliefUsed": 3.12,
-                |  "accountingAdjustment": 4.12,
-                |  "outstandingBusinessIncome": 6.12,
-                |  "balancingChargeBpra": 7.12,
-                |  "balancingChargeOther": 8.12,
-                |  "goodsAndServicesOwnUse": 9.12,
-                |  "transitionProfitAmount": 9.12,
-                |  "transitionProfitAccelerationAmount": 9.12
-                |}
-                |""".stripMargin)
-
-    "parse valid downstream JSON correctly" in {
-      json
-        .as[Def2_CreateAmend_Adjustments] shouldBe model
+  "reads" when {
+    "passed valid MTD JSON" should {
+      "return the expected model" in {
+        adjustmentsWithAdditionalFieldsMtdJson.as[Def2_CreateAmend_Adjustments] shouldBe adjustments
+      }
     }
   }
 
-  "writes" should {
-    "return the full downstream JSON" in {
-      Json.toJson(model) shouldBe Json.parse(s"""{
-                                                |  "includedNonTaxableProfits": 1.12,
-                                                |  "basisAdjustment": 2.12,
-                                                |  "overlapReliefUsed": 3.12,
-                                                |  "accountingAdjustment": 4.12,
-                                                |  "outstandingBusinessIncome": 6.12,
-                                                |  "balancingChargeBpra": 7.12,
-                                                |  "balancingChargeOther": 8.12,
-                                                |  "goodsAndServicesOwnUse": 9.12,
-                                                |  "transitionProfitAmount": 9.12,
-                                                |  "transitionProfitAccelerationAmount": 9.12
-                                                |}
-                                                |""".stripMargin)
+  "writes" when {
+    "passed a valid model" should {
+      "return the expected downstream JSON" in {
+        Json.toJson(adjustments) shouldBe downstreamJson
+      }
     }
-
   }
 
 }

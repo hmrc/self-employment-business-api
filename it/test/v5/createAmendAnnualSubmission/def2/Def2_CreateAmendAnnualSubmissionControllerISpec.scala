@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,32 +18,30 @@ package v5.createAmendAnnualSubmission.def2
 
 import api.models.errors.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status.*
 import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
+import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
+import play.api.test.Helpers.*
 import shared.models.errors.*
 import shared.models.utils.JsonErrorValidators
 import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 import v5.createAmendAnnualSubmission.def2.request.Def2_CreateAmendAnnualSubmissionFixture
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
-import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
 
 class Def2_CreateAmendAnnualSubmissionControllerISpec
     extends IntegrationBaseSpec
     with Def2_CreateAmendAnnualSubmissionFixture
     with JsonErrorValidators {
 
-  val requestBodyJson: JsValue           = createAmendAnnualSubmissionRequestBodyMtdJson()
+  val mtdRequestBodyJson: JsValue        = createAmendAnnualSubmissionRequestBodyMtdJson()
   val downstreamRequestBodyJson: JsValue = createAmendAnnualSubmissionRequestBodyDownstreamJson()
 
   "Calling the Create and Amend Self-Employment Annual Submission endpoint" should {
     "return a 204 status code" when {
-      "given any valid Def3 request" in new NonTysTest {
-
+      "any valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
@@ -53,31 +51,18 @@ class Def2_CreateAmendAnnualSubmissionControllerISpec
             .thenReturn(status = OK, downstreamResponseBody)
         }
 
-        val response: WSResponse = await(request().put(requestBodyJson))
+        val response: WSResponse = await(request().put(mtdRequestBodyJson))
         response.status shouldBe NO_CONTENT
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-      }
-
-      "given a valid Def3 request for a Tax Year Specific tax year" in new TysTest {
-
-        override def setupStubs(): StubMapping = {
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          BaseDownstreamStub
-            .when(method = BaseDownstreamStub.PUT, uri = downstreamUri)
-            .withRequestBody(downstreamRequestBodyJson)
-            .thenReturn(status = OK, downstreamResponseBody)
-        }
-
-        val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe NO_CONTENT
+        response.body shouldBe ""
+        response.header("Content-Type") shouldBe None
         response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
     "return bad request error" when {
-      "given a badly formed json body" in new NonTysTest {
+      "given a badly formed json body" in new Test {
         override def setupStubs(): StubMapping = {
+          AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
         }
@@ -85,6 +70,7 @@ class Def2_CreateAmendAnnualSubmissionControllerISpec
         val response: WSResponse = await(request().addHttpHeaders(("Content-Type", "application/json")).put("{ badJson }"))
         response.json shouldBe Json.toJson(BadRequestError)
         response.status shouldBe BAD_REQUEST
+        response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
@@ -96,8 +82,7 @@ class Def2_CreateAmendAnnualSubmissionControllerISpec
                                 requestBody: JsValue,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
-
+          s"validation fails with ${expectedBody.code} error" in new Test {
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
             override val taxYear: String    = requestTaxYear
@@ -111,96 +96,114 @@ class Def2_CreateAmendAnnualSubmissionControllerISpec
             val response: WSResponse = await(request().put(requestBody))
             response.json shouldBe Json.toJson(expectedBody)
             response.status shouldBe expectedStatus
+            response.header("Content-Type") shouldBe Some("application/json")
           }
         }
-        //
+
         val input = List(
-          ("AA1123A", "XAIS12345678910", "2017-18", requestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", requestBodyJson, BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2021-23", requestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "XAIS12345678910", "2016-17", requestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA1123A", "XAIS12345678910", "2024-25", mtdRequestBodyJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "XA***IS1", "2024-25", mtdRequestBodyJson, BAD_REQUEST, BusinessIdFormatError),
+          ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", mtdRequestBodyJson, BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "XAIS12345678910", "2024-26", mtdRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
+          ("AA123456A", "XAIS12345678910", "2016-17", mtdRequestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
           (
             "AA123456A",
             "XAIS12345678910",
-            "2021-22",
-            requestBodyJson.update("/adjustments/includedNonTaxableProfits", JsNumber(1.234)),
+            "2024-25",
+            mtdRequestBodyJson.replaceWithEmptyObject("/allowances"),
             BAD_REQUEST,
-            ValueFormatError.copy(paths = Some(List("/adjustments/includedNonTaxableProfits")))),
-          ("AA123456A", "XA***IS1", "2022-23", requestBodyJson, BAD_REQUEST, BusinessIdFormatError),
+            RuleIncorrectOrEmptyBodyError.withPath("/allowances")
+          ),
           (
             "AA123456A",
             "XAIS12345678910",
-            "2021-22",
+            "2024-25",
+            mtdRequestBodyJson.update("/adjustments/includedNonTaxableProfits", JsNumber(1.234)),
+            BAD_REQUEST,
+            ValueFormatError.withPath("/adjustments/includedNonTaxableProfits")
+          ),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2024-25",
             createAmendAnnualSubmissionRequestBodyMtdJson(
               allowances = Some(
                 allowancesMtdJsonWith(
-                  structuredBuildingAllowances = List(structuredBuildingAllowanceMtdJson
-                    .removeProperty("/building/name")
-                    .removeProperty("/building/number")))),
-              adjustments = None,
-              nonFinancials = None
+                  structuredBuildingAllowances = List(
+                    structuredBuildingAllowanceMtdJson.removeProperty("/building/name").removeProperty("/building/number")
+                  )
+                )
+              )
             ),
             BAD_REQUEST,
-            RuleBuildingNameNumberError.copy(paths = Some(List("/allowances/structuredBuildingAllowance/0/building")))),
+            RuleBuildingNameNumberError.withPath("/allowances/structuredBuildingAllowance/0/building")
+          ),
           (
             "AA123456A",
             "XAIS12345678910",
-            "2021-22",
+            "2024-25",
             createAmendAnnualSubmissionRequestBodyMtdJson(
               allowances = Some(
-                allowancesMtdJsonWith(structuredBuildingAllowances = List(structuredBuildingAllowanceMtdJson
-                  .update("/building/postcode", JsString("X" * 91))))),
-              adjustments = None,
-              nonFinancials = None
+                allowancesMtdJsonWith(
+                  structuredBuildingAllowances = List(
+                    structuredBuildingAllowanceMtdJson.update("/building/postcode", JsString("X" * 91))
+                  )
+                )
+              )
             ),
             BAD_REQUEST,
-            StringFormatError.copy(paths = Some(List("/allowances/structuredBuildingAllowance/0/building/postcode")))),
+            StringFormatError.withPath("/allowances/structuredBuildingAllowance/0/building/postcode")
+          ),
           (
             "AA123456A",
             "XAIS12345678910",
-            "2021-22",
-            requestBodyJson.update("/allowances/tradingIncomeAllowance", JsNumber(1.23)),
+            "2024-25",
+            mtdRequestBodyJson.update("/allowances/tradingIncomeAllowance", JsNumber(1.23)),
             BAD_REQUEST,
-            RuleBothAllowancesSuppliedError),
+            RuleBothAllowancesSuppliedError
+          ),
           (
             "AA123456A",
             "XAIS12345678910",
-            "2021-22",
-            requestBodyJson.replaceWithEmptyObject("/allowances"),
-            BAD_REQUEST,
-            RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/allowances")))),
-          (
-            "AA123456A",
-            "XAIS12345678910",
-            "2021-22",
+            "2024-25",
             createAmendAnnualSubmissionRequestBodyMtdJson(
-              allowances = Some(allowancesMtdJsonWith(
-                structuredBuildingAllowances = List(structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))))),
-              adjustments = None,
-              nonFinancials = None
+              allowances = Some(
+                allowancesMtdJsonWith(
+                  structuredBuildingAllowances = List(
+                    structuredBuildingAllowanceMtdJson.update("/firstYear/qualifyingDate", JsString("NOT-A-DATE"))
+                  )
+                )
+              )
             ),
             BAD_REQUEST,
-            DateFormatError.copy(paths = Some(List("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate")))),
+            DateFormatError.withPath("/allowances/structuredBuildingAllowance/0/firstYear/qualifyingDate")
+          ),
           (
             "AA123456A",
             "XAIS12345678910",
-            "2021-22",
+            "2024-25",
             createAmendAnnualSubmissionRequestBodyMtdJson(
-              nonFinancials = Some(nonFinancialsMtdJson.update("/class4NicsExemptionReason", JsString("not-a-valid-reason"))),
-              adjustments = None,
-              allowances = None
+              nonFinancials = Some(nonFinancialsMtdJson.update("/class4NicsExemptionReason", JsString("not-a-valid-reason")))
             ),
             BAD_REQUEST,
-            Class4ExemptionReasonFormatError)
+            Class4ExemptionReasonFormatError
+          ),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2024-25",
+            mtdRequestBodyJson.update("/adjustments/overlapReliefUsed", JsNumber(200.12)),
+            BAD_REQUEST,
+            RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed")
+          )
         )
 
-        input.foreach(args => validationErrorTest.tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedError: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
-
+          s"downstream returns a code $downstreamCode error and status $downstreamStatus" in new Test {
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
@@ -208,40 +211,30 @@ class Def2_CreateAmendAnnualSubmissionControllerISpec
               BaseDownstreamStub.onError(BaseDownstreamStub.PUT, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
-            val response: WSResponse = await(request().put(requestBodyJson))
+            val response: WSResponse = await(request().put(mtdRequestBodyJson))
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedError)
+            response.header("X-CorrelationId").nonEmpty shouldBe true
             response.header("Content-Type") shouldBe Some("application/json")
           }
         }
 
         val errors = List(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, BusinessIdFormatError),
+          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-          (FORBIDDEN, "MISSING_EXEMPTION_REASON", INTERNAL_SERVER_ERROR, InternalError),
-          (FORBIDDEN, "MISSING_EXEMPTION_INDICATOR", INTERNAL_SERVER_ERROR, InternalError),
-          (FORBIDDEN, "ALLOWANCE_NOT_SUPPORTED", BAD_REQUEST, RuleAllowanceNotSupportedError),
-          (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
-          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
-          (GONE, "GONE", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
+          (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
+          (UNPROCESSABLE_ENTITY, "MISSING_EXEMPTION_REASON", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "MISSING_EXEMPTION_INDICATOR", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (UNPROCESSABLE_ENTITY, "WRONG_TPA_AMOUNT_SUBMITTED", BAD_REQUEST, RuleWrongTpaAmountSubmittedError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        val extraTysErrors = List(
-          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
-          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
-          (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
-          (UNPROCESSABLE_ENTITY, "WRONG_TPA_AMOUNT_SUBMITTED", BAD_REQUEST, RuleWrongTpaAmountSubmittedError),
-          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError)
-        )
-
-        (errors ++ extraTysErrors).foreach(args => serviceErrorTest.tupled(args))
+        errors.foreach(serviceErrorTest.tupled)
       }
     }
   }
@@ -250,15 +243,17 @@ class Def2_CreateAmendAnnualSubmissionControllerISpec
     val nino: String       = "AA123456A"
     val businessId: String = "XAIS12345678910"
 
-    val downstreamResponseBody: JsValue = Json.parse("""{
-                                                       |   "transactionReference": "ignored"
-                                                       |}""".stripMargin)
+    val downstreamResponseBody: JsValue = Json.parse(
+      """
+        |{
+        |  "transactionReference": "ignored"
+        |}
+      """.stripMargin
+    )
 
-    def taxYear: String
+    def taxYear: String = "2024-25"
 
-    def downstreamTaxYear: String
-
-    def downstreamUri: String
+    def downstreamUri: String = s"/income-tax/24-25/$nino/self-employments/$businessId/annual-summaries"
 
     def setupStubs(): StubMapping
 
@@ -273,28 +268,16 @@ class Def2_CreateAmendAnnualSubmissionControllerISpec
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
+        |{
+        |  "failures": [
+        |    {
+        |      "code": "$code",
+        |      "reason": "downstream message"
+        |    }
+        |  ]
+        |}
       """.stripMargin
 
-  }
-
-  private trait NonTysTest extends Test {
-    def taxYear: String = "2020-21"
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/$downstreamTaxYear"
-
-    def downstreamTaxYear: String = "2021"
-  }
-
-  private trait TysTest extends Test {
-    def taxYear: String = "2023-24"
-
-    def downstreamUri: String = s"/income-tax/$downstreamTaxYear/$nino/self-employments/$businessId/annual-summaries"
-
-    def downstreamTaxYear: String = "23-24"
   }
 
 }

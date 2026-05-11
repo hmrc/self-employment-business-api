@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,24 +22,34 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
-import v5.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def1_CreateAmendAnnualSubmissionRequestData}
+import v5.createAmendAnnualSubmission.def3.request.Def3_CreateAmendAnnualSubmissionRequestBody
+import v5.createAmendAnnualSubmission.model.request.*
 
 import scala.concurrent.Future
 
 class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
-  val nino: String       = "AA123456A"
-  val businessId: String = "XAIS12345678910"
-  private val body       = Def1_CreateAmendAnnualSubmissionRequestBody(None, None, None)
+  private val nino: String       = "AA123456A"
+  private val businessId: String = "XAIS12345678910"
 
-  trait Test {
+  private val def1Body: Def1_CreateAmendAnnualSubmissionRequestBody = Def1_CreateAmendAnnualSubmissionRequestBody(None, None, None)
+  private val def3Body: Def3_CreateAmendAnnualSubmissionRequestBody = Def3_CreateAmendAnnualSubmissionRequestBody(None, None, None)
+
+  private trait Test {
     self: ConnectorTest =>
 
-    val request: CreateAmendAnnualSubmissionRequestData = Def1_CreateAmendAnnualSubmissionRequestData(
+    val def1Request: CreateAmendAnnualSubmissionRequestData = Def1_CreateAmendAnnualSubmissionRequestData(
       nino = Nino(nino),
       businessId = BusinessId(businessId),
       taxYear = taxYear,
-      body = body
+      body = def1Body
+    )
+
+    val def3Request: CreateAmendAnnualSubmissionRequestData = Def3_CreateAmendAnnualSubmissionRequestData(
+      nino = Nino(nino),
+      businessId = BusinessId(businessId),
+      taxYear = taxYear,
+      body = def3Body
     )
 
     protected val connector: CreateAmendAnnualSubmissionConnector = new CreateAmendAnnualSubmissionConnector(
@@ -48,90 +58,76 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
     )
 
     def taxYear: TaxYear
-
   }
 
-  "AmendAnnualSubmissionConnector for a non TYS tax year" when {
-    "amendAnnualSubmission called" must {
-      "return a 200 status for a success scenario" in
-        new IfsTest with Test {
+  "CreateAmendAnnualSubmissionConnector" when {
+    ".amendAnnualSubmission" should {
+      "return a 200 status for a success scenario" when {
+        "a valid request with a non-TYS tax year is supplied" in new IfsTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 
-          val outcome = Right(ResponseWrapper(correlationId, ()))
+          val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
 
-          willPut(url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}", body) returns Future
-            .successful(outcome)
+          willPut(
+            url = url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}",
+            body = def1Body
+          ).returns(Future.successful(outcome))
 
-          val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
+          val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(def1Request))
+
           result shouldBe outcome
         }
-    }
-  }
 
-  "AmendAnnualSubmissionConnector for a Tax Year Specific tax year pre-25/26" must {
-    "call IFS and return a 200 status for a success scenario if HIP is not enabled" in {
-      new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration("ifs_hip_migration_1802.enabled" -> false)
+        "a valid request with a TYS tax year before 2025-26 is supplied" in new IfsTest with Test {
+          def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
-        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+          val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
 
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+          willPut(
+            url = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries",
+            body = def1Body
+          ).returns(Future.successful(outcome))
 
-        willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
-          .successful(outcome)
+          val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(def1Request))
 
-        val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
-        result shouldBe outcome
+          result shouldBe outcome
+        }
+
+        "a valid request with a TYS tax year 2025-26 is supplied and feature switch is disabled (IFS enabled)" in new IfsTest with Test {
+          def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
+
+          val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
+
+          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> false))
+
+          willPut(
+            url = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries",
+            body = def3Body
+          ).returns(Future.successful(outcome))
+
+          val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(def3Request))
+
+          result shouldBe outcome
+        }
+
+        "a valid request with a TYS tax year 2025-26 is supplied and feature switch is enabled (HIP enabled)" in new HipTest with Test {
+          def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
+
+          val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
+
+          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> true))
+
+          willPut(
+            url = url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries",
+            body = def3Body
+          ).returns(Future.successful(outcome))
+
+          val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(def3Request))
+
+          result shouldBe outcome
+        }
       }
     }
-
-    "call IFS and return a 200 status for a success scenario if HIP is enabled" in {
-      new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration("ifs_hip_migration_1802.enabled" -> true)
-
-        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
-
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
-          .successful(outcome)
-
-        val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
-        result shouldBe outcome
-      }
-    }
   }
-
-  "AmendAnnualSubmissionConnector for tax year 25/26 if HIP is not enabled" must {
-    "call IFS and return a 200 status for a success scenario" in
-      new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration("ifs_hip_migration_1802.enabled" -> false)
-        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
-
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
-          .successful(outcome)
-
-        val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
-        result shouldBe outcome
-      }
-  }
-
-  "AmendAnnualSubmissionConnector for tax year 25/26 if HIP is enabled" must {
-    "call HIP and return a 200 status for a success scenario" in
-      new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration("ifs_hip_migration_1802.enabled" -> true)
-        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
-
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        willPut(url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries", body) returns Future
-          .successful(outcome)
-
-        val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(request))
-        result shouldBe outcome
-      }
-  }
-
+  
 }

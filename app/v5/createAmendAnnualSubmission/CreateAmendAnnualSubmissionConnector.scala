@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,7 @@ import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v5.createAmendAnnualSubmission.model.request.{
-  CreateAmendAnnualSubmissionRequestData,
-  Def1_CreateAmendAnnualSubmissionRequestData,
-  Def2_CreateAmendAnnualSubmissionRequestData,
-  Def3_CreateAmendAnnualSubmissionRequestData
-}
+import v5.createAmendAnnualSubmission.model.request.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
