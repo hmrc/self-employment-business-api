@@ -15,11 +15,11 @@
     "annualInvestmentAllowance": 564.76,
     "capitalAllowanceMainPool": 456.98,
     "capitalAllowanceSpecialRatePool": 352.87,
-    "zeroEmissionsGoodsVehicleAllowance": 653.99,
     "businessPremisesRenovationAllowance": 452.98,
     "enhancedCapitalAllowance": 563.23,
     "allowanceOnSales": 678.99,
     "capitalAllowanceSingleAssetPool": 563.89,
+    "zeroEmissionsCarAllowance": 678.78,
     "structuredBuildingAllowance": [
       {
         "amount": 564.89,
