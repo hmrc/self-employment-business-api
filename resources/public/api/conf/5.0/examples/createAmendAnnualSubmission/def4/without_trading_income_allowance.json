@@ -1,57 +1,54 @@
 {
-  "annualAdjustments": {
-    "includedNonTaxableProfits": 99999999999.99,
-    "basisAdjustment": 99999999999.99,
-    "accountingAdjustment": 99999999999.99,
-    "outstandingBusinessIncome": 99999999999.99,
-    "balancingChargeBpra": 99999999999.99,
-    "balancingChargeOther": 99999999999.99,
-    "goodsAndServicesOwnUse": 99999999999.99,
-    "transitionProfitAmount": 99999999999.99,
-    "transitionProfitAccelerationAmount": 99999999999.99,
+  "adjustments": {
+    "includedNonTaxableProfits": 200.12,
+    "basisAdjustment": 200.12,
+    "accountingAdjustment": 200.12,
+    "outstandingBusinessIncome": 200.12,
+    "balancingChargeBpra": 200.12,
+    "balancingChargeOther": 200.12,
+    "goodsAndServicesOwnUse": 200.12,
+    "transitionProfitAmount": 200.12,
+    "transitionProfitAccelerationAmount": 200.12,
     "adjustmentToProfitsForClass4": 5000.99
   },
-  "annualAllowances": {
-    "annualInvestmentAllowance": 99999999999.99,
-    "capitalAllowanceMainPool": 99999999999.99,
-    "capitalAllowanceSpecialRatePool": 99999999999.99,
-    "zeroEmissionGoodsVehicleAllowance": 99999999999.99,
-    "businessPremisesRenovationAllowance": 99999999999.99,
-    "enhanceCapitalAllowance": 99999999999.99,
-    "allowanceOnSales": 99999999999.99,
-    "capitalAllowanceSingleAssetPool": 99999999999.99,
+  "allowances": {
+    "annualInvestmentAllowance": 200.12,
+    "capitalAllowanceMainPool": 200.12,
+    "capitalAllowanceSpecialRatePool": 200.12,
+    "zeroEmissionsGoodsVehicleAllowance": 200.12,
+    "businessPremisesRenovationAllowance": 200.12,
+    "enhancedCapitalAllowance": 200.12,
+    "allowanceOnSales": 200.12,
+    "capitalAllowanceSingleAssetPool": 200.12,
+    "zeroEmissionsCarAllowance": 200.12,
     "structuredBuildingAllowance": [
       {
-        "amount": 99999999999.99,
+        "amount": 1.23,
         "firstYear": {
-          "qualifyingDate": "2026-04-29",
-          "qualifyingAmountExpenditure": 99999999999.99
+          "qualifyingDate": "2021-11-11",
+          "qualifyingAmountExpenditure": 1.23
         },
         "building": {
-          "name": "kX`lZ}bngIc^dTAuAkIAj_N",
-          "number": "khRN 33Sc)hBEgOD2n",
-          "postCode": "JwFzR7Ut`-ablGohXW EFpbN"
+          "name": "Plaza 2",
+          "postcode": "TF3 4NT"
         }
       }
     ],
     "enhancedStructuredBuildingAllowance": [
       {
-        "amount": 99999999999.99,
+        "amount": 1.23,
         "firstYear": {
-          "qualifyingDate": "2026-04-29",
-          "qualifyingAmountExpenditure": 99999999999.99
+          "qualifyingDate": "2021-11-11",
+          "qualifyingAmountExpenditure": 1.23
         },
         "building": {
-          "name": "mo1`odRSrlA1 XCmtGwMAHeK8lTU GrIHkn`EQcUAG5YVsplr5Wx'}0a M(5e-`5hOFiL.",
-          "number": "NW8JAUpw7K7)8I}n3^O-:{emyKJZ4y^dp}.T PLJ4P}OerO:3sYtou",
-          "postCode": "Lo_H'jY`0e9Y8 z5nzYLV&OXuJ.`Qa:KnF`sBvq2tJuOT4"
+          "name": "Plaza 2",
+          "postcode": "TF3 4NT"
         }
       }
-    ],
-    "zeroEmissionsCarAllowance": 99999999999.99
+    ]
   },
-  "annualNonFinancials": {
-    "businessDetailsChangedRecently": true,
-    "class4NicsExemptionReason": "001"
+  "nonFinancials": {
+    "businessDetailsChangedRecently": true
   }
 }
