@@ -28,7 +28,7 @@ import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 import v5.retrieveAnnualSubmission.def4.model.Def4_RetrieveAnnualSubmissionFixture
 
-class Def4_RetrieveAnnualSubmissionControllerHipISpec extends IntegrationBaseSpec with Def4_RetrieveAnnualSubmissionFixture {
+class Def4_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def4_RetrieveAnnualSubmissionFixture {
 
   private trait Test {
     def setupStubs(): StubMapping

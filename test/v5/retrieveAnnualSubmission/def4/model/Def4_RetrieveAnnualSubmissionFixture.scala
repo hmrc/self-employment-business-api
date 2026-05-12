@@ -114,7 +114,8 @@ trait Def4_RetrieveAnnualSubmissionFixture {
        |  "balancingChargeOther": 8.12,
        |  "goodsAndServicesOwnUse": 9.12,
        |  "transitionProfitAmount": 9.12,
-       |  "transitionProfitAccelerationAmount": 9.12
+       |  "transitionProfitAccelerationAmount": 9.12,
+       |  "adjustmentToProfitsForClass4": 200.12
        |}
        |""".stripMargin)
 
@@ -127,7 +128,8 @@ trait Def4_RetrieveAnnualSubmissionFixture {
        |  "balancingChargeOther": 8.12,
        |  "goodsAndServicesOwnUse": 9.12,
        |  "transitionProfitAmount": 9.12,
-       |  "transitionProfitAccelerationAmount": 9.12
+       |  "transitionProfitAccelerationAmount": 9.12,
+       |  "adjustmentToProfitsForClass4": 200.12
        |}
        |""".stripMargin)
 
