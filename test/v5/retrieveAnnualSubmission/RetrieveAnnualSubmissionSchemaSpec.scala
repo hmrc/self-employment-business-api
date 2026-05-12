@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,13 @@ class RetrieveAnnualSubmissionSchemaSpec extends UnitSpec with ScalaCheckDrivenP
         schemaFor(TaxYear.fromMtd("2024-25")).shouldBe(Valid(Def2))
       }
 
-      "use Def3 for tax years from 2025-26 onwards" in {
-        forTaxYearsFrom(TaxYear.fromMtd("2025-26")) { taxYear =>
-          schemaFor(taxYear.asMtd).shouldBe(Valid(Def3))
+      "use Def3 for tax years 2025-26" in {
+        schemaFor(TaxYear.fromMtd("2025-26")).shouldBe(Valid(Def3))
+      }
+
+      "use Def4 for tax years from 2026-27 onwards" in {
+        forTaxYearsFrom(TaxYear.fromMtd("2026-27")) { taxYear =>
+          schemaFor(taxYear.asMtd).shouldBe(Valid(Def4))
         }
       }
 

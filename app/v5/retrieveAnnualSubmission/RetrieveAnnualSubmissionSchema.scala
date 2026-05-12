@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import shared.schema.DownstreamReadable
 import v5.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v5.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
 import v5.retrieveAnnualSubmission.def3.model.response.Def3_RetrieveAnnualSubmissionResponse
+import v5.retrieveAnnualSubmission.def4.model.response.Def4_RetrieveAnnualSubmissionResponse
 import v5.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.math.Ordered.orderingToOrdered
@@ -50,6 +51,11 @@ object RetrieveAnnualSubmissionSchema {
     val connectorReads: Reads[DownstreamResp] = Def3_RetrieveAnnualSubmissionResponse.reads
   }
 
+  case object Def4 extends RetrieveAnnualSubmissionSchema {
+    type DownstreamResp = Def4_RetrieveAnnualSubmissionResponse
+    val connectorReads: Reads[DownstreamResp] = Def4_RetrieveAnnualSubmissionResponse.reads
+  }
+
   private val resolveTaxYear =
     ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
@@ -57,7 +63,8 @@ object RetrieveAnnualSubmissionSchema {
     resolveTaxYear(taxYear) andThen schemaFor
 
   def schemaFor(taxYear: TaxYear): Validated[Seq[MtdError], RetrieveAnnualSubmissionSchema] =
-    if (taxYear >= TaxYear.fromMtd("2025-26")) Valid(Def3)
+    if (taxYear >= TaxYear.fromMtd("2026-27")) Valid(Def4)
+    else if (taxYear == TaxYear.fromMtd("2025-26")) Valid(Def3)
     else if (taxYear == TaxYear.fromMtd("2024-25")) Valid(Def2)
     else Valid(Def1)
 

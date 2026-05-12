@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import shared.utils.JsonWritesUtil
 import v5.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v5.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
 import v5.retrieveAnnualSubmission.def3.model.response.Def3_RetrieveAnnualSubmissionResponse
+import v5.retrieveAnnualSubmission.def4.model.response.Def4_RetrieveAnnualSubmissionResponse
 
 trait RetrieveAnnualSubmissionResponse
 
@@ -30,6 +31,7 @@ object RetrieveAnnualSubmissionResponse extends JsonWritesUtil {
     case def1: Def1_RetrieveAnnualSubmissionResponse => implicitly[OWrites[Def1_RetrieveAnnualSubmissionResponse]].writes(def1)
     case def2: Def2_RetrieveAnnualSubmissionResponse => implicitly[OWrites[Def2_RetrieveAnnualSubmissionResponse]].writes(def2)
     case def3: Def3_RetrieveAnnualSubmissionResponse => implicitly[OWrites[Def3_RetrieveAnnualSubmissionResponse]].writes(def3)
+    case def4: Def4_RetrieveAnnualSubmissionResponse => implicitly[OWrites[Def4_RetrieveAnnualSubmissionResponse]].writes(def4)
   }
 
 }
