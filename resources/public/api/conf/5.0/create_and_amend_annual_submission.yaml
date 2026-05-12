@@ -39,6 +39,7 @@ requestBody:
           - $ref: './schemas/createAmendAnnualSubmission/def1/request.json'
           - $ref: './schemas/createAmendAnnualSubmission/def2/request.json'
           - $ref: './schemas/createAmendAnnualSubmission/def3/request.json'
+          - $ref: './schemas/createAmendAnnualSubmission/def4/request.json'
       examples:
         "With trading allowance request for TY 2023-24 and before":
           value:
@@ -59,19 +60,13 @@ requestBody:
           value:
             $ref: './examples/createAmendAnnualSubmission/def3/without_trading_income_allowance.json'
         {{#if (enabled 'r21_winter_fuel_payment_docs')}}
-        "With trading allowance request for TY 2026-27":
-        {{else}}
         "With trading allowance request for TY 2026-27 onwards":
-        {{/if}}
           value:
             $ref: './examples/createAmendAnnualSubmission/def4/with_trading_income_allowance.json'
-        {{#if (enabled 'r21_winter_fuel_payment_docs')}}
-        "Without trading allowance request for TY 2026-27":
-        {{else}}
         "Without trading allowance request for TY 2026-27 onwards":
-        {{/if}}
           value:
             $ref: './examples/createAmendAnnualSubmission/def4/without_trading_income_allowance.json'
+        {{/if}}
 
 responses:
   "204":

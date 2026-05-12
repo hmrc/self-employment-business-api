@@ -99,7 +99,7 @@
           "example": 2000.99
         },
         "adjustmentToProfitsForClass4": {
-          "description": "This field represents the total of all applicable adjustments to profit, including income disregarded for Class 4 NICs, accounting practice changes, excluded interest, and employment earnings already accounted for elsewhere. This value must be between  0 and 99999999999.99 up to 2 decimal places.",
+          "description": "This field represents the total of all applicable adjustments to profit, including income disregarded for Class 4 NICs, accounting practice changes, excluded interest, and employment earnings already accounted for elsewhere. This value must be between 0 and 99999999999.99 up to 2 decimal places.",
           "type": "number",
           "multipleOf": 0.01,
           "minimum": 0,
