@@ -39,7 +39,9 @@ requestBody:
           - $ref: './schemas/createAmendAnnualSubmission/def1/request.json'
           - $ref: './schemas/createAmendAnnualSubmission/def2/request.json'
           - $ref: './schemas/createAmendAnnualSubmission/def3/request.json'
+          {{#if (enabled 'r21_winter_fuel_payment_docs')}}
           - $ref: './schemas/createAmendAnnualSubmission/def4/request.json'
+          {{/if}}
       examples:
         "With trading allowance request for TY 2023-24 and before":
           value:
