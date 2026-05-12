@@ -112,7 +112,8 @@ class Def4_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |    "balancingChargeBpra": 200.12,
       |    "balancingChargeOther": 200.12,
       |    "goodsAndServicesOwnUse": 200.12,
-      |    "transitionProfitAccelerationAmount": 200.12
+      |    "transitionProfitAccelerationAmount": 200.12,
+      |    "adjustmentToProfitsForClass4": 200.12
       |  }
       |""".stripMargin
   )

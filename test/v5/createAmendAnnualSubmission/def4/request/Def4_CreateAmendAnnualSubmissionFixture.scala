@@ -43,7 +43,8 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
        |  "balancingChargeOther": 8.12,
-       |  "goodsAndServicesOwnUse": 9.12
+       |  "goodsAndServicesOwnUse": 9.12,
+       |  "adjustmentToProfitsForClass4": 9.12
        |}
        |""".stripMargin)
 
@@ -68,7 +69,8 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
        |  "outstandingBusinessIncome": 6.12,
        |  "balancingChargeBpra": 7.12,
        |  "balancingChargeOther": 8.12,
-       |  "goodsAndServicesOwnUse": 9.12
+       |  "goodsAndServicesOwnUse": 9.12,
+       |  "adjustmentToProfitsForClass4": 9.12
        |}
        |""".stripMargin)
 

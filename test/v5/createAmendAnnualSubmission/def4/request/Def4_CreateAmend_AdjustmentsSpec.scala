@@ -23,8 +23,7 @@ class Def4_CreateAmend_AdjustmentsSpec extends UnitSpec with Def4_CreateAmendAnn
 
   private val downstreamJson: JsObject = adjustmentsDownstreamJson.as[JsObject] ++ Json.obj(
     "transitionProfitAmount"             -> 9.12,
-    "transitionProfitAccelerationAmount" -> 9.12,
-    "adjustmentToProfitsForClass4"       -> 9.12
+    "transitionProfitAccelerationAmount" -> 9.12
   )
 
   "reads" when {

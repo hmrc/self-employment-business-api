@@ -60,8 +60,7 @@ class Def4_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def4
         result shouldBe createAmendAnnualSubmissionRequestBody().copy(adjustments = Some(
           adjustments.copy(
             transitionProfitAmount = None,
-            transitionProfitAccelerationAmount = None,
-            adjustmentToProfitsForClass4 = None
+            transitionProfitAccelerationAmount = None
           )))
       }
     }
