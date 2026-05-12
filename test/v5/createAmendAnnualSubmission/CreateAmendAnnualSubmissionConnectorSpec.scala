@@ -129,5 +129,5 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
       }
     }
   }
-  
+
 }
