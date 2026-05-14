@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ package v5.retrieveAnnualSubmission
 import cats.data.Validated.{Invalid, Valid}
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v5.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema.{Def1, Def2, Def3}
+import v5.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema.{Def1, Def2, Def3, Def4}
 import v5.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.def3.Def3_RetrieveAnnualSubmissionValidator
+import v5.retrieveAnnualSubmission.def4.Def4_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 import javax.inject.{Inject, Singleton}
@@ -35,6 +36,7 @@ class RetrieveAnnualSubmissionValidatorFactory @Inject() {
       case Valid(Def1)                    => new Def1_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
       case Valid(Def2)                    => new Def2_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
       case Valid(Def3)                    => new Def3_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
+      case Valid(Def4)                    => new Def4_RetrieveAnnualSubmissionValidator(nino, businessId, taxYear)
       case Invalid(errors: Seq[MtdError]) => Validator.returningErrors(errors)
     }
 

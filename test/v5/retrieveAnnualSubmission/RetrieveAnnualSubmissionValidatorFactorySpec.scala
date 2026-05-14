@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import shared.utils.UnitSpec
 import v5.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.def3.Def3_RetrieveAnnualSubmissionValidator
+import v5.retrieveAnnualSubmission.def4.Def4_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 class RetrieveAnnualSubmissionValidatorFactorySpec
@@ -52,6 +53,12 @@ class RetrieveAnnualSubmissionValidatorFactorySpec
     "given a request corresponding to a Def3 schema" should {
       "return a Def3 validator" in {
         validatorFor("2025-26").shouldBe(a[Def3_RetrieveAnnualSubmissionValidator])
+      }
+    }
+
+    "given a request corresponding to a Def4 schema" should {
+      "return a Def4 validator" in {
+        validatorFor("2026-27").shouldBe(a[Def4_RetrieveAnnualSubmissionValidator])
       }
     }
 
