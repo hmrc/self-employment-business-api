@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "{{#unless (releasedInProduction "r21_winter_fuel_payment_docs")}}[Test only] {{/unless}}TY 2026-27 onwards",
+  "title": "{{#unless (releasedInProduction "r21_adjustment_to_profits_for_class4_docs")}}[Test only] {{/unless}}TY 2026-27 onwards",
   "description": "Create and Amend Self-Employment Annual Submission Request",
   "type": "object",
   "properties": {
