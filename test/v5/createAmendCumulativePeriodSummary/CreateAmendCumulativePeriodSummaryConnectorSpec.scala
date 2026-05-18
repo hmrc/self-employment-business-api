@@ -16,22 +16,19 @@
 
 package v5.createAmendCumulativePeriodSummary
 
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
-import v5.createAmendCumulativePeriodSummary.model.request.{
-  CreateAmendCumulativePeriodSummaryRequestData,
-  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
-  Def1_CreateAmendCumulativePeriodSummaryRequestData
-}
+import v5.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
 import scala.concurrent.Future
 
 class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  val nino: String       = "AA123456A"
+  val nino: String = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
   val periodDates: Option[PeriodDates] = Some(
@@ -62,10 +59,11 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "AmendCumulativePeriodSummaryConnector for a Tax Year Specific tax year" must {
-    "return a 200 status for a success scenario" in
-      new IfsTest with Test {
+    "return a 200 status for a success scenario" when {
+      "feature switch is disabled (IFS enabled)" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> false))
         val outcome = Right(ResponseWrapper(correlationId, ()))
         willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
           .successful(outcome)
@@ -73,6 +71,18 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
         val result: DownstreamOutcome[Unit] = await(connector.amendCumulativePeriodSummary(request))
         result shouldBe outcome
       }
-  }
+      "feature switch is enabled (HIP enabled)" in new HipTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> true))
+        val outcome = Right(ResponseWrapper(correlationId, ()))
+        willPut(url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
+          .successful(outcome)
+
+        val result: DownstreamOutcome[Unit] = await(connector.amendCumulativePeriodSummary(request))
+        result shouldBe outcome
+      }
+    }
+
+  }
 }
