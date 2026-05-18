@@ -27,7 +27,10 @@ import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def1_RetrieveCumulativePeriodSummaryISpec extends IntegrationBaseSpec {
+class Def1_RetrieveCumulativePeriodSummaryIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1960.enabled" -> false) ++ super.servicesConfig
 
   "The V5 retrieve cumulative endpoint" should {
 
