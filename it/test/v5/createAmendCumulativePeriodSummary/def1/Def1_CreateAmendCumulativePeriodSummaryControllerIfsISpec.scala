@@ -32,7 +32,7 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerIfsISpec extends Integrat
 
   override def servicesConfig: Map[String, Any] =
     Map("feature-switch.ifs_hip_migration_1959.enabled" -> false) ++ super.servicesConfig
-  
+
   "The V5 create and amend endpoint" should {
 
     "return a 204 status code" when {

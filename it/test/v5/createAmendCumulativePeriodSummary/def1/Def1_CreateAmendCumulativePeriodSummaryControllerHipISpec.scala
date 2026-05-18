@@ -436,7 +436,7 @@ class Def1_CreateAmendCumulativePeriodSummaryControllerHipISpec extends Integrat
          |}
          |""".stripMargin
     )
-    
+
     def errorBody(code: String): String =
       s"""
          |{

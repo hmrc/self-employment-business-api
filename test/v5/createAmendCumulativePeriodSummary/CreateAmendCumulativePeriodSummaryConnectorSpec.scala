@@ -22,13 +22,17 @@ import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
-import v5.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
+import v5.createAmendCumulativePeriodSummary.model.request.{
+  CreateAmendCumulativePeriodSummaryRequestData,
+  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
+  Def1_CreateAmendCumulativePeriodSummaryRequestData
+}
 
 import scala.concurrent.Future
 
 class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
-  val nino: String = "AA123456A"
+  val nino: String       = "AA123456A"
   val businessId: String = "XAIS12345678910"
 
   val periodDates: Option[PeriodDates] = Some(
@@ -85,4 +89,5 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
     }
 
   }
+
 }
