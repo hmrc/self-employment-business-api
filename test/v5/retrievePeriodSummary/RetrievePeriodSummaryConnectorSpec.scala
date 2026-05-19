@@ -17,6 +17,7 @@
 package v5.retrievePeriodSummary
 
 import api.models.domain.PeriodId
+import play.api.Configuration
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -24,8 +25,9 @@ import uk.gov.hmrc.http.StringContextOps
 import v5.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
 import v5.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
+import v5.retrievePeriodSummary.def2.model.response.Def2_Retrieve_PeriodDates
 import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
-import v5.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
+import v5.retrievePeriodSummary.model.response.{Def1_RetrievePeriodSummaryResponse, Def2_RetrievePeriodSummaryResponse, RetrievePeriodSummaryResponse}
 
 import java.net.URL
 import scala.concurrent.Future
@@ -47,8 +49,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     None
   )
 
-  private val def2Response: RetrievePeriodSummaryResponse = Def1_RetrievePeriodSummaryResponse(
-    Def1_Retrieve_PeriodDates("2019-01-25", "2020-01-25"),
+  private val def2Response: RetrievePeriodSummaryResponse = Def2_RetrievePeriodSummaryResponse(
+    Def2_Retrieve_PeriodDates("2023-01-25", "2024-01-25"),
     None,
     None,
     None
@@ -57,36 +59,60 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
   "retrievePeriodSummary()" when {
 
     "given a def1 (non-TYS) request" should {
-      "call the non-TYS URL and return a 200 status" in new IfsTest with Test {
+      "call the non-TYS URL and return a 200 status" when {
+        "HIP feature switch is disabled" in new IfsTest with Test {
+          val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
-        val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
+          val expectedDownstreamUrl: URL =
+            url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
-        val expectedDownstreamUrl: URL =
-          url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+          willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
-        willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
+          val request: RetrievePeriodSummaryRequestData                = Def1_RetrievePeriodSummaryRequestData(nino, businessId, periodId, taxYear)
+          val result: DownstreamOutcome[RetrievePeriodSummaryResponse] = await(connector.retrievePeriodSummary(request))
+          result.shouldBe(outcome)
 
-        val request: RetrievePeriodSummaryRequestData                = Def1_RetrievePeriodSummaryRequestData(nino, businessId, periodId, taxYear)
-        val result: DownstreamOutcome[RetrievePeriodSummaryResponse] = await(connector.retrievePeriodSummary(request))
-        result.shouldBe(outcome)
+        }
       }
     }
 
     "given a def2 (TYS) request" should {
-      "call the TYS URL and return a 200 status" in new IfsTest with Test {
-        val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
+      "call the IFS TYS URL and return a 200 status" when {
+        "HIP feature switch is disabled" in new IfsTest with Test {
+          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> false))
 
-        val expectedDownstreamUrl: URL =
-          url"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+          val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
-        willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
+          val expectedDownstreamUrl: URL =
+            url"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
-        val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
+          willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
-        val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
-          await(connector.retrievePeriodSummary(request))
+          val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
 
-        result.shouldBe(outcome)
+          val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
+            await(connector.retrievePeriodSummary(request))
+
+          result.shouldBe(outcome)
+        }
+      }
+      "call the HIP TYS URL and return a 200 status" when {
+        "HIP feature switch is enabled" in new HipTest with Test {
+          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> true))
+          val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
+
+          val expectedDownstreamUrl: URL =
+            url"$baseUrl/itsa/income-tax/v1/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+
+          willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
+
+          val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
+
+          val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
+            await(connector.retrievePeriodSummary(request))
+
+          result.shouldBe(outcome)
+        }
       }
     }
   }

@@ -29,7 +29,7 @@ import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
+class Def2_RetrievePeriodSummaryControllerHipISpec extends IntegrationBaseSpec {
 
   "The V5 retrieve endpoint" should {
 
@@ -142,10 +142,10 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     val periodId                 = "2023-04-01_2024-01-01"
     val fromDate                 = "2023-04-01"
     val toDate                   = "2024-01-01"
-    val mtdTaxYear               = "2023-24"
+    val mtdTaxYear               = "2024-25"
     lazy val tysTaxYear: TaxYear = TaxYear.fromMtd(mtdTaxYear)
 
-    def tysDownstreamUri() = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
+    def tysDownstreamUri() = s"/itsa/income-tax/v1/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail"
 
     def request(): WSRequest = {
       setupStubs()
@@ -157,128 +157,128 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
     }
 
     def responseBody(fromDate: String, toDate: String): JsValue = Json.parse(s"""
-      |{
-      |  "periodDates":{
-      |      "periodStartDate": "$fromDate",
-      |      "periodEndDate":"$toDate"
-      |   },
-      |   "periodIncome":{
-      |      "taxTakenOffTradingIncome": 3000.99,
-      |      "turnover":3100.00,
-      |      "other":3200.00
-      |   },
-      |   "periodExpenses":{
-      |      "costOfGoods":-900.00,
-      |      "paymentsToSubcontractors":-700.00,
-      |      "wagesAndStaffCosts":-2500.00,
-      |      "carVanTravelExpenses":-2700.00,
-      |      "premisesRunningCosts":-2300.00,
-      |      "maintenanceCosts":-1700.00,
-      |      "adminCosts":100.00,
-      |      "businessEntertainmentCosts":2900.00,
-      |      "advertisingCosts":300.00,
-      |      "interestOnBankOtherLoans":1500.00,
-      |      "financeCharges":1300.00,
-      |      "irrecoverableDebts":500.00,
-      |      "professionalFees":2100.00,
-      |      "depreciation":1100.00,
-      |      "otherExpenses":1900.00
-      |   },
-      |   "periodDisallowableExpenses":{
-      |      "costOfGoodsDisallowable":-1000.00,
-      |      "paymentsToSubcontractorsDisallowable":-800.00,
-      |      "wagesAndStaffCostsDisallowable":-2600.00,
-      |      "carVanTravelExpensesDisallowable":-2800.00,
-      |      "premisesRunningCostsDisallowable":-2400.00,
-      |      "maintenanceCostsDisallowable":-1800.00,
-      |      "adminCostsDisallowable":200.00,
-      |      "businessEntertainmentCostsDisallowable":3000.00,
-      |      "advertisingCostsDisallowable":400.00,
-      |      "interestOnBankOtherLoansDisallowable":1600.00,
-      |      "financeChargesDisallowable":1400.00,
-      |      "irrecoverableDebtsDisallowable":600.00,
-      |      "professionalFeesDisallowable":2200.00,
-      |      "depreciationDisallowable":1200.00,
-      |      "otherExpensesDisallowable":2000.00
-      |   }
-      |}
-      |""".stripMargin)
+         |{
+         |  "periodDates":{
+         |      "periodStartDate": "$fromDate",
+         |      "periodEndDate":"$toDate"
+         |   },
+         |   "periodIncome":{
+         |      "taxTakenOffTradingIncome": 3000.99,
+         |      "turnover":3100.00,
+         |      "other":3200.00
+         |   },
+         |   "periodExpenses":{
+         |      "costOfGoods":-900.00,
+         |      "paymentsToSubcontractors":-700.00,
+         |      "wagesAndStaffCosts":-2500.00,
+         |      "carVanTravelExpenses":-2700.00,
+         |      "premisesRunningCosts":-2300.00,
+         |      "maintenanceCosts":-1700.00,
+         |      "adminCosts":100.00,
+         |      "businessEntertainmentCosts":2900.00,
+         |      "advertisingCosts":300.00,
+         |      "interestOnBankOtherLoans":1500.00,
+         |      "financeCharges":1300.00,
+         |      "irrecoverableDebts":500.00,
+         |      "professionalFees":2100.00,
+         |      "depreciation":1100.00,
+         |      "otherExpenses":1900.00
+         |   },
+         |   "periodDisallowableExpenses":{
+         |      "costOfGoodsDisallowable":-1000.00,
+         |      "paymentsToSubcontractorsDisallowable":-800.00,
+         |      "wagesAndStaffCostsDisallowable":-2600.00,
+         |      "carVanTravelExpensesDisallowable":-2800.00,
+         |      "premisesRunningCostsDisallowable":-2400.00,
+         |      "maintenanceCostsDisallowable":-1800.00,
+         |      "adminCostsDisallowable":200.00,
+         |      "businessEntertainmentCostsDisallowable":3000.00,
+         |      "advertisingCostsDisallowable":400.00,
+         |      "interestOnBankOtherLoansDisallowable":1600.00,
+         |      "financeChargesDisallowable":1400.00,
+         |      "irrecoverableDebtsDisallowable":600.00,
+         |      "professionalFeesDisallowable":2200.00,
+         |      "depreciationDisallowable":1200.00,
+         |      "otherExpensesDisallowable":2000.00
+         |   }
+         |}
+         |""".stripMargin)
 
     def downstreamResponseBody(fromDate: String, toDate: String): JsValue = Json.parse(s"""
-      |{
-      |   "from": "$fromDate",
-      |   "to": "$toDate",
-      |   "financials": {
-      |      "deductions": {
-      |         "adminCosts": {
-      |            "amount": 100.00,
-      |            "disallowableAmount": 200.00
-      |         },
-      |         "advertisingCosts": {
-      |            "amount": 300.00,
-      |            "disallowableAmount": 400.00
-      |         },
-      |         "badDebt": {
-      |            "amount": 500.00,
-      |            "disallowableAmount": 600.00
-      |         },
-      |         "constructionIndustryScheme": {
-      |            "amount": -700.00,
-      |            "disallowableAmount": -800.00
-      |         },
-      |         "costOfGoods": {
-      |            "amount": -900.00,
-      |            "disallowableAmount": -1000.00
-      |         },
-      |         "depreciation": {
-      |            "amount": 1100.00,
-      |            "disallowableAmount": 1200.00
-      |         },
-      |         "financialCharges": {
-      |            "amount": 1300.00,
-      |            "disallowableAmount": 1400.00
-      |         },
-      |         "interest": {
-      |            "amount": 1500.00,
-      |            "disallowableAmount": 1600.00
-      |         },
-      |         "maintenanceCosts": {
-      |            "amount": -1700.00,
-      |            "disallowableAmount": -1800.00
-      |         },
-      |         "other": {
-      |            "amount": 1900.00,
-      |            "disallowableAmount": 2000.00
-      |         },
-      |         "professionalFees": {
-      |            "amount": 2100.00,
-      |            "disallowableAmount": 2200.00
-      |         },
-      |         "premisesRunningCosts": {
-      |            "amount": -2300.00,
-      |            "disallowableAmount": -2400.00
-      |         },
-      |         "staffCosts": {
-      |            "amount": -2500.00,
-      |            "disallowableAmount": -2600.00
-      |         },
-      |         "travelCosts": {
-      |            "amount": -2700.00,
-      |            "disallowableAmount": -2800.00
-      |         },
-      |         "businessEntertainmentCosts": {
-      |            "amount": 2900.00,
-      |            "disallowableAmount": 3000.00
-      |         }
-      |      },
-      |      "incomes": {
-      |         "turnover": 3100.00,
-      |         "other": 3200.00,
-      |         "taxTakenOffTradingIncome": 3000.99
-      |      }
-      |   }
-      |}
-      |""".stripMargin)
+         |{
+         |   "from": "$fromDate",
+         |   "to": "$toDate",
+         |   "financials": {
+         |      "deductions": {
+         |         "adminCosts": {
+         |            "amount": 100.00,
+         |            "disallowableAmount": 200.00
+         |         },
+         |         "advertisingCosts": {
+         |            "amount": 300.00,
+         |            "disallowableAmount": 400.00
+         |         },
+         |         "badDebt": {
+         |            "amount": 500.00,
+         |            "disallowableAmount": 600.00
+         |         },
+         |         "constructionIndustryScheme": {
+         |            "amount": -700.00,
+         |            "disallowableAmount": -800.00
+         |         },
+         |         "costOfGoods": {
+         |            "amount": -900.00,
+         |            "disallowableAmount": -1000.00
+         |         },
+         |         "depreciation": {
+         |            "amount": 1100.00,
+         |            "disallowableAmount": 1200.00
+         |         },
+         |         "financialCharges": {
+         |            "amount": 1300.00,
+         |            "disallowableAmount": 1400.00
+         |         },
+         |         "interest": {
+         |            "amount": 1500.00,
+         |            "disallowableAmount": 1600.00
+         |         },
+         |         "maintenanceCosts": {
+         |            "amount": -1700.00,
+         |            "disallowableAmount": -1800.00
+         |         },
+         |         "other": {
+         |            "amount": 1900.00,
+         |            "disallowableAmount": 2000.00
+         |         },
+         |         "professionalFees": {
+         |            "amount": 2100.00,
+         |            "disallowableAmount": 2200.00
+         |         },
+         |         "premisesRunningCosts": {
+         |            "amount": -2300.00,
+         |            "disallowableAmount": -2400.00
+         |         },
+         |         "staffCosts": {
+         |            "amount": -2500.00,
+         |            "disallowableAmount": -2600.00
+         |         },
+         |         "travelCosts": {
+         |            "amount": -2700.00,
+         |            "disallowableAmount": -2800.00
+         |         },
+         |         "businessEntertainmentCosts": {
+         |            "amount": 2900.00,
+         |            "disallowableAmount": 3000.00
+         |         }
+         |      },
+         |      "incomes": {
+         |         "turnover": 3100.00,
+         |         "other": 3200.00,
+         |         "taxTakenOffTradingIncome": 3000.99
+         |      }
+         |   }
+         |}
+         |""".stripMargin)
 
     def setupStubs(): StubMapping
 
@@ -286,10 +286,17 @@ class Def2_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "message"
+         |     {
+         |      "origin": "HIP",
+         |      "response": {
+         |      "failures": [
+         |        {
+         |          "type": "$code",
+         |          "reason": "String"
+         |        }
+         |      ]
          |      }
+         |    } 
     """.stripMargin
 
   }
