@@ -28,12 +28,15 @@ import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
-class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends IntegrationBaseSpec {
+class Def1_CreateAmendCumulativePeriodSummaryControllerIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1959.enabled" -> false) ++ super.servicesConfig
 
   "The V5 create and amend endpoint" should {
 
     "return a 204 status code" when {
-      "given a valid TYS request" in new Test {
+      "given a valid request" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()

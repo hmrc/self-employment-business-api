@@ -16,9 +16,9 @@
 
 package v5.createAmendCumulativePeriodSummary
 
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,7 +41,7 @@ class CreateAmendCumulativePeriodSummaryConnector @Inject() (val http: HttpClien
 
     request match {
       case def1: Def1_CreateAmendCumulativePeriodSummaryRequestData =>
-        import def1._
+        import def1.*
         val downstreamUri =
           uriFactory(nino, businessId, taxYear)
         put(body, downstreamUri)
@@ -50,7 +50,11 @@ class CreateAmendCumulativePeriodSummaryConnector @Inject() (val http: HttpClien
   }
 
   private def uriFactory(nino: Nino, businessId: BusinessId, taxYear: TaxYear) = {
-    IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
+    if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1959")) {
+      HipUri[Unit](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
+    } else {
+      IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId")
+    }
   }
 
 }

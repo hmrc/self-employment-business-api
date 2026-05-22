@@ -27,7 +27,7 @@ import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def1_RetrieveCumulativePeriodSummaryISpec extends IntegrationBaseSpec {
+class Def1_RetrieveCumulativePeriodSummaryHipISpec extends IntegrationBaseSpec {
 
   "The V5 retrieve cumulative endpoint" should {
 
@@ -134,7 +134,7 @@ class Def1_RetrieveCumulativePeriodSummaryISpec extends IntegrationBaseSpec {
     val fromDate = "2025-06-07"
     val toDate   = "2025-08-10"
 
-    def downstreamUri: String = s"/income-tax/$downstreamTaxYear/self-employments/periodic-summary-detail/$nino/$businessId"
+    def downstreamUri: String = s"/itsa/income-tax/v1/$downstreamTaxYear/self-employments/periodic-summary-detail/$nino/$businessId"
 
     def request(): WSRequest = {
       setupStubs()
@@ -275,10 +275,17 @@ class Def1_RetrieveCumulativePeriodSummaryISpec extends IntegrationBaseSpec {
 
     def errorBody(code: String): String =
       s"""
-         | {
-         |   "code": "$code",
-         |   "reason": "message"
-         | }
+         |{
+         |  "origin": "HoD",
+         |  "response": {
+         |    "failures": [
+         |      {
+         |        "type": "$code",
+         |        "reason": "message"
+         |      }
+         |    ]
+         |  }
+         |}
     """.stripMargin
 
   }
