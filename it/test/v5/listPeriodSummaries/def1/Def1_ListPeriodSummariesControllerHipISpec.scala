@@ -28,30 +28,13 @@ import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
-class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
+class Def1_ListPeriodSummariesControllerHipISpec extends IntegrationBaseSpec {
 
   "calling the V5 list period summaries endpoint" should {
 
     "return a 200 status code" when {
 
-      s"any valid request is made" in new NonTysTest {
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          BaseDownstreamStub
-            .onSuccess(BaseDownstreamStub.GET, downstreamUri(), OK, downstreamResponseBody(fromDate, toDate))
-        }
-
-        val response: WSResponse = await(request().get())
-        response.status shouldBe OK
-        response.json shouldBe responseBody(periodId, fromDate, toDate)
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      s"any valid request is made for a TYS specific year" in new TysTest {
+      s"any valid request is made for a TYS specific year" in new HipTest {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
@@ -75,7 +58,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
                                 requestTaxYear: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new TysTest {
+          s"validation fails with ${expectedBody.code} error" in new HipTest {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -104,7 +87,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new HipTest {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -114,20 +97,20 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
             }
 
             val response: WSResponse = await(request().get())
-            response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
+            response.status shouldBe expectedStatus
+
           }
         }
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_INCOME_SOURCEID", BAD_REQUEST, BusinessIdFormatError),
-          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
-          (NOT_FOUND, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-          (INTERNAL_SERVER_ERROR, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (BAD_REQUEST, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+          (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
+          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
@@ -176,33 +159,21 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     def errorBody(code: String): String =
       s"""
          |{
-         |   "code": "$code",
-         |   "reason": "message"
+         |  "origin": "HIP",
+         |  "response": {
+         |    "failures": [
+         |      {
+         |        "type": "$code",
+         |        "reason": "Submission has not passed validation. Invalid parameter incomeSourceId."
+         |      }
+         |     ]
+         |  }
          |}
        """.stripMargin
 
   }
 
-  private trait NonTysTest extends Test {
-    val periodId = "2019-01-01_2020-01-01"
-    val fromDate = "2019-01-01"
-    val toDate   = "2020-01-01"
-    val taxYear  = "2019-20"
-
-    def downstreamUri(): String = s"/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries"
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(s"$uri/$taxYear")
-        .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.5.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
-  }
-
-  private trait TysTest extends Test {
+  private trait HipTest extends Test {
 
     lazy val tysTaxYear = TaxYear.fromMtd(mtdTaxYear)
     val periodId        = "2024-01-01_2024-01-02"
@@ -210,7 +181,7 @@ class Def1_ListPeriodSummariesControllerISpec extends IntegrationBaseSpec {
     val toDate          = "2024-01-02"
     val mtdTaxYear      = "2023-24"
 
-    def downstreamUri(): String = s"/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
+    def downstreamUri(): String = s"/itsa/income-tax/v1/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
 
     def request(): WSRequest = {
       setupStubs()

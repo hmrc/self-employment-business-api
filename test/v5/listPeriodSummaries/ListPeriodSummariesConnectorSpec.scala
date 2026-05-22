@@ -16,9 +16,11 @@
 
 package v5.listPeriodSummaries
 
+import org.scalatest.Inspectors.forAll
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{BusinessId, Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
 import v5.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
@@ -58,21 +60,40 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
   "connector" must {
 
-    "send a request and return a body for a TYS year" in new IfsTest with Test {
-      val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
-      willGet(url"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
-        .returns(Future.successful(outcome))
+    "send a request and return a body for a TYS year" when {
+      "IFs TYS" in new IfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> false))
 
-      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(tysTaxYear)))) shouldBe outcome
+        val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
+        willGet(url"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+          .returns(Future.successful(outcome))
+
+        await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(tysTaxYear)))) shouldBe outcome
+      }
+
+      "Hip TYS" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> true))
+        val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
+        willGet(url"$baseUrl/itsa/income-tax/v1/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+          .returns(Future.successful(outcome))
+
+        await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(tysTaxYear)))) shouldBe outcome
+      }
     }
 
     "send a request and return a body for a non TYS year" in new IfsTest with Test {
+      forAll(List(true, false)) { hipEnabled =>
+        {
+          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> hipEnabled))
 
-      val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
-      willGet(url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-        .returns(Future.successful(outcome))
+          val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
+          willGet(url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
+            .returns(Future.successful(outcome))
 
-      await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
+          await(connector.listPeriodSummaries(request(Nino(nino), BusinessId(businessId), TaxYear.fromMtd(taxYear)))) shouldBe outcome
+        }
+
+      }
     }
   }
 

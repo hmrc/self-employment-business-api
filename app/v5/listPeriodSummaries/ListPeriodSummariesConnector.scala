@@ -16,9 +16,9 @@
 
 package v5.listPeriodSummaries
 
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -39,16 +39,19 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClientV2, val appCon
     import request._
     import schema._
 
-    val downstreamUri =
-      if (taxYear.useTaxYearSpecificApi) {
-        IfsUri[DownstreamResp](
-          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries"
-        )
-      } else {
-        IfsUri[DownstreamResp](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
-      }
+    lazy val nonTysDownstreamUri = IfsUri[DownstreamResp](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
 
-    get(downstreamUri)
+    lazy val tysDownstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1965")) {
+      HipUri[DownstreamResp](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+    } else {
+      IfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
+    }
+
+    if (taxYear.useTaxYearSpecificApi) {
+      get(tysDownstreamUri)
+    } else {
+      get(nonTysDownstreamUri)
+    }
   }
 
 }
