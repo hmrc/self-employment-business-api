@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import shared.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNum
 import shared.models.errors.*
 import v5.createAmendAnnualSubmission.def1.model.request.*
 import v5.createAmendAnnualSubmission.model.request.Def1_CreateAmendAnnualSubmissionRequestData
-
-import scala.util.matching.Regex
 
 object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def1_CreateAmendAnnualSubmissionRequestData] {
 
@@ -131,16 +129,16 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
           s"/allowances/$typeOfBuildingAllowance/$index/firstYear/qualifyingAmountExpenditure").toUnit)
       .getOrElse(valid)
 
-    val validatedOptionalStrings = List(
-      (building.name, s"/allowances/$typeOfBuildingAllowance/$index/building/name"),
-      (building.number, s"/allowances/$typeOfBuildingAllowance/$index/building/number")
-    ).traverse_ { case (maybeValue, path) =>
-      maybeValue
-        .map(value => resolveStringPattern(regex, path, value))
-        .getOrElse(valid)
-    }
+    def buildingFieldError(field: String) = StringFormatError.withPath(s"/allowances/$typeOfBuildingAllowance/$index/building/$field")
 
-    val validatedString = resolveStringPattern(regex, s"/allowances/$typeOfBuildingAllowance/$index/building/postcode", building.postcode)
+    val validatedBuildingName =
+      ResolveStringPattern(building.name, regex, buildingFieldError("name"))
+
+    val validatedBuildingNumber =
+      ResolveStringPattern(building.number, regex, buildingFieldError("number"))
+
+    val validatedBuildingPostcode =
+      ResolveStringPattern(building.postcode, regex, buildingFieldError("postcode"))
 
     val validatedDate = firstYear
       .map(year =>
@@ -152,8 +150,9 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     combine(
       validatedAmount,
       validatedQualifyingAmountExpenditure,
-      validatedOptionalStrings,
-      validatedString,
+      validatedBuildingName,
+      validatedBuildingNumber,
+      validatedBuildingPostcode,
       validatedDate,
       validatedBuildingNameNumber
     )
@@ -165,10 +164,6 @@ object Def1_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       case Def1_CreateAmend_Building(None, None, _) => Invalid(List(RuleBuildingNameNumberError.withPath(path)))
       case _                                        => valid
     }
-  }
-
-  private def resolveStringPattern(regex: Regex, path: String, value: String): Validated[Seq[MtdError], String] = {
-    ResolveStringPattern(regex, StringFormatError.withPath(path))(value)
   }
 
 }

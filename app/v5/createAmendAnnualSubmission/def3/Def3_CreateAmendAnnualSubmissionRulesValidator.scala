@@ -25,8 +25,6 @@ import shared.controllers.validators.resolvers.{ResolveIsoDate, ResolveParsedNum
 import shared.models.errors.*
 import v5.createAmendAnnualSubmission.model.request.Def3_CreateAmendAnnualSubmissionRequestData
 
-import scala.util.matching.Regex
-
 object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def3_CreateAmendAnnualSubmissionRequestData] {
 
   private val resolveNonNegativeParsedNumber       = ResolveParsedNumber()
@@ -131,16 +129,16 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
           s"/allowances/$typeOfBuildingAllowance/$index/firstYear/qualifyingAmountExpenditure").toUnit)
       .getOrElse(valid)
 
-    val validatedOptionalStrings = List(
-      (building.name, s"/allowances/$typeOfBuildingAllowance/$index/building/name"),
-      (building.number, s"/allowances/$typeOfBuildingAllowance/$index/building/number")
-    ).traverse_ { case (maybeValue, path) =>
-      maybeValue
-        .map(value => resolveStringPattern(regex, path, value))
-        .getOrElse(valid)
-    }
+    def buildingFieldError(field: String) = StringFormatError.withPath(s"/allowances/$typeOfBuildingAllowance/$index/building/$field")
 
-    val validatedString = resolveStringPattern(regex, s"/allowances/$typeOfBuildingAllowance/$index/building/postcode", building.postcode)
+    val validatedBuildingName =
+      ResolveStringPattern(building.name, regex, buildingFieldError("name"))
+
+    val validatedBuildingNumber =
+      ResolveStringPattern(building.number, regex, buildingFieldError("number"))
+
+    val validatedBuildingPostcode =
+      ResolveStringPattern(building.postcode, regex, buildingFieldError("postcode"))
 
     val validatedDate = firstYear
       .map(year =>
@@ -152,8 +150,9 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     combine(
       validatedAmount,
       validatedQualifyingAmountExpenditure,
-      validatedOptionalStrings,
-      validatedString,
+      validatedBuildingName,
+      validatedBuildingNumber,
+      validatedBuildingPostcode,
       validatedDate,
       validatedBuildingNameNumber
     )
@@ -177,10 +176,6 @@ object Def3_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
 
   private def validateNoOverlapReliefUsed(adjustments: request.Def3_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
     adjustments.overlapReliefUsed.fold(valid)(_ => Invalid(List(RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed"))))
-  }
-
-  private def resolveStringPattern(regex: Regex, path: String, value: String): Validated[Seq[MtdError], String] = {
-    ResolveStringPattern(regex, StringFormatError.withPath(path))(value)
   }
 
 }
