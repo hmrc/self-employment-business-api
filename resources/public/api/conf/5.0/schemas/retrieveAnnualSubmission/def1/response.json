@@ -219,19 +219,19 @@
                 "description": "Postcode is mandatory and minimum one of name and number field must be supplied",
                 "properties": {
                   "name": {
-                    "description": "The name of the building.",
+                    "description": "The name of the building. Must not be empty or contain only whitespace.",
                     "type": "string",
                     "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
                     "example": "Green Oak’s"
                   },
                   "number": {
-                    "description": "The number of the building.",
+                    "description": "The number of the building. Must not be empty or contain only whitespace.",
                     "type": "string",
                     "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
                     "example": "16D"
                   },
                   "postcode": {
-                    "description": "The postcode for the building.",
+                    "description": "The postcode for the building. Must not be empty or contain only whitespace.",
                     "type": "string",
                     "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
                     "example": "SW1A 2AA"
@@ -291,19 +291,19 @@
                 "description": "Object holding enhanced structured building details. Postcode is mandatory and minimum one of name and number field must be supplied",
                 "properties": {
                   "name": {
-                    "description": "The name of the building.",
+                    "description": "The name of the building. Must not be empty or contain only whitespace.",
                     "type": "string",
                     "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
                     "example": "Green Oak’s"
                   },
                   "number": {
-                    "description": "The number of the building.",
+                    "description": "The number of the building. Must not be empty or contain only whitespace.",
                     "type": "string",
                     "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
                     "example": "16D"
                   },
                   "postcode": {
-                    "description": "The postcode for the building.",
+                    "description": "The postcode for the building. Must not be empty or contain only whitespace.",
                     "type": "string",
                     "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$",
                     "example": "SW1A 2AA"
