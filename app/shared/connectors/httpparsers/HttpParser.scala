@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,22 +21,31 @@ import shared.models.errors.*
 import shared.utils.Logging
 import uk.gov.hmrc.http.HttpResponse
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 trait HttpParser extends Logging {
 
   implicit class JsonResponseHelper(response: HttpResponse) {
+    private lazy val jsonTry: Try[JsValue] = Try(response.json)
 
-    private lazy val jsonOpt = Try(response.json).toOption
+    def validateJson[T](implicit reads: Reads[T]): Option[T] = jsonTry.toOption.flatMap(_.asOpt[T])
 
-    def validateJson[T](implicit reads: Reads[T]): Option[T] = jsonOpt.flatMap(_.asOpt)
-
-    def parseResult[T](json: JsValue)(implicit reads: Reads[T]): Option[T] = json.validate[T] match {
-      case JsSuccess(value, _) => Some(value)
-      case JsError(error) =>
-        logger.warn(s"[KnownJsonResponse][validateJson] Unable to parse JSON: $error")
-        None
-    }
+    def validateJsonWithLogging[T](implicit reads: Reads[T]): Option[T] =
+      jsonTry match {
+        case Success(json) =>
+          json
+            .validate[T]
+            .fold(
+              errors => {
+                logger.warn(s"[JsonResponseHelper][validateJsonWithLogging] JSON validation failed: $errors")
+                None
+              },
+              value => Some(value)
+            )
+        case Failure(_) =>
+          logger.warn("[JsonResponseHelper][validateJsonWithLogging] Response body is not valid JSON")
+          None
+      }
 
   }
 
