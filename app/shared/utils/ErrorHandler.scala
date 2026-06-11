@@ -18,8 +18,8 @@ package shared.utils
 
 import play.api.*
 import play.api.http.Status.*
-import play.api.mvc.Results.*
 import play.api.mvc.*
+import play.api.mvc.Results.*
 import shared.models.errors.*
 import shared.routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
@@ -104,6 +104,7 @@ class ErrorHandler @Inject() (
       case _: NotFoundException                                                  => (NotFoundError, "ResourceNotFound")
       case _: AuthorisationException                                             => (ClientOrAgentNotAuthorisedError.withStatus401, "ClientError")
       case _: JsValidationException                                              => (BadRequestError, "ServerValidationError")
+      case e: GatewayTimeoutException                                            => (GatewayTimeoutError, "ServerTimeoutError")
       case e: HttpException                                                      => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if timeoutStatusCodes.contains(e.statusCode) => (GatewayTimeoutError, "ServerTimeoutError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
