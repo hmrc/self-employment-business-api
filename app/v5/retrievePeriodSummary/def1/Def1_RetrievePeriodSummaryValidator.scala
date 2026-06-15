@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package v5.retrievePeriodSummary.def1
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYear}
-import shared.models.errors.MtdError
 import v5.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v5.validators.resolvers.ResolvePeriodId

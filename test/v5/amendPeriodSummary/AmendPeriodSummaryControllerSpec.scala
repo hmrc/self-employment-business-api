@@ -16,18 +16,17 @@
 
 package v5.amendPeriodSummary
 
-import api.models.domain.PeriodId
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.routing.{Version, Version5}
+import api.services.MockAuditService
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version5}
-import shared.services.MockAuditService
 import v5.amendPeriodSummary.def1.model.Def1_AmendPeriodSummaryFixture
 import v5.amendPeriodSummary.def1.model.request.Def1_AmendPeriodSummaryRequestData
 import v5.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
@@ -43,7 +42,7 @@ class AmendPeriodSummaryControllerSpec
     with MockAmendPeriodSummaryService
     with MockAmendPeriodSummaryValidatorFactory
     with MockAuditService
-    with MockSharedAppConfig
+    with MockAppConfig
     with Def1_AmendPeriodSummaryFixture
     with Def2_AmendPeriodSummaryFixture {
 
@@ -119,11 +118,11 @@ class AmendPeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(

@@ -16,9 +16,9 @@
 
 package v5.retrieveAnnualSubmission.def4
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v5.retrieveAnnualSubmission.def4.model.request.Def4_RetrieveAnnualSubmissionRequestData
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 

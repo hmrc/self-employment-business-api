@@ -16,11 +16,11 @@
 
 package v5.createAmendAnnualSubmission
 
+import api.controllers.validators.Validator
 import api.controllers.validators.common.InvalidResultValidator
+import api.models.domain.TaxYear
+import api.models.errors.{RuleIncorrectOrEmptyBodyError, TaxYearFormatError}
 import play.api.libs.json.{JsObject, JsValue}
-import shared.controllers.validators.Validator
-import shared.models.domain.TaxYear
-import shared.models.errors.{RuleIncorrectOrEmptyBodyError, TaxYearFormatError}
 import v5.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.def3.Def3_CreateAmendAnnualSubmissionValidator

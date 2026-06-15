@@ -16,14 +16,12 @@
 
 package v5.amendPeriodSummary
 
-import api.models.domain.PeriodId
-import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
-import shared.config.MockSharedAppConfig
-import shared.controllers.EndpointLogContext
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
+import api.config.MockAppConfig
+import api.controllers.EndpointLogContext
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v5.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodIncome}
 
 import scala.concurrent.Future
@@ -46,7 +44,7 @@ class AmendPeriodSummaryServiceSpec extends ServiceSpec {
     taxYear = taxYear
   )
 
-  trait Test extends MockAmendPeriodSummaryConnector with MockSharedAppConfig {
+  trait Test extends MockAmendPeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new AmendPeriodSummaryService(connector = mockAmendPeriodSummaryConnector)

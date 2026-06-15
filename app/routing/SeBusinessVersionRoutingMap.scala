@@ -16,14 +16,14 @@
 
 package routing
 
+import api.config.AppConfig
+import api.routing.*
 import play.api.routing.Router
-import shared.config.SharedAppConfig
-import shared.routing.*
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton case class SeBusinessVersionRoutingMap @Inject() (
-    appConfig: SharedAppConfig,
+    appConfig: AppConfig,
     defaultRouter: Router,
     v5Router: v5.Routes
 ) extends VersionRoutingMap {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package v5.retrieveAnnualSubmission.def3
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
 import v5.retrieveAnnualSubmission.def3.model.request.Def3_RetrieveAnnualSubmissionRequestData
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 

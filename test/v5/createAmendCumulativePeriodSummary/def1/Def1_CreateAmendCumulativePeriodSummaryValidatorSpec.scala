@@ -16,12 +16,11 @@
 
 package v5.createAmendCumulativePeriodSummary.def1
 
-import api.models.errors.RuleBothExpensesSuppliedError
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.utils.UnitSpec
 import play.api.libs.json.*
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.utils.UnitSpec
 import v5.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
 import v5.createAmendCumulativePeriodSummary.model.request.{
   CreateAmendCumulativePeriodSummaryRequestData,

@@ -16,8 +16,8 @@
 
 package v5.retrieveAnnualSubmission.def2.model.response
 
+import api.utils.UnitSpec
 import play.api.libs.json.Json
-import shared.utils.UnitSpec
 import v5.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
 class Def2_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def2_RetrieveAnnualSubmissionFixture {

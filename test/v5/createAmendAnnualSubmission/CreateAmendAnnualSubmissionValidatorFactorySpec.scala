@@ -16,16 +16,16 @@
 
 package v5.createAmendAnnualSubmission
 
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.utils.UnitSpec
 import play.api.libs.json.*
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.utils.UnitSpec
 import v5.createAmendAnnualSubmission.def1.Def1_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.def2.Def2_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.def3.Def3_CreateAmendAnnualSubmissionValidator
 import v5.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
-class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
+class CreateAmendAnnualSubmissionValidatorFactorySpec extends UnitSpec with MockAppConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"

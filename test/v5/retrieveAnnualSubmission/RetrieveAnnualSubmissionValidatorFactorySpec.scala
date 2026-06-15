@@ -16,11 +16,11 @@
 
 package v5.retrieveAnnualSubmission
 
+import api.controllers.validators.{AlwaysErrorsValidator, Validator}
+import api.models.domain.{TaxYear, TaxYearPropertyCheckSupport}
+import api.utils.UnitSpec
 import config.MockSeBusinessConfig
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import shared.controllers.validators.{AlwaysErrorsValidator, Validator}
-import shared.models.domain.{TaxYear, TaxYearPropertyCheckSupport}
-import shared.utils.UnitSpec
 import v5.retrieveAnnualSubmission.def1.Def1_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.def2.Def2_RetrieveAnnualSubmissionValidator
 import v5.retrieveAnnualSubmission.def3.Def3_RetrieveAnnualSubmissionValidator

@@ -16,12 +16,12 @@
 
 package v5.amendPeriodSummary.def1
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers._
-import shared.models.errors.MtdError
 import v5.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator.resolveTaxYear
 import v5.amendPeriodSummary.def1.model.request.{Def1_AmendPeriodSummaryRequestBody, Def1_AmendPeriodSummaryRequestData}
 import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData

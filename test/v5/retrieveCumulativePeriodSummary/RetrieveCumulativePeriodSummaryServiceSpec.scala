@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package v5.retrieveCumulativePeriodSummary
 
-import shared.config.MockSharedAppConfig
-import shared.controllers.EndpointLogContext
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.{ServiceOutcome, ServiceSpec}
+import api.config.MockAppConfig
+import api.controllers.EndpointLogContext
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.{ServiceOutcome, ServiceSpec}
 import v5.retrieveCumulativePeriodSummary.def1.model.request.Def1_RetrieveCumulativePeriodSummaryRequestData
 import v5.retrieveCumulativePeriodSummary.def1.model.response.{Def1_RetrieveCumulativePeriodSummaryResponse, Def1_Retrieve_PeriodDates}
 import v5.retrieveCumulativePeriodSummary.model.response.RetrieveCumulativePeriodSummaryResponse
@@ -44,7 +44,7 @@ class RetrieveCumulativePeriodSummaryServiceSpec extends ServiceSpec {
   private val def1Response =
     Def1_RetrieveCumulativePeriodSummaryResponse(Def1_Retrieve_PeriodDates("2025-07-08", "2025-09-10"), None, None, None)
 
-  trait Test extends MockRetrieveCumulativePeriodSummaryConnector with MockSharedAppConfig {
+  trait Test extends MockRetrieveCumulativePeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
     val service                                 = new RetrieveCumulativePeriodSummaryService(connector = mockRetrieveCumulativePeriodSummaryConnector)
   }

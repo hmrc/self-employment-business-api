@@ -16,17 +16,16 @@
 
 package v5.createPeriodSummary.def1
 
-import api.models.errors.RuleBothExpensesSuppliedError
+import api.config.MockAppConfig
+import api.models.domain.{BusinessId, Nino}
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.utils.UnitSpec
 import play.api.libs.json.*
-import shared.config.MockSharedAppConfig
-import shared.models.domain.{BusinessId, Nino}
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.utils.UnitSpec
 import v5.createPeriodSummary.def1.model.request.*
 import v5.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestBody, Def1_CreatePeriodSummaryRequestData}
 
-class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
+class Def1_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
 

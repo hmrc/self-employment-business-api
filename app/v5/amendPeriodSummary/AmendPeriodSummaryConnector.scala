@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package v5.amendPeriodSummary
 
+import api.config.AppConfig
+import api.connectors.DownstreamUri.{DesUri, IfsUri}
+import api.connectors.httpparsers.StandardDownstreamHttpParser.*
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import play.api.http.Status.OK
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v5.amendPeriodSummary.def2.model.request.Def2_AmendPeriodSummaryRequestData
@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendPeriodSummaryConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class AmendPeriodSummaryConnector @Inject() (val http: HttpClientV2, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def amendPeriodSummary(request: AmendPeriodSummaryRequestData)(implicit
       hc: HeaderCarrier,
@@ -41,13 +41,13 @@ class AmendPeriodSummaryConnector @Inject() (val http: HttpClientV2, val appConf
 
     request match {
       case def2: Def2_AmendPeriodSummaryRequestData =>
-        import def2._
+        import def2.*
         val ifsUri = IfsUri[Unit](
           s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
         put(def2.body, ifsUri)
 
       case _ @def1 =>
-        import def1._
+        import def1.*
         val desUri = DesUri[Unit](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries?from=${periodId.from}&to=${periodId.to}")
         put(def1.body, desUri)
 

@@ -16,7 +16,7 @@
 
 package v5.deleteAnnualSubmission.def1.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v5.deleteAnnualSubmission.DeleteAnnualSubmissionSchema
 import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
 

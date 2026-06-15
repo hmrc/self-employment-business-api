@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package v5.createAmendCumulativePeriodSummary
 
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
 import v5.createAmendCumulativePeriodSummary.model.request.{
@@ -55,7 +55,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
     protected val connector: CreateAmendCumulativePeriodSummaryConnector = new CreateAmendCumulativePeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
     def taxYear: TaxYear
@@ -67,7 +67,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
       "feature switch is disabled (IFS enabled)" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> false))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> false))
         val outcome = Right(ResponseWrapper(correlationId, ()))
         willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
           .successful(outcome)
@@ -78,7 +78,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
       "feature switch is enabled (HIP enabled)" in new HipTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> true))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> true))
         val outcome = Right(ResponseWrapper(correlationId, ()))
         willPut(url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
           .successful(outcome)

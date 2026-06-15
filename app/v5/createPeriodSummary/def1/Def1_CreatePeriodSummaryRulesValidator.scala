@@ -16,13 +16,12 @@
 
 package v5.createPeriodSummary.def1
 
-import api.models.errors.RuleBothExpensesSuppliedError
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import shared.models.errors.MtdError
 import v5.createPeriodSummary.def1.model.request.{Def1_Create_PeriodDisallowableExpenses, Def1_Create_PeriodExpenses, Def1_Create_PeriodIncome}
 import v5.createPeriodSummary.model.request.Def1_CreatePeriodSummaryRequestData
 
@@ -36,7 +35,7 @@ case class Def1_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def1_
   private val resolveDateRange = ResolveDateRange()
 
   def validateBusinessRules(parsed: Def1_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def1_CreatePeriodSummaryRequestData] = {
-    import parsed.body._
+    import parsed.body.*
     combine(
       validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
       validateExpenses(periodExpenses, periodDisallowableExpenses),
@@ -75,7 +74,7 @@ case class Def1_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def1_
     }
 
   private def validateAllowableNumericFields()(expenses: Def1_Create_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (consolidatedExpenses, "/periodExpenses/consolidatedExpenses"),
@@ -105,7 +104,7 @@ case class Def1_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def1_
   }
 
   private def validateDisllowableNumericFields()(expenses: Def1_Create_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (paymentsToSubcontractorsDisallowable, "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"),

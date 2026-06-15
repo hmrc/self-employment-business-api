@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package api.controllers.validators.common
 
+import api.controllers.validators.Validator
+import api.models.errors.{MtdError, TaxYearFormatError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import shared.controllers.validators.Validator
-import shared.models.errors.{MtdError, TaxYearFormatError}
 
 /** For ValidatorFactories that need to choose a validator for a schema definition, but encounter a format error; usually the tax year format in the
   * request. In this case, the factory can return a "predetermined" validator that will simply return the error.

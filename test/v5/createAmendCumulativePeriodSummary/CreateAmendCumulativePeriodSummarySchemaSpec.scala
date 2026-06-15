@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package v5.createAmendCumulativePeriodSummary
 
+import api.models.domain.TaxYear
+import api.models.errors.{RuleTaxYearNotSupportedError, TaxYearFormatError}
+import api.utils.UnitSpec
 import cats.data.Validated
-import shared.models.domain.TaxYear
-import shared.models.errors.{RuleTaxYearNotSupportedError, TaxYearFormatError}
-import shared.utils.UnitSpec
 
 class CreateAmendCumulativePeriodSummarySchemaSpec extends UnitSpec {
 

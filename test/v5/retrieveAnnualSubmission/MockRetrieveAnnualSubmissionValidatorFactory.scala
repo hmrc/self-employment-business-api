@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package v5.retrieveAnnualSubmission
 
+import api.controllers.validators.Validator
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import config.MockSeBusinessConfig
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import shared.controllers.validators.Validator
-import shared.models.errors.MtdError
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 
 trait MockRetrieveAnnualSubmissionValidatorFactory extends TestSuite with MockFactory with MockSeBusinessConfig {

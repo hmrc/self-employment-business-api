@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package v5.listPeriodSummaries.model.response
 
+import api.utils.JsonWritesUtil
+import api.utils.JsonWritesUtil.writesFrom
 import play.api.libs.json.*
-import shared.utils.JsonWritesUtil
-import shared.utils.JsonWritesUtil.writesFrom
 import v5.listPeriodSummaries.def1.model.response.{Def1_ListPeriodSummariesResponse, Def1_PeriodDetails}
 
 trait ListPeriodSummariesResponse[+E]

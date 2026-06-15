@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package v5.retrievePeriodSummary
 
-import api.models.domain.PeriodId
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
@@ -79,7 +78,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     "given a def2 (TYS) request" should {
       "call the IFS TYS URL and return a 200 status" when {
         "HIP feature switch is disabled" in new IfsTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> false))
+          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> false))
 
           val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
@@ -98,7 +97,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       }
       "call the HIP TYS URL and return a 200 status" when {
         "HIP feature switch is enabled" in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> true))
+          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> true))
           val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
           val expectedDownstreamUrl: URL =
@@ -122,7 +121,7 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
 
     protected val connector: RetrievePeriodSummaryConnector = new RetrievePeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
   }

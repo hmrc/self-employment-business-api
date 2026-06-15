@@ -16,7 +16,7 @@
 
 package v5.createAmendAnnualSubmission.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v5.createAmendAnnualSubmission.def2.request.Def2_CreateAmendAnnualSubmissionRequestBody
 import v5.createAmendAnnualSubmission.def3.request.Def3_CreateAmendAnnualSubmissionRequestBody

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 
 package v5.createAmendCumulativePeriodSummary.def1
 
-import api.models.errors.RuleBothExpensesSuppliedError
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import api.models.domain.TaxYear
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 import v5.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDisallowableExpenses, PeriodExpenses}
 import v5.createAmendCumulativePeriodSummary.model.request.{Create_PeriodIncome, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
@@ -36,7 +35,7 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
 
   def validateBusinessRules(
       parsed: Def1_CreateAmendCumulativePeriodSummaryRequestData): Validated[Seq[MtdError], Def1_CreateAmendCumulativePeriodSummaryRequestData] = {
-    import parsed.body._
+    import parsed.body.*
 
     combine(
       periodDates.fold(valid)(dates => resolveDateRange(dates.periodStartDate -> dates.periodEndDate).toUnit),
@@ -73,7 +72,7 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
     }
 
   private def validateAllowableNumericFields()(expenses: PeriodExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (consolidatedExpenses, "/periodExpenses/consolidatedExpenses"),
@@ -104,7 +103,7 @@ case class Def1_CreateAmendCumulativePeriodSummaryRulesValidator(taxYear: TaxYea
   }
 
   private def validateDisallowableNumericFields()(expenses: PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (paymentsToSubcontractorsDisallowable, "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"),

@@ -16,25 +16,17 @@
 
 package v5.amendPeriodSummary.def1
 
-import api.models.domain.PeriodId
-import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError}
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.utils.UnitSpec
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.utils.UnitSpec
-import v5.amendPeriodSummary.def1.model.request.{
-  Def1_AmendPeriodSummaryRequestBody,
-  Def1_AmendPeriodSummaryRequestData,
-  Def1_Amend_PeriodDisallowableExpenses,
-  Def1_Amend_PeriodExpenses,
-  Def1_Amend_PeriodIncome
-}
+import v5.amendPeriodSummary.def1.model.request.*
 import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
-class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockSharedAppConfig {
+class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
 

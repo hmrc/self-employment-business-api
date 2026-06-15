@@ -16,14 +16,14 @@
 
 package v5.deleteAnnualSubmission
 
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.errors
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
 import config.MockSeBusinessConfig
 import play.api.Configuration
 import play.api.mvc.Result
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
 import v5.deleteAnnualSubmission
 import v5.deleteAnnualSubmission.def1.model.request.Def1_DeleteAnnualSubmissionRequestData
 
@@ -86,11 +86,11 @@ class DeleteAnnualSubmissionControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId, taxYear)(fakeRequest)
   }

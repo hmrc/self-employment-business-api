@@ -17,7 +17,6 @@
 package api.models.errors
 
 import play.api.http.Status.*
-import shared.models.errors.MtdError
 
 object PeriodIdFormatError extends MtdError(code = "FORMAT_PERIOD_ID", message = "The provided Period ID is invalid", BAD_REQUEST)
 

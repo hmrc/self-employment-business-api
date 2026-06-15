@@ -16,7 +16,7 @@
 
 package v5.deleteAnnualSubmission.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 
 trait DeleteAnnualSubmissionRequestData {
   def nino: Nino

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package v5.listPeriodSummaries
 
+import api.connectors.ConnectorSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import org.scalatest.Inspectors.forAll
-import shared.connectors.ConnectorSpec
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
 import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
@@ -50,7 +50,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
     protected val connector: ListPeriodSummariesConnector = new ListPeriodSummariesConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
     protected def request(nino: Nino, businessId: BusinessId, taxYear: TaxYear): ListPeriodSummariesRequestData =
@@ -62,7 +62,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
 
     "send a request and return a body for a TYS year" when {
       "IFs TYS" in new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> false))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> false))
 
         val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
         willGet(url"$baseUrl/income-tax/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
@@ -72,7 +72,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
       }
 
       "Hip TYS" in new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> true))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> true))
         val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
         willGet(url"$baseUrl/itsa/income-tax/v1/${TaxYear.fromMtd(tysTaxYear).asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
           .returns(Future.successful(outcome))
@@ -84,7 +84,7 @@ class ListPeriodSummariesConnectorSpec extends ConnectorSpec {
     "send a request and return a body for a non TYS year" in new IfsTest with Test {
       forAll(List(true, false)) { hipEnabled =>
         {
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> hipEnabled))
+          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1965.enabled" -> hipEnabled))
 
           val outcome: Right[Nothing, ResponseWrapper[ListPeriodSummariesResponse[PeriodDetails]]] = Right(ResponseWrapper(correlationId, response))
           willGet(url"$baseUrl/income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")

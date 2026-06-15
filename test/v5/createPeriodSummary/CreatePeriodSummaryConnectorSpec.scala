@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package v5.createPeriodSummary
 
-import shared.connectors.ConnectorSpec
-import shared.models.domain.{BusinessId, Nino}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.ConnectorSpec
+import api.models.domain.{BusinessId, Nino}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.createPeriodSummary.def1.model.request.Def1_Create_PeriodDates
 import v5.createPeriodSummary.def2.model.request.Def2_Create_PeriodDates
@@ -71,7 +71,7 @@ class CreatePeriodSummaryConnectorSpec extends ConnectorSpec {
 
     protected val connector: CreatePeriodSummaryConnector = new CreatePeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
     val nino: String       = "AA123456A"

@@ -16,14 +16,12 @@
 
 package v5.retrievePeriodSummary
 
-import api.models.domain.PeriodId
-import api.models.errors.PeriodIdFormatError
-import shared.config.MockSharedAppConfig
-import shared.controllers.EndpointLogContext
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.{ServiceOutcome, ServiceSpec}
+import api.config.MockAppConfig
+import api.controllers.EndpointLogContext
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.{ServiceOutcome, ServiceSpec}
 import v5.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.def1.model.response.{Def1_Retrieve_PeriodDates, Def1_Retrieve_PeriodIncome}
 import v5.retrievePeriodSummary.def2.model.response.{Def2_Retrieve_PeriodDates, Def2_Retrieve_PeriodIncome}
@@ -59,7 +57,7 @@ class RetrievePeriodSummaryServiceSpec extends ServiceSpec {
     None
   )
 
-  trait Test extends MockRetrievePeriodSummaryConnector with MockSharedAppConfig {
+  trait Test extends MockRetrievePeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
     val service                                 = new RetrievePeriodSummaryService(connector = mockRetrievePeriodSummaryConnector)
   }
