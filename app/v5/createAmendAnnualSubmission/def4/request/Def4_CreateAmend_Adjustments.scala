@@ -20,7 +20,6 @@ import play.api.libs.json.{Json, OFormat}
 
 case class Def4_CreateAmend_Adjustments(includedNonTaxableProfits: Option[BigDecimal],
                                         basisAdjustment: Option[BigDecimal],
-                                        overlapReliefUsed: Option[BigDecimal],
                                         accountingAdjustment: Option[BigDecimal],
                                         outstandingBusinessIncome: Option[BigDecimal],
                                         balancingChargeBpra: Option[BigDecimal],

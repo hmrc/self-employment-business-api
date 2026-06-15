@@ -187,14 +187,6 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
             ),
             BAD_REQUEST,
             Class4ExemptionReasonFormatError
-          ),
-          (
-            "AA123456A",
-            "XAIS12345678910",
-            "2026-27",
-            mtdRequestBodyJson.update("/adjustments/overlapReliefUsed", JsNumber(200.12)),
-            BAD_REQUEST,
-            RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed")
           )
         )
 
