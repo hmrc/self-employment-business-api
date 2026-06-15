@@ -86,6 +86,7 @@ class CreateAmendAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Creat
 
         val extraTysErrors: Seq[(String, MtdError)] = Seq(
           "INVALID_INCOMESOURCE_ID"    -> BusinessIdFormatError,
+          "INVALID_INCOME_SOURCE_ID"   -> BusinessIdFormatError,
           "INVALID_CORRELATION_ID"     -> InternalError,
           "INCOME_SOURCE_NOT_FOUND"    -> NotFoundError,
           "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,

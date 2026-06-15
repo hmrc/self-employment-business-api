@@ -52,6 +52,7 @@ class RetrieveAnnualSubmissionService @Inject() (connector: RetrieveAnnualSubmis
 
     val extraTysErrors = Map(
       "INVALID_INCOMESOURCE_ID"       -> BusinessIdFormatError,
+      "INVALID_INCOME_SOURCE_ID"      -> BusinessIdFormatError,
       "INVALID_CORRELATION_ID"        -> InternalError,
       "INVALID_DELETED_RETURN_PERIOD" -> InternalError,
       "SUBMISSION_DATA_NOT_FOUND"     -> NotFoundError,

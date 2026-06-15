@@ -93,6 +93,7 @@ class RetrieveAnnualSubmissionServiceSpec extends ServiceSpec with Def1_Retrieve
 
       val extraTysErrors = List(
         "INVALID_INCOMESOURCE_ID"       -> BusinessIdFormatError,
+        "INVALID_INCOME_SOURCE_ID"      -> BusinessIdFormatError,
         "INVALID_DELETED_RETURN_PERIOD" -> InternalError,
         "INVALID_CORRELATION_ID"        -> InternalError,
         "INCOME_DATA_SOURCE_NOT_FOUND"  -> NotFoundError,
