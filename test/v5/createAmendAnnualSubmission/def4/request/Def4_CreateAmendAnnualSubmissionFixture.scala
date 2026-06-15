@@ -25,7 +25,6 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
     Def4_CreateAmend_Adjustments(
       includedNonTaxableProfits = Some(1.12),
       basisAdjustment = Some(2.12),
-      overlapReliefUsed = None,
       accountingAdjustment = Some(4.12),
       outstandingBusinessIncome = Some(6.12),
       balancingChargeBpra = Some(7.12),

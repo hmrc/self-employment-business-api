@@ -38,7 +38,6 @@ object Def4_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     combine(
       adjustments.map(validateAdjustments).getOrElse(valid),
       adjustments.map(validateTPAAmount).getOrElse(valid),
-      adjustments.map(validateNoOverlapReliefUsed).getOrElse(valid),
       allowances.map(validateBothAllowancesSupplied).getOrElse(valid),
       allowances.map(validateAllowances).getOrElse(valid)
     ).onSuccess(parsed)
@@ -173,10 +172,6 @@ object Def4_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
     } else {
       valid
     }
-  }
-
-  private def validateNoOverlapReliefUsed(adjustments: request.Def4_CreateAmend_Adjustments): Validated[Seq[MtdError], Unit] = {
-    adjustments.overlapReliefUsed.fold(valid)(_ => Invalid(List(RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed"))))
   }
 
 }
