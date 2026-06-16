@@ -77,6 +77,7 @@ class DeleteAnnualSubmissionServiceSpec extends ServiceSpec {
         "INVALID_TAX_YEAR"             -> TaxYearFormatError,
         "INVALID_INCOME_SOURCE"        -> BusinessIdFormatError,
         "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
+        "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
         "INVALID_CORRELATIONID"        -> InternalError,
         "INVALID_CORRELATION_ID"       -> InternalError,
         "INVALID_PAYLOAD"              -> InternalError,

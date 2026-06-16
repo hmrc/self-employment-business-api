@@ -56,6 +56,7 @@ class DeleteAnnualSubmissionService @Inject() (connector: DeleteAnnualSubmission
     val extraTysErrors: Map[String, MtdError] = Map(
       "INVALID_CORRELATION_ID"       -> InternalError,
       "INVALID_INCOMESOURCE_ID"      -> BusinessIdFormatError,
+      "INVALID_INCOME_SOURCE_ID"     -> BusinessIdFormatError,
       "PERIOD_NOT_FOUND"             -> NotFoundError,
       "INCOME_SOURCE_DATA_NOT_FOUND" -> NotFoundError,
       "PERIOD_ALREADY_DELETED"       -> NotFoundError,
