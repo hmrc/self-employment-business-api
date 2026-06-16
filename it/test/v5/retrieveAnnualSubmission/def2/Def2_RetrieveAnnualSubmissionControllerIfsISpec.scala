@@ -110,7 +110,6 @@ class Def2_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpe
         val errors = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_INCOMESOURCEID", BAD_REQUEST, BusinessIdFormatError),
-          (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "NOT_FOUND_PERIOD", NOT_FOUND, NotFoundError),

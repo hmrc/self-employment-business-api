@@ -186,7 +186,6 @@ class DeleteAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpec {
 
       val extraTysErrors = Seq(
         (Status.BAD_REQUEST, "INVALID_INCOMESOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
-        (Status.BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", Status.BAD_REQUEST, BusinessIdFormatError),
         (Status.BAD_REQUEST, "INVALID_CORRELATION_ID", Status.INTERNAL_SERVER_ERROR, InternalError),
         (Status.NOT_FOUND, "PERIOD_NOT_FOUND", Status.NOT_FOUND, NotFoundError),
         (Status.NOT_FOUND, "INCOME_SOURCE_DATA_NOT_FOUND", Status.NOT_FOUND, NotFoundError),

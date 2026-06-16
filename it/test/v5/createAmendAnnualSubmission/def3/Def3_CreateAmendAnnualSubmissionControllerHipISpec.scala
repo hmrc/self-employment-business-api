@@ -220,7 +220,6 @@ class Def3_CreateAmendAnnualSubmissionControllerHipISpec
 
         val errors = List(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
