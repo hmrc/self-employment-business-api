@@ -16,7 +16,7 @@
 
 package v5.deleteAnnualSubmission
 
-import shared.controllers.validators.Validator
+import api.controllers.validators.Validator
 import v5.deleteAnnualSubmission.DeleteAnnualSubmissionSchema.Def1
 import v5.deleteAnnualSubmission.def1.Def1_DeleteAnnualSubmissionValidator
 import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData

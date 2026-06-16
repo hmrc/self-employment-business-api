@@ -16,8 +16,8 @@
 
 package v5.createAmendAnnualSubmission.def3.request
 
+import api.utils.UnitSpec
 import play.api.libs.json.{JsObject, Json}
-import shared.utils.UnitSpec
 
 class Def3_CreateAmend_AdjustmentsSpec extends UnitSpec with Def3_CreateAmendAnnualSubmissionFixture {
 

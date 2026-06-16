@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v5.retrievePeriodSummary
 
+import api.controllers.validators.Validator
 import cats.data.Validated.{Invalid, Valid}
-import shared.controllers.validators.Validator
 import v5.retrievePeriodSummary.RetrievePeriodSummarySchema.{Def1, Def2}
 import v5.retrievePeriodSummary.def1.Def1_RetrievePeriodSummaryValidator
 import v5.retrievePeriodSummary.def2.Def2_RetrievePeriodSummaryValidator

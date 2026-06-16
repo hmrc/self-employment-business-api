@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v5.amendPeriodSummary.model.request
 
+import api.utils.JsonWritesUtil
 import play.api.libs.json.OWrites
-import shared.utils.JsonWritesUtil
 import v5.amendPeriodSummary.def1.model.request.Def1_AmendPeriodSummaryRequestBody
 import v5.amendPeriodSummary.def2.model.request.Def2_AmendPeriodSummaryRequestBody
 

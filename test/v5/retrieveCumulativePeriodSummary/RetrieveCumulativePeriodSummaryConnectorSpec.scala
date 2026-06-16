@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package v5.retrieveCumulativePeriodSummary
 
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.retrieveCumulativePeriodSummary.def1.model.request.Def1_RetrieveCumulativePeriodSummaryRequestData
 import v5.retrieveCumulativePeriodSummary.def1.model.response.{Def1_RetrieveCumulativePeriodSummaryResponse, Def1_Retrieve_PeriodDates}
@@ -48,7 +48,7 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
     "given a def1 request" should {
       "call the IFS URL and return a 200 status" when {
         "HIP feature switch is disabled" in new IfsTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1960.enabled" -> false))
+          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1960.enabled" -> false))
 
           val outcome: Right[Nothing, ResponseWrapper[RetrieveCumulativePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
@@ -63,7 +63,7 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
       }
       "call the HIP URL and return a 200 status" when {
         "HIP feature switch is enabled" in new HipTest with Test {
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1960.enabled" -> true))
+          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1960.enabled" -> true))
 
           val outcome: Right[Nothing, ResponseWrapper[RetrieveCumulativePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
@@ -87,7 +87,7 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
 
     protected val connector: RetrieveCumulativePeriodSummaryConnector = new RetrieveCumulativePeriodSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
   }

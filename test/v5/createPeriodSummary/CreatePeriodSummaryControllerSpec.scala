@@ -16,17 +16,17 @@
 
 package v5.createPeriodSummary
 
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import api.models.domain.{BusinessId, Nino}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.routing.{Version, Version5}
+import api.services.MockAuditService
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import shared.models.domain.{BusinessId, Nino}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version5}
-import shared.services.MockAuditService
 import v5.createPeriodSummary.def1.model.request.Def1_CreatePeriodSummaryFixture
 import v5.createPeriodSummary.model.request.{CreatePeriodSummaryRequestData, Def1_CreatePeriodSummaryRequestData}
 import v5.createPeriodSummary.model.response.CreatePeriodSummaryResponse
@@ -39,7 +39,7 @@ class CreatePeriodSummaryControllerSpec
     with ControllerTestRunner
     with MockCreatePeriodSummaryService
     with MockCreatePeriodSummaryValidatorFactory
-    with MockSharedAppConfig
+    with MockAppConfig
     with MockAuditService
     with Def1_CreatePeriodSummaryFixture {
 
@@ -108,11 +108,11 @@ class CreatePeriodSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+    MockAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.handleRequest(validNino, businessId)(fakePostRequest(requestMtdBodyJson))
 

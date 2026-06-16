@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package v5.createAmendCumulativePeriodSummary
 
+import api.controllers.validators.{AlwaysErrorsValidator, Validator}
+import api.utils.UnitSpec
 import play.api.libs.json.*
-import shared.controllers.validators.{AlwaysErrorsValidator, Validator}
-import shared.utils.UnitSpec
 import v5.createAmendCumulativePeriodSummary.def1.Def1_CreateAmendCumulativePeriodSummaryValidator
 import v5.createAmendCumulativePeriodSummary.model.request.CreateAmendCumulativePeriodSummaryRequestData
 

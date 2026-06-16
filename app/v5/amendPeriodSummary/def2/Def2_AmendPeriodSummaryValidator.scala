@@ -16,13 +16,13 @@
 
 package v5.amendPeriodSummary.def2
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinMax}
+import api.models.domain.TaxYear
+import api.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple5Semigroupal
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinMax}
-import shared.models.domain.TaxYear
-import shared.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 import v5.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_AmendPeriodSummaryRequestData}
 import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 import v5.validators.resolvers.ResolvePeriodId

@@ -16,16 +16,15 @@
 
 package v5.retrievePeriodSummary.def1
 
-import api.models.errors.PeriodIdFormatError
+import api.models.errors.*
+import api.services.{AuditStub, AuthStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.*
-import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
-import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 
 class Def1_RetrievePeriodSummaryControllerISpec extends IntegrationBaseSpec {

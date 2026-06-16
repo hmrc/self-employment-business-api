@@ -16,7 +16,7 @@
 
 package v5.retrieveAnnualSubmission.def4.model.request
 
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import v5.retrieveAnnualSubmission.RetrieveAnnualSubmissionSchema
 import v5.retrieveAnnualSubmission.model.request.RetrieveAnnualSubmissionRequestData
 

@@ -16,13 +16,13 @@
 
 package v5.deleteAnnualSubmission
 
+import api.config.{AppConfig, ConfigFeatureSwitches}
+import api.connectors.DownstreamUri.{DesUri, HipUri, IfsUri}
+import api.connectors.httpparsers.StandardDownstreamHttpParser.*
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import api.models.domain.TaxYear
 import config.SeBusinessFeatureSwitches
 import play.api.libs.json.JsObject
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
-import shared.connectors.DownstreamUri.{DesUri, HipUri, IfsUri}
-import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import shared.models.domain.TaxYear
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v5.deleteAnnualSubmission.model.request.DeleteAnnualSubmissionRequestData
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 @Singleton
-class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig)(implicit
+class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val appConfig: AppConfig)(implicit
     featureSwitches: SeBusinessFeatureSwitches)
     extends BaseDownstreamConnector {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package v5.createAmendAnnualSubmission
 
+import api.controllers.validators.Validator
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
-import shared.models.errors.MtdError
 import v5.createAmendAnnualSubmission.model.request.CreateAmendAnnualSubmissionRequestData
 
 trait MockCreateAmendAnnualSubmissionValidatorFactory extends TestSuite with MockFactory {

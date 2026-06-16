@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package v5.amendPeriodSummary.model.request
 
-import api.models.domain.PeriodId
-import shared.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import v5.amendPeriodSummary.AmendPeriodSummarySchema
 
 trait AmendPeriodSummaryRequestData {

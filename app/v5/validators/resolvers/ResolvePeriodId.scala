@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
 
 package v5.validators.resolvers
 
-import api.models.domain.PeriodId
-import api.models.errors.PeriodIdFormatError
+import api.controllers.validators.resolvers.ResolveDateRange
+import api.models.domain.{DateRange, PeriodId}
+import api.models.errors.{MtdError, PeriodIdFormatError}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.controllers.validators.resolvers.ResolveDateRange
-import shared.models.domain.DateRange
-import shared.models.errors.MtdError
 
 object ResolvePeriodId {
 

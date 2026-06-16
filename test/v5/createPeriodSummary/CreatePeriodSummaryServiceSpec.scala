@@ -16,13 +16,12 @@
 
 package v5.createPeriodSummary
 
+import api.config.MockAppConfig
+import api.controllers.EndpointLogContext
+import api.models.domain.{BusinessId, Nino}
 import api.models.errors.*
-import shared.config.MockSharedAppConfig
-import shared.controllers.EndpointLogContext
-import shared.models.domain.{BusinessId, Nino}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.{ServiceOutcome, ServiceSpec}
+import api.models.outcomes.ResponseWrapper
+import api.services.{ServiceOutcome, ServiceSpec}
 import v5.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDates, Def2_Create_PeriodIncome}
 import v5.createPeriodSummary.model.request.{Def2_CreatePeriodSummaryRequestBody, Def2_CreatePeriodSummaryRequestData}
 import v5.createPeriodSummary.model.response.CreatePeriodSummaryResponse
@@ -107,7 +106,7 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
     }
   }
 
-  trait Test extends MockCreatePeriodSummaryConnector with MockSharedAppConfig {
+  trait Test extends MockCreatePeriodSummaryConnector with MockAppConfig {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service = new CreatePeriodSummaryService(connector = mockCreatePeriodSummaryConnector)

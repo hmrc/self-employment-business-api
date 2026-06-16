@@ -16,15 +16,14 @@
 
 package v5.createAmendAnnualSubmission.def4
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
 import api.models.domain.ex.MtdNicExemption
-import api.models.errors.Class4ExemptionReasonFormatError
+import api.models.errors.{Class4ExemptionReasonFormatError, MtdError}
 import cats.data.Validated
 import cats.implicits.*
 import config.SeBusinessConfig
 import play.api.libs.json.*
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
-import shared.models.errors.MtdError
 import v5.createAmendAnnualSubmission.def4.Def4_CreateAmendAnnualSubmissionRulesValidator.validateBusinessRules
 import v5.createAmendAnnualSubmission.model.request.{CreateAmendAnnualSubmissionRequestData, Def4_CreateAmendAnnualSubmissionRequestData}
 

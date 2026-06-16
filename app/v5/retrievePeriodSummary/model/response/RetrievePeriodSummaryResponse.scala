@@ -17,8 +17,8 @@
 package v5.retrievePeriodSummary.model.response
 
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
-import v5.retrievePeriodSummary.def1.model.response._
-import v5.retrievePeriodSummary.def2.model.response._
+import v5.retrievePeriodSummary.def1.model.response.*
+import v5.retrievePeriodSummary.def2.model.response.*
 
 trait RetrievePeriodSummaryResponse
 

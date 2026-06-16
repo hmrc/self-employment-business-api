@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package v5.retrieveCumulativePeriodSummary.def1.model.response
 
+import api.config.MockAppConfig
+import api.utils.UnitSpec
 import play.api.libs.json.Json
-import shared.config.MockSharedAppConfig
-import shared.utils.UnitSpec
 import v5.retrieveCumulativePeriodSummary.def1.model.Def1_RetrieveCumulativePeriodSummaryFixture
 
-class Def1_RetrieveCumulativePeriodSummaryResponseSpec extends UnitSpec with MockSharedAppConfig with Def1_RetrieveCumulativePeriodSummaryFixture {
+class Def1_RetrieveCumulativePeriodSummaryResponseSpec extends UnitSpec with MockAppConfig with Def1_RetrieveCumulativePeriodSummaryFixture {
 
   "round trip" should {
     "return mtd json" when {

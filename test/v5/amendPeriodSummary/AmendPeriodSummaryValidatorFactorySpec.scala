@@ -16,15 +16,15 @@
 
 package v5.amendPeriodSummary
 
+import api.config.MockAppConfig
+import api.controllers.validators.{AlwaysErrorsValidator, Validator}
+import api.utils.UnitSpec
 import play.api.libs.json.Json
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.{AlwaysErrorsValidator, Validator}
-import shared.utils.UnitSpec
 import v5.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
 import v5.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator
 import v5.amendPeriodSummary.model.request.AmendPeriodSummaryRequestData
 
-class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
+class AmendPeriodSummaryValidatorFactorySpec extends UnitSpec with MockAppConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"

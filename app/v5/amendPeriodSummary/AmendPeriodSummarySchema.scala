@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package v5.amendPeriodSummary
 
+import api.controllers.validators.resolvers.ResolveTaxYear
+import api.models.domain.TaxYear
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.Valid
-import shared.controllers.validators.resolvers.ResolveTaxYear
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 
 import scala.math.Ordered.orderingToOrdered
 

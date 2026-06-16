@@ -16,13 +16,12 @@
 
 package v5.createPeriodSummary.def2
 
-import api.models.errors.RuleBothExpensesSuppliedError
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.{ResolveDateRange, ResolveParsedNumber}
-import shared.models.errors.{MtdError, RuleEndBeforeStartDateError, RuleTaxYearNotSupportedError}
 import v5.createPeriodSummary.def2.model.request.{Def2_Create_PeriodDisallowableExpenses, Def2_Create_PeriodExpenses}
 import v5.createPeriodSummary.model.request.{Create_PeriodIncome, Def2_CreatePeriodSummaryRequestData}
 
@@ -38,7 +37,7 @@ case class Def2_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def2_
   private val resolveDateRange = ResolveDateRange(RuleTaxYearNotSupportedError, RuleTaxYearNotSupportedError, RuleEndBeforeStartDateError)
 
   def validateBusinessRules(parsed: Def2_CreatePeriodSummaryRequestData): Validated[Seq[MtdError], Def2_CreatePeriodSummaryRequestData] = {
-    import parsed.body._
+    import parsed.body.*
 
     combine(
       validateDates(periodDates.periodStartDate, periodDates.periodEndDate),
@@ -78,7 +77,7 @@ case class Def2_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def2_
     }
 
   private def validateAllowableNumericFields(expenses: Def2_Create_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (consolidatedExpenses, "/periodExpenses/consolidatedExpenses"),
@@ -109,7 +108,7 @@ case class Def2_CreatePeriodSummaryRulesValidator() extends RulesValidator[Def2_
   }
 
   private def validateDisllowableNumericFields(expenses: Def2_Create_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (paymentsToSubcontractorsDisallowable, "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"),

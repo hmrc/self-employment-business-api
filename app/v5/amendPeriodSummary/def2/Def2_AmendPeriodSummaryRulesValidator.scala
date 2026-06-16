@@ -16,19 +16,13 @@
 
 package v5.amendPeriodSummary.def2
 
-import api.models.errors.RuleBothExpensesSuppliedError
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.ResolveParsedNumber
+import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.ResolveParsedNumber
-import shared.models.errors.MtdError
-import v5.amendPeriodSummary.def2.model.request.{
-  Def2_AmendPeriodSummaryRequestData,
-  Def2_Amend_PeriodDisallowableExpenses,
-  Def2_Amend_PeriodExpenses,
-  Def2_Amend_PeriodIncome
-}
+import v5.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
 
 class Def2_AmendPeriodSummaryRulesValidator() extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
 
@@ -37,7 +31,7 @@ class Def2_AmendPeriodSummaryRulesValidator() extends RulesValidator[Def2_AmendP
 
   def validateBusinessRules(parsed: Def2_AmendPeriodSummaryRequestData): Validated[Seq[MtdError], Def2_AmendPeriodSummaryRequestData] = {
 
-    import parsed.body._
+    import parsed.body.*
 
     combine(
       validateExpenses(periodExpenses, periodDisallowableExpenses),
@@ -69,7 +63,7 @@ class Def2_AmendPeriodSummaryRulesValidator() extends RulesValidator[Def2_AmendP
     }
 
   private def validatePeriodExpenses(expenses: Def2_Amend_PeriodExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (consolidatedExpenses, "/periodExpenses/consolidatedExpenses"),
@@ -100,7 +94,7 @@ class Def2_AmendPeriodSummaryRulesValidator() extends RulesValidator[Def2_AmendP
   }
 
   private def validatePeriodDisallowableExpenses(expenses: Def2_Amend_PeriodDisallowableExpenses): Validated[Seq[MtdError], Unit] = {
-    import expenses._
+    import expenses.*
 
     val conditionalMaybeNegativeExpenses = List(
       (paymentsToSubcontractorsDisallowable, "/periodDisallowableExpenses/paymentsToSubcontractorsDisallowable"),

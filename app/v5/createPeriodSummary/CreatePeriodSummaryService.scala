@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 
 package v5.createPeriodSummary
 
-import api.models.errors._
-import cats.implicits._
-import shared.controllers.RequestContext
-import shared.models.errors._
-import shared.models.outcomes.ResponseWrapper
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.*
 import v5.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
 import v5.createPeriodSummary.model.response.CreatePeriodSummaryResponse
 
@@ -36,7 +35,7 @@ class CreatePeriodSummaryService @Inject() (connector: CreatePeriodSummaryConnec
       ec: ExecutionContext): Future[ServiceOutcome[CreatePeriodSummaryResponse]] = {
 
     def createSummaryResponse(wrapper: ResponseWrapper[Unit]): ResponseWrapper[CreatePeriodSummaryResponse] = {
-      import request.body.periodDates._
+      import request.body.periodDates.*
       wrapper.copy(responseData = CreatePeriodSummaryResponse(s"${periodStartDate}_$periodEndDate"))
     }
 

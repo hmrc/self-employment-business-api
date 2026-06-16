@@ -17,12 +17,11 @@
 package v5.createAmendAnnualSubmission.def3
 
 import api.models.domain.ex.MtdNicExemption
+import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.utils.UnitSpec
 import play.api.libs.json.{JsNumber, JsValue, Json}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.utils.UnitSpec
 import v5.createAmendAnnualSubmission.CreateAmendAnnualSubmissionValidatorFactory
 import v5.createAmendAnnualSubmission.def3.request.*
 import v5.createAmendAnnualSubmission.model.request.*

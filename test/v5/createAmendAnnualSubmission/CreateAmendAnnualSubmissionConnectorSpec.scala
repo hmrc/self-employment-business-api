@@ -16,10 +16,10 @@
 
 package v5.createAmendAnnualSubmission
 
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v5.createAmendAnnualSubmission.def3.request.Def3_CreateAmendAnnualSubmissionRequestBody
@@ -54,7 +54,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
     protected val connector: CreateAmendAnnualSubmissionConnector = new CreateAmendAnnualSubmissionConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
     def taxYear: TaxYear
@@ -98,7 +98,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
           val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
 
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> false))
+          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> false))
 
           willPut(
             url = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries",
@@ -115,7 +115,7 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
 
           val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
 
-          MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> true))
+          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> true))
 
           willPut(
             url = url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries",

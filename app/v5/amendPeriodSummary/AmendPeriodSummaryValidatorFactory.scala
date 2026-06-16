@@ -16,9 +16,9 @@
 
 package v5.amendPeriodSummary
 
+import api.controllers.validators.Validator
 import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
 import v5.amendPeriodSummary.AmendPeriodSummarySchema.{Def1, Def2}
 import v5.amendPeriodSummary.def1.Def1_AmendPeriodSummaryValidator
 import v5.amendPeriodSummary.def2.Def2_AmendPeriodSummaryValidator

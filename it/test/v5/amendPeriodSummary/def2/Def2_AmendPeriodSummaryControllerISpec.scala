@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,19 @@
 
 package v5.amendPeriodSummary.def2
 
-import api.models.errors.{PeriodIdFormatError, RuleBothExpensesSuppliedError, RuleNotAllowedConsolidatedExpenses}
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.services.{AuthStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.services.{AuthStub, MtdIdLookupStub}
-import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 import v5.amendPeriodSummary.def2.model.Def2_AmendPeriodSummaryFixture
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 class Def2_AmendPeriodSummaryControllerISpec extends IntegrationBaseSpec with JsonErrorValidators with Def2_AmendPeriodSummaryFixture {
 

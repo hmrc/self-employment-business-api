@@ -16,8 +16,8 @@
 
 package v5.retrieveAnnualSubmission.model.response
 
+import api.utils.JsonWritesUtil
 import play.api.libs.json.OWrites
-import shared.utils.JsonWritesUtil
 import v5.retrieveAnnualSubmission.def1.model.response.Def1_RetrieveAnnualSubmissionResponse
 import v5.retrieveAnnualSubmission.def2.model.response.Def2_RetrieveAnnualSubmissionResponse
 import v5.retrieveAnnualSubmission.def3.model.response.Def3_RetrieveAnnualSubmissionResponse

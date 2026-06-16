@@ -16,11 +16,11 @@
 
 package v5.retrieveAnnualSubmission
 
+import api.connectors.ConnectorSpec
+import api.models.domain.{BusinessId, Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import config.MockSeBusinessFeatureSwitches
 import play.api.Configuration
-import shared.connectors.ConnectorSpec
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v5.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v5.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
@@ -52,7 +52,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
 
     protected val connector: RetrieveAnnualSubmissionConnector = new RetrieveAnnualSubmissionConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
   }
@@ -69,7 +69,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
 
     "send a request and return a body for a TYS tax year" when {
       "feature switch is disabled (IFS enabled)" in new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1803.enabled" -> false))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1803.enabled" -> false))
         val outcome = Right(ResponseWrapper(correlationId, response))
 
         willGet(url"$baseUrl/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries")
@@ -79,7 +79,7 @@ class RetrieveAnnualSubmissionConnectorSpec extends ConnectorSpec with Def1_Retr
       }
 
       "feature switch is enabled (HIP enabled)" in new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1803.enabled" -> true))
+        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1803.enabled" -> true))
         val outcome = Right(ResponseWrapper(correlationId, response))
 
         willGet(

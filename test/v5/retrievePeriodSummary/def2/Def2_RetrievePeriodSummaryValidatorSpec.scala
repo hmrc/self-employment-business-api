@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 
 package v5.retrievePeriodSummary.def2
 
-import api.models.domain.PeriodId
-import api.models.errors.PeriodIdFormatError
-import shared.models.domain.{BusinessId, Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v5.retrievePeriodSummary.def2.model.request.Def2_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 

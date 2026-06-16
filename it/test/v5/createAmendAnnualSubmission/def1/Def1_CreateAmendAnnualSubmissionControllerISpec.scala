@@ -17,18 +17,17 @@
 package v5.createAmendAnnualSubmission.def1
 
 import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.services.{AuditStub, AuthStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
+import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
-import shared.models.errors.*
-import shared.models.utils.JsonErrorValidators
-import shared.services.{AuditStub, AuthStub, MtdIdLookupStub}
-import shared.support.IntegrationBaseSpec
 import stubs.BaseDownstreamStub
 import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionFixture
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
-import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
 
 class Def1_CreateAmendAnnualSubmissionControllerISpec
     extends IntegrationBaseSpec

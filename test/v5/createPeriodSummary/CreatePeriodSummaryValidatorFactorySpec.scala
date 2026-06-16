@@ -16,17 +16,17 @@
 
 package v5.createPeriodSummary
 
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
 import api.controllers.validators.common.InvalidResultValidator
+import api.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
+import api.utils.UnitSpec
 import play.api.libs.json.*
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.models.errors.{EndDateFormatError, RuleIncorrectOrEmptyBodyError}
-import shared.utils.UnitSpec
 import v5.createPeriodSummary.def1.Def1_CreatePeriodSummaryValidator
 import v5.createPeriodSummary.def2.Def2_CreatePeriodSummaryValidator
 import v5.createPeriodSummary.model.request.CreatePeriodSummaryRequestData
 
-class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
+class CreatePeriodSummaryValidatorFactorySpec extends UnitSpec with MockAppConfig {
 
   private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"

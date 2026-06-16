@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package v5.retrieveCumulativePeriodSummary.model.response
 
+import api.utils.JsonWritesUtil
 import play.api.libs.json.*
-import shared.utils.JsonWritesUtil
-import v5.retrieveCumulativePeriodSummary.def1.model.response._
+import v5.retrieveCumulativePeriodSummary.def1.model.response.*
 
 trait RetrieveCumulativePeriodSummaryResponse
 
