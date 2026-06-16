@@ -22,12 +22,7 @@ import api.models.errors.{MtdError, RuleBothExpensesSuppliedError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import cats.implicits.toFoldableOps
-import v5.amendPeriodSummary.def2.model.request.{
-  Def2_AmendPeriodSummaryRequestData,
-  Def2_Amend_PeriodDisallowableExpenses,
-  Def2_Amend_PeriodExpenses,
-  Def2_Amend_PeriodIncome
-}
+import v5.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestData, Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
 
 class Def2_AmendPeriodSummaryRulesValidator() extends RulesValidator[Def2_AmendPeriodSummaryRequestData] {
 

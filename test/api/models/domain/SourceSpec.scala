@@ -16,9 +16,9 @@
 
 package api.models.domain
 
+import api.models.domain.Source.`MTD-SA`
 import api.utils.UnitSpec
 import api.utils.enums.EnumJsonSpecSupport
-import api.models.domain.Source.`MTD-SA`
 
 class SourceSpec extends UnitSpec with EnumJsonSpecSupport {
 

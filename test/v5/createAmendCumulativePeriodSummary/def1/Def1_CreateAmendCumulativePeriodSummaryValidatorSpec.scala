@@ -22,11 +22,7 @@ import api.models.utils.JsonErrorValidators
 import api.utils.UnitSpec
 import play.api.libs.json.*
 import v5.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
-import v5.createAmendCumulativePeriodSummary.model.request.{
-  CreateAmendCumulativePeriodSummaryRequestData,
-  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
-  Def1_CreateAmendCumulativePeriodSummaryRequestData
-}
+import v5.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
 class Def1_CreateAmendCumulativePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValidators {
 

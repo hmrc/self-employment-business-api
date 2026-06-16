@@ -16,10 +16,10 @@
 
 package v5.retrievePeriodSummary
 
-import cats.implicits.*
 import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.*
 import v5.retrievePeriodSummary.model.request.RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.model.response.RetrievePeriodSummaryResponse
 

@@ -17,6 +17,7 @@
 package api.models.domain
 
 import api.utils.UnitSpec
+
 import java.time.LocalDate
 
 class DateRangeSpec extends UnitSpec {

@@ -22,11 +22,7 @@ import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
-import v5.createAmendCumulativePeriodSummary.model.request.{
-  CreateAmendCumulativePeriodSummaryRequestData,
-  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
-  Def1_CreateAmendCumulativePeriodSummaryRequestData
-}
+import v5.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
 
 import scala.concurrent.Future
 
