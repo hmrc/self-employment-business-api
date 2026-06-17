@@ -34,7 +34,7 @@ private object AppDependencies {
   ).map(_ % Test)
 
   val itDependencies: Seq[ModuleID] = Seq(
-    "io.swagger.parser.v3"          % "swagger-parser-v3"    % "2.1.43",
+    "io.swagger.parser.v3"          % "swagger-parser-v3"    % "2.1.44",
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.22.0"
   ).map(_ % Test)
 

@@ -38,7 +38,7 @@ abstract class AuthorisedController(
 
   val endpointName: String
 
-  lazy val supportingAgentsAccessControlEnabled: Boolean = ConfigFeatureSwitches().supportingAgentsAccessControlEnabled
+  lazy private val supportingAgentsAccessControlEnabled: Boolean = ConfigFeatureSwitches().supportingAgentsAccessControlEnabled
 
   lazy private val endpointAllowsSupportingAgents: Boolean = {
     supportingAgentsAccessControlEnabled &&

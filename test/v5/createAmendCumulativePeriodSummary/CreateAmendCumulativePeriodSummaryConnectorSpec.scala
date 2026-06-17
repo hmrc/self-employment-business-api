@@ -22,7 +22,11 @@ import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
-import v5.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
+import v5.createAmendCumulativePeriodSummary.model.request.{
+  CreateAmendCumulativePeriodSummaryRequestData,
+  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
+  Def1_CreateAmendCumulativePeriodSummaryRequestData
+}
 
 import scala.concurrent.Future
 
@@ -64,7 +68,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
         MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> false))
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        private val outcome = Right(ResponseWrapper(correlationId, ()))
         willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
           .successful(outcome)
 
@@ -75,7 +79,7 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
         MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> true))
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        private val outcome = Right(ResponseWrapper(correlationId, ()))
         willPut(url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
           .successful(outcome)
 
