@@ -28,7 +28,10 @@ import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import v5.createAmendCumulativePeriodSummary.def1.model.request.CumulativePeriodSummaryFixture
-import v5.createAmendCumulativePeriodSummary.model.request.{Def1_CreateAmendCumulativePeriodSummaryRequestBody, Def1_CreateAmendCumulativePeriodSummaryRequestData}
+import v5.createAmendCumulativePeriodSummary.model.request.{
+  Def1_CreateAmendCumulativePeriodSummaryRequestBody,
+  Def1_CreateAmendCumulativePeriodSummaryRequestData
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

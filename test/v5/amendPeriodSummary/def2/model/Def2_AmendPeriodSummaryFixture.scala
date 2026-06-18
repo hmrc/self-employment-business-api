@@ -17,7 +17,12 @@
 package v5.amendPeriodSummary.def2.model
 
 import play.api.libs.json.{JsValue, Json}
-import v5.amendPeriodSummary.def2.model.request.{Def2_AmendPeriodSummaryRequestBody, Def2_Amend_PeriodDisallowableExpenses, Def2_Amend_PeriodExpenses, Def2_Amend_PeriodIncome}
+import v5.amendPeriodSummary.def2.model.request.{
+  Def2_AmendPeriodSummaryRequestBody,
+  Def2_Amend_PeriodDisallowableExpenses,
+  Def2_Amend_PeriodExpenses,
+  Def2_Amend_PeriodIncome
+}
 
 trait Def2_AmendPeriodSummaryFixture {
 

@@ -23,7 +23,12 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v5.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixture
 import v5.retrieveAnnualSubmission.def1.model.request.Def1_RetrieveAnnualSubmissionRequestData
-import v5.retrieveAnnualSubmission.def1.model.response.{Def1_RetrieveAnnualSubmissionResponse, RetrieveAdjustments, RetrieveAllowances, RetrieveNonFinancials}
+import v5.retrieveAnnualSubmission.def1.model.response.{
+  Def1_RetrieveAnnualSubmissionResponse,
+  RetrieveAdjustments,
+  RetrieveAllowances,
+  RetrieveNonFinancials
+}
 import v5.retrieveAnnualSubmission.model.response.RetrieveAnnualSubmissionResponse
 
 import scala.concurrent.Future

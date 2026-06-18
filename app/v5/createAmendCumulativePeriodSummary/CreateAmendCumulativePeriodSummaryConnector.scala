@@ -23,7 +23,10 @@ import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v5.createAmendCumulativePeriodSummary.model.request.{CreateAmendCumulativePeriodSummaryRequestData, Def1_CreateAmendCumulativePeriodSummaryRequestData}
+import v5.createAmendCumulativePeriodSummary.model.request.{
+  CreateAmendCumulativePeriodSummaryRequestData,
+  Def1_CreateAmendCumulativePeriodSummaryRequestData
+}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
