@@ -29,10 +29,10 @@ class Def2_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validPeriodId = "2017-01-25_2017-02-28"
-  private val validTaxYear = "2023-24"
+  private val validPeriodId   = "2017-01-25_2017-02-28"
+  private val validTaxYear    = "2023-24"
 
   private val validPeriodIncome = Json.parse("""
       | {

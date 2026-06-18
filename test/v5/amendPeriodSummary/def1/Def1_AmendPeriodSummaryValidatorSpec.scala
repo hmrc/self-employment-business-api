@@ -30,10 +30,10 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
-  private val validPeriodId = "2017-01-25_2017-02-28"
-  private val validTaxYear = "2019-20"
+  private val validPeriodId   = "2017-01-25_2017-02-28"
+  private val validTaxYear    = "2019-20"
 
   private val validPeriodIncome = Json.parse("""
       | {
@@ -92,10 +92,7 @@ class Def1_AmendPeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValida
       |""".stripMargin)
 
   private def validBody(periodIncome: JsValue = validPeriodIncome,
-                        ) periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses
-                        , periodExpenses
-                        /** EndMarker */
-                        : JsValue = validPeriodExpenses: JsValue = validPeriodExpenses,
+                        periodExpenses: JsValue = validPeriodExpenses,
                         periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses) = Json.obj(
     "periodIncome"               -> periodIncome,
     "periodExpenses"             -> periodExpenses,

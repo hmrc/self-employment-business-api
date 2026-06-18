@@ -29,7 +29,7 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
 
   private implicit val correlationId: String = "1234"
 
-  private val validNino = "AA123456A"
+  private val validNino       = "AA123456A"
   private val validBusinessId = "XAIS12345678901"
 
   private val validPeriodDates = Json.parse("""
@@ -94,9 +94,9 @@ class Def2_CreatePeriodSummaryValidatorSpec extends UnitSpec with JsonErrorValid
                         periodExpenses: JsValue = validPeriodExpenses,
                         periodDisallowableExpenses: JsValue = validPeriodDisallowableExpenses): JsObject =
     Json.obj(
-      "periodDates" -> periodDates,
-      "periodIncome" -> periodIncome,
-      "periodExpenses" -> periodExpenses,
+      "periodDates"                -> periodDates,
+      "periodIncome"               -> periodIncome,
+      "periodExpenses"             -> periodExpenses,
       "periodDisallowableExpenses" -> periodDisallowableExpenses
     )
 
