@@ -29,6 +29,7 @@ case class RetrieveAllowances(
     capitalAllowanceSingleAssetPool: Option[BigDecimal],
     tradingIncomeAllowance: Option[BigDecimal],
     zeroEmissionsCarAllowance: Option[BigDecimal],
+    firstYearAllowanceOnPlantAndMachinery: Option[BigDecimal],
     structuredBuildingAllowance: Option[Seq[RetrieveStructuredBuildingAllowance]],
     enhancedStructuredBuildingAllowance: Option[Seq[RetrieveStructuredBuildingAllowance]]
 )
@@ -45,6 +46,7 @@ object RetrieveAllowances {
       (JsPath \ "capitalAllowanceSingleAssetPool").readNullable[BigDecimal] and
       (JsPath \ "tradingIncomeAllowance").readNullable[BigDecimal] and
       (JsPath \ "zeroEmissionsCarAllowance").readNullable[BigDecimal] and
+      (JsPath \ "firstYearAllowanceOnPlantAndMachinery").readNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").readNullable[Seq[RetrieveStructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").readNullable[Seq[RetrieveStructuredBuildingAllowance]]
   )(RetrieveAllowances.apply)
