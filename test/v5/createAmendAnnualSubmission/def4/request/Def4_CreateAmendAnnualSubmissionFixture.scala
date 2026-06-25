@@ -77,19 +77,8 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
   val allowancesMtdJson: JsValue              = allowancesMtdJsonWith()
   val allowancesDownstreamJson: JsValue       = allowancesDownstreamJsonWith()
 
-  val allowancesTradingIncomeAllowance: Def4_CreateAmend_Allowances = Def4_CreateAmend_Allowances(
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    tradingIncomeAllowance = Some(10.12),
-    None,
-    None,
-    None
-  )
+  val allowancesTradingIncomeAllowance: Def4_CreateAmend_Allowances =
+    Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, tradingIncomeAllowance = Some(10.12), None, None, None, None)
 
   val allowancesTradingIncomeAllowanceMtdJson: JsValue = Json.parse(s"""{
        |  "tradingIncomeAllowance": 10.12
@@ -132,6 +121,7 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
       capitalAllowanceSingleAssetPool = Some(8.12),
       tradingIncomeAllowance = None,
       zeroEmissionsCarAllowance = Some(11.12),
+      firstYearAllowanceOnPlantAndMachinery = Some(12.12),
       structuredBuildingAllowance = Some(structuredBuildingAllowances),
       enhancedStructuredBuildingAllowance = Some(enhancedStructuredBuildingAllowances)
     )
@@ -146,6 +136,7 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
        |  "allowanceOnSales": 7.12,
        |  "capitalAllowanceSingleAssetPool": 8.12,
        |  "zeroEmissionsCarAllowance": 11.12,
+       |  "firstYearAllowanceOnPlantAndMachinery": 12.12,
        |  "structuredBuildingAllowance": ${JsArray(structuredBuildingAllowances)},
        |  "enhancedStructuredBuildingAllowance": ${JsArray(enhancedStructuredBuildingAllowances)}
        |}
@@ -162,6 +153,7 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
        |  "allowanceOnSales": 7.12,
        |  "capitalAllowanceSingleAssetPool": 8.12,
        |  "zeroEmissionsCarAllowance": 11.12,
+       |  "firstYearAllowanceOnPlantAndMachinery": 12.12,
        |  "structuredBuildingAllowance": ${JsArray(structuredBuildingAllowances)},
        |  "enhancedStructuredBuildingAllowance": ${JsArray(enhancedStructuredBuildingAllowances)}
        |}

@@ -106,7 +106,7 @@ object Def4_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
   private def validateBothAllowancesSupplied(allowances: request.Def4_CreateAmend_Allowances): Validated[Seq[MtdError], Unit] = {
     if (allowances.tradingIncomeAllowance.isDefined) {
       allowances match {
-        case request.Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, Some(_), None, None, None) => valid
+        case request.Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, Some(_), None, None, None, None) => valid
         case _ => Invalid(List(RuleBothAllowancesSuppliedError))
       }
     } else {

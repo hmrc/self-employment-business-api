@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 class Def4_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def4_CreateAmendAnnualSubmissionFixture {
 
   val model: Def4_CreateAmendAnnualSubmissionRequestBody = Def4_CreateAmendAnnualSubmissionRequestBody(
-    allowances = Some(Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None)),
+    allowances = Some(Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None, None)),
     adjustments = Some(Def4_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None, None)),
     nonFinancials = Some(Def4_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, None))
   )

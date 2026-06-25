@@ -63,6 +63,7 @@ class Def4_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       |    "capitalAllowanceSingleAssetPool": 200.12,
       |    "electricChargePointAllowance": 200.12,
       |    "zeroEmissionsCarAllowance": 200.12,
+      |    "firstYearAllowanceOnPlantAndMachinery": 12.12,
       |    "structuredBuildingAllowance": [
       |      {
       |        "amount": 1.23,
@@ -167,12 +168,13 @@ class Def4_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     capitalAllowanceSingleAssetPool = Some(200.12),
     tradingIncomeAllowance = None,
     zeroEmissionsCarAllowance = Some(200.12),
+    firstYearAllowanceOnPlantAndMachinery = Some(12.12),
     structuredBuildingAllowance = Some(Seq(parsedStructuredBuildingAllowance)),
     enhancedStructuredBuildingAllowance = Some(Seq(parsedStructuredBuildingAllowance))
   )
 
   private val parsedAllowancesWithOnlyTradingIncomeAllowance =
-    Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None)
+    Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None, None)
 
   private val parsedNonFinancials =
     Def4_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
