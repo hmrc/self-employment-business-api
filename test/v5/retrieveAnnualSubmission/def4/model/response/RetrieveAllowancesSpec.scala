@@ -31,6 +31,7 @@ class RetrieveAllowancesSpec extends UnitSpec {
     capitalAllowanceSingleAssetPool = Some(8.12),
     tradingIncomeAllowance = Some(10.12),
     zeroEmissionsCarAllowance = Some(11.12),
+    firstYearAllowanceOnPlantAndMachinery = Some(12.12),
     structuredBuildingAllowance = Some(Nil),
     enhancedStructuredBuildingAllowance = Some(Nil)
   )
@@ -49,6 +50,7 @@ class RetrieveAllowancesSpec extends UnitSpec {
              |  "capitalAllowanceSingleAssetPool": 8.12,
              |  "tradingIncomeAllowance": 10.12,
              |  "zeroEmissionsCarAllowance": 11.12,
+             |  "firstYearAllowanceOnPlantAndMachinery": 12.12,
              |  "structuredBuildingAllowance": [],
              |  "enhancedStructuredBuildingAllowance": []
              |}
@@ -74,6 +76,7 @@ class RetrieveAllowancesSpec extends UnitSpec {
              |  "capitalAllowanceSingleAssetPool": 8.12,
              |  "tradingIncomeAllowance": 10.12,
              |  "zeroEmissionsCarAllowance": 11.12,
+             |  "firstYearAllowanceOnPlantAndMachinery": 12.12,
              |  "structuredBuildingAllowance": [],
              |  "enhancedStructuredBuildingAllowance": []
              |}

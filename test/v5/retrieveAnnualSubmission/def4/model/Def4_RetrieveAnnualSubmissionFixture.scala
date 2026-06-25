@@ -143,6 +143,7 @@ trait Def4_RetrieveAnnualSubmissionFixture {
     capitalAllowanceSingleAssetPool = Some(8.12),
     tradingIncomeAllowance = None,
     zeroEmissionsCarAllowance = Some(11.12),
+    firstYearAllowanceOnPlantAndMachinery = Some(12.12),
     structuredBuildingAllowance = Some(List(structuredBuildingAllowance)),
     enhancedStructuredBuildingAllowance = Some(List(structuredBuildingAllowance))
   )
@@ -156,6 +157,7 @@ trait Def4_RetrieveAnnualSubmissionFixture {
        |  "allowanceOnSales": 7.12,
        |  "capitalAllowanceSingleAssetPool": 8.12,
        |  "zeroEmissionsCarAllowance": 11.12,
+       |  "firstYearAllowanceOnPlantAndMachinery": 12.12,
        |  "structuredBuildingAllowance": [ $structuredBuildingAllowanceMtdJson ],
        |  "enhancedStructuredBuildingAllowance": [ $structuredBuildingAllowanceMtdJson ]
        |}
@@ -170,6 +172,7 @@ trait Def4_RetrieveAnnualSubmissionFixture {
        |  "allowanceOnSales": 7.12,
        |  "capitalAllowanceSingleAssetPool": 8.12,
        |  "zeroEmissionsCarAllowance": 11.12,
+       |  "firstYearAllowanceOnPlantAndMachinery": 12.12,
        |  "structuredBuildingAllowance": [ $structuredBuildingAllowanceDownstreamJson ],
        |  "enhancedStructuredBuildingAllowance": [ $structuredBuildingAllowanceDownstreamJson]
        |}

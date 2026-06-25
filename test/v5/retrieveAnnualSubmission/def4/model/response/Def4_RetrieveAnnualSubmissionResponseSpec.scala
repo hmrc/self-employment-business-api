@@ -23,7 +23,7 @@ import v5.retrieveAnnualSubmission.def4.model.Def4_RetrieveAnnualSubmissionFixtu
 class Def4_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def4_RetrieveAnnualSubmissionFixture {
 
   private val retrieveAnnualSubmissionResponse = Def4_RetrieveAnnualSubmissionResponse(
-    allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None)),
+    allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None, None)),
     adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None, None, None)),
     nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
   )
