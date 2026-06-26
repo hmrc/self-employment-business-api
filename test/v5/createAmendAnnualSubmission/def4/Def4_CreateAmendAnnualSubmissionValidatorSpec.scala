@@ -500,7 +500,8 @@ class Def4_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
       "/allowances/enhancedCapitalAllowance",
       "/allowances/allowanceOnSales",
       "/allowances/capitalAllowanceSingleAssetPool",
-      "/allowances/zeroEmissionsCarAllowance"
+      "/allowances/zeroEmissionsCarAllowance",
+      "/allowances/firstYearAllowanceOnPlantAndMachinery"
     ).foreach(path => test(ValueFormatError.withPath(path))(validRequestBody().update(path, badNumber), path))
 
     test(ValueFormatError.forPathAndRange("/adjustments/basisAdjustment", min = "-99999999999.99", max = "99999999999.99"))(

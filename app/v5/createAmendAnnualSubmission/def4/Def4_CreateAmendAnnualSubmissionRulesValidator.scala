@@ -76,7 +76,8 @@ object Def4_CreateAmendAnnualSubmissionRulesValidator extends RulesValidator[Def
       (enhancedCapitalAllowance, "/allowances/enhancedCapitalAllowance"),
       (allowanceOnSales, "/allowances/allowanceOnSales"),
       (capitalAllowanceSingleAssetPool, "/allowances/capitalAllowanceSingleAssetPool"),
-      (zeroEmissionsCarAllowance, "/allowances/zeroEmissionsCarAllowance")
+      (zeroEmissionsCarAllowance, "/allowances/zeroEmissionsCarAllowance"),
+      (firstYearAllowanceOnPlantAndMachinery, "/allowances/firstYearAllowanceOnPlantAndMachinery")
     ).traverse_ { case (value, path) =>
       resolveNonNegativeParsedNumber(value, path)
     }
