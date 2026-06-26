@@ -28,6 +28,7 @@ case class Def4_CreateAmend_Allowances(annualInvestmentAllowance: Option[BigDeci
                                        capitalAllowanceSingleAssetPool: Option[BigDecimal],
                                        tradingIncomeAllowance: Option[BigDecimal],
                                        zeroEmissionsCarAllowance: Option[BigDecimal],
+                                       firstYearAllowanceOnPlantAndMachinery: Option[BigDecimal],
                                        structuredBuildingAllowance: Option[Seq[Def4_CreateAmend_StructuredBuildingAllowance]],
                                        enhancedStructuredBuildingAllowance: Option[Seq[Def4_CreateAmend_StructuredBuildingAllowance]])
 
@@ -44,6 +45,7 @@ object Def4_CreateAmend_Allowances {
       (JsPath \ "capitalAllowanceSingleAssetPool").writeNullable[BigDecimal] and
       (JsPath \ "tradingIncomeAllowance").writeNullable[BigDecimal] and
       (JsPath \ "zeroEmissionsCarAllowance").writeNullable[BigDecimal] and
+      (JsPath \ "firstYearAllowanceOnPlantAndMachinery").writeNullable[BigDecimal] and
       (JsPath \ "structuredBuildingAllowance").writeNullable[Seq[Def4_CreateAmend_StructuredBuildingAllowance]] and
       (JsPath \ "enhancedStructuredBuildingAllowance").writeNullable[Seq[Def4_CreateAmend_StructuredBuildingAllowance]]
   )(w => Tuple.fromProductTyped(w))
