@@ -20,6 +20,9 @@
     "allowanceOnSales": 200.12,
     "capitalAllowanceSingleAssetPool": 200.12,
     "zeroEmissionsCarAllowance": 200.12,
+    {{#if (enabled 'r22_fya_docs')}}
+      "firstYearAllowanceOnPlantAndMachinery": 678.78,
+    {{/if}}
     "structuredBuildingAllowance": [
       {
         "amount": 1.23,
