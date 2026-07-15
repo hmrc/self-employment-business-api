@@ -30,24 +30,6 @@ case class MtdError(code: String, message: String, httpStatus: Int, paths: Optio
     */
   def withPaths(paths: Seq[String]): MtdError = copy(paths = Some(paths))
 
-  /** If maybePath is defined, returns a copy of this error with the path, replacing any that were already present; otherwise returns the original
-    * error.
-    */
-  def maybeWithPath(maybePath: Option[String]): MtdError =
-    maybePath.map(withPath).getOrElse(this)
-
-  /** Returns a copy of this error with an additional path.
-    */
-  def withExtraPath(newPath: String): MtdError =
-    paths.fold(
-      copy(paths = Some(List(newPath)))
-    ) { existingPaths =>
-      copy(paths = Some(existingPaths :+ newPath))
-    }
-
-  def maybeWithExtraPath(maybeNewPath: Option[String]): MtdError =
-    maybeNewPath.map(withExtraPath).getOrElse(this)
-
 }
 
 object MtdError {
