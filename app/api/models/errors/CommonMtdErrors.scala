@@ -33,10 +33,6 @@ object DateFormatError extends MtdError(code = "FORMAT_DATE", message = "The sup
 
 object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The Business ID format is invalid", BAD_REQUEST)
 
-object TransactionIdFormatError extends MtdError(code = "FORMAT_TRANSACTION_ID", message = "The transaction ID format is invalid", BAD_REQUEST)
-
-object CountryCodeFormatError extends MtdError("FORMAT_COUNTRY_CODE", "The provided Country code is invalid", BAD_REQUEST)
-
 object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
 
   def forPathAndRange(path: String, min: String, max: String): MtdError =
@@ -46,8 +42,6 @@ object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be betw
     ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be $min or more")
 
 }
-
-object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The provided calculation ID is invalid", BAD_REQUEST)
 
 object StringFormatError extends MtdError(code = "FORMAT_STRING", message = "The supplied string format is not valid", BAD_REQUEST)
 
