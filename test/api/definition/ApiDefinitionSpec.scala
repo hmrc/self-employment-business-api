@@ -21,7 +21,7 @@ import api.utils.UnitSpec
 
 class ApiDefinitionSpec extends UnitSpec {
 
-  private val apiVersion: APIVersion       = APIVersion(Version5, APIStatus.ALPHA, endpointsEnabled = true)
+  private val apiVersion: APIVersion       = APIVersion(Version5, APIStatus.ALPHA, APIAccessType.PUBLIC, endpointsEnabled = true)
   private val apiDefinition: APIDefinition = APIDefinition("b", "c", "d", List("category"), List(apiVersion), Some(false))
 
   "APIDefinition" when {

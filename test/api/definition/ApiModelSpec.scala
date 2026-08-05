@@ -16,6 +16,7 @@
 
 package api.definition
 
+import api.definition.APIAccessType.PUBLIC
 import api.routing.Version5
 import api.utils.UnitSpec
 import play.api.libs.json.{JsValue, Json}
@@ -25,6 +26,7 @@ class ApiModelSpec extends UnitSpec {
   val model = APIVersion(
     version = Version5,
     status = APIStatus.BETA,
+    access = PUBLIC,
     endpointsEnabled = true
   )
 

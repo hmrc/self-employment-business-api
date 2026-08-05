@@ -52,6 +52,8 @@ class AppConfig @Inject() (val config: ServicesConfig, protected[config] val con
 
   def featureSwitchConfig: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
+  def controlledAccessEnabled: Boolean = config.getBoolean("api.controlled-access.enabled")
+
   def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
 
   /** Like endpointsEnabled, but will return false if version doesn't exist.

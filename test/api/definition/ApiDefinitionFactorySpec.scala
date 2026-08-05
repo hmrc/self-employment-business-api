@@ -26,7 +26,7 @@ import cats.implicits.catsSyntaxValidatedId
 
 import scala.language.reflectiveCalls
 
-class ApiDefinitionFactorySpec extends UnitSpec {
+class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
@@ -81,8 +81,9 @@ class ApiDefinitionFactorySpec extends UnitSpec {
           "description",
           "context",
           List("category"),
-          List(APIVersion(Version5, APIStatus.BETA, endpointsEnabled = true)),
-          None)
+          List(APIVersion(Version5, APIStatus.BETA, APIAccessType.PUBLIC, endpointsEnabled = true)),
+          None
+        )
       )
 
     }
