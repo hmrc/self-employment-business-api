@@ -18,45 +18,47 @@ package definition
 
 import api.config.Deprecation.NotDeprecated
 import api.config.MockAppConfig
-import api.definition.{APIAccessType, Definition}
+import api.definition.*
+import api.definition.APIAccessType.{CONTROLLED, PUBLIC}
+import api.definition.APIStatus.BETA
 import api.routing.Version5
 import api.utils.UnitSpec
 import cats.implicits.catsSyntaxValidatedId
 
 class SeBusinessApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
-  "SeBusinessApiDefinitionFactory" when {
+  "calling definition" when {
+    List((PUBLIC, false), (CONTROLLED, true)).foreach { (accessType, controlledAccessEnabled) =>
+      s"the controlled access flag is set to $controlledAccessEnabled" should {
+        s"return a valid Definition case class with the access type set to $accessType" in {
+          List(Version5).foreach { version =>
+            MockAppConfig.apiGatewayContext.returns("individuals/self-assessment/adjustable-summary")
+            MockAppConfig.deprecationFor(version).returns(NotDeprecated.valid)
+            MockAppConfig.apiStatus(version).returns("BETA")
+            MockAppConfig.endpointsEnabled(version).returns(true)
+            MockAppConfig.controlledAccessEnabled.returns(controlledAccessEnabled)
+          }
 
-    "the access level is set" when {
-      "the controlled access flag is enabled" should {
-        "return CONTROLLED" in {
+          val apiDefinitionFactory = new SeBusinessApiDefinitionFactory(mockAppConfig)
 
-          MockAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
-          MockAppConfig.endpointsEnabled(Version5)
-          MockAppConfig.apiStatus(Version5) returns "BETA"
-          MockAppConfig.deprecationFor(Version5).returns(NotDeprecated.valid).anyNumberOfTimes()
-
-          MockAppConfig.controlledAccessEnabled returns true
-
-          val definition: Definition = new SeBusinessApiDefinitionFactory(mockAppConfig).definition
-
-          definition.api.versions.head.access shouldBe APIAccessType.CONTROLLED
-        }
-      }
-
-      "the controlled access flag is disabled" should {
-        "return PUBLIC" in {
-
-          MockAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
-          MockAppConfig.endpointsEnabled(Version5)
-          MockAppConfig.apiStatus(Version5) returns "BETA"
-          MockAppConfig.deprecationFor(Version5).returns(NotDeprecated.valid).anyNumberOfTimes()
-
-          MockAppConfig.controlledAccessEnabled returns false
-
-          val definition: Definition = new SeBusinessApiDefinitionFactory(mockAppConfig).definition
-
-          definition.api.versions.head.access shouldBe APIAccessType.PUBLIC
+          apiDefinitionFactory.definition shouldBe
+            Definition(
+              api = APIDefinition(
+                name = "Self Employment Business (MTD)",
+                description = "An API for providing Annual and Periodic Summary data",
+                context = "individuals/self-assessment/adjustable-summary",
+                categories = List("INCOME_TAX_MTD"),
+                versions = List(
+                  APIVersion(
+                    version = Version5,
+                    status = BETA,
+                    access = accessType,
+                    endpointsEnabled = true
+                  )
+                ),
+                requiresTrust = None
+              )
+            )
         }
       }
     }

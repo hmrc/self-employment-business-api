@@ -30,6 +30,35 @@ class ApiModelSpec extends UnitSpec {
     endpointsEnabled = true
   )
 
+  private val apiDefinition = APIDefinition(
+    name = "Test API",
+    description = "Test Description",
+    context = "test-context",
+    categories = List("API"),
+    versions = List(model),
+    requiresTrust = Some(false)
+  )
+
+  private val definition = Definition(apiDefinition)
+
+  private val definitionJson: JsValue = Json.parse("""
+  {
+    "api": {
+      "name": "Test API",
+      "description": "Test Description",
+      "context": "test-context",
+      "categories": ["API"],
+      "versions": [{
+        "version": "5.0",
+        "status": "BETA",
+        "access": "PUBLIC",
+        "endpointsEnabled": true
+      }],
+      "requiresTrust": false
+    }
+  }
+  """)
+
   "PublishingException" should {
     "be created with a message" in {
       val message   = "Test exception message"
@@ -165,6 +194,18 @@ class ApiModelSpec extends UnitSpec {
   }
 
   "Definition" when {
+    "the full model is present" should {
+      "correctly write the model to json" in {
+        Json.toJson(definition) shouldBe definitionJson
+      }
+    }
+
+    "the full Json is present" should {
+      "correctly read JSON to a model" in {
+        definitionJson.as[Definition] shouldBe definition
+      }
+    }
+
     "created with an APIDefinition" should {
       "store the api correctly" in {
 
