@@ -26,7 +26,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
   private val retrieveAnnualSubmissionResponse = Def1_RetrieveAnnualSubmissionResponse(
     allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None, None, None)),
     adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
+    nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = false, None))
   )
 
   "reads" should {
@@ -37,7 +37,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
              |  "annualAllowances": {},
              |  "annualAdjustments": {},
              |  "annualNonFinancials": {
-             |    "businessDetailsChangedRecently": true
+             |    "businessDetailsChangedRecently": false
              |  }
              |}
              |""".stripMargin)
@@ -58,7 +58,7 @@ class Def1_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with MockAppCon
                |  "allowances": {},
                |  "adjustments": {},
                |  "nonFinancials": {
-               |    "businessDetailsChangedRecently": true
+               |    "businessDetailsChangedRecently": false
                |  }
                |}
                |""".stripMargin)

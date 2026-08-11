@@ -24,7 +24,7 @@ class Def4_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def4
   val model: Def4_CreateAmendAnnualSubmissionRequestBody = Def4_CreateAmendAnnualSubmissionRequestBody(
     allowances = Some(Def4_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None, None)),
     adjustments = Some(Def4_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(Def4_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, None))
+    nonFinancials = Some(Def4_CreateAmend_NonFinancials(None))
   )
 
   "reads" when {
@@ -35,7 +35,6 @@ class Def4_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def4
              |  "allowances": {},
              |  "adjustments": {},
              |  "nonFinancials": {
-             |    "businessDetailsChangedRecently": true
              |  }
              |}
              |""".stripMargin)
@@ -76,7 +75,6 @@ class Def4_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def4
             |  "annualAllowances": {},
             |  "annualAdjustments": {},
             |  "annualNonFinancials": {
-            |    "businessDetailsChangedRecently": true,
             |    "exemptFromPayingClass4Nics": false
             |  }
             |}

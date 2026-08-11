@@ -24,7 +24,7 @@ class Def3_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def3
   val model: Def3_CreateAmendAnnualSubmissionRequestBody = Def3_CreateAmendAnnualSubmissionRequestBody(
     allowances = Some(Def3_CreateAmend_Allowances(None, None, None, None, None, None, None, None, None, None, None)),
     adjustments = Some(Def3_CreateAmend_Adjustments(None, None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(Def3_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, None))
+    nonFinancials = Some(Def3_CreateAmend_NonFinancials(None))
   )
 
   "reads" when {
@@ -34,9 +34,7 @@ class Def3_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def3
           .parse(s"""{
              |  "allowances": {},
              |  "adjustments": {},
-             |  "nonFinancials": {
-             |    "businessDetailsChangedRecently": true
-             |  }
+             |  "nonFinancials": {}
              |}
              |""".stripMargin)
           .as[Def3_CreateAmendAnnualSubmissionRequestBody]
@@ -73,7 +71,6 @@ class Def3_CreateAmendAnnualSubmissionRequestBodySpec extends UnitSpec with Def3
             |  "annualAllowances": {},
             |  "annualAdjustments": {},
             |  "annualNonFinancials": {
-            |    "businessDetailsChangedRecently": true,
             |    "exemptFromPayingClass4Nics": false
             |  }
             |}

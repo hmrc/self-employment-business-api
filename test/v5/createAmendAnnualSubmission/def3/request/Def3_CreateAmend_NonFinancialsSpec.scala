@@ -27,13 +27,11 @@ class Def3_CreateAmend_NonFinancialsSpec extends UnitSpec {
       "return the model" in {
         val requestJson: JsValue = Json.parse(s"""
              |{
-             |    "businessDetailsChangedRecently": true,
              |    "class4NicsExemptionReason": "non-resident"
              |  }
              |""".stripMargin)
 
         requestJson.as[Def3_CreateAmend_NonFinancials] shouldBe Def3_CreateAmend_NonFinancials(
-          businessDetailsChangedRecently = true,
           class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
         )
       }
@@ -42,13 +40,9 @@ class Def3_CreateAmend_NonFinancialsSpec extends UnitSpec {
     "writes" when {
       "there is an exemption reason" must {
         "set exemptFromPayingClass4Nics false" in {
-          Json.toJson(
-            Def3_CreateAmend_NonFinancials(
-              businessDetailsChangedRecently = true,
-              class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
+          Json.toJson(Def3_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
             Json.parse(s"""
                  |{
-                 |  "businessDetailsChangedRecently": true,
                  |  "exemptFromPayingClass4Nics": true,
                  |  "class4NicsExemptionReason": "001"
                  |}
@@ -58,10 +52,9 @@ class Def3_CreateAmend_NonFinancialsSpec extends UnitSpec {
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-          Json.toJson(Def3_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+          Json.toJson(Def3_CreateAmend_NonFinancials(class4NicsExemptionReason = None)) shouldBe
             Json.parse(s"""
                  |{
-                 |  "businessDetailsChangedRecently": true,
                  |  "exemptFromPayingClass4Nics": false
                  |}
                  |""".stripMargin)

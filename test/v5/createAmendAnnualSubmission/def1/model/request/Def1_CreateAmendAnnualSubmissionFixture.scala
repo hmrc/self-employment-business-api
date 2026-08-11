@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,18 +100,16 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |""".stripMargin)
 
   val nonFinancials: Def1_CreateAmend_NonFinancials =
-    Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
+    Def1_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
 
   val nonFinancialsMtdJson: JsValue = Json.parse(s"""
        |{
-       |    "businessDetailsChangedRecently": true,
        |    "class4NicsExemptionReason": "non-resident"
        |  }
        |""".stripMargin)
 
   val nonFinancialsDownstreamJson: JsValue = Json.parse(s"""
        |{
-       |  "businessDetailsChangedRecently": true,
        |  "exemptFromPayingClass4Nics": true,
        |  "class4NicsExemptionReason": "001"
        |}

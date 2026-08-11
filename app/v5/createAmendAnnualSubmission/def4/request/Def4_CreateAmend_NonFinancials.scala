@@ -20,18 +20,17 @@ import api.models.domain.ex.MtdNicExemption
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.*
 
-case class Def4_CreateAmend_NonFinancials(businessDetailsChangedRecently: Boolean, class4NicsExemptionReason: Option[MtdNicExemption])
+case class Def4_CreateAmend_NonFinancials(class4NicsExemptionReason: Option[MtdNicExemption])
 
 object Def4_CreateAmend_NonFinancials {
   implicit val reads: Reads[Def4_CreateAmend_NonFinancials] = Json.reads[Def4_CreateAmend_NonFinancials]
 
   implicit val writes: Writes[Def4_CreateAmend_NonFinancials] = (
-    (JsPath \ "businessDetailsChangedRecently").write[Boolean] and
-      (JsPath \ "exemptFromPayingClass4Nics").write[Boolean] and
+    (JsPath \ "exemptFromPayingClass4Nics").write[Boolean] and
       (JsPath \ "class4NicsExemptionReason").writeNullable[String]
   ) { nonFinancials =>
     val exemption: Option[MtdNicExemption] = nonFinancials.class4NicsExemptionReason
-    (nonFinancials.businessDetailsChangedRecently, exemption.isDefined, exemption.map(_.toDownstream))
+    (exemption.isDefined, exemption.map(_.toDownstream))
   }
 
 }

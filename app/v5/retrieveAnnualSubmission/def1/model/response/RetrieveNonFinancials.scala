@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ object RetrieveNonFinancials {
   implicit val writes: OWrites[RetrieveNonFinancials] = Json.writes[RetrieveNonFinancials]
 
   implicit val reads: Reads[RetrieveNonFinancials] = (
-    (JsPath \ "businessDetailsChangedRecently").read[Boolean] and
+    (JsPath \ "businessDetailsChangedRecently").readWithDefault[Boolean](false) and
       (JsPath \ "class4NicsExemptionReason").readNullable[DownstreamNicExemption].map(_.map(_.toMtd))
   )(RetrieveNonFinancials.apply)
 

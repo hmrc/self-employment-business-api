@@ -91,18 +91,16 @@ trait Def4_CreateAmendAnnualSubmissionFixture extends Def4_CreateAmend_Structure
        |""".stripMargin)
 
   val nonFinancials: Def4_CreateAmend_NonFinancials =
-    Def4_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
+    Def4_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
 
   val nonFinancialsMtdJson: JsValue = Json.parse(s"""
        |{
-       |    "businessDetailsChangedRecently": true,
        |    "class4NicsExemptionReason": "non-resident"
        |  }
        |""".stripMargin)
 
   val nonFinancialsDownstreamJson: JsValue = Json.parse(s"""
        |{
-       |  "businessDetailsChangedRecently": true,
        |  "exemptFromPayingClass4Nics": true,
        |  "class4NicsExemptionReason": "001"
        |}

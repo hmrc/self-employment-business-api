@@ -28,7 +28,7 @@ class RetrieveNonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmiss
       "return the model" in {
         val requestJson: JsValue = Json.parse(s"""
              |{
-             |  "businessDetailsChangedRecently": true,
+             |  "businessDetailsChangedRecently": false,
              |  "class4NicsExemptionReason": "001"
              |}
              |""".stripMargin)
@@ -37,7 +37,7 @@ class RetrieveNonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmiss
           .as[RetrieveNonFinancials]
           .shouldBe(
             RetrieveNonFinancials(
-              businessDetailsChangedRecently = true,
+              businessDetailsChangedRecently = false,
               class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
             ))
       }
@@ -49,7 +49,7 @@ class RetrieveNonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmiss
           Json.toJson(nonFinancialsMtdJson) shouldBe
             Json.parse(s"""
                  |{
-                 |    "businessDetailsChangedRecently": true,
+                 |    "businessDetailsChangedRecently": false,
                  |    "class4NicsExemptionReason": "non-resident"
                  |}
                  |""".stripMargin)
@@ -58,10 +58,10 @@ class RetrieveNonFinancialsSpec extends UnitSpec with Def1_RetrieveAnnualSubmiss
 
       "there is no exemption reason" must {
         "set exemptFromPayingClass4Nics true" in {
-          Json.toJson(RetrieveNonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = None)) shouldBe
+          Json.toJson(RetrieveNonFinancials(businessDetailsChangedRecently = false, class4NicsExemptionReason = None)) shouldBe
             Json.parse(s"""
                  |{
-                 |  "businessDetailsChangedRecently": true
+                 |  "businessDetailsChangedRecently": false
                  |}
                  |""".stripMargin)
         }

@@ -25,7 +25,7 @@ class Def3_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def3_Retri
   private val retrieveAnnualSubmissionResponse = Def3_RetrieveAnnualSubmissionResponse(
     allowances = Some(RetrieveAllowances(None, None, None, None, None, None, None, None, None, None, None)),
     adjustments = Some(RetrieveAdjustments(None, None, None, None, None, None, None, None, None)),
-    nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = true, None))
+    nonFinancials = Some(RetrieveNonFinancials(businessDetailsChangedRecently = false, None))
   )
 
   "reads" should {
@@ -36,7 +36,7 @@ class Def3_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def3_Retri
              |  "annualAllowances": {},
              |  "annualAdjustments": {},
              |  "annualNonFinancials": {
-             |    "businessDetailsChangedRecently": true
+             |    "businessDetailsChangedRecently": false
              |  }
              |}
              |""".stripMargin)
@@ -57,7 +57,7 @@ class Def3_RetrieveAnnualSubmissionResponseSpec extends UnitSpec with Def3_Retri
                |  "allowances": {},
                |  "adjustments": {},
                |  "nonFinancials": {
-               |    "businessDetailsChangedRecently": true
+               |    "businessDetailsChangedRecently": false
                |  }
                |}
                |""".stripMargin)

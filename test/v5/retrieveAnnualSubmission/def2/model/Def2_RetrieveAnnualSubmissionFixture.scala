@@ -179,20 +179,20 @@ trait Def2_RetrieveAnnualSubmissionFixture {
 
   val nonFinancials: RetrieveNonFinancials =
     RetrieveNonFinancials(
-      businessDetailsChangedRecently = true,
+      businessDetailsChangedRecently = false,
       class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`)
     )
 
   val nonFinancialsMtdJson: JsValue = Json.parse(s"""
        |{
-       |    "businessDetailsChangedRecently": true,
+       |    "businessDetailsChangedRecently": false,
        |    "class4NicsExemptionReason": "non-resident"
        |  }
        |""".stripMargin)
 
   val nonFinancialsDownstreamJson: JsValue = Json.parse(s"""
        |{
-       |  "businessDetailsChangedRecently": true,
+       |  "businessDetailsChangedRecently": false,
        |  "class4NicsExemptionReason": "001"
        |}
        |""".stripMargin)

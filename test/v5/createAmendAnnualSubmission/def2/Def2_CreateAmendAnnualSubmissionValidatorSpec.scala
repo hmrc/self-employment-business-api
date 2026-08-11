@@ -176,7 +176,7 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     Def2_CreateAmend_Allowances(None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None, None)
 
   private val parsedNonFinancials =
-    Def2_CreateAmend_NonFinancials(businessDetailsChangedRecently = true, class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
+    Def2_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
 
   private val parsedRequestBody =
     Def2_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))
@@ -343,7 +343,7 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           validator(validNino, validBusinessId, validTaxYear, Json.parse("""{"nonFinancials": {}}""")).validateAndWrapResult()
 
         result shouldBe Left(
-          ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/nonFinancials/businessDetailsChangedRecently"))))
+          ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/nonFinancials"))))
         )
       }
       "structuredBuildingAllowance with a building without the mandatory postcode is submitted" in {
@@ -685,7 +685,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
             """
               |{
               |  "nonFinancials": {
-              |    "businessDetailsChangedRecently": true,
               |    "class4NicsExemptionReason": "non-resident 131231"
               |  }
               |}
@@ -852,7 +851,6 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
               |    ]
               |  },
               |  "nonFinancials": {
-              |    "businessDetailsChangedRecently": true,
               |    "class4NicsExemptionReason": "non-resident"
               |  }
               |}
