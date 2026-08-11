@@ -336,11 +336,6 @@
       "type": "object",
       "description": "Object containing details about annual non financials",
       "properties": {
-        "businessDetailsChangedRecently": {
-          "description": "A boolean to identify if business details have recently changed. The value must be true or false.",
-          "type": "boolean",
-          "example": false
-        },
         "class4NicsExemptionReason": {
           "description": "If exempt from paying Class 4 National Insurance, the reason for exemption.",
           "type": "string",
@@ -354,10 +349,7 @@
           ],
           "example": "non-resident"
         }
-      },
-      "required": [
-        "businessDetailsChangedRecently"
-      ]
+      }
     }
   },
   "additionalProperties": false

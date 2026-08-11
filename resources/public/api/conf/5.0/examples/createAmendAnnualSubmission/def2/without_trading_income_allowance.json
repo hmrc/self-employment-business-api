@@ -49,6 +49,6 @@
     ]
   },
   "nonFinancials": {
-    "businessDetailsChangedRecently": true
+    "class4NicsExemptionReason": "non-resident"
   }
 }
