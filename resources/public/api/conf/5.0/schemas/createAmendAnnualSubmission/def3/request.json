@@ -345,10 +345,7 @@
           ],
           "example": "non-resident"
         }
-      },
-      "required": [
-        "businessDetailsChangedRecently"
-      ]
+      }
     }
   }
 }
