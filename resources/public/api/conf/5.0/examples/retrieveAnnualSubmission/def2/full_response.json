@@ -51,6 +51,7 @@
     "zeroEmissionsCarAllowance": 678.78
   },
   "nonFinancials": {
+    "businessDetailsChangedRecently": false,
     "class4NicsExemptionReason": "non-resident"
   }
 }
