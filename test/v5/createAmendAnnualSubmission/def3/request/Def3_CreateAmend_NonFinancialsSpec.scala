@@ -39,7 +39,7 @@ class Def3_CreateAmend_NonFinancialsSpec extends UnitSpec {
 
     "writes" when {
       "there is an exemption reason" must {
-        "set exemptFromPayingClass4Nics false" in {
+        "set exemptFromPayingClass4Nics true" in {
           Json.toJson(Def3_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))) shouldBe
             Json.parse(s"""
                  |{
@@ -51,7 +51,7 @@ class Def3_CreateAmend_NonFinancialsSpec extends UnitSpec {
       }
 
       "there is no exemption reason" must {
-        "set exemptFromPayingClass4Nics true" in {
+        "set exemptFromPayingClass4Nics false" in {
           Json.toJson(Def3_CreateAmend_NonFinancials(class4NicsExemptionReason = None)) shouldBe
             Json.parse(s"""
                  |{
