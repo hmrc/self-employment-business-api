@@ -176,7 +176,9 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     Def2_CreateAmend_Allowances(None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None, None)
 
   private val parsedNonFinancials =
-    Def2_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
+    Def2_CreateAmend_NonFinancials(
+      businessDetailsChangedRecently = Some(true),
+      class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
 
   private val parsedRequestBody =
     Def2_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))
@@ -270,6 +272,7 @@ class Def2_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
             parsedRequestBody.copy(adjustments = None, allowances = Some(parsedAllowancesWithOnlyTradingIncomeAllowance), nonFinancials = None)
           )
         )
+
       }
     }
     "return a path parameter error" when {

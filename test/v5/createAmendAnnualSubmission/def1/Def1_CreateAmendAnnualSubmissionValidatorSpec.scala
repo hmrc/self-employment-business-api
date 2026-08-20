@@ -158,7 +158,9 @@ class Def1_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
     Def1_CreateAmend_Allowances(None, None, None, None, None, None, None, None, tradingIncomeAllowance = Some(200.12), None, None, None, None)
 
   private val parsedNonFinancials =
-    Def1_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
+    Def1_CreateAmend_NonFinancials(
+      businessDetailsChangedRecently = Some(true),
+      class4NicsExemptionReason = Some(MtdNicExemption.parser("non-resident")))
 
   private val parsedRequestBody =
     Def1_CreateAmendAnnualSubmissionRequestBody(Some(parsedAdjustments), Some(parsedAllowances), Some(parsedNonFinancials))

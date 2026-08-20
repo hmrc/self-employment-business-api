@@ -100,7 +100,7 @@ trait Def1_CreateAmendAnnualSubmissionFixture extends Def1_CreateAmend_Structure
        |""".stripMargin)
 
   val nonFinancials: Def1_CreateAmend_NonFinancials =
-    Def1_CreateAmend_NonFinancials(class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
+    Def1_CreateAmend_NonFinancials(businessDetailsChangedRecently = None, class4NicsExemptionReason = Some(MtdNicExemption.`non-resident`))
 
   val nonFinancialsMtdJson: JsValue = Json.parse(s"""
        |{

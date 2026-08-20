@@ -59,8 +59,7 @@ class RetrieveNonFinancialsSpec extends UnitSpec with Def3_RetrieveAnnualSubmiss
       "there is no exemption reason" must {
         "omit class4NicsExemptionReason from the json" in {
           Json.toJson(RetrieveNonFinancials(businessDetailsChangedRecently = false, class4NicsExemptionReason = None)) shouldBe
-            Json.parse(
-              s"""
+            Json.parse(s"""
                  |{
                  |  "businessDetailsChangedRecently": false
                  |}
