@@ -55,7 +55,7 @@ post:
     content:
       application/json:
         schema:
-          oneOf:
+          anyOf:
             - $ref: './schemas/createPeriodSummary/def1/request.json'
             - $ref: './schemas/createPeriodSummary/def2/request.json'
         examples:

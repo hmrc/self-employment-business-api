@@ -41,7 +41,7 @@ requestBody:
   content:
     application/json:
       schema:
-        oneOf:
+        anyOf:
           - $ref: './schemas/amendPeriodSummary/def1/request.json'
           - $ref: './schemas/amendPeriodSummary/def2/request.json'
       examples:
