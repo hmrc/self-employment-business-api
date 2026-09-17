@@ -50,7 +50,7 @@ responses:
     content:
       application/json:
         schema:
-          oneOf:
+          anyOf:
             - $ref: './schemas/retrievePeriodSummary/def1/response.json'
             - $ref: './schemas/retrievePeriodSummary/def2/response.json'
         examples:

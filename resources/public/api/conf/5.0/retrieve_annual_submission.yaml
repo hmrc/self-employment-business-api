@@ -43,7 +43,7 @@ responses:
     content:
       application/json:
         schema:
-          oneOf:
+          anyOf:
             - $ref: './schemas/retrieveAnnualSubmission/def1/response.json'
             - $ref: './schemas/retrieveAnnualSubmission/def2/response.json'
             - $ref: './schemas/retrieveAnnualSubmission/def3/response.json'

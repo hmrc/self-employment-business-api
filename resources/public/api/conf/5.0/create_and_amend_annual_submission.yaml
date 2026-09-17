@@ -35,7 +35,7 @@ requestBody:
   content:
     application/json:
       schema:
-        oneOf:
+        anyOf:
           - $ref: './schemas/createAmendAnnualSubmission/def1/request.json'
           - $ref: './schemas/createAmendAnnualSubmission/def2/request.json'
           - $ref: './schemas/createAmendAnnualSubmission/def3/request.json'
