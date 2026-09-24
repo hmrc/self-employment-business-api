@@ -19,7 +19,6 @@ package v5.createAmendAnnualSubmission
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendAnnualSubmission.def1.model.request.Def1_CreateAmendAnnualSubmissionRequestBody
 import v5.createAmendAnnualSubmission.def3.request.Def3_CreateAmendAnnualSubmissionRequestBody
@@ -93,29 +92,10 @@ class CreateAmendAnnualSubmissionConnectorSpec extends ConnectorSpec {
           result shouldBe outcome
         }
 
-        "a valid request with a TYS tax year 2025-26 is supplied and feature switch is disabled (IFS enabled)" in new IfsTest with Test {
+        "a valid request with a TYS tax year 2025-26 is supplied" in new HipTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
           val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
-
-          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> false))
-
-          willPut(
-            url = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries",
-            body = def3Body
-          ).returns(Future.successful(outcome))
-
-          val result: DownstreamOutcome[Unit] = await(connector.amendAnnualSubmission(def3Request))
-
-          result shouldBe outcome
-        }
-
-        "a valid request with a TYS tax year 2025-26 is supplied and feature switch is enabled (HIP enabled)" in new HipTest with Test {
-          def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
-
-          val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
-
-          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1802.enabled" -> true))
 
           willPut(
             url = url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries",

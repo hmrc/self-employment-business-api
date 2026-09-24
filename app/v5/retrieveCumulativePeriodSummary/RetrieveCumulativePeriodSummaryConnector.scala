@@ -16,8 +16,8 @@
 
 package v5.retrieveCumulativePeriodSummary
 
-import api.config.{AppConfig, ConfigFeatureSwitches}
-import api.connectors.DownstreamUri.{HipUri, IfsUri}
+import api.config.AppConfig
+import api.connectors.DownstreamUri.HipUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,11 +39,8 @@ class RetrieveCumulativePeriodSummaryConnector @Inject() (val http: HttpClientV2
     import request.*
     import schema.*
 
-    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1960")) {
+    val downstreamUri =
       HipUri[DownstreamResp](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId")
-    } else {
-      IfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId")
-    }
 
     get(downstreamUri)
   }

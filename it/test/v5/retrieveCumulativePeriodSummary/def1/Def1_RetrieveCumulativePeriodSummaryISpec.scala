@@ -27,12 +27,10 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import stubs.BaseDownstreamStub
 
-class Def1_RetrieveCumulativePeriodSummaryHipISpec extends IntegrationBaseSpec {
+class Def1_RetrieveCumulativePeriodSummaryISpec extends IntegrationBaseSpec {
 
-  "The V5 retrieve cumulative endpoint" should {
-
+  "calling the 'Retrieve a Self-Employment Cumulative Period Summary' endpoint" should {
     "return a 200 status code" when {
-
       "given a valid request" in new Test {
 
         override def setupStubs(): StubMapping = {

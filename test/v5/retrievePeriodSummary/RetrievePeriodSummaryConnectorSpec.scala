@@ -19,7 +19,6 @@ package v5.retrievePeriodSummary
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, PeriodId, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.retrievePeriodSummary.def1.model.request.Def1_RetrievePeriodSummaryRequestData
 import v5.retrievePeriodSummary.def1.model.response.Def1_Retrieve_PeriodDates
@@ -55,9 +54,8 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
     None
   )
 
-  "retrievePeriodSummary()" when {
-
-    "given a def1 (non-TYS) request" should {
+  "retrievePeriodSummary" when {
+    "given a non-TYS request" should {
       "call the non-TYS URL and return a 200 status" when {
         "HIP feature switch is disabled" in new IfsTest with Test {
           val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
@@ -75,44 +73,23 @@ class RetrievePeriodSummaryConnectorSpec extends ConnectorSpec {
       }
     }
 
-    "given a def2 (TYS) request" should {
-      "call the IFS TYS URL and return a 200 status" when {
-        "HIP feature switch is disabled" in new IfsTest with Test {
-          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> false))
+    "given a TYS request" should {
+      "call the TYS URL and return a 200 status" in new HipTest with Test {
+        val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
-          val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
+        val expectedDownstreamUrl: URL =
+          url"$baseUrl/itsa/income-tax/v1/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
 
-          val expectedDownstreamUrl: URL =
-            url"$baseUrl/income-tax/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
+        willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
-          willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
+        val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
 
-          val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
+        val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
+          await(connector.retrievePeriodSummary(request))
 
-          val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
-            await(connector.retrievePeriodSummary(request))
-
-          result.shouldBe(outcome)
-        }
+        result.shouldBe(outcome)
       }
-      "call the HIP TYS URL and return a 200 status" when {
-        "HIP feature switch is enabled" in new HipTest with Test {
-          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1786.enabled" -> true))
-          val outcome: Right[Nothing, ResponseWrapper[RetrievePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def2Response))
 
-          val expectedDownstreamUrl: URL =
-            url"$baseUrl/itsa/income-tax/v1/${tysTaxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate"
-
-          willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
-
-          val request: RetrievePeriodSummaryRequestData = Def2_RetrievePeriodSummaryRequestData(nino, businessId, periodId, tysTaxYear)
-
-          val result: DownstreamOutcome[RetrievePeriodSummaryResponse] =
-            await(connector.retrievePeriodSummary(request))
-
-          result.shouldBe(outcome)
-        }
-      }
     }
   }
 
