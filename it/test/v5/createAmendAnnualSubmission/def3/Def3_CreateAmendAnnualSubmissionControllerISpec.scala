@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v5.createAmendAnnualSubmission.def4
+package v5.createAmendAnnualSubmission.def3
 
 import api.models.errors.*
 import api.models.utils.JsonErrorValidators
@@ -28,11 +28,11 @@ import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import stubs.BaseDownstreamStub
-import v5.createAmendAnnualSubmission.def4.request.Def4_CreateAmendAnnualSubmissionFixture
+import v5.createAmendAnnualSubmission.def3.request.Def3_CreateAmendAnnualSubmissionFixture
 
-class Def4_CreateAmendAnnualSubmissionControllerHipISpec
+class Def3_CreateAmendAnnualSubmissionControllerISpec
     extends IntegrationBaseSpec
-    with Def4_CreateAmendAnnualSubmissionFixture
+    with Def3_CreateAmendAnnualSubmissionFixture
     with JsonErrorValidators {
 
   val mtdRequestBodyJson: JsValue        = createAmendAnnualSubmissionRequestBodyMtdJson()
@@ -100,15 +100,15 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
         }
 
         val input = List(
-          ("AA1123A", "XAIS12345678910", "2026-27", mtdRequestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "XA***IS1", "2026-27", mtdRequestBodyJson, BAD_REQUEST, BusinessIdFormatError),
+          ("AA1123A", "XAIS12345678910", "2025-26", mtdRequestBodyJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "XA***IS1", "2025-26", mtdRequestBodyJson, BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", mtdRequestBodyJson, BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "XAIS12345678910", "2026-28", mtdRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
+          ("AA123456A", "XAIS12345678910", "2025-27", mtdRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2016-17", mtdRequestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
           (
             "AA123456A",
             "XAIS12345678910",
-            "2026-27",
+            "2025-26",
             mtdRequestBodyJson.replaceWithEmptyObject("/allowances"),
             BAD_REQUEST,
             RuleIncorrectOrEmptyBodyError.withPath("/allowances")
@@ -116,7 +116,7 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
           (
             "AA123456A",
             "XAIS12345678910",
-            "2026-27",
+            "2025-26",
             mtdRequestBodyJson.update("/adjustments/includedNonTaxableProfits", JsNumber(1.234)),
             BAD_REQUEST,
             ValueFormatError.withPath("/adjustments/includedNonTaxableProfits")
@@ -124,7 +124,7 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
           (
             "AA123456A",
             "XAIS12345678910",
-            "2026-27",
+            "2025-26",
             createAmendAnnualSubmissionRequestBodyMtdJson(
               allowances = Some(
                 allowancesMtdJsonWith(
@@ -140,7 +140,7 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
           (
             "AA123456A",
             "XAIS12345678910",
-            "2026-27",
+            "2025-26",
             createAmendAnnualSubmissionRequestBodyMtdJson(
               allowances = Some(
                 allowancesMtdJsonWith(
@@ -156,7 +156,7 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
           (
             "AA123456A",
             "XAIS12345678910",
-            "2026-27",
+            "2025-26",
             mtdRequestBodyJson.update("/allowances/tradingIncomeAllowance", JsNumber(1.23)),
             BAD_REQUEST,
             RuleBothAllowancesSuppliedError
@@ -164,7 +164,7 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
           (
             "AA123456A",
             "XAIS12345678910",
-            "2026-27",
+            "2025-26",
             createAmendAnnualSubmissionRequestBodyMtdJson(
               allowances = Some(
                 allowancesMtdJsonWith(
@@ -180,12 +180,20 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
           (
             "AA123456A",
             "XAIS12345678910",
-            "2026-27",
+            "2025-26",
             createAmendAnnualSubmissionRequestBodyMtdJson(
               nonFinancials = Some(nonFinancialsMtdJson.update("/class4NicsExemptionReason", JsString("not-a-valid-reason")))
             ),
             BAD_REQUEST,
             Class4ExemptionReasonFormatError
+          ),
+          (
+            "AA123456A",
+            "XAIS12345678910",
+            "2025-26",
+            mtdRequestBodyJson.update("/adjustments/overlapReliefUsed", JsNumber(200.12)),
+            BAD_REQUEST,
+            RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed")
           )
         )
 
@@ -243,9 +251,9 @@ class Def4_CreateAmendAnnualSubmissionControllerHipISpec
       """.stripMargin
     )
 
-    def taxYear: String = "2026-27"
+    def taxYear: String = "2025-26"
 
-    def downstreamUri: String = s"/itsa/income-tax/v1/26-27/$nino/self-employments/$businessId/annual-summaries"
+    def downstreamUri: String = s"/itsa/income-tax/v1/25-26/$nino/self-employments/$businessId/annual-summaries"
 
     def setupStubs(): StubMapping
 

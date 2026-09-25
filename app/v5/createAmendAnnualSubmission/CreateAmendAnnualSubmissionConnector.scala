@@ -16,7 +16,7 @@
 
 package v5.createAmendAnnualSubmission
 
-import api.config.{AppConfig, ConfigFeatureSwitches}
+import api.config.AppConfig
 import api.connectors.DownstreamUri.{HipUri, IfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
@@ -41,7 +41,7 @@ class CreateAmendAnnualSubmissionConnector @Inject() (val http: HttpClientV2, va
     import request.*
 
     lazy val downstreamUri1802: DownstreamUri[Unit] =
-      if (taxYear.year >= 2026 && ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1802")) {
+      if (taxYear.year >= 2026) {
         HipUri[Unit](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
       } else {
         IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")

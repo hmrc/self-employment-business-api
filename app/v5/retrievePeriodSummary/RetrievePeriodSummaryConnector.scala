@@ -16,7 +16,7 @@
 
 package v5.retrievePeriodSummary
 
-import api.config.{AppConfig, ConfigFeatureSwitches}
+import api.config.AppConfig
 import api.connectors.DownstreamUri.{HipUri, IfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
@@ -43,13 +43,8 @@ class RetrievePeriodSummaryConnector @Inject() (val http: HttpClientV2, val appC
     val toDate   = periodId.to
 
     lazy val downstreamUri1786: DownstreamUri[Def2_RetrievePeriodSummaryResponse] =
-      if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1786")) {
-        HipUri[Def2_RetrievePeriodSummaryResponse](
-          s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-      } else {
-        IfsUri[Def2_RetrievePeriodSummaryResponse](
-          s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
-      }
+      HipUri[Def2_RetrievePeriodSummaryResponse](
+        s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summary-detail?from=$fromDate&to=$toDate")
 
     lazy val downstreamUri1406: DownstreamUri[Def1_RetrievePeriodSummaryResponse] =
       IfsUri[Def1_RetrievePeriodSummaryResponse](

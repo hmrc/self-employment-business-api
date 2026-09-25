@@ -27,9 +27,9 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import stubs.BaseDownstreamStub
 
-class Def1_CreateAmendCumulativePeriodSummaryControllerHipISpec extends IntegrationBaseSpec {
+class Def1_CreateAmendCumulativePeriodSummaryControllerISpec extends IntegrationBaseSpec {
 
-  "The V5 create and amend endpoint" should {
+  "calling the 'Create or Amend a Self-Employment Cumulative Period Summary' endpoint" should {
 
     "return a 204 status code" when {
       "given a valid request" in new Test {

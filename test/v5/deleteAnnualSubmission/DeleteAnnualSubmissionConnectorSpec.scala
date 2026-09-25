@@ -22,7 +22,6 @@ import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import api.models.outcomes.ResponseWrapper
 import config.MockSeBusinessFeatureSwitches
 import org.scalamock.handlers.CallHandler
-import play.api.Configuration
 import play.api.libs.json.JsObject
 import uk.gov.hmrc.http.StringContextOps
 import v5.deleteAnnualSubmission.def1.model.request.Def1_DeleteAnnualSubmissionRequestData
@@ -69,7 +68,6 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
 
     "given a valid request for a TYS tax year before 2025-26" must {
       "return a success response" in new IfsTest with Test {
-        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1787.enabled" -> true))
         def taxYear: TaxYear = tysTaxYear
 
         stubTysHttpResponse(outcome)
@@ -80,19 +78,7 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
     }
 
     "given a valid request for a TYS tax year 2025-26 onwards" must {
-      "return a success response when feature switch is disabled (IFS enabled)" in new IfsTest with Test {
-        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1787.enabled" -> false))
-        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
-
-        stubTysHttpResponse(outcome)
-
-        private val result: DownstreamOutcome[Unit] = await(connector.deleteAnnualSubmission(request))
-        result shouldBe outcome
-      }
-
-      "return a success response when feature switch is enabled (HIP enabled)" in new HipTest with Test {
-        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1787.enabled" -> true))
-
+      "return a success response" in new HipTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
         willDelete(
@@ -110,7 +96,6 @@ class DeleteAnnualSubmissionConnectorSpec extends ConnectorSpec with MockSeBusin
       val outcome = Left(ResponseWrapper(correlationId, downstreamErrorResponse))
 
       "return the error" in new HipTest with Test {
-        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1767.enabled" -> true))
         def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
         willDelete(

@@ -19,7 +19,6 @@ package v5.retrieveCumulativePeriodSummary
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.retrieveCumulativePeriodSummary.def1.model.request.Def1_RetrieveCumulativePeriodSummaryRequestData
 import v5.retrieveCumulativePeriodSummary.def1.model.response.{Def1_RetrieveCumulativePeriodSummaryResponse, Def1_Retrieve_PeriodDates}
@@ -46,38 +45,18 @@ class RetrieveCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
   "retrieveCumulativePeriodSummary()" when {
 
     "given a def1 request" should {
-      "call the IFS URL and return a 200 status" when {
-        "HIP feature switch is disabled" in new IfsTest with Test {
-          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1960.enabled" -> false))
+      "call the HIP URL and return a 200 status" in new HipTest with Test {
+        val outcome: Right[Nothing, ResponseWrapper[RetrieveCumulativePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
 
-          val outcome: Right[Nothing, ResponseWrapper[RetrieveCumulativePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
+        val expectedDownstreamUrl =
+          url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId"
 
-          val expectedDownstreamUrl = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId"
+        willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
 
-          willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
-
-          val request: RetrieveCumulativePeriodSummaryRequestData = Def1_RetrieveCumulativePeriodSummaryRequestData(nino, businessId, taxYear)
-          val result: DownstreamOutcome[RetrieveCumulativePeriodSummaryResponse] = await(connector.retrieveCumulativePeriodSummary(request))
-          result.shouldBe(outcome)
-        }
+        val request: RetrieveCumulativePeriodSummaryRequestData = Def1_RetrieveCumulativePeriodSummaryRequestData(nino, businessId, taxYear)
+        val result: DownstreamOutcome[RetrieveCumulativePeriodSummaryResponse] = await(connector.retrieveCumulativePeriodSummary(request))
+        result.shouldBe(outcome)
       }
-      "call the HIP URL and return a 200 status" when {
-        "HIP feature switch is enabled" in new HipTest with Test {
-          MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1960.enabled" -> true))
-
-          val outcome: Right[Nothing, ResponseWrapper[RetrieveCumulativePeriodSummaryResponse]] = Right(ResponseWrapper(correlationId, def1Response))
-
-          val expectedDownstreamUrl =
-            url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic-summary-detail/$nino/$businessId"
-
-          willGet(expectedDownstreamUrl).returns(Future.successful(outcome))
-
-          val request: RetrieveCumulativePeriodSummaryRequestData = Def1_RetrieveCumulativePeriodSummaryRequestData(nino, businessId, taxYear)
-          val result: DownstreamOutcome[RetrieveCumulativePeriodSummaryResponse] = await(connector.retrieveCumulativePeriodSummary(request))
-          result.shouldBe(outcome)
-        }
-      }
-
     }
 
   }

@@ -16,7 +16,7 @@
 
 package v5.listPeriodSummaries
 
-import api.config.{AppConfig, ConfigFeatureSwitches}
+import api.config.AppConfig
 import api.connectors.DownstreamUri.{HipUri, IfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -41,11 +41,8 @@ class ListPeriodSummariesConnector @Inject() (val http: HttpClientV2, val appCon
 
     lazy val nonTysDownstreamUri = IfsUri[DownstreamResp](s"income-tax/nino/$nino/self-employments/$businessId/periodic-summaries")
 
-    lazy val tysDownstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1965")) {
+    lazy val tysDownstreamUri =
       HipUri[DownstreamResp](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
-    } else {
-      IfsUri[DownstreamResp](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/periodic-summaries")
-    }
 
     if (taxYear.useTaxYearSpecificApi) {
       get(tysDownstreamUri)
