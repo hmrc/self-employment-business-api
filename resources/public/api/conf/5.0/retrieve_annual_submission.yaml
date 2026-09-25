@@ -47,9 +47,7 @@ responses:
             - $ref: './schemas/retrieveAnnualSubmission/def1/response.json'
             - $ref: './schemas/retrieveAnnualSubmission/def2/response.json'
             - $ref: './schemas/retrieveAnnualSubmission/def3/response.json'
-            {{#if (enabled 'r21_adjustment_to_profits_for_class4_docs')}}
             - $ref: './schemas/retrieveAnnualSubmission/def4/response.json'
-            {{/if}}
         examples:
           "With allowances response for TY 2023-24 and before":
             value:
@@ -69,14 +67,12 @@ responses:
           "With trading allowances response for TY 2025-26":
             value:
               $ref: './examples/retrieveAnnualSubmission/def3/trading_allowance_response.json'
-          {{#if (enabled 'r21_adjustment_to_profits_for_class4_docs')}}
           "With allowances response for TY 2026-27 onwards":
             value:
               $ref: './examples/retrieveAnnualSubmission/def4/full_response.json'
           "With trading allowances response for TY 2026-27 onwards":
             value:
               $ref: './examples/retrieveAnnualSubmission/def4/trading_allowance_response.json'
-          {{/if}}
 
   "400":
     description: Bad request
