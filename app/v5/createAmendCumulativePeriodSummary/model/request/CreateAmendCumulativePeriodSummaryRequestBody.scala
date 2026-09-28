@@ -16,6 +16,7 @@
 
 package v5.createAmendCumulativePeriodSummary.model.request
 
+import api.utils.JsonWritesUtil
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v5.createAmendCumulativePeriodSummary.def1.model.request.{PeriodDates, PeriodDisallowableExpenses, PeriodExpenses, PeriodIncome}
@@ -25,6 +26,15 @@ sealed trait CreateAmendCumulativePeriodSummaryRequestBody {
   val periodIncome: Option[Create_PeriodIncome]
   val periodExpenses: Option[Create_PeriodExpenses]
   val periodDisallowableExpenses: Option[Create_PeriodDisallowableExpenses]
+}
+
+object CreateAmendCumulativePeriodSummaryRequestBody extends JsonWritesUtil {
+
+  implicit val writes: OWrites[CreateAmendCumulativePeriodSummaryRequestBody] = writesFrom {
+    case def1: Def1_CreateAmendCumulativePeriodSummaryRequestBody =>
+      implicitly[OWrites[Def1_CreateAmendCumulativePeriodSummaryRequestBody]].writes(def1)
+  }
+
 }
 
 trait Create_PeriodDates {

@@ -16,7 +16,7 @@
 
 package v5.retrieveAnnualSubmission
 
-import api.config.{AppConfig, ConfigFeatureSwitches}
+import api.config.AppConfig
 import api.connectors.DownstreamUri.{HipUri, IfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
@@ -40,15 +40,7 @@ class RetrieveAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val a
     import request.*
     import schema.*
 
-    lazy val downstream1803Uri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1803")) {
-      HipUri(
-        s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
-      )
-    } else {
-      IfsUri(
-        s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
-      )
-    }
+    lazy val downstream1803Uri = HipUri(s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
 
     lazy val downstream1403Uri = IfsUri(s"income-tax/nino/$nino/self-employments/$businessId/annual-summaries/${taxYear.asDownstream}")
 

@@ -30,9 +30,6 @@ import stubs.BaseDownstreamStub
 
 class DeleteAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpec {
 
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1787.enabled" -> false) ++ super.servicesConfig
-
   private trait Test {
     def taxYear: String
     def setupStubs(): StubMapping

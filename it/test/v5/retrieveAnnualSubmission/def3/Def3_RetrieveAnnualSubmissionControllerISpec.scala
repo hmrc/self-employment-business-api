@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v5.retrieveAnnualSubmission.def2
+package v5.retrieveAnnualSubmission.def3
 
-import api.models.domain.TaxYear
 import api.models.errors.*
 import api.services.{AuditStub, AuthStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
@@ -27,17 +26,38 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import stubs.BaseDownstreamStub
-import v5.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
+import v5.retrieveAnnualSubmission.def3.model.Def3_RetrieveAnnualSubmissionFixture
 
-class Def2_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpec with Def2_RetrieveAnnualSubmissionFixture {
+class Def3_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def3_RetrieveAnnualSubmissionFixture {
 
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1803.enabled" -> false) ++ super.servicesConfig
+  private trait Test {
+    def setupStubs(): StubMapping
 
-  "calling the V5 retrieve endpoint" should {
+    def request(): WSRequest = {
+      setupStubs()
+      buildRequest(uri)
+        .withHttpHeaders(
+          (ACCEPT, s"application/vnd.hmrc.5.0+json"),
+          (AUTHORIZATION, "Bearer 123")
+        )
+    }
+
+    private def uri: String = s"/$nino/$businessId/annual/$taxYear"
+
+    def nino: String = "AA123456A"
+
+    def businessId = "XAIS12345678910"
+
+    def taxYear: String = "2025-26"
+
+    def downstreamUri: String = s"/itsa/income-tax/v1/25-26/$nino/self-employments/$businessId/annual-summaries"
+  }
+
+  "calling the 'Retrieve a Self-Employment Annual Submission' endpoint" should {
 
     "return a 200 status code" when {
-      s"any valid request is made" in new Test {
+
+      "any valid request is made with a TYS tax year" in new Test {
         override def setupStubs(): StubMapping = {
 
           AuditStub.audit()
@@ -61,33 +81,37 @@ class Def2_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpe
                                 requestTaxYear: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String       = requestNino
-            override val businessId: String = requestBusinessId
-            override val taxYear: String    = requestTaxYear
+          s"validation fails with ${expectedBody.code} error in" in new Test {
+
+            override def nino: String = requestNino
+
+            override def taxYear: String = requestTaxYear
+
+            override def businessId: String = requestBusinessId
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
-              MtdIdLookupStub.ninoFound(requestNino)
+              MtdIdLookupStub.ninoFound(nino)
             }
 
             val response: WSResponse = await(request().get())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
+            response.header("Content-Type") shouldBe Some("application/json")
           }
         }
 
         val input = Seq(
-          ("AA123", "XAIS12345678910", "2021-22", BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "203100", "2021-22", BAD_REQUEST, BusinessIdFormatError),
+          ("AA123", "XAIS12345678910", "2025-26", BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "203100", "2025-26", BAD_REQUEST, BusinessIdFormatError),
           ("AA123456A", "XAIS12345678910", "NOT_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "XAIS12345678910", "2020-22", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "XAIS12345678910", "2016-17", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
 
-        input.foreach(args => validationErrorTest(args._1, args._2, args._3, args._4, args._5))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
@@ -107,59 +131,38 @@ class Def2_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpe
           }
         }
 
+        def errorBody(`type`: String): String =
+          s"""
+             |{
+             |    "origin": "HoD",
+             |    "response": {
+             |        "failures": [
+             |            {
+             |                "type": "${`type`}",
+             |                "reason": "downstream message"
+             |            }
+             |        ]
+             |    }
+             |}
+      """.stripMargin
+
         val errors = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_INCOMESOURCEID", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (NOT_FOUND, "NOT_FOUND_PERIOD", NOT_FOUND, NotFoundError),
-          (INTERNAL_SERVER_ERROR, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
-        )
-
-        val extraTysErrors = Seq(
-          (BAD_REQUEST, "INVALID_INCOMESOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
+          (BAD_REQUEST, "INVALID_INCOME_SOURCE_ID", BAD_REQUEST, BusinessIdFormatError),
           (BAD_REQUEST, "INVALID_CORRELATION_ID", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_DELETED_RETURN_PERIOD", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "SUBMISSION_DATA_NOT_FOUND", NOT_FOUND, NotFoundError),
           (NOT_FOUND, "INCOME_DATA_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
+          (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
-        (errors ++ extraTysErrors).foreach(args => serviceErrorTest(args._1, args._2, args._3, args._4))
+
+        errors.foreach(args => serviceErrorTest.tupled(args))
+
       }
     }
-  }
-
-  private trait Test {
-
-    val nino       = "AA123456A"
-    val businessId = "XAIS12345678910"
-
-    def taxYear: String = "2024-25"
-
-    def downstreamUri: String = s"/income-tax/${TaxYear.fromMtd(taxYear).asTysDownstream}/$nino/self-employments/$businessId/annual-summaries"
-    def setupStubs(): StubMapping
-
-    def request(): WSRequest = {
-      setupStubs()
-      buildRequest(uri)
-        .withHttpHeaders(
-          (ACCEPT, s"application/vnd.hmrc.5.0+json"),
-          (AUTHORIZATION, "Bearer 123")
-        )
-    }
-
-    private def uri: String = s"/$nino/$businessId/annual/$taxYear"
-
-    def errorBody(code: String): String =
-      s"""
-         |      {
-         |        "code": "$code",
-         |        "reason": "downstream message"
-         |      }
-    """.stripMargin
-
   }
 
 }

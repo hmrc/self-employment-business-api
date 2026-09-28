@@ -28,7 +28,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import stubs.BaseDownstreamStub
 import v5.retrieveAnnualSubmission.def2.model.Def2_RetrieveAnnualSubmissionFixture
 
-class Def2_RetrieveAnnualSubmissionControllerHipISpec extends IntegrationBaseSpec with Def2_RetrieveAnnualSubmissionFixture {
+class Def2_RetrieveAnnualSubmissionControllerISpec extends IntegrationBaseSpec with Def2_RetrieveAnnualSubmissionFixture {
 
   private trait Test {
     def setupStubs(): StubMapping

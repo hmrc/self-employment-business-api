@@ -30,30 +30,11 @@ import v5.retrieveAnnualSubmission.def1.model.Def1_RetrieveAnnualSubmissionFixtu
 
 class Def1_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpec with Def1_RetrieveAnnualSubmissionFixture {
 
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1803.enabled" -> false) ++ super.servicesConfig
-
-  "calling the V5 retrieve endpoint" should {
+  "calling the 'Retrieve a Self-Employment Annual Submission' endpoint" should {
 
     "return a 200 status code" when {
-      s"any valid request is made" in new NonTysTest {
+      "any valid request is made" in new Test {
         override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          BaseDownstreamStub.onSuccess(BaseDownstreamStub.GET, downstreamUri, OK, downstreamRetrieveResponseJson)
-        }
-
-        val response: WSResponse = await(request().get())
-        response.status shouldBe OK
-        response.json shouldBe mtdRetrieveResponseJson
-        response.header("X-CorrelationId").nonEmpty shouldBe true
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
-
-      s"any valid request is made with a TYS tax year" in new TysTest {
-        override def setupStubs(): StubMapping = {
-
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
@@ -75,7 +56,7 @@ class Def1_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpe
                                 requestTaxYear: String,
                                 expectedStatus: Int,
                                 expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new NonTysTest {
+          s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String       = requestNino
             override val businessId: String = requestBusinessId
@@ -106,7 +87,7 @@ class Def1_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpe
 
       "downstream service error" when {
         def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new NonTysTest {
+          s"downstream returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -150,8 +131,9 @@ class Def1_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpe
     val nino       = "AA123456A"
     val businessId = "XAIS12345678910"
 
-    def taxYear: String
-    def downstreamUri: String
+    def taxYear: String = "2022-23"
+
+    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2023"
 
     def setupStubs(): StubMapping
 
@@ -174,18 +156,6 @@ class Def1_RetrieveAnnualSubmissionControllerIfsISpec extends IntegrationBaseSpe
          |      }
     """.stripMargin
 
-  }
-
-  private trait TysTest extends Test {
-    def taxYear: String = "2023-24"
-
-    def downstreamUri: String = s"/income-tax/23-24/$nino/self-employments/$businessId/annual-summaries"
-  }
-
-  private trait NonTysTest extends Test {
-    def taxYear: String = "2022-23"
-
-    def downstreamUri: String = s"/income-tax/nino/$nino/self-employments/$businessId/annual-summaries/2023"
   }
 
 }

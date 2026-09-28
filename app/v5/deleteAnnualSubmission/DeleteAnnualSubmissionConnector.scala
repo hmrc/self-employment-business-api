@@ -16,7 +16,7 @@
 
 package v5.deleteAnnualSubmission
 
-import api.config.{AppConfig, ConfigFeatureSwitches}
+import api.config.AppConfig
 import api.connectors.DownstreamUri.{DesUri, HipUri, IfsUri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -45,7 +45,7 @@ class DeleteAnnualSubmissionConnector @Inject() (val http: HttpClientV2, val app
 
     import request.*
 
-    lazy val downstream1787Uri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1787") && taxYear >= TaxYear.fromMtd("2025-26")) {
+    lazy val downstream1787Uri = if (taxYear >= TaxYear.fromMtd("2025-26")) {
       HipUri[Unit](s"itsa/income-tax/v1/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")
     } else {
       IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/self-employments/$businessId/annual-summaries")

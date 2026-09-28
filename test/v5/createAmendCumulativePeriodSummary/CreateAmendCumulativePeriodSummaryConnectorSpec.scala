@@ -19,7 +19,6 @@ package v5.createAmendCumulativePeriodSummary
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{BusinessId, Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
-import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v5.createAmendCumulativePeriodSummary.def1.model.request.PeriodDates
 import v5.createAmendCumulativePeriodSummary.model.request.{
@@ -63,29 +62,15 @@ class CreateAmendCumulativePeriodSummaryConnectorSpec extends ConnectorSpec {
   }
 
   "AmendCumulativePeriodSummaryConnector for a Tax Year Specific tax year" must {
-    "return a 200 status for a success scenario" when {
-      "feature switch is disabled (IFS enabled)" in new IfsTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
+    "return a 200 status for a success scenario" in new HipTest with Test {
+      def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
 
-        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> false))
-        private val outcome = Right(ResponseWrapper(correlationId, ()))
-        willPut(url"$baseUrl/income-tax/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
-          .successful(outcome)
+      private val outcome = Right(ResponseWrapper(correlationId, ()))
+      willPut(url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
+        .successful(outcome)
 
-        val result: DownstreamOutcome[Unit] = await(connector.amendCumulativePeriodSummary(request))
-        result shouldBe outcome
-      }
-      "feature switch is enabled (HIP enabled)" in new HipTest with Test {
-        def taxYear: TaxYear = TaxYear.fromMtd("2025-26")
-
-        MockAppConfig.featureSwitchConfig.returns(Configuration("ifs_hip_migration_1959.enabled" -> true))
-        private val outcome = Right(ResponseWrapper(correlationId, ()))
-        willPut(url"$baseUrl/itsa/income-tax/v1/${taxYear.asTysDownstream}/self-employments/periodic/$nino/$businessId", body) returns Future
-          .successful(outcome)
-
-        val result: DownstreamOutcome[Unit] = await(connector.amendCumulativePeriodSummary(request))
-        result shouldBe outcome
-      }
+      val result: DownstreamOutcome[Unit] = await(connector.amendCumulativePeriodSummary(request))
+      result shouldBe outcome
     }
 
   }
