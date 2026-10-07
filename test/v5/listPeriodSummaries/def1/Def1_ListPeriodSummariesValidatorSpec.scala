@@ -97,9 +97,9 @@ class Def1_ListPeriodSummariesValidatorSpec extends UnitSpec {
     }
 
     "return RuleTaxYearNotSupportedError" when {
-      "a tax year 2025 or over is passed" in {
+      "a tax year before 2024-25 is passed" in {
         val result: Either[ErrorWrapper, ListPeriodSummariesRequestData] =
-          validator(validNino, validBusinessId, "2025-26").validateAndWrapResult()
+          validator(validNino, validBusinessId, "2023-24").validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
         )

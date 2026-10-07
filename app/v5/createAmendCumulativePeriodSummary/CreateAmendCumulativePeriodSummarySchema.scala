@@ -16,14 +16,14 @@
 
 package v5.createAmendCumulativePeriodSummary
 
-import api.controllers.validators.resolvers.ResolveTaxYearMinimum
+import api.controllers.validators.resolvers.ResolveDetailedTaxYear
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
 
 object CreateAmendCumulativePeriodSummarySchema {
 
-  private val resolveTaxYearMinimum = ResolveTaxYearMinimum(TaxYear.fromMtd("2025-26"))
+  private val resolveTaxYearMinimum = ResolveDetailedTaxYear(TaxYear.fromMtd("2025-26"))
 
   def schemaFor(taxYear: String): Validated[Seq[MtdError], TaxYear] = resolveTaxYearMinimum(taxYear)
 

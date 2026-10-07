@@ -17,7 +17,7 @@
 package v5.retrieveCumulativePeriodSummary.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinimum}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveNino}
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
@@ -28,7 +28,7 @@ import v5.retrieveCumulativePeriodSummary.model.request.RetrieveCumulativePeriod
 class Def1_RetrieveCumulativePeriodSummaryValidator(nino: String, businessId: String, taxYear: String)
     extends Validator[RetrieveCumulativePeriodSummaryRequestData] {
 
-  private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.starting(2025))
+  private lazy val resolveTaxYear = ResolveDetailedTaxYear(TaxYear.starting(2025))
 
   def validate: Validated[Seq[MtdError], RetrieveCumulativePeriodSummaryRequestData] = {
     (

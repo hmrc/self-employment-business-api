@@ -16,7 +16,7 @@
 
 package v5.retrieveAnnualSubmission
 
-import api.controllers.validators.resolvers.ResolveTaxYearMinimum
+import api.controllers.validators.resolvers.ResolveDetailedTaxYear
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import api.schema.DownstreamReadable
@@ -57,7 +57,7 @@ object RetrieveAnnualSubmissionSchema {
   }
 
   private val resolveTaxYear =
-    ResolveTaxYearMinimum(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
+    ResolveDetailedTaxYear(minimumTaxYear = SeBusinessConfig.minimumTaxYear)
 
   def schemaFor(taxYear: String): Validated[Seq[MtdError], RetrieveAnnualSubmissionSchema] =
     resolveTaxYear(taxYear) andThen schemaFor
