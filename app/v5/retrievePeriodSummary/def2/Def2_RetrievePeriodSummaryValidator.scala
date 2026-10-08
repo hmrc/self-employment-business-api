@@ -17,7 +17,7 @@
 package v5.retrievePeriodSummary.def2
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveTaxYearMinMax}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveNino}
 import api.models.domain.TaxYear
 import api.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
@@ -29,13 +29,12 @@ import v5.validators.resolvers.ResolvePeriodId
 class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)
     extends Validator[RetrievePeriodSummaryRequestData] {
 
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
-
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    minMaxTaxYears,
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = TaxYear.ending(2024),
+    maximumTaxYear = Some(TaxYear.ending(2025)),
     minError = InvalidTaxYearParameterError,
     maxError = RuleTaxYearNotSupportedError
-  ).resolver
+  )
 
   def validate: Validated[Seq[MtdError], RetrievePeriodSummaryRequestData] = {
     (

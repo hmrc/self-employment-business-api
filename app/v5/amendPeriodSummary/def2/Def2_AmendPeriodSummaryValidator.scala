@@ -17,7 +17,7 @@
 package v5.amendPeriodSummary.def2
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinMax}
+import api.controllers.validators.resolvers.{ResolveBusinessId, ResolveDetailedTaxYear, ResolveNino, ResolveNonEmptyJsonObject}
 import api.models.domain.TaxYear
 import api.models.errors.{InvalidTaxYearParameterError, MtdError, RuleTaxYearNotSupportedError}
 import cats.data.Validated
@@ -30,13 +30,12 @@ import v5.validators.resolvers.ResolvePeriodId
 class Def2_AmendPeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String, body: JsValue)
     extends Validator[AmendPeriodSummaryRequestData] {
 
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
-
-  private val resolveTaxYear = ResolveTaxYearMinMax(
-    minMaxTaxYears,
+  private val resolveTaxYear = ResolveDetailedTaxYear(
+    minimumTaxYear = TaxYear.ending(2024),
+    maximumTaxYear = Some(TaxYear.ending(2025)),
     minError = InvalidTaxYearParameterError,
     maxError = RuleTaxYearNotSupportedError
-  ).resolver
+  )
 
   private val resolveJson = new ResolveNonEmptyJsonObject[Def2_AmendPeriodSummaryRequestBody]()
 
