@@ -22,6 +22,7 @@ import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.*
+import config.SeBusinessConfig
 import v5.listPeriodSummaries.def1.model.request.Def1_ListPeriodSummariesRequestData
 import v5.listPeriodSummaries.model.request.ListPeriodSummariesRequestData
 
@@ -31,7 +32,10 @@ class Def1_ListPeriodSummariesValidator(
     taxYear: String
 ) extends Validator[ListPeriodSummariesRequestData] {
 
-  private val resolveTaxYearMax = ResolveDetailedTaxYear(TaxYear.ending(2025))
+  private val resolveTaxYearMax = ResolveDetailedTaxYear(
+    minimumTaxYear = SeBusinessConfig.minimumTaxYear,
+    maximumTaxYear = Some(TaxYear.ending(2025))
+  )
 
   def validate: Validated[Seq[MtdError], ListPeriodSummariesRequestData] =
     (
