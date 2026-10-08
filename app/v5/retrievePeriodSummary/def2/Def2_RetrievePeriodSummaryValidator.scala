@@ -29,11 +29,9 @@ import v5.validators.resolvers.ResolvePeriodId
 class Def2_RetrievePeriodSummaryValidator(nino: String, businessId: String, periodId: String, taxYear: String)
     extends Validator[RetrievePeriodSummaryRequestData] {
 
-  private val minMaxTaxYears: (TaxYear, TaxYear) = (TaxYear.ending(2024), TaxYear.ending(2025))
-
   private val resolveTaxYear = ResolveDetailedTaxYear(
-    minimumTaxYear = minMaxTaxYears._1,
-    maximumTaxYear = Some(minMaxTaxYears._2),
+    minimumTaxYear = TaxYear.ending(2024),
+    maximumTaxYear = Some(TaxYear.ending(2025)),
     minError = InvalidTaxYearParameterError,
     maxError = RuleTaxYearNotSupportedError
   )
