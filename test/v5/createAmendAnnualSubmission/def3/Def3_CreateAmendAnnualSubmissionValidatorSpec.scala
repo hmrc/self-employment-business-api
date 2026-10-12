@@ -139,7 +139,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
   private val parsedAdjustments = Def3_CreateAmend_Adjustments(
     includedNonTaxableProfits = Some(200.12),
     basisAdjustment = Some(200.12),
-    overlapReliefUsed = None,
     accountingAdjustment = Some(200.12),
     outstandingBusinessIncome = Some(200.12),
     balancingChargeBpra = Some(200.12),
@@ -218,7 +217,7 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
           parsedBusinessId,
           parsedTaxYear,
           parsedRequestBody.copy(
-            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None, None)),
+            Some(parsedAdjustments.copy(includedNonTaxableProfits = Some(216.12), None, None, None, None, None, None, None, None)),
             None,
             None)
         )
@@ -466,19 +465,6 @@ class Def3_CreateAmendAnnualSubmissionValidatorSpec extends UnitSpec with JsonEr
 
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleWrongTpaAmountSubmittedError)
-        )
-      }
-    }
-
-    "return RuleOverlapReliefUsedNotAllowedError" when {
-      "a body containing overlapReliefUsed is submitted" in {
-        val requestBody: JsValue = validRequestBody().update("/adjustments/overlapReliefUsed", JsNumber(200.12))
-
-        val result: Either[ErrorWrapper, CreateAmendAnnualSubmissionRequestData] =
-          validator(validNino, validBusinessId, validTaxYear, requestBody).validateAndWrapResult()
-
-        result shouldBe Left(
-          ErrorWrapper(correlationId, RuleOverlapReliefUsedNotAllowedError.withPath("/adjustments/overlapReliefUsed"))
         )
       }
     }
