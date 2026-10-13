@@ -32,15 +32,6 @@ object Class4ExemptionReasonFormatError
       message = "The format of the supplied Class 4 National Insurance exemption reason is not valid",
       BAD_REQUEST)
 
-object RuleInvalidSubmissionPeriodError
-    extends MtdError(
-      code = "RULE_INVALID_SUBMISSION_PERIOD",
-      message = "Self Employment submissions cannot be more than 10 days before the end of the Period",
-      BAD_REQUEST)
-
-object RuleInvalidSubmissionEndDateError
-    extends MtdError(code = "RULE_INVALID_SUBMISSION_END_DATE", message = "The submitted end date must be the end of the quarter", BAD_REQUEST)
-
 object RuleOverlappingPeriod
     extends MtdError(code = "RULE_OVERLAPPING_PERIOD", message = "Period summary overlaps with any of the existing period summaries", BAD_REQUEST)
 
@@ -54,9 +45,6 @@ object RuleNotAllowedConsolidatedExpenses
       code = "RULE_NOT_ALLOWED_CONSOLIDATED_EXPENSES",
       message = "Consolidated expenses are not allowed if the accumulative turnover amount exceeds the threshold",
       BAD_REQUEST)
-
-object RuleToDateBeforeFromDateError
-    extends MtdError(code = "RULE_TO_DATE_BEFORE_FROM_DATE", message = "The To date cannot be earlier than the From date", BAD_REQUEST)
 
 object RuleBothExpensesSuppliedError
     extends MtdError(
@@ -131,9 +119,3 @@ object RuleStartAndEndDateNotAllowedError
 
 object RuleOutsideAmendmentWindowError
     extends MtdError(code = "RULE_OUTSIDE_AMENDMENT_WINDOW", message = "You are outside the amendment window", BAD_REQUEST)
-
-object RuleOverlapReliefUsedNotAllowedError
-    extends MtdError(
-      code = "RULE_OVERLAP_RELIEF_USED_NOT_ALLOWED",
-      message = "The overlapReliefUsed field is not applicable for this tax year",
-      BAD_REQUEST)

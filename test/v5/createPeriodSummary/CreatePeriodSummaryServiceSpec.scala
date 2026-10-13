@@ -97,8 +97,6 @@ class CreatePeriodSummaryServiceSpec extends ServiceSpec {
           ("INVALID_TAX_YEAR", InternalError),
           ("BUSINESS_INCOME_PERIOD_RESTRICTION", RuleBusinessIncomePeriodRestriction),
           ("SUBMISSION_DATE_ISSUE", RuleMisalignedPeriod)
-          //          ("INVALID_SUBMISSION_PERIOD", RuleInvalidSubmissionPeriodError), // To be reinstated, see MTDSA-15595
-//          ("INVALID_SUBMISSION_END_DATE", RuleInvalidSubmissionEndDateError) // To be reinstated, see MTDSA-15595
         )
 
         (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
