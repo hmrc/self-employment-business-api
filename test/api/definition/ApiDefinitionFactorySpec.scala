@@ -17,7 +17,8 @@
 package api.definition
 
 import api.config.Deprecation.NotDeprecated
-import api.config.{AppConfig, MockAppConfig}
+import api.config.MockAppConfig
+import api.definition.APIAccessType.{CONTROLLED, PUBLIC}
 import api.definition.APIStatus.{ALPHA, BETA}
 import api.mocks.MockHttpClient
 import api.routing.*
@@ -27,6 +28,43 @@ import cats.implicits.catsSyntaxValidatedId
 import scala.language.reflectiveCalls
 
 class ApiDefinitionFactorySpec extends UnitSpec {
+
+  "calling definition" when {
+    List((PUBLIC, false), (CONTROLLED, true)).foreach { (accessType, controlledAccessEnabled) =>
+      s"the controlled access flag is set to $controlledAccessEnabled" should {
+        s"return a valid Definition case class with the access type set to $accessType" in new Test {
+          List(Version5).foreach { version =>
+            MockAppConfig.apiGatewayContext.returns("individuals/self-assessment/adjustable-summary")
+            MockAppConfig.deprecationFor(version).returns(NotDeprecated.valid)
+            MockAppConfig.apiStatus(version).returns("BETA")
+            MockAppConfig.endpointsEnabled(version).returns(true)
+            MockAppConfig.controlledAccessEnabled.returns(controlledAccessEnabled)
+          }
+
+          override val apiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
+
+          apiDefinitionFactory.definition shouldBe
+            Definition(
+              api = APIDefinition(
+                name = "Self Employment Business (MTD)",
+                description = "An API for providing Annual and Periodic Summary data",
+                context = "individuals/self-assessment/adjustable-summary",
+                categories = List("INCOME_TAX_MTD"),
+                versions = List(
+                  APIVersion(
+                    version = Version5,
+                    status = BETA,
+                    access = accessType,
+                    endpointsEnabled = true
+                  )
+                ),
+                requiresTrust = None
+              )
+            )
+        }
+      }
+    }
+  }
 
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
@@ -72,10 +110,9 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   trait Test extends UnitSpec with MockHttpClient with MockAppConfig {
     MockAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
 
-    protected val apiDefinitionFactory: ApiDefinitionFactory = new ApiDefinitionFactory {
-      protected val appConfig: AppConfig = mockAppConfig
+    protected val apiDefinitionFactory: ApiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig) {
 
-      lazy val definition: Definition = Definition(
+      override lazy val definition: Definition = Definition(
         APIDefinition(
           "test API definition",
           "description",

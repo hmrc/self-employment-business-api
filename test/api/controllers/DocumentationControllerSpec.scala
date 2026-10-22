@@ -18,7 +18,7 @@ package api.controllers
 
 import api.config.rewriters.*
 import api.config.rewriters.DocumentationRewriters.CheckAndRewrite
-import api.config.{AppConfig, MockAppConfig, RealAppConfig}
+import api.config.{MockAppConfig, RealAppConfig}
 import api.definition.*
 import api.routing.{Version, Versions}
 import com.typesafe.config.ConfigFactory
@@ -177,10 +177,9 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     MockAppConfig.featureSwitchConfig returns Configuration("openApiFeatureTest.enabled" -> featureEnabled)
 
-    private val apiFactory = new ApiDefinitionFactory {
-      protected val appConfig: AppConfig = mockAppConfig
+    private val apiFactory = new ApiDefinitionFactory(mockAppConfig) {
 
-      lazy val definition: Definition = Definition(
+      override lazy val definition: Definition = Definition(
         APIDefinition(
           "test API definition",
           "description",
