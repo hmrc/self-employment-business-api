@@ -17,19 +17,37 @@
 package api.definition
 
 import api.config.AppConfig
-import api.routing.Version
+import api.definition.APIAccessType.{CONTROLLED, PUBLIC}
+import api.routing.{Version, Version5}
 import api.utils.Logging
 import cats.data.Validated.Invalid
 
-trait ApiDefinitionFactory extends Logging {
+import javax.inject.{Inject, Singleton}
+
+@Singleton
+class ApiDefinitionFactory @Inject() (appConfig: AppConfig) extends Logging {
 
   protected val mtdCategory = "INCOME_TAX_MTD"
 
-  protected val appConfig: AppConfig
+  lazy val definition: Definition = Definition(
+    api = APIDefinition(
+      name = "Self Employment Business (MTD)",
+      description = "An API for providing Annual and Periodic Summary data",
+      context = appConfig.apiGatewayContext,
+      categories = List(mtdCategory),
+      versions = List(
+        APIVersion(
+          version = Version5,
+          status = buildAPIStatus(Version5),
+          access = if (appConfig.controlledAccessEnabled) CONTROLLED else PUBLIC,
+          endpointsEnabled = appConfig.endpointsEnabled(Version5)
+        )
+      ),
+      requiresTrust = None
+    )
+  )
 
-  lazy val definition: Definition
-
-  def buildAPIStatus(version: Version): APIStatus = {
+  protected[definition] def buildAPIStatus(version: Version): APIStatus = {
     checkDeprecationConfigFor(version)
 
     APIStatus.parser
