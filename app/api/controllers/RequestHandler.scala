@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package api.controllers
 
 import api.config.AppConfig
-import api.config.Deprecation.Deprecated
+import api.config.Deprecation.HasDeprecationDates
 import api.controllers.validators.Validator
 import api.models.errors.{ErrorWrapper, InternalError}
 import api.models.outcomes.ResponseWrapper
@@ -96,16 +96,13 @@ object RequestHandler {
 
       implicit class Response(result: Result)(implicit appConfig: AppConfig, apiVersion: Version) {
 
-        private def withDeprecationHeaders: List[(String, String)] = {
-
-          appConfig.deprecationFor(apiVersion) match {
-            case Valid(Deprecated(deprecatedOn, maybeSunsetDate)) =>
-              List(
-                "Deprecation" -> longDateTimestampGmt(deprecatedOn),
-                "Link"        -> appConfig.apiDocumentationUrl
-              ) ++ maybeSunsetDate.map(sunsetDate => "Sunset" -> longDateTimestampGmt(sunsetDate))
-            case _ => Nil
-          }
+        private def withDeprecationHeaders: List[(String, String)] = appConfig.deprecationFor(apiVersion) match {
+          case Valid(deprecation: HasDeprecationDates) =>
+            List(
+              "Deprecation" -> longDateTimestampGmt(deprecation.deprecatedOn),
+              "Link"        -> appConfig.apiDocumentationUrl
+            ) ++ deprecation.sunsetDate.map(sunsetDate => "Sunset" -> longDateTimestampGmt(sunsetDate))
+          case _ => Nil
         }
 
         def withApiHeaders(correlationId: String, responseHeaders: (String, String)*): Result = {
